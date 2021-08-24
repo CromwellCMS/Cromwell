@@ -31,3 +31,13 @@
 
 .modalCover {
 }
+
+:global(.modeDark) {
+    .ConfirmationModal {
+        background-color: #333;
+
+        * {
+            color: #eee;
+        }
+    }
+}

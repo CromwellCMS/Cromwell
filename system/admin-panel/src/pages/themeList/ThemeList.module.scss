@@ -149,3 +149,14 @@ div.updateProgress {
         font-size: 13px;
     }
 }
+
+:global(.modeDark) {
+    .updateModal,
+    .themeCard {
+        background-color: #333;
+
+        * {
+            color: #eee;
+        }
+    }
+}

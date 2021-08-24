@@ -147,7 +147,6 @@ div.textField {
 }
 
 :global(.modeDark) {
-    .currencyItem,
     .header,
     .category {
         background-color: #333;
@@ -155,5 +154,17 @@ div.textField {
         * {
             color: #eee;
         }
+    }
+
+    .currencyItem {
+        background-color: #222;
+
+        * {
+            color: #eee;
+        }
+    }
+
+    .cmsVersion {
+        color: #ccc;
     }
 }

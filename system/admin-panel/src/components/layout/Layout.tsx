@@ -16,21 +16,6 @@ import { ConfirmPrompt } from '../modal/Confirmation';
 import Sidebar from '../sidebar/Sidebar';
 import styles from './Layout.module.scss';
 
-const theme = createMuiTheme({
-  palette: {
-    primary: {
-      main: '#8228c5',
-      light: '#8561c5',
-      dark: '#482880',
-    },
-    secondary: {
-      main: '#910081',
-      light: '#910081',
-      dark: '#910081',
-    }
-  },
-});
-
 function Layout() {
   const forceUpdate = useForceUpdate();
   const darkMode = getStoreItem('theme')?.mode === 'dark';
@@ -38,6 +23,34 @@ function Layout() {
   document.body.classList.remove('modeDark');
   document.body.classList.remove('modeLight');
   document.body.classList.add(darkMode ? 'modeDark' : 'modeLight');
+
+  const theme = createMuiTheme(darkMode ? {
+    palette: {
+      primary: {
+        main: '#9747d3',
+        light: '#9747d3',
+        dark: '#8228c5',
+      },
+      secondary: {
+        main: '#910081',
+        light: '#910081',
+        dark: '#910081',
+      }
+    },
+  } : {
+    palette: {
+      primary: {
+        main: '#8228c5',
+        light: '#8561c5',
+        dark: '#482880',
+      },
+      secondary: {
+        main: '#910081',
+        light: '#910081',
+        dark: '#910081',
+      }
+    },
+  });
 
   useEffect(() => {
     onStoreChange('theme', () => {

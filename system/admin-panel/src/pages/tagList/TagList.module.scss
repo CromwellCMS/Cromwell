@@ -59,3 +59,14 @@ div.filterItem {
     margin: 10px;
     width: 150px;
 }
+
+:global(.modeDark) {
+    .listHeader,
+    .pagination {
+        background-color: #333;
+
+        * {
+            color: #eee;
+        }
+    }
+}

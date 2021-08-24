@@ -78,3 +78,29 @@
         margin-right: 10px;
     }
 }
+
+:global(.modeDark) {
+    .Post {
+        background-color: #333;
+
+        * {
+            color: #eee;
+        }
+
+        .postHeader {
+            background-color: #333;
+
+            * {
+                color: #eee;
+            }
+        }
+    }
+
+    div:global(.ql-toolbar) {
+        background-color: #ddd;
+
+        * {
+            color: #333;
+        }
+    }
+}

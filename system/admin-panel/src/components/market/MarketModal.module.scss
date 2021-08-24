@@ -49,3 +49,13 @@
         margin: 4px 0;
     }
 }
+
+:global(.modeDark) {
+    .MarketModal {
+        background-color: #333;
+
+        * {
+            color: #eee;
+        }
+    }
+}

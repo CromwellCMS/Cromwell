@@ -52,3 +52,21 @@ div.popover {
 :global(.MuiPickersDay-daySelected) p {
     color: #fff;
 }
+
+:global(.modeDark) {
+    div.popover {
+        background-color: #333;
+
+        * {
+            color: #eee;
+        }
+    }
+
+    :global(.MuiChip-root.MuiAutocomplete-tag) {
+        background-color: #111;
+
+        * {
+            color: #eee;
+        }
+    }
+}

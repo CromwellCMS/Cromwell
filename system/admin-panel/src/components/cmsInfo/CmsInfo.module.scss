@@ -5,7 +5,7 @@
     @include paper;
     padding: 20px;
 
-    >p {
+    > p {
         margin: 8px 0;
     }
 }
@@ -23,5 +23,15 @@
     a {
         color: $primaryColor;
         margin: 0 2px;
+    }
+}
+
+:global(.modeDark) {
+    .cmsInfo {
+        background-color: #333;
+
+        * {
+            color: #eee;
+        }
     }
 }

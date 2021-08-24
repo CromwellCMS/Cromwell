@@ -109,10 +109,6 @@
         opacity: 0;
         transition: 0.2s;
         background: #fff;
-
-        &:hover {
-            background: #fff;
-        }
     }
 
     .photoPreviewCloseBtn {
@@ -136,7 +132,7 @@
         margin-right: 10px;
     }
 
-    .preloader>div {
+    .preloader > div {
         box-shadow: 0 0 25px 2px rgba(91, 0, 82, 0.7);
         background: linear-gradient(144deg, #28006f 0%, #600155 100%);
         border-radius: 100%;
@@ -181,4 +177,24 @@
 
 .pathChunk {
     cursor: pointer;
+}
+
+:global(.modeDark) {
+    .FileManager,
+    .FileManager .header,
+    .createFolderWindow {
+        background-color: #333;
+
+        * {
+            color: #eee;
+        }
+    }
+
+    .item:hover {
+        background-color: #555;
+    }
+
+    .zoomItemBtn {
+        background-color: #333;
+    }
 }
