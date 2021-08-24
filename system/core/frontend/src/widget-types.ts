@@ -31,6 +31,6 @@ export type Widget_EntityActions<T> = {
 }
 
 export type Widget_PostActions = Widget_EntityActions<TPost> & {
-    quillInstance: any;
+    editorInstance: any;
 }
 

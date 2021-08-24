@@ -254,7 +254,9 @@ const devGenerate = async (themeName: string, options) => {
         } else {
             const globalStyles = `
             import 'pure-react-carousel/dist/react-carousel.es.css';
-            import 'react-image-lightbox/style.css';`
+            import 'react-image-lightbox/style.css';
+            import '@cromwell/renderer/build/editor-styles.css';
+            `;
 
             pageContent = globalStyles + '\n' + pageContent;
         }

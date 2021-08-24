@@ -18,7 +18,7 @@ import CategoriesTab from './CategoriesTab';
 import MainInfoCard from './MainInfoCard';
 import styles from './Product.module.scss';
 
-export const editorId = "quill-editor";
+export const editorId = "prod-text-editor";
 
 export type TInfoCardRef = {
     save: () => void;

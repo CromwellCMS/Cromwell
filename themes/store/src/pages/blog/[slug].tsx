@@ -1,5 +1,3 @@
-import 'quill/dist/quill.snow.css';
-
 import { TCromwellPage, TGetStaticProps, TPost } from '@cromwell/core';
 import { CContainer, getGraphQLClient, Link, LoadBox } from '@cromwell/core-frontend';
 import { useRouter } from 'next/router';
@@ -62,7 +60,7 @@ const BlogPostPage: TCromwellPage<BlogPostProps> = (props) => {
                         </div>
                     )}
                     {post?.content && (
-                        <div id="quill" dangerouslySetInnerHTML={{
+                        <div id="text-editor" dangerouslySetInnerHTML={{
                             __html: post?.content
                         }}></div>
                     )}

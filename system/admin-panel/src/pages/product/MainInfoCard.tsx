@@ -1,12 +1,11 @@
 import { resolvePageRoute, serviceLocator, TAttributeProductVariant, TProduct } from '@cromwell/core';
 import { TextField } from '@material-ui/core';
-import { Quill as QuillType } from 'quill';
 import React, { useEffect, useRef } from 'react';
 
 import GalleryPicker from '../../components/galleryPicker/GalleryPicker';
 import { useForceUpdate } from '../../helpers/forceUpdate';
 import { NumberFormatCustom } from '../../helpers/NumberFormatCustom';
-import { getQuillHTML, initQuillEditor } from '../../helpers/quill';
+import { getEditorData, getEditorHtml, initTextEditor } from '../../helpers/editor';
 import { editorId, TInfoCardRef } from './Product';
 import styles from './Product.module.scss';
 
@@ -34,11 +33,11 @@ const MainInfoCard = (props: {
         forceUpdate();
     }
 
-    const fullSave = () => {
+    const fullSave = async () => {
         setProdData({
             ...(product as TProduct),
-            description: getQuillHTML(quillEditor.current, `#${editorId}`),
-            descriptionDelta: JSON.stringify(quillEditor.current?.getContents() ?? null),
+            description: await getEditorHtml(editorId),
+            descriptionDelta: JSON.stringify(await getEditorData(editorId)),
         });
     }
 
@@ -48,7 +47,6 @@ const MainInfoCard = (props: {
 
     const productVariantVal = useRef(props.productVariantVal);
     const isNewVariant = productVariantVal.current !== props.productVariantVal;
-    const quillEditor = useRef<QuillType | null>(null);
     if (isNewVariant) {
         productVariantVal.current = props.productVariantVal;
     }
@@ -69,8 +67,12 @@ const MainInfoCard = (props: {
                 descriptionDelta = JSON.parse(product.descriptionDelta);
             } catch (e) { console.error(e) }
         }
-        const Quill: any = await import('quill');
-        quillEditor.current = initQuillEditor(Quill?.default, `#${editorId}`, descriptionDelta);
+
+        await initTextEditor({
+            htmlId: editorId,
+            data: descriptionDelta,
+            placeholder: 'Product description...',
+        });
     }
 
     const handleChange = (prop: keyof TProduct, val: any) => {

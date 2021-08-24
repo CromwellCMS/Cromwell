@@ -177,17 +177,13 @@ button.galleryAddImageBtn {
 }
 
 .descriptionEditor {
+    @include styledScrollBar;
     margin: 20px 0;
     border: 1px solid #bbb;
     border-radius: 5px;
-
-    div:global(.ql-toolbar) {
-        border: 0;
-        border-bottom: 1px solid #bbb;
-    }
-    div:global(.ql-container) {
-        border: 0;
-    }
+    max-height: 350px;
+    overflow: auto;
+    padding: 15px;
 }
 
 .CategoriesTab {

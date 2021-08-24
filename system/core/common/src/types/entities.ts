@@ -53,7 +53,7 @@ export type TProductCategoryCore = {
      */
     description?: string;
     /**
-     * Description in Quill format
+     * Description in JSON format
      */
     descriptionDelta?: string;
     /**
@@ -118,7 +118,7 @@ export type TProduct = TBasePageEntity & {
      */
     description?: string;
     /**
-     * Description in Quill format
+     * Description in JSON format
      */
     descriptionDelta?: string;
     /**
@@ -204,7 +204,7 @@ export type TPost = {
      */
     content?: string | null;
     /**
-     * Post content, stringified JSON from Quill.js
+     * Post content, stringified JSON from text editor
      */
     delta?: string | null;
     /**

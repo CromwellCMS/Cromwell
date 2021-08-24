@@ -1,0 +1,148 @@
+.image-tool {
+    --bg-color: #cdd1e0;
+    --front-color: #388ae5;
+    --border-color: #e8e8eb;
+  
+    &__image {
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 10px;
+  
+      &-picture {
+        max-width: 100%;
+        vertical-align: bottom;
+        display: block;
+      }
+  
+      &-preloader {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-size: cover;
+        margin: auto;
+        position: relative;
+        background-color: var(--bg-color);
+        background-position: center center;
+  
+        &::after {
+          content: "";
+          position: absolute;
+          z-index: 3;
+          width: 60px;
+          height: 60px;
+          border-radius: 50%;
+          border: 2px solid var(--bg-color);
+          border-top-color: var(--front-color);
+          left: 50%;
+          top: 50%;
+          margin-top: -30px;
+          margin-left: -30px;
+          animation: image-preloader-spin 2s infinite linear;
+          box-sizing: border-box;
+        }
+      }
+    }
+  
+    &__caption {
+      &[contentEditable="true"][data-placeholder]::before {
+        position: absolute !important;
+        content: attr(data-placeholder);
+        color: #707684;
+        font-weight: normal;
+        display: none;
+      }
+  
+      &[contentEditable="true"][data-placeholder]:empty {
+        &::before {
+          display: block;
+        }
+  
+        &:focus::before {
+          display: none;
+        }
+      }
+    }
+  
+    &--empty {
+      ^&__image {
+        display: none;
+      }
+    }
+  
+    &--empty,
+    &--loading {
+      ^&__caption {
+        display: none;
+      }
+    }
+  
+    &--filled {
+      .cdx-button {
+        display: none;
+      }
+  
+      ^&__image {
+        &-preloader {
+          display: none;
+        }
+      }
+    }
+  
+    &--loading {
+      ^&__image {
+        min-height: 200px;
+        display: flex;
+        border: 1px solid var(--border-color);
+        background-color: #fff;
+  
+        &-picture {
+          display: none;
+        }
+      }
+  
+      .cdx-button {
+        display: none;
+      }
+    }
+  
+    /**
+     * Tunes
+     * ----------------
+     */
+  
+    &--withBorder {
+      ^&__image {
+        border: 1px solid var(--border-color);
+      }
+    }
+  
+    &--withBackground {
+      ^&__image {
+        padding: 15px;
+        background: var(--bg-color);
+  
+        &-picture {
+          max-width: 60%;
+          margin: 0 auto;
+        }
+      }
+    }
+  
+    &--stretched {
+      ^&__image {
+        &-picture {
+          width: 100%;
+        }
+      }
+    }
+  }
+  
+  @keyframes image-preloader-spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  

@@ -135,7 +135,7 @@ export default function Sidebar() {
                     </div>
                 </div>
                 <div className={styles.bottomBlock}
-                    style={{ marginRight: '-15px' }}
+                    style={{ marginRight: '-10px' }}
                     ref={popperAnchorEl}>
                     <Tooltip title="Options">
                         <IconButton

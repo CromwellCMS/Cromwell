@@ -39,6 +39,9 @@ const main = () => {
     }
 
     const buildService = () => {
+        spawnSync(`node postcss-build`, [],
+            { shell: true, stdio: 'inherit', cwd: rendererRootDir, env: npmRunPath.env() });
+
         spawnSync(`rollup -c`, [],
             { shell: true, stdio: 'inherit', cwd: rendererRootDir, env: npmRunPath.env() });
     }
