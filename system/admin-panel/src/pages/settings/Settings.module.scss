@@ -2,7 +2,7 @@
 @import "../../styles/variables.scss";
 
 .SettingsPage {
-    padding: 15px;
+    padding: 15px 15px 0 15px;
     display: flex;
     flex-direction: column;
     max-width: 900px;
@@ -15,17 +15,17 @@
     @include paper;
     display: flex;
     justify-content: space-between;
-    margin-bottom: 15px;
     padding: 10px 20px;
+    z-index: 1;
 }
 
 .list {
-    @include styledScrollBar;
+    @include styledScrollBarList;
     display: flex;
     flex-direction: column;
     height: 100%;
     overflow: auto;
-    padding: 5px 10px 5px 5px;
+    padding: 20px 10px 5px 5px;
 }
 
 .field {
@@ -43,7 +43,7 @@
     margin-top: 15px;
     font-weight: 500;
 
-    > h3 {
+    >h3 {
         font-size: 24px;
     }
 }
@@ -135,6 +135,7 @@ div.textField {
 }
 
 @media screen and (max-width: $mobileBreakpoint) {
+
     // mobile
     .SettingsPage .list {
         overflow: visible;
@@ -147,6 +148,7 @@ div.textField {
 }
 
 :global(.modeDark) {
+
     .header,
     .category {
         background-color: #333;
