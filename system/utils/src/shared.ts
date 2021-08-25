@@ -468,7 +468,6 @@ export const defaultFrontendDeps: (string | TFrontendDependency)[] = [
     "clsx",
     "throttle-debounce",
     "query-string",
-    "quill",
     "react",
     "react-dom",
     "react-is",

@@ -52,3 +52,13 @@
     @include styledScrollBar;
     padding-right: 5px;
 }
+
+:global(.modeDark) {
+    .PluginSettingsLayout {
+        background-color: #333;
+
+        * {
+            color: #eee;
+        }
+    }
+}

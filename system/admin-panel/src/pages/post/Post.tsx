@@ -11,16 +11,15 @@ import {
 } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
 import { Button, IconButton, Tooltip } from '@material-ui/core';
-import { OpenInNew as OpenInNewIcon, Settings as SettingsIcon } from '@material-ui/icons';
+import { MoreHoriz as MoreHorizIcon, OpenInNew as OpenInNewIcon } from '@material-ui/icons';
 import { Skeleton } from '@material-ui/lab';
-import { Quill as QuillType } from 'quill';
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useHistory, useParams } from 'react-router-dom';
 
 import { toast } from '../../components/toast/toast';
 import { postListInfo, postPageInfo } from '../../constants/PageInfos';
+import { getEditorData, getEditorHtml, initTextEditor } from '../../helpers/editor';
 import { useForceUpdate } from '../../helpers/forceUpdate';
-import { getQuillHTML, initQuillEditor } from '../../helpers/quill';
 import styles from './Post.module.scss';
 import PostSettings from './PostSettings';
 
@@ -40,17 +39,15 @@ const Post = (props) => {
     const [isLoading, setIsloading] = useState(false);
     const [notFound, setNotFound] = useState(false);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-    const quillEditor = useRef<QuillType | null>(null);
     const actionsRef = useRef<HTMLDivElement | null>(null);
     const hasChanges = useRef<boolean>(false);
     const history = useHistory();
     const forceUpdate = useForceUpdate();
-    const editorId = 'quill-editor';
+    const editorId = 'post-text-editor';
 
     const unregisterBlock = useRef<(() => void) | null>(null);
 
     const getPostData = async (postId: string): Promise<TPost | undefined> => {
-        setIsloading(true);
         let post;
         try {
             post = await client?.getPostById(postId, gql`
@@ -85,7 +82,6 @@ const Post = (props) => {
             );
             if (post) setPostData(post);
         } catch (e) { console.error(e) }
-        setIsloading(false);
         return post;
     }
 
@@ -101,17 +97,17 @@ const Post = (props) => {
     }
 
     const _initEditor = async (postContent?: any) => {
-        const Quill: any = await import('quill');
-        const quill = initQuillEditor(Quill?.default, '#quill-editor', postContent);
-
-        quill.on('text-change', () => {
-            if (!hasChanges.current) {
-                hasChanges.current = true;
-                forceUpdate();
+        await initTextEditor({
+            htmlId: editorId,
+            data: postContent,
+            autofocus: true,
+            onChange: () => {
+                if (!hasChanges.current) {
+                    hasChanges.current = true;
+                    forceUpdate();
+                }
             }
         });
-
-        quillEditor.current = quill;
     }
 
     const init = async () => {
@@ -125,6 +121,7 @@ const Post = (props) => {
         if (postId && postId !== 'new') {
             let postContent: any = null;
             let post;
+            setIsloading(true);
             try {
                 post = await getPostData(postId);
                 if (post?.delta) {
@@ -133,6 +130,7 @@ const Post = (props) => {
             } catch (e) {
                 console.error(e);
             }
+            setIsloading(false);
 
             if (post) {
                 await _initEditor(postContent);
@@ -162,7 +160,7 @@ const Post = (props) => {
     }, []);
 
 
-    const getInput = (): TPostInput => ({
+    const getInput = async (): Promise<TPostInput> => ({
         slug: postData.slug,
         pageTitle: postData.pageTitle,
         pageDescription: postData.pageDescription,
@@ -174,47 +172,41 @@ const Post = (props) => {
         isEnabled: postData.isEnabled,
         tagIds: postData.tags?.map(tag => tag.id),
         authorId: postData?.author?.id ?? userInfo?.id,
-        delta: JSON.stringify(quillEditor.current.getContents()),
+        delta: JSON.stringify(await getEditorData(editorId)),
+        content: await getEditorHtml(editorId),
     });
 
     const handleSave = async (input: TPostInput) => {
-        // console.log(quillEditor.current.getContents());
-        const outerHTML = getQuillHTML(quillEditor.current, `#${editorId}`);
+        if (postId === 'new') {
+            try {
+                input.authorId = userInfo?.id;
+                const newPost = await client?.createPost(input);
 
-        if (outerHTML) {
-            input.content = outerHTML;
+                setPostData(newPost);
+                toast.success('Created post!');
 
-            if (postId === 'new') {
-                try {
-                    input.authorId = userInfo?.id;
-                    const newPost = await client?.createPost(input);
-
-                    setPostData(newPost);
-                    toast.success('Created post!');
-
-                    hasChanges.current = false;
-                    history.push(`${postPageInfo.baseRoute}/${newPost.id}`)
-                    await getPostData(newPost.id);
-                } catch (e) {
-                    toast.error('Failed to create post');
-                    console.error(e)
-                }
-            } else if (postData?.id) {
-                try {
-                    await client?.updatePost(postData.id, input);
-                    hasChanges.current = false;
-                    await getPostData(postData.id);
-                    toast.success('Saved!');
-                } catch (e) {
-                    toast.error('Failed to save');
-                    console.error(e)
-                }
+                hasChanges.current = false;
+                history.push(`${postPageInfo.baseRoute}/${newPost.id}`)
+                await getPostData(newPost.id);
+            } catch (e) {
+                toast.error('Failed to create post');
+                console.error(e)
+            }
+        } else if (postData?.id) {
+            try {
+                await client?.updatePost(postData.id, input);
+                hasChanges.current = false;
+                await getPostData(postData.id);
+                toast.success('Saved!');
+            } catch (e) {
+                toast.error('Failed to save');
+                console.error(e)
             }
         }
     }
 
     const handlePublish = async () => {
-        const input = getInput();
+        const input = await getInput();
         input.published = true;
         if (!input.publishDate) input.publishDate = new Date(Date.now());
         handleSave(input);
@@ -255,19 +247,19 @@ const Post = (props) => {
                             {ArrowBackIcon}
                         </IconButton>
                     </Link>
-                    <Tooltip title="Edit title in settings">
+                    <Tooltip title="Edit title in meta">
                         <p className={styles.title} onClick={handleOpenSettings}>{postData?.title ?? ''}</p>
                     </Tooltip>
                 </div>
                 <div
                     ref={actionsRef}
                 >
-                    <Tooltip title="Settings">
+                    <Tooltip title="Post meta info">
                         <IconButton onClick={handleOpenSettings}
                             style={{ marginRight: '10px' }}
-                            id="settings-button"
+                            id="more-button"
                         >
-                            <SettingsIcon />
+                            <MoreHorizIcon />
                         </IconButton>
                     </Tooltip>
                     {isSettingsOpen && (
@@ -302,7 +294,7 @@ const Post = (props) => {
                         className={styles.saveBtn}
                         size="small"
                         disabled={!hasChanges.current}
-                        onClick={() => handleSave(getInput())}>
+                        onClick={async () => handleSave(await getInput())}>
                         Save</Button>
                 </div>
             </div>

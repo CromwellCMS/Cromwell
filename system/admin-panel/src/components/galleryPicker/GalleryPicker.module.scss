@@ -21,3 +21,18 @@
         @extend .galleryActionBtn;
     }
 }
+
+:global(.modeDark) {
+    .GalleryPicker {
+        button.galleryActionBtn {
+            background-color: #222;
+            margin-right: 5px;
+        }
+        button.galleryActionBtn:hover {
+            background-color: #555;
+            svg {
+                color: #fff;
+            }
+        }
+    }
+}

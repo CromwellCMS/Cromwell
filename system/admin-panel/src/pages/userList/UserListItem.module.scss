@@ -55,3 +55,18 @@
 .listItem:hover {
     background-color: #f4f4f4;
 }
+
+:global(.modeDark) {
+    .listItem {
+        background-color: #333;
+        border-bottom: 1px solid #333;
+
+        * {
+            color: #eee;
+        }
+    }
+
+    .listItem:hover {
+        background-color: #555;
+    }
+}

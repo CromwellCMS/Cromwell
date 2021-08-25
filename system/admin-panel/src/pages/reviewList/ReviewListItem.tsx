@@ -78,6 +78,7 @@ const ReviewListItem = (props: TPropsType) => {
                         )}
                         <Rating name="read-only"
                             size="small"
+                            className={styles.rating}
                             value={props.data?.rating ?? 0}
                             precision={0.5} readOnly
                         />

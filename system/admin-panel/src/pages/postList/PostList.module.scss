@@ -17,11 +17,11 @@
         margin-right: 20px;
     }
 
-    .authorSearch {
-        input {
-            // padding: 0 !important;
-        }
-    }
+    // .authorSearch {
+    //     input {
+    //         // padding: 0 !important;
+    //     }
+    // }
 }
 
 .listHeader {
@@ -55,7 +55,6 @@
 
 .listItem {
     @include paper;
-
     display: flex;
     align-items: center;
     margin-bottom: 3px;
@@ -67,6 +66,25 @@
 .listItem:hover {
     background-color: #f4f4f4;
     // border: 1px solid #ccc;
+}
+
+:global(.modeDark) {
+    .listHeader,
+    .listItem {
+        background-color: #333;
+
+        * {
+            color: #eee;
+        }
+    }
+
+    .listItem {
+        border-bottom: 1px solid #333;
+    }
+
+    .listItem:hover {
+        background-color: #555;
+    }
 }
 
 .list {

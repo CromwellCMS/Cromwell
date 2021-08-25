@@ -2,7 +2,6 @@ import './helpers/Draggable/Draggable.css';
 import './helpers/importDependencies';
 import './styles/global.scss';
 import 'pure-react-carousel/dist/react-carousel.es.css';
-import 'quill/dist/quill.snow.css';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import 'react-toastify/dist/ReactToastify.css';

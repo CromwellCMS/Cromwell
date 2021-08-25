@@ -9,7 +9,7 @@
     max-width: 90vw;
     overflow: auto;
 
-    >p {
+    > p {
         margin: 8px 0;
     }
 }
@@ -38,4 +38,14 @@
 
 .chartBox {
     margin-bottom: 30px;
+}
+
+:global(.modeDark) {
+    .SystemMonitor {
+        background-color: #333;
+
+        * {
+            color: #eee;
+        }
+    }
 }

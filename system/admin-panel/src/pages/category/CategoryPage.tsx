@@ -3,15 +3,14 @@ import { resolvePageRoute, serviceLocator, TPagedParams, TProductCategory, TProd
 import { getGraphQLClient } from '@cromwell/core-frontend';
 import { Button, IconButton, TextField, Tooltip } from '@material-ui/core';
 import { ArrowBack as ArrowBackIcon, OpenInNew as OpenInNewIcon } from '@material-ui/icons';
-import { Quill as QuillType } from 'quill';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useHistory, useParams } from 'react-router-dom';
 
 import Autocomplete from '../../components/autocomplete/Autocomplete';
 import ImagePicker from '../../components/imagePicker/ImagePicker';
 import { toast } from '../../components/toast/toast';
 import { categoryListPageInfo, categoryPageInfo } from '../../constants/PageInfos';
-import { getQuillHTML, initQuillEditor } from '../../helpers/quill';
+import { getEditorData, getEditorHtml, initTextEditor } from '../../helpers/editor';
 import commonStyles from '../../styles/common.module.scss';
 import styles from './CategoryPage.module.scss';
 
@@ -22,7 +21,6 @@ export default function CategoryPage(props) {
     const history = useHistory();
     const [category, setCategoryData] = useState<TProductCategory | undefined | null>(null);
     const editorId = 'category-description-editor';
-    const quillEditor = useRef<QuillType | null>(null);
     const [parentCategory, setParentCategory] = useState<TProductCategory | null>(null);
 
     const urlParams = new URLSearchParams(props?.location?.search);
@@ -106,8 +104,11 @@ export default function CategoryPage(props) {
             console.error(e);
         }
 
-        const Quill: any = await import('quill');
-        quillEditor.current = initQuillEditor(Quill?.default, `#${editorId}`, postContent);
+        await initTextEditor({
+            htmlId: editorId,
+            data: postContent,
+            placeholder: 'Category description...',
+        });
     }
 
     useEffect(() => {
@@ -143,20 +144,20 @@ export default function CategoryPage(props) {
         });
     }
 
-    const getInput = (): TProductCategoryInput => ({
+    const getInput = async (): Promise<TProductCategoryInput> => ({
         slug: category.slug,
         pageTitle: category.pageTitle,
         pageDescription: category.pageDescription,
         name: category.name,
         mainImage: category.mainImage,
         isEnabled: category.isEnabled,
-        description: getQuillHTML(quillEditor.current, `#${editorId}`),
-        descriptionDelta: JSON.stringify(quillEditor.current.getContents()),
+        description: await getEditorHtml(editorId),
+        descriptionDelta: JSON.stringify(await getEditorData(editorId)),
         parentId: category.parent?.id,
     });
 
     const handleSave = async () => {
-        const inputData: TProductCategoryInput = getInput();
+        const inputData: TProductCategoryInput = await getInput();
 
         if (categoryId === 'new') {
             try {

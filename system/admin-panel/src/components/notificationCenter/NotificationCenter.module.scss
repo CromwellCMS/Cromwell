@@ -126,3 +126,14 @@ div.updateProgress {
     display: block;
     word-break: break-all;
 }
+
+:global(.modeDark) {
+    .list {
+        background-color: #444;
+        border-radius: 0;
+    }
+
+    div.item {
+        background-color: #333;
+    }
+}

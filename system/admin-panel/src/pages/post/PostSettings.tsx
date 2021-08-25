@@ -78,7 +78,7 @@ const PostSettings = (props: {
             }}
         >
             <div className={styles.PostSettings}>
-                <p className={styles.headerText}>Page settings</p>
+                <p className={styles.headerText}>Page meta</p>
                 <IconButton className={styles.closeBtn}
                     id="post-settings-close-btn"
                     onClick={handleClose}>

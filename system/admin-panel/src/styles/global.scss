@@ -29,6 +29,12 @@ h3 {
 }
 
 :global(div.react-grid-item.react-grid-placeholder) {
-    background-color: $primaryColor;
+    background-color: #bbb;
     border-radius: 5px;
+}
+
+:global(.modeDark) {
+    :global(div.react-grid-item.react-grid-placeholder) {
+        background-color: #777;
+    }
 }

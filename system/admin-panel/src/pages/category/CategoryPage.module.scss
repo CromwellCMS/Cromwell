@@ -63,6 +63,13 @@
 
 .descriptionEditor {
     @extend .item;
+
+    @include styledScrollBar;
+    border: 1px solid #bbb;
+    border-radius: 5px;
+    max-height: 350px;
+    overflow: auto;
+    padding: 15px;
 }
 
 .imageBox {

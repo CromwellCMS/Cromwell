@@ -3,54 +3,65 @@
 .UserPage {
     position: relative;
     margin: 10px;
+}
 
-    .container {
-        max-width: 900px;
-        margin: 0 auto;
-    }
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+}
 
-    .notFoundPage {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100%;
-    }
+.notFoundPage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
 
-    .notFoundText {
-        font-size: 25px;
-        font-weight: 500;
-    }
+.notFoundText {
+    font-size: 25px;
+    font-weight: 500;
+}
 
-    .header {
-        @extend .container;
-        @include paper;
-        padding: 10px 20px;
-        margin-bottom: 15px;
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
+.header {
+    @extend .container;
+    @include paper;
+    padding: 10px 20px;
+    margin-bottom: 15px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
+.fields {
+    @extend .container;
+    @include paper;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.field {
+    // margin-bottom: 15px;
+}
+
+.imageField {
+    @extend .field;
+    border-bottom: 1px solid #999;
+    padding-bottom: 4px;
+}
+
+.image {
+    border-radius: 100%;
+}
+
+:global(.modeDark) {
+    .header,
     .fields {
-        @extend .container;
-        @include paper;
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-    }
+        background-color: #333;
 
-    .field {
-        // margin-bottom: 15px;
-    }
-
-    .imageField {
-        @extend .field;
-        border-bottom: 1px solid #999;
-        padding-bottom: 4px;
-    }
-
-    .image {
-        border-radius: 100%;
+        * {
+            color: #eee;
+        }
     }
 }

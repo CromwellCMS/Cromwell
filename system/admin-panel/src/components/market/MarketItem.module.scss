@@ -70,3 +70,13 @@ div.updateProgress {
         opacity: 0.5;
     }
 }
+
+:global(.modeDark) {
+    .listItemContent {
+        background-color: #333;
+
+        * {
+            color: #eee;
+        }
+    }
+}

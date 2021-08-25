@@ -121,4 +121,16 @@
     .listItem:hover {
         background-color: #555;
     }
+
+    .rating,
+    .rating * {
+        color: #fdcf63;
+
+        :global(.MuiRating-iconEmpty) {
+            color: #666;
+            * {
+                color: #666;
+            }
+        }
+    }
 }

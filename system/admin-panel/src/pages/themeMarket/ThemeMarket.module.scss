@@ -69,3 +69,13 @@ div.filterItem {
     margin: 10px;
     width: 150px;
 }
+
+:global(.modeDark) {
+    .listHeader {
+        background-color: #333;
+
+        * {
+            color: #eee;
+        }
+    }
+}

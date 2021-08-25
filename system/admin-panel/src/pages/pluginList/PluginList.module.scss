@@ -134,3 +134,14 @@ div.updateProgress {
         font-size: 13px;
     }
 }
+
+:global(.modeDark) {
+    .pluginItem,
+    .updateModal {
+        background-color: #333;
+
+        * {
+            color: #eee;
+        }
+    }
+}
