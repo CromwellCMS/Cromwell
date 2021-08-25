@@ -205,7 +205,7 @@ export default function Sidebar() {
                             className={styles.toolbar}
                         >
                             <div className={styles.sidebarMobileHeader}>
-                                <img src="/admin/static/icon_small.png" alt="logo" className={styles.logoMobile} />
+                                <div className={styles.logoMobile}></div>
                                 {/* <p className={commonStyles.text} style={{ color: '#fff', opacity: 0.7 }}>Admin Panel</p> */}
                                 <div className={styles.mobileActions}>
                                     <NotificationCenter />

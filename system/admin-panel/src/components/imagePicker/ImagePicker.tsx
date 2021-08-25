@@ -1,5 +1,6 @@
-import { IconButton, Tooltip } from '@material-ui/core';
+import { IconButton, Tooltip, MenuItem } from '@material-ui/core';
 import { AddPhotoAlternateOutlined as AddPhotoAlternateOutlinedIcon, HighlightOffOutlined } from '@material-ui/icons';
+import { Property } from 'csstype';
 import React, { useState } from 'react';
 
 import { getFileManager } from '../../components/fileManager/helpers';
@@ -14,7 +15,7 @@ export type ImagePickerProps = {
     onChange?: (value: string | undefined) => void;
     value?: string | null;
     className?: string;
-    backgroundSize?: 'contain' | 'cover';
+    backgroundSize?: Property.BackgroundSize;
     showRemove?: boolean;
     hideSrc?: boolean;
     classes?: {
@@ -46,17 +47,19 @@ const ImagePicker = (props: ImagePickerProps) => {
         <div className={`${styles.wrapper} ${props.className ?? ''} ${props.classes?.root ?? ''}`}
             style={{ paddingTop: props.label ? '18px' : '', ...(props.style ?? {}) }}>
             <Tooltip title={props.toolTip ?? ''}>
-                <div className={`${styles.image} ${props.classes?.image}`}
-                    onClick={pickImage}
-                    style={{
-                        backgroundImage: `url(${value})`,
-                        backgroundSize: props.backgroundSize ?? 'cover',
-                        width: value && props.width,
-                        minWidth: value && props.width,
-                        height: value && props.height,
-                    }}>
-                    {!value && <AddPhotoAlternateOutlinedIcon />}
-                </div>
+                <MenuItem style={{ padding: '0' }} className={styles.imageWrapper}>
+                    <div className={`${styles.image} ${props.classes?.image}`}
+                        onClick={pickImage}
+                        style={{
+                            backgroundImage: `url(${value})`,
+                            backgroundSize: props.backgroundSize ?? 'cover',
+                            width: value && props.width,
+                            minWidth: value && props.width,
+                            height: value && props.height,
+                        }}>
+                        {!value && <AddPhotoAlternateOutlinedIcon />}
+                    </div>
+                </MenuItem>
             </Tooltip>
             {props.label && value && (
                 <p className={styles.floatingLabel}>{props.label}</p>

@@ -1,6 +1,7 @@
-import { getFileManager } from '../components/fileManager/helpers';
-import { OutputData } from '@editorjs/editorjs';
 import { sleep } from '@cromwell/core';
+import { API, BlockAPI, OutputData } from '@editorjs/editorjs';
+
+import { getFileManager } from '../components/fileManager/helpers';
 import { toast } from '../components/toast/toast';
 
 let EditorJS: typeof import('@editorjs/editorjs');
@@ -10,12 +11,10 @@ let EditorImage: any; // typeof import('@editorjs/image');
 let EditorEmbed: any; // typeof import('@editorjs/embed');
 let EditorQuote: any; // typeof import('@editorjs/quote');
 let EditorDelimiter: any; // typeof import('@editorjs/delimiter');
-let EditorRaw: typeof import('@editorjs/raw');
+// let EditorRaw: typeof import('@editorjs/raw');
 let EditorTable: typeof import('@editorjs/table');
-
-
 let EditorMarker: typeof import('@editorjs/marker');
-let EditorCode: typeof import('@editorjs/code');
+// let EditorCode: typeof import('@editorjs/code');
 let EditorLink: typeof import('@editorjs/link');
 let EditorWarning: typeof import('@editorjs/warning');
 
@@ -27,8 +26,8 @@ export const initTextEditor = async (options: {
     placeholder?: string;
     data?: any;
     autofocus?: boolean;
-    onChange?: () => any;
-}) => {
+    onChange?: (api: API, block: BlockAPI) => any;
+}): Promise<void> => {
     const { htmlId, data, onChange, placeholder, autofocus } = options;
     if (!EditorJS) {
         [
@@ -39,10 +38,10 @@ export const initTextEditor = async (options: {
             EditorEmbed,
             EditorQuote,
             EditorDelimiter,
-            EditorRaw,
+            // EditorRaw,
             EditorTable,
             EditorMarker,
-            EditorCode,
+            // EditorCode,
             EditorLink,
             EditorWarning,
         ] = await Promise.all([
@@ -53,10 +52,10 @@ export const initTextEditor = async (options: {
             await import('@editorjs/embed'),
             await import('@editorjs/quote'),
             await import('@editorjs/delimiter'),
-            await import('@editorjs/raw'),
+            // await import('@editorjs/raw'),
             await import('@editorjs/table'),
             await import('@editorjs/marker'),
-            await import('@editorjs/code'),
+            // await import('@editorjs/code'),
             await import('@editorjs/link'),
             await import('@editorjs/warning'),
         ]);
@@ -67,6 +66,7 @@ export const initTextEditor = async (options: {
         console.error('initTextEditor: Failed to find container by id: ' + htmlId);
         return;
     }
+    container.classList.add('crw-text-editor');
 
     const editor = new EditorJS.default({
         holder: htmlId,
@@ -124,10 +124,10 @@ export const initTextEditor = async (options: {
                 class: EditorDelimiter.default,
                 inlineToolbar: true,
             },
-            raw: {
-                class: EditorRaw.default,
-                inlineToolbar: true,
-            },
+            // raw: {
+            //     class: EditorRaw.default,
+            //     inlineToolbar: true,
+            // },
             table: {
                 class: EditorTable.default,
                 inlineToolbar: true,
@@ -137,10 +137,10 @@ export const initTextEditor = async (options: {
                 inlineToolbar: true,
                 shortcut: 'CMD+SHIFT+M',
             },
-            code: {
-                class: EditorCode.default,
-                inlineToolbar: true,
-            },
+            // code: {
+            //     class: EditorCode.default,
+            //     inlineToolbar: true,
+            // },
             linkTool: {
                 class: EditorLink.default,
                 inlineToolbar: true,
@@ -157,8 +157,6 @@ export const initTextEditor = async (options: {
     await editor.isReady;
 
     editors[htmlId] = editor;
-
-    return editor;
 }
 
 export const getEditorHtml = async (htmlId: string) => {
@@ -186,57 +184,48 @@ export const getEditorHtml = async (htmlId: string) => {
         tools: {
             header: {
                 class: EditorHeader.default,
-                inlineToolbar: true
             },
             list: {
                 class: EditorList.default,
-                inlineToolbar: true,
             },
             image: {
                 class: EditorImage.default,
-                inlineToolbar: true,
             },
             embed: {
                 class: EditorEmbed.default,
-                inlineToolbar: true,
             },
             quote: {
                 class: EditorQuote.default,
-                inlineToolbar: true,
             },
             delimiter: {
                 class: EditorDelimiter.default,
-                inlineToolbar: true,
             },
-            raw: {
-                class: EditorRaw.default,
-                inlineToolbar: true,
-            },
+            // raw: {
+            //     class: EditorRaw.default,
+            // },
             table: {
                 class: EditorTable.default,
-                inlineToolbar: true,
             },
             Marker: {
                 class: EditorMarker.default,
-                inlineToolbar: true,
             },
-            code: {
-                class: EditorCode.default,
-                inlineToolbar: true,
-            },
+            // code: {
+            //     class: EditorCode.default,
+            // },
             linkTool: {
                 class: EditorLink.default,
-                inlineToolbar: true,
             },
             warning: {
                 class: EditorWarning.default,
-                inlineToolbar: true,
             },
         },
     });
     await editor.isReady;
 
-    const content = saverContainer.querySelector('.codex-editor__redactor').outerHTML;
+    const redactor = saverContainer.querySelector('.codex-editor__redactor');
+    (redactor as any).style = null;
+
+    const content = redactor.outerHTML;
     saverContainer.remove();
     return content;
 

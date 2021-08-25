@@ -15,24 +15,12 @@ div.popover {
     @include styledScrollBar;
 
     .settingItem {
-        display: block;
         margin-bottom: 20px;
     }
 
     .imageBox {
         @extend .settingItem;
-        display: flex;
-        align-items: center;
-        cursor: pointer;
         border-bottom: 1px solid #999;
-    }
-
-    .mainImage {
-        width: 60px;
-        height: 40px;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-size: contain;
     }
 
     .closeBtn {
@@ -49,13 +37,17 @@ div.popover {
     }
 }
 
+// :global(div.tc-wrap) {
+//     height: auto;
+// }
+
 :global(.MuiPickersDay-daySelected) p {
     color: #fff;
 }
 
 :global(.modeDark) {
     div.popover {
-        background-color: #333;
+        background-color: #222;
 
         * {
             color: #eee;
@@ -63,7 +55,7 @@ div.popover {
     }
 
     :global(.MuiChip-root.MuiAutocomplete-tag) {
-        background-color: #111;
+        background-color: #444;
 
         * {
             color: #eee;

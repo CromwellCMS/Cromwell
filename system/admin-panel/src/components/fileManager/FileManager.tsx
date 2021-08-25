@@ -43,6 +43,7 @@ class FileManager extends React.Component<{
     private deleteItemBtn: React.RefObject<HTMLButtonElement> = React.createRef();
     private downloadItemBtn: React.RefObject<HTMLButtonElement> = React.createRef();
     private createFolderWindow: React.RefObject<HTMLDivElement> = React.createRef();
+    private listRef: React.RefObject<HTMLDivElement> = React.createRef();
     private selectedItem: HTMLLIElement | null = null;
     private selectedFileName: string | null = null;
 
@@ -59,6 +60,67 @@ class FileManager extends React.Component<{
 
         if (!isServer()) window.CromwellFileManager = this;
         else global.CromwellFileManager = this;
+    }
+
+    private listEl: HTMLDivElement;
+
+    componentDidUpdate() {
+        if (this.listRef.current && this.listEl !== this.listRef.current) {
+            if (this.listEl) {
+                this.listEl.removeEventListener('drop', this.onDrop)
+                this.listEl.removeEventListener('dragover', this.onDragover);
+                this.listEl.removeEventListener('dragleave', this.onDragleave);
+            }
+            this.listEl = this.listRef.current;
+
+            this.listEl.addEventListener('drop', this.onDrop)
+            this.listEl.addEventListener('dragover', this.onDragover);
+            this.listEl.addEventListener('dragleave', this.onDragleave);
+        }
+    }
+
+    private onDrop = async (ev: DragEvent) => {
+        ev.preventDefault();
+        this.listEl.classList.remove(styles.dragOverList);
+
+        if (!ev.dataTransfer) return;
+        const files: File[] = [];
+
+        if (ev.dataTransfer.items) {
+            // Use DataTransferItemList interface to access the file(s)
+            for (let i = 0; i < ev.dataTransfer.items.length; i++) {
+                // If dropped items aren't files, reject them
+                if (ev.dataTransfer.items[i].kind === 'file') {
+                    files.push(ev.dataTransfer.items[i].getAsFile());
+                }
+            }
+        } else {
+            // Use DataTransfer interface to access the file(s)
+            for (let i = 0; i < ev.dataTransfer.files.length; i++) {
+                files.push(ev.dataTransfer.files[i]);
+            }
+        }
+
+        if (!files.length) return;
+
+        this.setState({ isLoading: true });
+
+        try {
+            await getRestApiClient()?.uploadPublicFiles(this.currentPath, files);
+            await this.fetchCurrentItems();
+        } catch (e) {
+            console.error(e)
+        }
+        this.setState({ isLoading: false });
+    }
+
+    private onDragover = (event: DragEvent) => {
+        event.preventDefault();
+        this.listEl.classList.add(styles.dragOverList);
+    }
+
+    private onDragleave = () => {
+        this.listEl.classList.remove(styles.dragOverList);
     }
 
     private openHome = async () => {
@@ -303,7 +365,7 @@ class FileManager extends React.Component<{
         input.addEventListener("change", async (e: any) => {
             // Get the selected file from the input element
             const files = e.target?.files;
-            if (!files) return;
+            if (!files?.length) return;
 
             this.setState({ isLoading: true });
 
@@ -437,7 +499,8 @@ class FileManager extends React.Component<{
                         })}
                     </Breadcrumbs>
                 </div>
-                <div className={styles.listContainer} >
+                <div className={styles.listContainer} ref={this.listRef} id="file-list-container">
+                    <div className={styles.dragAreaHighlight}></div>
                     {this.currentItems && (
                         <CList
                             className={styles.list}
