@@ -52,9 +52,13 @@ a {
 }
 
 .logoMobile {
+    @extend .logoMoon;
+    filter: invert(100%);
     width: 24px;
+    height: 24px;
     margin-right: 10px;
     margin-left: 5px;
+    user-select: none;
 }
 
 div.SidebarLink {
@@ -195,8 +199,8 @@ li.optionsItem {
 
 header.appBar {
     padding: 0;
-    box-shadow: none;
     @extend .paper;
+    border-radius: 0;
 
     > div {
         padding: 0;
@@ -241,5 +245,19 @@ header.appBar {
     .mobileActions,
     .sidebarMobileActions {
         display: none;
+    }
+}
+
+:global(.modeDark) {
+    header.appBar {
+        background-color: #333;
+        box-shadow: 0 1px 11px 0 rgb(0 0 0 / 24%), 0 0 11px 5px rgb(0 0 0 / 27%);
+        * {
+            color: #eee;
+        }
+    }
+
+    .logoMobile {
+        filter: none;
     }
 }

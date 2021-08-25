@@ -15,4 +15,7 @@ export class InputTag extends BasePageInput implements TTagInput {
 
     @Field(type => String, { nullable: true })
     description?: string;
+
+    @Field(type => String, { nullable: true })
+    descriptionDelta?: string | null;
 }

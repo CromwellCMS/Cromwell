@@ -36,7 +36,8 @@ const Post = (props) => {
     const userInfo: TUser | undefined = getStoreItem('userInfo');
     const client = getGraphQLClient();
     const [allTags, setAllTags] = useState<TTag[] | null>(null);
-    const [isLoading, setIsloading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
     const [notFound, setNotFound] = useState(false);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const actionsRef = useRef<HTMLDivElement | null>(null);
@@ -121,7 +122,7 @@ const Post = (props) => {
         if (postId && postId !== 'new') {
             let postContent: any = null;
             let post;
-            setIsloading(true);
+            setIsLoading(true);
             try {
                 post = await getPostData(postId);
                 if (post?.delta) {
@@ -130,7 +131,7 @@ const Post = (props) => {
             } catch (e) {
                 console.error(e);
             }
-            setIsloading(false);
+            setIsLoading(false);
 
             if (post) {
                 await _initEditor(postContent);
@@ -176,7 +177,7 @@ const Post = (props) => {
         content: await getEditorHtml(editorId),
     });
 
-    const handleSave = async (input: TPostInput) => {
+    const saveInput = async (input: TPostInput) => {
         if (postId === 'new') {
             try {
                 input.authorId = userInfo?.id;
@@ -206,10 +207,18 @@ const Post = (props) => {
     }
 
     const handlePublish = async () => {
+        setIsSaving(true);
         const input = await getInput();
         input.published = true;
         if (!input.publishDate) input.publishDate = new Date(Date.now());
-        handleSave(input);
+        await saveInput(input);
+        setIsSaving(false);
+    }
+
+    const handleSave = async () => {
+        setIsSaving(true);
+        await saveInput(await getInput());
+        setIsSaving(false);
     }
 
     const handleOpenSettings = () => {
@@ -287,14 +296,15 @@ const Post = (props) => {
                         <Button variant="contained" color="primary"
                             className={styles.publishBtn}
                             size="small"
+                            disabled={isSaving}
                             onClick={handlePublish}>
                             Publish</Button>
                     )}
                     <Button variant="contained" color="primary"
                         className={styles.saveBtn}
                         size="small"
-                        disabled={!hasChanges.current}
-                        onClick={async () => handleSave(await getInput())}>
+                        disabled={!hasChanges.current || isSaving}
+                        onClick={handleSave}>
                         Save</Button>
                 </div>
             </div>

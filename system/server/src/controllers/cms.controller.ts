@@ -198,11 +198,10 @@ export class CmsController {
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async removeDir(@Query('inPath') inPath: string, @Query('dirName') dirName: string): Promise<boolean> {
-        logger.log('CmsController::removeDir');
+        logger.log('CmsController::removeDir', inPath, dirName);
         if (publicSystemDirs.includes(dirName)) return false;
 
         const fullPath = join(getPublicDir(), inPath ?? '', dirName);
-        if (! await fs.pathExists(fullPath)) return false;
         await fs.remove(fullPath);
         return true;
     }
@@ -225,9 +224,14 @@ export class CmsController {
     async uploadFile(@Query('inPath') inPath: string, @Query('fileName') fileName: string,
         @Req() req: any): Promise<string> {
         logger.log('CmsController::uploadFile');
-        const fullPath = join(getPublicDir(), inPath ?? '');
+        try {
+            const fullPath = join(getPublicDir(), inPath ?? '');
+            await this.cmsService.uploadFile(req, fullPath);
+        } catch (error) {
+            logger.error(error);
+            return 'false';
+        }
 
-        await this.cmsService.uploadFile(req, fullPath)
         return 'true';
     }
 
@@ -268,7 +272,7 @@ export class CmsController {
         }
     }
 
-
+    
     @Post('set-up')
     @UseGuards(JwtAuthGuard)
     @Roles('administrator')

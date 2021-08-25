@@ -358,13 +358,14 @@ class SettingsPage extends React.Component<any, {
                                         </Select>
                                     </FormControl>
                                 </Grid>
+                                <Grid item xs={12} sm={6}></Grid>
                                 <Grid item xs={12} sm={6}>
                                     <ImagePicker
                                         label="Logo"
                                         onChange={(val) => this.changeSettings('logo', val)}
                                         value={settings?.logo}
                                         className={styles.imageField}
-                                        backgroundSize='contain'
+                                        backgroundSize='80%'
                                         showRemove
                                     />
                                 </Grid>
@@ -376,6 +377,7 @@ class SettingsPage extends React.Component<any, {
                                         onChange={(val) => this.changeSettings('favicon', val)}
                                         value={settings?.favicon}
                                         className={styles.imageField}
+                                        backgroundSize='80%'
                                         showRemove
                                     />
                                 </Grid>
@@ -672,7 +674,7 @@ class SettingsPage extends React.Component<any, {
                     onClose={() => this.setState({ cmsInfoOpen: false })}
                 />
                 <LoadingStatus isActive={this.state?.exporting || this.state?.buildingSitemap} />
-            </div>
+            </div >
         )
     }
 }

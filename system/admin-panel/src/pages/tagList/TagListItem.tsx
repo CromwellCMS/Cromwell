@@ -1,7 +1,7 @@
 import { TTag } from '@cromwell/core';
 import { Checkbox, Grid, IconButton } from '@material-ui/core';
 import { DeleteForever as DeleteForeverIcon, Edit as EditIcon } from '@material-ui/icons';
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import { connect, PropsType } from 'react-redux-ts';
 import { Link } from 'react-router-dom';
 
@@ -16,7 +16,7 @@ type TListItemProps = {
     listItemProps: ListItemProps;
 }
 
-const mapStateToProps = (state: TAppState, ownProps: TListItemProps) => {
+const mapStateToProps = (state: TAppState) => {
     return {
         selectedItems: state.selectedItems,
         allSelected: state.allSelected,
@@ -45,7 +45,6 @@ const TagListItem = (props: TPropsType) => {
                         </div>
                         <div className={styles.itemMainInfo}>
                             <p className={styles.itemTitle}>{props.data?.name}</p>
-                            <p className={styles.itemAuthor}>{props.data?.description}</p>
                         </div>
                     </Grid>
                     <Grid item xs={2} className={styles.itemSubInfo}>
@@ -76,9 +75,3 @@ const TagListItem = (props: TPropsType) => {
 }
 
 export default connect(mapStateToProps)(TagListItem);
-
-const toLocaleDateString = (date: Date | string | undefined) => {
-    if (!date) return '';
-    if (typeof date === 'string') date = new Date(date);
-    return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
-}

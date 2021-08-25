@@ -79,48 +79,15 @@
         }
 
         .postHeader {
-            background-color: #333;
+            background-color: #2b2b2b;
+
+            svg {
+                fill: #eee;
+            }
 
             * {
                 color: #eee;
             }
         }
-    }
-
-    :global(.ce-inline-toolbar) {
-        background-color: #222;
-        border: 1px solid #222;
-    }
-
-    :global(.ce-inline-tool:hover) {
-        background-color: #444;
-    }
-    :global(.ce-inline-toolbar__dropdown:hover) {
-        background-color: #444;
-    }
-    :global(.ce-conversion-tool:hover) {
-        background-color: #444;
-    }
-    :global(.ce-settings__button:hover) {
-        background-color: #444;
-    }
-    :global(.cdx-settings-button:hover) {
-        background-color: #444;
-    }
-    :global(.ce-conversion-toolbar) {
-        background-color: #222;
-        border: 1px solid #222;
-    }
-    :global(.ce-toolbar__settings-btn) {
-        background-color: #222;
-        border: 1px solid #222;
-    }
-    :global(.ce-settings) {
-        background-color: #222;
-        border: 1px solid #222;
-    }
-
-    :global(.ce-block--selected .ce-block__content) {
-        background-color: #444;
     }
 }
