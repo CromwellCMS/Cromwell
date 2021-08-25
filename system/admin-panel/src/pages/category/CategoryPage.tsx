@@ -18,6 +18,7 @@ export default function CategoryPage(props) {
     const { id: categoryId } = useParams<{ id: string }>();
     const client = getGraphQLClient();
     const [notFound, setNotFound] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
     const history = useHistory();
     const [category, setCategoryData] = useState<TProductCategory | undefined | null>(null);
     const editorId = 'category-description-editor';
@@ -157,6 +158,7 @@ export default function CategoryPage(props) {
     });
 
     const handleSave = async () => {
+        setIsSaving(true);
         const inputData: TProductCategoryInput = await getInput();
 
         if (categoryId === 'new') {
@@ -188,7 +190,7 @@ export default function CategoryPage(props) {
                 console.error(e)
             }
         }
-
+        setIsSaving(false);
     }
 
     if (notFound) {
@@ -234,6 +236,7 @@ export default function CategoryPage(props) {
                     <Button variant="contained" color="primary"
                         className={styles.saveBtn}
                         size="small"
+                        disabled={isSaving}
                         onClick={handleSave}>
                         Save</Button>
                 </div>
@@ -265,7 +268,7 @@ export default function CategoryPage(props) {
                     showRemove
                 />
                 <div className={styles.descriptionEditor}>
-                    <div style={{ height: '300px' }} id={editorId}></div>
+                    <div style={{ height: '350px' }} id={editorId}></div>
                 </div>
                 <TextField label="Page URL"
                     value={category?.slug || ''}

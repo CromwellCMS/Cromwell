@@ -51,8 +51,8 @@ import { getCentralServerClient, getCStore } from '@cromwell/core-frontend';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { format } from 'date-fns';
 import fs from 'fs-extra';
-import { join, resolve } from 'path';
-import stream from 'stream';
+import { resolve, join } from 'path';
+import { pipeline } from 'stream';
 import { Container, Service } from 'typedi';
 import { getConnection, getCustomRepository, getManager, Repository } from 'typeorm';
 import { DateUtils } from 'typeorm/util/DateUtils';
@@ -75,6 +75,7 @@ import { PluginService } from './plugin.service';
 import { ThemeService } from './theme.service';
 
 const logger = getLogger();
+const pump = util.promisify(pipeline);
 
 @Injectable()
 @Service()
@@ -147,34 +148,14 @@ export class CmsService {
     }
 
     async uploadFile(req: any, dirName: string): Promise<any> {
-        //Check request is multipart
         if (!req.isMultipart()) {
-            return
+            return;
         }
-
-        const handler = async (field: string, file: any, filename: string): Promise<void> => {
-            const fullPath = join(`${dirName}/${filename}`);
-            if (await fs.pathExists(fullPath)) {
-                await fs.remove(fullPath);
-                await sleep(0.1);
-            }
-
-            const pipeline = util.promisify(stream.pipeline);
-            const writeStream = fs.createWriteStream(fullPath); //File path
-            try {
-                await pipeline(file, writeStream);
-            } catch (err) {
-                logger.error('Pipeline failed', err);
-            }
+        const parts = req.files();
+        for await (const part of parts) {
+            const fullPath = join(`${dirName}/${part.filename}`);
+            await pump(part.file, fs.createWriteStream(fullPath));
         }
-
-        const mp = await req.multipart(handler, (err) => {
-            logger.error(err);
-        });
-        // for key value pairs in request
-        mp.on('field', function (key: any, value: any) {
-            logger.log('form-data', key, value);
-        });
     }
 
 
@@ -866,5 +847,4 @@ ${content}
             }
         }
     }
-
 }

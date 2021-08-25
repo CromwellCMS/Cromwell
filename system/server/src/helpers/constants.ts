@@ -3,7 +3,7 @@ import { TAuthUserInfo } from '@cromwell/core-backend';
 import { UserDto } from '../dto/user.dto';
 
 export const publicSystemDirs = [
-    'bundled-modules'
+    'bundled-modules',
 ]
 
 export type TServerCommands = 'build' | 'dev' | 'prod';

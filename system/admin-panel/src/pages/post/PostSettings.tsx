@@ -2,13 +2,13 @@ import 'date-fns';
 
 import { resolvePageRoute, serviceLocator, TPost, TTag } from '@cromwell/core';
 import DateFnsUtils from '@date-io/date-fns';
-import { Checkbox, FormControlLabel, IconButton, MenuItem, Popover, TextField } from '@material-ui/core';
-import { Close as CloseIcon, HighlightOffOutlined, Wallpaper as WallpaperIcon } from '@material-ui/icons';
+import { Checkbox, FormControlLabel, IconButton, Popover, TextField } from '@material-ui/core';
+import { Close as CloseIcon } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import React, { useState } from 'react';
 
-import { getFileManager } from '../../components/fileManager/helpers';
+import ImagePicker from '../../components/imagePicker/ImagePicker';
 import styles from './PostSettings.module.scss';
 
 
@@ -28,15 +28,6 @@ const PostSettings = (props: {
     const [tags, setTags] = useState<TTag[] | undefined>(postData?.tags ?? []);
     const [publishDate, setPublishDate] = useState<Date | undefined | null>(postData?.publishDate ?? null);
     const [featured, setFeatured] = useState<boolean | undefined | null>(postData?.featured ?? null);
-
-    const handleChangeImage = async () => {
-        const photoPath = await getFileManager()?.getPhoto({
-            initialFileLocation: mainImage
-        });
-        if (photoPath) {
-            setMainImage(photoPath);
-        }
-    }
 
     const handleChangeTags = (event: any, newValue: TTag[]) => {
         setTags(newValue);
@@ -99,27 +90,14 @@ const PostSettings = (props: {
                     onChange={e => setSlug(e.target.value)}
                     helperText={pageFullUrl}
                 />
-                <div className={styles.imageBox}
-                    onClick={handleChangeImage}
-                >
-                    <MenuItem style={{ padding: '0', borderRadius: '7px' }}>
-                        {mainImage ? (
-                            <div
-                                style={{ backgroundImage: `url(${mainImage})` }}
-                                className={styles.mainImage}></div>
-                        ) : (
-                            <WallpaperIcon
-                                style={{ opacity: '0.7' }}
-                            />
-                        )}
-                    </MenuItem>
-                    <p style={{ margin: '10px' }}>{mainImage ?? <span style={{ opacity: '0.7' }}>No image</span>}</p>
-                    {mainImage && (
-                        <IconButton onClick={(e) => { e.stopPropagation(); setMainImage(undefined) }}>
-                            <HighlightOffOutlined />
-                        </IconButton>
-                    )}
-                </div>
+                <ImagePicker
+                    label="Main image"
+                    onChange={(val) => setMainImage(val)}
+                    value={mainImage}
+                    className={styles.imageBox}
+                    backgroundSize='cover'
+                    showRemove
+                />
                 <Autocomplete
                     multiple
                     className={styles.settingItem}

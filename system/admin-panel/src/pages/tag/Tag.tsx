@@ -11,18 +11,20 @@ import { toast } from '../../components/toast/toast';
 import { tagListPageInfo, tagPageInfo } from '../../constants/PageInfos';
 import commonStyles from '../../styles/common.module.scss';
 import styles from './Tag.module.scss';
+import { getEditorData, getEditorHtml, initTextEditor } from '../../helpers/editor';
 
 const TagPage = () => {
     const { id: tagId } = useParams<{ id: string }>();
     const client = getGraphQLClient();
     const [data, setData] = useState<TTag | null>(null);
     const [notFound, setNotFound] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
     const [tagLoading, setTagLoading] = useState<boolean>(false);
     const history = useHistory();
+    const editorId = 'tag-description-editor';
 
     const getTagData = async (id: string) => {
         let tagData: TTag;
-        setTagLoading(true);
         try {
             tagData = await client.getTagById(id);
             if (tagData) {
@@ -35,17 +37,36 @@ const TagPage = () => {
         if (!tagData) {
             setNotFound(true);
         }
-        setTagLoading(false);
+        return tagData;
     }
 
     const init = async () => {
+
+        let descriptionData = {};
+        setTagLoading(true);
+
         if (tagId && tagId !== 'new') {
-            getTagData(tagId);
+            const tag = await getTagData(tagId);
+
+            try {
+                if (tag?.descriptionDelta)
+                    descriptionData = JSON.parse(tag?.descriptionDelta);
+            } catch (e) {
+                console.error(e);
+            }
         }
 
         if (tagId === 'new') {
             setData({ id: tagId } as any);
         }
+
+        setTagLoading(false);
+
+        await initTextEditor({
+            htmlId: editorId,
+            data: descriptionData,
+            placeholder: 'Tag description...',
+        });
     }
 
     useEffect(() => {
@@ -53,39 +74,42 @@ const TagPage = () => {
     }, []);
 
     const handleSave = async () => {
-        if (data) {
-            const inputData: TTagInput = {
-                slug: data.slug,
-                pageTitle: data.pageTitle,
-                pageDescription: data.pageDescription,
-                name: data.name,
-                color: data.color,
-                image: data.image,
-                description: data.description,
-                isEnabled: data.isEnabled,
-            }
+        if (!data) return;
+        setIsSaving(true);
 
-            if (data?.id === 'new') {
-                try {
-                    const newData = await client?.createTag(inputData);
-                    toast.success('Created tag!');
-                    history.push(`${tagPageInfo.baseRoute}/${newData.id}`)
-                    await getTagData(newData.id);
-                } catch (e) {
-                    toast.error('Failed to create tag');
-                    console.error(e);
-                }
-            } else {
-                try {
-                    await client?.updateTag(data.id, inputData);
-                    await getTagData(data.id);
-                    toast.success('Saved!');
-                } catch (e) {
-                    toast.error('Failed to save');
-                    console.error(e)
-                }
+        const inputData: TTagInput = {
+            slug: data.slug,
+            pageTitle: data.pageTitle,
+            pageDescription: data.pageDescription,
+            name: data.name,
+            color: data.color,
+            image: data.image,
+            isEnabled: data.isEnabled,
+            description: await getEditorHtml(editorId),
+            descriptionDelta: JSON.stringify(await getEditorData(editorId)),
+        }
+
+        if (data?.id === 'new') {
+            try {
+                const newData = await client?.createTag(inputData);
+                toast.success('Created tag!');
+                history.push(`${tagPageInfo.baseRoute}/${newData.id}`)
+                await getTagData(newData.id);
+            } catch (e) {
+                toast.error('Failed to create tag');
+                console.error(e);
+            }
+        } else {
+            try {
+                await client?.updateTag(data.id, inputData);
+                await getTagData(data.id);
+                toast.success('Saved!');
+            } catch (e) {
+                toast.error('Failed to save');
+                console.error(e)
             }
         }
+        setIsSaving(false);
     }
 
     const handleInputChange = (prop: keyof TTag, val: any) => {
@@ -118,8 +142,7 @@ const TagPage = () => {
             <div className={styles.header}>
                 <div className={styles.headerLeft}>
                     <Link to={tagListPageInfo.route}>
-                        <IconButton
-                        >
+                        <IconButton>
                             <ArrowBackIcon />
                         </IconButton>
                     </Link>
@@ -141,6 +164,7 @@ const TagPage = () => {
                     <Button variant="contained" color="primary"
                         className={styles.saveBtn}
                         size="small"
+                        disabled={isSaving}
                         onClick={handleSave}>Save</Button>
                 </div>
             </div>
@@ -177,6 +201,11 @@ const TagPage = () => {
                                 helperText={pageFullUrl}
                                 onChange={(e) => { handleInputChange('slug', e.target.value) }}
                             />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <div className={styles.descriptionEditor}>
+                                <div style={{ height: '350px' }} id={editorId}></div>
+                            </div>
                         </Grid>
                         <Grid item xs={12}>
                             <TextField

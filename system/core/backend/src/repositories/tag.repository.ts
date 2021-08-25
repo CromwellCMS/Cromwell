@@ -42,6 +42,7 @@ export class TagRepository extends BaseRepository<Tag> {
         tag.color = input.color;
         tag.image = input.image;
         tag.description = input.description;
+        tag.descriptionDelta = input.descriptionDelta;
     }
 
     async createTag(inputData: TTagInput, id?: string): Promise<Tag> {
