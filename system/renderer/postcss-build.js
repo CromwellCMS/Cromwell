@@ -3,8 +3,6 @@ const postcss = require("postcss")
 const atImport = require("postcss-import")
 const path = require('path');
 
-const presetEnv = require('postcss-preset-env')
-const postcssNesting = require('postcss-nesting')
 const autoprefixer = require('autoprefixer')
 const postcssNested = require('postcss-nested')
 const postcssNestedAncestors = require('postcss-nested-ancestors')
@@ -15,8 +13,6 @@ const css = fs.readFileSync(path.join(__dirname, 'src/css/index.pcss'), "utf8")
 // process css
 postcss()
     .use(atImport())
-    .use(presetEnv())
-    .use(postcssNesting())
     .use(autoprefixer())
     .use(postcssNested())
     .use(postcssNestedAncestors())
