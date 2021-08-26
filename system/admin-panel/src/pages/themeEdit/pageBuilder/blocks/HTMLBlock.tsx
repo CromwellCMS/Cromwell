@@ -7,7 +7,6 @@ import { useForceUpdate } from '../../../../helpers/forceUpdate';
 import styles from './BaseBlock.module.scss';
 import { BaseMenu, TBaseMenuProps } from './BaseMenu';
 
-
 export function HTMLBlockReplacer(props: TBaseMenuProps) {
     return (
         <>

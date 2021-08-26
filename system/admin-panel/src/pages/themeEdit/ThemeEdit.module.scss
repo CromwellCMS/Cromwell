@@ -114,6 +114,11 @@ li.optionsItem {
     }
 }
 
+.frameEditor {
+    width: 100%;
+    height: 100%;
+}
+
 :global(.modeDark) {
     .pageBarActions {
         background-color: #333;

@@ -28,7 +28,8 @@ import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
 import { SkeletonPreloader } from '../../components/skeleton/SkeletonPreloader';
 import { toast } from '../../components/toast/toast';
 import { store } from '../../redux/store';
-import { PageBuilder } from './pageBuilder/PageBuilder';
+// import { PageBuilder } from './pageBuilder/PageBuilder';
+import { PageBuilder } from './pageBuilder/PageBuilder2';
 import { PageListItem } from './pageListItem/PageListItem';
 import { PageSettings } from './pageSettings/PageSettings';
 import styles from './ThemeEdit.module.scss';
@@ -488,8 +489,7 @@ export default class ThemeEdit extends React.Component<Partial<RouteComponentPro
                                         <TabPanel value={activeTabNum} index={1}>
                                             {/* <FramePortal
                                         className={styles.builderFrame}
-                                        id="builderFrame"
-                                    >
+                                        id="builderFrame">
                                         {!isPageLoading && EditingPage && (
                                             <PageBuilder
                                                 plugins={this.state.plugins}
@@ -499,6 +499,7 @@ export default class ThemeEdit extends React.Component<Partial<RouteComponentPro
                                             />
                                         )}
                                     </FramePortal> */}
+
                                             {!isPageLoading && EditingPage && (
                                                 <PageBuilder
                                                     plugins={this.state.plugins}
@@ -515,14 +516,6 @@ export default class ThemeEdit extends React.Component<Partial<RouteComponentPro
                         </div>
                     )}
                 </div>
-                {/* {editingPage && (
-                <div>
-                    <iframe
-                        src={`${frontendUrl}/${editingPage.route}`}
-                        ref={editingFrameRef}
-                    />
-                </div>
-            )} */}
                 <LoadingStatus isActive={this.state.loadingStatus} />
             </div>
         )

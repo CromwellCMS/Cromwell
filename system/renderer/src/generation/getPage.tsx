@@ -103,6 +103,9 @@ export const getPage = (pageName: TDefaultPageName | string, PageComponent: TCro
             }
         }
 
+        const RootComp: React.ComponentType = getStoreItem('rendererComponents')?.root ?? ((props: any) => props.children);
+        const PageWrapperComp: React.ComponentType = getStoreItem('rendererComponents')?.pageWrapper ?? ((props: any) => props.children ?? <></>);
+
         const content = (
             <>
                 <Head>
@@ -114,12 +117,16 @@ export const getPage = (pageName: TDefaultPageName | string, PageComponent: TCro
                         />
                     )}
                 </Head>
-                <CContainer id={pageRootContainerId} isConstant={true}>
-                    <PageComponent {...pageCompProps} {...props} />
-                    {cmsSettings?.footerHtml && ReactHtmlParser(cmsSettings.footerHtml, { transform: parserTransform })}
-                    {themeFooterHtml && ReactHtmlParser(themeFooterHtml, { transform: parserTransform })}
-                    {pageConfig?.footerHtml && ReactHtmlParser(pageConfig?.footerHtml, { transform: parserTransform })}
-                </CContainer>
+                <RootComp>
+                    <CContainer id={pageRootContainerId} isConstant={true}>
+                        <PageWrapperComp>
+                            <PageComponent {...pageCompProps} {...props} />
+                        </PageWrapperComp>
+                        {cmsSettings?.footerHtml && ReactHtmlParser(cmsSettings.footerHtml, { transform: parserTransform })}
+                        {themeFooterHtml && ReactHtmlParser(themeFooterHtml, { transform: parserTransform })}
+                        {pageConfig?.footerHtml && ReactHtmlParser(pageConfig?.footerHtml, { transform: parserTransform })}
+                    </CContainer>
+                </RootComp>
                 <Head>
                     {themeHeadHtml && ReactHtmlParser(themeHeadHtml, { transform: parserTransform })}
                     {cmsSettings?.headHtml && ReactHtmlParser(cmsSettings.headHtml, { transform: parserTransform })}

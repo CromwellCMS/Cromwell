@@ -70,7 +70,7 @@ export class PageBuilder extends React.Component<{
         });
 
         this.init();
-        this.checkHitoryButtons();
+        this.checkHistoryButtons();
         setTimeout(() => {
             this.updateDraggable();
         }, 500)
@@ -213,14 +213,14 @@ export class PageBuilder extends React.Component<{
         if (this.history.length > 20) {
             this.history.shift();
         }
-        this.checkHitoryButtons();
+        this.checkHistoryButtons();
     }
 
     public saveCurrentStateDebounced = debounce(200, false, () => {
         this.saveCurrentState();
     });
 
-    private checkHitoryButtons = () => {
+    private checkHistoryButtons = () => {
         const disableButton = (button: HTMLButtonElement) => {
             button.style.opacity = '0.4';
             const ripple = button.querySelector<HTMLSpanElement>('.MuiTouchRipple-root');
@@ -280,11 +280,10 @@ export class PageBuilder extends React.Component<{
             });
         }
 
-        this.checkHitoryButtons();
+        this.checkHistoryButtons();
     }
 
     public deleteBlock = async (blockData: TCromwellBlockData) => {
-
         if (blockData) {
             blockData.isDeleted = true;
             this.modifyBlock(blockData);
@@ -551,7 +550,6 @@ export class PageBuilder extends React.Component<{
                                 const data = block?.getData();
                                 const bType = data?.type;
                                 const blockProps = createBlockProps(this)(block);
-
                                 let content;
 
                                 if (bType === 'text') {

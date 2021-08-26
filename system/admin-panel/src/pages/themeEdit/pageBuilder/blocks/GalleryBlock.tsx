@@ -12,7 +12,6 @@ import {
 } from '@material-ui/core';
 import { PhotoLibrary as PhotoLibraryIcon, Public as PublicIcon } from '@material-ui/icons';
 import React from 'react';
-
 import GalleryPicker from '../../../../components/galleryPicker/GalleryPicker';
 import { useForceUpdate } from '../../../../helpers/forceUpdate';
 import styles from './BaseBlock.module.scss';
@@ -64,7 +63,6 @@ export function GalleryBlockSidebar(props: TBaseMenuProps) {
     const handleBoolInput = (name: keyof TCromwellBlockData['gallery']) => (event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
         handleChange(name, checked ?? false)
     }
-
 
     return (
         <div>

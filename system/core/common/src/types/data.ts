@@ -1,3 +1,4 @@
+import React from 'react';
 import { ConnectionOptions } from 'typeorm';
 
 import { systemPackages } from '../constants';
@@ -98,6 +99,11 @@ export type TCromwellStore = {
      * HTTP rewrites for Next.js server
      */
     rewrites?: Record<string, TCmsRedirect>;
+
+    /**
+     * Custom components to inject by renderer into Theme
+     */
+    rendererComponents?: Partial<Record<'root' | 'pageWrapper', React.ComponentType>>;
 }
 
 
