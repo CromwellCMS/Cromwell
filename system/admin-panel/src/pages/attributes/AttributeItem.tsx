@@ -13,7 +13,7 @@ import { getFileManager } from '../../components/fileManager/helpers';
 import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
 import ConfirmationModal from '../../components/modal/Confirmation';
 import { toast } from '../../components/toast/toast';
-import { CheckList } from '../../components/transferList/TransferList';
+import { CheckList } from '../../components/transferList/CheckList';
 import { useForceUpdate } from '../../helpers/forceUpdate';
 
 const useStyles = makeStyles(() =>

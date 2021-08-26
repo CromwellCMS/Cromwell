@@ -543,7 +543,7 @@ export class PageBuilder extends React.Component<{
         const { EditingPage } = this.props;
         return (
             <div ref={this.editorWindowRef} className={styles.PageBuilder}>
-                <div className={styles.editingPage} >
+                <div className={styles.editingPage}>
                     <BlockContentProvider
                         value={{
                             getter: (block) => {
