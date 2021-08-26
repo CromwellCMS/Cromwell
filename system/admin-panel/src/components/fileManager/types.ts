@@ -3,6 +3,7 @@ export type TState = {
     isActive: boolean;
     isLoading: boolean;
     isSelecting: boolean;
+    selectingType?: 'image' | 'file';
     isCreatingFolder: boolean;
     hasLoadingStatus: boolean;
 }

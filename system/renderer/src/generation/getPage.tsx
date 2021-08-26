@@ -96,7 +96,7 @@ export const getPage = (pageName: TDefaultPageName | string, PageComponent: TCro
         let favicon = cmsSettings?.favicon;
         if (favicon && favicon !== '') {
             if (!favicon.startsWith('http')) {
-                if (!favicon.startsWith('/')) favicon = '/' + favicon;
+                if (favicon.startsWith('/')) favicon = favicon.slice(1, favicon.length);
                 if (documentContext?.origin) {
                     favicon = documentContext.origin + favicon;
                 }

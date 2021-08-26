@@ -22,14 +22,25 @@
     }
 }
 
-.ImageItem {
+.actions {
+    margin-top: 10px;
+}
+
+.imageItem {
     display: flex;
     align-items: center;
     width: 100%;
+    transition: 0.3s;
+    background-color: #fff;
+    border-radius: 5px;
 
     > div {
         width: 100%;
     }
+}
+
+.imageItem:hover {
+    background-color: #ddd;
 }
 
 :global(.modeDark) {
@@ -44,5 +55,12 @@
                 color: #fff;
             }
         }
+    }
+
+    .imageItem {
+        background-color: #333;
+    }
+    .imageItem:hover {
+        background-color: #555;
     }
 }

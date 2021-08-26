@@ -17,9 +17,14 @@
 :global(.modeDark) {
     .pagination {
         background-color: #333;
+        box-shadow: 0 2px 3px 0 rgb(0 0 0 / 27%), 0 0 20px 4px rgb(0 0 0 / 34%);
 
         * {
             color: #eee;
         }
+    }
+
+    :global(.MuiPaginationItem-page.Mui-selected) {
+        background-color: #222;
     }
 }

@@ -1,7 +1,7 @@
-import { getStoreItem, onStoreChange } from '@cromwell/core';
+import { getStoreItem, setStoreItem } from '@cromwell/core';
 import { createMuiTheme, ThemeProvider, Toolbar } from '@material-ui/core';
 import clsx from 'clsx';
-import React, { Suspense, useEffect } from 'react';
+import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
 import { HashRouter, Route, RouteComponentProps, Switch } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
@@ -18,10 +18,11 @@ import styles from './Layout.module.scss';
 
 function Layout() {
   const forceUpdate = useForceUpdate();
+  setStoreItem('forceUpdatePage', forceUpdate);
+
   const darkMode = getStoreItem('theme')?.mode === 'dark';
 
-  document.body.classList.remove('modeDark');
-  document.body.classList.remove('modeLight');
+  document.body.classList.remove('modeDark', 'modeLight');
   document.body.classList.add(darkMode ? 'modeDark' : 'modeLight');
 
   const theme = createMuiTheme(darkMode ? {
@@ -50,12 +51,6 @@ function Layout() {
         dark: '#910081',
       }
     },
-  });
-
-  useEffect(() => {
-    onStoreChange('theme', () => {
-      forceUpdate();
-    })
   });
 
   return (

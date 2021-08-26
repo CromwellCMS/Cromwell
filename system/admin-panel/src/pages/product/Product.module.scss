@@ -5,9 +5,12 @@
     width: 100%;
     height: 100%;
     padding: 20px;
-    padding-bottom: 150px;
+    padding-bottom: 0;
     max-width: 1200px;
     margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    min-height: 300px;
 }
 
 .paper {
@@ -21,6 +24,7 @@
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
+    z-index: 20;
 }
 .headerLeft {
     display: flex;
@@ -30,8 +34,16 @@
     padding-right: 15px;
 }
 
-.tabContent {
-    margin: 20px 0;
+// .tabContent {
+// }
+
+.tab {
+    @include styledScrollBarList;
+    overflow: auto;
+    height: 100%;
+    min-height: 300px;
+    padding-right: 10px;
+    padding-top: 15px;
 }
 
 .mainTab {
@@ -55,12 +67,6 @@
 
 .imageItem {
     position: relative;
-    transition: 0.3s;
-}
-
-.imageItem:hover {
-    background-color: #eee;
-    border-radius: 8px;
 }
 
 :global(.DraggableBlock__dragging) {
@@ -85,7 +91,7 @@
     @include paper;
     // border: 1px solid #bbb;
     border-radius: 5px;
-    margin: 20px 0;
+    margin-bottom: 20px;
 }
 
 .attributeHeader {
@@ -190,8 +196,15 @@ button.galleryAddImageBtn {
 }
 
 @media screen and (max-width: 1069px) {
+    // mobile
     .Product .header {
         justify-content: space-around;
+    }
+
+    .tab {
+        overflow: visible;
+        height: auto;
+        padding-right: 0;
     }
 }
 

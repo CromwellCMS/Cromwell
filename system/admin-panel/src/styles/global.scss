@@ -37,6 +37,25 @@ h3 {
     :global(div.react-grid-item.react-grid-placeholder) {
         background-color: #777;
     }
+
+    :global(.MuiChip-root) {
+        background-color: #555;
+    }
+
+    :global(.MuiInput-underline:before) {
+        border-bottom: 1px solid #aaa;
+    }
+
+    :global(.MuiInput-underline:hover:not(.Mui-disabled):before) {
+        border-bottom: 2px solid #fff;
+    }
+
+    :global(.MuiOutlinedInput-notchedOutline) {
+        border-color: #aaa;
+    }
+    :global(.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline) {
+        border-color: #fff;
+    }
 }
 
 :global(.crw-text-editor) {

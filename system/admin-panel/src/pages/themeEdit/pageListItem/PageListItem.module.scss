@@ -12,6 +12,7 @@ body .pageItem {
     min-height: 45px;
     transition: 0.3s;
 }
+
 .pageItemActions {
     display: flex;
     margin-left: 20px;
@@ -33,4 +34,22 @@ body .activeItem {
 
 body .activeItem:hover {
     background-color: #666;
+}
+
+:global(.modeDark) {
+    .pageItem {
+        background-color: #333;
+
+        * {
+            color: #eee;
+        }
+
+        &:hover {
+            background-color: #555;
+        }
+    }
+
+    .activeItem {
+        background-color: #222;
+    }
 }

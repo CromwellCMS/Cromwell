@@ -8,13 +8,7 @@
     padding: 20px 20px 0 20px;
     max-width: 1200px;
     margin: 0 auto;
-}
-
-.list {
-    @include styledScrollBarList;
-    border-radius: 10px;
-    padding-right: 10px;
-    padding-top: 5px;
+    min-height: 200px;
 }
 
 .listHeader {
@@ -38,7 +32,7 @@
 }
 
 .listWrapper {
-    min-height: 400px;
+    min-height: 300px;
     height: 100%;
     width: 100%;
 }
@@ -63,7 +57,6 @@
 }
 
 :global(.modeDark) {
-
     .pagination,
     .listHeader {
         background-color: #333;

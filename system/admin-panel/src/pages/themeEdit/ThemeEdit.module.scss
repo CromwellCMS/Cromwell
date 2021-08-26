@@ -9,116 +9,89 @@
     padding: 20px;
     max-width: 1200px;
     margin: 0 auto;
-
-    .mainContainer {
-        display: flex;
-    }
-    .sidebar {
-        max-width: 300px;
-        opacity: 1;
-        transition: 0.3s;
-    }
-
-    .sidebarClosed {
-        max-width: 0;
-        opacity: 0;
-        overflow: hidden;
-    }
-
-    .pageList {
-        display: flex;
-        flex-direction: column;
-        margin-bottom: 20px;
-    }
-    .pageListHeader {
-        font-size: 12px;
-        margin-bottom: 9px;
-        margin-left: 15px;
-    }
-    .navBarItem {
-        display: flex;
-        justify-content: space-between;
-        background-color: #fff;
-        margin-bottom: 10px;
-        border-radius: 6px;
-        padding: 0 0 0 15px;
-    }
-    .addPageItem {
-        display: flex;
-        justify-content: center;
-    }
-
-    .pageBarActions {
-        @include paper;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        background-color: #fff;
-        margin-bottom: 10px;
-        border-radius: 8px;
-        overflow: hidden;
-        padding-right: 10px;
-    }
-    .pageBarTitle {
-        font-size: 18px;
-        font-weight: 600;
-    }
-
-    .pageSettingsContainer {
-        width: 100%;
-        padding-left: 20px;
-    }
-
-    .adminPanelThemeController {
-        position: relative;
-        padding: 15px;
-    }
-
-    .tabs {
-        // padding: 15px;
-        margin: 15px 0;
-        border-radius: 8px;
-    }
-
-    .tabsContent {
-        transition-duration: 0.3s;
-        transition-property: opacity;
-    }
-
-    .saveBtn {
-        position: relative;
-    }
-
-    .actionBtn {
-        margin-right: 6px;
-    }
 }
 
-.EditorWindow {
-    :global(.CromwellBlock) {
-        position: relative;
-        // padding: 10px;
-        // margin: 5px;
-        // border: 2px dashed transparent;
-        // border-radius: 5px;
-        // transition-property: border, height, margin, padding;
-        // transition-duration: 0.3s;
-        // user-select: none;
-        // z-index: 5;
-    }
-    // :global(.CromwellBlock):hover {
-    //     border: 2px dashed #999;
+.mainContainer {
+    display: flex;
+}
+.sidebar {
+    max-width: 300px;
+    opacity: 1;
+    transition: 0.3s;
+}
 
-    // }
+.sidebarClosed {
+    max-width: 0;
+    opacity: 0;
+    overflow: hidden;
+}
 
-    // :global(.CromwellBlock__adminPanelView) {
-    //     display: flex;
-    //     align-items: center;
-    // }
+.pageList {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+.pageListHeader {
+    font-size: 12px;
+    margin-bottom: 9px;
+    margin-left: 15px;
+}
+.navBarItem {
+    display: flex;
+    justify-content: space-between;
+    background-color: #fff;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    padding: 0 0 0 15px;
+}
+.addPageItem {
+    display: flex;
+    justify-content: center;
+}
 
-    // :global(.CromwellBlock__adminPanelIcon) {
-    //     margin: 10px
-    // }
+.pageBarActions {
+    @include paper;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fff;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    overflow: hidden;
+    padding-right: 10px;
+}
+.pageBarTitle {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.pageSettingsContainer {
+    width: 100%;
+    padding-left: 20px;
+}
+
+.adminPanelThemeController {
+    position: relative;
+    padding: 15px;
+}
+
+.tabs {
+    // padding: 15px;
+    margin: 15px 0;
+    border-radius: 8px;
+}
+
+.tabsContent {
+    transition-duration: 0.3s;
+    transition-property: opacity;
+}
+
+.saveBtn {
+    position: relative;
+}
+
+.actionBtn {
+    margin-right: 6px;
 }
 
 .builderFrame {
@@ -132,5 +105,35 @@ li.optionsItem {
 
     svg {
         margin-right: 10px;
+    }
+}
+
+.EditorWindow {
+    :global(.CB) {
+        position: relative;
+    }
+}
+
+:global(.modeDark) {
+    .pageBarActions {
+        background-color: #333;
+
+        * {
+            color: #eee;
+        }
+    }
+
+    .sidebar {
+        * {
+            color: #eee;
+        }
+    }
+
+    .addPageItem {
+        background-color: #333;
+
+        * {
+            color: #eee;
+        }
     }
 }

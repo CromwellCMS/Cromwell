@@ -1,7 +1,7 @@
 import { ClickAwayListener, Fade, InputAdornment, Popper, TextField } from '@material-ui/core';
 import React, { useRef, useState } from 'react';
 import { SketchPicker } from 'react-color';
-
+import { useForceUpdate } from '../../helpers/forceUpdate';
 
 export default function ColorPicker(props: {
     label: string;
@@ -75,9 +75,4 @@ export default function ColorPicker(props: {
             </Popper>
         </>
     )
-}
-
-function useForceUpdate() {
-    const [value, setValue] = useState(0);
-    return () => setValue(value => ++value);
 }

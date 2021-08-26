@@ -1,9 +1,8 @@
 import { TImageSettings } from '@cromwell/core';
 import { IconButton, Tooltip } from '@material-ui/core';
-import { Add as AddIcon, Delete as DeleteIcon, DragIndicator as DragIndicatorIcon } from '@material-ui/icons';
+import { Add as AddIcon, DeleteForever as DeleteForeverIcon, DragIndicator as DragIndicatorIcon, DeleteOutline as DeleteOutlineIcon } from '@material-ui/icons';
 import React, { Component } from 'react';
 import { Responsive, WidthProvider } from 'react-grid-layout';
-
 import { ImagePickerProps } from '../imagePicker/ImagePicker';
 import styles from './GalleryPicker.module.scss';
 import { ImageItem } from './ImageItem';
@@ -30,6 +29,13 @@ class GalleryPicker extends Component<{
     private handleAddImage = () => {
         const images = [...(this.props.images ?? this.uncontrolledInput)];
         images.push({ src: '' });
+        this.uncontrolledInput = images;
+        this.props.onChange?.(images);
+    }
+
+    private handleRemoveImage = (index: number) => {
+        const images = [...(this.props.images ?? this.uncontrolledInput)]
+            .filter((it, idx) => idx !== index);
         this.uncontrolledInput = images;
         this.props.onChange?.(images);
     }
@@ -80,7 +86,7 @@ class GalleryPicker extends Component<{
                     {images.map((image, index) => {
                         return (<div
                             key={(image?.id ?? index) + ''}
-                            className={styles.ImageItem}
+                            className={styles.imageItem}
                         >
                             <IconButton style={{ cursor: 'move', marginRight: '10px' }}
                                 className="draggableHandle">
@@ -96,22 +102,14 @@ class GalleryPicker extends Component<{
                                     allImages: images,
                                 }}
                             />
+                            <IconButton style={{ cursor: 'pointer', marginLeft: '10px' }}
+                                onClick={() => this.handleRemoveImage(index)}
+                            >
+                                <DeleteOutlineIcon />
+                            </IconButton>
                         </div>)
                     })}
                 </ResponsiveGridLayout>
-                {/* <DraggableList<TImageSettings>
-                    component={ImageItem}
-                    componentProps={{
-                        onImageChange: this.onImageChange,
-                        classes: this.props.classes?.imagePicker,
-                        allImages: images,
-                    }}
-                    data={images}
-                    onChange={(items) => {
-                        this.uncontrolledInput = items;
-                        this.props.onChange?.(items);
-                    }}
-                /> */}
                 <div className={styles.actions}>
                     <Tooltip title="Add image">
                         <IconButton
@@ -128,7 +126,7 @@ class GalleryPicker extends Component<{
                             aria-label="clear image"
                             onClick={this.handleDeleteAllImages}
                         >
-                            <DeleteIcon />
+                            <DeleteForeverIcon />
                         </IconButton>
                     </Tooltip>
                 </div>
