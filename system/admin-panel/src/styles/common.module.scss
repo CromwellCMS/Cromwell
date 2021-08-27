@@ -47,6 +47,14 @@
   }
 }
 
+@mixin styledScrollBarList {
+  @include styledScrollBar;
+  &::-webkit-scrollbar-track {
+    margin-top: 15px;
+    margin-bottom: 15px;
+  }
+}
+
 @mixin bckgrCover {
   background-position: center;
   background-repeat: no-repeat;

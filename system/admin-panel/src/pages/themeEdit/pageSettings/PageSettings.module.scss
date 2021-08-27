@@ -16,3 +16,17 @@
         margin-top: 15px;
     }
 }
+
+:global(.modeDark) {
+    .pageSettings {
+        background-color: #333;
+
+        .textField {
+            background-color: #333;
+        }
+
+        * {
+            color: #eee;
+        }
+    }
+}

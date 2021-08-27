@@ -154,7 +154,7 @@ class FileManager extends React.Component<{
         this.filePromise = new Promise(resolver => {
             this.fileResolver = resolver;
         });
-        this.setState({ isSelecting: true });
+        this.setState({ isSelecting: true, selectingType: 'image' });
         this.open(settings);
 
         return this.filePromise;
@@ -267,8 +267,17 @@ class FileManager extends React.Component<{
         this.selectedFileName = itemName;
         this.selectedItem?.classList.add(styles.selectedItem);
 
-        if (this.state.isSelecting && this.selectButton.current && itemType !== 'folder')
-            this.selectButton.current.style.opacity = '1';
+        if (this.state.isSelecting && this.selectButton.current && itemType !== 'folder') {
+            if (this.state.selectingType === 'image') {
+                if (itemType === 'image') {
+                    this.selectButton.current.style.opacity = '1';
+                } else {
+                    this.selectButton.current.style.opacity = '0.5';
+                }
+            } else {
+                this.selectButton.current.style.opacity = '1';
+            }
+        }
 
         if (this.deleteItemBtn.current) this.deleteItemBtn.current.style.opacity = '1';
         if (this.downloadItemBtn.current) this.downloadItemBtn.current.style.opacity = '1';
@@ -292,14 +301,17 @@ class FileManager extends React.Component<{
 
     private handleApplySelect = () => {
         if (this.selectedFileName && this.fileResolver) {
+            const itemType = this.getItemType(this.selectedFileName);
+            if (this.state.selectingType === 'image' && itemType !== 'image') return;
+
             this.fileResolver(this.normalize(`/${this.currentPath}/${this.selectedFileName}`));
-            this.setState({ isSelecting: false, isActive: false })
+            this.setState({ isSelecting: false, isActive: false, selectingType: undefined })
         }
     }
 
     private handleClose = () => {
         if (this.fileResolver) this.fileResolver(undefined);
-        this.setState({ isSelecting: false, isActive: false, isLoading: false });
+        this.setState({ isSelecting: false, isActive: false, isLoading: false, selectingType: undefined });
         this.currentItems = null;
     }
 

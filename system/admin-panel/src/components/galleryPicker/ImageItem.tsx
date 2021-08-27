@@ -18,7 +18,6 @@ export const ImageItem = (props: {
     }
     return (<ImagePicker
         classes={props.itemProps.classes}
-        showRemove
         value={props.data.src}
         placeholder="Pick an image"
         onChange={onSrcChange}

@@ -377,7 +377,6 @@ class SettingsPage extends React.Component<any, {
                                         onChange={(val) => this.changeSettings('favicon', val)}
                                         value={settings?.favicon}
                                         className={styles.imageField}
-                                        backgroundSize='80%'
                                         showRemove
                                     />
                                 </Grid>

@@ -30,3 +30,17 @@
 .settings {
     padding: 15px;
 }
+
+:global(.modeDark) {
+    .sidebar {
+        background-color: #333;
+
+        * {
+            color: #eee;
+        }
+    }
+
+    .sidebarPaper {
+        background-color: #333;
+    }
+}

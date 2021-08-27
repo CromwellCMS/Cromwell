@@ -156,175 +156,178 @@ const OrderPage = () => {
                         onClick={handleSave}>Update</Button>
                 </div>
             </div>
-            <div className={styles.fields}>
-                {orderLoading && (
-                    Array(8).fill(1).map((it, index) => (
-                        <Skeleton style={{ marginBottom: '10px' }} key={index} height={"50px"} />
-                    ))
-                )}
-                {!orderLoading && (
-                    <>
-                        <Autocomplete
-                            value={data?.status ?? orderStatuses[0]}
-                            onChange={(event: any, newValue: string | null) => {
-                                handleInputChange('status', newValue);
-                            }}
-                            options={orderStatuses}
-                            getOptionLabel={(option) => option}
-                            className={styles.textField}
-                            fullWidth
-                            style={{ width: 300 }}
-                            renderInput={(params) => <TextField {...params}
-                                label="Status"
+            <div className={styles.content}>
+
+                <div className={styles.fields}>
+                    {orderLoading && (
+                        Array(8).fill(1).map((it, index) => (
+                            <Skeleton style={{ marginBottom: '10px' }} key={index} height={"50px"} />
+                        ))
+                    )}
+                    {!orderLoading && (
+                        <>
+                            <Autocomplete
+                                value={data?.status ?? orderStatuses[0]}
+                                onChange={(event: any, newValue: string | null) => {
+                                    handleInputChange('status', newValue);
+                                }}
+                                options={orderStatuses}
+                                getOptionLabel={(option) => option}
+                                className={styles.textField}
                                 fullWidth
-                            />}
-                        />
-                        <TextField label="Name"
-                            value={data?.customerName || ''}
-                            fullWidth
-                            className={styles.textField}
-                            onChange={(e) => { handleInputChange('customerName', e.target.value) }}
-                        />
-                        <TextField label="Phone"
-                            value={data?.customerPhone || ''}
-                            fullWidth
-                            className={styles.textField}
-                            onChange={(e) => { handleInputChange('customerPhone', e.target.value) }}
-                        />
-                        <TextField label="Email"
-                            value={data?.customerEmail || ''}
-                            fullWidth
-                            className={styles.textField}
-                            onChange={(e) => { handleInputChange('customerEmail', e.target.value) }}
-                        />
-                        <TextField label="Address"
-                            value={data?.customerAddress || ''}
-                            fullWidth
-                            className={styles.textField}
-                            onChange={(e) => { handleInputChange('customerAddress', e.target.value) }}
-                        />
-                        <TextField label="Comment"
-                            value={data?.customerComment || ''}
-                            fullWidth
-                            className={styles.textField}
-                            onChange={(e) => { handleInputChange('customerComment', e.target.value) }}
-                        />
-                        <TextField label="Payment method"
-                            disabled
-                            value={data?.paymentMethod}
-                            fullWidth
-                            className={styles.textField}
-                        />
-                        <TextField label="Shipping method"
-                            disabled
-                            value={data?.shippingMethod}
-                            fullWidth
-                            className={styles.textField}
-                        />
-                        <TextField label="Shipping price"
-                            value={data?.shippingPrice ?? 0}
-                            className={styles.textField}
-                            onChange={(e) => {
-                                let newPrice = parseInt(e.target.value);
-                                if (isNaN(newPrice)) newPrice = 0;
-                                handleInputChange('shippingPrice', newPrice);
-                            }}
-                            fullWidth
-                            InputProps={{
-                                inputComponent: NumberFormatCustom as any,
-                            }}
-                        />
-                        <TextField label="Created"
-                            value={toLocaleDateString(data?.createDate)}
-                            fullWidth
-                            className={styles.textField}
-                        />
-                        <TextField label="Last updated"
-                            value={toLocaleDateString(data?.updateDate)}
-                            fullWidth
-                            className={styles.textField}
-                        />
-                    </>
-                )}
-            </div>
-            <div className={styles.sums}>
-                {!cartLoading && data && (
-                    <>
-                        <p>Cart total: <b>{cstore.getPriceWithCurrency(data.cartTotalPrice)}</b></p>
-                        <p>Shipping: <b>{cstore.getPriceWithCurrency(data.shippingPrice ?? 0)}</b></p>
-                        <p>{data.orderTotalPrice != orderTotalPriceRecalc ? 'Initial ' : ''}Order total: <b>{cstore.getPriceWithCurrency(data.orderTotalPrice ?? 0)}</b></p>
-                        {data.orderTotalPrice != orderTotalPriceRecalc && (
-                            <p>Order total: <b>{cstore.getPriceWithCurrency(orderTotalPriceRecalc)}</b></p>
-                        )}
-                        {(cartNewTotal !== data.cartTotalPrice) && (
-                            <div className={styles.totalChangedBlock}>
-                                <div className={styles.totalChangedWarning}>
-                                    <WarningRoundedIcon />
-                                    <p style={{ margin: '0 0 0 5px' }}>Price has changed for some products since this order was created!</p>
+                                style={{ width: 300 }}
+                                renderInput={(params) => <TextField {...params}
+                                    label="Status"
+                                    fullWidth
+                                />}
+                            />
+                            <TextField label="Name"
+                                value={data?.customerName || ''}
+                                fullWidth
+                                className={styles.textField}
+                                onChange={(e) => { handleInputChange('customerName', e.target.value) }}
+                            />
+                            <TextField label="Phone"
+                                value={data?.customerPhone || ''}
+                                fullWidth
+                                className={styles.textField}
+                                onChange={(e) => { handleInputChange('customerPhone', e.target.value) }}
+                            />
+                            <TextField label="Email"
+                                value={data?.customerEmail || ''}
+                                fullWidth
+                                className={styles.textField}
+                                onChange={(e) => { handleInputChange('customerEmail', e.target.value) }}
+                            />
+                            <TextField label="Address"
+                                value={data?.customerAddress || ''}
+                                fullWidth
+                                className={styles.textField}
+                                onChange={(e) => { handleInputChange('customerAddress', e.target.value) }}
+                            />
+                            <TextField label="Comment"
+                                value={data?.customerComment || ''}
+                                fullWidth
+                                className={styles.textField}
+                                onChange={(e) => { handleInputChange('customerComment', e.target.value) }}
+                            />
+                            <TextField label="Payment method"
+                                disabled
+                                value={data?.paymentMethod}
+                                fullWidth
+                                className={styles.textField}
+                            />
+                            <TextField label="Shipping method"
+                                disabled
+                                value={data?.shippingMethod}
+                                fullWidth
+                                className={styles.textField}
+                            />
+                            <TextField label="Shipping price"
+                                value={data?.shippingPrice ?? 0}
+                                className={styles.textField}
+                                onChange={(e) => {
+                                    let newPrice = parseInt(e.target.value);
+                                    if (isNaN(newPrice)) newPrice = 0;
+                                    handleInputChange('shippingPrice', newPrice);
+                                }}
+                                fullWidth
+                                InputProps={{
+                                    inputComponent: NumberFormatCustom as any,
+                                }}
+                            />
+                            <TextField label="Created"
+                                value={toLocaleDateString(data?.createDate)}
+                                fullWidth
+                                className={styles.textField}
+                            />
+                            <TextField label="Last updated"
+                                value={toLocaleDateString(data?.updateDate)}
+                                fullWidth
+                                className={styles.textField}
+                            />
+                        </>
+                    )}
+                </div>
+                <div className={styles.sums}>
+                    {!cartLoading && data && (
+                        <>
+                            <p>Cart total: <b>{cstore.getPriceWithCurrency(data.cartTotalPrice)}</b></p>
+                            <p>Shipping: <b>{cstore.getPriceWithCurrency(data.shippingPrice ?? 0)}</b></p>
+                            <p>{data.orderTotalPrice != orderTotalPriceRecalc ? 'Initial ' : ''}Order total: <b>{cstore.getPriceWithCurrency(data.orderTotalPrice ?? 0)}</b></p>
+                            {data.orderTotalPrice != orderTotalPriceRecalc && (
+                                <p>Order total: <b>{cstore.getPriceWithCurrency(orderTotalPriceRecalc)}</b></p>
+                            )}
+                            {(cartNewTotal !== data.cartTotalPrice) && (
+                                <div className={styles.totalChangedBlock}>
+                                    <div className={styles.totalChangedWarning}>
+                                        <WarningRoundedIcon />
+                                        <p style={{ margin: '0 0 0 5px' }}>Price has changed for some products since this order was created!</p>
+                                    </div>
+                                    <p>Updated cart total: <b>{cstore.getPriceWithCurrency(cartNewTotal)}</b></p>
+                                    <p>Updated order total: <b>{cstore.getPriceWithCurrency(cartNewTotal + (data.shippingPrice ?? 0))}</b></p>
                                 </div>
-                                <p>Updated cart total: <b>{cstore.getPriceWithCurrency(cartNewTotal)}</b></p>
-                                <p>Updated order total: <b>{cstore.getPriceWithCurrency(cartNewTotal + (data.shippingPrice ?? 0))}</b></p>
-                            </div>
-                        )}
-                    </>
-                )}
-                {cartLoading && (
-                    Array(4).fill(1).map((it, index) => (
-                        <Skeleton style={{ marginBottom: '3px' }} key={index} height={"20px"} />
-                    ))
-                )}
-            </div>
-            <div className={styles.cart}>
-                {!cartLoading && cart.map((it, i) => {
-                    const product = it.product;
-                    const checkedAttrKeys = Object.keys(it.pickedAttributes || {});
-                    if (product) {
-                        const productLink = `${productPageInfo.baseRoute}/${product.id}`;
-                        return (
-                            <Grid key={i} className={styles.cartItem} container>
-                                <Grid item xs={3} className={styles.itemBlock}>
-                                    <Link to={productLink}>
-                                        <img src={product.mainImage} className={styles.mainImage} />
-                                    </Link>
+                            )}
+                        </>
+                    )}
+                    {cartLoading && (
+                        Array(4).fill(1).map((it, index) => (
+                            <Skeleton style={{ marginBottom: '3px' }} key={index} height={"20px"} />
+                        ))
+                    )}
+                </div>
+                <div className={styles.cart}>
+                    {!cartLoading && cart.map((it, i) => {
+                        const product = it.product;
+                        const checkedAttrKeys = Object.keys(it.pickedAttributes || {});
+                        if (product) {
+                            const productLink = `${productPageInfo.baseRoute}/${product.id}`;
+                            return (
+                                <Grid key={i} className={styles.cartItem} container>
+                                    <Grid item xs={3} className={styles.itemBlock}>
+                                        <Link to={productLink}>
+                                            <img src={product.mainImage} className={styles.mainImage} />
+                                        </Link>
+                                    </Grid>
+                                    <Grid item xs={3} className={styles.itemBlock}>
+                                        <Link to={productLink} className={styles.productName}>{product.name}</Link>
+                                        <div className={styles.priceBlock}>
+                                            {(product?.oldPrice !== undefined && product?.oldPrice !== null) && (
+                                                <p className={styles.oldPrice}>{cstore.getPriceWithCurrency(product.oldPrice)}</p>
+                                            )}
+                                            <p className={styles.price}>{cstore.getPriceWithCurrency(product?.price)}</p>
+                                        </div>
+                                    </Grid>
+                                    <Grid item xs={3} className={styles.itemBlock}>
+                                        {checkedAttrKeys.map(key => {
+                                            const vals = it.pickedAttributes ? it.pickedAttributes[key] : [];
+                                            const valsStr = vals.join(', ');
+                                            return <p key={key}>{key}: {valsStr}</p>
+                                        })}
+                                    </Grid>
+                                    <Grid item xs={2} className={styles.itemBlock}>
+                                        <p>Qty: {it.amount}</p>
+                                    </Grid>
+                                    <Grid item xs={1} className={styles.itemBlock} style={{ marginLeft: 'auto', paddingRight: '0px' }}>
+                                        <div>
+                                            <IconButton
+                                                aria-label="Delete"
+                                                onClick={() => { handleDeleteFromCart(it); }}
+                                            >
+                                                <DeleteForeverIcon />
+                                            </IconButton>
+                                        </div>
+                                    </Grid>
                                 </Grid>
-                                <Grid item xs={3} className={styles.itemBlock}>
-                                    <Link to={productLink} className={styles.productName}>{product.name}</Link>
-                                    <div className={styles.priceBlock}>
-                                        {(product?.oldPrice !== undefined && product?.oldPrice !== null) && (
-                                            <p className={styles.oldPrice}>{cstore.getPriceWithCurrency(product.oldPrice)}</p>
-                                        )}
-                                        <p className={styles.price}>{cstore.getPriceWithCurrency(product?.price)}</p>
-                                    </div>
-                                </Grid>
-                                <Grid item xs={3} className={styles.itemBlock}>
-                                    {checkedAttrKeys.map(key => {
-                                        const vals = it.pickedAttributes ? it.pickedAttributes[key] : [];
-                                        const valsStr = vals.join(', ');
-                                        return <p key={key}>{key}: {valsStr}</p>
-                                    })}
-                                </Grid>
-                                <Grid item xs={2} className={styles.itemBlock}>
-                                    <p>Qty: {it.amount}</p>
-                                </Grid>
-                                <Grid item xs={1} className={styles.itemBlock} style={{ marginLeft: 'auto', paddingRight: '0px' }}>
-                                    <div>
-                                        <IconButton
-                                            aria-label="Delete"
-                                            onClick={() => { handleDeleteFromCart(it); }}
-                                        >
-                                            <DeleteForeverIcon />
-                                        </IconButton>
-                                    </div>
-                                </Grid>
-                            </Grid>
-                        )
-                    }
-                })}
-                {cartLoading && (
-                    Array(2).fill(1).map((it, index) => (
-                        <Skeleton style={{ margin: '0 20px 5px 20px' }} key={index} height={"60px"} />
-                    ))
-                )}
+                            )
+                        }
+                    })}
+                    {cartLoading && (
+                        Array(2).fill(1).map((it, index) => (
+                            <Skeleton style={{ margin: '0 20px 5px 20px' }} key={index} height={"60px"} />
+                        ))
+                    )}
+                </div>
             </div>
         </div>
     )

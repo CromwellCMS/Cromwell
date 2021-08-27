@@ -6,3 +6,25 @@
     height: 230px;
     overflow: auto;
 }
+
+button.button {
+    margin: 5px 0px;
+}
+
+.root {
+    margin: auto;
+}
+
+.cardHeader {
+    padding: 8px 16px;
+}
+
+:global(.modeDark) {
+    button.button {
+        background-color: #444;
+
+        * {
+            color: #eee;
+        }
+    }
+}

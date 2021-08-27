@@ -1,5 +1,5 @@
 import { getStoreItem, setStoreItem } from '@cromwell/core';
-import { createStyles, Switch, SwitchClassKey, SwitchProps, Theme, withStyles } from '@material-ui/core';
+import { createStyles, Switch, SwitchClassKey, SwitchProps, Theme, withStyles, Tooltip } from '@material-ui/core';
 import clsx from 'clsx';
 import React from 'react';
 import styles from './ModeSwitch.module.scss';
@@ -30,26 +30,28 @@ export const ModeSwitch = withStyles((theme: Theme) =>
 )(({ classes, ...props }: Props) => {
     const darkMode = getStoreItem('theme')?.mode === 'dark';
     return (
-        <Switch
-            size="medium"
-            checked={darkMode}
-            onChange={() => {
-                setStoreItem('theme', {
-                    ...(getStoreItem('theme') ?? {}),
-                    mode: darkMode ? 'light' : 'dark',
-                });
-
-                window.localStorage.setItem('crw_theme_mode', darkMode ? 'light' : 'dark');
-            }}
-            focusVisibleClassName={classes.focusVisible}
-            classes={{
-                root: styles.root,
-                switchBase: clsx(styles.switchBase, classes.switchBase),
-                thumb: styles.thumb,
-                track: clsx(styles.track, classes.track),
-                checked: clsx(styles.checked, classes.checked),
-            }}
-            {...props}
-        />
+        <Tooltip title="Switch theme">
+            <Switch
+                size="medium"
+                checked={darkMode}
+                onChange={() => {
+                    setStoreItem('theme', {
+                        ...(getStoreItem('theme') ?? {}),
+                        mode: darkMode ? 'light' : 'dark',
+                    });
+                    window.localStorage.setItem('crw_theme_mode', darkMode ? 'light' : 'dark');
+                    getStoreItem('forceUpdatePage')?.();
+                }}
+                focusVisibleClassName={classes.focusVisible}
+                classes={{
+                    root: styles.root,
+                    switchBase: clsx(styles.switchBase, classes.switchBase),
+                    thumb: styles.thumb,
+                    track: clsx(styles.track, classes.track),
+                    checked: clsx(styles.checked, classes.checked),
+                }}
+                {...props}
+            />
+        </Tooltip>
     );
 });

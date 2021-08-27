@@ -66,11 +66,13 @@ const ImagePicker = (props: ImagePickerProps) => {
             )}
             {!props.hideSrc && (
                 <Tooltip title={props.toolTip ?? ''}>
-                    <p
-                        onClick={pickImage}
-                        className={styles.placeholder}
-                        style={{ color: !value ? 'rgba(0, 0, 0, 0.54)' : '#000', marginLeft: '10px' }}
-                    >{value ?? props.placeholder ?? props.label ?? ''}</p>
+                    <div className={styles.valueWrapper}>
+                        <p
+                            onClick={pickImage}
+                            className={styles.placeholder}
+                            style={{ color: !value ? 'rgba(0, 0, 0, 0.54)' : '#000', marginLeft: '10px' }}
+                        >{value ?? props.placeholder ?? props.label ?? ''}</p>
+                    </div>
                 </Tooltip>
             )}
             {value && props.showRemove && (

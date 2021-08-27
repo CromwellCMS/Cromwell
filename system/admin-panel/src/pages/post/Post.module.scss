@@ -10,6 +10,7 @@
     flex-direction: column;
     max-width: 900px;
     margin: 0 auto;
+    min-height: 300px;
 
     div.editor {
         width: 100%;
@@ -18,7 +19,7 @@
         display: inline-block;
         overflow-y: auto;
         padding: 0 40px;
-        @include styledScrollBar;
+        @include styledScrollBarList;
     }
 
     .postHeader {
@@ -26,7 +27,6 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin-bottom: 6px;
         padding: 0 20px;
     }
 

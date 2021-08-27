@@ -5,10 +5,19 @@
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 300px;
 }
 
 .list {
+    @include styledScrollBarList;
     width: 100%;
+    min-height: 300px;
+    height: 100%;
+    overflow: auto;
+    padding-top: 10px;
 }
 
 .listItem {
@@ -20,8 +29,18 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     padding: 10px 20px;
+    z-index: 1;
+}
+
+@media screen and (max-width: 1069px) {
+    // mobile
+    .list {
+        overflow: visible;
+        height: auto;
+        padding-right: 0;
+    }
 }
 
 :global(.modeDark) {

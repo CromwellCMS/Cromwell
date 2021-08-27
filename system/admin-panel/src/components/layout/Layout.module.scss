@@ -31,6 +31,7 @@ a {
 }
 
 .main {
+    @include styledScrollBar;
     display: flex;
     flex-direction: column;
     width: 100%;

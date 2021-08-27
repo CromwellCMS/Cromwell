@@ -76,7 +76,7 @@
             background-color: #eee;
 
             .zoomItemBtn {
-                opacity: 1;
+                opacity: 0.5;
             }
         }
     }
@@ -108,6 +108,11 @@
         left: calc(50% - 24px);
         opacity: 0;
         transition: 0.2s;
+        background: #fff;
+    }
+
+    .item .zoomItemBtn:hover {
+        opacity: 1;
         background: #fff;
     }
 
@@ -213,5 +218,13 @@
 
     .zoomItemBtn {
         background-color: #333;
+    }
+
+    .item .zoomItemBtn:hover {
+        background-color: #333;
+    }
+
+    .FileManager .selectedItem {
+        border: 2px solid #111;
     }
 }
