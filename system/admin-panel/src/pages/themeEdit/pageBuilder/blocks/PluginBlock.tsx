@@ -7,30 +7,10 @@ import React from 'react';
 
 import { useForceUpdate } from '../../../../helpers/forceUpdate';
 import styles from './BaseBlock.module.scss';
-import { BaseMenu, TBaseMenuProps } from './BaseMenu';
+import { TBlockMenuProps } from './BlockMenu';
 
-export function PluginBlockReplacer(props: TBaseMenuProps) {
-    const pluginInfo = props.plugins?.find(p => p.name === props.block?.getData()?.plugin?.pluginName);
-    return (
-        <>
-            <BaseMenu
-                {...props}
-                icon={(
-                    <Tooltip title="Plugin block">
-                        <PowerIcon />
-                    </Tooltip>
-                )}
-            />
-            <div className={styles.pluginText}>{pluginInfo?.name ? (
-                <p><b>{pluginInfo?.title}</b> plugin [{pluginInfo?.name}]</p>
-            ) : (
-                    <p>plugin block</p>
-                )}</div>
-        </>
-    );
-}
 
-export function PluginBlockSidebar(props: TBaseMenuProps) {
+export function PluginBlockSidebar(props: TBlockMenuProps) {
     const data = props.block?.getData();
     const pluginInfo = props.plugins?.find(p => p.name === data?.plugin?.pluginName);
     const forceUpdate = useForceUpdate();

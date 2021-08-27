@@ -124,7 +124,7 @@ const args = yargs(process.argv.slice(2))
         }
     })
     // BUILD
-    .command<{ watch?: boolean; port?: string; admin?: boolean }>({
+    .command<{ watch?: boolean; port?: string; admin?: boolean; force?: boolean; }>({
         command: 'build [options]',
         describe: 'builds CMS module - theme or plugin',
         aliases: ['build', 'b'],

@@ -7,25 +7,9 @@ import React from 'react';
 import ImagePicker from '../../../../components/imagePicker/ImagePicker';
 import { useForceUpdate } from '../../../../helpers/forceUpdate';
 import styles from './BaseBlock.module.scss';
-import { BaseMenu, TBaseMenuProps } from './BaseMenu';
+import { TBlockMenuProps } from './BlockMenu';
 
-export function ImageBlockReplacer(props: TBaseMenuProps) {
-    return (
-        <>
-            <BaseMenu
-                {...props}
-                icon={(
-                    <Tooltip title="Image block">
-                        <ImageIcon />
-                    </Tooltip>
-                )}
-            />
-            {props?.block?.getDefaultContent()}
-        </>
-    );
-}
-
-export function ImageBlockSidebar(props: TBaseMenuProps) {
+export function ImageBlockSidebar(props: TBlockMenuProps) {
     const forceUpdate = useForceUpdate();
     const data = props.block?.getData();
 

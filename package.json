@@ -43,6 +43,9 @@
         "node": "14.x",
         "yarn": "1.x"
     },
+    "dependencies": {
+        "theme-test": "1.0.0"
+    },
     "resolutions": {
         "@apollo/client": "3.2.1",
         "@loadable/component": "5.15.0",

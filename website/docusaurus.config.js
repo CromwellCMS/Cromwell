@@ -30,8 +30,8 @@ module.exports = {
       title: 'Cromwell CMS',
       logo: {
         alt: 'Logo',
-        src: 'img/icon_small.png',
-        srcDark: 'img/icon_small_dark.png',
+        src: 'img/logo_small_black.svg',
+        srcDark: 'img/logo_small_white.svg',
       },
       items: [
         {

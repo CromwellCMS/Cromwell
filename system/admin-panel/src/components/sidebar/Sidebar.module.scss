@@ -35,30 +35,25 @@ a {
     justify-content: space-between;
 }
 
-.logoMoon {
-    background-color: transparent;
-    border-radius: 100%;
-    box-shadow: inset 0px 3px 0 1.4px #fff;
-    transform: rotate(270deg);
-}
-
 .logo {
-    @extend .logoMoon;
     width: 24px;
     height: 24px;
     margin-right: 10px;
     margin-left: 9px;
     user-select: none;
+    background-size: contain;
+    background-repeat: no-repeat;
 }
 
 .logoMobile {
-    @extend .logoMoon;
     filter: invert(100%);
     width: 24px;
     height: 24px;
     margin-right: 10px;
     margin-left: 5px;
     user-select: none;
+    background-size: contain;
+    background-repeat: no-repeat;
 }
 
 div.SidebarLink {
@@ -202,7 +197,7 @@ header.appBar {
     @extend .paper;
     border-radius: 0;
 
-    > div {
+    >div {
         padding: 0;
     }
 }
@@ -222,6 +217,7 @@ header.appBar {
 }
 
 @media screen and (max-width: $mobileBreakpoint) {
+
     // mobile
     .sidebarMobileHeader {
         margin: 0;
@@ -237,6 +233,7 @@ header.appBar {
 }
 
 @media screen and (min-width: $mobileBreakpoint) {
+
     // desktop
     .mobileContent {
         display: none;
@@ -252,6 +249,7 @@ header.appBar {
     header.appBar {
         background-color: #333;
         box-shadow: 0 1px 11px 0 rgb(0 0 0 / 24%), 0 0 11px 5px rgb(0 0 0 / 27%);
+
         * {
             color: #eee;
         }

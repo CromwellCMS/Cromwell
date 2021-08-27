@@ -23,11 +23,13 @@
     align-items: center;
     padding-left: 5px;
     color: #111;
+    pointer-events: all;
 }
 
 .typeIcon {
     padding: 6px 16px;
 }
+
 .headerIcon {
     margin-left: 5px;
 }
@@ -38,6 +40,7 @@
     position: absolute;
     bottom: -28px;
     left: calc(50% - 24px);
+    pointer-events: all;
 }
 
 .addIcon {
@@ -61,6 +64,7 @@
     width: 400px;
     padding: 10px;
 }
+
 .settingsHeader {
     display: flex;
     align-items: center;
@@ -81,14 +85,15 @@
     display: flex;
     align-items: center;
 
-    > p {
+    >p {
         margin-left: 4px;
     }
 }
 
 div.textField {
     color: inherit;
-    > div {
+
+    >div {
         color: inherit;
     }
 }

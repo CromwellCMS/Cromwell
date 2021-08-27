@@ -27,12 +27,14 @@ export type TDraggableOptions = {
     dragPlacement?: 'element' | 'underline';
 
     onBlockInserted?: (container: HTMLElement, draggedBlock: HTMLElement, nextElement?: Element | null) => void;
-
+    onTryToInsert?: (container: HTMLElement, draggedBlock: HTMLElement, shadow?: HTMLElement | null, nextElement?: Element | null) => void;
     canInsertBlock?: (container: HTMLElement, draggedBlock: HTMLElement, nextElement?: Element | null) => boolean;
 
     onBlockSelected?: (draggedBlock: HTMLElement) => void;
-
     onBlockDeSelected?: (draggedBlock: HTMLElement) => void;
+
+    onBlockHoverStart?: (draggedBlock: HTMLElement) => void;
+    onBlockHoverEnd?: (draggedBlock: HTMLElement) => void;
 
     canDeselectBlock?: (draggedBlock: HTMLElement) => boolean;
 
@@ -59,6 +61,7 @@ export type TDraggableOptions = {
 
     /** Create a new draggable frame or find inside a block */
     createFrame?: boolean;
+    draggableFrameClass?: string;
 
     /** Custom document to work on (e.g. in iframe) */
     document?: typeof document;
@@ -72,27 +75,15 @@ export class Draggable {
 
     // Block on which drag started
     private draggingBlock: HTMLElement | null = null;
-
     // Copy of draggingBlock that attached to the mouse cursor
     private draggingCursor: HTMLElement | null = null;
-
     private hoveredBlock: HTMLElement | null = null;
-    private hoveredFrame: HTMLElement | null = null;
     private selectedBlock: HTMLElement | null = null;
-    private selectedFrame: HTMLElement | null = null;
     private draggingBlockShadow: HTMLElement | null = null;
-
     private draggableBlocks: (HTMLElement | null)[] = [];
-    private draggableFrames: (HTMLElement | null)[] = [];
-
     private containers: (HTMLElement | null)[] | null = [];
-
-    private bodyElem: HTMLBodyElement | null = null;
-
     private canDragBlock = false;
-
     private isDragging = false;
-
     private options: TDraggableOptions;
     private document = document;
 
@@ -124,34 +115,7 @@ export class Draggable {
 
 
     constructor(options: TDraggableOptions) {
-        const bodyElem = this.document.querySelector('body');
-
-        if (bodyElem) {
-            this.bodyElem = bodyElem;
-            bodyElem.addEventListener('mousemove', this.onMouseMove);
-            bodyElem.addEventListener('mouseup', this.onDragStop);
-            bodyElem.addEventListener('click', this.onPageBodyClick);
-        }
-
         this.setupDraggableBlocks(options);
-    }
-
-    public setOptions(options: TDraggableOptions) {
-        this.options = options;
-        if (!this.options.dragPlacement) this.options.dragPlacement = 'element';
-        this.canInsertBlock = options.canInsertBlock;
-        this.onBlockInserted = options.onBlockInserted;
-        if (options.document) this.document = options.document;
-        if (options.iframeSelector) {
-            const iframe: HTMLIFrameElement = document.querySelector(options.iframeSelector)
-            if (iframe) {
-                this.document = iframe.contentDocument;
-            }
-        }
-
-        if (!options.rootElement && options.rootElementSelector) {
-            options.rootElement = document.querySelector(options.rootElementSelector);
-        }
     }
 
     public setupDraggableBlocks = (options: TDraggableOptions) => {
@@ -165,39 +129,52 @@ export class Draggable {
         });
     }
 
+    public setOptions(options: TDraggableOptions) {
+        this.options = options;
+        if (!this.options.dragPlacement) this.options.dragPlacement = 'element';
+        this.canInsertBlock = options.canInsertBlock;
+        this.onBlockInserted = options.onBlockInserted;
+        if (options.document) this.document = options.document;
+
+        this.document.body.addEventListener('mousemove', this.onMouseMove);
+        this.document.body.addEventListener('mouseup', this.onDragStop);
+        this.document.body.addEventListener('click', this.onPageBodyClick);
+
+        if (options.iframeSelector) {
+            const iframe: HTMLIFrameElement = document.querySelector(options.iframeSelector)
+            if (iframe) {
+                this.document = iframe.contentDocument;
+            }
+        }
+
+        if (!options.rootElement && options.rootElementSelector) {
+            options.rootElement = document.querySelector(options.rootElementSelector);
+        }
+    }
+
     private setupBlock = (block: HTMLElement) => {
         if (!block || !this.options) return;
 
         block.classList.add(Draggable.draggableBlockClass);
 
-        const draggableFrame: HTMLElement | null = this.options?.createFrame ? this.document.createElement('div') : block.querySelector(`.${Draggable.draggableFrameClass}`);
-        if (draggableFrame) {
-            draggableFrame.classList.add(Draggable.draggableFrameClass);
-            if (this.options?.createFrame) block.appendChild(draggableFrame);
-            this.draggableFrames.push(draggableFrame);
-
-            draggableFrame.addEventListener('click', (e) => {
-                this.onBlockClick(block, draggableFrame, e);
-            })
-        }
 
         block.addEventListener('click', (e) => {
-            this.onBlockClick(block, draggableFrame, e);
-        })
+            this.onBlockClick(block, e);
+        });
 
         block.addEventListener('mousedown', (e) => {
             if (this.options.ignoreDraggableClass &&
                 block.classList.contains(this.options.ignoreDraggableClass)) return;
 
-            if (draggableFrame) this.onBlockMouseDown(e, block);
+            this.onBlockMouseDown(e, block);
         });
 
         block.addEventListener('mouseover', (e) => {
-            if (draggableFrame) this.onHoverStart(e, block, draggableFrame);
+            this.onHoverStart(e, block);
         });
 
         block.addEventListener('mouseleave', (e) => {
-            if (draggableFrame) this.onHoverEnd(e, block, draggableFrame);
+            this.onHoverEnd(e, block);
         });
     }
 
@@ -233,6 +210,10 @@ export class Draggable {
         this.draggableBlocks = updatedBlocks;
 
         this.containers = Array.from(this.document.querySelectorAll(containerSelector)) as HTMLElement[];
+    }
+
+    public onMouseUp = () => {
+        this.onDragStop();
     }
 
     private onBlockMouseDown = (event: MouseEvent, block: HTMLElement) => {
@@ -271,8 +252,8 @@ export class Draggable {
         const { rootElement } = this.options;
         if (rootElement) {
             rootElement.appendChild(this.draggingCursor);
-        } else if (this.bodyElem) {
-            this.bodyElem.appendChild(this.draggingCursor);
+        } else {
+            this.document.body.appendChild(this.draggingCursor);
         }
 
         this.draggingBlock.classList.add(Draggable.draggingClass);
@@ -297,12 +278,11 @@ export class Draggable {
 
             if (rootElement) {
                 rootElement.appendChild(this.draggingBlockShadow);
-            } else if (this.bodyElem) {
-                this.bodyElem.appendChild(this.draggingBlockShadow);
+            } else {
+                this.document.body.appendChild(this.draggingBlockShadow);
             }
         }
     }
-
 
     private onMouseMove = (event: MouseEvent) => {
         // console.log('canDragBlock', canDragBlock, 'draggingBlock', draggingBlock);
@@ -333,51 +313,52 @@ export class Draggable {
     }
 
     private tryToInsert = throttle(100, (event: MouseEvent) => {
-        if (this.hoveredBlock && this.draggingBlock) {
+        if (!this.hoveredBlock || !this.draggingBlock) return;
+        if (this.draggingBlock.contains(this.hoveredBlock)) return;
 
-            if (this.draggingBlock.contains(this.hoveredBlock)) return;
+        const afterElement = this.getDragAfterElement(this.hoveredBlock, event.clientY);
 
-            const afterElement = this.getDragAfterElement(this.hoveredBlock, event.clientY);
+        const canInsert = this.canInsertBlock ?
+            this.canInsertBlock(this.hoveredBlock, this.draggingBlock, afterElement) : true;
 
-            const canInsert = this.canInsertBlock ?
-                this.canInsertBlock(this.hoveredBlock, this.draggingBlock, afterElement) : true;
+        if (canInsert) {
+            let blockToInsert: HTMLElement | null = null;
 
-            if (canInsert) {
-                let blockToInsert: HTMLElement | null = null;
+            if (this.options.disableInsert) {
+                blockToInsert = this.draggingBlockShadow;
 
-                if (this.options.disableInsert) {
-                    blockToInsert = this.draggingBlockShadow;
-
-                    if (this.options.dragPlacement === 'element') {
-                        this.draggingBlock.style.display = 'none';
-                    }
-
-                    if (this.draggingBlockShadow) this.draggingBlockShadow.style.display = '';
-                    this.lastInsertionData = {
-                        draggingBlock: this.draggingBlock,
-                        container: this.hoveredBlock,
-                        afterElement: afterElement as HTMLElement
-                    }
-                } else {
-                    blockToInsert = this.draggingBlock;
+                if (this.options.dragPlacement === 'element') {
+                    this.draggingBlock.style.display = 'none';
                 }
 
-                try {
-                    if (blockToInsert) {
-                        if (afterElement) {
-                            this.hoveredBlock.insertBefore(blockToInsert, afterElement)
-                        } else {
-                            this.hoveredBlock.appendChild(blockToInsert);
-                        }
-                    }
-
-                    if (!this.options.disableInsert)
-                        this.onBlockInserted?.(this.hoveredBlock, this.draggingBlock, afterElement);
-                } catch (e) {
-                    console.error(e);
+                if (this.draggingBlockShadow) this.draggingBlockShadow.style.display = '';
+                this.lastInsertionData = {
+                    draggingBlock: this.draggingBlock,
+                    container: this.hoveredBlock,
+                    afterElement: afterElement as HTMLElement
                 }
-
+            } else {
+                blockToInsert = this.draggingBlock;
             }
+
+            try {
+                if (blockToInsert) {
+                    if (afterElement) {
+                        this.hoveredBlock.insertBefore(blockToInsert, afterElement)
+                    } else {
+                        this.hoveredBlock.appendChild(blockToInsert);
+                    }
+                }
+
+                this.options?.onTryToInsert(this.hoveredBlock, this.draggingBlock, blockToInsert, afterElement)
+
+
+                if (!this.options.disableInsert)
+                    this.onBlockInserted?.(this.hoveredBlock, this.draggingBlock, afterElement);
+            } catch (e) {
+                console.error(e);
+            }
+
         }
     });
 
@@ -429,7 +410,7 @@ export class Draggable {
         }
     }
 
-    private onHoverStart = (event: MouseEvent, block: HTMLElement, frame: HTMLElement) => {
+    private onHoverStart = (event: MouseEvent, block: HTMLElement) => {
         if ((event as any).hitContainer) return;
         if (this.containers.includes(block)) {
             (event as any).hitContainer = true;
@@ -445,33 +426,33 @@ export class Draggable {
         if (this.hoveredBlock === block) return;
 
         if (this.hoveredBlock && this.hoveredBlock !== this.selectedBlock) {
-            this.blockHoverEnd(event, this.hoveredBlock, this.hoveredFrame);
+            this.blockHoverEnd(event, this.hoveredBlock);
         }
 
         this.hoveredBlock = block;
-        this.hoveredFrame = frame;
+        this.options?.onBlockHoverStart?.(block);
 
         if (block !== this.selectedBlock) {
-            this.styleHoveredBlock(block, frame);
+            this.styleHoveredBlock(block);
         }
     }
 
-    private onHoverEnd = (event: MouseEvent, block: HTMLElement, frame?: HTMLElement) => {
+    private onHoverEnd = (event: MouseEvent, block: HTMLElement) => {
         if ((event as any).hitBlock) return;
         (event as any).hitBlock = true;
 
-        this.blockHoverEnd(event, block, frame);
+        this.blockHoverEnd(event, block);
     }
 
-    private blockHoverEnd = (event: MouseEvent, block: HTMLElement, frame?: HTMLElement) => {
-        if (block !== this.selectedBlock && frame) {
-            this.styleDeselectedBlock(block, frame);
+    private blockHoverEnd = (event: MouseEvent, block: HTMLElement) => {
+        if (block !== this.selectedBlock) {
+            this.styleDeselectedBlock(block);
         }
+        this.options?.onBlockHoverEnd?.(this.hoveredBlock);
         this.hoveredBlock = null;
-        this.hoveredFrame = null;
     }
 
-    private onBlockClick = (block: HTMLElement, frame: HTMLElement | null, event: MouseEvent) => {
+    private onBlockClick = (block: HTMLElement, event: MouseEvent) => {
         if ((event as any).hitBlock) return;
         (event as any).hitBlock = true;
 
@@ -481,8 +462,7 @@ export class Draggable {
 
             this.options?.onBlockSelected?.(block);
             this.selectedBlock = block;
-            this.selectedFrame = frame;
-            this.styleSelectedBlock(block, frame);
+            this.styleSelectedBlock(block);
         }
     }
 
@@ -499,18 +479,17 @@ export class Draggable {
         }
 
         if (this.selectedBlock) {
-            this.styleDeselectedBlock(this.selectedBlock, this.selectedFrame)
+            this.styleDeselectedBlock(this.selectedBlock)
             this.options?.onBlockDeSelected?.(this.selectedBlock);
         }
         if (this.selectedBlock === this.hoveredBlock) {
-            this.styleHoveredBlock(this.selectedBlock, this.selectedFrame);
+            this.styleHoveredBlock(this.selectedBlock);
         }
         this.selectedBlock = null;
-        this.selectedFrame = null;
         return true;
     }
 
-    private styleHoveredBlock = (block: HTMLElement, frame?: HTMLElement) => {
+    private styleHoveredBlock = (block: HTMLElement) => {
         if (block) {
             block.style.zIndex = '1005';
 
@@ -524,15 +503,9 @@ export class Draggable {
             }
             styleParent(block);
         }
-
-        if (frame) {
-            const color = this.options?.getFrameColor?.(block) ?? this.options?.primaryColor ?? '#9900CC';
-            frame.classList.add(Draggable.draggableFrameHoveredCSSclass);
-            frame.style.border = `1px solid ${color}`;
-        }
     }
 
-    private styleSelectedBlock = (block: HTMLElement, frame?: HTMLElement) => {
+    private styleSelectedBlock = (block: HTMLElement) => {
         if (block) {
             block.style.zIndex = '1006';
 
@@ -546,22 +519,9 @@ export class Draggable {
             }
             styleParent(block);
         }
-
-        if (frame) {
-            const color = this.options?.getFrameColor?.(block) ?? this.options?.primaryColor ?? '#9900CC';
-            frame.classList.add(Draggable.draggableFrameHoveredCSSclass);
-            frame.style.border = `2px solid ${color}`;
-        }
     }
 
-    private styleDeselectedBlock = (block: HTMLElement, frame?: HTMLElement) => {
+    private styleDeselectedBlock = (block: HTMLElement) => {
         if (block) block.style.zIndex = '1002';
-
-        if (frame) {
-            frame.classList.remove(Draggable.draggableFrameHoveredCSSclass);
-            frame.style.border = '0';
-        }
     }
-
-
 }

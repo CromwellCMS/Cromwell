@@ -3,6 +3,7 @@
 .PageBuilder {
     display: flex;
     width: 100%;
+    height: 100%;
 
     :global(.CromwellBlock_Type_container) {
         padding: 10px;
@@ -21,5 +22,4 @@
 }
 
 
-.rootBlock {
-}
+.rootBlock {}

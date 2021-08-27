@@ -9,14 +9,14 @@ import {
     TPluginEntity,
     TThemeConfig,
 } from '@cromwell/core';
-import { getGraphQLClient, getRestApiClient, loadFrontendBundle } from '@cromwell/core-frontend';
+import { getGraphQLClient, getRestApiClient } from '@cromwell/core-frontend';
 import { Button, IconButton, MenuItem, Popover, Tab, Tabs, Tooltip } from '@material-ui/core';
 import {
     AddCircle as AddCircleIcon,
+    DeleteForever as DeleteForeverIcon,
     MoreVertOutlined as MoreVertOutlinedIcon,
     Settings as SettingsIcon,
     SettingsBackupRestore as SettingsBackupRestoreIcon,
-    DeleteForever as DeleteForeverIcon,
 } from '@material-ui/icons';
 import clsx from 'clsx';
 import React, { Suspense } from 'react';
@@ -28,8 +28,7 @@ import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
 import { SkeletonPreloader } from '../../components/skeleton/SkeletonPreloader';
 import { toast } from '../../components/toast/toast';
 import { store } from '../../redux/store';
-// import { PageBuilder } from './pageBuilder/PageBuilder';
-import { PageBuilder } from './pageBuilder/PageBuilder2';
+import { PageBuilder } from './pageBuilder/PageBuilder';
 import { PageListItem } from './pageListItem/PageListItem';
 import { PageSettings } from './pageSettings/PageSettings';
 import styles from './ThemeEdit.module.scss';
@@ -40,15 +39,14 @@ class ThemeEditState {
     pageInfos: TPageInfo[] | null = null;
     plugins: TPluginEntity[] | null = null;
     editingPageInfo: TPageConfig | null = null;
-    EditingPage: React.ComponentType<any> | null | undefined = null;
     isPageLoading: boolean = false;
     isPageListLoading: boolean = true;
     loadingStatus: boolean = false;
     isSidebarOpen: boolean = true;
     pageOptionsOpen: boolean = false;
     activeTabNum: number = 0;
+    pageCompPath?: string;
 }
-
 
 export default class ThemeEdit extends React.Component<Partial<RouteComponentProps>, ThemeEditState> {
 
@@ -135,14 +133,10 @@ export default class ThemeEdit extends React.Component<Partial<RouteComponentPro
             this.changedModifications = null;
             const pageCompPath = pageInfo?.isVirtual ?
                 (this.state.themeConfig?.defaultPages?.pages ?? genericPageName) : pageInfo.route;
-            const pageComp = await loadFrontendBundle(
-                pageCompPath,
-                () => getRestApiClient()?.getThemePageBundle(pageCompPath),
-            );
 
             this.setState({
-                EditingPage: pageComp,
                 editingPageInfo: pageConfig,
+                pageCompPath: pageCompPath,
             });
         } catch (e) {
             console.error(e)
@@ -156,7 +150,6 @@ export default class ThemeEdit extends React.Component<Partial<RouteComponentPro
     private handleCloseEditingPage = () => {
         this.setState({
             editingPageInfo: null,
-            EditingPage: null
         })
     }
 
@@ -237,7 +230,6 @@ export default class ThemeEdit extends React.Component<Partial<RouteComponentPro
 
         this.setState({
             editingPageInfo: undefined,
-            EditingPage: undefined,
             activeTabNum: 0,
             isSidebarOpen: true,
             pageOptionsOpen: false,
@@ -263,7 +255,6 @@ export default class ThemeEdit extends React.Component<Partial<RouteComponentPro
 
         this.setState({
             editingPageInfo: undefined,
-            EditingPage: undefined,
             activeTabNum: 0,
             isSidebarOpen: true,
             pageOptionsOpen: false,
@@ -327,10 +318,8 @@ export default class ThemeEdit extends React.Component<Partial<RouteComponentPro
     }
 
     render() {
-
         const { pageInfos,
             editingPageInfo,
-            EditingPage,
             isPageLoading,
             isPageListLoading,
             isSidebarOpen,
@@ -343,151 +332,150 @@ export default class ThemeEdit extends React.Component<Partial<RouteComponentPro
 
         return (
             <div className={styles.ThemeEdit}>
-                <div>
-                    {isPageListLoading && (
-                        <SkeletonPreloader style={{
-                            maxWidth: '300px',
-                            maxHeight: '400px'
-                        }} />
-                    )}
-                    {!isPageListLoading && (
-                        <div className={styles.mainContainer}>
-                            <div className={`${styles.sidebar} ${isSidebarOpen ? '' : styles.sidebarClosed}`}>
-                                {ImportedThemeController && (
-                                    <div className={styles.pageList} key="_1_">
-                                        <MenuItem className={styles.navBarItem}
-                                            onClick={this.handleCloseEditingPage}
+                {isPageListLoading && (
+                    <SkeletonPreloader style={{
+                        maxWidth: '300px',
+                        maxHeight: '400px'
+                    }} />
+                )}
+                {!isPageListLoading && (
+                    <div className={styles.mainContainer}>
+                        <div className={`${styles.sidebar} ${isSidebarOpen ? '' : styles.sidebarClosed}`}>
+                            {ImportedThemeController && (
+                                <div className={styles.pageList} key="_1_">
+                                    <MenuItem className={styles.navBarItem}
+                                        onClick={this.handleCloseEditingPage}
+                                    >
+                                        <p>Theme settings</p>
+                                        <IconButton>
+                                            <SettingsIcon />
+                                        </IconButton>
+                                    </MenuItem>
+                                </div>
+                            )}
+                            {defaultPages && defaultPages.length > 0 && (
+                                <div className={styles.pageList} key="_2_">
+                                    <p className={styles.pageListHeader}>Theme pages</p>
+                                    {defaultPages.filter(p => !p.isVirtual).map(p => (
+                                        <PageListItem
+                                            activePage={this.state.editingPageInfo}
+                                            key={p.route}
+                                            page={p}
+                                            handleOpenPage={this.handleOpenPage}
+                                            handleDeletePage={this.handleDeletePage}
+                                        />
+                                    ))}
+                                </div>
+                            )}
+                            {customPages && (
+                                <div className={styles.pageList} key="_3_">
+                                    <p className={styles.pageListHeader}>Custom pages</p>
+                                    {customPages.filter(p => p.isVirtual).map(p => (
+                                        <PageListItem
+                                            activePage={this.state.editingPageInfo}
+                                            key={p.route}
+                                            page={p}
+                                            handleOpenPage={this.handleOpenPage}
+                                            handleDeletePage={this.handleDeletePage}
+                                        />
+
+                                    ))}
+                                    <Tooltip title="Add a new page">
+                                        <MenuItem
+                                            className={clsx(styles.addPageItem, styles.navBarItem)}
                                         >
-                                            <p>Theme settings</p>
-                                            <IconButton>
-                                                <SettingsIcon />
+                                            <IconButton
+                                                aria-label="add page"
+                                                onClick={this.handleAddCustomPage}
+                                            >
+                                                <AddCircleIcon />
                                             </IconButton>
                                         </MenuItem>
-                                    </div>
-                                )}
-                                {defaultPages && defaultPages.length > 0 && (
-                                    <div className={styles.pageList} key="_2_">
-                                        <p className={styles.pageListHeader}>Theme pages</p>
-                                        {defaultPages.filter(p => !p.isVirtual).map(p => (
-                                            <PageListItem
-                                                activePage={this.state.editingPageInfo}
-                                                key={p.route}
-                                                page={p}
-                                                handleOpenPage={this.handleOpenPage}
-                                                handleDeletePage={this.handleDeletePage}
-                                            />
-                                        ))}
-                                    </div>
-                                )}
-                                {customPages && (
-                                    <div className={styles.pageList} key="_3_">
-                                        <p className={styles.pageListHeader}>Custom pages</p>
-                                        {customPages.filter(p => p.isVirtual).map(p => (
-                                            <PageListItem
-                                                activePage={this.state.editingPageInfo}
-                                                key={p.route}
-                                                page={p}
-                                                handleOpenPage={this.handleOpenPage}
-                                                handleDeletePage={this.handleDeletePage}
-                                            />
-
-                                        ))}
-                                        <Tooltip title="Add a new page">
-                                            <MenuItem
-                                                className={clsx(styles.addPageItem, styles.navBarItem)}
+                                    </Tooltip>
+                                </div>
+                            )}
+                        </div>
+                        <div className={styles.pageSettingsContainer}>
+                            {/** If no page selected to edit settings, display Theme's AdminPanel controller */}
+                            {!editingPageInfo && ImportedThemeController && (
+                                <div className={styles.adminPanelThemeController} >
+                                    <PageErrorBoundary>
+                                        <Suspense fallback={<LoadBox />}>
+                                            <ImportedThemeController />
+                                        </Suspense>
+                                    </PageErrorBoundary>
+                                </div>
+                            )}
+                            {/* Header */}
+                            {(editingPageInfo) && (
+                                <div className={styles.pageBarActions}>
+                                    <Tabs
+                                        value={activeTabNum}
+                                        indicatorColor="primary"
+                                        textColor="primary"
+                                        onChange={(event: React.ChangeEvent<any>, newValue: number) => {
+                                            this.handleTabChange(newValue);
+                                        }}
+                                    >
+                                        <Tab label="Settings" />
+                                        <Tab label="Page builder" />
+                                    </Tabs>
+                                    <div className={styles.bottomBlock} ref={this.optionsAnchorEl}>
+                                        <Tooltip title="Options">
+                                            <IconButton
+                                                onClick={this.handleOptionsToggle}
+                                                className={styles.actionBtn}
+                                                aria-label="Options"
                                             >
-                                                <IconButton
-                                                    aria-label="add page"
-                                                    onClick={this.handleAddCustomPage}
-                                                >
-                                                    <AddCircleIcon />
-                                                </IconButton>
-                                            </MenuItem>
+                                                <MoreVertOutlinedIcon />
+                                            </IconButton>
                                         </Tooltip>
-                                    </div>
-                                )}
-                            </div>
-                            <div className={styles.pageSettingsContainer}>
-                                {/** If no page selected to edit settings, display Theme's AdminPanel controller */}
-                                {!editingPageInfo && ImportedThemeController && (
-                                    <div className={styles.adminPanelThemeController} >
-                                        <PageErrorBoundary>
-                                            <Suspense fallback={<LoadBox />}>
-                                                <ImportedThemeController />
-                                            </Suspense>
-                                        </PageErrorBoundary>
-                                    </div>
-                                )}
-                                {/* Header */}
-                                {(editingPageInfo || EditingPage) && (
-                                    <div className={styles.pageBarActions}>
-                                        <Tabs
-                                            value={activeTabNum}
-                                            indicatorColor="primary"
-                                            textColor="primary"
-                                            onChange={(event: React.ChangeEvent<any>, newValue: number) => {
-                                                this.handleTabChange(newValue);
+                                        <Popover open={this.state.pageOptionsOpen}
+                                            anchorEl={this.optionsAnchorEl.current}
+                                            style={{ zIndex: 9999 }}
+                                            onClose={this.handleOptionsToggle}
+                                            anchorOrigin={{
+                                                vertical: 'bottom',
+                                                horizontal: 'left',
+                                            }}
+                                            transformOrigin={{
+                                                vertical: 'top',
+                                                horizontal: 'left',
                                             }}
                                         >
-                                            <Tab label="Settings" />
-                                            <Tab label="Page builder" />
-                                        </Tabs>
-                                        <div className={styles.bottomBlock} ref={this.optionsAnchorEl}>
-                                            <Tooltip title="Options">
-                                                <IconButton
-                                                    onClick={this.handleOptionsToggle}
-                                                    className={styles.actionBtn}
-                                                    aria-label="Options"
-                                                >
-                                                    <MoreVertOutlinedIcon />
-                                                </IconButton>
-                                            </Tooltip>
-                                            <Popover open={this.state.pageOptionsOpen}
-                                                anchorEl={this.optionsAnchorEl.current}
-                                                style={{ zIndex: 9999 }}
-                                                onClose={this.handleOptionsToggle}
-                                                anchorOrigin={{
-                                                    vertical: 'bottom',
-                                                    horizontal: 'left',
-                                                }}
-                                                transformOrigin={{
-                                                    vertical: 'top',
-                                                    horizontal: 'left',
-                                                }}
-                                            >
-                                                <div>
-                                                    <MenuItem
-                                                        onClick={this.handleResetCurrentPage} className={styles.optionsItem}>
-                                                        <SettingsBackupRestoreIcon />
-                                                        <p>Reset to default</p>
-                                                    </MenuItem>
-                                                    <MenuItem
-                                                        disabled={!this.state.editingPageInfo?.isVirtual}
-                                                        onClick={this.handleDeleteCurrentPage} className={styles.optionsItem}>
-                                                        <DeleteForeverIcon />
-                                                        <p>Delete page</p>
-                                                    </MenuItem>
-                                                </div>
-                                            </Popover>
-                                            <Button variant="contained" color="primary"
-                                                className={styles.saveBtn}
-                                                size="small"
-                                                onClick={this.handleSaveEditingPage}
-                                            >Save</Button>
-                                        </div>
+                                            <div>
+                                                <MenuItem
+                                                    onClick={this.handleResetCurrentPage} className={styles.optionsItem}>
+                                                    <SettingsBackupRestoreIcon />
+                                                    <p>Reset to default</p>
+                                                </MenuItem>
+                                                <MenuItem
+                                                    disabled={!this.state.editingPageInfo?.isVirtual}
+                                                    onClick={this.handleDeleteCurrentPage} className={styles.optionsItem}>
+                                                    <DeleteForeverIcon />
+                                                    <p>Delete page</p>
+                                                </MenuItem>
+                                            </div>
+                                        </Popover>
+                                        <Button variant="contained" color="primary"
+                                            className={styles.saveBtn}
+                                            size="small"
+                                            onClick={this.handleSaveEditingPage}
+                                        >Save</Button>
                                     </div>
-                                )}
-                                <div className={styles.tabs}>
-                                    <div className={styles.tabsContent} ref={this.tabsContent}>
-                                        <TabPanel value={activeTabNum} index={0}>
-                                            {!isPageLoading && editingPageInfo && (
-                                                <PageSettings initialPageConfig={editingPageInfo}
-                                                    handlePageInfoChange={this.handlePageInfoChange}
-                                                />
-                                            )}
-                                        </TabPanel>
-                                        <TabPanel value={activeTabNum} index={1}>
-                                            {/* <FramePortal
+                                </div>
+                            )}
+                            <div className={styles.tabs}>
+                                <div className={styles.tabsContent} ref={this.tabsContent}>
+                                    <TabPanel value={activeTabNum} index={0}>
+                                        {!isPageLoading && editingPageInfo && (
+                                            <PageSettings initialPageConfig={editingPageInfo}
+                                                handlePageInfoChange={this.handlePageInfoChange}
+                                            />
+                                        )}
+                                    </TabPanel>
+                                    <TabPanel value={activeTabNum} index={1}>
+                                        {/* <FramePortal
                                         className={styles.builderFrame}
                                         id="builderFrame">
                                         {!isPageLoading && EditingPage && (
@@ -500,22 +488,20 @@ export default class ThemeEdit extends React.Component<Partial<RouteComponentPro
                                         )}
                                     </FramePortal> */}
 
-                                            {!isPageLoading && EditingPage && (
-                                                <PageBuilder
-                                                    plugins={this.state.plugins}
-                                                    editingPageInfo={editingPageInfo}
-                                                    onPageModificationsChange={this.handlePageModificationsChange}
-                                                    EditingPage={EditingPage}
-                                                />
-                                            )}
-                                        </TabPanel>
-                                    </div>
+                                        {!isPageLoading && (
+                                            <PageBuilder
+                                                plugins={this.state.plugins}
+                                                editingPageInfo={editingPageInfo}
+                                                onPageModificationsChange={this.handlePageModificationsChange}
+                                            />
+                                        )}
+                                    </TabPanel>
                                 </div>
-                                {isPageLoading && (<LoadBox />)}
                             </div>
+                            {isPageLoading && (<LoadBox />)}
                         </div>
-                    )}
-                </div>
+                    </div>
+                )}
                 <LoadingStatus isActive={this.state.loadingStatus} />
             </div>
         )

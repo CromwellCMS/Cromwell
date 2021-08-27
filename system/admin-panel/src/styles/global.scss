@@ -9,6 +9,10 @@
     }
 }
 
+body {
+    // overflow: hidden;
+}
+
 h1 {
     font-size: 24px;
     font-weight: 500;
@@ -53,6 +57,7 @@ h3 {
     :global(.MuiOutlinedInput-notchedOutline) {
         border-color: #aaa;
     }
+
     :global(.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline) {
         border-color: #fff;
     }
@@ -81,22 +86,28 @@ h3 {
     :global(.ce-inline-tool:hover) {
         background-color: #444;
     }
+
     :global(.ce-inline-toolbar__dropdown:hover) {
         background-color: #444;
     }
+
     :global(.ce-conversion-tool:hover) {
         background-color: #444;
     }
+
     :global(.ce-settings__button:hover) {
         background-color: #444;
     }
+
     :global(.cdx-settings-button:hover) {
         background-color: #444;
     }
+
     :global(.ce-conversion-toolbar) {
         background-color: #222;
         border: 1px solid #222;
     }
+
     :global(.ce-toolbar__settings-btn) {
         background-color: #222;
         border: 1px solid #222;
@@ -105,50 +116,63 @@ h3 {
         border-radius: 5px;
         filter: invert(100%);
     }
+
     :global(.codex-editor--narrow .ce-toolbox) {
         background-color: #222;
     }
+
     :global(.ce-settings) {
         background-color: #222;
         border: 1px solid #222;
     }
+
     :global(.ce-inline-tool-input) {
         background-color: #222;
         border: 1px solid #222;
     }
+
     :global(.tc-row--selected) {
         background-color: #555;
     }
+
     :global(.tc-popover) {
         background-color: #222;
         border: 1px solid #222;
     }
+
     :global(.ce-block--selected .ce-block__content),
     :global(.tc-cell--selected) {
         background-color: #666;
     }
+
     :global(.tc-add-column:hover),
     :global(.tc-add-row:hover),
     :global(.tc-add-row:hover:before) {
         background-color: #666;
     }
+
     :global(.tc-popover__item-icon) {
         color: #222;
+
         * {
             color: #222;
         }
     }
+
     :global(.tc-row--selected:after) {
         background-color: #777;
     }
+
     :global(.tc-toolbox__toggler) svg {
         background-color: #fff;
         border-radius: 5px;
         color: #333;
+
         * {
             color: #333;
         }
     }
+
     :global(.ce-code__textarea) {
         background-color: #222;
     }
