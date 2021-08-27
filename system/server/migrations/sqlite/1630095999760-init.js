@@ -1,7 +1,7 @@
 const { MigrationInterface, QueryRunner } = require("typeorm");
 
-module.exports = class init1628591695221 {
-    name = 'init1628591695221'
+module.exports = class init1630095999760 {
+    name = 'init1630095999760'
 
     async up(queryRunner) {
         await queryRunner.query(`CREATE TABLE "crw_base_page_entity" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "slug" varchar, "pageTitle" varchar, "pageDescription" varchar, "createDate" datetime NOT NULL DEFAULT (datetime('now')), "updateDate" datetime NOT NULL DEFAULT (datetime('now')), "isEnabled" boolean DEFAULT (1), CONSTRAINT "UQ_33d156210ae42177f24eb55b524" UNIQUE ("slug"))`);
@@ -53,6 +53,7 @@ module.exports = class init1628591695221 {
         await queryRunner.query(`CREATE INDEX "IDX_59bfab9f694d339b5c3c857459" ON "crw_product_category" ("id") `);
         await queryRunner.query(`CREATE INDEX "IDX_3121c25318b5eaab5d51aba6d9" ON "crw_product_category" ("createDate") `);
         await queryRunner.query(`CREATE INDEX "IDX_2d6326bee97904d86e512225ee" ON "crw_product_category" ("updateDate") `);
+        await queryRunner.query(`CREATE INDEX "IDX_2a1e7d159e9a000b09d5cb70f4" ON "crw_product_category" ("name") `);
         await queryRunner.query(`CREATE TABLE "crw_product_review" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "slug" varchar, "pageTitle" varchar, "pageDescription" varchar, "createDate" datetime NOT NULL DEFAULT (datetime('now')), "updateDate" datetime NOT NULL DEFAULT (datetime('now')), "isEnabled" boolean DEFAULT (1), "productId" integer NOT NULL, "title" varchar, "description" text, "rating" float, "userEmail" varchar, "userName" varchar, "userId" varchar, "approved" boolean, CONSTRAINT "UQ_2fa3845bbaf6607041282074f3a" UNIQUE ("slug"))`);
         await queryRunner.query(`CREATE INDEX "IDX_a5cf4a8450a9f6dbd2652a83fc" ON "crw_product_review" ("id") `);
         await queryRunner.query(`CREATE INDEX "IDX_c2f533935056c7f29553b6e19a" ON "crw_product_review" ("createDate") `);
@@ -74,7 +75,7 @@ module.exports = class init1628591695221 {
         await queryRunner.query(`CREATE INDEX "IDX_e1ce51262721c84f8d0b0e167c" ON "crw_theme" ("id") `);
         await queryRunner.query(`CREATE INDEX "IDX_78cf29997948828f22da70514d" ON "crw_theme" ("createDate") `);
         await queryRunner.query(`CREATE INDEX "IDX_a1a866ef4e58782a1e886a5bc8" ON "crw_theme" ("updateDate") `);
-        await queryRunner.query(`CREATE TABLE "crw_user" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "slug" varchar, "pageTitle" varchar, "pageDescription" varchar, "createDate" datetime NOT NULL DEFAULT (datetime('now')), "updateDate" datetime NOT NULL DEFAULT (datetime('now')), "isEnabled" boolean DEFAULT (1), "fullName" varchar, "email" varchar, "avatar" varchar, "bio" varchar(6000), "role" varchar, "address" varchar(1000), "phone" varchar, "password" varchar NOT NULL, "refreshToken" varchar(500), "resetPasswordCode" varchar, "resetPasswordDate" datetime, CONSTRAINT "UQ_86fcd952549ae797ab020043b23" UNIQUE ("slug"), CONSTRAINT "UQ_4544ef20d7756aad6b7a49d8133" UNIQUE ("email"))`);
+        await queryRunner.query(`CREATE TABLE "crw_user" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "slug" varchar, "pageTitle" varchar, "pageDescription" varchar, "createDate" datetime NOT NULL DEFAULT (datetime('now')), "updateDate" datetime NOT NULL DEFAULT (datetime('now')), "isEnabled" boolean DEFAULT (1), "fullName" varchar, "email" varchar, "avatar" varchar, "bio" varchar(6000), "role" varchar, "address" varchar(1000), "phone" varchar, "password" varchar NOT NULL, "refreshTokens" varchar(5000), "resetPasswordCode" varchar, "resetPasswordDate" datetime, CONSTRAINT "UQ_86fcd952549ae797ab020043b23" UNIQUE ("slug"), CONSTRAINT "UQ_4544ef20d7756aad6b7a49d8133" UNIQUE ("email"))`);
         await queryRunner.query(`CREATE INDEX "IDX_d1e2d7b6f6f40bef308ba789a9" ON "crw_user" ("id") `);
         await queryRunner.query(`CREATE INDEX "IDX_aae8c723ca641247505d92aedc" ON "crw_user" ("createDate") `);
         await queryRunner.query(`CREATE INDEX "IDX_82038b3a02bf4b55377a056d4e" ON "crw_user" ("updateDate") `);
@@ -109,6 +110,7 @@ module.exports = class init1628591695221 {
         await queryRunner.query(`DROP INDEX "IDX_59bfab9f694d339b5c3c857459"`);
         await queryRunner.query(`DROP INDEX "IDX_3121c25318b5eaab5d51aba6d9"`);
         await queryRunner.query(`DROP INDEX "IDX_2d6326bee97904d86e512225ee"`);
+        await queryRunner.query(`DROP INDEX "IDX_2a1e7d159e9a000b09d5cb70f4"`);
         await queryRunner.query(`CREATE TABLE "temporary_crw_product_category" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "slug" varchar, "pageTitle" varchar, "pageDescription" varchar, "createDate" datetime NOT NULL DEFAULT (datetime('now')), "updateDate" datetime NOT NULL DEFAULT (datetime('now')), "isEnabled" boolean DEFAULT (1), "name" varchar NOT NULL, "mainImage" varchar(300), "description" text, "descriptionDelta" text, "parentId" integer, CONSTRAINT "UQ_273d34ee465b63376bead18bbf2" UNIQUE ("slug"), CONSTRAINT "FK_e7959ee49453ac5342ed33c2f0f" FOREIGN KEY ("parentId") REFERENCES "crw_product_category" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION)`);
         await queryRunner.query(`INSERT INTO "temporary_crw_product_category"("id", "slug", "pageTitle", "pageDescription", "createDate", "updateDate", "isEnabled", "name", "mainImage", "description", "descriptionDelta", "parentId") SELECT "id", "slug", "pageTitle", "pageDescription", "createDate", "updateDate", "isEnabled", "name", "mainImage", "description", "descriptionDelta", "parentId" FROM "crw_product_category"`);
         await queryRunner.query(`DROP TABLE "crw_product_category"`);
@@ -116,6 +118,7 @@ module.exports = class init1628591695221 {
         await queryRunner.query(`CREATE INDEX "IDX_59bfab9f694d339b5c3c857459" ON "crw_product_category" ("id") `);
         await queryRunner.query(`CREATE INDEX "IDX_3121c25318b5eaab5d51aba6d9" ON "crw_product_category" ("createDate") `);
         await queryRunner.query(`CREATE INDEX "IDX_2d6326bee97904d86e512225ee" ON "crw_product_category" ("updateDate") `);
+        await queryRunner.query(`CREATE INDEX "IDX_2a1e7d159e9a000b09d5cb70f4" ON "crw_product_category" ("name") `);
         await queryRunner.query(`DROP INDEX "IDX_a5cf4a8450a9f6dbd2652a83fc"`);
         await queryRunner.query(`DROP INDEX "IDX_c2f533935056c7f29553b6e19a"`);
         await queryRunner.query(`DROP INDEX "IDX_282a9f102f8f653176677fef08"`);
@@ -138,7 +141,7 @@ module.exports = class init1628591695221 {
         await queryRunner.query(`CREATE INDEX "IDX_b096b1be8dd42fe22ddc88821d" ON "crw_product_review" ("approved") `);
         await queryRunner.query(`DROP INDEX "IDX_f24f47df26e67c493b68bfc75b"`);
         await queryRunner.query(`DROP INDEX "IDX_6c786f2afb686050d8233fdc6e"`);
-        await queryRunner.query(`CREATE TABLE "temporary_crw_post_tags_tag" ("postId" integer NOT NULL, "tagId" integer NOT NULL, CONSTRAINT "FK_f24f47df26e67c493b68bfc75bb" FOREIGN KEY ("postId") REFERENCES "crw_post" ("id") ON DELETE CASCADE ON UPDATE NO ACTION, CONSTRAINT "FK_6c786f2afb686050d8233fdc6e7" FOREIGN KEY ("tagId") REFERENCES "crw_tag" ("id") ON DELETE CASCADE ON UPDATE NO ACTION, PRIMARY KEY ("postId", "tagId"))`);
+        await queryRunner.query(`CREATE TABLE "temporary_crw_post_tags_tag" ("postId" integer NOT NULL, "tagId" integer NOT NULL, CONSTRAINT "FK_f24f47df26e67c493b68bfc75bb" FOREIGN KEY ("postId") REFERENCES "crw_post" ("id") ON DELETE CASCADE ON UPDATE CASCADE, CONSTRAINT "FK_6c786f2afb686050d8233fdc6e7" FOREIGN KEY ("tagId") REFERENCES "crw_tag" ("id") ON DELETE CASCADE ON UPDATE CASCADE, PRIMARY KEY ("postId", "tagId"))`);
         await queryRunner.query(`INSERT INTO "temporary_crw_post_tags_tag"("postId", "tagId") SELECT "postId", "tagId" FROM "crw_post_tags_tag"`);
         await queryRunner.query(`DROP TABLE "crw_post_tags_tag"`);
         await queryRunner.query(`ALTER TABLE "temporary_crw_post_tags_tag" RENAME TO "crw_post_tags_tag"`);
@@ -146,7 +149,7 @@ module.exports = class init1628591695221 {
         await queryRunner.query(`CREATE INDEX "IDX_6c786f2afb686050d8233fdc6e" ON "crw_post_tags_tag" ("tagId") `);
         await queryRunner.query(`DROP INDEX "IDX_8056740044bde85c6535e4cc6c"`);
         await queryRunner.query(`DROP INDEX "IDX_f4f41beb6142f70af17b37ff50"`);
-        await queryRunner.query(`CREATE TABLE "temporary_crw_product_categories_product_category" ("productId" integer NOT NULL, "productCategoryId" integer NOT NULL, CONSTRAINT "FK_8056740044bde85c6535e4cc6c9" FOREIGN KEY ("productId") REFERENCES "crw_product" ("id") ON DELETE CASCADE ON UPDATE NO ACTION, CONSTRAINT "FK_f4f41beb6142f70af17b37ff50f" FOREIGN KEY ("productCategoryId") REFERENCES "crw_product_category" ("id") ON DELETE CASCADE ON UPDATE NO ACTION, PRIMARY KEY ("productId", "productCategoryId"))`);
+        await queryRunner.query(`CREATE TABLE "temporary_crw_product_categories_product_category" ("productId" integer NOT NULL, "productCategoryId" integer NOT NULL, CONSTRAINT "FK_8056740044bde85c6535e4cc6c9" FOREIGN KEY ("productId") REFERENCES "crw_product" ("id") ON DELETE CASCADE ON UPDATE CASCADE, CONSTRAINT "FK_f4f41beb6142f70af17b37ff50f" FOREIGN KEY ("productCategoryId") REFERENCES "crw_product_category" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION, PRIMARY KEY ("productId", "productCategoryId"))`);
         await queryRunner.query(`INSERT INTO "temporary_crw_product_categories_product_category"("productId", "productCategoryId") SELECT "productId", "productCategoryId" FROM "crw_product_categories_product_category"`);
         await queryRunner.query(`DROP TABLE "crw_product_categories_product_category"`);
         await queryRunner.query(`ALTER TABLE "temporary_crw_product_categories_product_category" RENAME TO "crw_product_categories_product_category"`);
@@ -154,7 +157,7 @@ module.exports = class init1628591695221 {
         await queryRunner.query(`CREATE INDEX "IDX_f4f41beb6142f70af17b37ff50" ON "crw_product_categories_product_category" ("productCategoryId") `);
         await queryRunner.query(`DROP INDEX "IDX_9463c9a5893b1efb969e9a21c5"`);
         await queryRunner.query(`DROP INDEX "IDX_bc8936d152e18bc99150472594"`);
-        await queryRunner.query(`CREATE TABLE "temporary_crw_product_category_closure" ("id_ancestor" integer NOT NULL, "id_descendant" integer NOT NULL, CONSTRAINT "FK_9463c9a5893b1efb969e9a21c59" FOREIGN KEY ("id_ancestor") REFERENCES "crw_product_category" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION, CONSTRAINT "FK_bc8936d152e18bc991504725944" FOREIGN KEY ("id_descendant") REFERENCES "crw_product_category" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION, PRIMARY KEY ("id_ancestor", "id_descendant"))`);
+        await queryRunner.query(`CREATE TABLE "temporary_crw_product_category_closure" ("id_ancestor" integer NOT NULL, "id_descendant" integer NOT NULL, CONSTRAINT "FK_9463c9a5893b1efb969e9a21c59" FOREIGN KEY ("id_ancestor") REFERENCES "crw_product_category" ("id") ON DELETE CASCADE ON UPDATE NO ACTION, CONSTRAINT "FK_bc8936d152e18bc991504725944" FOREIGN KEY ("id_descendant") REFERENCES "crw_product_category" ("id") ON DELETE CASCADE ON UPDATE NO ACTION, PRIMARY KEY ("id_ancestor", "id_descendant"))`);
         await queryRunner.query(`INSERT INTO "temporary_crw_product_category_closure"("id_ancestor", "id_descendant") SELECT "id_ancestor", "id_descendant" FROM "crw_product_category_closure"`);
         await queryRunner.query(`DROP TABLE "crw_product_category_closure"`);
         await queryRunner.query(`ALTER TABLE "temporary_crw_product_category_closure" RENAME TO "crw_product_category_closure"`);
@@ -207,6 +210,7 @@ module.exports = class init1628591695221 {
         await queryRunner.query(`CREATE INDEX "IDX_282a9f102f8f653176677fef08" ON "crw_product_review" ("updateDate") `);
         await queryRunner.query(`CREATE INDEX "IDX_c2f533935056c7f29553b6e19a" ON "crw_product_review" ("createDate") `);
         await queryRunner.query(`CREATE INDEX "IDX_a5cf4a8450a9f6dbd2652a83fc" ON "crw_product_review" ("id") `);
+        await queryRunner.query(`DROP INDEX "IDX_2a1e7d159e9a000b09d5cb70f4"`);
         await queryRunner.query(`DROP INDEX "IDX_2d6326bee97904d86e512225ee"`);
         await queryRunner.query(`DROP INDEX "IDX_3121c25318b5eaab5d51aba6d9"`);
         await queryRunner.query(`DROP INDEX "IDX_59bfab9f694d339b5c3c857459"`);
@@ -214,6 +218,7 @@ module.exports = class init1628591695221 {
         await queryRunner.query(`CREATE TABLE "crw_product_category" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "slug" varchar, "pageTitle" varchar, "pageDescription" varchar, "createDate" datetime NOT NULL DEFAULT (datetime('now')), "updateDate" datetime NOT NULL DEFAULT (datetime('now')), "isEnabled" boolean DEFAULT (1), "name" varchar NOT NULL, "mainImage" varchar(300), "description" text, "descriptionDelta" text, "parentId" integer, CONSTRAINT "UQ_273d34ee465b63376bead18bbf2" UNIQUE ("slug"))`);
         await queryRunner.query(`INSERT INTO "crw_product_category"("id", "slug", "pageTitle", "pageDescription", "createDate", "updateDate", "isEnabled", "name", "mainImage", "description", "descriptionDelta", "parentId") SELECT "id", "slug", "pageTitle", "pageDescription", "createDate", "updateDate", "isEnabled", "name", "mainImage", "description", "descriptionDelta", "parentId" FROM "temporary_crw_product_category"`);
         await queryRunner.query(`DROP TABLE "temporary_crw_product_category"`);
+        await queryRunner.query(`CREATE INDEX "IDX_2a1e7d159e9a000b09d5cb70f4" ON "crw_product_category" ("name") `);
         await queryRunner.query(`CREATE INDEX "IDX_2d6326bee97904d86e512225ee" ON "crw_product_category" ("updateDate") `);
         await queryRunner.query(`CREATE INDEX "IDX_3121c25318b5eaab5d51aba6d9" ON "crw_product_category" ("createDate") `);
         await queryRunner.query(`CREATE INDEX "IDX_59bfab9f694d339b5c3c857459" ON "crw_product_category" ("id") `);
@@ -270,6 +275,7 @@ module.exports = class init1628591695221 {
         await queryRunner.query(`DROP INDEX "IDX_c2f533935056c7f29553b6e19a"`);
         await queryRunner.query(`DROP INDEX "IDX_a5cf4a8450a9f6dbd2652a83fc"`);
         await queryRunner.query(`DROP TABLE "crw_product_review"`);
+        await queryRunner.query(`DROP INDEX "IDX_2a1e7d159e9a000b09d5cb70f4"`);
         await queryRunner.query(`DROP INDEX "IDX_2d6326bee97904d86e512225ee"`);
         await queryRunner.query(`DROP INDEX "IDX_3121c25318b5eaab5d51aba6d9"`);
         await queryRunner.query(`DROP INDEX "IDX_59bfab9f694d339b5c3c857459"`);
