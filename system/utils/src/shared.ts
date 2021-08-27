@@ -378,8 +378,7 @@ export const collectFrontendDependencies = async (packages: TPackage[], forceIns
                         if (mainDep.version !== frontendDep.version) {
                             console.log(colors.brightYellow(`\nCromwell:: Local package ${pckg.name} at ${pckg.path} dependent on different version of used frontend module ${frontendDep.name}. \nAlready used ${frontendDep.name} is "${mainDep.version}", but dependent is "${frontendDep.version}".\n`));
                             if (!forceInstall) {
-                                console.log(colors.brightRed(`Cromwell:: Error. Abort operation. Please fix "${frontendDep.name}": "${frontendDep.version}" or run command in force mode (add -f flag).\n`));
-                                process.exit();
+                                console.log(colors.brightRed(`Cromwell:: Error. Please fix "${frontendDep.name}": "${frontendDep.version}"\n`));
                             }
                         } else {
                             index = i;
