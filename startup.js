@@ -48,6 +48,12 @@ const fs = require('fs');
                 fs.rmdirSync(frontendNode_modules, { recursive: true });
         }
 
+        try {
+            spawnSync(`npm i yarn@2.0.0-rc.27 -g`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
+        } catch (error) {
+            console.error(error);
+        }
+
         spawnSync(`npx yarn@2.0.0-rc.27 install`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
     }
 
