@@ -43,6 +43,10 @@
     background-color: #ddd;
 }
 
+.imageItemContent {
+height: 100%;
+}
+
 :global(.modeDark) {
     .GalleryPicker {
         button.galleryActionBtn {

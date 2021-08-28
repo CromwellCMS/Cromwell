@@ -1,23 +1,19 @@
 import { TCromwellBlock } from '@cromwell/core';
 import { Drawer, IconButton, Tooltip } from '@material-ui/core';
-import { Close as CloseIcon, Redo as RedoIcon, Undo as UndoIcon } from '@material-ui/icons';
+import { Close as CloseIcon } from '@material-ui/icons';
 import React from 'react';
 
 import { Draggable } from '../../../helpers/Draggable/Draggable';
+import { TBlockMenuProps } from '../pageBuilder/blocks/BlockMenu';
 import { ContainerBlockSidebar } from '../pageBuilder/blocks/ContainerBlock';
 import { GalleryBlockSidebar } from '../pageBuilder/blocks/GalleryBlock';
 import { HTMLBlockSidebar } from '../pageBuilder/blocks/HTMLBlock';
 import { ImageBlockSidebar } from '../pageBuilder/blocks/ImageBlock';
 import { PluginBlockSidebar } from '../pageBuilder/blocks/PluginBlock';
 import { TextBlockSidebar } from '../pageBuilder/blocks/TextBlock';
-import { TBlockMenuProps } from '../pageBuilder/blocks/BlockMenu';
 import styles from './PageBuilderSidebar.module.scss';
 
 type PageBuilderSidebarProps = {
-    undoBtnRef: React.RefObject<HTMLButtonElement>
-    undoModification: () => void;
-    redoBtnRef: React.RefObject<HTMLButtonElement>
-    redoModification: () => void;
     createBlockProps: (block: TCromwellBlock) => TBlockMenuProps;
     draggable?: Draggable;
     getInst: (menu: PageBuilderSidebar) => any;
@@ -49,6 +45,7 @@ export class PageBuilderSidebar extends React.Component<PageBuilderSidebarProps>
 
     render() {
         const props = this.props;
+        props.getInst(this);
         const block = this.selectedBlock;
         const data = block?.getData();
         const bType = data?.type;
@@ -95,35 +92,14 @@ export class PageBuilderSidebar extends React.Component<PageBuilderSidebarProps>
                 open={!!this.selectedBlock}
                 onClick={(e) => e.stopPropagation()}
             >
-                <div className={styles.actions}>
-                    <div>
-                        <Tooltip title="Undo">
-                            <IconButton
-                                ref={props.undoBtnRef}
-                                onClick={props.undoModification}
-                            >
-                                <UndoIcon />
-                            </IconButton>
-                        </Tooltip>
-                        <Tooltip title="Redo">
-                            <IconButton
-                                ref={props.redoBtnRef}
-                                onClick={props.redoModification}
-                            >
-                                <RedoIcon />
-                            </IconButton>
-                        </Tooltip>
-                    </div>
-                    <div>
-                        <Tooltip title="Close settings">
-                            <IconButton
-                                onClick={this.handleClose}
-                            >
-                                <CloseIcon />
-                            </IconButton>
-                        </Tooltip>
-                    </div>
-                </div>
+                <Tooltip title="Close settings">
+                    <IconButton
+                        className={styles.sidebarCloseBtn}
+                        onClick={this.handleClose}
+                    >
+                        <CloseIcon />
+                    </IconButton>
+                </Tooltip>
                 <div className={styles.settings}>
                     {content}
                 </div>

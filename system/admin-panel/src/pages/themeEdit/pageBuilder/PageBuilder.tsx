@@ -23,14 +23,15 @@ type THistoryItem = {
 }
 
 export class PageBuilder extends Component<{
+    getInst: (inst: PageBuilder) => any;
     editingPageInfo: TPageConfig;
     plugins: TPluginEntity[] | null;
     onPageModificationsChange: (modifications: TCromwellBlockData[] | null | undefined) => void;
 }> {
     private editingFrameRef = React.createRef<HTMLIFrameElement>();
+    private editorWidgetWrapper: HTMLElement;
     private contentWindow: Window;
     private contentStore: TCromwellStore;
-    private contentReact: typeof import('react');
     private contentFrontend: typeof import('@cromwell/core-frontend');
     private getStoreItem: (typeof import('@cromwell/core'))['getStoreItem'];
     private setStoreItem: (typeof import('@cromwell/core'))['setStoreItem'];
@@ -69,6 +70,11 @@ export class PageBuilder extends Component<{
         this._changedModifications = data;
     }
 
+    constructor(props) {
+        super(props);
+        props.getInst(this);
+    }
+
     componentDidMount() {
         this.init();
     }
@@ -79,6 +85,7 @@ export class PageBuilder extends Component<{
             return;
         }
         this.contentWindow = this.editingFrameRef.current.contentWindow;
+        this.editorWidgetWrapper = document.getElementById('editorWidgetWrapper');
 
         const awaitInit = async () => {
             if (!this.contentWindow.CromwellStore?.nodeModules?.modules?.['@cromwell/core-frontend']) {
@@ -90,7 +97,6 @@ export class PageBuilder extends Component<{
 
         this.contentWindow.document.body.style.userSelect = 'none';
         this.contentStore = this.contentWindow.CromwellStore;
-        this.contentReact = this.contentStore.nodeModules?.modules?.['react'];
         this.contentFrontend = this.contentStore.nodeModules?.modules?.['@cromwell/core-frontend'];
         this.getBlockElementById = this.contentFrontend.getBlockElementById;
         this.getBlockData = this.contentFrontend.getBlockData;
@@ -139,13 +145,13 @@ export class PageBuilder extends Component<{
         this.contentWindow.document.head.appendChild(styles);
 
         const rootBlock = this.getBlockById(pageRootContainerId);
-
         if (rootBlock) rootBlock.addDidUpdateListener('PageBuilder', () => {
             this.updateDraggable();
         });
 
         document.body.addEventListener('mouseup', this.onMouseUp);
         this.checkHistoryButtons();
+        this.updateDraggable();
     }
 
     public updateDraggable = () => {
@@ -155,7 +161,24 @@ export class PageBuilder extends Component<{
         allElements.forEach((el: HTMLElement) => {
             // Disable all links
             el.onclick = (e) => { e.preventDefault() }
-        })
+            el.addEventListener('scroll', this.onAnyElementScroll);
+        });
+    }
+
+    public onAnyElementScroll = () => {
+        this.updateFramesPosition();
+    }
+
+    public updateFramesPosition = () => {
+        Object.keys(this.selectedFrames).forEach(id => {
+            const block = this.getBlockElementById(getBlockIdFromHtml(id));
+            if (block && this.selectedFrames[id]) this.setFramePosition(block, this.selectedFrames[id]);
+        });
+
+        Object.keys(this.hoveredFrames).forEach(id => {
+            const block = this.getBlockElementById(getBlockIdFromHtml(id));
+            if (block && this.hoveredFrames[id]) this.setFramePosition(block, this.hoveredFrames[id]);
+        });
     }
 
     private onMouseUp = () => {
@@ -168,12 +191,12 @@ export class PageBuilder extends Component<{
 
     public onTryToInsert = (container: HTMLElement, draggedBlock: HTMLElement, shadow?: HTMLElement | null) => {
         if (!shadow) return;
-        shadow.style.zIndex = '10000';
+        shadow.style.zIndex = '100000';
         shadow.style.position = 'relative';
 
         const shadowFrame = this.contentWindow.document.createElement('div');
         shadowFrame.style.border = `2px solid aqua`;
-        shadowFrame.style.zIndex = '111';
+        shadowFrame.style.zIndex = '10000';
         shadowFrame.style.position = 'absolute';
         shadowFrame.style.top = '0';
         shadowFrame.style.bottom = '0';
@@ -183,26 +206,41 @@ export class PageBuilder extends Component<{
         shadow.appendChild(shadowFrame);
     }
 
+    private setFramePosition = (block: HTMLElement, frame: HTMLElement) => {
+        const bounding = block.getBoundingClientRect();
+        frame.style.position = 'absolute';
+        frame.style.top = (this.contentWindow.pageYOffset + bounding.top) + 'px';
+        frame.style.left = (this.contentWindow.pageXOffset + bounding.left) + 'px';
+    }
+
     private createBlockFrame = (block: HTMLElement) => {
         const selectableFrame = this.contentWindow.document.createElement('div');
-        selectableFrame.style.zIndex = '10000';
-        selectableFrame.style.position = 'absolute';
+        selectableFrame.style.zIndex = '10';
         selectableFrame.style.pointerEvents = 'none';
         selectableFrame.style.height = block.offsetHeight + 'px';
         selectableFrame.style.width = block.offsetWidth + 'px';
         selectableFrame.style.border = `1px solid ${this.getFrameColor(block)}`;
-        selectableFrame.style.top = (this.contentWindow.pageYOffset + block.getBoundingClientRect().top) + 'px';
-        selectableFrame.style.left = (this.contentWindow.pageXOffset + block.getBoundingClientRect().left) + 'px';
+        this.setFramePosition(block, selectableFrame);
         return selectableFrame;
     }
 
     public onBlockSelected = (block: HTMLElement) => {
         if (!block) return;
         if (this.selectedFrames[block.id]) return;
+
+        if (this.selectedBlock) {
+            this.selectedBlock.style.cursor = 'initial';
+        }
+        this.selectedBlock = block;
+        this.selectedBlock.style.cursor = 'move';
+
+        Object.values(this.selectedFrames).forEach(frame => frame?.remove())
+        this.selectedFrames = {};
+
         const frame = this.createBlockFrame(block);
         frame.style.border = `2px solid ${this.getFrameColor(block)}`;
 
-        this.contentWindow.document.body.appendChild(frame);
+        this.editorWidgetWrapper.appendChild(frame);
         this.selectedFrames[block.id] = frame;
         const crwBlock = this.getBlockById(getBlockIdFromHtml(block.id));
 
@@ -216,7 +254,7 @@ export class PageBuilder extends Component<{
         this.blockMenu.setSelectedBlock(null, null, null);
         this.pageBuilderSidebar.setSelectedBlock(null, null);
         this.selectedFrames[block.id]?.remove();
-        this.selectedFrames[block.id] = null;
+        delete this.selectedFrames[block.id];
         this.updateDraggable();
     }
 
@@ -238,14 +276,14 @@ export class PageBuilder extends Component<{
         frame.style.userSelect = 'none';
         frame.setAttribute('draggable', 'false');
 
-        this.contentWindow.document.body.appendChild(frame);
+        this.editorWidgetWrapper.appendChild(frame);
         this.hoveredFrames[block.id] = frame;
     }
 
     public onBlockHoverEnd = (block: HTMLElement) => {
         if (!block) return;
         this.hoveredFrames[block.id]?.remove();
-        this.hoveredFrames[block.id] = null;
+        delete this.hoveredFrames[block.id];
     }
 
     public canDeselectBlock = (draggedBlock: HTMLElement) => {
@@ -484,6 +522,7 @@ export class PageBuilder extends Component<{
             })
         }
         await Promise.all(promises);
+        this.updateDraggable();
     }
 
 
@@ -603,11 +642,12 @@ export class PageBuilder extends Component<{
     }
 
     render() {
-        const { editingPageInfo } = this.props;
-
+        const { editingPageInfo, getInst } = this.props;
+        getInst(this);
 
         return (
-            <div className={styles.PageBuilder}>
+            <div className={styles.PageBuilder} >
+                <div id="editorWidgetWrapper" className={styles.editorWidgetWrapper}></div>
                 <BlockMenu
                     getInst={inst => this.blockMenu = inst}
                     deselectBlock={this.deselectBlock}
@@ -621,10 +661,8 @@ export class PageBuilder extends Component<{
                 <PageBuilderSidebar
                     getInst={inst => this.pageBuilderSidebar = inst}
                     deselectBlock={this.deselectBlock}
-                    undoBtnRef={this.undoBtnRef}
-                    undoModification={this.undoModification}
-                    redoBtnRef={this.redoBtnRef}
-                    redoModification={this.redoModification}
+                    // undoBtnRef={this.undoBtnRef}
+                    // redoBtnRef={this.redoBtnRef}
                     createBlockProps={this.createBlockProps}
                 />
             </div>

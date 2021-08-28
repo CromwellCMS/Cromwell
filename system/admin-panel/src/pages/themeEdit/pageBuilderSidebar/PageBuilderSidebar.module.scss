@@ -5,6 +5,7 @@
     position: fixed !important;
     z-index: 1008 !important;
 }
+
 .sidebarPaper {
     @include paperElevated;
     @include styledScrollBar;
@@ -22,10 +23,17 @@
     border-bottom: 1px solid #ccc;
     justify-content: space-between;
 
-    > div {
+    >div {
         display: flex;
     }
 }
+
+.sidebarCloseBtn {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
 
 .settings {
     padding: 15px;

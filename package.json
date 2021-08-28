@@ -41,7 +41,7 @@
     ],
     "engines": {
         "node": "14.x",
-        "yarn": "1.x"
+        "yarn": "2.x"
     },
     "dependencies": {
         "theme-test": "1.0.0"

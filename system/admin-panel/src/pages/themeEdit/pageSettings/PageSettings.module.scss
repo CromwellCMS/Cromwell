@@ -2,8 +2,14 @@
 
 .pageSettings {
     @include paper;
+    @include styledScrollBar;
     position: relative;
     padding: 15px;
+    max-width: 400px;
+    overflow: auto;
+    height: 100%;
+    min-width: 300px;
+    max-height: 90vh;
 
     .textField {
         width: 100%;
