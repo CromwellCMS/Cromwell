@@ -5,26 +5,10 @@ import React from 'react';
 
 import { useForceUpdate } from '../../../../helpers/forceUpdate';
 import styles from './BaseBlock.module.scss';
-import { BaseMenu, TBaseMenuProps } from './BaseMenu';
+import { TBlockMenuProps } from './BlockMenu';
 
 
-export function HTMLBlockReplacer(props: TBaseMenuProps) {
-    return (
-        <>
-            <BaseMenu
-                {...props}
-                icon={(
-                    <Tooltip title="HTML block">
-                        <CodeIcon />
-                    </Tooltip>
-                )}
-            />
-            {props?.block?.getDefaultContent()}
-        </>
-    );
-}
-
-export function HTMLBlockSidebar(props: TBaseMenuProps) {
+export function HTMLBlockSidebar(props: TBlockMenuProps) {
     const blockValue = props.block?.getData()?.html?.innerHTML as string;
     const forceUpdate = useForceUpdate();
     const data = props.block?.getData();

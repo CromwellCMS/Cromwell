@@ -1,4 +1,4 @@
-import { TCromwellBlock, TCromwellBlockData, TCromwellBlockType, TPluginEntity } from '@cromwell/core';
+import { TCromwellBlock, TCromwellBlockType, TCromwellBlockData, TPluginEntity } from '@cromwell/core';
 import { Grid, IconButton, MenuItem, Popover, Tooltip } from '@material-ui/core';
 import {
     AddCircleOutline as AddCircleOutlineIcon,
@@ -10,13 +10,12 @@ import {
     Subject as SubjectIcon,
     Widgets as WidgetsIcon,
 } from '@material-ui/icons';
-import React from 'react';
-import { connect, PropsType } from 'react-redux-ts';
+import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 
-import { TAppState } from '../../../../redux/store';
 import styles from './BaseBlock.module.scss';
 
-export type TBaseMenuProps = {
+export type TBlockMenuProps = {
     block?: TCromwellBlock;
     global?: boolean,
     isGlobalElem: (block: HTMLElement) => boolean;
@@ -31,63 +30,115 @@ export type TBaseMenuProps = {
     setCanDeselect: (canDeselect: boolean) => void;
 }
 
-const mapStateToProps = (state: TAppState) => {
-    return {
-        selectedBlock: state.selectedBlock,
-    }
-}
-type TPropsType = PropsType<PropsType, TBaseMenuProps,
-    ReturnType<typeof mapStateToProps>>;
-
-class BaseMenuComp extends React.Component<TPropsType, {
+export class BlockMenu extends Component<{
+    getInst: (menu: BlockMenu) => any;
+    deselectBlock: (block: HTMLElement) => any;
+    createBlockProps: (block: TCromwellBlock) => TBlockMenuProps;
+}, {
     addNewOpen: boolean;
-}>  {
-
+}> {
+    private selectedFrame: HTMLElement;
+    private selectedElement: HTMLElement;
+    private selectedBlock: TCromwellBlock;
+    private frameRef = React.createRef<HTMLDivElement>();
     public addNewBtnEl: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>();
 
     constructor(props) {
         super(props);
-
         this.state = {
             addNewOpen: false,
         }
+
+        props.getInst(this);
     }
 
-    public addNewBlock = (bType: TCromwellBlockType) => () => {
-        this.props?.addNewBlockAfter?.(bType);
-        this.setState({ addNewOpen: false });
+    public setSelectedBlock = (frame: HTMLElement, blockElement: HTMLElement, block: TCromwellBlock) => {
+        this.selectedFrame = frame;
+        this.selectedElement = blockElement;
+        this.selectedBlock = block;
+        this.forceUpdate();
     }
 
-    public deleteBlock = () => {
-        this.props?.deleteBlock();
+    private handleClose = () => {
+        this.props.deselectBlock(this.selectedElement);
+        this.selectedElement = undefined;
+        this.selectedBlock = undefined;
+        this.forceUpdate();
     }
 
     public handleCloseAddNew = () => {
         this.setState({ addNewOpen: false });
     }
+
     public handleOpenAddNew = () => {
         this.setState({ addNewOpen: true });
     }
 
-    render() {
-        const data = this.props?.block?.getData();
-        const isConstant = data?.isConstant;
-        const menuVisible = this.props.selectedBlock?.getData()?.id === data?.id;
-        if (!menuVisible) return <></>
 
-        return (
-            <div className={styles.menu}>
-                {!isConstant && (
-                    <div className={styles.actions}>
-                        <div className={styles.typeIcon}>{this.props.icon}</div>
-                        {this.props.menuItems}
-                        <Tooltip title="Delete block">
-                            <MenuItem onClick={this.deleteBlock}>
-                                <DeleteForeverIcon />
-                            </MenuItem>
-                        </Tooltip>
-                    </div>
-                )}
+
+    render() {
+        this.props.getInst(this);
+        if (!this.selectedFrame) return <></>;
+
+        const block = this.selectedBlock;
+        const data = block?.getData();
+        const bType = data?.type;
+        const isConstant = data?.isConstant;
+        const blockProps = this.props.createBlockProps(block);
+
+        const addNewBlock = (bType: TCromwellBlockType) => () => {
+            blockProps?.addNewBlockAfter?.(bType);
+            this.setState({ addNewOpen: false });
+        }
+
+        let icon: JSX.Element;
+
+        if (bType === 'text') {
+            icon = <Tooltip title="Text block">
+                <SubjectIcon />
+            </Tooltip>
+        }
+        if (bType === 'plugin') {
+            icon = <Tooltip title="Plugin block">
+                <PowerIcon />
+            </Tooltip>
+        }
+        if (bType === 'container') {
+            icon = <Tooltip title="Container block">
+                <WidgetsIcon />
+            </Tooltip>
+        }
+        if (bType === 'HTML') {
+            icon = <Tooltip title="HTML block">
+                <CodeIcon />
+            </Tooltip>
+        }
+        if (bType === 'image') {
+            icon = <Tooltip title="Image block">
+                <ImageIcon />
+            </Tooltip>
+        }
+        if (bType === 'gallery') {
+            icon = <Tooltip title="Gallery block">
+                <PhotoLibraryIcon />
+            </Tooltip>
+        }
+
+
+        return ReactDOM.createPortal(
+            (<>
+                <div className={styles.actions}>
+                    {!isConstant && (
+                        <div className={styles.actions}>
+                            <div className={styles.typeIcon}>{icon}</div>
+                            <Tooltip title="Delete block">
+                                <MenuItem onClick={blockProps.deleteBlock}>
+                                    <DeleteForeverIcon />
+                                </MenuItem>
+                            </Tooltip>
+                        </div>
+                    )}
+                </div>
                 <div className={styles.bottomActions} ref={this.addNewBtnEl}>
                     <Tooltip title="Add block">
                         <IconButton onClick={this.handleOpenAddNew}>
@@ -112,7 +163,7 @@ class BaseMenuComp extends React.Component<TPropsType, {
                             <Grid container spacing={1} >
                                 <Grid item xs={4} >
                                     <MenuItem className={styles.widgetItem}
-                                        onClick={this.addNewBlock('text')}
+                                        onClick={addNewBlock('text')}
                                     >
                                         <SubjectIcon />
                                         <p>Text</p>
@@ -120,7 +171,7 @@ class BaseMenuComp extends React.Component<TPropsType, {
                                 </Grid>
                                 <Grid item xs={4} >
                                     <MenuItem className={styles.widgetItem}
-                                        onClick={this.addNewBlock('container')}
+                                        onClick={addNewBlock('container')}
                                     >
                                         <WidgetsIcon />
                                         <p>Container</p>
@@ -128,7 +179,7 @@ class BaseMenuComp extends React.Component<TPropsType, {
                                 </Grid>
                                 <Grid item xs={4} >
                                     <MenuItem className={styles.widgetItem}
-                                        onClick={this.addNewBlock('HTML')}
+                                        onClick={addNewBlock('HTML')}
                                     >
                                         <CodeIcon />
                                         <p>HTML</p>
@@ -136,7 +187,7 @@ class BaseMenuComp extends React.Component<TPropsType, {
                                 </Grid>
                                 <Grid item xs={4} >
                                     <MenuItem className={styles.widgetItem}
-                                        onClick={this.addNewBlock('plugin')}
+                                        onClick={addNewBlock('plugin')}
                                     >
                                         <PowerIcon />
                                         <p>Plugin</p>
@@ -144,7 +195,7 @@ class BaseMenuComp extends React.Component<TPropsType, {
                                 </Grid>
                                 <Grid item xs={4} >
                                     <MenuItem className={styles.widgetItem}
-                                        onClick={this.addNewBlock('image')}
+                                        onClick={addNewBlock('image')}
                                     >
                                         <ImageIcon />
                                         <p>Image</p>
@@ -152,7 +203,7 @@ class BaseMenuComp extends React.Component<TPropsType, {
                                 </Grid>
                                 <Grid item xs={4} >
                                     <MenuItem className={styles.widgetItem}
-                                        onClick={this.addNewBlock('gallery')}
+                                        onClick={addNewBlock('gallery')}
                                     >
                                         <PhotoLibraryIcon />
                                         <p>Gallery</p>
@@ -162,9 +213,9 @@ class BaseMenuComp extends React.Component<TPropsType, {
                         </div>
                     </Popover>
                 </div>
-            </div>
+
+            </>),
+            this.selectedFrame
         );
     }
 }
-
-export const BaseMenu: React.ComponentType<TBaseMenuProps> = connect(mapStateToProps)(BaseMenuComp);

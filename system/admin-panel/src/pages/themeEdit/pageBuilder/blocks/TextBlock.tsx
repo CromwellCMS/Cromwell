@@ -5,25 +5,10 @@ import React from 'react';
 
 import { useForceUpdate } from '../../../../helpers/forceUpdate';
 import styles from './BaseBlock.module.scss';
-import { BaseMenu, TBaseMenuProps } from './BaseMenu';
+import { TBlockMenuProps } from './BlockMenu';
 
-export const TextBlockReplacer = (props: TBaseMenuProps) => {
-    return (
-        <>
-            <BaseMenu
-                {...props}
-                icon={(
-                    <Tooltip title="Text block">
-                        <SubjectIcon />
-                    </Tooltip>
-                )}
-            />
-            {props?.block?.getDefaultContent()}
-        </>
-    );
-}
 
-export const TextBlockSidebar = (props: TBaseMenuProps) => {
+export const TextBlockSidebar = (props: TBlockMenuProps) => {
     const data = props.block?.getData();
     const blockValue = props.block?.getData()?.text?.content ?? props.block?.props?.children as string;
 

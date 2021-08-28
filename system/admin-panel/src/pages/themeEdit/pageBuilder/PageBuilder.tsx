@@ -1,38 +1,20 @@
 import {
-    getRandStr,
-    getStoreItem,
-    setStoreItem,
+    sleep,
     TCromwellBlock,
     TCromwellBlockData,
     TCromwellBlockType,
+    TCromwellStore,
     TPageConfig,
-    TPageInfo,
     TPluginEntity,
+    getRandStr,
 } from '@cromwell/core';
-import {
-    BlockContentProvider,
-    blockCssClass,
-    CContainer,
-    getBlockById,
-    getBlockData,
-    getBlockElementById,
-    getBlockHtmlType,
-    pageRootContainerId,
-} from '@cromwell/core-frontend';
-import React from 'react';
-import { debounce } from 'throttle-debounce';
+import { blockCssClass, getBlockHtmlType, getBlockIdFromHtml, pageRootContainerId } from '@cromwell/core-frontend';
+import React, { Component } from 'react';
 
-import PageErrorBoundary from '../../../components/errorBoundaries/PageErrorBoundary';
 import { Draggable } from '../../../helpers/Draggable/Draggable';
-import { store } from '../../../redux/store';
-import PageBuilderSidebar from '../pageBuilderSidebar/PageBuilderSidebar';
-import { TBaseMenuProps } from './blocks/BaseMenu';
-import { ContainerBlockReplacer } from './blocks/ContainerBlock';
-import { GalleryBlockReplacer } from './blocks/GalleryBlock';
-import { HTMLBlockReplacer } from './blocks/HTMLBlock';
-import { ImageBlockReplacer } from './blocks/ImageBlock';
-import { PluginBlockReplacer } from './blocks/PluginBlock';
-import { TextBlockReplacer } from './blocks/TextBlock';
+import { PageBuilderSidebar } from '../pageBuilderSidebar/PageBuilderSidebar';
+import { TBlockMenuProps } from './blocks/BlockMenu';
+import { BlockMenu } from './blocks/BlockMenu';
 import styles from './PageBuilder.module.scss';
 
 type THistoryItem = {
@@ -40,76 +22,41 @@ type THistoryItem = {
     global: string;
 }
 
-export class PageBuilder extends React.Component<{
-    EditingPage: React.ComponentType<any>;
+export class PageBuilder extends Component<{
+    editingPageInfo: TPageConfig;
     plugins: TPluginEntity[] | null;
-    editingPageInfo: TPageInfo;
     onPageModificationsChange: (modifications: TCromwellBlockData[] | null | undefined) => void;
-}>  {
+}> {
+    private editingFrameRef = React.createRef<HTMLIFrameElement>();
+    private contentWindow: Window;
+    private contentStore: TCromwellStore;
+    private contentReact: typeof import('react');
+    private contentFrontend: typeof import('@cromwell/core-frontend');
+    private getStoreItem: (typeof import('@cromwell/core'))['getStoreItem'];
+    private setStoreItem: (typeof import('@cromwell/core'))['setStoreItem'];
+    private getBlockData: (typeof import('@cromwell/core-frontend'))['getBlockData'];
+    private getBlockElementById: (typeof import('@cromwell/core-frontend'))['getBlockElementById'];
+    private getBlockById: (typeof import('@cromwell/core-frontend'))['getBlockById'];
 
-    private editorWindowRef: React.RefObject<HTMLDivElement> = React.createRef();
+    private ignoreDraggableClass: string = pageRootContainerId;
+    private draggable: Draggable;
+    private undoBtnRef = React.createRef<HTMLButtonElement>();
+    private redoBtnRef = React.createRef<HTMLButtonElement>();
+
     public blockInfos: Record<string, {
         canDrag?: boolean;
         canDeselect?: boolean;
     }> = {};
-    private ignoreDraggableClass: string = pageRootContainerId;
-    private draggable: Draggable;
 
+    private hoveredFrames: Record<string, HTMLElement> = {};
+    private selectedFrames: Record<string, HTMLElement> = {};
+    private selectedBlock: HTMLElement;
+    private blockMenu: BlockMenu;
+    private pageBuilderSidebar: PageBuilderSidebar;
     private history: THistoryItem[] = [];
     private undoneHistory: THistoryItem[] = [];
 
-    private undoBtnRef = React.createRef<HTMLButtonElement>();
-    private redoBtnRef = React.createRef<HTMLButtonElement>();
-
-    componentDidMount() {
-
-        const rootBlock = getBlockById(pageRootContainerId);
-
-        if (rootBlock) rootBlock.addDidUpdateListener('PageBuilder', () => {
-            this.updateDraggable();
-        });
-
-        this.init();
-        this.checkHitoryButtons();
-        setTimeout(() => {
-            this.updateDraggable();
-        }, 500)
-    }
-
-    private async init() {
-        this.draggable = new Draggable({
-            draggableSelector: `.${blockCssClass}`,
-            containerSelector: `.${getBlockHtmlType('container')}`,
-            rootElement: this.editorWindowRef.current,
-            disableInsert: true,
-            canInsertBlock: this.canInsertBlock,
-            onBlockInserted: this.onBlockInserted,
-            onBlockSelected: this.onDraggableBlockSelected,
-            onBlockDeSelected: this.onDraggableBlockDeSelected,
-            ignoreDraggableClass: this.ignoreDraggableClass,
-            canDeselectBlock: this.canDeselectDraggableBlock,
-            canDragBlock: this.canDragDraggableBlock,
-            getFrameColor: this.getFrameColor,
-            createFrame: true,
-            iframeSelector: '#builderFrame',
-            dragPlacement: 'underline',
-            disableClickAwayDeselect: true,
-        });
-        store.setStateProp({
-            prop: 'draggable',
-            payload: this.draggable,
-        })
-    }
-
-    componentWillUnmount() {
-        store.setStateProp({
-            prop: 'selectedBlock',
-            payload: undefined,
-        });
-    }
-
-
-    // Keeps track of modifications that user made (added) curently. Does not store all mods from actual pageCofig.
+    // Keeps track of modifications that user made (added) currently. Does not store all mods from actual pageCofig.
     // We need to send to the server only newly added modifications.
     private _changedModifications: TCromwellBlockData[] | null | undefined = null;
     private get changedModifications(): TCromwellBlockData[] | null | undefined {
@@ -122,22 +69,213 @@ export class PageBuilder extends React.Component<{
         this._changedModifications = data;
     }
 
-    private canInsertBlock = (container: HTMLElement): boolean => {
-        const parentData = getBlockData(container);
-        if (!parentData?.id) {
-            return false;
+    componentDidMount() {
+        this.init();
+    }
+
+    private init = async () => {
+        if (!this.editingFrameRef.current) {
+            console.error('!this.editingFrameRef.current');
+            return;
+        }
+        this.contentWindow = this.editingFrameRef.current.contentWindow;
+
+        const awaitInit = async () => {
+            if (!this.contentWindow.CromwellStore?.nodeModules?.modules?.['@cromwell/core-frontend']) {
+                await sleep(0.2);
+                await awaitInit();
+            }
+        }
+        await awaitInit();
+
+        this.contentWindow.document.body.style.userSelect = 'none';
+        this.contentStore = this.contentWindow.CromwellStore;
+        this.contentReact = this.contentStore.nodeModules?.modules?.['react'];
+        this.contentFrontend = this.contentStore.nodeModules?.modules?.['@cromwell/core-frontend'];
+        this.getBlockElementById = this.contentFrontend.getBlockElementById;
+        this.getBlockData = this.contentFrontend.getBlockData;
+        this.getBlockById = this.contentFrontend.getBlockById;
+        this.getStoreItem = this.contentStore.nodeModules?.modules?.['@cromwell/core'].getStoreItem;
+        this.setStoreItem = this.contentStore.nodeModules?.modules?.['@cromwell/core'].setStoreItem;
+        (window as any).PageBuilder2 = this;
+
+        this.contentStore.forceUpdatePage();
+
+        this.draggable = new Draggable({
+            document: this.contentWindow.document,
+            draggableSelector: `.${blockCssClass}`,
+            containerSelector: `.${getBlockHtmlType('container')}`,
+            rootElement: this.contentWindow.document.getElementById('CB_root'),
+            disableInsert: true,
+            ignoreDraggableClass: this.ignoreDraggableClass,
+            canInsertBlock: this.canInsertBlock,
+            onBlockInserted: this.onBlockInserted,
+            onBlockSelected: this.onBlockSelected,
+            onBlockDeSelected: this.onBlockDeSelected,
+            canDeselectBlock: this.canDeselectBlock,
+            canDragBlock: this.canDragBlock,
+            getFrameColor: this.getFrameColor,
+            onBlockHoverStart: this.onBlockHoverStart,
+            onBlockHoverEnd: this.onBlockHoverEnd,
+            onTryToInsert: this.onTryToInsert,
+            dragPlacement: 'underline',
+            disableClickAwayDeselect: true,
+        });
+
+        const styles = this.contentWindow.document.createElement('style');
+        styles.innerHTML = `
+        * {
+            -webkit-user-drag: none;
+            -khtml-user-drag: none;
+            -moz-user-drag: none;
+            -o-user-drag: none;
+            user-drag: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -o-user-select: none;
+            user-select: none;
+        }`;
+        this.contentWindow.document.head.appendChild(styles);
+
+        const rootBlock = this.getBlockById(pageRootContainerId);
+
+        if (rootBlock) rootBlock.addDidUpdateListener('PageBuilder', () => {
+            this.updateDraggable();
+        });
+
+        document.body.addEventListener('mouseup', this.onMouseUp);
+        this.checkHistoryButtons();
+    }
+
+    public updateDraggable = () => {
+        this.draggable?.updateBlocks();
+
+        const allElements = Array.from(this.contentWindow.document.getElementsByTagName('*') ?? []);
+        allElements.forEach((el: HTMLElement) => {
+            // Disable all links
+            el.onclick = (e) => { e.preventDefault() }
+        })
+    }
+
+    private onMouseUp = () => {
+        this.draggable?.onMouseUp();
+    }
+
+    public canInsertBlock = () => {
+        return true;
+    }
+
+    public onTryToInsert = (container: HTMLElement, draggedBlock: HTMLElement, shadow?: HTMLElement | null) => {
+        if (!shadow) return;
+        shadow.style.zIndex = '10000';
+        shadow.style.position = 'relative';
+
+        const shadowFrame = this.contentWindow.document.createElement('div');
+        shadowFrame.style.border = `2px solid aqua`;
+        shadowFrame.style.zIndex = '111';
+        shadowFrame.style.position = 'absolute';
+        shadowFrame.style.top = '0';
+        shadowFrame.style.bottom = '0';
+        shadowFrame.style.right = '0';
+        shadowFrame.style.left = '0';
+
+        shadow.appendChild(shadowFrame);
+    }
+
+    private createBlockFrame = (block: HTMLElement) => {
+        const selectableFrame = this.contentWindow.document.createElement('div');
+        selectableFrame.style.zIndex = '10000';
+        selectableFrame.style.position = 'absolute';
+        selectableFrame.style.pointerEvents = 'none';
+        selectableFrame.style.height = block.offsetHeight + 'px';
+        selectableFrame.style.width = block.offsetWidth + 'px';
+        selectableFrame.style.border = `1px solid ${this.getFrameColor(block)}`;
+        selectableFrame.style.top = (this.contentWindow.pageYOffset + block.getBoundingClientRect().top) + 'px';
+        selectableFrame.style.left = (this.contentWindow.pageXOffset + block.getBoundingClientRect().left) + 'px';
+        return selectableFrame;
+    }
+
+    public onBlockSelected = (block: HTMLElement) => {
+        if (!block) return;
+        if (this.selectedFrames[block.id]) return;
+        const frame = this.createBlockFrame(block);
+        frame.style.border = `2px solid ${this.getFrameColor(block)}`;
+
+        this.contentWindow.document.body.appendChild(frame);
+        this.selectedFrames[block.id] = frame;
+        const crwBlock = this.getBlockById(getBlockIdFromHtml(block.id));
+
+        this.blockMenu.setSelectedBlock(frame, block, crwBlock);
+        this.pageBuilderSidebar.setSelectedBlock(block, crwBlock);
+        this.updateDraggable();
+    }
+
+    public onBlockDeSelected = (block: HTMLElement) => {
+        if (!block) return;
+        this.blockMenu.setSelectedBlock(null, null, null);
+        this.pageBuilderSidebar.setSelectedBlock(null, null);
+        this.selectedFrames[block.id]?.remove();
+        this.selectedFrames[block.id] = null;
+        this.updateDraggable();
+    }
+
+    public deselectBlock = (block: HTMLElement) => {
+        this.draggable?.deselectCurrentBlock();
+        this.onBlockDeSelected(block);
+    }
+
+    public selectBlock = (blockData: TCromwellBlockData) => {
+        this.draggable?.deselectCurrentBlock();
+        this.onBlockSelected(this.getBlockElementById(blockData.id));
+    }
+
+    public onBlockHoverStart = (block: HTMLElement) => {
+        if (!block) return;
+        if (this.hoveredFrames[block.id]) return;
+        const frame = this.createBlockFrame(block);
+        frame.style.border = `1px solid ${this.getFrameColor(block)}`;
+        frame.style.userSelect = 'none';
+        frame.setAttribute('draggable', 'false');
+
+        this.contentWindow.document.body.appendChild(frame);
+        this.hoveredFrames[block.id] = frame;
+    }
+
+    public onBlockHoverEnd = (block: HTMLElement) => {
+        if (!block) return;
+        this.hoveredFrames[block.id]?.remove();
+        this.hoveredFrames[block.id] = null;
+    }
+
+    public canDeselectBlock = (draggedBlock: HTMLElement) => {
+        const blockData = Object.assign({}, this.getBlockData(draggedBlock));
+        if (blockData?.id) {
+            return this.blockInfos[blockData?.id]?.canDeselect ?? true;
         }
         return true;
     }
 
+    public canDragBlock = (draggedBlock: HTMLElement) => {
+        const blockData = Object.assign({}, this.getBlockData(draggedBlock));
+        if (blockData?.id) {
+            return this.blockInfos[blockData?.id]?.canDrag ?? true;
+        }
+        return true;
+    }
+
+    public getFrameColor = (elem: HTMLElement) => {
+        if (this.isGlobalElem(elem)) return '#ff9100';
+        return '#9900CC';
+    }
+
     private onBlockInserted = async (container: HTMLElement, draggedBlock: HTMLElement, nextElement?: HTMLElement | null) => {
-
-        const blockData = Object.assign({}, getBlockData(draggedBlock));
-        const newParentData = Object.assign({}, getBlockData(container));
+        const blockData = Object.assign({}, this.getBlockData(draggedBlock));
+        const newParentData = Object.assign({}, this.getBlockData(container));
         // const oldParentData = Object.assign({}, getBlockData(draggedBlock?.parentNode));
-        const nextData = getBlockData(nextElement);
+        const nextData = this.getBlockData(nextElement);
 
-        // Ivalid block - no id, or instance was not found in the global store.
+        // Invalid block - no id, or instance was not found in the global store.
         if (!blockData?.id) {
             console.error('!blockData.id: ', draggedBlock);
             return;
@@ -151,7 +289,7 @@ export class PageBuilder extends React.Component<{
         this.addBlock({
             blockData,
             targetBlockData: nextData,
-            parentData: getBlockData(container),
+            parentData: this.getBlockData(container),
             position: 'before'
         });
 
@@ -166,247 +304,9 @@ export class PageBuilder extends React.Component<{
         this.draggable?.updateBlocks();
 
         setTimeout(() => {
-            getBlockElementById(blockData.id)?.click();
-            store.setStateProp({
-                prop: 'selectedBlock',
-                payload: getStoreItem('blockInstances')?.[blockData.id],
-            });
+            this.getBlockElementById(blockData.id)?.click();
+            this.selectBlock(blockData);
         }, 100);
-    }
-
-    public updateDraggable = () => {
-        this.draggable?.updateBlocks();
-    }
-
-    public modifyBlock = (blockData: TCromwellBlockData, saveHist?: boolean) => {
-        if (!this.changedModifications) this.changedModifications = [];
-        // Save histroy
-        if (saveHist !== false) this.saveCurrentState();
-
-        // Save to global modifications in pageConfig.
-        const pageConfig: TPageConfig = getStoreItem('pageConfig') ?? {} as TPageConfig;
-        if (!pageConfig.modifications) pageConfig.modifications = [];
-        pageConfig.modifications = this.addToModifications(blockData, pageConfig.modifications);
-        setStoreItem('pageConfig', pageConfig);
-
-        // Add to local changedModifications (contains only newly added changes);
-        this.changedModifications = this.addToModifications(blockData, this.changedModifications);
-    }
-
-    private getCurrentModificationsState = (): THistoryItem => {
-        const pageConfig = getStoreItem('pageConfig');
-        return {
-            global: JSON.stringify(pageConfig?.modifications ?? []),
-            local: JSON.stringify(this.changedModifications),
-        }
-    }
-
-    public saveCurrentState = () => {
-        const current = this.getCurrentModificationsState();
-
-        if (this.history[this.history.length - 1]?.local !== current.local) {
-            this.history.push(current);
-        }
-
-        this.undoneHistory = [];
-
-        if (this.history.length > 20) {
-            this.history.shift();
-        }
-        this.checkHitoryButtons();
-    }
-
-    public saveCurrentStateDebounced = debounce(200, false, () => {
-        this.saveCurrentState();
-    });
-
-    private checkHitoryButtons = () => {
-        const disableButton = (button: HTMLButtonElement) => {
-            button.style.opacity = '0.4';
-            const ripple = button.querySelector<HTMLSpanElement>('.MuiTouchRipple-root');
-            if (ripple) {
-                ripple.style.opacity = '0';
-                ripple.style.transition = '0.4s';
-            }
-        }
-        const enableButton = (button: HTMLButtonElement) => {
-            button.style.opacity = '1';
-            const ripple = button.querySelector<HTMLSpanElement>('.MuiTouchRipple-root');
-            if (ripple) {
-                ripple.style.transition = '0.4s';
-                ripple.style.opacity = '1';
-            }
-        }
-
-        if (this.undoBtnRef.current) {
-            if (this.history.length > 0) enableButton(this.undoBtnRef.current)
-            else disableButton(this.undoBtnRef.current);
-        }
-
-        if (this.redoBtnRef.current) {
-            if (this.undoneHistory.length > 0) enableButton(this.redoBtnRef.current)
-            else disableButton(this.redoBtnRef.current);
-        }
-    }
-
-    public undoModification = () => {
-        const last = this.history.pop();
-        if (last) {
-            this.undoneHistory.push(this.getCurrentModificationsState());
-            this.applyHistory(last);
-        }
-    }
-
-    public redoModification = () => {
-        if (this.undoneHistory.length > 0) {
-            const last = this.undoneHistory.pop();
-            this.saveCurrentState();
-            this.applyHistory(last);
-        }
-    }
-
-    private applyHistory = async (history: THistoryItem) => {
-        const pageConfig = getStoreItem('pageConfig');
-        pageConfig.modifications = JSON.parse(history.global);
-        setStoreItem('pageConfig', pageConfig);
-        this.changedModifications = JSON.parse(history.local);
-        await new Promise(done => setTimeout(done, 100));
-        await this.rerenderBlocks();
-
-        if (store.getState().selectedBlock) {
-            store.setStateProp({
-                prop: 'selectedBlock',
-                payload: Object.assign({}, store.getState().selectedBlock),
-            });
-        }
-
-        this.checkHitoryButtons();
-    }
-
-    public deleteBlock = async (blockData: TCromwellBlockData) => {
-
-        if (blockData) {
-            blockData.isDeleted = true;
-            this.modifyBlock(blockData);
-        }
-
-        store.setStateProp({
-            prop: 'selectedBlock',
-            payload: undefined,
-        });
-
-        await this.rerenderBlocks();
-
-        this.draggable?.updateBlocks();
-    }
-
-    /**
-     * Saves block into provided array, returns a new array, provided isn't modified
-     * @param data 
-     * @param mods 
-     */
-    private addToModifications = (data: TCromwellBlockData, mods: TCromwellBlockData[]):
-        TCromwellBlockData[] => {
-        let modIndex: number | null = null;
-        mods = [...mods];
-        mods.forEach((mod, i) => {
-            if (mod.id === data.id) modIndex = i;
-        });
-        if (modIndex !== null) {
-            mods[modIndex] = data;
-        } else {
-            mods.push(data);
-        }
-        return mods;
-    }
-
-    public async rerenderBlock(id: string) {
-        const instances = getStoreItem('blockInstances');
-        let blockInst: TCromwellBlock | null = null;
-        if (instances) {
-            Object.values(instances).forEach(inst => {
-                if (inst?.getData()?.id === id && inst?.rerender) blockInst = inst;
-
-            })
-        }
-        if (blockInst) await blockInst.rerender();
-    }
-
-    public async rerenderBlocks() {
-        // Re-render blocks
-        const instances = getStoreItem('blockInstances');
-        const promises: Promise<any>[] = [];
-        if (instances) {
-            Object.values(instances).forEach(inst => {
-                if (inst?.rerender) {
-                    const p = inst.rerender();
-                    if (p) promises.push(p);
-                }
-            })
-        }
-        await Promise.all(promises);
-    }
-
-    private getFrameColor = (elem: HTMLElement) => {
-        if (this.isGlobalElem(elem)) return '#ff9100';
-        return '#9900CC';
-    }
-
-    private onDraggableBlockSelected = (draggedBlock: HTMLElement) => {
-        const blockData = Object.assign({}, getBlockData(draggedBlock));
-        if (blockData?.id) {
-            this.onBlockSelected(blockData)
-        }
-    }
-
-    private onDraggableBlockDeSelected = (draggedBlock: HTMLElement) => {
-        const blockData = Object.assign({}, getBlockData(draggedBlock));
-        if (blockData?.id) {
-            this.onBlockDeSelected()
-        }
-    }
-
-    private canDeselectDraggableBlock = (draggedBlock: HTMLElement): boolean => {
-        const blockData = Object.assign({}, getBlockData(draggedBlock));
-        if (blockData?.id) {
-            return this.canDeselectBlock(blockData);
-        }
-        return true;
-    }
-
-    private canDragDraggableBlock = (draggedBlock: HTMLElement): boolean => {
-        const blockData = Object.assign({}, getBlockData(draggedBlock));
-        if (blockData?.id) {
-            return this.canDragBlock(blockData);
-        }
-        return true;
-    }
-
-    public createNewBlock = async (newBlockType: TCromwellBlockType, afterBlockData: TCromwellBlockData, containerData?: TCromwellBlockData) => {
-        const newBlock: TCromwellBlockData = {
-            id: `_${getRandStr()}`,
-            type: newBlockType,
-            isVirtual: true,
-        }
-        if (containerData && containerData.type !== 'container') containerData = undefined;
-
-        this.addBlock({
-            blockData: newBlock,
-            targetBlockData: containerData ? undefined : afterBlockData,
-            parentData: containerData,
-            position: 'after',
-        });
-
-        await this.rerenderBlocks();
-
-        // Select new block
-        setTimeout(() => {
-            getBlockElementById(newBlock.id)?.click();
-            store.setStateProp({
-                prop: 'selectedBlock',
-                payload: getStoreItem('blockInstances')?.[newBlock?.id],
-            });
-        }, 200);
     }
 
     public addBlock = (config: {
@@ -418,8 +318,8 @@ export class PageBuilder extends React.Component<{
         const { targetBlockData, position } = config;
         const blockData = Object.assign({}, config.blockData);
 
-        const parentData = getBlockData(getBlockElementById(targetBlockData?.id)?.parentNode) ?? config?.parentData;
-        const parent = getBlockElementById(parentData.id);
+        const parentData = this.getBlockData(this.getBlockElementById(targetBlockData?.id)?.parentNode) ?? config?.parentData;
+        const parent = this.getBlockElementById(parentData.id);
         if (!parentData || !parent) {
             console.warn('Failed to add new block, parent was not found: ', parentData, parent, ' block data: ', blockData)
             return;
@@ -432,7 +332,7 @@ export class PageBuilder extends React.Component<{
 
         // Sort parent's children
         Array.from(parent.children).forEach((child) => {
-            const childData = Object.assign({}, getBlockData(child));
+            const childData = Object.assign({}, this.getBlockData(child));
             if (!childData.id) return;
             if (child.classList.contains(Draggable.cursorClass)) return;
             if (childData.id === blockData.id) return;
@@ -472,9 +372,227 @@ export class PageBuilder extends React.Component<{
         return childrenData;
     }
 
+    public modifyBlock = (blockData: TCromwellBlockData, saveHist?: boolean) => {
+        if (!this.changedModifications) this.changedModifications = [];
+        // Save history
+        if (saveHist !== false) this.saveCurrentState();
+
+        // Save to global modifications in pageConfig.
+        const pageConfig: TPageConfig = this.getStoreItem('pageConfig') ?? {} as TPageConfig;
+        if (!pageConfig.modifications) pageConfig.modifications = [];
+        pageConfig.modifications = this.addToModifications(blockData, pageConfig.modifications);
+        this.setStoreItem('pageConfig', pageConfig);
+
+        // Add to local changedModifications (contains only newly added changes);
+        this.changedModifications = this.addToModifications(blockData, this.changedModifications);
+    }
+
+    /**
+   * Saves block into provided array, returns a new array, provided isn't modified
+   * @param data 
+   * @param mods 
+   */
+    private addToModifications = (data: TCromwellBlockData, mods: TCromwellBlockData[]):
+        TCromwellBlockData[] => {
+        let modIndex: number | null = null;
+        mods = [...mods];
+        mods.forEach((mod, i) => {
+            if (mod.id === data.id) modIndex = i;
+        });
+        if (modIndex !== null) {
+            mods[modIndex] = data;
+        } else {
+            mods.push(data);
+        }
+        return mods;
+    }
+
+    public saveCurrentState = () => {
+        const current = this.getCurrentModificationsState();
+
+        if (this.history[this.history.length - 1]?.local !== current.local) {
+            this.history.push(current);
+        }
+
+        this.undoneHistory = [];
+
+        if (this.history.length > 20) {
+            this.history.shift();
+        }
+        this.checkHistoryButtons();
+    }
+
+    private getCurrentModificationsState = (): THistoryItem => {
+        const pageConfig = this.getStoreItem('pageConfig');
+        return {
+            global: JSON.stringify(pageConfig?.modifications ?? []),
+            local: JSON.stringify(this.changedModifications),
+        }
+    }
+
+    private checkHistoryButtons = () => {
+        const disableButton = (button: HTMLButtonElement) => {
+            button.style.opacity = '0.4';
+            const ripple = button.querySelector<HTMLSpanElement>('.MuiTouchRipple-root');
+            if (ripple) {
+                ripple.style.opacity = '0';
+                ripple.style.transition = '0.4s';
+            }
+        }
+        const enableButton = (button: HTMLButtonElement) => {
+            button.style.opacity = '1';
+            const ripple = button.querySelector<HTMLSpanElement>('.MuiTouchRipple-root');
+            if (ripple) {
+                ripple.style.transition = '0.4s';
+                ripple.style.opacity = '1';
+            }
+        }
+
+        if (this.undoBtnRef.current) {
+            if (this.history.length > 0) enableButton(this.undoBtnRef.current)
+            else disableButton(this.undoBtnRef.current);
+        }
+
+        if (this.redoBtnRef.current) {
+            if (this.undoneHistory.length > 0) enableButton(this.redoBtnRef.current)
+            else disableButton(this.redoBtnRef.current);
+        }
+    }
+
+    public async rerenderBlock(id: string) {
+        const instances = this.getStoreItem('blockInstances');
+        let blockInst: TCromwellBlock | null = null;
+        if (instances) {
+            Object.values(instances).forEach(inst => {
+                if (inst?.getData()?.id === id && inst?.rerender) blockInst = inst;
+
+            })
+        }
+        if (blockInst) await blockInst.rerender();
+    }
+
+    public async rerenderBlocks() {
+        // Re-render blocks
+        const instances = this.getStoreItem('blockInstances');
+        const promises: Promise<any>[] = [];
+        if (instances) {
+            Object.values(instances).forEach(inst => {
+                if (inst?.rerender) {
+                    const p = inst.rerender();
+                    if (p) promises.push(p);
+                }
+            })
+        }
+        await Promise.all(promises);
+    }
+
+
+    public undoModification = () => {
+        const last = this.history.pop();
+        if (last) {
+            this.undoneHistory.push(this.getCurrentModificationsState());
+            this.applyHistory(last);
+        }
+    }
+
+    public redoModification = () => {
+        if (this.undoneHistory.length > 0) {
+            const last = this.undoneHistory.pop();
+            this.saveCurrentState();
+            this.applyHistory(last);
+        }
+    }
+
+    private applyHistory = async (history: THistoryItem) => {
+        const pageConfig = this.getStoreItem('pageConfig');
+        pageConfig.modifications = JSON.parse(history.global);
+        this.setStoreItem('pageConfig', pageConfig);
+        this.changedModifications = JSON.parse(history.local);
+        await new Promise(done => setTimeout(done, 100));
+        await this.rerenderBlocks();
+
+        if (this.selectedBlock) this.selectBlock(this.getBlockData(this.selectedBlock));
+        this.checkHistoryButtons();
+    }
+
+    public deleteBlock = async (blockData: TCromwellBlockData) => {
+        if (blockData) {
+            blockData.isDeleted = true;
+            this.modifyBlock(blockData);
+        }
+        this.deselectBlock(this.getBlockElementById(blockData.id));
+        await this.rerenderBlocks();
+
+        this.draggable?.updateBlocks();
+    }
+
+
+    public createNewBlock = async (newBlockType: TCromwellBlockType, afterBlockData: TCromwellBlockData, containerData?: TCromwellBlockData) => {
+        const newBlock: TCromwellBlockData = {
+            id: `_${getRandStr()}`,
+            type: newBlockType,
+            isVirtual: true,
+        }
+        if (containerData && containerData.type !== 'container') containerData = undefined;
+
+        this.addBlock({
+            blockData: newBlock,
+            targetBlockData: containerData ? undefined : afterBlockData,
+            parentData: containerData,
+            position: 'after',
+        });
+
+        await this.rerenderBlocks();
+
+        // Select new block
+        setTimeout(() => {
+            this.getBlockElementById(newBlock.id)?.click();
+            this.selectBlock(newBlock);
+        }, 200);
+    }
+
+    private createBlockProps = (block?: TCromwellBlock): TBlockMenuProps => {
+        const data = block?.getData();
+        const bId = data?.id;
+        const bType = data?.type;
+        const deleteBlock = () => {
+            if (!data.global && this.isGlobalElem(this.getBlockElementById(data?.id))) {
+                data.global = true;
+            }
+            this.deleteBlock(data);
+        }
+        const handleCreateNewBlock = (newBType: TCromwellBlockType) =>
+            this.createNewBlock(newBType, data, bType === 'container' ? data : undefined);
+
+        const blockProps: TBlockMenuProps = {
+            block: block,
+            isGlobalElem: this.isGlobalElem,
+            modifyData: (blockData: TCromwellBlockData) => {
+                if (!blockData.global && this.isGlobalElem(this.getBlockElementById(blockData?.id))) {
+                    blockData.global = true;
+                }
+                this.modifyBlock(blockData);
+                block?.rerender();
+            },
+            deleteBlock: deleteBlock,
+            addNewBlockAfter: handleCreateNewBlock,
+            plugins: this.props.plugins,
+            setCanDrag: (canDrag: boolean) => {
+                if (!this.blockInfos[bId]) this.blockInfos[bId] = {};
+                this.blockInfos[bId].canDrag = canDrag;
+            },
+            setCanDeselect: (canDeselect: boolean) => {
+                if (!this.blockInfos[bId]) this.blockInfos[bId] = {};
+                this.blockInfos[bId].canDeselect = canDeselect;
+            },
+        }
+        return blockProps;
+    }
+
+
     public isGlobalElem = (elem?: HTMLElement): boolean => {
         if (!elem) return false;
-        const data = getBlockData(elem);
+        const data = this.getBlockData(elem);
         if (data?.global) return true;
         if (data?.id === 'root') return false;
         const parent = elem?.parentElement;
@@ -484,176 +602,32 @@ export class PageBuilder extends React.Component<{
         return false;
     }
 
-    public onBlockSelected = (data: TCromwellBlockData) => {
-        store.setStateProp({
-            prop: 'selectedBlock',
-            payload: getStoreItem('blockInstances')?.[data.id],
-        })
-    }
-    public onBlockDeSelected = () => {
-        store.setStateProp({
-            prop: 'selectedBlock',
-            payload: undefined,
-        })
-    }
-
-    public canDeselectBlock = (data?: TCromwellBlockData) => {
-        return this.blockInfos[data?.id]?.canDeselect ?? true;
-    }
-
-    public canDragBlock = (data?: TCromwellBlockData) => {
-        return this.blockInfos[data?.id]?.canDrag ?? true;
-    }
-
-    public debouncedDidUpdate = debounce(100, () => {
-        this.contentDidUpdate();
-    });
-
-    public contentDidUpdate = () => {
-        this.draggable?.updateBlocks();
-
-        const allElements = Array.from(this.editorWindowRef?.current?.getElementsByTagName('*') ?? []);
-        allElements.forEach((el: HTMLElement) => {
-            const elStyles = window.getComputedStyle(el);
-            // Disable fixed elements
-            if (elStyles.position === 'fixed') {
-                el.style.position = 'absolute';
-            }
-
-            // Clamp z-index to ensure editor's elements aren't covered
-            if (elStyles.zIndex) {
-                const zIndex = parseInt(elStyles.zIndex);
-                if (!isNaN(zIndex) && zIndex > 1000) {
-                    el.style.zIndex = '999';
-                }
-            }
-
-            // Disable all links
-            if (el.tagName === 'A') {
-                el.onclick = (e) => { e.preventDefault() }
-            }
-
-        })
-    }
-
     render() {
-        // console.log('PageBuilder render')
-        const adminPanelProps = getStoreItem('pageConfig')?.adminPanelProps ?? {};
+        const { editingPageInfo } = this.props;
 
-        const { EditingPage } = this.props;
+
         return (
-            <div ref={this.editorWindowRef} className={styles.PageBuilder}>
-                <div className={styles.editingPage}>
-                    <BlockContentProvider
-                        value={{
-                            getter: (block) => {
-                                // Will replace content inside any CromwellBlock by JSX this function returns
-                                const data = block?.getData();
-                                const bType = data?.type;
-                                const blockProps = createBlockProps(this)(block);
-
-                                let content;
-
-                                if (bType === 'text') {
-                                    content = <TextBlockReplacer
-                                        {...blockProps}
-                                    />
-                                }
-                                if (bType === 'plugin') {
-                                    content = <PluginBlockReplacer
-                                        {...blockProps}
-                                    />
-                                }
-                                if (bType === 'container') {
-                                    content = <ContainerBlockReplacer
-                                        {...blockProps}
-                                    />
-                                }
-                                if (bType === 'HTML') {
-                                    content = <HTMLBlockReplacer
-                                        {...blockProps}
-                                    />
-                                }
-                                if (bType === 'image') {
-                                    content = <ImageBlockReplacer
-                                        {...blockProps}
-                                    />
-                                }
-                                if (bType === 'gallery') {
-                                    content = <GalleryBlockReplacer
-                                        {...blockProps}
-                                    />
-                                }
-
-                                if (!content) {
-                                    content = block.getDefaultContent();
-                                }
-
-                                return <>
-                                    {content}
-                                </>;
-                            },
-                            componentDidUpdate: () => {
-                                this.debouncedDidUpdate();
-                            }
-                        }}
-                    >
-                        <PageErrorBoundary>
-                            <CContainer id={pageRootContainerId}
-                                className={`${this.ignoreDraggableClass} ${styles.rootBlock}`}
-                                isConstant={true}
-                            >
-                                <EditingPage {...adminPanelProps} />
-                            </CContainer>
-                        </PageErrorBoundary>
-                    </BlockContentProvider>
-                </div>
+            <div className={styles.PageBuilder}>
+                <BlockMenu
+                    getInst={inst => this.blockMenu = inst}
+                    deselectBlock={this.deselectBlock}
+                    createBlockProps={this.createBlockProps}
+                />
+                <iframe
+                    className={styles.frameEditor}
+                    src={`${window.location.origin}/${editingPageInfo.route}`}
+                    ref={this.editingFrameRef}
+                />
                 <PageBuilderSidebar
+                    getInst={inst => this.pageBuilderSidebar = inst}
+                    deselectBlock={this.deselectBlock}
                     undoBtnRef={this.undoBtnRef}
                     undoModification={this.undoModification}
                     redoBtnRef={this.redoBtnRef}
                     redoModification={this.redoModification}
-                    createBlockProps={createBlockProps(this)}
+                    createBlockProps={this.createBlockProps}
                 />
             </div>
         )
     }
-}
-
-const createBlockProps = (pbInst: PageBuilder) => (block?: TCromwellBlock): TBaseMenuProps => {
-    const data = block?.getData();
-    const bId = data?.id;
-    const bType = data?.type;
-    const deleteBlock = () => {
-        if (!data.global && pbInst.isGlobalElem(getBlockElementById(data?.id))) {
-            data.global = true;
-        }
-        pbInst.deleteBlock(data);
-    }
-    const handleCreateNewBlock = (newBType: TCromwellBlockType) =>
-        pbInst.createNewBlock(newBType, data, bType === 'container' ? data : undefined);
-
-    const blockProps: TBaseMenuProps = {
-        block: block,
-        isGlobalElem: pbInst.isGlobalElem,
-        modifyData: (blockData: TCromwellBlockData) => {
-            if (!blockData.global && pbInst.isGlobalElem(getBlockElementById(blockData?.id))) {
-                blockData.global = true;
-            }
-            pbInst.modifyBlock(blockData);
-            block?.rerender();
-        },
-        deleteBlock: deleteBlock,
-        addNewBlockAfter: handleCreateNewBlock,
-        plugins: pbInst.props.plugins,
-        setCanDrag: (canDrag: boolean) => {
-            if (!pbInst.blockInfos[bId]) pbInst.blockInfos[bId] = {};
-            pbInst.blockInfos[bId].canDrag = canDrag;
-        },
-        setCanDeselect: (canDeselect: boolean) => {
-            if (!pbInst.blockInfos[bId]) pbInst.blockInfos[bId] = {};
-            pbInst.blockInfos[bId].canDeselect = canDeselect;
-        },
-    }
-    return blockProps;
 }

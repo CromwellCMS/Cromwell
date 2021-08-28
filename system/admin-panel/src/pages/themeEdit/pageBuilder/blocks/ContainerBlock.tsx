@@ -6,25 +6,9 @@ import React from 'react';
 
 import { useForceUpdate } from '../../../../helpers/forceUpdate';
 import styles from './BaseBlock.module.scss';
-import { BaseMenu, TBaseMenuProps } from './BaseMenu';
+import { TBlockMenuProps } from './BlockMenu';
 
-export function ContainerBlockReplacer(props: TBaseMenuProps) {
-    return (
-        <>
-            <BaseMenu
-                {...props}
-                icon={(
-                    <Tooltip title="Container block">
-                        <WidgetsIcon />
-                    </Tooltip>
-                )}
-            />
-            {props.block?.getDefaultContent()}
-        </>
-    );
-}
-
-export function ContainerBlockSidebar(props: TBaseMenuProps) {
+export function ContainerBlockSidebar(props: TBlockMenuProps) {
     const data = props.block?.getData();
     const forceUpdate = useForceUpdate();
 

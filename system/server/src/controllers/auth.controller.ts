@@ -77,7 +77,7 @@ export class AuthController {
     async logOut(@Request() request: TRequestWithUser, @Response() response: FastifyReply) {
         if (request.user) {
             try {
-                await this.authService.removeRefreshToken(request.user);
+                await this.authService.removeRefreshTokens(request.user);
             } catch (error) {
                 logger.error(error);
             }

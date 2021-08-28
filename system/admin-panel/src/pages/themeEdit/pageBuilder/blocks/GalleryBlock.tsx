@@ -16,25 +16,9 @@ import React from 'react';
 import GalleryPicker from '../../../../components/galleryPicker/GalleryPicker';
 import { useForceUpdate } from '../../../../helpers/forceUpdate';
 import styles from './BaseBlock.module.scss';
-import { BaseMenu, TBaseMenuProps } from './BaseMenu';
+import { TBlockMenuProps } from './BlockMenu';
 
-export function GalleryBlockReplacer(props: TBaseMenuProps) {
-    return (
-        <>
-            <BaseMenu
-                {...props}
-                icon={(
-                    <Tooltip title="Gallery block">
-                        <PhotoLibraryIcon />
-                    </Tooltip>
-                )}
-            />
-            {props?.block?.getDefaultContent()}
-        </>
-    );
-}
-
-export function GalleryBlockSidebar(props: TBaseMenuProps) {
+export function GalleryBlockSidebar(props: TBlockMenuProps) {
     const forceUpdate = useForceUpdate();
     const data = props.block?.getData();
 
@@ -64,7 +48,6 @@ export function GalleryBlockSidebar(props: TBaseMenuProps) {
     const handleBoolInput = (name: keyof TCromwellBlockData['gallery']) => (event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
         handleChange(name, checked ?? false)
     }
-
 
     return (
         <div>

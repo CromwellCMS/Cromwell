@@ -50,15 +50,15 @@
     justify-content: center;
     align-items: center;
     background-repeat: no-repeat;
-    background-color: #fff;
     border-radius: 100%;
+    background-color: #fff;
     border: 1px solid #aaa;
 
     * {
         color: #333;
     }
 
-    > svg {
+    >svg {
         opacity: 0.7;
     }
 }
@@ -73,6 +73,8 @@
     }
 
     .image {
+        border: 1px solid #222;
+
         * {
             color: #333;
             fill: #333;

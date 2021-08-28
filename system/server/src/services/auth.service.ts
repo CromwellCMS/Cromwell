@@ -35,6 +35,8 @@ export class AuthService {
         firstDate: Date;
     }> = {};
 
+    private tokensDelimiter = '$$'
+
     constructor(
         private jwtService: JwtService,
     ) {
@@ -71,15 +73,22 @@ export class AuthService {
             role: user.role ?? 'customer',
         }
 
-        if (user.refreshToken) {
-            const isValid = await this.validateRefreshToken(user.refreshToken);
-            if (!isValid) user.refreshToken = null;
+        let validated: string[] = [];
+        if (user.refreshTokens) {
+            const tokens = user.refreshTokens.split(this.tokensDelimiter);
+
+            validated = (await Promise.all(
+                tokens.map(async token => {
+                    const isValid = await this.validateRefreshToken(token);
+                    if (isValid) return token;
+                })))
+                .filter(Boolean) as string[];
         }
 
-        const refreshToken = user.refreshToken ?? (await this.generateRefreshToken(userInfo)).token;
+        const refreshToken = validated[0] ?? (await this.generateRefreshToken(userInfo)).token;
         const accessToken = (await this.generateAccessToken(userInfo)).token;
 
-        if (!user.refreshToken) {
+        if (!validated.length) {
             await this.saveRefreshToken(userInfo, refreshToken);
         }
 
@@ -218,7 +227,6 @@ export class AuthService {
             sub: userInfo.id,
             role: userInfo.role,
         };
-
         // Generate new token and save to DB
         const token = await this.jwtService.signAsync(payload, {
             secret: authSettings.refreshSecret,
@@ -240,34 +248,35 @@ export class AuthService {
         }
     }
 
-    async saveRefreshToken(userInfo: TAuthUserInfo, newToken: string) {
+    async saveRefreshToken(userInfo: TAuthUserInfo, newToken: string, user?: User) {
+        if (!user) user = await getCustomRepository(UserRepository).getUserById(userInfo.id);
+        if (!user) {
+            return false;
+        }
+        let tokens = (user.refreshTokens ?? '').split(this.tokensDelimiter);
+        tokens.push(newToken);
+        if (tokens.length > 10) {
+            tokens = tokens.slice(tokens.length - 10, tokens.length);
+        }
+
+        user.refreshTokens = tokens.join(this.tokensDelimiter)
+        await getCustomRepository(UserRepository).save(user);
+        return true;
+    }
+
+    async removeRefreshTokens(userInfo: TAuthUserInfo) {
         const user = await getCustomRepository(UserRepository).getUserById(userInfo.id);
         if (!user) {
             return;
         }
-        user.refreshToken = newToken;
+        user.refreshTokens = null;
         await getCustomRepository(UserRepository).save(user);
     }
 
-    async removeRefreshToken(userInfo: TAuthUserInfo) {
-        const user = await getCustomRepository(UserRepository).getUserById(userInfo.id);
-        if (!user) {
-            return;
-        }
-        user.refreshToken = null;
-        await getCustomRepository(UserRepository).save(user);
-    }
-
-    async updateRefreshToken(userInfo: TAuthUserInfo) {
-        const user = await getCustomRepository(UserRepository).getUserById(userInfo.id);
-        if (!user) {
-            return;
-        }
+    async updateRefreshToken(userInfo: TAuthUserInfo, user?: User) {
         const newToken = await this.generateRefreshToken(userInfo);
-
-        user.refreshToken = newToken.token;
-        await getCustomRepository(UserRepository).save(user);
-        return newToken;
+        const success = await this.saveRefreshToken(userInfo, newToken.token, user);
+        if (success) return newToken;
     }
 
     async validateAccessToken(accessToken: string): Promise<TTokenPayload | undefined> {
@@ -286,23 +295,24 @@ export class AuthService {
                 secret: authSettings.refreshSecret,
             });
         } catch (e) {
-            // logger.error(e);
+            logger.log(e);
         }
     }
 
-    async dbCheckRefreshToken(refreshToken: string, userInfo: TAuthUserInfo): Promise<boolean> {
+    async dbCheckRefreshToken(refreshToken: string, userInfo: TAuthUserInfo): Promise<User | undefined> {
         try {
             const user = await getCustomRepository(UserRepository).getUserById(userInfo.id);
-            if (!user?.refreshToken) {
-                return false;
+            if (!user?.refreshTokens) {
+                return undefined;
             }
 
-            if (user.refreshToken === refreshToken)
-                return true;
+            const tokens = user.refreshTokens.split(this.tokensDelimiter);
+            if (tokens.includes(refreshToken))
+                return user;
         } catch (e) {
             logger.error(e);
         }
-        return false;
+        return undefined;
     }
 
     getCookiesForLogOut() {
@@ -394,9 +404,9 @@ export class AuthService {
 
             const authUserInfo = this.payloadToUserInfo(refreshTokenPayload);
 
-            // Check if token is in DB and was not blacklisted
-            const isValid = await this.dbCheckRefreshToken(refreshToken, authUserInfo);
-            if (!isValid)
+            // Check that token is in DB and was not blacklisted
+            const validUser = await this.dbCheckRefreshToken(refreshToken, authUserInfo);
+            if (!validUser)
                 throw new UnauthorizedException('Refresh token is not valid');
 
             request.user = authUserInfo;
@@ -405,7 +415,7 @@ export class AuthService {
             const newAccessToken = await this.generateAccessToken(authUserInfo);
 
             // Update refresh token
-            const newRefreshToken = await this.updateRefreshToken(authUserInfo);
+            const newRefreshToken = await this.updateRefreshToken(authUserInfo, validUser);
 
             if (!newRefreshToken)
                 throw new UnauthorizedException('Failed to update refresh token');

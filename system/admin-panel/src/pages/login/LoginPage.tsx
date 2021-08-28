@@ -141,7 +141,7 @@ const LoginPage = () => {
     return (
         <div className={styles.LoginPage}>
             <form className={styles.loginForm} onSubmit={handleSubmit}>
-                <img src="/admin/static/logo_small.png" width="150px" className={styles.logo} />
+                <img src="/admin/static/logo_small_black.svg" width="100px" className={styles.logo} />
                 {formType === 'sign-in' && (
                     <>
                         <TextField

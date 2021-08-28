@@ -42,8 +42,8 @@ export class User extends BasePageEntity implements TUser {
     @Column({ type: "varchar", nullable: false })
     password: string;
 
-    @Column({ type: "varchar", nullable: true, length: 500 })
-    refreshToken?: string | null;
+    @Column({ type: "varchar", nullable: true, length: 5000 })
+    refreshTokens?: string | null;
 
     // A secret code sent to user e-mail to reset his password
     @Column({ type: "varchar", nullable: true })
