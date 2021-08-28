@@ -1,0 +1,6 @@
+packages:
+  - 'system/**'
+  - 'system/core/**'
+  - 'plugins/**'
+  - 'themes/**'
+  - 'website'

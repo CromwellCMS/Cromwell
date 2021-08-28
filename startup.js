@@ -49,12 +49,12 @@ const fs = require('fs');
         }
 
         try {
-            spawnSync(`npm i yarn@2.0.0-rc.27 -g`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
+            spawnSync(`npm i lerna -g`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
         } catch (error) {
             console.error(error);
         }
 
-        spawnSync(`npx yarn@2.0.0-rc.27 install`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
+        spawnSync(`npx lerna install`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
     }
 
     // Build core

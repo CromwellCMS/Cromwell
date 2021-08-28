@@ -53,6 +53,7 @@
         "date-fns": "2.23.0",
         "graphql": "15.5.1",
         "graphql-tag": "2.12.5",
+        "fsevents": "2.3.2",
         "mobx": "6.3.2",
         "mobx-react": "7.2.0",
         "next": "11.1.0",
@@ -67,7 +68,8 @@
         "react-toastify": "7.0.4",
         "react-image-lightbox": "5.1.4",
         "throttle-debounce": "3.0.1",
-        "tslib": "2.3.1"
+        "tslib": "2.3.1",
+        "typescript": "4.3.5"
     },
     "cromwell": {
         "themes": [

@@ -1,9 +1,11 @@
-import { resolve } from 'path';
-import autoExternal from 'rollup-plugin-auto-external';
+import { isAbsolute, resolve } from 'path';
 import typescript from 'rollup-plugin-ts-compiler';
 
+const external = id => {
+    return !id.startsWith('\0') && !id.startsWith('.') && !id.startsWith('/') && !isAbsolute(id);
+}
+
 const input = resolve(__dirname, 'src/_index.ts');
-const external = ["tslib"];
 const getOutput = (format = 'esm') => {
     if (format === 'esm') {
         return { dir: resolve(__dirname, 'es'), format, sourcemap: true, };
@@ -23,8 +25,6 @@ const getPlugins = () => {
             },
             monorepo: true,
         }),
-        autoExternal(),
-        // terser(),
     ];
 };
 

@@ -55,7 +55,6 @@
     "eslint": "7.32.0",
     "jest": "27.0.6",
     "rollup": "2.56.2",
-    "rollup-plugin-auto-external": "2.0.0",
     "rollup-plugin-terser": "7.0.2",
     "rollup-plugin-ts-compiler": "1.0.16",
     "ts-jest": "27.0.5",

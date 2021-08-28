@@ -88,7 +88,7 @@ export class CRestApiClient {
                 if (!cmsConfig.serviceSecret) {
                     try {
                         const nodeRequire = (name: string) => eval(`require('${name}');`);
-                        const backend: typeof import('@cromwell/core-backend') = nodeRequire('@cromwell/core-backend');
+                        const backend = nodeRequire('@cromwell/core-backend');
                         const { resolve } = nodeRequire('path');
                         const cacache = nodeRequire('cacache');
                         const tempDir = backend.getServerTempDir();
