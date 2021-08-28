@@ -76,7 +76,6 @@
             "theme-test"
         ]
     },
-    "cache-version": "7; modify this string to reset circleci cache",
     "devDependencies": {
         "lerna": "^4.0.0"
     }
