@@ -58,13 +58,13 @@ describe('ThemeEdit page', () => {
         await screen.findByText('_test2_name_');
     });
 
-    it("opens page settings", async () => {
-        render(<Router><ThemeEditPage /></Router>);
+    // it("opens page settings", async () => {
+    //     render(<Router><ThemeEditPage /></Router>);
 
-        const pageBtn = await screen.findByText('_test1_name_');
-        fireEvent.click(pageBtn);
+    //     const pageBtn = await screen.findByText('_test1_name_');
+    //     fireEvent.click(pageBtn);
 
-        await screen.findByText('Settings');
-        await screen.findByDisplayValue('_test1_title_')
-    });
+    //     await screen.findByText('Settings');
+    //     await screen.findByDisplayValue('_test1_title_')
+    // });
 })

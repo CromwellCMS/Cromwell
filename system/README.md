@@ -1,7 +1,7 @@
 # CMS Core Development
 
 ### Prerequisites
-- Node.js v12 or above
+- Node.js v16
 
 ### Install
 

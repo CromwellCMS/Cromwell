@@ -48,13 +48,7 @@ const fs = require('fs');
                 fs.rmdirSync(frontendNode_modules, { recursive: true });
         }
 
-        try {
-            spawnSync(`npm i lerna -g`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
-        } catch (error) {
-            console.error(error);
-        }
-
-        spawnSync(`npx lerna install`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
+        spawnSync(`npm i --workspaces --force`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
     }
 
     // Build core

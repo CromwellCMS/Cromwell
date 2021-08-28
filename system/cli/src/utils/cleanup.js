@@ -65,9 +65,16 @@ const folders = [
     join(systemDir, 'cli/.tsbuildinfo'),
     join(systemDir, 'cli/package-lock.json'),
 
+    join(projectRootDir, 'website/.docusaurus'),
+    join(projectRootDir, 'website/build'),
+    join(projectRootDir, 'website/node_modules'),
+    join(projectRootDir, 'website/.tsbuildinfo'),
+    join(projectRootDir, 'website/package-lock.json'),
+
     join(systemDir, '.cromwell'),
 
     join(projectRootDir, 'package-lock.json'),
+    join(projectRootDir, 'lerna-debug.log'),
     join(projectRootDir, '.cromwell/server'),
     join(projectRootDir, '.cromwell/renderer'),
     join(projectRootDir, '.cromwell/manager'),
