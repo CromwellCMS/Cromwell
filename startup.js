@@ -48,8 +48,7 @@ const fs = require('fs');
                 fs.rmdirSync(frontendNode_modules, { recursive: true });
         }
 
-        spawnSync(`npm i yarn@2.0.0-rc.27 -g`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
-        spawnSync(`yarn install --non-interactive --network-timeout 100000`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
+        spawnSync(`npx yarn@2.0.0-rc.27 install`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
     }
 
     // Build core
