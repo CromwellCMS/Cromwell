@@ -1,6 +1,5 @@
-import { IconButton, Tooltip, MenuItem } from '@material-ui/core';
+import { IconButton, MenuItem, Tooltip } from '@material-ui/core';
 import { AddPhotoAlternateOutlined as AddPhotoAlternateOutlinedIcon, HighlightOffOutlined } from '@material-ui/icons';
-import { Property } from 'csstype';
 import React, { useState } from 'react';
 
 import { getFileManager } from '../../components/fileManager/helpers';
@@ -15,7 +14,7 @@ export type ImagePickerProps = {
     onChange?: (value: string | undefined) => void;
     value?: string | null;
     className?: string;
-    backgroundSize?: Property.BackgroundSize;
+    backgroundSize?: 'contain' | 'cover' | string;
     showRemove?: boolean;
     hideSrc?: boolean;
     classes?: {
