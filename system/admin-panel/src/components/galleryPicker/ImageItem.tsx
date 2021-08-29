@@ -2,6 +2,7 @@ import { TImageSettings } from '@cromwell/core';
 import React from 'react';
 
 import ImagePicker, { ImagePickerProps } from '../imagePicker/ImagePicker';
+import styles from './GalleryPicker.module.scss';
 
 export const ImageItem = (props: {
     itemProps: {
@@ -17,6 +18,7 @@ export const ImageItem = (props: {
             src ? Object.assign({}, props.data, { src }) : undefined);
     }
     return (<ImagePicker
+        className={styles.imageItemContent}
         classes={props.itemProps.classes}
         value={props.data.src}
         placeholder="Pick an image"

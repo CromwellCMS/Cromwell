@@ -9,6 +9,9 @@ const sassLoaderPath = resolveFrom(coreBackend.getAdminPanelDir(), 'sass-loader'
 const tsLoaderPath = resolveFrom(coreBackend.getAdminPanelDir(), 'ts-loader');
 const buildMode = process.env.NODE_ENV || 'production';
 const isProduction = buildMode === 'production';
+const styleLoaderOptions = {
+    attributes: { 'data-meta': 'crw-admin-style' }
+}
 
 const entry = [path.resolve(__dirname, 'src/index.ts')];
 if (!isProduction) {
@@ -58,7 +61,7 @@ module.exports = {
             {
                 test: /\.css$/i,
                 use: [
-                    { loader: styleLoaderPath },
+                    { loader: styleLoaderPath, options: styleLoaderOptions },
                     {
                         loader: cssLoaderPath, options: {
                             sourceMap: isProduction ? false : true,
@@ -69,7 +72,7 @@ module.exports = {
             {
                 test: /\.s[ac]ss$/i,
                 use: [
-                    { loader: styleLoaderPath },
+                    { loader: styleLoaderPath, options: styleLoaderOptions },
                     {
                         loader: cssLoaderPath, options: {
                             modules: {

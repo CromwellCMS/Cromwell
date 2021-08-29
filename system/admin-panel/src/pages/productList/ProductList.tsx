@@ -9,7 +9,7 @@ import {
     TProductFilter,
 } from '@cromwell/core';
 import { CList, CPlugin, getGraphQLClient, TCList } from '@cromwell/core-frontend';
-import { IFrontendFilter, TInstanceSettings } from '@cromwell/plugin-product-filter/build/types/types';
+// import { IFrontendFilter, TInstanceSettings } from '@cromwell/plugin-product-filter/build/types/types';
 import { Checkbox, Drawer, IconButton, Tooltip } from '@material-ui/core';
 import {
     AddCircle as AddCircleIcon,
@@ -66,7 +66,7 @@ const ProductList = (props: TPropsType) => {
     const filterPluginName = '@cromwell/plugin-product-filter';
     const [showFilter, setShowFilter] = useState(false);
     const headerRef = useRef<HTMLDivElement | null>(null);
-    const filterInstRef = useRef<IFrontendFilter | null>(null);
+    const filterInstRef = useRef</*IFrontendFilter*/ any | null>(null);
     const productsRef = useRef<TFilteredProductList | null>(null);
 
     useEffect(() => {
@@ -253,7 +253,7 @@ const ProductList = (props: TPropsType) => {
                                     onChange: onFilterChange,
                                     getInstance: (inst) => { filterInstRef.current = inst },
                                     onMount: onFilterMount,
-                                } as TInstanceSettings
+                                } // as TInstanceSettings
                             }}
                             adminPanel={false}
                             pluginName={filterPluginName}

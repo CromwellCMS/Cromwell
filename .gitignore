@@ -6,10 +6,10 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 .cromwell
-/package-lock.json
+package.json.lerna_backup
+package-lock.json
 /pnpm-lock.yaml
 /cmsconfig.json
-/ormconfig.json
 /.vscode/settings.json
 /themes/theme-test
 

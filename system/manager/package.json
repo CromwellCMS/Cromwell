@@ -34,6 +34,7 @@
     "is-running": "2.1.0",
     "node-cleanup": "2.1.2",
     "node-fetch": "2.6.1",
+    "normalize-path": "3.0.0",
     "npm-run-path": "4.0.1",
     "pretty-bytes": "^5.4.1",
     "pretty-ms": "^7.0.1",

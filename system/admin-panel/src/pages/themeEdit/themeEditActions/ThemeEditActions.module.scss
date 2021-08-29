@@ -1,0 +1,122 @@
+@import "../../../styles/common.module.scss";
+
+.ThemeEditActions {
+    @include paper;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding-right: 10px;
+}
+
+.actionBtn {
+    margin-right: 6px;
+}
+
+.saveBtn {
+    position: relative;
+}
+
+li.optionsItem {
+    padding: 10px 15px;
+
+    svg {
+        margin-right: 10px;
+    }
+}
+
+
+.sidebar {
+    padding: 15px;
+}
+
+.sidebarPaper {
+    @include paperElevated;
+    @include styledScrollBar;
+    border-radius: 0;
+    position: fixed !important;
+    z-index: 1008 !important;
+    max-width: 275px;
+    min-width: 275px;
+    top: 0;
+    bottom: 0;
+    overflow: auto;
+}
+
+.sidebarCloseBtn {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.pageList {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.pageListHeader {
+    font-size: 18px;
+    margin-bottom: 15px;
+    margin-left: 10px;
+    font-weight: 500;
+}
+
+.navBarItem {
+    display: flex;
+    justify-content: space-between;
+    background-color: #fff;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    padding: 0 0 0 15px;
+}
+
+.addPageItem {
+    display: flex;
+    justify-content: center;
+}
+
+.pageBarActions {
+    @include paper;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fff;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    overflow: hidden;
+    padding-right: 10px;
+}
+
+.pageBarTitle {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.pageSettingsContainer {
+    width: 100%;
+    padding-left: 20px;
+}
+
+:global(.modeDark) {
+    .pageBarActions {
+        background-color: #333;
+
+        * {
+            color: #eee;
+        }
+    }
+
+    .sidebar {
+        * {
+            color: #eee;
+        }
+    }
+
+    .addPageItem {
+        background-color: #333;
+
+        * {
+            color: #eee;
+        }
+    }
+}

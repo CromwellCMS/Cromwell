@@ -8,6 +8,7 @@
         "build": "node ./startup.js build",
         "build:core": "npm run build --prefix ./system/core/common && npm run build --prefix ./system/core/backend && npm run build --prefix ./system/core/frontend",
         "build:system": "node ./startup.js build --system",
+        "install-packages": "npm i --workspaces --force",
         "dev": "node ./system/manager/startup.js development",
         "dev:win": "node ./system/manager/src/utils/windowsDev.js",
         "link:cli": "cd ./system/cli && npm link --only=production && yarn",
@@ -32,42 +33,27 @@
         "docker:prune-builder": "docker builder prune -a"
     },
     "workspaces": [
-        "system/*",
-        "system/core/*",
-        "plugins/*",
-        "themes/*",
+        "system/core/backend",
+        "system/core/common",
+        "system/core/frontend",
+        "system/admin-panel",
+        "system/cli",
+        "system/manager",
+        "system/renderer",
+        "system/server",
+        "system/utils",
+        "plugins/main-menu",
+        "plugins/newsletter",
+        "plugins/product-filter",
+        "plugins/product-showcase",
+        "plugins/stripe",
+        "themes/blog",
+        "themes/store",
         "website",
         ".cromwell/bundled-modules"
     ],
     "engines": {
-        "node": "14.x",
-        "yarn": "1.x"
-    },
-    "dependencies": {
-        "theme-test": "1.0.0"
-    },
-    "resolutions": {
-        "@apollo/client": "3.2.1",
-        "@loadable/component": "5.15.0",
-        "clsx": "1.1.1",
-        "date-fns": "2.23.0",
-        "graphql": "15.5.1",
-        "graphql-tag": "2.12.5",
-        "mobx": "6.3.2",
-        "mobx-react": "7.2.0",
-        "next": "11.1.0",
-        "query-string": "7.0.1",
-        "postcss": "8.3.6",
-        "pure-react-carousel": "1.27.6",
-        "react": "17.0.2",
-        "react-dom": "17.0.2",
-        "react-html-parser": "2.0.2",
-        "react-is": "17.0.2",
-        "react-resize-detector": "6.7.6",
-        "react-toastify": "7.0.4",
-        "react-image-lightbox": "5.1.4",
-        "throttle-debounce": "3.0.1",
-        "tslib": "2.3.1"
+        "node": "16.x"
     },
     "cromwell": {
         "themes": [
@@ -76,7 +62,6 @@
             "theme-test"
         ]
     },
-    "cache-version": "7; modify this string to reset circleci cache",
     "devDependencies": {
         "lerna": "^4.0.0"
     }

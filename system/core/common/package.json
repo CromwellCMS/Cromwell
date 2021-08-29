@@ -32,12 +32,12 @@
     "@typescript-eslint/parser": "4.29.2",
     "eslint": "7.32.0",
     "rollup": "2.56.2",
-    "rollup-plugin-auto-external": "2.0.0",
     "rollup-plugin-terser": "7.0.2",
     "rollup-plugin-ts-compiler": "1.0.16",
     "typescript": "4.3.5"
   },
   "peerDependencies": {
-    "next": "11.1.0"
+    "next": "11.1.0",
+    "typeorm": "0.2.37"
   }
 }

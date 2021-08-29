@@ -1,5 +1,5 @@
-import { TCromwellBlock, TCromwellBlockType, TCromwellBlockData, TPluginEntity } from '@cromwell/core';
-import { Grid, IconButton, MenuItem, Popover, Tooltip } from '@material-ui/core';
+import { TCromwellBlock, TCromwellBlockData, TCromwellBlockType, TPluginEntity } from '@cromwell/core';
+import { Grid, IconButton, MenuItem, Popover, Popper, Tooltip } from '@material-ui/core';
 import {
     AddCircleOutline as AddCircleOutlineIcon,
     Code as CodeIcon,
@@ -11,7 +11,6 @@ import {
     Widgets as WidgetsIcon,
 } from '@material-ui/icons';
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 
 import styles from './BaseBlock.module.scss';
 
@@ -74,8 +73,6 @@ export class BlockMenu extends Component<{
         this.setState({ addNewOpen: true });
     }
 
-
-
     render() {
         this.props.getInst(this);
         if (!this.selectedFrame) return <></>;
@@ -124,21 +121,28 @@ export class BlockMenu extends Component<{
             </Tooltip>
         }
 
-
-        return ReactDOM.createPortal(
-            (<>
-                <div className={styles.actions}>
-                    {!isConstant && (
-                        <div className={styles.actions}>
-                            <div className={styles.typeIcon}>{icon}</div>
-                            <Tooltip title="Delete block">
-                                <MenuItem onClick={blockProps.deleteBlock}>
-                                    <DeleteForeverIcon />
-                                </MenuItem>
-                            </Tooltip>
-                        </div>
-                    )}
-                </div>
+        return (<>
+            <Popper
+                open={true}
+                anchorEl={this.selectedFrame}
+                placement={'top-start'}
+            >
+                {!isConstant && (
+                    <div className={styles.actions}>
+                        <div className={styles.typeIcon}>{icon}</div>
+                        <Tooltip title="Delete block">
+                            <MenuItem onClick={blockProps.deleteBlock}>
+                                <DeleteForeverIcon />
+                            </MenuItem>
+                        </Tooltip>
+                    </div>
+                )}
+            </Popper>
+            <Popper
+                open={true}
+                anchorEl={this.selectedFrame}
+                placement={'bottom'}
+            >
                 <div className={styles.bottomActions} ref={this.addNewBtnEl}>
                     <Tooltip title="Add block">
                         <IconButton onClick={this.handleOpenAddNew}>
@@ -213,9 +217,7 @@ export class BlockMenu extends Component<{
                         </div>
                     </Popover>
                 </div>
-
-            </>),
-            this.selectedFrame
-        );
+            </Popper>
+        </>);
     }
 }

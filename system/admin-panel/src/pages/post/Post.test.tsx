@@ -1,5 +1,5 @@
 import React from 'react';
-import { TPost } from '@cromwell/core';
+import { TPost, sleep } from '@cromwell/core';
 
 jest.mock('react-router-dom', () => {
     const originalModule = jest.requireActual('react-router-dom');
@@ -55,12 +55,14 @@ describe('Post page', () => {
 
     it("renders delta", async () => {
         render(<PostPage />);
+        await sleep(1);
 
         await screen.findByText('Lorem ipsum dolor sit amet');
     });
 
     it('opens settings', async () => {
         render(<PostPage />);
+        await sleep(1);
 
         await screen.findByText('Lorem ipsum dolor sit amet');
 
