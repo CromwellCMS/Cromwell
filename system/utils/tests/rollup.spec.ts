@@ -72,7 +72,7 @@ describe('rollup', () => {
 
         const configs = await rollupConfigWrapper(moduleInfo);
 
-        expect(configs.length).toEqual(3);
+        expect(configs.length).toEqual(2);
 
     });
 
