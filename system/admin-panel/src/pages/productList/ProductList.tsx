@@ -53,7 +53,6 @@ const mapStateToProps = (state: TAppState) => {
 type TPropsType = PropsType<TAppState, Record<string, unknown>,
     ReturnType<typeof mapStateToProps>>;
 
-
 const ProductList = (props: TPropsType) => {
     const client = getGraphQLClient();
     const filterInput = useRef<TProductFilter>({});
