@@ -56,7 +56,7 @@ Config properties:
 
 - **rollupConfig** - Function that returns an object with custom Rollup options to pre-build Theme or build Plugin. [Example](https://github.com/CromwellCMS/Cromwell/blob/master/themes/store/cromwell.config.js#L10). Require your development dependencies inside this function, so when the CMS will have to look for other properties, it won't have to require() them. The function exports Rollup options under properties directed at different parts of a target bundle:
   - `main` - default config used in all cases unless overwritten by other properties.
-  - `adminPanel` - Options to use (override) for Theme's Admin panel page bundles OR for Plugin's admin panel bundle.
+  - `adminPanel` - Options to use (override) for Plugin's admin panel bundle.
   - `frontend` - Options for Plugin's frontend bundle
   - `backend` - Options for Plugin's backend bundle.
 - **nextConfig** - Function that returns [Next.js config](https://nextjs.org/docs/api-reference/next.config.js/introduction) for Theme build. This config usually exported from next.config.js file. Returned config should be an object.

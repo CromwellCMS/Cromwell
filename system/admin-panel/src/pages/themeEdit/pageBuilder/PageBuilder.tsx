@@ -1,4 +1,5 @@
 import {
+    getRandStr,
     sleep,
     TCromwellBlock,
     TCromwellBlockData,
@@ -6,15 +7,15 @@ import {
     TCromwellStore,
     TPageConfig,
     TPluginEntity,
-    getRandStr,
 } from '@cromwell/core';
 import { blockCssClass, getBlockHtmlType, getBlockIdFromHtml, pageRootContainerId } from '@cromwell/core-frontend';
 import React, { Component } from 'react';
 
 import { Draggable } from '../../../helpers/Draggable/Draggable';
 import { PageBuilderSidebar } from '../pageBuilderSidebar/PageBuilderSidebar';
-import { TBlockMenuProps } from './blocks/BlockMenu';
-import { BlockMenu } from './blocks/BlockMenu';
+import { TEditorInstances, TExtendedPageConfig } from '../ThemeEdit';
+import { BlockMenu, TBlockMenuProps } from './blocks/BlockMenu';
+import { contentStyles } from './contentStyles';
 import styles from './PageBuilder.module.scss';
 
 type THistoryItem = {
@@ -23,8 +24,8 @@ type THistoryItem = {
 }
 
 export class PageBuilder extends Component<{
-    getInst: (inst: PageBuilder) => any;
-    editingPageInfo: TPageConfig;
+    instances: TEditorInstances;
+    editingPageInfo: TExtendedPageConfig;
     plugins: TPluginEntity[] | null;
     onPageModificationsChange: (modifications: TCromwellBlockData[] | null | undefined) => void;
 }> {
@@ -52,10 +53,12 @@ export class PageBuilder extends Component<{
     private hoveredFrames: Record<string, HTMLElement> = {};
     private selectedFrames: Record<string, HTMLElement> = {};
     private selectedBlock: HTMLElement;
+    public getSelectedBlock = () => this.selectedBlock;
     private blockMenu: BlockMenu;
-    private pageBuilderSidebar: PageBuilderSidebar;
     private history: THistoryItem[] = [];
     private undoneHistory: THistoryItem[] = [];
+    private pageBuilderSidebar: PageBuilderSidebar;
+    public getSidebar = () => this.pageBuilderSidebar;
 
     // Keeps track of modifications that user made (added) currently. Does not store all mods from actual pageCofig.
     // We need to send to the server only newly added modifications.
@@ -72,7 +75,7 @@ export class PageBuilder extends Component<{
 
     constructor(props) {
         super(props);
-        props.getInst(this);
+        props.instances.pageBuilder = this;
     }
 
     componentDidMount() {
@@ -129,19 +132,7 @@ export class PageBuilder extends Component<{
         });
 
         const styles = this.contentWindow.document.createElement('style');
-        styles.innerHTML = `
-        * {
-            -webkit-user-drag: none;
-            -khtml-user-drag: none;
-            -moz-user-drag: none;
-            -o-user-drag: none;
-            user-drag: none;
-            -webkit-user-select: none;
-            -khtml-user-select: none;
-            -moz-user-select: none;
-            -o-user-select: none;
-            user-select: none;
-        }`;
+        styles.innerHTML = contentStyles
         this.contentWindow.document.head.appendChild(styles);
 
         const rootBlock = this.getBlockById(pageRootContainerId);
@@ -251,11 +242,16 @@ export class PageBuilder extends Component<{
 
     public onBlockDeSelected = (block: HTMLElement) => {
         if (!block) return;
+        this.selectedBlock = null;
         this.blockMenu.setSelectedBlock(null, null, null);
         this.pageBuilderSidebar.setSelectedBlock(null, null);
         this.selectedFrames[block.id]?.remove();
         delete this.selectedFrames[block.id];
         this.updateDraggable();
+    }
+
+    public deselectCurrentBlock = () => {
+        if (this.selectedBlock) this.deselectBlock(this.selectedBlock);
     }
 
     public deselectBlock = (block: HTMLElement) => {
@@ -605,6 +601,7 @@ export class PageBuilder extends Component<{
 
         const blockProps: TBlockMenuProps = {
             block: block,
+            getBlockElementById: this.getBlockElementById,
             isGlobalElem: this.isGlobalElem,
             modifyData: (blockData: TCromwellBlockData) => {
                 if (!blockData.global && this.isGlobalElem(this.getBlockElementById(blockData?.id))) {
@@ -642,9 +639,7 @@ export class PageBuilder extends Component<{
     }
 
     render() {
-        const { editingPageInfo, getInst } = this.props;
-        getInst(this);
-
+        const editingPageConfig = this.props.instances.themeEditor.getEditingPageConfig();
         return (
             <div className={styles.PageBuilder} >
                 <div id="editorWidgetWrapper" className={styles.editorWidgetWrapper}></div>
@@ -655,7 +650,7 @@ export class PageBuilder extends Component<{
                 />
                 <iframe
                     className={styles.frameEditor}
-                    src={`${window.location.origin}/${editingPageInfo.route}`}
+                    src={`${window.location.origin}/${editingPageConfig.previewUrl ?? editingPageConfig.route}`}
                     ref={this.editingFrameRef}
                 />
                 <PageBuilderSidebar

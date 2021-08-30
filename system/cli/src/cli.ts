@@ -140,16 +140,10 @@ const args = yargs(process.argv.slice(2))
                     desc: 'Port for Next.js server',
                     type: 'string'
                 })
-                .option('admin', {
-                    alias: 'a',
-                    desc: 'Generate Admin panel page bundles',
-                    type: 'boolean'
-                })
         },
         handler: (argv) => {
             const { buildTask } = require('@cromwell/cms');
-
-            buildTask(argv.watch, argv.port, argv.admin);
+            buildTask(argv.watch, argv.port);
         }
     })
     // CREATE

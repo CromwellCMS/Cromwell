@@ -173,12 +173,6 @@ export const getThemeAdminPanelDir = async (themeModuleName: string) => {
         return resolve(themeBuildDir, 'admin')
     }
 }
-export const getThemeAdminPanelBundleDir = async (themeModuleName: string, pageRoute: string) => {
-    const themeAdminPanelDir = await getThemeAdminPanelDir(themeModuleName);
-    if (themeAdminPanelDir) {
-        return join(themeAdminPanelDir, pageRoute)
-    }
-}
 
 export const getCmsModuleConfig = async (moduleName?: string): Promise<TModuleConfig | undefined> => {
     const path = moduleName ? await getNodeModuleDir(moduleName) : process.cwd();

@@ -10,8 +10,6 @@ module.exports = {
     rollupConfig: () => {
         const commonjs = require('@rollup/plugin-commonjs');
         const json = require('@rollup/plugin-json');
-        const postcss = require('rollup-plugin-postcss');
-        const { terser } = require('rollup-plugin-terser');
         const typescript = require('rollup-plugin-ts-compiler');
 
         // All plugins below will be instantiated for every output options (pages, admin panel, etc)
@@ -33,24 +31,6 @@ module.exports = {
             main: {
                 plugins: [
                     ...getDefaultPlugins(),
-                ]
-            },
-            adminPanel: {
-                plugins: [
-                    ...getDefaultPlugins(),
-                    terser({
-                        compress: {
-                            side_effects: false,
-                            negate_iife: false,
-                        }
-                    }),
-                    postcss({
-                        extract: false,
-                        modules: true,
-                        writeDefinitions: false,
-                        inject: true,
-                        use: ['sass'],
-                    }),
                 ]
             },
         }
@@ -144,77 +124,6 @@ module.exports = {
                     }
                 }
             ],
-            adminPanelProps: {
-                product: {
-                    "id": "401",
-                    "slug": "401",
-                    "name": "Top Laptop",
-                    "price": 231,
-                    "oldPrice": 869,
-                    "views": 0,
-                    "images": [
-                        "/themes/@cromwell/theme-store/product3.png",
-                        "/themes/@cromwell/theme-store/product2.png",
-                        "/themes/@cromwell/theme-store/product1.png",
-                        "/themes/@cromwell/theme-store/product1.png",
-                        "/themes/@cromwell/theme-store/product3.png"
-                    ],
-                    "description": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat.</p><ul><li><i class=\"porto-icon-ok\"></i>Any Product types that You want - Simple, Configurable</li><li><i class=\"porto-icon-ok\"></i>Downloadable/Digital Products, Virtual Products</li><li><i class=\"porto-icon-ok\"></i>Inventory Management with Backordered items</li></ul><p>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, <br>quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>",
-                    "pageTitle": null,
-                    "rating": {
-                        "average": 3.25,
-                        "reviewsNumber": 6
-                    },
-                    "reviews": {
-                        "elements": [
-                            {
-                                "title": "Nothing special",
-                                "productId": "401"
-                            },
-                            {
-                                "title": "Just awesome",
-                                "productId": "401"
-                            },
-                            {
-                                "title": "All good",
-                                "productId": "401"
-                            }
-                        ]
-                    },
-                    "attributes": [
-                        {
-                            "key": "Color",
-                            "values": [
-                                {
-                                    "value": "Purple",
-                                    "productVariant": {
-                                        "images": [
-                                            "/themes/@cromwell/theme-store/product_3.jpg"
-                                        ]
-                                    }
-                                }
-                            ]
-                        },
-                        {
-                            "key": "Size",
-                            "values": [
-                                {
-                                    "value": "38"
-                                },
-                                {
-                                    "value": "40"
-                                },
-                                {
-                                    "value": "42"
-                                },
-                                {
-                                    "value": "44"
-                                }
-                            ]
-                        }
-                    ]
-                }
-            }
         },
         {
             id: "blog/[slug]",

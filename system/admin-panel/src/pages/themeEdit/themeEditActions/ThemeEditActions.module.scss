@@ -24,9 +24,8 @@ li.optionsItem {
     }
 }
 
-
 .sidebar {
-    padding: 15px;
+    padding: 25px 15px;
 }
 
 .sidebarPaper {
@@ -35,8 +34,8 @@ li.optionsItem {
     border-radius: 0;
     position: fixed !important;
     z-index: 1008 !important;
-    max-width: 275px;
-    min-width: 275px;
+    max-width: 300px;
+    min-width: 300px;
     top: 0;
     bottom: 0;
     overflow: auto;
@@ -44,7 +43,7 @@ li.optionsItem {
 
 .sidebarCloseBtn {
     position: absolute;
-    top: 0;
+    top: 10px;
     right: 0;
 }
 
@@ -56,9 +55,11 @@ li.optionsItem {
 
 .pageListHeader {
     font-size: 18px;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     margin-left: 10px;
     font-weight: 500;
+    border-left: 3px solid #333;
+    padding-left: 10px;
 }
 
 .navBarItem {
@@ -80,7 +81,6 @@ li.optionsItem {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #fff;
     margin-bottom: 10px;
     border-radius: 8px;
     overflow: hidden;
@@ -106,6 +106,10 @@ li.optionsItem {
         }
     }
 
+    .pageListHeader {
+        border-left: 3px solid #eee;
+    }
+
     .sidebar {
         * {
             color: #eee;
@@ -113,6 +117,19 @@ li.optionsItem {
     }
 
     .addPageItem {
+        background-color: #333;
+        &:hover {
+            background-color: #555;
+        }
+
+        * {
+            color: #eee;
+        }
+    }
+
+    .pageBarActions,
+    .sidebarPaper,
+    .ThemeEditActions {
         background-color: #333;
 
         * {

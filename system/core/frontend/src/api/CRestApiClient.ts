@@ -210,9 +210,10 @@ export class CRestApiClient {
      * Makes DELETE request to specified route
      * @auth no
      */
-    public delete = async <T = any>(route: string, options?: TRequestOptions): Promise<T> => {
+    public delete = async <T = any>(route: string, input?: any, options?: TRequestOptions): Promise<T> => {
         return this.fetch(route, {
             method: 'delete',
+            input,
             ...(options ?? {}),
         });
     }
@@ -649,7 +650,7 @@ export class CRestApiClient {
      * @auth admin
      */
     public deletePage = async (pageRoute: string, options?: TRequestOptions): Promise<boolean | undefined> => {
-        return this.delete(`v1/theme/page?pageRoute=${pageRoute}`, options);
+        return this.delete(`v1/theme/page?pageRoute=${pageRoute}`, {}, options);
     }
 
     /**
@@ -715,14 +716,6 @@ export class CRestApiClient {
     /** @internal */
     public getThemeCustomConfig = async (options?: TRequestOptions): Promise<Record<string, any> | undefined> => {
         return this.get(`v1/theme/custom-config`, options);
-    }
-
-    /**
-     * Get Admin panel page bundle by specified route of currently active Theme
-     * @auth no
-     */
-    public getThemePageBundle = async (pageRoute: string, options?: TRequestOptions): Promise<TFrontendBundle | undefined> => {
-        return this.get(`v1/theme/page-bundle?pageRoute=${pageRoute}`, options);
     }
 
     /** 

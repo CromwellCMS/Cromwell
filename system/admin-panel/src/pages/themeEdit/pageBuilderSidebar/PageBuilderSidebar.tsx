@@ -24,6 +24,7 @@ export class PageBuilderSidebar extends React.Component<PageBuilderSidebarProps>
 
     private selectedElement: HTMLElement;
     private selectedBlock: TCromwellBlock;
+    public getSelectedBlock = () => this.selectedBlock;
 
     constructor(props) {
         super(props);

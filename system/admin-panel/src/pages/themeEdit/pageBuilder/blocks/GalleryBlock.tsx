@@ -1,5 +1,4 @@
 import { TCromwellBlockData } from '@cromwell/core';
-import { getBlockElementById } from '@cromwell/core-frontend';
 import {
     Checkbox,
     FormControl,
@@ -36,24 +35,24 @@ export function GalleryBlockSidebar(props: TBlockMenuProps) {
     const handleNumberInput = (name: keyof TCromwellBlockData['gallery']) => (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
         let val = parseFloat(e.target.value);
         if (isNaN(val)) val = undefined;
-        handleChange(name, val)
+        handleChange(name, val);
     }
 
     const handleTextInput = (name: keyof TCromwellBlockData['gallery']) => (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
         let val = e.target.value;
         if (val === '') val = undefined;
-        handleChange(name, val)
+        handleChange(name, val);
     }
 
     const handleBoolInput = (name: keyof TCromwellBlockData['gallery']) => (event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
-        handleChange(name, checked ?? false)
+        handleChange(name, checked ?? false);
     }
 
     return (
         <div>
             <div className={styles.settingsHeader}>
                 <PhotoLibraryIcon />
-                {props.isGlobalElem(getBlockElementById(data?.id)) && (
+                {props.isGlobalElem(props.getBlockElementById(data?.id)) && (
                     <div className={styles.headerIcon}>
                         <Tooltip title="Global block">
                             <PublicIcon />

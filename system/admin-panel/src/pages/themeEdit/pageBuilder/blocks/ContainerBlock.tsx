@@ -1,5 +1,4 @@
 import { TCromwellBlockData } from '@cromwell/core';
-import { getBlockElementById } from '@cromwell/core-frontend';
 import { FormControl, InputLabel, MenuItem, Select, TextField, Tooltip } from '@material-ui/core';
 import { Public as PublicIcon, Widgets as WidgetsIcon } from '@material-ui/icons';
 import React from 'react';
@@ -31,7 +30,7 @@ export function ContainerBlockSidebar(props: TBlockMenuProps) {
         <div className={styles.containerSettings}>
             <div className={styles.settingsHeader}>
                 <WidgetsIcon />
-                {props.isGlobalElem(getBlockElementById(data?.id)) && (
+                {props.isGlobalElem(props.getBlockElementById(data?.id)) && (
                     <div className={styles.headerIcon}>
                         <Tooltip title="Global block">
                             <PublicIcon />
