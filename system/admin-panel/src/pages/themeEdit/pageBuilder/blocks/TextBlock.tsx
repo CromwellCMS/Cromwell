@@ -1,4 +1,3 @@
-import { getBlockElementById } from '@cromwell/core-frontend';
 import { TextField, Tooltip } from '@material-ui/core';
 import { Public as PublicIcon, Subject as SubjectIcon } from '@material-ui/icons';
 import React from 'react';
@@ -39,7 +38,7 @@ export const TextBlockSidebar = (props: TBlockMenuProps) => {
         <div>
             <div className={styles.settingsHeader}>
                 <SubjectIcon />
-                {props.isGlobalElem(getBlockElementById(data?.id)) && (
+                {props.isGlobalElem(props.getBlockElementById(data?.id)) && (
                     <div className={styles.headerIcon}>
                         <Tooltip title="Global block">
                             <PublicIcon />

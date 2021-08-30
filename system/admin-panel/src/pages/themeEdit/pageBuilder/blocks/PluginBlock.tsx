@@ -1,5 +1,4 @@
 import { TPluginEntity } from '@cromwell/core';
-import { getBlockElementById } from '@cromwell/core-frontend';
 import { TextField, Tooltip } from '@material-ui/core';
 import { Power as PowerIcon, Public as PublicIcon } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
@@ -33,7 +32,7 @@ export function PluginBlockSidebar(props: TBlockMenuProps) {
         <div>
             <div className={styles.settingsHeader}>
                 <PowerIcon />
-                {props.isGlobalElem(getBlockElementById(data?.id)) && (
+                {props.isGlobalElem(props.getBlockElementById(data?.id)) && (
                     <div className={styles.headerIcon}>
                         <Tooltip title="Global block">
                             <PublicIcon />

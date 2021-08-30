@@ -1,18 +1,8 @@
-import { TFrontendBundle, TPackageCromwellConfig, TPageConfig, TPageInfo, TThemeConfig } from '@cromwell/core';
-import {
-    getCmsSettings,
-    getLogger,
-    getThemeAdminPanelBundleDir,
-    getThemeConfigs,
-    JwtAuthGuard,
-    Roles,
-} from '@cromwell/core-backend';
+import { TPackageCromwellConfig, TPageConfig, TPageInfo, TThemeConfig } from '@cromwell/core';
+import { getLogger, getThemeConfigs, JwtAuthGuard, Roles } from '@cromwell/core-backend';
 import { Body, Controller, Delete, Get, HttpException, HttpStatus, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import fs from 'fs-extra';
-import normalizePath from 'normalize-path';
 
-import { FrontendBundleDto } from '../dto/frontend-bundle.dto';
 import { ModuleInfoDto } from '../dto/module-info.dto';
 import { PageConfigDto } from '../dto/page-config.dto';
 import { PageInfoDto } from '../dto/page-info.dto';
@@ -236,54 +226,6 @@ export class ThemeController {
         let out: Record<string, any> = {};
         const { themeConfig, userConfig } = await getThemeConfigs();
         out = Object.assign(out, themeConfig?.themeCustomConfig, userConfig?.themeCustomConfig);
-        return out;
-    }
-
-
-    @Get('page-bundle')
-    @ApiOperation({
-        description: `Returns page's admin panel bundle from theme dir.`,
-        parameters: [{ name: 'pageRoute', in: 'query', required: true }]
-    })
-    @ApiResponse({
-        status: 200,
-        type: FrontendBundleDto
-    })
-    async getPageBundle(@Query('pageRoute') pageRoute: string): Promise<TFrontendBundle | null> {
-        logger.log('ThemeController::getPageBundle');
-        let out: TFrontendBundle | null = null;
-
-        if (!pageRoute || pageRoute === '')
-            throw new HttpException('Page route is not valid: ' + pageRoute, HttpStatus.NOT_ACCEPTABLE);
-
-        const cmsSettings = await getCmsSettings();
-        if (!cmsSettings?.themeName) throw new HttpException('!cmsSettings?.themeName', HttpStatus.INTERNAL_SERVER_ERROR);
-
-        const pagePath = await getThemeAdminPanelBundleDir(cmsSettings.themeName, pageRoute);
-        if (!pagePath) throw new HttpException('page path cannot be resolved', HttpStatus.NOT_ACCEPTABLE);
-
-        const pagePathBundle = normalizePath(pagePath) + '.js';
-        if (await fs.pathExists(pagePathBundle)) {
-            try {
-                const source = (await fs.readFile(pagePathBundle)).toString();
-                if (source) out = { source }
-            } catch (e) {
-                logger.error('Failed to read page file at: ' + pagePathBundle, 'Error');
-            }
-
-            const pageMetaInfoPath = pagePathBundle + '_meta.json';
-            if (await fs.pathExists(pageMetaInfoPath)) {
-                try {
-                    if (out) out.meta = await fs.readJSON(pageMetaInfoPath);
-                } catch (e) {
-                    logger.error('Failed to read meta of page at: ' + pageMetaInfoPath, 'Error');
-                }
-            }
-        }
-
-        if (!out)
-            throw new HttpException("Page bundle doesn't exist", HttpStatus.NOT_FOUND);
-
         return out;
     }
 

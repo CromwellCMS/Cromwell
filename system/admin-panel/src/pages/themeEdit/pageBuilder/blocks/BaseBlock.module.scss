@@ -16,8 +16,8 @@
 .actions {
     display: flex;
     position: absolute;
-    top: -41px;
-    left: -10px;
+    top: -38px;
+    left: -2px;
     background-color: #fff;
     box-shadow: 0 3px 4px 0 rgba(0, 0, 0, 0.05), 0 0 8px 0 rgba(0, 0, 0, 0.05);
     align-items: center;
@@ -69,6 +69,8 @@
     display: flex;
     align-items: center;
     margin-bottom: 25px;
+    border-bottom: 2px solid #333;
+    padding-bottom: 10px;
 }
 
 .settingsTitle {
@@ -85,7 +87,7 @@
     display: flex;
     align-items: center;
 
-    >p {
+    > p {
         margin-left: 4px;
     }
 }
@@ -93,7 +95,7 @@
 div.textField {
     color: inherit;
 
-    >div {
+    > div {
         color: inherit;
     }
 }
@@ -113,4 +115,10 @@ div.settingsInput {
     background-color: #fff;
     border-radius: 6px;
     color: #222;
+}
+
+:global(.modeDark) {
+    .settingsHeader {
+        border-bottom: 2px solid #fff;
+    }
 }

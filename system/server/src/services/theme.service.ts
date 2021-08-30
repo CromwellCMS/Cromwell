@@ -277,11 +277,21 @@ export class ThemeService {
         }
         if (!userPageConfig.modifications) {
             logger.error('Server::saveUserPageConfig: Invalid userPageConfig, no modifications', JSON.stringify(userPageConfig));
-            return false;
+            throw new HttpException("Invalid page config, no modifications", HttpStatus.NOT_ACCEPTABLE);
         }
 
         const config = await getThemeConfigs();
         let userConfig = config.userConfig;
+        const themeConfig = config.themeConfig;
+
+        const allPages = [...(userConfig?.pages ?? []), ...(themeConfig?.pages ?? [])];
+        allPages.forEach(page => {
+            if (page.route === userPageConfig.route && page.id !== userPageConfig.id) {
+                logger.error('Server::saveUserPageConfig: page with this route already exists', JSON.stringify(userPageConfig));
+                throw new HttpException("Page with this route already exists", HttpStatus.NOT_ACCEPTABLE);
+            }
+        })
+
         const cmsSettings = config.cmsSettings;
 
         // If userConfig is null, then theme is probably new and user has never saved mods. Create a new userConfig
@@ -447,12 +457,18 @@ export class ThemeService {
         const configs = await getThemeConfigs();
 
         if (configs.themeConfig?.pages) {
-            configs.themeConfig.pages = configs.themeConfig.pages.filter(p => !p.isVirtual && !(p.route === page?.route && p.id === page?.id))
+            configs.themeConfig.pages = configs.themeConfig.pages.filter(p => {
+                if (p.isVirtual && p.route === page?.route && p.id === page?.id) return false;
+                return true;
+            });
             await this.saveThemeOriginalConfig(configs.themeConfig);
         }
 
         if (configs.userConfig?.pages) {
-            configs.userConfig.pages = configs.userConfig.pages.filter(p => !(p.route === page?.route && p.id === page?.id))
+            configs.userConfig.pages = configs.userConfig.pages.filter(p => {
+                if (p.isVirtual && p.route === page?.route && p.id === page?.id) return false;
+                return true;
+            });
             await this.saveThemeUserConfig(configs.userConfig);
         }
         return true;

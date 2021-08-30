@@ -9,10 +9,6 @@
     }
 }
 
-body {
-    // overflow: hidden;
-}
-
 h1 {
     font-size: 24px;
     font-weight: 500;
@@ -180,8 +176,4 @@ h3 {
     :global(.ce-conversion-tool) svg {
         fill: #333;
     }
-}
-
-div[role="tooltip"] {
-    z-index: 10000;
 }
