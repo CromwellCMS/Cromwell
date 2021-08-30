@@ -1,5 +1,5 @@
-import { TCromwellBlockData, TPageConfig, TPageInfo, TPluginEntity } from '@cromwell/core';
-import { getGraphQLClient, getRestApiClient } from '@cromwell/core-frontend';
+import { TCromwellBlockData, TPageConfig, TPluginEntity, TPageInfo } from '@cromwell/core';
+import { getGraphQLClient } from '@cromwell/core-frontend';
 import React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 
@@ -9,12 +9,23 @@ import { PageBuilder } from './pageBuilder/PageBuilder';
 import styles from './ThemeEdit.module.scss';
 import { ThemeEditActions } from './themeEditActions/ThemeEditActions';
 
+export type TExtendedPageInfo = TPageInfo & {
+    isSaved?: boolean;
+    previewUrl?: string;
+}
 
-class ThemeEditState {
-    plugins: TPluginEntity[] | null = null;
-    editingPageInfo: TPageConfig | null = null;
-    isPageLoading: boolean = false;
-    loadingStatus: boolean = false;
+export type TEditorInstances = {
+    pageBuilder?: PageBuilder;
+    actions?: ThemeEditActions;
+    themeEditor?: ThemeEdit;
+}
+
+export type TExtendedPageConfig = TPageConfig & TExtendedPageInfo;
+
+type ThemeEditState = {
+    plugins: TPluginEntity[] | null;
+    isPageLoading: boolean;
+    loadingStatus: boolean;
 }
 
 export default class ThemeEdit extends React.Component<Partial<RouteComponentProps>, ThemeEditState> {
@@ -24,19 +35,27 @@ export default class ThemeEdit extends React.Component<Partial<RouteComponentPro
     public getChangedModifications = () => this.changedModifications;
 
     private pageBuilderContent = React.createRef<HTMLDivElement>();
-    private pageBuilder: PageBuilder;
+
+    private editingPageConfig: TExtendedPageConfig | null | undefined = null;
+    public getEditingPageConfig = () => this.editingPageConfig;
+    public setEditingPageConfig = (info: TPageConfig | null) => this.editingPageConfig = info;
+
+    private instances: TEditorInstances = { themeEditor: this };
 
     constructor(props: any) {
         super(props);
-        this.state = new ThemeEditState();
+        this.state = {
+            plugins: null,
+            isPageLoading: false,
+            loadingStatus: false,
+        };
     }
 
     componentDidMount() {
         this.init();
     }
 
-
-    private init = async () => {
+    public init = async () => {
         const graphQLClient = getGraphQLClient();
 
         try {
@@ -46,35 +65,13 @@ export default class ThemeEdit extends React.Component<Partial<RouteComponentPro
                 this.setState({ plugins: pluginEntities });
             }
         } catch (e) { console.error(e); }
-
-    }
-
-    private handleOpenPage = async (pageInfo: TPageInfo) => {
-        this.setState({ isPageLoading: true });
-
-        let pageConfig: TPageConfig | undefined;
-        try {
-            if (pageInfo.route && pageInfo.route !== '') {
-                pageConfig = await getRestApiClient()?.getPageConfig(pageInfo.route);
-            }
-        } catch (e) {
-            console.error(e);
-        }
-
-        this.changedModifications = null;
-
-        this.setState({
-            editingPageInfo: pageConfig,
-            isPageLoading: false,
-        });
     }
 
     private handlePageModificationsChange = (modifications: TCromwellBlockData[] | null | undefined) => {
         this.changedModifications = modifications;
     }
 
-
-    public handleTabChange = () => {
+    public handlePageChange = () => {
         if (this.pageBuilderContent.current) {
             this.pageBuilderContent.current.style.opacity = '0';
             this.pageBuilderContent.current.style.transitionDuration = '0s'
@@ -92,37 +89,33 @@ export default class ThemeEdit extends React.Component<Partial<RouteComponentPro
     }
 
     public undoModification = () => {
-        this.pageBuilder.undoModification();
+        this.instances.pageBuilder.undoModification();
     }
 
     public redoModification = () => {
-        this.pageBuilder.redoModification();
+        this.instances.pageBuilder.redoModification();
     }
 
     render() {
-        const {
-            editingPageInfo,
-            isPageLoading } = this.state;
+        const { isPageLoading } = this.state;
 
         return (
             <div className={styles.ThemeEdit}>
                 <div className={styles.header}>
                     <ThemeEditActions
-                        editingPageInfo={editingPageInfo}
-                        themeEditPage={this}
-                        openPage={this.handleOpenPage}
+                        instances={this.instances}
                         history={this.props.history}
                         undoModification={this.undoModification}
                         redoModification={this.redoModification}
                     />
                 </div>
                 <div className={styles.pageBuilder} ref={this.pageBuilderContent}>
-                    {(isPageLoading || !editingPageInfo) && (<LoadBox />)}
-                    {!isPageLoading && editingPageInfo && (
+                    {(isPageLoading || !this.editingPageConfig) && (<LoadBox />)}
+                    {!isPageLoading && this.editingPageConfig && (
                         <PageBuilder
-                            getInst={inst => this.pageBuilder = inst}
+                            instances={this.instances}
                             plugins={this.state.plugins}
-                            editingPageInfo={editingPageInfo}
+                            editingPageInfo={this.editingPageConfig}
                             onPageModificationsChange={this.handlePageModificationsChange}
                         />
                     )}

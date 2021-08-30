@@ -1,6 +1,5 @@
 import {
     getRandStr,
-    sleep,
     TFrontendDependency,
     TModuleConfig,
     TPackageCromwellConfig,
@@ -18,7 +17,6 @@ import {
     getPluginBackendPath,
     getPublicPluginsDir,
     getPublicThemesDir,
-    getThemeAdminPanelBundleDir,
     getThemePagesMetaPath,
     getThemePagesVirtualPath,
     getThemeTempRollupBuildDir,
@@ -74,7 +72,7 @@ const resolveExternal = (source: string, frontendDeps?: TFrontendDependency[]): 
     return false;
 }
 
-export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, moduleConfig?: TModuleConfig, watch?: boolean, admin?: boolean): Promise<RollupOptions[]> => {
+export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, moduleConfig?: TModuleConfig, watch?: boolean): Promise<RollupOptions[]> => {
 
     if (!moduleInfo) throw new Error(`CromwellPlugin Error. Provide config as second argument to the wrapper function`);
     if (!moduleInfo?.type) throw new Error(`CromwellPlugin Error. Provide one of types to the CromwellConfig: 'plugin', 'theme'`);
@@ -275,7 +273,6 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
             pagesDir,
         });
 
-        const adminPanelOptions: RollupOptions[] = [];
         const dependencyOptions: RollupOptions[] = [];
 
         if (pageFiles && pageFiles.length > 0) {
@@ -319,59 +316,6 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
             if (watch) {
                 startPagesWatcher(buildDir, pagesDir);
             }
-
-            // Theme admin panel config
-            if (admin || !watch) {
-                for (const pagePath of pagesMetaInfo.paths) {
-                    const adminOptions: RollupOptions = (Object.assign({}, (specifiedOptions?.adminPanel ?? inputOptions)));
-                    adminOptions.plugins = [...(adminOptions.plugins ?? [])];
-
-                    const optionsInput = '$$' + moduleInfo.name + '/admin/' + pagePath.pageName;
-                    adminOptions.plugins.push(virtual({
-                        [optionsInput]: `import pageComp from '${pagePath.srcFullPath}';export default pageComp;`
-                    }));
-
-                    if (!adminOptions.plugins.find(plugin => typeof plugin === 'object' && plugin?.name === '@rollup/plugin-babel'
-                        || typeof plugin === 'object' && plugin?.name === 'babel'))
-                        adminOptions.plugins.push(babel({
-                            extensions: ['.js', '.jsx', '.ts', '.tsx'],
-                            babelHelpers: 'bundled',
-                            presets: ['@babel/preset-react']
-                        }));
-
-                    adminOptions.input = optionsInput;
-                    adminOptions.plugins.push(await rollupPluginCromwellFrontend({
-                        buildDir, moduleInfo,
-                        moduleConfig, frontendDeps,
-                        type: 'themeAdminPanel',
-                        pagesDir,
-                    }));
-
-                    if (!adminOptions.plugins.find(plugin => typeof plugin === 'object' && plugin?.name === '@rollup/plugin-node-resolve'
-                        || typeof plugin === 'object' && plugin?.name === 'node-resolve'))
-                        adminOptions.plugins.push(nodeResolve({
-                            extensions: ['.js', '.jsx', '.ts', '.tsx'],
-                        }));
-
-                    const pageStrippedName = 'page_' + (pagePath?.pageName?.replace(/\W/g, '_') ?? strippedName);
-
-                    adminOptions.output = Object.assign({}, adminOptions.output, {
-                        dir: resolve(buildDir, 'admin', dirname(pagePath.pageName)),
-                        format: "iife",
-                        name: pageStrippedName,
-                        banner: '(function() {',
-                        footer: `return ${pageStrippedName};})();`
-                    } as OutputOptions);
-
-                    adminPanelOptions.push(adminOptions);
-                }
-                adminPanelOptions.forEach(opt => outOptions.push(opt));
-            }
-
-            if (admin) {
-                startPageBundlesWatcher(moduleInfo.name, resolve(buildDir, 'admin'))
-            }
-
         } else {
             throw new Error('CromwellPlugin Error. No pages found at: ' + pagesDir);
         }
@@ -503,7 +447,7 @@ export const rollupPluginCromwellFrontend = async (settings?: {
         },
         resolveId(source) {
             if (settings?.moduleInfo?.type === 'theme' && settings?.pagesMetaInfo?.paths) {
-                // If bundle frontend pages (not AdminPanel) mark css as external to leave it to Next.js Webpack
+                // If bundle frontend pages mark css as external to leave it to Next.js Webpack
                 if (/\.s?css$/.test(source)) {
                     return { id: source, external: true };
                 }
@@ -968,47 +912,4 @@ const startStaticWatcher = async (moduleName: string, type: 'theme' | 'plugin') 
     watcher
         .on('change', copyFile)
         .on('add', copyFile)
-}
-
-
-let pageBundlesWatcherActive = false;
-const startPageBundlesWatcher = async (themeName: string, buildDir: string) => {
-    if (pageBundlesWatcherActive) return;
-    pageBundlesWatcherActive = true;
-
-    buildDir = normalizePath(buildDir);
-    await fs.ensureDir(buildDir);
-
-    const globStr = `${buildDir}/**`;
-
-    const watcher = chokidar.watch(globStr, {
-        persistent: true
-    });
-
-    const copyFile = async (filePath: string) => {
-        const pathChunk = normalizePath(filePath).replace(buildDir, '');
-        const destPath = await getThemeAdminPanelBundleDir(themeName, pathChunk);
-        if (!destPath) return;
-
-        try {
-            if (await fs.pathExists(destPath)) {
-                await fs.remove(destPath);
-            }
-        } catch (error) {
-            await sleep(0.5);
-        }
-
-        try {
-            await fs.ensureDir(dirname(destPath));
-
-            await fs.copyFile(filePath, destPath);
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
-    watcher
-        .on('change', copyFile)
-        .on('add', copyFile);
-
 }

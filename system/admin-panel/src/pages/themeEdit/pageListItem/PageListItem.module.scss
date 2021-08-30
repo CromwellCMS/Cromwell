@@ -15,6 +15,7 @@ body .pageItem {
 
 .pageItemActions {
     display: flex;
+    align-items: center;
     margin-left: 20px;
 }
 
@@ -26,6 +27,10 @@ body .activeItem {
     background-color: #333;
     color: #fff;
 
+    * {
+        color: #fff;
+    }
+
     .activeIcon {
         display: block;
         margin-right: 5px;
@@ -34,6 +39,10 @@ body .activeItem {
 
 body .activeItem:hover {
     background-color: #666;
+}
+
+.previewChangeContainer {
+    padding: 15px;
 }
 
 :global(.modeDark) {

@@ -1,5 +1,5 @@
 import { TCromwellBlock, TCromwellBlockData, TCromwellBlockType, TPluginEntity } from '@cromwell/core';
-import { Grid, IconButton, MenuItem, Popover, Popper, Tooltip } from '@material-ui/core';
+import { Grid, IconButton, MenuItem, Popover, Tooltip } from '@material-ui/core';
 import {
     AddCircleOutline as AddCircleOutlineIcon,
     Code as CodeIcon,
@@ -11,6 +11,7 @@ import {
     Widgets as WidgetsIcon,
 } from '@material-ui/icons';
 import React, { Component } from 'react';
+import ReactDom from 'react-dom';
 
 import styles from './BaseBlock.module.scss';
 
@@ -18,6 +19,7 @@ export type TBlockMenuProps = {
     block?: TCromwellBlock;
     global?: boolean,
     isGlobalElem: (block: HTMLElement) => boolean;
+    getBlockElementById: (typeof import('@cromwell/core-frontend'))['getBlockElementById'];
     modifyData?: (data: TCromwellBlockData) => void;
     deleteBlock?: () => void;
     addNewBlockAfter?: (bType: TCromwellBlockType) => void;
@@ -121,103 +123,92 @@ export class BlockMenu extends Component<{
             </Tooltip>
         }
 
-        return (<>
-            <Popper
-                open={true}
-                anchorEl={this.selectedFrame}
-                placement={'top-start'}
-            >
-                {!isConstant && (
-                    <div className={styles.actions}>
-                        <div className={styles.typeIcon}>{icon}</div>
-                        <Tooltip title="Delete block">
-                            <MenuItem onClick={blockProps.deleteBlock}>
-                                <DeleteForeverIcon />
-                            </MenuItem>
-                        </Tooltip>
-                    </div>
-                )}
-            </Popper>
-            <Popper
-                open={true}
-                anchorEl={this.selectedFrame}
-                placement={'bottom'}
-            >
-                <div className={styles.bottomActions} ref={this.addNewBtnEl}>
-                    <Tooltip title="Add block">
-                        <IconButton onClick={this.handleOpenAddNew}>
-                            <AddCircleOutlineIcon className={styles.addIcon} />
-                        </IconButton>
+        return ReactDom.createPortal(<>
+            {!isConstant && (
+                <div className={styles.actions}>
+                    <div className={styles.typeIcon}>{icon}</div>
+                    <Tooltip title="Delete block">
+                        <MenuItem onClick={blockProps.deleteBlock}>
+                            <DeleteForeverIcon />
+                        </MenuItem>
                     </Tooltip>
-                    <Popover
-                        open={this.state.addNewOpen}
-                        elevation={6}
-                        anchorEl={this.addNewBtnEl.current}
-                        onClose={this.handleCloseAddNew}
-                        anchorOrigin={{
-                            vertical: 'bottom',
-                            horizontal: 'center',
-                        }}
-                        transformOrigin={{
-                            vertical: 'top',
-                            horizontal: 'center',
-                        }}
-                    >
-                        <div className={styles.widgetsContainer}>
-                            <Grid container spacing={1} >
-                                <Grid item xs={4} >
-                                    <MenuItem className={styles.widgetItem}
-                                        onClick={addNewBlock('text')}
-                                    >
-                                        <SubjectIcon />
-                                        <p>Text</p>
-                                    </MenuItem>
-                                </Grid>
-                                <Grid item xs={4} >
-                                    <MenuItem className={styles.widgetItem}
-                                        onClick={addNewBlock('container')}
-                                    >
-                                        <WidgetsIcon />
-                                        <p>Container</p>
-                                    </MenuItem>
-                                </Grid>
-                                <Grid item xs={4} >
-                                    <MenuItem className={styles.widgetItem}
-                                        onClick={addNewBlock('HTML')}
-                                    >
-                                        <CodeIcon />
-                                        <p>HTML</p>
-                                    </MenuItem>
-                                </Grid>
-                                <Grid item xs={4} >
-                                    <MenuItem className={styles.widgetItem}
-                                        onClick={addNewBlock('plugin')}
-                                    >
-                                        <PowerIcon />
-                                        <p>Plugin</p>
-                                    </MenuItem>
-                                </Grid>
-                                <Grid item xs={4} >
-                                    <MenuItem className={styles.widgetItem}
-                                        onClick={addNewBlock('image')}
-                                    >
-                                        <ImageIcon />
-                                        <p>Image</p>
-                                    </MenuItem>
-                                </Grid>
-                                <Grid item xs={4} >
-                                    <MenuItem className={styles.widgetItem}
-                                        onClick={addNewBlock('gallery')}
-                                    >
-                                        <PhotoLibraryIcon />
-                                        <p>Gallery</p>
-                                    </MenuItem>
-                                </Grid>
-                            </Grid>
-                        </div>
-                    </Popover>
                 </div>
-            </Popper>
-        </>);
+            )}
+            <div className={styles.bottomActions} ref={this.addNewBtnEl}>
+                <Tooltip title="Add block">
+                    <IconButton onClick={this.handleOpenAddNew}>
+                        <AddCircleOutlineIcon className={styles.addIcon} />
+                    </IconButton>
+                </Tooltip>
+                <Popover
+                    open={this.state.addNewOpen}
+                    elevation={6}
+                    anchorEl={this.addNewBtnEl.current}
+                    onClose={this.handleCloseAddNew}
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'center',
+                    }}
+                    transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'center',
+                    }}
+                >
+                    <div className={styles.widgetsContainer}>
+                        <Grid container spacing={1} >
+                            <Grid item xs={4} >
+                                <MenuItem className={styles.widgetItem}
+                                    onClick={addNewBlock('text')}
+                                >
+                                    <SubjectIcon />
+                                    <p>Text</p>
+                                </MenuItem>
+                            </Grid>
+                            <Grid item xs={4} >
+                                <MenuItem className={styles.widgetItem}
+                                    onClick={addNewBlock('container')}
+                                >
+                                    <WidgetsIcon />
+                                    <p>Container</p>
+                                </MenuItem>
+                            </Grid>
+                            <Grid item xs={4} >
+                                <MenuItem className={styles.widgetItem}
+                                    onClick={addNewBlock('HTML')}
+                                >
+                                    <CodeIcon />
+                                    <p>HTML</p>
+                                </MenuItem>
+                            </Grid>
+                            <Grid item xs={4} >
+                                <MenuItem className={styles.widgetItem}
+                                    onClick={addNewBlock('plugin')}
+                                >
+                                    <PowerIcon />
+                                    <p>Plugin</p>
+                                </MenuItem>
+                            </Grid>
+                            <Grid item xs={4} >
+                                <MenuItem className={styles.widgetItem}
+                                    onClick={addNewBlock('image')}
+                                >
+                                    <ImageIcon />
+                                    <p>Image</p>
+                                </MenuItem>
+                            </Grid>
+                            <Grid item xs={4} >
+                                <MenuItem className={styles.widgetItem}
+                                    onClick={addNewBlock('gallery')}
+                                >
+                                    <PhotoLibraryIcon />
+                                    <p>Gallery</p>
+                                </MenuItem>
+                            </Grid>
+                        </Grid>
+                    </div>
+                </Popover>
+            </div>
+
+        </>, this.selectedFrame)
     }
 }

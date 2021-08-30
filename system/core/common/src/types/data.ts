@@ -287,7 +287,6 @@ export type TPageInfo = {
 export type TPageConfig = TPageInfo & {
     modifications: TCromwellBlockData[];
     pageCustomConfig?: Record<string, any>;
-    adminPanelProps?: any;
     /** Custom HTML to add into head of the page */
     headHtml?: string;
     /** Custom HTML to add to the end of the page */
