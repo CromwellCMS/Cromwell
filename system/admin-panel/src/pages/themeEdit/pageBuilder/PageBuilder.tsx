@@ -31,6 +31,7 @@ export class PageBuilder extends Component<{
 }> {
     private editingFrameRef = React.createRef<HTMLIFrameElement>();
     private editorWidgetWrapper: HTMLElement;
+    private editorWidgetWrapperCropped: HTMLElement;
     private contentWindow: Window;
     private contentStore: TCromwellStore;
     private contentFrontend: typeof import('@cromwell/core-frontend');
@@ -52,6 +53,7 @@ export class PageBuilder extends Component<{
 
     private hoveredFrames: Record<string, HTMLElement> = {};
     private selectedFrames: Record<string, HTMLElement> = {};
+    private invisibleSelectedFrames: Record<string, HTMLElement> = {};
     private selectedBlock: HTMLElement;
     public getSelectedBlock = () => this.selectedBlock;
     private blockMenu: BlockMenu;
@@ -59,6 +61,7 @@ export class PageBuilder extends Component<{
     private undoneHistory: THistoryItem[] = [];
     private pageBuilderSidebar: PageBuilderSidebar;
     public getSidebar = () => this.pageBuilderSidebar;
+    private selectableFrameMargin = 0;
 
     // Keeps track of modifications that user made (added) currently. Does not store all mods from actual pageCofig.
     // We need to send to the server only newly added modifications.
@@ -89,9 +92,11 @@ export class PageBuilder extends Component<{
         }
         this.contentWindow = this.editingFrameRef.current.contentWindow;
         this.editorWidgetWrapper = document.getElementById('editorWidgetWrapper');
+        this.editorWidgetWrapperCropped = document.getElementById('editorWidgetWrapperCropped');
 
         const awaitInit = async () => {
-            if (!this.contentWindow.CromwellStore?.nodeModules?.modules?.['@cromwell/core-frontend']) {
+            if (!this.contentWindow.CromwellStore?.nodeModules?.modules?.['@cromwell/core-frontend'] ||
+                !this.contentWindow.CromwellStore?.forceUpdatePage) {
                 await sleep(0.2);
                 await awaitInit();
             }
@@ -108,7 +113,7 @@ export class PageBuilder extends Component<{
         this.setStoreItem = this.contentStore.nodeModules?.modules?.['@cromwell/core'].setStoreItem;
         (window as any).PageBuilder2 = this;
 
-        this.contentStore.forceUpdatePage();
+        this.contentStore?.forceUpdatePage?.();
 
         this.draggable = new Draggable({
             document: this.contentWindow.document,
@@ -161,14 +166,13 @@ export class PageBuilder extends Component<{
     }
 
     public updateFramesPosition = () => {
-        Object.keys(this.selectedFrames).forEach(id => {
-            const block = this.getBlockElementById(getBlockIdFromHtml(id));
-            if (block && this.selectedFrames[id]) this.setFramePosition(block, this.selectedFrames[id]);
-        });
-
-        Object.keys(this.hoveredFrames).forEach(id => {
-            const block = this.getBlockElementById(getBlockIdFromHtml(id));
-            if (block && this.hoveredFrames[id]) this.setFramePosition(block, this.hoveredFrames[id]);
+        [
+            ...Object.entries(this.selectedFrames),
+            ...Object.entries(this.invisibleSelectedFrames),
+            ...Object.entries(this.hoveredFrames),
+        ].forEach(entry => {
+            const block = this.getBlockElementById(getBlockIdFromHtml(entry[0]));
+            if (entry[1] && block) this.setFramePosition(block, entry[1]);
         });
     }
 
@@ -200,16 +204,20 @@ export class PageBuilder extends Component<{
     private setFramePosition = (block: HTMLElement, frame: HTMLElement) => {
         const bounding = block.getBoundingClientRect();
         frame.style.position = 'absolute';
-        frame.style.top = (this.contentWindow.pageYOffset + bounding.top) + 'px';
-        frame.style.left = (this.contentWindow.pageXOffset + bounding.left) + 'px';
+        frame.style.top = (this.contentWindow.pageYOffset
+            + bounding.top + this.selectableFrameMargin) + 'px';
+        frame.style.left = (this.contentWindow.pageXOffset
+            + bounding.left + this.selectableFrameMargin) + 'px';
+
+        frame.style.height = block.offsetHeight + 'px';
+        frame.style.width = block.offsetWidth + 'px';
     }
 
     private createBlockFrame = (block: HTMLElement) => {
         const selectableFrame = this.contentWindow.document.createElement('div');
         selectableFrame.style.zIndex = '10';
         selectableFrame.style.pointerEvents = 'none';
-        selectableFrame.style.height = block.offsetHeight + 'px';
-        selectableFrame.style.width = block.offsetWidth + 'px';
+
         selectableFrame.style.border = `1px solid ${this.getFrameColor(block)}`;
         this.setFramePosition(block, selectableFrame);
         return selectableFrame;
@@ -226,16 +234,23 @@ export class PageBuilder extends Component<{
         this.selectedBlock.style.cursor = 'move';
 
         Object.values(this.selectedFrames).forEach(frame => frame?.remove())
+        Object.values(this.invisibleSelectedFrames).forEach(frame => frame?.remove())
         this.selectedFrames = {};
+        this.invisibleSelectedFrames = {};
 
         const frame = this.createBlockFrame(block);
         frame.style.border = `2px solid ${this.getFrameColor(block)}`;
 
-        this.editorWidgetWrapper.appendChild(frame);
         this.selectedFrames[block.id] = frame;
-        const crwBlock = this.getBlockById(getBlockIdFromHtml(block.id));
+        this.editorWidgetWrapperCropped.appendChild(frame);
 
-        this.blockMenu.setSelectedBlock(frame, block, crwBlock);
+        const invisibleFrame = frame.cloneNode(true) as HTMLDivElement;
+        invisibleFrame.style.border = null;
+        this.invisibleSelectedFrames[block.id] = invisibleFrame;
+        this.editorWidgetWrapper.appendChild(invisibleFrame);
+
+        const crwBlock = this.getBlockById(getBlockIdFromHtml(block.id));
+        this.blockMenu.setSelectedBlock(invisibleFrame, block, crwBlock);
         this.pageBuilderSidebar.setSelectedBlock(block, crwBlock);
         this.updateDraggable();
     }
@@ -272,7 +287,7 @@ export class PageBuilder extends Component<{
         frame.style.userSelect = 'none';
         frame.setAttribute('draggable', 'false');
 
-        this.editorWidgetWrapper.appendChild(frame);
+        this.editorWidgetWrapperCropped.appendChild(frame);
         this.hoveredFrames[block.id] = frame;
     }
 
@@ -567,6 +582,10 @@ export class PageBuilder extends Component<{
             id: `_${getRandStr()}`,
             type: newBlockType,
             isVirtual: true,
+            style: {
+                minWidth: '50px',
+                minHeight: '30px',
+            },
         }
         if (containerData && containerData.type !== 'container') containerData = undefined;
 
@@ -621,6 +640,7 @@ export class PageBuilder extends Component<{
                 if (!this.blockInfos[bId]) this.blockInfos[bId] = {};
                 this.blockInfos[bId].canDeselect = canDeselect;
             },
+            updateFramesPosition: this.updateFramesPosition,
         }
         return blockProps;
     }
@@ -642,6 +662,7 @@ export class PageBuilder extends Component<{
         const editingPageConfig = this.props.instances.themeEditor.getEditingPageConfig();
         return (
             <div className={styles.PageBuilder} >
+                <div id="editorWidgetWrapperCropped" className={styles.editorWidgetWrapperCropped}></div>
                 <div id="editorWidgetWrapper" className={styles.editorWidgetWrapper}></div>
                 <BlockMenu
                     getInst={inst => this.blockMenu = inst}
@@ -656,8 +677,6 @@ export class PageBuilder extends Component<{
                 <PageBuilderSidebar
                     getInst={inst => this.pageBuilderSidebar = inst}
                     deselectBlock={this.deselectBlock}
-                    // undoBtnRef={this.undoBtnRef}
-                    // redoBtnRef={this.redoBtnRef}
                     createBlockProps={this.createBlockProps}
                 />
             </div>

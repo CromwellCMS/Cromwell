@@ -9,6 +9,7 @@ import {
     Power as PowerIcon,
     Subject as SubjectIcon,
     Widgets as WidgetsIcon,
+    EditOutlined as EditOutlinedIcon,
 } from '@material-ui/icons';
 import React, { Component } from 'react';
 import ReactDom from 'react-dom';
@@ -29,6 +30,7 @@ export type TBlockMenuProps = {
     plugins: TPluginEntity[] | null;
     setCanDrag: (canDrag: boolean) => void;
     setCanDeselect: (canDeselect: boolean) => void;
+    updateFramesPosition: () => any;
 }
 
 export class BlockMenu extends Component<{
@@ -122,6 +124,11 @@ export class BlockMenu extends Component<{
                 <PhotoLibraryIcon />
             </Tooltip>
         }
+        if (bType === 'editor') {
+            icon = <Tooltip title="Editor block">
+                <EditOutlinedIcon />
+            </Tooltip>
+        }
 
         return ReactDom.createPortal(<>
             {!isConstant && (
@@ -161,7 +168,15 @@ export class BlockMenu extends Component<{
                                     onClick={addNewBlock('text')}
                                 >
                                     <SubjectIcon />
-                                    <p>Text</p>
+                                    <p>Simple Text</p>
+                                </MenuItem>
+                            </Grid>
+                            <Grid item xs={4} >
+                                <MenuItem className={styles.widgetItem}
+                                    onClick={addNewBlock('editor')}
+                                >
+                                    <EditOutlinedIcon />
+                                    <p>Text Editor</p>
                                 </MenuItem>
                             </Grid>
                             <Grid item xs={4} >

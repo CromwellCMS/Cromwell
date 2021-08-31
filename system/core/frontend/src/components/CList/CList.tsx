@@ -2,7 +2,7 @@ import { isServer, TCromwellBlockProps, TPagedList, TPagedParams } from '@cromwe
 import { debounce } from 'throttle-debounce';
 import React from 'react';
 
-import { CromwellBlock } from '../CromwellBlock/CromwellBlock';
+import { CBlock } from '../CBlock/CBlock';
 import { LoadBox } from '../loadBox/Loadbox';
 import { throbber } from '../throbber';
 import styles from './CList.module.scss';
@@ -462,7 +462,7 @@ export class CList<DataType, ListItemProps = any> extends React.PureComponent<TC
         const props = this.getProps();
         const { id, ...rest } = props;
         return (
-            <CromwellBlock id={id} type='list'
+            <CBlock id={id} type='list'
                 className={props.className}
                 {...rest}
                 content={(data, blockRef, setContentInstance) => {

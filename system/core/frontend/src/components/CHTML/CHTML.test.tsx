@@ -10,6 +10,4 @@ describe('CHTML', () => {
 
         await screen.findByText('_test1_');
     });
-
-
 })

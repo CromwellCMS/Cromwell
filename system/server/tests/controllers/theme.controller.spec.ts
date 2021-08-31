@@ -125,17 +125,6 @@ describe('Theme Controller', () => {
             })
     });
 
-
-    it(`/GET page-bundle`, () => {
-        return request(server)
-            .get(`/v1/theme/page-bundle?pageRoute=${defaultPage}`)
-            .expect(200)
-            .then(response => {
-                expect(response.body).toBeTruthy();
-            })
-    });
-
-
     afterAll(async () => {
         await tearDownController(app, testDir);
     });

@@ -31,7 +31,7 @@ export type TElements = {
 }
 
 export type TCListProps<DataType, ListItemProps> = {
-    /** CromwellBlock id */
+    /** CBlock id */
     id: string;
 
     /** HTML Class attribute for wrapper container */

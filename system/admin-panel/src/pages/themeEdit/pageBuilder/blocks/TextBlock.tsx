@@ -3,6 +3,7 @@ import { Public as PublicIcon, Subject as SubjectIcon } from '@material-ui/icons
 import React from 'react';
 
 import { useForceUpdate } from '../../../../helpers/forceUpdate';
+import { StylesEditor } from '../components/StylesEditor';
 import styles from './BaseBlock.module.scss';
 import { TBlockMenuProps } from './BlockMenu';
 
@@ -53,7 +54,7 @@ export const TextBlockSidebar = (props: TBlockMenuProps) => {
                 value={blockValue}
                 onChange={(e) => { setBlockValue(e.target.value) }}
                 multiline
-                className={styles.textField}
+                className={styles.settingsInput}
             />
             <TextField
                 fullWidth
@@ -61,6 +62,10 @@ export const TextBlockSidebar = (props: TBlockMenuProps) => {
                 value={data?.text?.href ?? ''}
                 className={styles.settingsInput}
                 label="Link"
+            />
+            <StylesEditor
+                forceUpdate={forceUpdate}
+                blockProps={props}
             />
         </div>
     );

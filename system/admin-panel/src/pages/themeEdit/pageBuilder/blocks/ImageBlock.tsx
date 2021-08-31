@@ -5,6 +5,7 @@ import React from 'react';
 
 import ImagePicker from '../../../../components/imagePicker/ImagePicker';
 import { useForceUpdate } from '../../../../helpers/forceUpdate';
+import { StylesEditor } from '../components/StylesEditor';
 import styles from './BaseBlock.module.scss';
 import { TBlockMenuProps } from './BlockMenu';
 
@@ -91,6 +92,10 @@ export function ImageBlockSidebar(props: TBlockMenuProps) {
                     <MenuItem value={'cover'}>Cover</MenuItem>
                 </Select>
             </FormControl>
+            <StylesEditor
+                forceUpdate={forceUpdate}
+                blockProps={props}
+            />
         </div>
     );
 }

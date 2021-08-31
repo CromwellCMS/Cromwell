@@ -1,7 +1,7 @@
 import { TCromwellBlockProps } from '@cromwell/core';
 import React from 'react';
 
-import { CromwellBlock } from '../CromwellBlock/CromwellBlock';
+import { CBlock } from '../CBlock/CBlock';
 import { Link } from '../Link/Link';
 import styles from './CImage.module.scss';
 
@@ -20,7 +20,7 @@ export class CImage extends React.Component<CImageProps> {
         const props = this.props;
         const { image, ...rest } = props;
         return (
-            <CromwellBlock {...rest} type='image'
+            <CBlock {...rest} type='image'
                 content={(data, blockRef, setContentInstance) => {
                     setContentInstance(this);
                     const _src = data?.image?.src ?? image?.src ?? props.src;

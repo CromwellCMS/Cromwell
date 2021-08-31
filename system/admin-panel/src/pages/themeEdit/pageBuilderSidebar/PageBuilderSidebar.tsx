@@ -6,6 +6,7 @@ import React from 'react';
 import { Draggable } from '../../../helpers/Draggable/Draggable';
 import { TBlockMenuProps } from '../pageBuilder/blocks/BlockMenu';
 import { ContainerBlockSidebar } from '../pageBuilder/blocks/ContainerBlock';
+import { EditorBlockSidebar } from '../pageBuilder/blocks/EditorBlock';
 import { GalleryBlockSidebar } from '../pageBuilder/blocks/GalleryBlock';
 import { HTMLBlockSidebar } from '../pageBuilder/blocks/HTMLBlock';
 import { ImageBlockSidebar } from '../pageBuilder/blocks/ImageBlock';
@@ -84,6 +85,11 @@ export class PageBuilderSidebar extends React.Component<PageBuilderSidebarProps>
                 {...blockProps}
             />
         }
+        if (bType === 'editor') {
+            content = <EditorBlockSidebar
+                {...blockProps}
+            />
+        }
 
         return (
             <Drawer
@@ -102,7 +108,7 @@ export class PageBuilderSidebar extends React.Component<PageBuilderSidebarProps>
                     </IconButton>
                 </Tooltip>
                 <div className={styles.settings}>
-                    {content}
+                    {!!this.selectedBlock && content}
                 </div>
             </Drawer>
         );

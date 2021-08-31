@@ -442,28 +442,28 @@ export class ThemeEditActions extends Component<{
                 onClick={(e) => e.stopPropagation()}
             >
                 <div className={styles.sidebar}>
-                    <Tooltip title="Close">
-                        <IconButton
-                            className={styles.sidebarCloseBtn}
-                            onClick={this.handlePagesToggle}>
-                            <CloseIcon />
-                        </IconButton>
-                    </Tooltip>
-                    {defaultPages && defaultPages.length > 0 && (
-                        <div className={styles.pageList} key="_2_">
+                    <div className={styles.pageList} key="_2_">
+                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                             <p className={styles.pageListHeader}>Theme pages</p>
-                            {defaultPages.map(p => (
-                                <PageListItem
-                                    activePage={editingPageConfig}
-                                    key={p.id + p.route}
-                                    page={p}
-                                    handleOpenPage={this.handleOpenPage}
-                                    handleDeletePage={this.handleDeletePage}
-                                    onPreviewChange={this.handlePreviewChange(p)}
-                                />
-                            ))}
+                            <Tooltip title="Close">
+                                <IconButton
+                                    className={styles.sidebarCloseBtn}
+                                    onClick={this.handlePagesToggle}>
+                                    <CloseIcon />
+                                </IconButton>
+                            </Tooltip>
                         </div>
-                    )}
+                        {defaultPages?.map(p => (
+                            <PageListItem
+                                activePage={editingPageConfig}
+                                key={p.id + p.route}
+                                page={p}
+                                handleOpenPage={this.handleOpenPage}
+                                handleDeletePage={this.handleDeletePage}
+                                onPreviewChange={this.handlePreviewChange(p)}
+                            />
+                        ))}
+                    </div>
                     {customPages && (
                         <div className={styles.pageList} key="_3_">
                             <p className={styles.pageListHeader}>Custom pages</p>

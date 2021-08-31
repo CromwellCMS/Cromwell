@@ -5,7 +5,7 @@ import { isValidElementType } from 'react-is';
 import { getRestApiClient } from '../../api/CRestApiClient';
 import { getDynamicLoader } from '../../constants';
 import { getLoadableFrontendBundle } from '../../helpers/loadFrontendBundle';
-import { CromwellBlock } from '../CromwellBlock/CromwellBlock';
+import { CBlock } from '../CBlock/CBlock';
 
 /** @internal */
 const fallbackComponent = () => <></>;
@@ -23,7 +23,7 @@ export class CPlugin extends React.Component<CPluginProps> {
         const props = this.props;
         const { pluginName, component, ...rest } = props;
         return (
-            <CromwellBlock {...rest} type='plugin'
+            <CBlock {...rest} type='plugin'
                 plugin={{ pluginName: pluginName }}
                 content={(data, blockRef, setContentInstance) => {
                     setContentInstance(this);
