@@ -256,7 +256,7 @@ export const getEditorHtml = async (htmlId: string, data?: OutputData) => {
 
 export const getEditorData = async (htmlId: string): Promise<OutputData | undefined> => {
     const editor = editors[htmlId];
-    if (!editor) {
+    if (!editor || typeof editor.save !== 'function') {
         return;
     }
     return await editor.save();

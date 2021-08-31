@@ -22,7 +22,7 @@ export function StyleField(props: {
                 let value: any = e.target.value;
                 if (props.dataType === 'px') {
                     if (value) value = parseFloat(value);
-                    if (isNaN(val) || val === '' || val === null) val = undefined;
+                    if (isNaN(value) || value === '' || value === null) value = undefined;
                     if (value !== undefined) value += 'px';
                 }
                 props.handleStyleChange(props.name, value);
