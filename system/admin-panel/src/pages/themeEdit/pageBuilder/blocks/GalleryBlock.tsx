@@ -14,6 +14,7 @@ import React from 'react';
 
 import GalleryPicker from '../../../../components/galleryPicker/GalleryPicker';
 import { useForceUpdate } from '../../../../helpers/forceUpdate';
+import { StylesEditor } from '../components/StylesEditor';
 import styles from './BaseBlock.module.scss';
 import { TBlockMenuProps } from './BlockMenu';
 
@@ -207,6 +208,10 @@ export function GalleryBlockSidebar(props: TBlockMenuProps) {
                     <MenuItem value={'flip'}>flip</MenuItem>
                 </Select>
             </FormControl> */}
+            <StylesEditor
+                forceUpdate={forceUpdate}
+                blockProps={props}
+            />
         </div>
     );
 }

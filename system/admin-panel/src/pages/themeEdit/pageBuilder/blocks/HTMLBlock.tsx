@@ -3,6 +3,7 @@ import { Code as CodeIcon, Public as PublicIcon } from '@material-ui/icons';
 import React from 'react';
 
 import { useForceUpdate } from '../../../../helpers/forceUpdate';
+import { StylesEditor } from '../components/StylesEditor';
 import styles from './BaseBlock.module.scss';
 import { TBlockMenuProps } from './BlockMenu';
 
@@ -42,6 +43,10 @@ export function HTMLBlockSidebar(props: TBlockMenuProps) {
                 onChange={(e) => { setBlockValue(e.target.value) }}
                 multiline
                 className={styles.textField}
+            />
+            <StylesEditor
+                forceUpdate={forceUpdate}
+                blockProps={props}
             />
         </div>
     );

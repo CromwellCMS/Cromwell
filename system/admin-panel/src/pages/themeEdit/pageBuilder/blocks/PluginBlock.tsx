@@ -5,6 +5,7 @@ import { Autocomplete } from '@material-ui/lab';
 import React from 'react';
 
 import { useForceUpdate } from '../../../../helpers/forceUpdate';
+import { StylesEditor } from '../components/StylesEditor';
 import styles from './BaseBlock.module.scss';
 import { TBlockMenuProps } from './BlockMenu';
 
@@ -49,6 +50,10 @@ export function PluginBlockSidebar(props: TBlockMenuProps) {
                 renderInput={(params) => <TextField {...params}
                     placeholder="Plugin"
                 />}
+            />
+            <StylesEditor
+                forceUpdate={forceUpdate}
+                blockProps={props}
             />
         </div>
     );

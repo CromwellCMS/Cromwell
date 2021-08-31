@@ -22,6 +22,7 @@ import { useForceUpdate } from '../../helpers/forceUpdate';
 import { CContainer } from '../CContainer/CContainer';
 import { CGallery } from '../CGallery/CGallery';
 import { CHTML } from '../CHTML/CHTML';
+import { CEditor } from '../CEditor/CEditor';
 import { CImage } from '../CImage/CImage';
 import { CPlugin } from '../CPlugin/CPlugin';
 import { CText } from '../CText/CText';
@@ -204,6 +205,11 @@ export class CromwellBlock<TContentBlock = React.Component> extends
         }
         if (b.type === 'plugin') {
             return <CPlugin
+                {...defProps}
+            />
+        }
+        if (b.type === 'editor') {
+            return <CEditor
                 {...defProps}
             />
         }

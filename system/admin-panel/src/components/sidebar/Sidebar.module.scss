@@ -197,7 +197,7 @@ header.appBar {
     @extend .paper;
     border-radius: 0;
 
-    >div {
+    > div {
         padding: 0;
     }
 }
@@ -217,7 +217,6 @@ header.appBar {
 }
 
 @media screen and (max-width: $mobileBreakpoint) {
-
     // mobile
     .sidebarMobileHeader {
         margin: 0;
@@ -233,7 +232,6 @@ header.appBar {
 }
 
 @media screen and (min-width: $mobileBreakpoint) {
-
     // desktop
     .mobileContent {
         display: none;

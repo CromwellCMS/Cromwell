@@ -52,7 +52,7 @@ export const PageListItem = (props: {
                 <div className={styles.pageItemActions}>
                     {isGeneric && (
                         <>
-                            <Tooltip title="Edit page preview URL">
+                            <Tooltip title="Edit preview URL">
                                 <IconButton
                                     onClick={openEditingPreview}
                                 >

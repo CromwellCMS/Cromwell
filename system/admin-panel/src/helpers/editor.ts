@@ -18,17 +18,13 @@ let EditorMarker: typeof import('@editorjs/marker');
 let EditorLink: typeof import('@editorjs/link');
 let EditorWarning: typeof import('@editorjs/warning');
 
+let importPromise;
+(async () => {
+    let importResolver;
+    importPromise = new Promise(done => {
+        importResolver = done;
+    });
 
-const editors: Record<string, EditorJS.default> = {};
-
-export const initTextEditor = async (options: {
-    htmlId: string;
-    placeholder?: string;
-    data?: any;
-    autofocus?: boolean;
-    onChange?: (api: API, block: BlockAPI) => any;
-}): Promise<void> => {
-    const { htmlId, data, onChange, placeholder, autofocus } = options;
     if (!EditorJS) {
         [
             EditorJS,
@@ -61,6 +57,29 @@ export const initTextEditor = async (options: {
         ]);
     }
 
+    importResolver();
+})();
+
+const editors: Record<string, EditorJS.default> = {};
+
+export const initTextEditor = async (options: {
+    htmlId: string;
+    placeholder?: string;
+    data?: any;
+    autofocus?: boolean;
+    onChange?: (api: API, block: BlockAPI) => any;
+}): Promise<void> => {
+    const { htmlId, data, onChange, placeholder, autofocus } = options;
+
+    if (importPromise) await importPromise;
+
+    if (editors[htmlId]) {
+        await editors[htmlId].isReady;
+        if (typeof editors[htmlId]?.destroy === 'function')
+            await editors[htmlId].destroy();
+        delete editors[htmlId];
+    }
+
     const container = document.querySelector(`#${htmlId}`);
     if (!container) {
         console.error('initTextEditor: Failed to find container by id: ' + htmlId);
@@ -71,6 +90,7 @@ export const initTextEditor = async (options: {
     const editor = new EditorJS.default({
         holder: htmlId,
         data: data,
+        minHeight: 0,
         tools: {
             header: {
                 class: EditorHeader.default,
@@ -154,79 +174,83 @@ export const initTextEditor = async (options: {
         autofocus,
         placeholder: placeholder ?? 'Let`s write an awesome story!',
     });
-    await editor.isReady;
-
     editors[htmlId] = editor;
+    await editor.isReady;
 }
 
-export const getEditorHtml = async (htmlId: string) => {
-    const data = await getEditorData(htmlId);
+export const getEditorHtml = async (htmlId: string, data?: OutputData) => {
+    if (!data) data = await getEditorData(htmlId);
     if (!data) return;
 
     const saverId = 'editorSaverContainer';
 
-    if (document.getElementById(saverId)) {
-        await sleep(1);
-        if (document.getElementById(saverId)) {
-            document.getElementById(saverId).remove();
-        }
+    let editor = editors['saver'];
+    let saverContainer = document.getElementById(saverId);
+
+    if (editor) {
+        await editor.isReady;
+        await editor.render(data);
+        await editor.isReady;
+
+    } else {
+        saverContainer = document.createElement('div');
+        saverContainer.id = saverId;
+        saverContainer.style.display = 'none';
+        document.body.appendChild(saverContainer);
+
+        editor = new EditorJS.default({
+            holder: saverId,
+            data: data,
+            readOnly: true,
+            autofocus: false,
+            tools: {
+                header: {
+                    class: EditorHeader.default,
+                },
+                list: {
+                    class: EditorList.default,
+                },
+                image: {
+                    class: EditorImage.default,
+                },
+                embed: {
+                    class: EditorEmbed.default,
+                },
+                quote: {
+                    class: EditorQuote.default,
+                },
+                delimiter: {
+                    class: EditorDelimiter.default,
+                },
+                // raw: {
+                //     class: EditorRaw.default,
+                // },
+                table: {
+                    class: EditorTable.default,
+                },
+                Marker: {
+                    class: EditorMarker.default,
+                },
+                // code: {
+                //     class: EditorCode.default,
+                // },
+                linkTool: {
+                    class: EditorLink.default,
+                },
+                warning: {
+                    class: EditorWarning.default,
+                },
+            },
+        });
+        await editor.isReady;
     }
 
-    const saverContainer = document.createElement('div');
-    saverContainer.id = saverId;
-    saverContainer.style.display = 'none';
-    document.body.appendChild(saverContainer);
-
-    const editor = new EditorJS.default({
-        holder: saverId,
-        data: data,
-        readOnly: true,
-        tools: {
-            header: {
-                class: EditorHeader.default,
-            },
-            list: {
-                class: EditorList.default,
-            },
-            image: {
-                class: EditorImage.default,
-            },
-            embed: {
-                class: EditorEmbed.default,
-            },
-            quote: {
-                class: EditorQuote.default,
-            },
-            delimiter: {
-                class: EditorDelimiter.default,
-            },
-            // raw: {
-            //     class: EditorRaw.default,
-            // },
-            table: {
-                class: EditorTable.default,
-            },
-            Marker: {
-                class: EditorMarker.default,
-            },
-            // code: {
-            //     class: EditorCode.default,
-            // },
-            linkTool: {
-                class: EditorLink.default,
-            },
-            warning: {
-                class: EditorWarning.default,
-            },
-        },
-    });
-    await editor.isReady;
+    editors['saver'] = editor;
 
     const redactor = saverContainer.querySelector('.codex-editor__redactor');
     (redactor as any).style = null;
 
     const content = redactor.outerHTML;
-    saverContainer.remove();
     return content;
 
 }
@@ -237,4 +261,14 @@ export const getEditorData = async (htmlId: string): Promise<OutputData | undefi
         return;
     }
     return await editor.save();
+}
+
+export const destroyEditor = async (htmlId: string) => {
+    const editor = editors[htmlId];
+    if (!editor) {
+        return;
+    }
+    if (typeof editor.destroy === 'function')
+        await editor.destroy();
+    delete editors[htmlId];
 }

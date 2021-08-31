@@ -93,7 +93,16 @@ export type TCommonComponentProps = {
     data?: TProduct | TPost | any;
 }
 
-export type TCromwellBlockType = 'container' | 'plugin' | 'text' | 'HTML' | 'image' | 'gallery' | 'list' | 'link';
+export type TCromwellBlockType =
+    'container' |
+    'plugin' |
+    'text' |
+    'HTML' |
+    'image' |
+    'gallery' |
+    'list' |
+    'editor' |
+    'link';
 
 /**
  * Modification for a Block. Used in the Page builder to store user's changes. 
@@ -190,6 +199,12 @@ export type TCromwellBlockData = {
     link?: {
         href?: string;
         text?: string;
+    }
+
+    /** For editor block */
+    editor?: {
+        html?: string
+        data?: string
     }
 }
 

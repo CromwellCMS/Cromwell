@@ -7,7 +7,14 @@ import {
     TDefaultPageName,
     TPageStats,
 } from '@cromwell/core';
-import { CContainer, getModuleImporter, getRestApiClient, pageRootContainerId } from '@cromwell/core-frontend';
+import {
+    CContainer,
+    cleanParseContext,
+    getModuleImporter,
+    getParserTransform,
+    getRestApiClient,
+    pageRootContainerId,
+} from '@cromwell/core-frontend';
 import { NextRouter, withRouter } from 'next/router';
 import React, { useRef } from 'react';
 import ReactHtmlParser from 'react-html-parser';
@@ -15,7 +22,6 @@ import { isValidElementType } from 'react-is';
 
 import { CrwDocumentContext, patchDocument } from '../helpers/document';
 import { useForceUpdate } from '../helpers/helpers';
-import { cleanParseContext, getParserTransform } from '../helpers/parserTransform';
 import { usePatchForRedirects } from '../helpers/redirects';
 
 type PageProps = Partial<TCromwellPageCoreProps> & {

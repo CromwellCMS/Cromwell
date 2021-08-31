@@ -1,4 +1,5 @@
 @import "../../../styles/common.module.scss";
+@import "../../../styles/variables.scss";
 
 .sidebar {
     @include paperElevated;
@@ -23,17 +24,16 @@
     border-bottom: 1px solid #ccc;
     justify-content: space-between;
 
-    >div {
+    > div {
         display: flex;
     }
 }
 
 .sidebarCloseBtn {
     position: absolute;
-    top: 0;
+    top: 5px;
     right: 0;
 }
-
 
 .settings {
     padding: 15px;
@@ -50,5 +50,15 @@
 
     .sidebarPaper {
         background-color: #333;
+    }
+}
+
+@media screen and (max-width: $mobileBreakpoint) {
+    // mobile
+    .sidebarPaper {
+        padding-top: 70px;
+    }
+    .sidebarCloseBtn {
+        top: 75px;
     }
 }
