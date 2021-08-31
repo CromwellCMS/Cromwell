@@ -41,18 +41,18 @@ export class EditorBlockSidebar extends React.Component<TBlockMenuProps> {
     private handleSaveEditor = async () => {
         if (this.unmounted) return;
         const data = this.props.block?.getData();
-        if (data) {
-            const editorData = await getEditorData(this.editorId);
-            const html = await getEditorHtml(this.editorId, editorData);
+        if (!data) return;
 
-            if (!data.editor) data.editor = {};
-            data.editor.data = JSON.stringify(editorData);
-            data.editor.html = html;
-            this.props.modifyData?.(data);
-            setTimeout(() => {
-                this.props.updateFramesPosition();
-            }, 100);
-        }
+        const editorData = await getEditorData(this.editorId);
+        const html = await getEditorHtml(this.editorId, editorData);
+
+        if (!data.editor) data.editor = {};
+        data.editor.data = JSON.stringify(editorData);
+        data.editor.html = html;
+        this.props.modifyData?.(data);
+        setTimeout(() => {
+            this.props.updateFramesPosition();
+        }, 100);
     }
 
     render() {

@@ -1,4 +1,4 @@
-import './CromwellBlock.module.scss';
+import './CBlock.module.scss';
 
 import {
     getStoreItem,
@@ -29,7 +29,7 @@ import { CText } from '../CText/CText';
 
 
 /** @internal */
-export class CromwellBlock<TContentBlock = React.Component> extends
+export class CBlock<TContentBlock = React.Component> extends
     Component<TCromwellBlockProps<TContentBlock>> implements TCromwellBlock<TContentBlock> {
 
     private data?: TCromwellBlockData;
@@ -215,7 +215,7 @@ export class CromwellBlock<TContentBlock = React.Component> extends
         }
 
         return (
-            <CromwellBlock
+            <CBlock
                 {...defProps}
             />
         )
@@ -385,7 +385,7 @@ export class CromwellBlock<TContentBlock = React.Component> extends
 
     render(): React.ReactNode | null {
         this.readConfig();
-        // console.log('CromwellBlock::render id: ' + this.props.id, this.hasBeenMoved, this.getData());
+        // console.log('CBlock::render id: ' + this.props.id, this.hasBeenMoved, this.getData());
 
         if (this.hasBeenMoved) {
             // For some reason React copies properties of this block to next one if we return <></> or null here

@@ -1,4 +1,4 @@
-export { CromwellBlock } from './components/CromwellBlock/CromwellBlock';
+export { CBlock } from './components/CBlock/CBlock';
 export { CText } from './components/CText/CText';
 export { CHTML } from './components/CHTML/CHTML';
 export { CContainer } from './components/CContainer/CContainer';

@@ -1,4 +1,3 @@
-import { sleep } from '@cromwell/core';
 import { API, BlockAPI, OutputData } from '@editorjs/editorjs';
 
 import { getFileManager } from '../components/fileManager/helpers';

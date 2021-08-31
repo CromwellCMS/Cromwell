@@ -1,7 +1,7 @@
 import { TCromwellBlockProps } from '@cromwell/core';
 import React from 'react';
 
-import { CromwellBlock } from '../CromwellBlock/CromwellBlock';
+import { CBlock } from '../CBlock/CBlock';
 import { Link } from '../Link/Link';
 
 type CTextProps = {
@@ -15,7 +15,7 @@ export class CText extends React.Component<CTextProps> {
         const props = this.props;
         const { children, element, ...rest } = props;
         return (
-            <CromwellBlock
+            <CBlock
                 text={(children && typeof children === 'string') ? {
                     content: children,
                     textElementType: element ?? 'p'

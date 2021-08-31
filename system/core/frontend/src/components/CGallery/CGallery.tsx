@@ -17,7 +17,7 @@ import {
 import React, { useContext, useEffect } from 'react';
 import ReactResizeDetector from 'react-resize-detector';
 
-import { CromwellBlock } from '../CromwellBlock/CromwellBlock';
+import { CBlock } from '../CBlock/CBlock';
 import { Link } from '../Link/Link';
 import styles from './CGallery.module.scss';
 import Lightbox from './Lightbox';
@@ -254,7 +254,7 @@ export class CGallery extends React.Component<TCGalleryProps> {
 
     render() {
         return (
-            <CromwellBlock {...this.props} type='gallery'
+            <CBlock {...this.props} type='gallery'
                 key={this.props.id + '_crw'}
                 content={(data, ref, setContentInstance) => {
                     setContentInstance(this);

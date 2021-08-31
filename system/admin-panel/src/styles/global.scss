@@ -63,6 +63,11 @@ h3 {
     :global(.tc-wrap) {
         height: unset;
     }
+
+    :global(.image-tool--loading .image-tool__image) {
+        background-color: transparent;
+        border: none;
+    }
 }
 
 :global(.modeDark .crw-text-editor) {

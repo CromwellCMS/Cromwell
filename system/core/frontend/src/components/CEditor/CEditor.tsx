@@ -3,13 +3,13 @@ import React from 'react';
 import ReactHtmlParser from 'react-html-parser';
 
 import { cleanParseContext, getParserTransform } from '../../helpers/parserTransform';
-import { CromwellBlock } from '../CromwellBlock/CromwellBlock';
+import { CBlock } from '../CBlock/CBlock';
 
 export class CEditor extends React.Component<TCromwellBlockProps> {
     render() {
         const { children, editor, ...rest } = this.props;
         return (
-            <CromwellBlock {...rest} type='editor'
+            <CBlock {...rest} type='editor'
                 content={(data, blockRef, setContentInstance) => {
                     setContentInstance(this);
                     let content = children;
