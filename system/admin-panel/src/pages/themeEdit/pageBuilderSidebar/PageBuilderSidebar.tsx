@@ -50,8 +50,11 @@ export class PageBuilderSidebar extends React.Component<PageBuilderSidebarProps>
         props.getInst(this);
         const block = this.selectedBlock;
         const data = block?.getData();
+        if (data?.isConstant) return <></>;
+
         const bType = data?.type;
         const blockProps = props.createBlockProps(block);
+
 
         let content;
 

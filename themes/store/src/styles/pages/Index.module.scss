@@ -57,15 +57,21 @@
     position: relative;
     border-radius: 15px;
 
+    img {
+        border-radius: 6px;
+    }
+
     &::before {
         content: "";
         transition: 0.3s;
+        pointer-events: none;
     }
 
     &:hover::before {
+        pointer-events: none;
         position: absolute;
-        z-index: 1;
         background-color: rgba(0, 0, 0, 0.2);
+        border-radius: 6px;
         top: 0;
         bottom: 0;
         left: 0;

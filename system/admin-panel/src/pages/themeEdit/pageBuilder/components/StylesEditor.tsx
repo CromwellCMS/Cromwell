@@ -22,7 +22,6 @@ export function StylesEditor(props: {
         (data.editorStyles[name] as any) = value;
         props.blockProps.modifyData?.(data);
         props.forceUpdate();
-        props.blockProps.block.rerender();
     }
 
     const handleStyleChange = (name: keyof React.CSSProperties, value: any) => {
@@ -48,22 +47,6 @@ export function StylesEditor(props: {
             blockProps={props.blockProps}
             data={data}
         />
-        <div className={styles.stylesGroup}>
-            <h3>Margin align</h3>
-            <FormControl fullWidth className={styles.settingsInput} >
-                <InputLabel>Align</InputLabel>
-                <Select
-                    fullWidth
-                    onChange={(e) => handleEditorStyleChange('align', e.target.value as any)}
-                    value={data?.editorStyles?.align}
-                >
-                    <MenuItem value={undefined}>no</MenuItem>
-                    <MenuItem value={'left'}>left</MenuItem>
-                    <MenuItem value={'right'}>right</MenuItem>
-                    <MenuItem value={'center'}>center</MenuItem>
-                </Select>
-            </FormControl>
-        </div>
         <StyleOffset
             type="padding"
             handleStyleChange={handleStyleChange}
@@ -100,7 +83,22 @@ export function StylesEditor(props: {
                 />
             </div>
         </div>
-
+        <div className={styles.stylesGroup}>
+            <h3>Block align</h3>
+            <FormControl fullWidth className={styles.settingsInput} >
+                <InputLabel>horizontal align</InputLabel>
+                <Select
+                    fullWidth
+                    onChange={(e) => handleEditorStyleChange('align', e.target.value as any)}
+                    value={data?.editorStyles?.align}
+                >
+                    <MenuItem value={undefined}>no</MenuItem>
+                    <MenuItem value={'left'}>left</MenuItem>
+                    <MenuItem value={'right'}>right</MenuItem>
+                    <MenuItem value={'center'}>center</MenuItem>
+                </Select>
+            </FormControl>
+        </div>
         <div className={styles.stylesGroup}>
             <h3>Height (px)</h3>
             <div style={{ display: 'flex' }}>
@@ -127,6 +125,105 @@ export function StylesEditor(props: {
                     handleStyleChange={handleStyleChange}
                     dataType="px"
                     className={styles.groupField}
+                />
+            </div>
+        </div>
+
+        <div className={styles.stylesGroup}>
+            <h3>Font</h3>
+            <div style={{ display: 'flex' }}>
+                <StyleField
+                    label="size"
+                    data={data}
+                    name={'fontSize'}
+                    handleStyleChange={handleStyleChange}
+                    dataType="px"
+                    style={{ maxWidth: '50px' }}
+                    className={styles.groupField}
+                />
+                <StyleField
+                    label="color"
+                    data={data}
+                    name={'color'}
+                    handleStyleChange={handleStyleChange}
+                    dataType="color"
+                    className={styles.groupField}
+                />
+                <StyleField
+                    label="weight"
+                    data={data}
+                    name={'fontWeight'}
+                    handleStyleChange={handleStyleChange}
+                    dataType="select"
+                    className={styles.groupField}
+                    style={{ minWidth: '70px' }}
+                    options={['lighter', 'normal', 'bolder', 'bold']}
+                />
+                <StyleField
+                    label="align"
+                    data={data}
+                    name={'textAlign'}
+                    handleStyleChange={handleStyleChange}
+                    dataType="select"
+                    className={styles.groupField}
+                    style={{ minWidth: '70px' }}
+                    options={['left', 'center', 'right']}
+                />
+            </div>
+        </div>
+
+        <div className={styles.stylesGroup}>
+            <h3>Background</h3>
+            <div style={{ display: 'flex' }}>
+                <StyleField
+                    label="color"
+                    data={data}
+                    name={'backgroundColor'}
+                    handleStyleChange={handleStyleChange}
+                    dataType="color"
+                    className={styles.groupField}
+                />
+            </div>
+        </div>
+
+        <div className={styles.stylesGroup}>
+            <h3>Border</h3>
+            <div style={{ display: 'flex' }}>
+                <StyleField
+                    label="width"
+                    data={data}
+                    name={'borderWidth'}
+                    handleStyleChange={handleStyleChange}
+                    dataType="px"
+                    style={{ maxWidth: '70px' }}
+                    className={styles.groupField}
+                />
+                <StyleField
+                    label="radius"
+                    data={data}
+                    name={'borderRadius'}
+                    handleStyleChange={handleStyleChange}
+                    dataType="px"
+                    style={{ maxWidth: '70px' }}
+                    className={styles.groupField}
+                />
+                <StyleField
+                    label="color"
+                    data={data}
+                    name={'borderColor'}
+                    handleStyleChange={handleStyleChange}
+                    dataType="color"
+                    className={styles.groupField}
+                />
+                <StyleField
+                    label="style"
+                    data={data}
+                    name={'borderStyle'}
+                    handleStyleChange={handleStyleChange}
+                    dataType="select"
+                    style={{ minWidth: '50px' }}
+                    className={styles.groupField}
+                    options={['solid', 'dashed', 'dotted', 'double', 'outset', 'ridge']}
                 />
             </div>
         </div>

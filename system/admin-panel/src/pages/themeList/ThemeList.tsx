@@ -342,7 +342,7 @@ class ThemeList extends React.Component<Partial<RouteComponentProps>, {
                                                 disabled={isUnderUpdate || isChangingTheme}
                                                 size="small" color="primary" variant="contained"
                                                 onClick={() => {
-                                                    const route = `${themeEditPageInfo.baseRoute}/${info.name}`;
+                                                    const route = `${themeEditPageInfo.baseRoute}`;
                                                     this.props.history.push(route);
                                                 }}
                                             >

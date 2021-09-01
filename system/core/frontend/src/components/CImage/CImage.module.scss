@@ -6,7 +6,8 @@
     &::before {
         content: "";
         position: absolute;
-        z-index: -1;
+        pointer-events: none;
+        z-index: 1;
         background-color: #000;
         top: 0;
         bottom: 0;
@@ -18,6 +19,13 @@
         opacity: 1;
         transition-property: opacity;
         transition-duration: 0.3s;
+        position: relative;
+        z-index: 1;
+    }
+
+    a {
+        position: relative;
+        z-index: 1;
     }
 
     &:hover img {
