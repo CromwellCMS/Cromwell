@@ -1,12 +1,14 @@
-import { ClickAwayListener, Fade, InputAdornment, Popper, TextField } from '@material-ui/core';
+import { InputAdornment, Popover, TextField } from '@material-ui/core';
 import React, { useRef, useState } from 'react';
 import { SketchPicker } from 'react-color';
+
 import { useForceUpdate } from '../../helpers/forceUpdate';
 
 export default function ColorPicker(props: {
     label: string;
     value?: string;
     className?: string;
+    style?: React.CSSProperties;
     onChange?: (color: string) => void;
 }) {
     const colorRef = useRef<string | null>(null);
@@ -58,21 +60,28 @@ export default function ColorPicker(props: {
                 ref={inputAnchorRef}
                 onChange={handleInputChange}
                 onClick={() => setOpen(true)}
+                style={props.style}
             />
-            <Popper open={open} anchorEl={inputAnchorRef.current} placement={'bottom-start'} transition>
-                {({ TransitionProps }) => (
-                    <Fade {...TransitionProps} timeout={350}>
-                        <ClickAwayListener onClickAway={handleClose}>
-                            <div>
-                                <SketchPicker
-                                    color={colorRef.current ?? '#000'}
-                                    onChangeComplete={handleChange}
-                                />
-                            </div>
-                        </ClickAwayListener>
-                    </Fade>
-                )}
-            </Popper>
+            <Popover
+                open={open}
+                anchorEl={inputAnchorRef.current}
+                onClose={handleClose}
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left',
+                }}
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                }}
+            >
+                <div>
+                    <SketchPicker
+                        color={colorRef.current ?? '#000'}
+                        onChangeComplete={handleChange}
+                    />
+                </div>
+            </Popover>
         </>
     )
 }

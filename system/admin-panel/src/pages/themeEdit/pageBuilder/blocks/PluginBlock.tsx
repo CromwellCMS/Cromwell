@@ -1,4 +1,6 @@
 import { TPluginEntity } from '@cromwell/core';
+import { AdminPanelWidgetPlace } from '@cromwell/core-frontend';
+
 import { TextField, Tooltip } from '@material-ui/core';
 import { Power as PowerIcon, Public as PublicIcon } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
@@ -51,6 +53,15 @@ export function PluginBlockSidebar(props: TBlockMenuProps) {
                     placeholder="Plugin"
                 />}
             />
+            {pluginInfo?.name && (
+                <AdminPanelWidgetPlace
+                    widgetName="ThemeEditor"
+                    pluginName={pluginInfo?.name}
+                    widgetProps={{
+                        data: { ...props, forceUpdate },
+                    }}
+                />
+            )}
             <StylesEditor
                 forceUpdate={forceUpdate}
                 blockProps={props}

@@ -125,7 +125,7 @@ export class PageBuilder extends Component<{
             canInsertBlock: this.canInsertBlock,
             onBlockInserted: this.onBlockInserted,
             onBlockSelected: this.onBlockSelected,
-            onBlockDeSelected: this.onBlockDeSelected,
+            // onBlockDeSelected: this.onBlockDeSelected,
             canDeselectBlock: this.canDeselectBlock,
             canDragBlock: this.canDragBlock,
             getFrameColor: this.getFrameColor,
@@ -159,6 +159,8 @@ export class PageBuilder extends Component<{
             el.onclick = (e) => { e.preventDefault() }
             el.addEventListener('scroll', this.onAnyElementScroll);
         });
+
+        this.updateFramesPosition();
     }
 
     public onAnyElementScroll = () => {
@@ -172,7 +174,12 @@ export class PageBuilder extends Component<{
             ...Object.entries(this.hoveredFrames),
         ].forEach(entry => {
             const block = this.getBlockElementById(getBlockIdFromHtml(entry[0]));
-            if (entry[1] && block) this.setFramePosition(block, entry[1]);
+            if (!entry[1]) return;
+            if (!block) {
+                entry[1].remove();
+                return;
+            }
+            this.setFramePosition(block, entry[1]);
         });
     }
 
@@ -226,9 +233,20 @@ export class PageBuilder extends Component<{
     public onBlockSelected = (block: HTMLElement) => {
         if (!block) return;
         if (this.selectedFrames[block.id]) return;
+        let crwBlock = this.getBlockById(getBlockIdFromHtml(block.id));
+        const blockData = crwBlock?.getData();
+
+        if (blockData.editorHidden) {
+            const editable = this.findEditableParent(block);
+            if (!editable) return;
+
+            block = editable;
+            crwBlock = this.getBlockById(getBlockIdFromHtml(editable.id));
+        }
 
         if (this.selectedBlock) {
             this.selectedBlock.style.cursor = 'initial';
+            this.onBlockDeSelected(this.selectedBlock);
         }
         this.selectedBlock = block;
         this.selectedBlock.style.cursor = 'move';
@@ -249,7 +267,6 @@ export class PageBuilder extends Component<{
         this.invisibleSelectedFrames[block.id] = invisibleFrame;
         this.editorWidgetWrapper.appendChild(invisibleFrame);
 
-        const crwBlock = this.getBlockById(getBlockIdFromHtml(block.id));
         this.blockMenu.setSelectedBlock(invisibleFrame, block, crwBlock);
         this.pageBuilderSidebar.setSelectedBlock(block, crwBlock);
         this.updateDraggable();
@@ -282,6 +299,10 @@ export class PageBuilder extends Component<{
     public onBlockHoverStart = (block: HTMLElement) => {
         if (!block) return;
         if (this.hoveredFrames[block.id]) return;
+        const crwBlock = this.getBlockById(getBlockIdFromHtml(block.id));
+        const blockData = crwBlock?.getData();
+        if (blockData.editorHidden) return;
+
         const frame = this.createBlockFrame(block);
         frame.style.border = `1px solid ${this.getFrameColor(block)}`;
         frame.style.userSelect = 'none';
@@ -404,6 +425,7 @@ export class PageBuilder extends Component<{
                 childrenData.push(blockData);
             }
 
+            this.checkBlockDataGlobal(childData);
             this.modifyBlock(childData, false);
         });
 
@@ -605,6 +627,14 @@ export class PageBuilder extends Component<{
         }, 200);
     }
 
+    private checkBlockDataGlobal = (blockData: TCromwellBlockData) => {
+        if (this.isGlobalElem(this.getBlockElementById(blockData?.id))) {
+            blockData.global = true;
+        } else {
+            delete blockData.global;
+        }
+    }
+
     private createBlockProps = (block?: TCromwellBlock): TBlockMenuProps => {
         const data = block?.getData();
         const bId = data?.id;
@@ -623,11 +653,13 @@ export class PageBuilder extends Component<{
             getBlockElementById: this.getBlockElementById,
             isGlobalElem: this.isGlobalElem,
             modifyData: (blockData: TCromwellBlockData) => {
-                if (!blockData.global && this.isGlobalElem(this.getBlockElementById(blockData?.id))) {
-                    blockData.global = true;
-                }
+                this.checkBlockDataGlobal(blockData)
                 this.modifyBlock(blockData);
                 block?.rerender();
+                if (blockData?.parentId) {
+                    const parentBlock = this.getBlockById(blockData?.parentId);
+                    parentBlock?.rerender();
+                }
             },
             deleteBlock: deleteBlock,
             addNewBlockAfter: handleCreateNewBlock,
@@ -656,6 +688,21 @@ export class PageBuilder extends Component<{
             return this.isGlobalElem(parent);
         }
         return false;
+    }
+
+    public findEditableParent = (elem?: HTMLElement): HTMLElement | undefined => {
+        if (!elem) return undefined;
+        if (elem === this.contentWindow.document.body) return;
+
+        const data = this.getBlockData(elem);
+        if (data?.id === 'root') return;
+        if (data && !data.editorHidden) return elem;
+
+        const parent = elem?.parentElement;
+        if (parent) {
+            return this.findEditableParent(parent);
+        }
+        return;
     }
 
     render() {

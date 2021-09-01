@@ -192,8 +192,11 @@ export type TCromwellBlockData = {
         href?: string;
     };
 
-    /** If true, user can't delete or modify this block in the editor */
+    /** If true, user can't delete or modify this block in Theme editor */
     isConstant?: boolean;
+
+    /** Hide this block in Theme editor */
+    editorHidden?: boolean;
 
     /** For link block */
     link?: {

@@ -12,6 +12,7 @@ import { TBlockMenuProps } from './BlockMenu';
 export function ImageBlockSidebar(props: TBlockMenuProps) {
     const forceUpdate = useForceUpdate();
     const data = props.block?.getData();
+    const imageData = Object.assign({}, props.block.getContentInstance().props, data?.image)
 
     const handleChange = (key: keyof TCromwellBlockData['image'], value: any) => {
         const data = props.block?.getData();
@@ -47,7 +48,7 @@ export function ImageBlockSidebar(props: TBlockMenuProps) {
                 <h3 className={styles.settingsTitle}>Image settings</h3>
             </div>
             <ImagePicker
-                value={data?.image?.src}
+                value={imageData?.src}
                 style={{ borderBottom: '1px solid #999' }}
                 placeholder={"Pick an image"}
                 onChange={(val) => handleChange('src', val)}
@@ -56,27 +57,27 @@ export function ImageBlockSidebar(props: TBlockMenuProps) {
             <TextField
                 fullWidth
                 onChange={handleTextInput('link')}
-                value={data?.image?.link}
+                value={imageData?.link}
                 className={styles.settingsInput}
                 label="Link to" />
             <TextField
                 fullWidth
                 onChange={handleNumberInput('width')}
-                value={data?.image?.width}
+                value={imageData?.width}
                 className={styles.settingsInput}
                 type="number"
                 label="Width (px)" />
             <TextField
                 onChange={handleNumberInput('height')}
                 fullWidth
-                value={data?.image?.height}
+                value={imageData?.height}
                 className={styles.settingsInput}
                 type="number"
                 label="Height (px)" />
             <TextField
                 onChange={handleTextInput('alt')}
                 fullWidth
-                value={data?.image?.alt}
+                value={imageData?.alt}
                 className={styles.settingsInput}
                 label="Alt" />
             <FormControl
@@ -86,7 +87,7 @@ export function ImageBlockSidebar(props: TBlockMenuProps) {
                 <Select
                     fullWidth
                     onChange={handleTextInput('objectFit')}
-                    value={data?.image?.objectFit ?? 'contain'}
+                    value={imageData?.objectFit ?? 'contain'}
                 >
                     <MenuItem value={'contain'}>Contain</MenuItem>
                     <MenuItem value={'cover'}>Cover</MenuItem>

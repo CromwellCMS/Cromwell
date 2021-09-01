@@ -45,6 +45,7 @@ const ProductShowcase = (props: TFrontendPluginProps<ProductShowcaseProps>): JSX
     return (
         <div className={classes.wrapper}>
             <CGallery
+                editorHidden
                 style={{ height: '100%' }}
                 id={galleryId.current}
                 gallery={{

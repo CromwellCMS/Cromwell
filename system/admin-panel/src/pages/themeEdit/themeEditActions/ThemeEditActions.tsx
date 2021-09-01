@@ -23,6 +23,8 @@ import { PageListItem } from '../pageListItem/PageListItem';
 import { PageSettings } from '../pageSettings/PageSettings';
 import { TEditorInstances, TExtendedPageInfo } from '../ThemeEdit';
 import styles from './ThemeEditActions.module.scss';
+import queryString from 'query-string';
+
 
 export class ThemeEditActions extends Component<{
     instances: TEditorInstances;
@@ -75,7 +77,12 @@ export class ThemeEditActions extends Component<{
 
     private init = async () => {
         const infos = await this.getPageInfos();
-        if (infos?.[0]) this.handleOpenPage(infos?.[0]);
+
+        const parsedUrl = queryString.parseUrl(window.location.href, { parseFragmentIdentifier: true });
+        const route = parsedUrl.query['page'];
+
+        const info = infos?.find(i => i.route === route) ?? infos?.[0];
+        if (info) this.handleOpenPage(info);
     }
 
     private getPageInfos = async () => {
@@ -292,6 +299,10 @@ export class ThemeEditActions extends Component<{
         this.getThemeEditor().handlePageChange();
         this.getThemeEditor().setEditingPageConfig(Object.assign({}, pageInfo, pageConfig));
         this.getThemeEditor().setState({ isPageLoading: false });
+
+        const parsedUrl = queryString.parseUrl(window.location.href, { parseFragmentIdentifier: true });
+        parsedUrl.query['page'] = pageInfo.route;
+        window.history.pushState({}, '', queryString.stringifyUrl(parsedUrl, { encode: false }));
     }
 
     private undoModification = () => {

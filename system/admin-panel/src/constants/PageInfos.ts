@@ -72,7 +72,7 @@ export const themeListPageInfo: PageInfo = {
 };
 export const themeEditPageInfo: PageInfo = {
     name: 'ThemeEdit',
-    route: '/theme-edit/:themeName',
+    route: '/theme-edit',
     baseRoute: '/theme-edit',
     component: ThemeEditPage
 };

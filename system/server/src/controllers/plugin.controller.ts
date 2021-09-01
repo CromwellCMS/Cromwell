@@ -36,7 +36,7 @@ export class PluginController {
         return getPluginSettings(pluginName);
     }
 
-    
+
     @Post('settings')
     @UseGuards(JwtAuthGuard)
     @Roles('administrator')
@@ -75,9 +75,10 @@ export class PluginController {
             throw new HttpException(`Invalid plugin name: ${pluginName}`, HttpStatus.NOT_ACCEPTABLE);
 
         const bundle = await this.pluginService.getPluginBundle(pluginName, 'frontend');
-        if (bundle) {
-            return bundle;
-        }
+        if (!bundle)
+            throw new HttpException(`Frontend bundle not found for: ${pluginName}`, HttpStatus.NOT_FOUND);
+
+        return bundle;
     }
 
 
