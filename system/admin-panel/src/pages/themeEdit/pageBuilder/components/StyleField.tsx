@@ -1,5 +1,5 @@
 import { TCromwellBlockData } from '@cromwell/core';
-import { TextField, MenuItem, Select } from '@material-ui/core';
+import { TextField, MenuItem, Select, FormControl, InputLabel } from '@material-ui/core';
 import React from 'react';
 import ColorPicker from '../../../../components/colorPicker/ColorPicker';
 
@@ -19,15 +19,17 @@ export function StyleField(props: {
         if (isNaN(val)) val = undefined;
     }
 
+    let noWrapper = true;
     let Field: React.ComponentType<any> = TextField;
     if (props.dataType === 'color') {
         Field = ColorPicker;
     }
     if (props.dataType === 'select') {
         Field = Select;
+        noWrapper = false;
     }
 
-    return (
+    let content = (
         <Field
             onChange={e => {
                 let value: any = e?.target?.value ?? e;
@@ -39,10 +41,24 @@ export function StyleField(props: {
                 props.handleStyleChange(props.name, value);
             }}
             value={val ?? ''}
-            className={props.className}
             type={props.dataType === 'px' ? 'number' : 'string'}
-            label={props.label}
-            style={props.style}
+            label={noWrapper ? props.label : undefined}
+            className={noWrapper ? props.className : undefined}
+            style={noWrapper ? props.style : undefined}
         >{props.options?.map(opt => <MenuItem value={opt} key={opt}>{opt}</MenuItem>)}</Field>
-    )
+    );
+
+    if (props.dataType === 'select') {
+        content = (
+            <FormControl
+                className={props.className}
+                style={props.style}
+            >
+                <InputLabel>{props.label}</InputLabel>
+                {content}
+            </FormControl>
+        )
+    }
+
+    return content;
 }
