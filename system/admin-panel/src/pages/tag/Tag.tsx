@@ -11,7 +11,7 @@ import { toast } from '../../components/toast/toast';
 import { tagListPageInfo, tagPageInfo } from '../../constants/PageInfos';
 import commonStyles from '../../styles/common.module.scss';
 import styles from './Tag.module.scss';
-import { getEditorData, getEditorHtml, initTextEditor } from '../../helpers/editor';
+import { getEditorData, getEditorHtml, initTextEditor } from '../../helpers/editor/editor';
 
 const TagPage = () => {
     const { id: tagId } = useParams<{ id: string }>();

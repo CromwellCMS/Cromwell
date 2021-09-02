@@ -5,7 +5,7 @@ import React, { useEffect, useRef } from 'react';
 import GalleryPicker from '../../components/galleryPicker/GalleryPicker';
 import { useForceUpdate } from '../../helpers/forceUpdate';
 import { NumberFormatCustom } from '../../helpers/NumberFormatCustom';
-import { getEditorData, getEditorHtml, initTextEditor } from '../../helpers/editor';
+import { getEditorData, getEditorHtml, initTextEditor } from '../../helpers/editor/editor';
 import { editorId, TInfoCardRef } from './Product';
 import styles from './Product.module.scss';
 

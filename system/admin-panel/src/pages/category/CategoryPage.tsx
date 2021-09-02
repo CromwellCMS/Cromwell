@@ -10,7 +10,7 @@ import Autocomplete from '../../components/autocomplete/Autocomplete';
 import ImagePicker from '../../components/imagePicker/ImagePicker';
 import { toast } from '../../components/toast/toast';
 import { categoryListPageInfo, categoryPageInfo } from '../../constants/PageInfos';
-import { getEditorData, getEditorHtml, initTextEditor } from '../../helpers/editor';
+import { getEditorData, getEditorHtml, initTextEditor } from '../../helpers/editor/editor';
 import commonStyles from '../../styles/common.module.scss';
 import styles from './CategoryPage.module.scss';
 

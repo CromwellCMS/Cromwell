@@ -33,6 +33,12 @@ export default function ProductDetails(props: {
 
     const hasImages = !!product?.images?.length;
 
+    const onTitleClick = () => {
+        const productLink = `/product/${product?.slug ?? product?.id}`;
+        if (props.compact)
+            router.push(productLink);
+    }
+
     return (
         <CContainer id="product_01"
             className={styles.ProductDetails + (props.compact ? ' ' + styles.compact : '')}
@@ -49,40 +55,47 @@ export default function ProductDetails(props: {
             {product && (<>
                 <CContainer id="product_0" className={styles.imageAndCaptionBlock}>
                     <CContainer id="product_2" className={styles.imageBlock}>
-                        <CGallery id="product_1" gallery={{
-                            images: hasImages ? product.images?.map(i => {
-                                return {
-                                    src: i
-                                }
-                            }) : [{ src: '/themes/@cromwell/theme-store/no-photos.png' }],
-                            loop: false,
-                            navigation: hasImages,
-                            zoom: hasImages,
-                            thumbs: hasImages ? {
-                                width: 80,
-                                height: 80,
-                            } : false,
-                            fullscreen: hasImages,
-                            backgroundSize: 'contain',
-                            // width: 400,
-                            // height: 400,
-                            responsive: {
-                                0: {
-                                    ratio: 1,
-                                    visibleSlides: 1,
+                        <CGallery id="product_1"
+                            isConstant
+                            gallery={{
+                                images: hasImages ? product.images?.map(i => {
+                                    return {
+                                        src: i
+                                    }
+                                }) : [{ src: '/themes/@cromwell/theme-store/no-photos.png' }],
+                                loop: false,
+                                navigation: hasImages,
+                                zoom: hasImages,
+                                thumbs: hasImages ? {
+                                    width: 80,
+                                    height: 80,
+                                } : false,
+                                fullscreen: hasImages,
+                                backgroundSize: 'contain',
+                                // width: 400,
+                                // height: 400,
+                                responsive: {
+                                    0: {
+                                        ratio: 1,
+                                        visibleSlides: 1,
+                                    },
+                                    700: {
+                                        ratio: 1,
+                                        // visibleSlides: 2,
+                                        visibleSlides: 1,
+                                        height: 600
+                                    }
                                 },
-                                700: {
-                                    ratio: 1,
-                                    // visibleSlides: 2,
-                                    visibleSlides: 1,
-                                    height: 600
-                                }
-                            },
-                        }} />
+                            }} />
                     </CContainer>
                     <CContainer id="product_3" className={styles.captionBlock}>
                         <CContainer id="product_4">
-                            <h1 className={styles.productName}>{product?.name}</h1>
+                            <h1 onClick={onTitleClick}
+                                style={{
+                                    textDecoration: props.compact ? 'underline' : 'none',
+                                    cursor: props.compact ? 'pointer' : 'initial',
+                                }}
+                                className={styles.productName}>{product?.name}</h1>
                         </CContainer>
                         <div className={styles.ratingBlock}>
                             <Rating name="read-only" value={product?.rating?.average} precision={0.5} readOnly />

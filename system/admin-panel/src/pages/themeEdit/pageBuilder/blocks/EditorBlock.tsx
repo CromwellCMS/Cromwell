@@ -3,7 +3,7 @@ import { EditOutlined as EditOutlinedIcon, Public as PublicIcon } from '@materia
 import React from 'react';
 import { debounce } from 'throttle-debounce';
 
-import { destroyEditor, getEditorData, getEditorHtml, initTextEditor } from '../../../../helpers/editor';
+import { destroyEditor, getEditorData, getEditorHtml, initTextEditor } from '../../../../helpers/editor/editor';
 import { StylesEditor } from '../components/StylesEditor';
 import styles from './BaseBlock.module.scss';
 import { TBlockMenuProps } from './BlockMenu';

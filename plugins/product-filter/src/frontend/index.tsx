@@ -15,16 +15,15 @@ import {
     Collapse,
     Divider,
     IconButton,
-    Theme,
     List,
     ListItem,
     ListItemIcon,
     ListItemText,
     SwipeableDrawer,
     TextField,
+    Theme,
     Typography,
     useMediaQuery,
-    WithStyles,
     withStyles,
 } from '@material-ui/core';
 import clsx from 'clsx';
@@ -33,10 +32,10 @@ import React from 'react';
 import { debounce } from 'throttle-debounce';
 
 import { defaultSettings } from '../constants';
-import { TInstanceSettings, IFrontendFilter } from '../types';
+import { IFrontendFilter, TInstanceSettings } from '../types';
 import { Slider } from './components/slider';
 import { filterCList, setListProps, TProductFilterData } from './service';
-import { getStyles } from './styles';
+import { styles } from './styles';
 
 const ExpandMoreIcon = iconFromPath(<path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"></path>);
 const FilterListIcon = iconFromPath(<path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"></path>);
@@ -49,7 +48,7 @@ type FilterState = {
     isMobileOpen: boolean;
 }
 
-type FilterProps = WithStyles<ReturnType<typeof getStyles>, true> & {
+type FilterProps = {
     router: NextRouter;
     isMobile?: boolean;
 } & TFrontendPluginProps<TProductFilterData, TInstanceSettings>;
@@ -159,16 +158,14 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
         content: JSX.Element;
     }) => {
         const { collapsedItems } = this.state;
-        const { classes } = this.props;
-
         if (collapsedItems[props.key] === undefined) {
             collapsedItems[props.key] = this.collapsedByDefault;
         }
         const isExpanded = !collapsedItems[props.key];
 
         return (
-            <Card className={classes.card}>
-                <div className={classes.headerWrapper}
+            <Card className="productFilter_card">
+                <div className="productFilter_headerWrapper"
                     onClick={() => this.setState(prev => ({
                         collapsedItems: {
                             ...prev.collapsedItems,
@@ -181,8 +178,8 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
                         margin: '0 0 0 15px'
                     }}>{props.title}</Typography>
                     <IconButton
-                        className={clsx(classes.expand, {
-                            [classes.expandOpen]: isExpanded,
+                        className={clsx('productFilter_expand', {
+                            'productFilter_expandOpen': isExpanded,
                         })}
                         aria-expanded={isExpanded}
                     >
@@ -197,7 +194,7 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
     }
 
     render() {
-        const { classes, instanceSettings } = this.props;
+        const { instanceSettings } = this.props;
         const { attributes, productCategory, pluginSettings } = this.props.data ?? {};
         const { isMobileOpen, minPrice, maxPrice, collapsedItems } = this.state;
 
@@ -219,10 +216,10 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
         const filterContent = (
             <div>
                 {isMobile && (
-                    <div className={classes.mobileHeader}>
+                    <div className="productFilter_mobileHeader">
                         <p>Filter</p>
                         <IconButton
-                            className={classes.mobileCloseBtn}
+                            className="productFilter_mobileCloseBtn"
                             onClick={this.handleMobileClose}>
                             <CloseIcon />
                         </IconButton>
@@ -248,14 +245,16 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
                         title: 'Categories',
                         key: 'categories',
                         content: (
-                            <div className={clsx(classes.categoryBox, classes.styledScrollBar, classes.list)}>
+                            <div className={clsx('productFilter_categoryBox',
+                                'productFilter_styledScrollBar',
+                                'productFilter_list')}>
                                 {productCategory.parent && (
-                                    <Chip className={classes.category}
+                                    <Chip className="productFilter_category"
                                         label={productCategory.parent.name}
                                         onClick={this.handleCategoryClick(productCategory.parent)} />
                                 )}
                                 {productCategory && (
-                                    <Chip className={classes.category}
+                                    <Chip className="productFilter_category"
                                         variant="outlined"
                                         disabled
                                         style={{ marginLeft: productCategory.parent ? '15px' : '' }}
@@ -266,7 +265,7 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
                                     <>
                                         {productCategory.children.map(child => (
                                             <Chip key={child.id}
-                                                className={classes.category}
+                                                className="productFilter_category"
                                                 style={{ marginLeft: ((productCategory?.parent ? 15 : 0) + 15) + 'px' }}
                                                 label={child.name}
                                                 onClick={this.handleCategoryClick(child)} />
@@ -305,10 +304,10 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
                         }
                         const isExpanded = !collapsedItems[attr.key];
                         return (
-                            <Card className={classes.card} key={attr.key}>
-                                <div className={classes.headerWrapper}>
+                            <Card className="productFilter_card">
+                                <div className="productFilter_headerWrapper">
                                     <CardHeader
-                                        className={classes.cardHeader}
+                                        className="productFilter_cardHeader"
                                         avatar={
                                             <Checkbox
                                                 color="primary"
@@ -329,8 +328,8 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
                                                 [attr.key]: !prev.collapsedItems[attr.key]
                                             }
                                         }))}
-                                        className={clsx(classes.expand, {
-                                            [classes.expandOpen]: isExpanded,
+                                        className={clsx('productFilter_expand', {
+                                            'productFilter_expandOpen': isExpanded,
                                         })}
                                         aria-expanded={isExpanded}
                                         aria-label="show more"
@@ -340,7 +339,7 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
                                 </div>
                                 <Collapse in={isExpanded} timeout="auto" unmountOnExit>
                                     <Divider />
-                                    <List className={clsx(classes.list, classes.styledScrollBar)} dense component="div" role="list">
+                                    <List className={clsx('productFilter_list', 'productFilter_styledScrollBar')} dense component="div" role="list">
                                         {attr.values.map((attrValue: TAttributeValue) => {
                                             const value = attrValue.value
                                             const labelId = `attribute-list-${attr.key}-${value}-label`;
@@ -368,7 +367,7 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
                                                     {attrValue.icon && (
                                                         <div
                                                             style={{ backgroundImage: `url(${attrValue.icon}` }}
-                                                            className={classes.attrValueIcon}></div>
+                                                            className="productFilter_attrValueIcon"></div>
                                                     )}
                                                     <ListItemText id={labelId} primary={value} />
                                                 </ListItem>
@@ -393,7 +392,7 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
             return (
                 <div>
                     <IconButton
-                        className={classes.mobileOpenBtn}
+                        className="productFilter_mobileOpenBtn"
                         style={{
                             top: mobileIconPosition.top + 'px',
                             left: mobileIconPosition.left + 'px'
@@ -406,7 +405,7 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
                         onClose={this.handleMobileClose}
                         onOpen={onOpen}
                     >
-                        <div className={classes.drawer}>
+                        <div className="productFilter_drawer">
                             {filterContent}
                         </div>
                     </SwipeableDrawer>
@@ -432,9 +431,7 @@ let hocComp: any = withMediaQuery({
     'isMobile': theme => theme?.breakpoints?.down('xs'),
 })(ProductFilter);
 
-hocComp = withStyles(
-    getStyles, { withTheme: true }
-)(hocComp);
+hocComp = withStyles(styles)(hocComp);
 
 if (withRouter) {
     hocComp = withRouter(hocComp);

@@ -1,7 +1,9 @@
 import { API, BlockAPI, OutputData } from '@editorjs/editorjs';
+import InlineCode from '@editorjs/inline-code';
 
-import { getFileManager } from '../components/fileManager/helpers';
-import { toast } from '../components/toast/toast';
+import { getFileManager } from '../../components/fileManager/helpers';
+import { toast } from '../../components/toast/toast';
+import { FontSize } from './fontSize/FontSize';
 
 let EditorJS: typeof import('@editorjs/editorjs');
 let EditorHeader: typeof import('@editorjs/header');
@@ -59,6 +61,91 @@ let importPromise;
     importResolver();
 })();
 
+const getTools = (readOnly?: boolean) => ({
+    image: {
+        class: EditorImage.default,
+        inlineToolbar: !readOnly,
+        config: readOnly ? undefined : {
+            onSelectFile: async () => {
+                return getFileManager().getPhoto();
+            },
+            uploader: {
+                uploadByFile: () => {
+                    toast.error('Please upload image via File manager')
+                    return new Promise<any>(done => done({
+                        success: 0,
+                    }));
+                },
+                uploadByUrl: (url: string) => {
+                    if (url.startsWith(window.location.origin)) {
+                        return new Promise<any>(done => done({
+                            success: 1,
+                            file: {
+                                url,
+                            }
+                        }));
+                    } else {
+                        toast.error('Please upload image via File manage')
+                        return new Promise<any>(done => done({
+                            success: 0,
+                        }));
+                    }
+                }
+            },
+        }
+    },
+    header: {
+        class: EditorHeader.default,
+        inlineToolbar: !readOnly
+    },
+    list: {
+        class: EditorList.default,
+        inlineToolbar: !readOnly,
+    },
+    embed: {
+        class: EditorEmbed.default,
+        inlineToolbar: !readOnly,
+    },
+    quote: {
+        class: EditorQuote.default,
+        inlineToolbar: !readOnly,
+    },
+    delimiter: {
+        class: EditorDelimiter.default,
+        inlineToolbar: !readOnly,
+    },
+    // raw: {
+    //     class: EditorRaw.default,
+    //     inlineToolbar: true,
+    // },
+    table: {
+        class: EditorTable.default,
+        inlineToolbar: !readOnly,
+    },
+    Marker: {
+        class: EditorMarker.default,
+        inlineToolbar: !readOnly,
+        shortcut: 'CMD+SHIFT+M',
+    },
+    // code: {
+    //     class: EditorCode.default,
+    //     inlineToolbar: true,
+    // },
+    code: {
+        class: InlineCode,
+        inlineToolbar: true,
+    },
+    linkTool: {
+        class: EditorLink.default,
+        inlineToolbar: !readOnly,
+    },
+    warning: {
+        class: EditorWarning.default,
+        inlineToolbar: !readOnly,
+    },
+    fontSize: FontSize,
+})
+
 const editors: Record<string, EditorJS.default> = {};
 
 export const initTextEditor = async (options: {
@@ -89,85 +176,9 @@ export const initTextEditor = async (options: {
     const editor = new EditorJS.default({
         holder: htmlId,
         data: data,
-        minHeight: 0,
+        // readOnly: true,
         tools: {
-            header: {
-                class: EditorHeader.default,
-                inlineToolbar: true
-            },
-            list: {
-                class: EditorList.default,
-                inlineToolbar: true,
-            },
-            image: {
-                class: EditorImage.default,
-                inlineToolbar: true,
-                config: {
-                    onSelectFile: async () => {
-                        return getFileManager().getPhoto();
-                    },
-                    uploader: {
-                        uploadByFile: () => {
-                            toast.error('Please upload image via File manager')
-                            return new Promise<any>(done => done({
-                                success: 0,
-                            }));
-                        },
-                        uploadByUrl: (url: string) => {
-                            if (url.startsWith(window.location.origin)) {
-                                return new Promise<any>(done => done({
-                                    success: 1,
-                                    file: {
-                                        url,
-                                    }
-                                }));
-                            } else {
-                                toast.error('Please upload image via File manage')
-                                return new Promise<any>(done => done({
-                                    success: 0,
-                                }));
-                            }
-                        }
-                    },
-                }
-            },
-            embed: {
-                class: EditorEmbed.default,
-                inlineToolbar: true,
-            },
-            quote: {
-                class: EditorQuote.default,
-                inlineToolbar: true,
-            },
-            delimiter: {
-                class: EditorDelimiter.default,
-                inlineToolbar: true,
-            },
-            // raw: {
-            //     class: EditorRaw.default,
-            //     inlineToolbar: true,
-            // },
-            table: {
-                class: EditorTable.default,
-                inlineToolbar: true,
-            },
-            Marker: {
-                class: EditorMarker.default,
-                inlineToolbar: true,
-                shortcut: 'CMD+SHIFT+M',
-            },
-            // code: {
-            //     class: EditorCode.default,
-            //     inlineToolbar: true,
-            // },
-            linkTool: {
-                class: EditorLink.default,
-                inlineToolbar: true,
-            },
-            warning: {
-                class: EditorWarning.default,
-                inlineToolbar: true,
-            },
+            ...getTools(),
         },
         onChange,
         autofocus,
@@ -200,45 +211,11 @@ export const getEditorHtml = async (htmlId: string, data?: OutputData) => {
         editor = new EditorJS.default({
             holder: saverId,
             data: data,
+            minHeight: 0,
             readOnly: true,
             autofocus: false,
             tools: {
-                header: {
-                    class: EditorHeader.default,
-                },
-                list: {
-                    class: EditorList.default,
-                },
-                image: {
-                    class: EditorImage.default,
-                },
-                embed: {
-                    class: EditorEmbed.default,
-                },
-                quote: {
-                    class: EditorQuote.default,
-                },
-                delimiter: {
-                    class: EditorDelimiter.default,
-                },
-                // raw: {
-                //     class: EditorRaw.default,
-                // },
-                table: {
-                    class: EditorTable.default,
-                },
-                Marker: {
-                    class: EditorMarker.default,
-                },
-                // code: {
-                //     class: EditorCode.default,
-                // },
-                linkTool: {
-                    class: EditorLink.default,
-                },
-                warning: {
-                    class: EditorWarning.default,
-                },
+                ...getTools(true),
             },
         });
         await editor.isReady;

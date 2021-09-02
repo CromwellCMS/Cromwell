@@ -8,6 +8,7 @@ import { ToastContainer } from 'react-toastify';
 
 import { pageInfos } from '../../constants/PageInfos';
 import { useForceUpdate } from '../../helpers/forceUpdate';
+import { LayoutPortal } from '../../helpers/LayoutPortal';
 import Page404 from '../../pages/404/404page';
 import PageErrorBoundary from '../errorBoundaries/PageErrorBoundary';
 import FileManager from '../fileManager/FileManager';
@@ -90,9 +91,11 @@ function Layout() {
           <div className={styles.toastContainer} ><ToastContainer /></div>, document.body)}
         <FileManager />
         <ConfirmPrompt />
+        <LayoutPortal />
       </div>
     </ThemeProvider>
   );
 }
 
 export default Layout;
+

@@ -85,11 +85,12 @@ export class PageBuilder extends Component<{
         this.init();
     }
 
-    private init = async () => {
+    public init = async () => {
         if (!this.editingFrameRef.current) {
             console.error('!this.editingFrameRef.current');
             return;
         }
+        this.pageChangeStart();
         this.contentWindow = this.editingFrameRef.current.contentWindow;
         this.editorWidgetWrapper = document.getElementById('editorWidgetWrapper');
         this.editorWidgetWrapperCropped = document.getElementById('editorWidgetWrapperCropped');
@@ -113,7 +114,7 @@ export class PageBuilder extends Component<{
         this.setStoreItem = this.contentStore.nodeModules?.modules?.['@cromwell/core'].setStoreItem;
         (window as any).PageBuilder2 = this;
 
-        this.contentStore?.forceUpdatePage?.();
+        // this.contentStore?.forceUpdatePage?.();
 
         this.draggable = new Draggable({
             document: this.contentWindow.document,
@@ -148,6 +149,22 @@ export class PageBuilder extends Component<{
         document.body.addEventListener('mouseup', this.onMouseUp);
         this.checkHistoryButtons();
         this.updateDraggable();
+        this.pageChangeFinish();
+    }
+
+    public pageChangeStart = () => {
+        if (this.editingFrameRef.current) {
+            this.editingFrameRef.current.style.transitionDuration = '0.5s'
+            this.editingFrameRef.current.style.opacity = '0';
+        }
+    }
+
+    public pageChangeFinish = () => {
+        if (this.editingFrameRef.current) {
+            setTimeout(() => {
+                this.editingFrameRef.current.style.opacity = '1';
+            }, 100);
+        }
     }
 
     public updateDraggable = () => {
