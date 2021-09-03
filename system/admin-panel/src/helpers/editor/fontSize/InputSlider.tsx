@@ -50,9 +50,8 @@ export function InputSlider(props: {
                         onChange={handleInputChange}
                         onBlur={handleBlur}
                         inputProps={{
-                            step: 10,
+                            step: 2,
                             min: 0,
-                            max: 100,
                             type: 'number',
                             'aria-labelledby': 'input-slider',
                         }}

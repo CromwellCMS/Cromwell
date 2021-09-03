@@ -65,6 +65,7 @@ export function GalleryBlockSidebar(props: TBlockMenuProps) {
             <GalleryPicker
                 images={data?.gallery?.images}
                 onChange={(val) => handleChange('images', val)}
+                className={styles.settingsInput}
             />
             <TextField
                 fullWidth

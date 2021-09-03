@@ -101,7 +101,7 @@ class Autocomplete<TItemDataType> extends React.Component<{
         return itemList;
     }
 
-    private searchRequest = debounce(500, async (searchText: string) => {
+    private searchRequest = debounce(500, async () => {
         const list = getBlockInstance<TCList>(this.listId)?.getContentInstance();
         if (!list) {
             return;
@@ -123,7 +123,7 @@ class Autocomplete<TItemDataType> extends React.Component<{
         if (!this.state.searchOpen) {
             this.setState({ searchOpen: true });
         }
-        this.searchRequest(searchText);
+        this.searchRequest();
     }
 
     private handleSearchClose = () => {
@@ -201,10 +201,10 @@ class Autocomplete<TItemDataType> extends React.Component<{
                                                 {ItemComponent ? (
                                                     <ItemComponent data={props.data} />
                                                 ) : (
-                                                        <ListItem button>
-                                                            <p className={styles.itemText}>{this.props.getOptionLabel(props.data)}</p>
-                                                        </ListItem>
-                                                    )}
+                                                    <ListItem button>
+                                                        <p className={styles.itemText}>{this.props.getOptionLabel(props.data)}</p>
+                                                    </ListItem>
+                                                )}
                                             </div>
                                         )
                                     }}

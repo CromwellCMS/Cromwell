@@ -1,8 +1,15 @@
 import { TImageSettings } from '@cromwell/core';
 import { IconButton, Tooltip } from '@material-ui/core';
-import { Add as AddIcon, DeleteForever as DeleteForeverIcon, DragIndicator as DragIndicatorIcon, DeleteOutline as DeleteOutlineIcon } from '@material-ui/icons';
+import {
+    Add as AddIcon,
+    DeleteForever as DeleteForeverIcon,
+    DeleteOutline as DeleteOutlineIcon,
+    DragIndicator as DragIndicatorIcon,
+} from '@material-ui/icons';
+import clsx from 'clsx';
 import React, { Component } from 'react';
 import { Responsive, WidthProvider } from 'react-grid-layout';
+
 import { ImagePickerProps } from '../imagePicker/ImagePicker';
 import styles from './GalleryPicker.module.scss';
 import { ImageItem } from './ImageItem';
@@ -15,6 +22,7 @@ class GalleryPicker extends Component<{
     classes?: {
         imagePicker?: ImagePickerProps['classes'];
     }
+    className?: string;
 }> {
     private uncontrolledInput: TImageSettings[] = [];
 
@@ -72,7 +80,7 @@ class GalleryPicker extends Component<{
         });
 
         return (
-            <div className={styles.GalleryPicker}>
+            <div className={clsx(styles.GalleryPicker, this.props.className)}>
                 <ResponsiveGridLayout
                     margin={[0, 0]}
                     isResizable={false}

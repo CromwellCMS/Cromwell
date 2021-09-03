@@ -21,9 +21,6 @@
     position: absolute;
 }
 
-.itemText {
-    // font-weight: 500;
-}
 
 .itemWrapper {
     width: 100%;
@@ -32,6 +29,7 @@
 .list {
     width: 100%;
     height: 100%;
+    @include styledScrollBar;
 }
 
 .listPreloader {
@@ -42,4 +40,17 @@
     left: 0;
     right: 0;
     z-index: 10;
+}
+
+:global(.modeDark) {
+
+    .searchContent,
+    .listPreloader {
+        background-color: #222;
+        border-radius: 6px;
+
+        * {
+            color: #eee;
+        }
+    }
 }

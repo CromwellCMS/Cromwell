@@ -37,17 +37,7 @@ const fs = require('fs');
 
     // Check node_modules
     if ((!hasNodeModules() || scriptName === 'build') && !noInstall) {
-
-        if (scriptName === 'build') {
-            // Force yarn to re-resolve packages (run install). Otherwise some modules may be left unlinked
-            // For example, at circleci there won't be available cromwell cli if we don't run install
-            if (fs.existsSync(backendNode_modules))
-                fs.rmdirSync(backendNode_modules, { recursive: true });
-
-            if (fs.existsSync(frontendNode_modules))
-                fs.rmdirSync(frontendNode_modules, { recursive: true });
-        }
-
+2
         spawnSync(`npm i --workspaces --force`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
     }
 

@@ -11,7 +11,7 @@ export class FontSize implements InlineTool {
     private tag: string;
     private icon = '<svg viewBox="0 0 24 24" width="20" height="18"><path d="M9 4v3h5v12h3V7h5V4H9zm-6 8h3v7h3v-7h3V9H3v3z"></path></svg>';
     private actions: HTMLDivElement;
-    private currentSpan: HTMLSpanElement;
+    private currentSpan: HTMLSpanElement | null;
     private lastRange: Range;
     private hasShownActions = false;
     private appliedSize = false;
@@ -62,8 +62,9 @@ export class FontSize implements InlineTool {
 
     handleSizeChange = (value: number) => {
         if (!this.appliedSize) {
-            this.wrap(this.lastRange);
+            this.wrap();
         }
+        if (!this.currentSpan) return;
         this.appliedSize = true;
 
         const innerSpans = [...this.currentSpan.querySelectorAll('span')];
@@ -81,6 +82,11 @@ export class FontSize implements InlineTool {
 
     showActions() {
         this.appliedSize = false;
+        const range = this.lastRange;
+        if (range.collapsed) return;
+
+        const firstParent = range.startContainer?.parentNode as HTMLElement;
+        const initialSize = window.getComputedStyle(firstParent, null).getPropertyValue('font-size');
 
         if (this.hasShownActions) {
             layoutActions.closePortal('fontSizeTool');
@@ -93,13 +99,14 @@ export class FontSize implements InlineTool {
 
         layoutActions.renderPortal('fontSizeTool', (
             <InputSlider
-                initialVal={16}
+                initialVal={parseFloat(initialSize) ?? 16}
                 onChange={this.handleSizeChange}
             />
         ), this.actions)
     }
 
-    wrap(range: Range) {
+    wrap() {
+        const range = this.lastRange;
         if (range.collapsed) return;
 
         // Selected only one SPAN tag
@@ -123,11 +130,16 @@ export class FontSize implements InlineTool {
             }
 
             range.insertNode(this.currentSpan);
+
+            // Remove empty span tags
+            (this.currentSpan?.parentElement ?? this.currentSpan).querySelectorAll('span').forEach(span => {
+                if (span.innerText === '') span.remove();
+            });
         }
 
-        this.api.selection.expandToTag(this.currentSpan);
+        if (this.currentSpan)
+            this.api.selection.expandToTag(this.currentSpan);
     }
-
 
     checkState() {
         if (this.hasShownActions) {

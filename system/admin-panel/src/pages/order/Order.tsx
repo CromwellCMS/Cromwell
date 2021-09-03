@@ -171,6 +171,7 @@ const OrderPage = () => {
                                 onChange={(event: any, newValue: string | null) => {
                                     handleInputChange('status', newValue);
                                 }}
+                                classes={{ paper: styles.popper }}
                                 options={orderStatuses}
                                 getOptionLabel={(option) => option}
                                 className={styles.textField}

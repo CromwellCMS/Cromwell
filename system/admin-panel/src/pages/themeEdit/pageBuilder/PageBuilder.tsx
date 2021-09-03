@@ -43,8 +43,6 @@ export class PageBuilder extends Component<{
 
     private ignoreDraggableClass: string = pageRootContainerId;
     private draggable: Draggable;
-    private undoBtnRef = React.createRef<HTMLButtonElement>();
-    private redoBtnRef = React.createRef<HTMLButtonElement>();
 
     public blockInfos: Record<string, {
         canDrag?: boolean;
@@ -536,14 +534,17 @@ export class PageBuilder extends Component<{
             }
         }
 
-        if (this.undoBtnRef.current) {
-            if (this.history.length > 0) enableButton(this.undoBtnRef.current)
-            else disableButton(this.undoBtnRef.current);
+        const undoBtn = this.props.instances.actions?.undoBtnRef?.current;
+        const redoBtn = this.props.instances.actions?.redoBtnRef?.current;
+
+        if (undoBtn) {
+            if (this.history.length > 0) enableButton(undoBtn)
+            else disableButton(undoBtn);
         }
 
-        if (this.redoBtnRef.current) {
-            if (this.undoneHistory.length > 0) enableButton(this.redoBtnRef.current)
-            else disableButton(this.redoBtnRef.current);
+        if (redoBtn) {
+            if (this.undoneHistory.length > 0) enableButton(redoBtn)
+            else disableButton(redoBtn);
         }
     }
 

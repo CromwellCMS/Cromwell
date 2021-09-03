@@ -557,7 +557,7 @@ class SettingsPage extends React.Component<any, {
                                         fullWidth
                                         label="Head HTML"
                                         multiline
-                                        rowsMax={20}
+                                        maxRows={20}
                                         value={settings?.headHtml ?? ''}
                                         onChange={this.handleTextFieldChange('headHtml')}
                                         variant="outlined"
@@ -569,7 +569,7 @@ class SettingsPage extends React.Component<any, {
                                         fullWidth
                                         label="Footer HTML"
                                         multiline
-                                        rowsMax={20}
+                                        maxRows={20}
                                         value={settings?.footerHtml ?? ''}
                                         onChange={this.handleTextFieldChange('footerHtml')}
                                         variant="outlined"
@@ -633,7 +633,7 @@ class SettingsPage extends React.Component<any, {
                                 <Grid item xs={12} >
                                     <TextField
                                         multiline
-                                        rowsMax={8}
+                                        maxRows={8}
                                         fullWidth
                                         variant="outlined"
                                         label="robots.txt"

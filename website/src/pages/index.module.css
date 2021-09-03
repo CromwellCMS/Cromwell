@@ -8,6 +8,10 @@
   text-decoration: none;
 }
 
+.content p {
+  margin: 0;
+}
+
 .header {
   margin: 60px 0 10px;
   font-size: 58px;
@@ -32,7 +36,7 @@ html[data-theme="dark"] .moon {
   box-shadow: inset -5px 7px 0 5px #fff;
 }
 
-.subheader {
+p.subheader {
   font-size: 18px;
   display: flex;
   align-items: center;
@@ -132,7 +136,7 @@ button.examplesBtn:hover {
   align-items: center;
   margin-bottom: 50px;
   padding: 20px;
-  background: linear-gradient(144deg, rgb(60, 0, 166), rgb(119, 0, 106));
+  background: linear-gradient(144deg, rgba(60, 0, 166, 0.85), rgba(119, 0, 106, 0.85));
   border-radius: 10px;
   color: #fff;
   box-shadow: 0 17px 39px 7px rgb(60 0 166 / 18%), 0 0 22px 2px rgb(119 0 116 / 24%);
@@ -164,6 +168,26 @@ p.featureTitle {
   font-weight: 700;
   margin-bottom: 6px;
 }
+
+.header3 {
+  font-size: 28px;
+  line-height: 40px;
+  font-weight: 500;
+  margin: 0;
+}
+
+.block {
+  margin: 20px 0 30px;
+}
+
+.screenshots {
+  position: relative;
+}
+
+.demoImage {
+  width: 100%;
+}
+
 
 @media screen and (max-width: 700px) {
   .feature {
