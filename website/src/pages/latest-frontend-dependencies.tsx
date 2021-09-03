@@ -1,17 +1,16 @@
-import { getCentralServerClient } from '@cromwell/core-frontend';
-import { Collapse, IconButton, TextField, CircularProgress } from '@material-ui/core';
+import Link from '@docusaurus/Link';
+import { CircularProgress, Collapse, IconButton, TextField } from '@material-ui/core';
 import { ExpandMore as ExpandMoreIcon } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
-import Link from '@docusaurus/Link';
 import Layout from '@theme/Layout';
-import React, { useEffect, useState } from 'react';
 import compareVersions from 'compare-versions';
+import React, { useEffect, useState } from 'react';
 
+import { apiClient } from '../helpers/api-client';
 import styles from './latest-frontend-dependencies.module.css';
 
 
 export default function FrontendDependencies() {
-    const client = getCentralServerClient();
 
     const [expanded, setExpanded] = React.useState(false);
     const [versionsLoading, setVersionsLoading] = React.useState(false);
@@ -29,7 +28,7 @@ export default function FrontendDependencies() {
     useEffect(() => {
         (async () => {
             setVersionsLoading(true);
-            const versions = (await client.getFrontendDependenciesBindings())
+            const versions = (await apiClient.getFrontendDependenciesBindings())
                 .filter(compareVersions.validate)
                 .sort(compareVersions).reverse();
 
@@ -44,7 +43,7 @@ export default function FrontendDependencies() {
 
     const getDependencies = async (version: string) => {
         setVersionsLoading(true);
-        const deps = await client.getFrontendDependenciesList(version);
+        const deps = await apiClient.getFrontendDependenciesList(version);
         setDependencies(Object.keys(deps?.latestVersions ?? {}).map(pckg => ({
             name: pckg,
             version: (deps?.latestVersions ?? {})[pckg],

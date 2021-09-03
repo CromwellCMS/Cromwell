@@ -177,6 +177,7 @@ export const initTextEditor = async (options: {
         holder: htmlId,
         data: data,
         // readOnly: true,
+        minHeight: 0,
         tools: {
             ...getTools(),
         },

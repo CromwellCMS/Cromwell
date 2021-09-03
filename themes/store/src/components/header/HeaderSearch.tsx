@@ -1,20 +1,11 @@
 import { gql } from '@apollo/client';
 import { TPagedParams, TProduct } from '@cromwell/core';
 import { getCStore, getGraphQLClient, Link, LoadBox } from '@cromwell/core-frontend';
-import { ClickAwayListener, Fade, Grid, Popper, TextField as MuiTextField, withStyles } from '@material-ui/core';
+import { ClickAwayListener, Fade, Grid, Popper } from '@material-ui/core';
 import React from 'react';
 import { debounce } from 'throttle-debounce';
 
 import styles from './Header.module.scss';
-
-const TextField = withStyles({
-    root: {
-        paddingTop: '0',
-        paddingBottom: '0',
-        fontWeight: 300,
-        width: "100%"
-    },
-})(MuiTextField);
 
 export class HeaderSearch extends React.Component<unknown, {
     searchOpen: boolean;
@@ -104,11 +95,16 @@ export class HeaderSearch extends React.Component<unknown, {
 
         return (
             <>
-                <TextField label="Search..."
-                    variant="outlined" size="small"
+                <div
+                    style={{ width: '100%' }}
                     ref={this.searchAnchorRef}
-                    // onBlur={handleSearchClose}
-                    onChange={(event) => this.handleSearchInput(event.currentTarget.value)} />
+                >
+                    <input
+                        className={styles.searchInput}
+                        placeholder="Search..."
+                        onChange={(event) => this.handleSearchInput(event.currentTarget.value)}
+                    />
+                </div>
                 <Popper open={searchOpen} anchorEl={this.searchAnchorRef.current}
                     style={{ zIndex: 9999 }}
                     transition>

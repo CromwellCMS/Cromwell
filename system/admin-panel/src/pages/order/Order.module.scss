@@ -10,6 +10,7 @@
     height: 100%;
     min-height: 300px;
 }
+
 .header {
     @include paper;
     padding: 0 20px 0 0;
@@ -48,9 +49,11 @@
     @include paper;
     margin-bottom: 15px;
     padding: 20px;
+
     p {
         margin-bottom: 5px;
     }
+
     b {
         font-weight: 500;
     }
@@ -71,6 +74,7 @@
     svg {
         color: #ff9100;
     }
+
     p {
         font-weight: 500;
     }
@@ -90,6 +94,7 @@
     flex-direction: column;
     justify-content: center;
 }
+
 .productName {
     font-weight: 500;
 }
@@ -104,9 +109,11 @@
     font-size: 18px;
     margin: 6px 0;
 }
+
 .price {
     font-weight: 400;
 }
+
 .oldPrice {
     text-decoration: line-through;
     opacity: 0.7;
@@ -114,11 +121,20 @@
 }
 
 :global(.modeDark) {
+
     .header,
     .fields,
     .cart,
     .sums {
         background-color: #333;
+
+        * {
+            color: #eee;
+        }
+    }
+
+    .popper {
+        background-color: #222;
 
         * {
             color: #eee;

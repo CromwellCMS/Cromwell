@@ -104,8 +104,8 @@ const ReviewForm = (props: {
                 size="small"
                 fullWidth
                 multiline
-                rows={4}
-                rowsMax={20}
+                minRows={4}
+                maxRows={20}
                 className={styles.reviewInput}
                 value={description}
                 onChange={e => setDescription(e.target.value)}

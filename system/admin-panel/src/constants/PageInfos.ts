@@ -6,7 +6,6 @@ import {
     LocalMall as LocalMallIcon,
     LocalOfferOutlined as LocalOfferOutlinedIcon,
     PeopleAlt as PeopleAltIcon,
-    Power as PowerIcon,
     Settings as SettingsIcon,
     ShoppingBasket as ShoppingBasketIcon,
     Stars as StarsIcon,
@@ -312,7 +311,10 @@ export const sideBarLinks: SidebarLinkType[] = [
         id: '6_pluginsPage',
         title: 'Plugins',
         route: pluginListPageInfo.route,
-        icon: React.createElement(PowerIcon)
+        icon: React.createElement('div', {
+            className: sidebarStyles.customIcon,
+            style: { backgroundImage: 'url(/admin/static/extension.svg)', filter: 'invert(1)' }
+        }),
     },
     {
         id: 'users_page',

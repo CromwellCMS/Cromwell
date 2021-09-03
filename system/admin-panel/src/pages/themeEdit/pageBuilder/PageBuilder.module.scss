@@ -38,3 +38,10 @@
     height: 100%;
     border-radius: 6px;
 }
+
+
+:global(.modeDark) {
+    .PageBuilder {
+        background-color: #333;
+    }
+}

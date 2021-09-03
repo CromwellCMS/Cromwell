@@ -1,4 +1,5 @@
 @import "./variables.scss";
+@import "./common.module.scss";
 
 * {
     box-sizing: border-box;
@@ -57,6 +58,28 @@ h3 {
     :global(.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline) {
         border-color: #fff;
     }
+
+    *::selection {
+        background-color: #777;
+    }
+
+    :global(.MuiPaper-root.MuiMenu-paper) {
+        background-color: #333;
+
+        * {
+            color: #eee;
+        }
+    }
+
+    :global(.MuiList-root.MuiMenu-list) {
+        @include styledScrollBar;
+        background-color: #222;
+        border-radius: 6px;
+
+        * {
+            color: #eee;
+        }
+    }
 }
 
 :global(.crw-text-editor) {
@@ -101,6 +124,10 @@ h3 {
     }
 
     :global(.cdx-settings-button:hover) {
+        background-color: #555;
+    }
+
+    :global(.cdx-settings-button--active) {
         background-color: #444;
     }
 
@@ -187,6 +214,7 @@ body :global(.ct) {
     z-index: 99;
 }
 
+body,
 :global(#root) {
     overflow: hidden;
 }

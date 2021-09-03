@@ -44,6 +44,9 @@ export class ThemeEditActions extends Component<{
     private hasChangedPageInfo: boolean = false;
     private unregisterBlock;
     private unsavedPrompt = 'Your unsaved changes will be lost. Do you want to discard and leave this page?';
+    
+    public undoBtnRef = React.createRef<HTMLButtonElement>();
+    public redoBtnRef = React.createRef<HTMLButtonElement>();
 
     constructor(props) {
         super(props);
@@ -414,6 +417,7 @@ export class ThemeEditActions extends Component<{
                     </Popover>
                     <Tooltip title="Undo">
                         <IconButton
+                            ref={this.undoBtnRef}
                             onClick={this.undoModification}
                         >
                             <UndoIcon />
@@ -421,6 +425,7 @@ export class ThemeEditActions extends Component<{
                     </Tooltip>
                     <Tooltip title="Redo">
                         <IconButton
+                            ref={this.redoBtnRef}
                             onClick={this.redoModification}
                         >
                             <RedoIcon />
