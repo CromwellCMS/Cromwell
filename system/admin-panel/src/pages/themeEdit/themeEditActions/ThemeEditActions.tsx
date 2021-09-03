@@ -14,6 +14,7 @@ import {
 } from '@material-ui/icons';
 import clsx from 'clsx';
 import { History } from 'history';
+import queryString from 'query-string';
 import React, { Component } from 'react';
 
 import { LoadingStatus } from '../../../components/loadBox/LoadingStatus';
@@ -23,7 +24,6 @@ import { PageListItem } from '../pageListItem/PageListItem';
 import { PageSettings } from '../pageSettings/PageSettings';
 import { TEditorInstances, TExtendedPageInfo } from '../ThemeEdit';
 import styles from './ThemeEditActions.module.scss';
-import queryString from 'query-string';
 
 
 export class ThemeEditActions extends Component<{
@@ -282,7 +282,16 @@ export class ThemeEditActions extends Component<{
         if (this.hasUnsavedModifications() && !window.confirm(this.unsavedPrompt)) return;
         this.hasChangedPageInfo = false;
         this.getThemeEditor().resetModifications();
-        this.getThemeEditor().setState({ isPageLoading: true });
+        this.getThemeEditor().pageChangeStart();
+
+        const fadeOutPromise = new Promise<void>(done => {
+            setTimeout(() => {
+                this.getThemeEditor().setState({ isPageLoading: true, loadingStatus: true }, () => {
+                    done();
+                });
+            }, 300);
+        });
+
 
         let pageConfig: TPageConfig | undefined;
         if (pageInfo?.isSaved !== false) {
@@ -290,15 +299,25 @@ export class ThemeEditActions extends Component<{
                 if (pageInfo.route && pageInfo.route !== '') {
                     pageConfig = await getRestApiClient()?.getPageConfig(pageInfo.route);
                 }
+
+                pageInfo = Object.assign({}, pageInfo, pageConfig);
+                try {
+                    await fetch(`${window.location.origin}/${pageInfo.previewUrl ?? pageInfo.route}`);
+                } catch (error) {
+                    console.error(error);
+                }
             } catch (e) {
                 console.error(e);
             }
         }
 
         this.forceUpdate();
-        this.getThemeEditor().handlePageChange();
         this.getThemeEditor().setEditingPageConfig(Object.assign({}, pageInfo, pageConfig));
+        await fadeOutPromise;
         this.getThemeEditor().setState({ isPageLoading: false });
+        setTimeout(() => {
+            this.getThemeEditor().setState({ loadingStatus: false });
+        }, 300);
 
         const parsedUrl = queryString.parseUrl(window.location.href, { parseFragmentIdentifier: true });
         parsedUrl.query['page'] = pageInfo.route;
@@ -313,18 +332,27 @@ export class ThemeEditActions extends Component<{
         this.getThemeEditor().redoModification();
     }
 
-    private handlePreviewChange = (pageConfig: TExtendedPageInfo) => (url: string) => {
+    private handlePreviewChange = (pageConfig: TExtendedPageInfo) => async (url: string) => {
         const editingPageConfig = this.getThemeEditor().getEditingPageConfig();
         if (editingPageConfig.id === pageConfig.id) {
             this.getThemeEditor().setEditingPageConfig(Object.assign({}, editingPageConfig, {
                 previewUrl: url,
             }));
 
-            this.getThemeEditor().setState({ isPageLoading: true });
+            this.getThemeEditor().pageChangeStart();
+            const fadeOutPromise = new Promise<void>(done => {
+                setTimeout(() => {
+                    this.getThemeEditor().setState({ isPageLoading: true, loadingStatus: true }, () => {
+                        done();
+                    });
+                }, 300);
+            });
+            await fadeOutPromise;
+            this.getThemeEditor().setState({ isPageLoading: false });
+
             setTimeout(() => {
-                this.getThemeEditor().setState({ isPageLoading: false });
-            }, 100);
-            this.getThemeEditor().handlePageChange();
+                this.getThemeEditor().setState({ loadingStatus: false });
+            }, 200);
         }
 
         this.setState(prev => ({

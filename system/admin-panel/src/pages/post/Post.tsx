@@ -18,7 +18,7 @@ import { Link, useHistory, useParams } from 'react-router-dom';
 
 import { toast } from '../../components/toast/toast';
 import { postListInfo, postPageInfo } from '../../constants/PageInfos';
-import { getEditorData, getEditorHtml, initTextEditor } from '../../helpers/editor';
+import { getEditorData, getEditorHtml, initTextEditor } from '../../helpers/editor/editor';
 import { useForceUpdate } from '../../helpers/forceUpdate';
 import styles from './Post.module.scss';
 import PostSettings from './PostSettings';

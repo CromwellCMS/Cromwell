@@ -186,3 +186,7 @@ h3 {
 body :global(.ct) {
     z-index: 99;
 }
+
+:global(#root) {
+    overflow: hidden;
+}

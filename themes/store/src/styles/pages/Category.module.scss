@@ -2,6 +2,10 @@
 
 .content {
     display: flex;
+
+    :global(.productFilter_card) {
+        background-color: #fff;
+    }
 }
 
 .sidebar {

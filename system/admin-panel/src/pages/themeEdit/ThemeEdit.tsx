@@ -1,9 +1,8 @@
-import { TCromwellBlockData, TPageConfig, TPluginEntity, TPageInfo } from '@cromwell/core';
+import { TCromwellBlockData, TPageConfig, TPageInfo, TPluginEntity } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
 import React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 
-import LoadBox from '../../components/loadBox/LoadBox';
 import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
 import { PageBuilder } from './pageBuilder/PageBuilder';
 import styles from './ThemeEdit.module.scss';
@@ -71,17 +70,12 @@ export default class ThemeEdit extends React.Component<Partial<RouteComponentPro
         this.changedModifications = modifications;
     }
 
-    public handlePageChange = () => {
-        if (this.pageBuilderContent.current) {
-            this.pageBuilderContent.current.style.opacity = '0';
-            this.pageBuilderContent.current.style.transitionDuration = '0s'
-            setTimeout(() => {
-                this.pageBuilderContent.current.style.transitionDuration = '0.3s';
-                setTimeout(() => {
-                    this.pageBuilderContent.current.style.opacity = '1';
-                }, 100);
-            }, 400);
-        }
+    public pageChangeStart = () => {
+        this.instances.pageBuilder?.pageChangeStart();
+    }
+
+    public pageChangeFinish = () => {
+        this.instances.pageBuilder?.pageChangeFinish();
     }
 
     public resetModifications = () => {
@@ -109,9 +103,9 @@ export default class ThemeEdit extends React.Component<Partial<RouteComponentPro
                         redoModification={this.redoModification}
                     />
                 </div>
+                {/* {(isPageLoading || !this.editingPageConfig) && (<LoadBox />)} */}
                 <div className={styles.pageBuilder} ref={this.pageBuilderContent}>
-                    {(isPageLoading || !this.editingPageConfig) && (<LoadBox />)}
-                    {!isPageLoading && this.editingPageConfig && (
+                    {this.editingPageConfig && !isPageLoading && (
                         <PageBuilder
                             instances={this.instances}
                             plugins={this.state.plugins}
@@ -120,7 +114,7 @@ export default class ThemeEdit extends React.Component<Partial<RouteComponentPro
                         />
                     )}
                 </div>
-                <LoadingStatus isActive={this.state.loadingStatus} />
+                <LoadingStatus isActive={this.state.loadingStatus || isPageLoading} />
             </div>
         )
     }

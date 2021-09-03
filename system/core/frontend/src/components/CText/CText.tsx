@@ -31,7 +31,6 @@ export class CText extends React.Component<CTextProps> {
                     if (href) {
                         return <Link href={href}>{_text}</Link>
                     }
-
                     return React.createElement(_type, {}, _text);
                 }} />
         )
