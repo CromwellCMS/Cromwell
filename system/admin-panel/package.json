@@ -41,7 +41,7 @@
     "@cromwell/core": "1.1.10",
     "@cromwell/core-backend": "1.0.12",
     "@cromwell/core-frontend": "1.0.9",
-    "@cromwell/editorjs-image": "2.7.1",
+    "@cromwell/editorjs-image": "2.7.2",
     "@cromwell/plugin-product-filter": "1.0.9",
     "@cromwell/utils": "1.0.14",
     "@date-io/date-fns": "1.3.13",

@@ -93,7 +93,7 @@
             items: [
               {
                 label: 'Discord',
-                href: 'https://github.com/CromwellCMS/Cromwell'
+                href: 'https://discord.gg/mxmJNSZ2gn'
               },
               {
                 label: 'Issues',

@@ -5,6 +5,7 @@ import { useEffect } from 'react';
 import { useRef } from 'react';
 import React from 'react';
 import Swiper, { EffectCoverflow, Lazy } from 'swiper';
+import styles from './CoverFlowImages.module.css';
 
 Swiper.use([Lazy, EffectCoverflow]);
 
@@ -17,8 +18,11 @@ export const CoverFlowImages = (props: {
         const swiper = new Swiper(containerRef.current, {
             effect: "coverflow",
             grabCursor: true,
-            slidesPerView: 1.3,
+            // slidesPerView: 1.3,
+            slidesPerView: "auto",
+            spaceBetween: 30,
             lazy: true,
+            height: 400,
             coverflowEffect: {
                 rotate: 50,
                 stretch: 0,
@@ -30,11 +34,11 @@ export const CoverFlowImages = (props: {
     }, []);
 
     return (
-        <div className={clsx("swiper mySwaper")} ref={containerRef}>
+        <div className={clsx("swiper", styles.swiper)} ref={containerRef}>
             <div className="swiper-wrapper">
                 {props.images.map(image => (
                     <div key={image}
-                        className={clsx("swiper-slide")}>
+                        className={clsx("swiper-slide", styles.slide)}>
                         <img
                             data-src={image}
                             className="swiper-lazy"

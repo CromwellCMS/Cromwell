@@ -302,7 +302,6 @@ export class ThemeService {
         }
         if (!userConfig.pages) userConfig.pages = [];
 
-
         const oldUserPageConfig: TPageConfig | undefined = this.getPageConfigFromThemeConfig(userConfig, userPageConfig.route, userPageConfig.id);
 
         // Remove global mods that were changed to local
@@ -332,36 +331,18 @@ export class ThemeService {
             ...userPageConfig,
             modifications: [...userPageConfig.modifications]
         };
-        userPageConfig.modifications.forEach(mod => {
-            if (mod.isDeleted) {
-                let hasUserSameMod = false;
 
-                oldUserPageConfig?.modifications.forEach(userMod => {
-                    if (userMod.id === mod.id) hasUserSameMod = true;
-                });
-                // If hasUserSameMod === false, then mod exists only in theme's config
-                if (!hasUserSameMod) {
-                    // Just remove from user's config
-                    if (oldUserPageConfig && oldUserPageConfig.modifications) {
-                        oldUserPageConfig.modifications = oldUserPageConfig.modifications.filter(
-                            userMode => userMode.id !== mod.id
-                        )
-                    }
-                    filteredUserPageConfig.modifications = filteredUserPageConfig.modifications.filter(
-                        userMode => userMode.id !== mod.id
-                    )
-                } else {
-                    // compress info to leave only flag and id
-                    filteredUserPageConfig.modifications = filteredUserPageConfig.modifications.map(userMode =>
-                        userMode.id === mod.id ? {
-                            id: mod.id,
-                            isDeleted: true,
-                            type: mod.type
-                        } : userMode
-                    )
-                }
-            }
-        })
+        // For deleted blocks we want to compress info and leave only flag and id in user config
+        userPageConfig.modifications.forEach(mod => {
+            if (!mod.isDeleted) return;
+            filteredUserPageConfig.modifications = filteredUserPageConfig.modifications.map(userMode =>
+                userMode.id === mod.id ? {
+                    id: mod.id,
+                    isDeleted: true,
+                    type: mod.type
+                } : userMode
+            )
+        });
 
         // Merge the rest
         const pageConfig = this.mergePages(oldUserPageConfig, filteredUserPageConfig);
