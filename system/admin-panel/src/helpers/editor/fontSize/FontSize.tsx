@@ -116,18 +116,23 @@ export class FontSize implements InlineTool {
         } else {
             // Selected many tags or text
             const content = range.extractContents();
+
             this.currentSpan = document.createElement(this.tag);
             this.currentSpan.classList.add('fontSize');
+            this.currentSpan.appendChild(content);
 
-            // If many same spans, then merge
-            if (content.children.length > 1 &&
-                [...content.children].every(tag => tag.tagName === 'SPAN'
-                    && tag.classList.contains('fontSize'))) {
-                this.currentSpan.innerHTML = [...content.children].map(child => child.innerHTML).join('');
-            } else {
-                // If text, then wrap it
-                this.currentSpan.appendChild(content);
-            }
+            this.currentSpan.childNodes.forEach(child => {
+                // If has inner span tags, replace them by text nodes
+                if ((child as HTMLElement)?.classList?.contains('fontSize')) {
+                    const text = (child as HTMLElement).innerText;
+                    if (text && text !== '') {
+                        this.currentSpan.replaceChild(document.createTextNode(text), child)
+                    } else {
+                        // Remove empty spans
+                        this.currentSpan.removeChild(child);
+                    }
+                }
+            });
 
             range.insertNode(this.currentSpan);
 
@@ -135,6 +140,13 @@ export class FontSize implements InlineTool {
             (this.currentSpan?.parentElement ?? this.currentSpan).querySelectorAll('span').forEach(span => {
                 if (span.innerText === '') span.remove();
             });
+
+            // If parent is the same span as only child, swap content
+            if (this.currentSpan?.parentElement?.classList.contains('fontSize') &&
+                this.currentSpan?.parentElement.childNodes.length === 1) {
+                this.currentSpan.parentElement.innerHTML = this.currentSpan.innerHTML;
+                this.currentSpan = this.currentSpan.parentElement;
+            }
         }
 
         if (this.currentSpan)

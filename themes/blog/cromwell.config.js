@@ -48,18 +48,27 @@ module.exports = {
             isVirtual: true,
             modifications: [
                 {
-                    "id": "_c7ibjr09hrpi",
-                    "type": "HTML",
+                    "id": "contacts_content",
+                    "jsxParentId": "PagesGenericPage",
+                    "type": "editor",
                     "isVirtual": true,
-                    "parentId": "PagesGenericPage",
-                    "index": 0,
                     "style": {
-                        "padding": "20px",
-                        "backgroundColor": "#fff",
-                        "borderRadius": "5px"
+                        "minWidth": "50px",
+                        "minHeight": "30px",
+                        "backgroundColor": "#ffffff",
+                        "marginBottom": "30px",
+                        "marginTop": "30px",
+                        "paddingTop": "0px",
+                        "paddingBottom": "20px",
+                        "paddingLeft": "20px",
+                        "paddingRight": "20px",
+                        "borderRadius": "9px"
                     },
-                    "html": {
-                        "innerHTML": "<h1>Contact Information</h1>\n<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>\n<ul>\n<li><p><strong>Email:</strong> contact@example.com</p></li>\n<li><p><strong>Phone:</strong> +1 (234) 567-89-00</p></li>\n<li><p><strong>Address:</strong> Lorem ipsum dolor sit amet</p></li>\n</ul>"
+                    "parentId": "PagesGenericPage",
+                    "index": 1,
+                    "editor": {
+                        "data": "{\"time\":1630764783219,\"blocks\":[{\"id\":\"R81SLM-otU\",\"type\":\"header\",\"data\":{\"text\":\"Contact Information\",\"level\":1}},{\"id\":\"8cX7U93w4F\",\"type\":\"paragraph\",\"data\":{\"text\":\"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\"}},{\"id\":\"9cFps_xNV-\",\"type\":\"list\",\"data\":{\"style\":\"ordered\",\"items\":[\"<b>Lorem ipsum dolor sit amet</b>\",\"<span class=\\\"fontSize\\\" style=\\\"font-size: 16px; line-height: 26px;\\\">Lorem ipsum dolor sit amet</span>\",\"<mark class=\\\"cdx-marker\\\">Lorem ipsum dolor sit amet</mark>\"]}}],\"version\":\"2.22.2\"}",
+                        "html": "<div class=\"codex-editor__redactor\" style=\"\"><div class=\"ce-block\"><div class=\"ce-block__content\"><h1 class=\"ce-header\" contenteditable=\"false\" data-placeholder=\"\">Contact Information</h1></div></div><div class=\"ce-block\"><div class=\"ce-block__content\"><div class=\"ce-paragraph cdx-block\" contenteditable=\"false\" data-placeholder=\"\">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</div></div></div><div class=\"ce-block\"><div class=\"ce-block__content\"><ol class=\"cdx-block cdx-list cdx-list--ordered\" contenteditable=\"false\"><li class=\"cdx-list__item\"><b>Lorem ipsum dolor sit amet</b></li><li class=\"cdx-list__item\"><span class=\"fontSize\" style=\"font-size: 16px; line-height: 26px;\">Lorem ipsum dolor sit amet</span></li><li class=\"cdx-list__item\"><mark class=\"cdx-marker\">Lorem ipsum dolor sit amet</mark></li></ol></div></div></div>"
                     }
                 },
                 {

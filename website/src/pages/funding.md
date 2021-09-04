@@ -7,7 +7,7 @@ title: Funding
 ## Donations
 
 Development of Cromwell CMS goes for free. Support the project so it could became even better.  
-Patreon link
+[Patreon link](https://www.patreon.com/cromwellcms?fan_landing=true)
 
 ## For investors
 
@@ -15,4 +15,4 @@ Author of Cromwell CMS is open for investment offers. Together we can build amaz
 
 Contact me via e-mail: 
 
-Or chat with @elrix at Discord server
+Or chat with @elrix at [Discord server](https://discord.gg/mxmJNSZ2gn)

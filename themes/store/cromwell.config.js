@@ -162,18 +162,26 @@ module.exports = {
             modifications: [
                 {
                     "id": "shipping_content",
-                    "type": "HTML",
+                    "jsxParentId": "PagesGenericPage_content",
+                    "type": "editor",
                     "isVirtual": true,
-                    "parentId": "PagesGenericPage_content",
-                    "index": 0,
                     "style": {
-                        "margin": "40px 0",
-                        "padding": "20px",
-                        "backgroundColor": "#fff",
-                        "borderRadius": "5px"
+                        "minWidth": "50px",
+                        "minHeight": "30px",
+                        "backgroundColor": "#ffffff",
+                        "marginBottom": "30px",
+                        "marginTop": "30px",
+                        "paddingTop": "0px",
+                        "paddingBottom": "20px",
+                        "paddingLeft": "20px",
+                        "paddingRight": "20px",
+                        "borderRadius": "9px"
                     },
-                    "html": {
-                        "innerHTML": "<h1>Shipping and Delivery</h1>\n<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>\n<ul>\n<li><p><strong>1.</strong>  Lorem ipsum dolor sit amet</p></li>\n<li><p><strong>2.</strong>  Lorem ipsum dolor sit amet</p></li>\n<li><p><strong>3.</strong> Lorem ipsum dolor sit amet</p></li>\n</ul>"
+                    "parentId": "PagesGenericPage_content",
+                    "index": 1,
+                    "editor": {
+                        "data": "{\"time\":1630764783219,\"blocks\":[{\"id\":\"R81SLM-otU\",\"type\":\"header\",\"data\":{\"text\":\"Shipping and Delivery\",\"level\":1}},{\"id\":\"8cX7U93w4F\",\"type\":\"paragraph\",\"data\":{\"text\":\"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\"}},{\"id\":\"9cFps_xNV-\",\"type\":\"list\",\"data\":{\"style\":\"ordered\",\"items\":[\"<b>Lorem ipsum dolor sit amet</b>\",\"<span class=\\\"fontSize\\\" style=\\\"font-size: 16px; line-height: 26px;\\\">Lorem ipsum dolor sit amet</span>\",\"<mark class=\\\"cdx-marker\\\">Lorem ipsum dolor sit amet</mark>\"]}}],\"version\":\"2.22.2\"}",
+                        "html": "<div class=\"codex-editor__redactor\" style=\"\"><div class=\"ce-block\"><div class=\"ce-block__content\"><h1 class=\"ce-header\" contenteditable=\"false\" data-placeholder=\"\">Shipping and Delivery</h1></div></div><div class=\"ce-block\"><div class=\"ce-block__content\"><div class=\"ce-paragraph cdx-block\" contenteditable=\"false\" data-placeholder=\"\">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</div></div></div><div class=\"ce-block\"><div class=\"ce-block__content\"><ol class=\"cdx-block cdx-list cdx-list--ordered\" contenteditable=\"false\"><li class=\"cdx-list__item\"><b>Lorem ipsum dolor sit amet</b></li><li class=\"cdx-list__item\"><span class=\"fontSize\" style=\"font-size: 16px; line-height: 26px;\">Lorem ipsum dolor sit amet</span></li><li class=\"cdx-list__item\"><mark class=\"cdx-marker\">Lorem ipsum dolor sit amet</mark></li></ol></div></div></div>"
                     }
                 },
             ]
@@ -187,18 +195,26 @@ module.exports = {
             modifications: [
                 {
                     "id": "returns_content",
-                    "type": "HTML",
+                    "jsxParentId": "PagesGenericPage_content",
+                    "type": "editor",
                     "isVirtual": true,
-                    "parentId": "PagesGenericPage_content",
-                    "index": 0,
                     "style": {
-                        "margin": "40px 0",
-                        "padding": "20px",
-                        "backgroundColor": "#fff",
-                        "borderRadius": "5px"
+                        "minWidth": "50px",
+                        "minHeight": "30px",
+                        "backgroundColor": "#ffffff",
+                        "marginBottom": "30px",
+                        "marginTop": "30px",
+                        "paddingTop": "0px",
+                        "paddingBottom": "20px",
+                        "paddingLeft": "20px",
+                        "paddingRight": "20px",
+                        "borderRadius": "9px"
                     },
-                    "html": {
-                        "innerHTML": "<h1>Returns</h1>\n<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>\n<ul>\n<li><p><strong>1.</strong>  Lorem ipsum dolor sit amet</p></li>\n<li><p><strong>2.</strong>  Lorem ipsum dolor sit amet</p></li>\n<li><p><strong>3.</strong> Lorem ipsum dolor sit amet</p></li>\n</ul>"
+                    "parentId": "PagesGenericPage_content",
+                    "index": 1,
+                    "editor": {
+                        "data": "{\"time\":1630764783219,\"blocks\":[{\"id\":\"R81SLM-otU\",\"type\":\"header\",\"data\":{\"text\":\"Returns\",\"level\":1}},{\"id\":\"8cX7U93w4F\",\"type\":\"paragraph\",\"data\":{\"text\":\"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\"}},{\"id\":\"9cFps_xNV-\",\"type\":\"list\",\"data\":{\"style\":\"ordered\",\"items\":[\"<b>Lorem ipsum dolor sit amet</b>\",\"<span class=\\\"fontSize\\\" style=\\\"font-size: 16px; line-height: 26px;\\\">Lorem ipsum dolor sit amet</span>\",\"<mark class=\\\"cdx-marker\\\">Lorem ipsum dolor sit amet</mark>\"]}}],\"version\":\"2.22.2\"}",
+                        "html": "<div class=\"codex-editor__redactor\" style=\"\"><div class=\"ce-block\"><div class=\"ce-block__content\"><h1 class=\"ce-header\" contenteditable=\"false\" data-placeholder=\"\">Returns</h1></div></div><div class=\"ce-block\"><div class=\"ce-block__content\"><div class=\"ce-paragraph cdx-block\" contenteditable=\"false\" data-placeholder=\"\">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</div></div></div><div class=\"ce-block\"><div class=\"ce-block__content\"><ol class=\"cdx-block cdx-list cdx-list--ordered\" contenteditable=\"false\"><li class=\"cdx-list__item\"><b>Lorem ipsum dolor sit amet</b></li><li class=\"cdx-list__item\"><span class=\"fontSize\" style=\"font-size: 16px; line-height: 26px;\">Lorem ipsum dolor sit amet</span></li><li class=\"cdx-list__item\"><mark class=\"cdx-marker\">Lorem ipsum dolor sit amet</mark></li></ol></div></div></div>"
                     }
                 },
             ]
@@ -212,18 +228,26 @@ module.exports = {
             modifications: [
                 {
                     "id": "gift-cards_content",
-                    "type": "HTML",
+                    "jsxParentId": "PagesGenericPage_content",
+                    "type": "editor",
                     "isVirtual": true,
-                    "parentId": "PagesGenericPage_content",
-                    "index": 0,
                     "style": {
-                        "margin": "40px 0",
-                        "padding": "20px",
-                        "backgroundColor": "#fff",
-                        "borderRadius": "5px"
+                        "minWidth": "50px",
+                        "minHeight": "30px",
+                        "backgroundColor": "#ffffff",
+                        "marginBottom": "30px",
+                        "marginTop": "30px",
+                        "paddingTop": "0px",
+                        "paddingBottom": "20px",
+                        "paddingLeft": "20px",
+                        "paddingRight": "20px",
+                        "borderRadius": "9px"
                     },
-                    "html": {
-                        "innerHTML": "<h1>Gift cards</h1>\n<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>\n<ul>\n<li><p><strong>1.</strong>  Lorem ipsum dolor sit amet</p></li>\n<li><p><strong>2.</strong>  Lorem ipsum dolor sit amet</p></li>\n<li><p><strong>3.</strong> Lorem ipsum dolor sit amet</p></li>\n</ul>"
+                    "parentId": "PagesGenericPage_content",
+                    "index": 1,
+                    "editor": {
+                        "data": "{\"time\":1630764783219,\"blocks\":[{\"id\":\"R81SLM-otU\",\"type\":\"header\",\"data\":{\"text\":\"Gift cards\",\"level\":1}},{\"id\":\"8cX7U93w4F\",\"type\":\"paragraph\",\"data\":{\"text\":\"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\"}},{\"id\":\"9cFps_xNV-\",\"type\":\"list\",\"data\":{\"style\":\"ordered\",\"items\":[\"<b>Lorem ipsum dolor sit amet</b>\",\"<span class=\\\"fontSize\\\" style=\\\"font-size: 16px; line-height: 26px;\\\">Lorem ipsum dolor sit amet</span>\",\"<mark class=\\\"cdx-marker\\\">Lorem ipsum dolor sit amet</mark>\"]}}],\"version\":\"2.22.2\"}",
+                        "html": "<div class=\"codex-editor__redactor\" style=\"\"><div class=\"ce-block\"><div class=\"ce-block__content\"><h1 class=\"ce-header\" contenteditable=\"false\" data-placeholder=\"\">Gift cards</h1></div></div><div class=\"ce-block\"><div class=\"ce-block__content\"><div class=\"ce-paragraph cdx-block\" contenteditable=\"false\" data-placeholder=\"\">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</div></div></div><div class=\"ce-block\"><div class=\"ce-block__content\"><ol class=\"cdx-block cdx-list cdx-list--ordered\" contenteditable=\"false\"><li class=\"cdx-list__item\"><b>Lorem ipsum dolor sit amet</b></li><li class=\"cdx-list__item\"><span class=\"fontSize\" style=\"font-size: 16px; line-height: 26px;\">Lorem ipsum dolor sit amet</span></li><li class=\"cdx-list__item\"><mark class=\"cdx-marker\">Lorem ipsum dolor sit amet</mark></li></ol></div></div></div>"
                     }
                 },
             ]
@@ -237,18 +261,26 @@ module.exports = {
             modifications: [
                 {
                     "id": "news_content",
-                    "type": "HTML",
+                    "jsxParentId": "PagesGenericPage_content",
+                    "type": "editor",
                     "isVirtual": true,
-                    "parentId": "PagesGenericPage_content",
-                    "index": 0,
                     "style": {
-                        "margin": "40px 0",
-                        "padding": "20px",
-                        "backgroundColor": "#fff",
-                        "borderRadius": "5px"
+                        "minWidth": "50px",
+                        "minHeight": "30px",
+                        "backgroundColor": "#ffffff",
+                        "marginBottom": "30px",
+                        "marginTop": "30px",
+                        "paddingTop": "0px",
+                        "paddingBottom": "20px",
+                        "paddingLeft": "20px",
+                        "paddingRight": "20px",
+                        "borderRadius": "9px"
                     },
-                    "html": {
-                        "innerHTML": "<h1>News</h1>\n<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>\n<ul>\n<li><p><strong>1.</strong>  Lorem ipsum dolor sit amet</p></li>\n<li><p><strong>2.</strong>  Lorem ipsum dolor sit amet</p></li>\n<li><p><strong>3.</strong> Lorem ipsum dolor sit amet</p></li>\n</ul>"
+                    "parentId": "PagesGenericPage_content",
+                    "index": 1,
+                    "editor": {
+                        "data": "{\"time\":1630764783219,\"blocks\":[{\"id\":\"R81SLM-otU\",\"type\":\"header\",\"data\":{\"text\":\"News\",\"level\":1}},{\"id\":\"8cX7U93w4F\",\"type\":\"paragraph\",\"data\":{\"text\":\"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\"}},{\"id\":\"9cFps_xNV-\",\"type\":\"list\",\"data\":{\"style\":\"ordered\",\"items\":[\"<b>Lorem ipsum dolor sit amet</b>\",\"<span class=\\\"fontSize\\\" style=\\\"font-size: 16px; line-height: 26px;\\\">Lorem ipsum dolor sit amet</span>\",\"<mark class=\\\"cdx-marker\\\">Lorem ipsum dolor sit amet</mark>\"]}}],\"version\":\"2.22.2\"}",
+                        "html": "<div class=\"codex-editor__redactor\" style=\"\"><div class=\"ce-block\"><div class=\"ce-block__content\"><h1 class=\"ce-header\" contenteditable=\"false\" data-placeholder=\"\">News</h1></div></div><div class=\"ce-block\"><div class=\"ce-block__content\"><div class=\"ce-paragraph cdx-block\" contenteditable=\"false\" data-placeholder=\"\">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</div></div></div><div class=\"ce-block\"><div class=\"ce-block__content\"><ol class=\"cdx-block cdx-list cdx-list--ordered\" contenteditable=\"false\"><li class=\"cdx-list__item\"><b>Lorem ipsum dolor sit amet</b></li><li class=\"cdx-list__item\"><span class=\"fontSize\" style=\"font-size: 16px; line-height: 26px;\">Lorem ipsum dolor sit amet</span></li><li class=\"cdx-list__item\"><mark class=\"cdx-marker\">Lorem ipsum dolor sit amet</mark></li></ol></div></div></div>"
                     }
                 },
             ]
@@ -262,18 +294,26 @@ module.exports = {
             modifications: [
                 {
                     "id": "contacts_content",
-                    "type": "HTML",
+                    "jsxParentId": "PagesGenericPage_content",
+                    "type": "editor",
                     "isVirtual": true,
-                    "parentId": "PagesGenericPage_content",
-                    "index": 0,
                     "style": {
-                        "margin": "40px 0",
-                        "padding": "20px",
-                        "backgroundColor": "#fff",
-                        "borderRadius": "5px"
+                        "minWidth": "50px",
+                        "minHeight": "30px",
+                        "backgroundColor": "#ffffff",
+                        "marginBottom": "30px",
+                        "marginTop": "30px",
+                        "paddingTop": "0px",
+                        "paddingBottom": "20px",
+                        "paddingLeft": "20px",
+                        "paddingRight": "20px",
+                        "borderRadius": "9px"
                     },
-                    "html": {
-                        "innerHTML": "<h1>Contact Information</h1>\n<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>\n<ul>\n<li><p><strong>Email:</strong> contact@example.com</p></li>\n<li><p><strong>Phone:</strong> +1 (234) 567-89-00</p></li>\n<li><p><strong>Address:</strong> Lorem ipsum dolor sit amet</p></li>\n</ul>"
+                    "parentId": "PagesGenericPage_content",
+                    "index": 1,
+                    "editor": {
+                        "data": "{\"time\":1630764783219,\"blocks\":[{\"id\":\"R81SLM-otU\",\"type\":\"header\",\"data\":{\"text\":\"Contact Information\",\"level\":1}},{\"id\":\"8cX7U93w4F\",\"type\":\"paragraph\",\"data\":{\"text\":\"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\"}},{\"id\":\"9cFps_xNV-\",\"type\":\"list\",\"data\":{\"style\":\"ordered\",\"items\":[\"<b>Lorem ipsum dolor sit amet</b>\",\"<span class=\\\"fontSize\\\" style=\\\"font-size: 16px; line-height: 26px;\\\">Lorem ipsum dolor sit amet</span>\",\"<mark class=\\\"cdx-marker\\\">Lorem ipsum dolor sit amet</mark>\"]}}],\"version\":\"2.22.2\"}",
+                        "html": "<div class=\"codex-editor__redactor\" style=\"\"><div class=\"ce-block\"><div class=\"ce-block__content\"><h1 class=\"ce-header\" contenteditable=\"false\" data-placeholder=\"\">Contact Information</h1></div></div><div class=\"ce-block\"><div class=\"ce-block__content\"><div class=\"ce-paragraph cdx-block\" contenteditable=\"false\" data-placeholder=\"\">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</div></div></div><div class=\"ce-block\"><div class=\"ce-block__content\"><ol class=\"cdx-block cdx-list cdx-list--ordered\" contenteditable=\"false\"><li class=\"cdx-list__item\"><b>Lorem ipsum dolor sit amet</b></li><li class=\"cdx-list__item\"><span class=\"fontSize\" style=\"font-size: 16px; line-height: 26px;\">Lorem ipsum dolor sit amet</span></li><li class=\"cdx-list__item\"><mark class=\"cdx-marker\">Lorem ipsum dolor sit amet</mark></li></ol></div></div></div>"
                     }
                 },
             ]

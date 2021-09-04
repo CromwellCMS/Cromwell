@@ -208,6 +208,14 @@ h3 {
     :global(.ce-conversion-tool) svg {
         fill: #333;
     }
+
+    :global(.ce-toolbar) {
+        background-color: #222;
+    }
+
+    :global(.cdx-button) {
+        background-color: #222;
+    }
 }
 
 body :global(.ct) {
@@ -217,4 +225,8 @@ body :global(.ct) {
 body,
 :global(#root) {
     overflow: hidden;
+}
+
+:global(div.MuiToolbar-regular) {
+    min-height: 50px;
 }
