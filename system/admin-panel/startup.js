@@ -2,7 +2,6 @@ const fs = require('fs-extra');
 const { resolve } = require('path');
 const { spawn, spawnSync } = require('child_process');
 const { getAdminPanelServiceBuildDir } = require('@cromwell/core-backend');
-const localProjectDir = __dirname;
 
 // 'build' | 'dev' | 'prod'
 const scriptName = process.argv[2];
@@ -20,11 +19,11 @@ const main = () => {
 
     const buildService = (dev = false) => {
         spawnSync(`npx --no-install rollup -c`, [],
-            { shell: true, stdio: 'inherit', cwd: localProjectDir });
+            { shell: true, stdio: 'inherit', cwd: __dirname });
 
         if (dev) return;
         spawnSync('npx webpack', [],
-            { shell: true, stdio: 'inherit', cwd: localProjectDir });
+            { shell: true, stdio: 'inherit', cwd: __dirname });
     }
 
     if (scriptName === 'build') {
