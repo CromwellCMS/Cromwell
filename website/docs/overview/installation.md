@@ -6,8 +6,8 @@ sidebar_position: 2
 
 There are multiple ways to install and run Cromwell CMS
 
-## 1. Docker run container
-For most use-cases the recommended way is to to run the CMS inside a Docker container. Our image goes with already installed MariaDB and Nginx, so you only need to install Docker.
+## 1. Docker run
+The most simple way to deploy the CMS is to run it inside a Docker container. Our image goes with already installed MariaDB and Nginx (to proxy multiple services of the CMS), so you only need to install Docker.
 [You can install Docker on Windows, Linux or other supported platform](https://docs.docker.com/engine/install/)
 
 After installation run a single command in your terminal / command prompt to create and run a container:
@@ -118,13 +118,49 @@ As you can see in your current directory appeared new files:
 
 For example, if you want to change emailing template that sends to your customers when they place a new order in your store you can modify file at `.cromwell/server/emails/order.hbs`  
 
-If you want to edit Nginx settings such as add SLL (https), you need to edit `nginx/nginx.conf` and restart container with CMS.
+If you want to edit Nginx settings such as https configuration, you need to edit `nginx/nginx.conf` and restart the container with CMS.
 
 
-## 3. NPM
+## 3. Cromwell CLI
+
+Cromwell CMS provides CLI that can create a new Node.js project. 
+First download and install latest Node.js ** v14-16 ** from https://nodejs.org/en/
+
+Navigate to a directory where you want to create a new project subdirectory and run:
+```sh
+npx @cromwell/cli create my-website-name
+```
+ 
+Run the CMS:
+```sh
+cd my-website-name
+npx cromwell start -d
+```
+
+Open [`http://localhost:4016`](http://localhost:4016) in a web browser to see your web site.  
+Open [`http://localhost:4016/admin`](http://localhost:4016/admin) to see admin panel.  
+
+#### Working directories
+
+CMS will create the same working directories as in Docker compose example except `db_data` and `nginx`.
+
+
+In this example we do not launch a proxy server (Nginx) or a database service, but Cromwell CMS can work without them as well as without any config.  
+The CMS has its Node.js proxy to distribute traffic to API server, Next.js server and admin panel.  
+
+And if there's no config provided CMS will create and use a new SQLite database in `./.cromwell/server/db.sqlite3`   
+
+
+:::note
+It's recommended to use SQLite only in development. For production you have to switch to MySQL/MariaDB/PostgreSQL. Read in the [next post](/docs/overview/configuration) how to setup a database.  
+:::
+
+
+## 4. NPM
 
 Since the CMS is a set of packages, you can install them via npm.  
-First download and install latest Node.js ** v14 ** from https://nodejs.org/en/  
+For this example you also should have installed [Node.js ** v14-16 **](https://nodejs.org/en/) first.  
+  
 
 Create a new directory and open terminal / command prompt
 ```sh
@@ -148,37 +184,5 @@ npm i @cromwell/theme-store @cromwell/theme-blog @cromwell/plugin-main-menu @cro
 
 Run the CMS:
 ```sh
-npx cromwell start -d
-```
-
-Open [`http://localhost:4016`](http://localhost:4016) in a web browser to see your web site.  
-Open [`http://localhost:4016/admin`](http://localhost:4016/admin) to see admin panel.  
-
-In this example we do not launch a proxy server (Nginx) or a database service, but Cromwell CMS can work without them as well as without any config.  
-The CMS has its Node.js proxy to distribute traffic to API server, Next.js server and admin panel.  
-And if there's no config provided CMS will create and use a new SQLite database in `./.cromwell/server/db.sqlite3`   
-
-
-:::note
-It's recommended to use SQLite only in development. For production you have to switch to MySQL/MariaDB/PostgreSQL. Read in the [next post](/docs/overview/configuration) how to setup a database.  
-:::
-
-#### Working directories
-
-CMS will create the same working directories as in Docker compose example except `db_data` and `nginx`.
-
-## 4. Cromwell CLI
-
-To simplify previous installation case Cromwell CMS provides CLI that can create a new project. For this example you also should have installed [Node.js ** v14 **](https://nodejs.org/en/) first.  
-
-
-Navigate to a directory where you want to create a new project subdirectory and run:
-```sh
-npx @cromwell/cli create my-website-name
-```
- 
-Run the CMS:
-```sh
-cd my-website-name
 npx cromwell start -d
 ```
