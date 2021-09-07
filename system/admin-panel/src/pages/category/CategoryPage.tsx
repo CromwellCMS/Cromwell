@@ -268,7 +268,7 @@ export default function CategoryPage(props) {
                     showRemove
                 />
                 <div className={styles.descriptionEditor}>
-                    <div style={{ height: '350px' }} id={editorId}></div>
+                    <div id={editorId}></div>
                 </div>
                 <TextField label="Page URL"
                     value={category?.slug || ''}
