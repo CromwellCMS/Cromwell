@@ -226,6 +226,10 @@ export const getEditorHtml = async (htmlId: string, data?: OutputData) => {
 
     const redactor = saverContainer.querySelector('.codex-editor__redactor');
     (redactor as any).style = null;
+    redactor.querySelectorAll('*').forEach(element => {
+        element.removeAttribute('contentEditable');
+        element.removeAttribute('data-placeholder');
+    });
 
     const content = redactor.outerHTML;
     return content;

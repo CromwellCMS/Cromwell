@@ -67,9 +67,9 @@
     @include styledScrollBar;
     border: 1px solid #bbb;
     border-radius: 5px;
-    max-height: 350px;
+    max-height: 400px;
     overflow: auto;
-    padding: 15px;
+    padding: 15px 40px;
 }
 
 .imageBox {
