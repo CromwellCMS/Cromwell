@@ -41,7 +41,35 @@ export const getNodeModuleDir = async (moduleName: string) => {
     } catch (e) { }
 }
 
-export const getCMSConfigPath = (dir?: string) => resolve(dir ?? process.cwd(), cmsConfigFileName);
+export const getCmsConfigPath = async (dir?: string) => {
+    let confPath;
+    const getUp = async (level: number) => {
+        const dirPath = normalizePath(resolve(dir ?? process.cwd(),
+            Array(level).fill('../').join('')));
+
+        confPath = join(dirPath, cmsConfigFileName);
+        if (! await fs.pathExists(confPath) && dirPath.includes('/')) {
+            await getUp(++level);
+        }
+    }
+    await getUp(0);
+    if (await fs.pathExists(confPath)) return confPath;
+}
+
+export const getCmsConfigPathSync = (dir?: string) => {
+    let confPath;
+    const getUp = (level: number) => {
+        const dirPath = normalizePath(resolve(dir ?? process.cwd(),
+            Array(level).fill('../').join('')));
+
+        confPath = join(dirPath, cmsConfigFileName);
+        if (!fs.pathExistsSync(confPath) && dirPath.includes('/')) {
+            getUp(++level);
+        }
+    }
+    getUp(0);
+    if (fs.pathExistsSync(confPath)) return confPath;
+}
 
 export const getCoreCommonDir = () => getNodeModuleDirSync('@cromwell/core');
 export const getCoreFrontendDir = () => getNodeModuleDirSync('@cromwell/core-backend');

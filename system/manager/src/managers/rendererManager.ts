@@ -1,4 +1,4 @@
-import { resolvePageRoute, serviceLocator, sleep, TCmsSettings, TPageInfo } from '@cromwell/core';
+import { resolvePageRoute, serviceLocator, setStoreItem, sleep, TCmsSettings, TPageInfo } from '@cromwell/core';
 import {
     buildDirName,
     getLogger,
@@ -27,10 +27,12 @@ const logger = getLogger();
 const rendererStartupPath = getRendererStartupPath();
 
 export const startRenderer = async (command?: TRendererCommands, options?: {
-    serverPort?: string | number;
+    port?: string | number;
 }): Promise<boolean> => {
 
     const cmsConfig = await readCMSConfig();
+    setStoreItem('cmsSettings', cmsConfig);
+
     let cmsSettings: TCmsSettings | undefined;
     try {
         cmsSettings = await getRestApiClient()?.getCmsSettings({ disableLog: true });
@@ -38,16 +40,12 @@ export const startRenderer = async (command?: TRendererCommands, options?: {
         logger.error(error);
     }
 
-    if (!cmsConfig?.frontendPort) {
-        const message = 'Manager: Failed to start Renderer: frontendPort in cmsconfig is not defined';
-        logger.error(message);
-        throw new Error(message);
-    }
+    const port = options?.port ?? 4128;
 
     const isBuild = command === 'build' || command === 'buildService';
 
-    if (!isBuild && await isPortUsed(cmsConfig.frontendPort)) {
-        const message = `Manager: Failed to start Renderer: frontendPort ${cmsConfig.frontendPort} is already in use. You may want to run close command: cromwell close --sv renderer`;
+    if (!isBuild && await isPortUsed(Number(port))) {
+        const message = `Manager: Failed to start Renderer: port ${port} is already in use. You may want to run close command: cromwell close --sv renderer`;
         logger.error(message);
         throw new Error(message);
     }
@@ -64,7 +62,7 @@ export const startRenderer = async (command?: TRendererCommands, options?: {
         return false;
     }
 
-    const rendererUrl = serviceLocator.getFrontendUrl();
+    const rendererUrl = `http://localhost:${port}`;
     const rendererEnv = command ?? servicesEnv.renderer;
 
     if (rendererEnv && rendererStartupPath) {
@@ -73,7 +71,7 @@ export const startRenderer = async (command?: TRendererCommands, options?: {
             name: cacheKeys.renderer,
             args: [rendererEnv,
                 `--theme-name=${themeName}`,
-                options?.serverPort ? `--server-port=${options.serverPort}` : ''
+                `--port=${port}`,
             ],
             sync: command === 'build' ? true : false,
             watchName: !isBuild ? 'renderer' : undefined,
@@ -81,7 +79,7 @@ export const startRenderer = async (command?: TRendererCommands, options?: {
                 if (cmsConfig.useWatch) {
                     await closeRenderer();
                     try {
-                        await tcpPortUsed.waitUntilFree(cmsConfig.frontendPort, 500, 4000);
+                        await tcpPortUsed.waitUntilFree(port, 500, 4000);
                     } catch (e) { logger.error(e) }
                     await startRenderer(command, options);
                 }
@@ -112,7 +110,7 @@ export const startRenderer = async (command?: TRendererCommands, options?: {
                 logger.error(e);
             }
 
-            await pollPages();
+            await pollPages(port);
 
             if (success) logger.info(`Renderer has successfully started`);
             else logger.error(`Failed to start renderer`);
@@ -259,7 +257,7 @@ const isThemeBuilt = async (dir: string): Promise<boolean> => {
 }
 
 /** Poll all routes to make Next.js server generate and cache pages */
-const pollPages = async () => {
+const pollPages = async (port: string | number) => {
     let infos: TPageInfo[] | undefined;
     try {
         infos = await getRestApiClient().getPagesInfo();
@@ -274,7 +272,7 @@ const pollPages = async () => {
                 slug: 'test'
             });
 
-            const pageUrl = serviceLocator.getFrontendUrl() + pageRoute;
+            const pageUrl = `http://localhost:${port}${pageRoute}`;
             try {
                 await fetch(pageUrl);
             } catch (e) {

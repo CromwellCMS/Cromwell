@@ -1,4 +1,5 @@
 import { getLogger, readCMSConfigSync } from '@cromwell/core-backend';
+import { serviceLocator, setStoreItem } from '@cromwell/core';
 import http from 'http';
 import httpProxy from 'http-proxy';
 import nodeCleanup from 'node-cleanup';
@@ -13,12 +14,10 @@ async function main(): Promise<void> {
     let argsPort: number | undefined = parseInt(args.port + '');
     if (isNaN(argsPort)) argsPort = undefined;
 
-    if (argsPort) {
-        process.env.API_PORT = argsPort + '';
-    }
-
     const config = readCMSConfigSync();
-    const port = config.apiPort ?? 4016;
+    setStoreItem('cmsSettings', config);
+
+    const port = process.env.API_PORT ?? argsPort ?? 4016;
 
     // Start a proxy at the server port. Actual server will be launched at random port.
     // This way we can dynamically spawn new server instances and switch between them via proxy
@@ -46,13 +45,13 @@ async function main(): Promise<void> {
         if (req?.url) {
             if (req.url.startsWith('/admin/') || req.url === '/admin' || req.url.startsWith('/admin?')) {
                 proxy.web(req, res, {
-                    target: `http://localhost:${config.adminPanelPort}`
+                    target: serviceLocator.getAdminUrl()
                 });
             } else if (req.url.startsWith('/api/') || req.url === '/api') {
                 proxyApiServer();
             } else {
                 proxy.web(req, res, {
-                    target: `http://localhost:${config.frontendPort}`
+                    target: serviceLocator.getFrontendUrl(),
                 });
             }
         } else {

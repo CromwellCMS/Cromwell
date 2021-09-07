@@ -1,5 +1,4 @@
 import React from 'react';
-import { setStoreItem } from '@cromwell/core';
 import '@testing-library/jest-dom/extend-expect';
 
 const idObj = new Proxy({}, {
@@ -15,11 +14,3 @@ const idObj = new Proxy({}, {
 jest.mock('@material-ui/icons', () => {
     return idObj;
 });
-
-
-setStoreItem('cmsSettings', {
-    apiPort: 1,
-    adminPanelPort: 2,
-    frontendPort: 3,
-    managerPort: 4,
-})

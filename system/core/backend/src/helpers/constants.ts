@@ -1,4 +1,4 @@
-import { TCmsConfig } from '@cromwell/core';
+import { TCmsConfig, serviceLocator } from '@cromwell/core';
 
 import { Attribute } from '../models/entities/attribute.entity';
 import { CmsEntity } from '../models/entities/cms.entity';
@@ -47,10 +47,10 @@ export const serverMessages = {
 }
 
 export const defaultCmsConfig: TCmsConfig = {
-    apiPort: 4016,
-    adminPanelPort: 4064,
-    frontendPort: 4128,
-    centralServerUrl: 'https://api.cromwellcms.com',
+    apiUrl: serviceLocator.defaultLocations.apiUrl,
+    adminUrl: serviceLocator.defaultLocations.adminUrl,
+    frontendUrl: serviceLocator.defaultLocations.frontendUrl,
+    centralServerUrl: serviceLocator.defaultLocations.centralServerUrl,
     useWatch: true,
     accessTokenExpirationTime: 600,
     refreshTokenExpirationTime: 1296000,

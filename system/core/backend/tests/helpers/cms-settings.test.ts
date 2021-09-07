@@ -12,14 +12,14 @@ describe('cms config / settings', () => {
 
     it('read cms config and and return default settings', () => {
         const config = readCMSConfigSync();
-        expect(config.adminPanelPort).toEqual(defaultCmsConfig.adminPanelPort);
+        expect(config.apiUrl).toEqual(defaultCmsConfig.apiUrl);
         expect(config.useWatch).toEqual(defaultCmsConfig.useWatch);
         expect(config.defaultSettings?.publicSettings?.defaultPageSize).toEqual(defaultCmsConfig.defaultSettings?.publicSettings?.defaultPageSize);
     });
 
     it('read cms config async and and return default settings', async () => {
         const config = await readCMSConfig();
-        expect(config.adminPanelPort).toEqual(defaultCmsConfig.adminPanelPort);
+        expect(config.apiUrl).toEqual(defaultCmsConfig.apiUrl);
         expect(config.useWatch).toEqual(defaultCmsConfig.useWatch);
         expect(config.defaultSettings?.publicSettings?.defaultPageSize).toEqual(defaultCmsConfig.defaultSettings?.publicSettings?.defaultPageSize);
     });

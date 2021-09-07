@@ -74,9 +74,10 @@ Remove all DB_* environment variables and add the volume:
 Options of `cmsconfig.json`. Format: **optionName** `: type` (`defaultValue`) - description.
 
 - **orm:** `: ConnectionOptions` - Options passed to TypeORM to create a new connection. [See in TypeORM docs](https://typeorm.io/#/connection-options).
-- **apiPort** `: number`  (`4016`)  - Port to use for API and Proxy server. On this port will also be proxied admin panel and Next.js server.
-- **adminPanelPort** `: number` (`4064`) - Port to use for admin panel server.
-- **frontendPort** `: number` (`4128`) - Port to use for Next.js server.
+- **apiUrl** `: string`  (`http://localhost:4016`)  - Location of API server. Used in development if, for example, you open frontend at `http://localhost:4128`, it will make request to API URL (in production if you open it at any domain or 127.0.0.1, frontend will make requests to /api route of current origin).   
+In production it used by Next.js service to make API requests at server-side render. So it's normal to have `localhost` here in production usage. If you host multiple instances and use load balancing, then place here URL to your proxy balancer. 
+- **adminUrl** `: string` (`http://localhost:4064`) - URL of admin panel server.
+- **frontendUrl** `: string` (`http://localhost:4128`) - URL for Next.js server, same as apiUrl, used 
 - **env** `: string` (`prod`) - CMS environment. Available values: `dev`, `prod`. 'dev' environment adds: 
   - Detailed logs; 
   - Swagger UI at http://localhost:4016/api/v1/api-docs/; 
@@ -86,7 +87,7 @@ Options of `cmsconfig.json`. Format: **optionName** `: type` (`defaultValue`) - 
 - **refreshTokenSecret** `: string` - Same as accessTokenSecret, but for refresh JWT.
 - **accessTokenExpirationTime** `: number` (`600`) - Time in seconds after which access token will be considered as expired.
 - **refreshTokenExpirationTime** `: number` (`1296000`) - Same as accessTokenExpirationTime, but for refresh JWT.
-- **serviceSecret** `: string` - Secret key used for interservice communications. Usually it generated automatically, but if for example, you host Next.js server on one dedicated server and API server on another, you must set manually the same serviceSecret key on both machines, otherwise requests from Next.js server will be unauthorized and rejected.
+- **serviceSecret** `: string` - Secret key used for interservice communications. Basically can be any string. Usually it generated automatically, but if for example, you host Next.js server on one dedicated server and API server on another, you must set manually the same serviceSecret key on both machines, otherwise requests from Next.js server will be unauthorized and rejected.
 - **defaultSettings** `: Object` - Default values used to initialize database settings of the CMS on first launch.
     - **installed** `: boolean` (`false`) - If false, open installation window on admin panel visit until installation finished. Important to note that when there's "installed: false" in DB, all routes will be unprotected by authorization, which means anyone can open admin panel, configure new admin account or make any changes on other pages.
     - **themeName** `: string` (`@cromwell/theme-store`) - NPM package name of an initial theme to use.

@@ -2,12 +2,13 @@ const fs = require('fs-extra');
 const { resolve } = require('path');
 const { spawn, spawnSync } = require('child_process');
 const { getAdminPanelServiceBuildDir } = require('@cromwell/core-backend');
+const yargs = require('yargs-parser');
 
 // 'build' | 'dev' | 'prod'
 const scriptName = process.argv[2];
 
 const main = () => {
-
+    const args = yargs(process.argv.slice(2));
     const buildDir = getAdminPanelServiceBuildDir();
 
     const isServiceBuilt = () => {
@@ -36,7 +37,8 @@ const main = () => {
             buildService(true);
         }
 
-        spawn(`node ${resolve(buildDir, 'server.js')}`, ['development'],
+        spawn(`node ${resolve(buildDir, 'server.js')}`,
+            ['development', args.port ? '--port=' + args.port : ''],
             { shell: true, stdio: 'inherit', cwd: process.cwd(), env: { NODE_ENV: 'development' } });
 
         return;

@@ -61,13 +61,13 @@ export const closeService = async (name: string): Promise<boolean> => {
 export const startService = async ({ path, name, args, dir, sync, watchName, onVersionChange }: {
     path: string;
     name: string;
-    args: string[];
+    args?: string[];
     dir?: string;
     sync?: boolean;
     watchName?: keyof TServiceVersions;
     onVersionChange?: () => Promise<void>;
 }): Promise<ChildProcess> => {
-    const proc = fork(path, args, {
+    const proc = fork(path, args ?? [], {
         stdio: sync ? 'inherit' : 'pipe',
         cwd: dir ?? process.cwd(),
     });
@@ -99,6 +99,7 @@ type TStartOptions = {
     port?: string;
     serviceName?: TServiceNames;
     init?: boolean;
+    startAll?: boolean;
 }
 
 export const startSystem = async (options: TStartOptions) => {
@@ -145,20 +146,23 @@ export const startSystem = async (options: TStartOptions) => {
     await startServiceByName({
         ...options,
         serviceName: 'server',
+        startAll: true,
     });
     await startServiceByName({
         ...options,
         serviceName: 'adminPanel',
+        startAll: true,
     });
     await startServiceByName({
         ...options,
         serviceName: 'renderer',
+        startAll: true,
     });
 }
 
 
 export const startServiceByName = async (options: TStartOptions) => {
-    const { scriptName, port, serviceName, init } = options;
+    const { scriptName, port, serviceName, init, startAll } = options;
     const isDevelopment = scriptName === 'development';
 
     if (!serviceName || !serviceNames.includes(serviceName)) {
@@ -177,14 +181,14 @@ export const startServiceByName = async (options: TStartOptions) => {
         const pckg = await getModulePackage('@cromwell/admin-panel')
         await checkModules(isDevelopment, pckg ? [pckg] : undefined);
         await startAdminPanel(isDevelopment ? 'dev' : 'prod', {
-            serverPort: port
+            port: !startAll ? port : undefined,
         });
     }
 
     if (serviceName === 'renderer' || serviceName === 'r') {
         await checkModules(isDevelopment);
         await startRenderer(isDevelopment ? 'dev' : 'prod', {
-            serverPort: port
+            port: !startAll ? port : undefined,
         });
     }
 

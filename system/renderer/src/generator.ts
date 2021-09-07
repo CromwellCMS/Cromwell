@@ -30,7 +30,6 @@ const logger = getLogger();
 export const generator = async (options: {
     scriptName: string;
     targetThemeName?: string;
-    serverPort?: string;
 }) => {
     const { scriptName, targetThemeName } = options
     const config = await readCMSConfig();
@@ -361,6 +360,8 @@ const linkFiles = async (tempDir: string, themeName: string, options) => {
 
     // Output .env file
     let envContent = '';
-    if (options.serverPort) envContent += `API_PORT=${options.serverPort}`;
-    await fs.outputFile(resolve(tempDir, '.env.local'), envContent);
+    if (options.serverUrl) {
+        envContent += `API_URL=${options.serverUrl}`;
+        await fs.outputFile(resolve(tempDir, '.env.local'), envContent);
+    }
 }

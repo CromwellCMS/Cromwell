@@ -2,7 +2,7 @@ import { NextPage } from 'next';
 import { DocumentContext } from 'next/document';
 import React from 'react';
 
-import { TCmsSettings, TDefaultPageName, TPageConfig, TPageInfo, TPalette } from './data';
+import { TCmsConfig, TCmsSettings, TDefaultPageName, TPageConfig, TPageInfo, TPalette } from './data';
 import { TPost, TProduct } from './entities';
 
 type ParsedUrlQuery = NodeJS.Dict<string | string[]>;
@@ -40,6 +40,7 @@ export type TCromwellPageCoreProps = {
 export type CrwDocumentContextType = Partial<DocumentContext> & {
     fullUrl?: string;
     origin?: string;
+    cmsConfig?: TCmsConfig;
 }
 
 export type TCromwellBlock<TContentBlock = React.Component> = React.Component<TCromwellBlockProps<TContentBlock>> & {

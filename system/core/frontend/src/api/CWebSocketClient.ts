@@ -30,7 +30,7 @@ export const getWebSocketClient = (): CWebSocketClient | undefined => {
     let client = getStoreItem('webSocketClient');
     if (client) return client;
 
-    const baseUrl = `${serviceLocator.getApiWsUrl()}/api`;
+    const baseUrl = `${serviceLocator.getApiUrl()}/api`;
 
     client = new CWebSocketClient(baseUrl);
 

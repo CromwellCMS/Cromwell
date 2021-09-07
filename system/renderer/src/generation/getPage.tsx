@@ -53,7 +53,7 @@ export const getPage = (pageName: TDefaultPageName | string, PageComponent: TCro
         }
 
         const forcedChildStaticProps = useRef(null);
-        if (cmsSettings) setStoreItem('cmsSettings', cmsSettings);
+        if (cmsSettings && !isServer()) setStoreItem('cmsSettings', Object.assign({}, cmsSettings, getStoreItem('cmsSettings')));
         if (plugins) setStoreItem('plugins', plugins);
         if (pageConfig) setStoreItem('pageConfig', pageConfig);
         if (defaultPages) setStoreItem('defaultPages', defaultPages);

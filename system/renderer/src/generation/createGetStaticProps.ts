@@ -49,7 +49,6 @@ export const createGetStaticProps = (pageName: TDefaultPageName | string,
         const { pageConfig, themeConfig, cmsSettings,
             themeCustomConfig, pagesInfo, pluginsSettings } = rendererData;
 
-        if (cmsSettings) setStoreItem('cmsSettings', cmsSettings);
         if (themeConfig?.defaultPages) setStoreItem('defaultPages', themeConfig?.defaultPages);
         const resolvedPageRoute = resolvePageRoute(pageConfigName, { slug: context?.params?.slug as string })
 

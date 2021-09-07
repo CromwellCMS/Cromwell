@@ -174,10 +174,9 @@ export type TCmsConfig = {
     domain?: string;
     url?: string;
     orm?: ConnectionOptions;
-    apiPort?: number;
-    adminPanelPort?: number;
-    frontendPort?: number;
-    managerPort?: number;
+    apiUrl?: string;
+    adminUrl?: string;
+    frontendUrl?: string;
     centralServerUrl?: string;
     defaultSettings?: TCmsEntityCore;
     pm?: 'yarn' | 'cromwella';

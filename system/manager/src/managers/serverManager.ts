@@ -15,18 +15,12 @@ export const startServer = async (command?: TServerCommands, argsPort?: string |
     const cmsConfig = await readCMSConfig();
     argsPort = parseInt(argsPort + '');
     if (isNaN(argsPort)) argsPort = undefined;
-    const port = argsPort ?? cmsConfig?.apiPort;
-
-    if (!port) {
-        const message = 'Manager: Failed to start Server: apiPort is not defined in cmsconfig';
-        logger.error(message);
-        throw new Error(message);
-    }
+    const port = argsPort ?? 4016;
 
     if (command !== 'build') {
         let message;
         if (await isPortUsed(port)) {
-            message = `Manager: Failed to start Server: apiPort ${port} is already in use. You may want to run close command: cromwell close --sv server`;
+            message = `Manager: Failed to start Server: api port ${port} is already in use. You may want to run close command: cromwell close --sv server`;
         }
         if (message) {
             logger.error(message);
@@ -40,7 +34,10 @@ export const startServer = async (command?: TServerCommands, argsPort?: string |
         serverProc = await startService({
             path: serverStartupPath,
             name: cacheKeys.serverMain,
-            args: [env, `--port=${port}`, init ? '--init' : ''],
+            args: [env,
+                `--port=${port}`,
+                init ? '--init' : ''
+            ],
             sync: command === 'build' ? true : false,
             watchName: command !== 'build' ? 'server' : undefined,
             onVersionChange: async () => {

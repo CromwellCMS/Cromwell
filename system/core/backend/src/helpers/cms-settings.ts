@@ -1,18 +1,18 @@
-import { getStoreItem, setStoreItem, systemPackages, TCmsConfig, TCmsInfo, TCmsSettings } from '@cromwell/core';
+import { setStoreItem, systemPackages, TCmsConfig, TCmsInfo, TCmsSettings } from '@cromwell/core';
 import fs from 'fs-extra';
 
 import { CmsEntity } from '../models/entities/cms.entity';
 import { defaultCmsConfig } from './constants';
 import { getLogger } from './logger';
-import { getCMSConfigPath, getModulePackage } from './paths';
+import { getCmsConfigPath, getCmsConfigPathSync, getModulePackage } from './paths';
 
 const getEnvConfig = () => {
     return JSON.parse(JSON.stringify({
-        apiPort: process.env.API_PORT,
-        adminPanelPort: process.env.ADMIN_PORT,
-        frontendPort: process.env.FRONTEND_PORT,
+        apiUrl: process.env.API_URL,
+        adminUrl: process.env.ADMIN_URL,
+        frontendUrl: process.env.FRONTEND_URL,
         centralServerUrl: process.env.CCS_URL,
-    }));
+    } as TCmsConfig));
 }
 
 /**
@@ -20,7 +20,7 @@ const getEnvConfig = () => {
  */
 export const readCMSConfigSync = (path?: string): TCmsConfig => {
     const logger = getLogger();
-    const configPath = path ?? getCMSConfigPath();
+    const configPath = path ?? getCmsConfigPathSync();
     let customConfig;
     if (fs.pathExistsSync(configPath)) {
         try {
@@ -38,7 +38,7 @@ export const readCMSConfigSync = (path?: string): TCmsConfig => {
  */
 export const readCMSConfig = async (path?: string): Promise<TCmsConfig> => {
     const logger = getLogger();
-    const configPath = path ?? getCMSConfigPath();
+    const configPath = path ?? await getCmsConfigPath();
     let customConfig;
     if (await fs.pathExists(configPath)) {
         try {
