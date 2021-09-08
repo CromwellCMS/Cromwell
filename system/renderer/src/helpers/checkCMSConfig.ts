@@ -24,11 +24,7 @@ export const checkCMSConfig = (): void => {
     if (!isServer()) return undefined;
     checkBackendModules();
 
-    let cmsConfigPath = coreBackend.getCMSConfigPath();
-    if (!fs.pathExistsSync(cmsConfigPath)) {
-        cmsConfigPath = coreBackend.getCMSConfigPath(pathResolve(process.cwd(), '../../'));
-    }
-
+    const cmsConfigPath = coreBackend.getCmsConfigPathSync();
     const config = coreBackend.readCMSConfigSync(cmsConfigPath);
 
     if (!config.serviceSecret) {

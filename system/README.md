@@ -31,6 +31,7 @@ Below listed core services with default settings (ports at localhost address can
 - NPM Module - @cromwell/server
 - Url main - http://localhost:4016
 - Url extension - http://localhost:4032
+- Run command - `npx crw s --sv s`
 
 API server and Proxy. That's two servers in one service.  
 Proxy server handles all incoming requests and distributes them for other services. So all services of CMS will be available at http://localhost:4016 in development.  In production it's recommended to setup Nginx config to proxy services instead. CMS goes with configured Nginx config for this purpose.
@@ -45,6 +46,7 @@ API Server Implements REST API for transactions or internal usage and GraphQL AP
 - Path - system/renderer
 - NPM Module - @cromwell/renderer
 - Url - http://localhost:4128
+- Run command - `npx crw s --sv r`
 
 Next.js service, compiles (using Utils) and serves files of an active Theme and Plugins to end-users.
 
@@ -52,6 +54,7 @@ Next.js service, compiles (using Utils) and serves files of an active Theme and 
 - Path - system/admin-panel
 - NPM Module - @cromwell/admin-panel
 - Url - http://localhost:4064
+- Run command - `npx crw s --sv a`
 
 Uses dedicated Fastify server to serve Admin Panel files and public media files. 
 

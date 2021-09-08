@@ -5,6 +5,19 @@ import { createTask } from './tasks/create';
 
 export type TServiceNames = 'renderer' | 'r' | 'server' | 's' | 'adminPanel' | 'a' | 'nginx' | 'n';
 
+let manager;
+const getManager = () => {
+    if (!manager) {
+        try {
+            manager = require('@cromwell/cms');
+        } catch (error) {
+            console.error(`Could not locate '@cromwell/cms' package. Make sure you run it a project with installed dependencies`);
+            return;
+        }
+    }
+    return manager;
+}
+
 const args = yargs(process.argv.slice(2))
     // START
     .command<{
@@ -34,7 +47,7 @@ const args = yargs(process.argv.slice(2))
                 })
                 .option('port', {
                     alias: 'p',
-                    desc: 'Port of a proxy server',
+                    desc: 'Port of a service',
                     type: 'string'
                 })
                 .option('try', {
@@ -69,11 +82,7 @@ const args = yargs(process.argv.slice(2))
                 return;
             }
 
-            if (port) {
-                process.env.API_PORT = port + '';
-            }
-
-            const { startServiceByName, startSystem, closeSystem, closeServiceByName } = require('@cromwell/cms');
+            const { startServiceByName, startSystem, closeSystem, closeServiceByName } = getManager();
             if (serviceToStart) {
                 await startServiceByName({
                     scriptName: development ? 'development' : 'production',
@@ -114,7 +123,7 @@ const args = yargs(process.argv.slice(2))
         handler: async (argv) => {
             const serviceToClose = argv.service as TServiceNames;
 
-            const { closeServiceByName, closeSystem } = require('@cromwell/cms');
+            const { closeServiceByName, closeSystem } = getManager();
 
             if (serviceToClose) {
                 await closeServiceByName(serviceToClose);
@@ -142,7 +151,7 @@ const args = yargs(process.argv.slice(2))
                 })
         },
         handler: (argv) => {
-            const { buildTask } = require('@cromwell/cms');
+            const { buildTask } = getManager();
             buildTask(argv.watch, argv.port);
         }
     })

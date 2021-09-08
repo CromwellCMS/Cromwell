@@ -15,7 +15,6 @@ import cryptoRandomString from 'crypto-random-string';
 import fs from 'fs-extra';
 import { resolve } from 'path';
 import { ConnectionOptions } from 'typeorm';
-import yargs from 'yargs-parser';
 
 import { TServerCommands } from './constants';
 
@@ -31,13 +30,8 @@ type TEnv = {
 export const loadEnv = (): TEnv => {
     if (sEnv) return sEnv;
 
-    const args = yargs(process.argv.slice(2));
     const scriptName = process.argv[2] as TServerCommands;
     const cmsConfig = readCMSConfigSync();
-
-    if (args.proxyPort) {
-        process.env.API_PORT = args.proxyPort + '';
-    }
 
     if (!scriptName || (scriptName as any) === '') {
         const msg = 'Provide as first argument to this script one of these commands: build, dev, prod, serverDev, serverProd';

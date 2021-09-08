@@ -4,8 +4,8 @@ sidebar_position: 1
 
 # Theme development
 
-Cromwell CMS follows principles of headless CMS where API server runs separately from its frontend server. So basically you can create any type of frontend and host it wherever you like. But in this scenario you need to manage and deploy this frontend by yourself.  
-To simply the workflow Cromwell CMS has its theming engine. Users can easily install Themes from the official market right in their Admin panel GUI, make active, delete them, change layout in the Theme Editor as long as Themes follow guidelines we are going to show.  
+Cromwell CMS follows principles of headless CMS where API server runs separately from its frontend server. So basically you can create any type of frontend and host it wherever you like. But in this scenario, you need to manage and deploy this frontend by yourself.  
+To simply the workflow Cromwell CMS has its theming engine. Users can easily install Themes from the official market right in their Admin panel GUI, make active, delete them, change layout in the Theme Editor as long as Themes follow the guidelines we are going to show.  
 
 Cromwell CMS Theme is a Next.js app. Theme development is basically Next.js development. If you are not familiar with Next.js, [you should definitely start with it first](https://nextjs.org/docs/getting-started).   
 
@@ -20,15 +20,15 @@ npx @cromwell/cli create --type theme my-theme-name
 ## Project structure
 
 - **`cromwell.config.js`** - [Optional config file for your Theme/Plugin.](/docs/development/module-config)  
-- **`src/pages`** - Directory for Next.js pages. By default there's `index.tsx` created by CLI. You can rename it to .jsx if you don't want to work with TypeScript (which is discouraged).
-- **`static`** - Directory for static files (images). After installation of this Theme by end user files from `static` directory will be copied into `public` directory of the CMS, from where they will be served to the frontend. In your code you can access static files of your Theme through the following pattern: `/themes/${packageName}/${pathInStaticDir}`.  
+- **`src/pages`** - Directory for Next.js pages. By default, there's `index.tsx` created by CLI. You can rename it to .jsx if you don't want to work with TypeScript (which is discouraged).
+- **`static`** - Directory for static files (images). After installation of this Theme by end-user files from `static` directory will be copied into `public` directory of the CMS, from where they will be served to the frontend. In your code you can access static files of your Theme through the following pattern: `/themes/${packageName}/${pathInStaticDir}`.  
 Image example:  `<img src="/themes/@cromwell/theme-store/free_shipping.png" />`
 
 
 
 ## Compile
 
-To make your Theme work with the CMS we need to run additional [pre-build phase](#pre-build-phase). With that you cannot directly use Next.js CLI, but Cromwell CLI has a replacement which works in a similar way.  
+To make your Theme work with the CMS we need to run additional [pre-build phase](#pre-build-phase). With that, you cannot directly use Next.js CLI, but Cromwell CLI has a replacement that works in a similar way.  
 
 First you may optionally start the CMS to retrieve data/plugins from API server:
 ```bash
@@ -61,7 +61,7 @@ Now you can go into Admin panel > Themes > click "Set active" on your Theme card
 
 This is a multipurpose phase that happens before we run Webpack compiler of Next.js.
 
-1. We wrap your pages in a root component that requests and injects settings from Admin panel such as custom head HTML, meta data (SEO), settings for Plugins, etc.
+1. We wrap your pages in a root component that requests and injects settings from Admin panel such as custom head HTML, metadata (SEO), settings for Plugins, etc.
 
 2. Cromwell CMS needs to generate meta info files on your source code. In order to parse your files, we need to transpile them into plain JavaScript first.
 
@@ -70,7 +70,7 @@ This is a multipurpose phase that happens before we run Webpack compiler of Next
 
 ## Customize bundler
 
-We use [Rollup](https://rollupjs.org) for the pre-build phase. Which means you need to change Rollup config if you want to customize your build. The purpose of the phase is to build plain JavaScript, so you won't need to customize Next.js's Webpack config.  
+We use [Rollup](https://rollupjs.org) for the pre-build phase. This means you need to change Rollup config if you want to customize your build. The purpose of the phase is to build plain JavaScript, so you won't need to customize Next.js's Webpack config.  
 
 By default CMS build command can transpile React and handle CSS/SASS (by passing stylesheets to Next.js).  
 After generating Theme template with Cromwell CLI, you will also have TypeScript compiler in the build config.
@@ -81,7 +81,7 @@ Open `cromwell.config.js`. You can see there's `rollupConfig` function that retu
     main: RollupOptions,
 }
 ```
-Usually `RollupOptions` is an object that exported from [Rollup Config File](https://rollupjs.org/guide/en/#configuration-files). But might need to use different configs, so we return them in the `rollupConfig` labeled by properties.
+Usually, `RollupOptions` is an object exported from [Rollup Config File](https://rollupjs.org/guide/en/#configuration-files). But might need to use different configs, so we return them in the `rollupConfig` labeled by properties.
 - `main` - Options used by default for all bundles.
 
 
@@ -123,7 +123,7 @@ We put elements into `CContainer`s. This component equals to `<div>` tag plus pr
 - Removable - User can delete Block. Component will remain in the code since we cannot edit files of your Theme, but it will render `<></>` instead of its content.
 
 :::important
-You must always provide unique `id` prop to Blocks. We need it to keep in sync user's and Theme author's changes.  
+You must always provide a unique `id` prop to Blocks. We need it to keep in sync user's and Theme author's changes.  
 For example, user has modified some Block and then author made a new release where he modified the same Block as well. After Theme update we'll have to match differences and override author's modifications by user's.  
 :::
 
@@ -136,14 +136,14 @@ You can apply some custom configurations to your pages in `cromwell.config.js`. 
 - **`id`** - Unique id of the page. Required. We need it to recognize pages, since `route` can be changed for [Generic pages](#generic-pages).
 - **`route`** - Page's route. Required. Usually it has the same value as Next.js file-routing. For example, if you have created file: `info/contacts.tsx`, then your page will be served at `info/contacts` by Next.js, so `route` value will be `info/contacts`. If your page is dynamic, for example `product/[slug].tsx`, then value is `product/[slug]`. There's one exception with the Home page, we use `index` value for it.
 - **`name`** - Name of the page displayed in Theme Editor sidebar.
-- **`title`** - Meta title (SEO). Cromwell CMS will automatically import Head component from `next/head` package for the title to work in frontend. But you also can use `next/head` in your code. Note that `title` from the page config overrides title in your React component.
+- **`title`** - Meta title (SEO). Cromwell CMS will automatically import Head component from `next/head` package for the title to work in the frontend. But you also can use `next/head` in your code. Note that `title` from the page config overrides title in your React component.
 - **`description`** - Meta description (SEO).
 - **`headHtml`** - Custom HTML injected in the head. After Pre-build phase your pages will be wrapped by our root component to make these injections. 
 - **`footerHtml`** - Custom HTML injected at the end of the page.
-- **`modifications`** - Modifications of Blocks. Part of Page builder system. All custom modifications for Blocks (such as dragging, styling) are stored as JSON configs in `modifications`. There are two types of them: author's and user's. Author's modifications stored in `cromwell.config.js` under this property. User's modifications stored in database.  
+- **`modifications`** - Modifications of Blocks. Part of Page builder system. All custom modifications for Blocks (such as dragging, styling) are stored as JSON configs in `modifications`. There are two types of them: author's and user's. Author's modifications stored in `cromwell.config.js` under this property. User's modifications are stored in database.  
 In actual usage your modification from the config will be merged and overwritten by user's modification from DB. 
 When you are making a Theme you can copy modifications from DB into this property. 
-It makes possible to create a Theme using Page builder (which is not recommended since Page builder doesn't have yet advanced features to make a responsive layout) and it would be fully customizable by user.  
+It makes it possible to create a Theme using Page builder (which is not recommended since Page builder doesn't have yet advanced features to make a responsive layout) and it would be fully customizable by user.  
 `modifications` property is a flat array of objects (modifications). [See TCromwellBlockData for details](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/blocks.ts#L81). Main properties: 
   - **id**`: string` - Block id, unique on the page
   - **type**`: string` - Block type, one of following: 'container', 'plugin', 'text', 'HTML', 'image', 'gallery', 'list', 'link'  
@@ -160,7 +160,7 @@ It is not necessary to add configs for your pages, and you can start development
 
 ### Default pages
 
-`cromwell.config.js` has `defaultPages` property that tells Admin panel where to find your pages. For example, in a product page of Admin panel at the top right menu you can see icon with tooltip "open product page in the new tab". The icon opens same product in frontend page of an active Theme. Since it's possible for Theme author to place product page under any route, you need to specify its route in the `defaultPages` for Admin panel links to work.  
+`cromwell.config.js` has `defaultPages` property that tells Admin panel where to find your pages. For example, in a product page of Admin panel at the top-right menu you can see icon with the tooltip "open product page in the new tab". The icon opens the same product in frontend page of an active Theme. Since it's possible for Theme author to place the product page under any route, you need to specify its route in the `defaultPages` for Admin panel links to work.  
 
 All available Default pages with route examples:
 ```json
@@ -177,7 +177,7 @@ All available Default pages with route examples:
 
 ## Use Plugins
 
-Plugins unlike other blocks can only be added in the page config. In order to retrieve static props of Plugins on server we need to know what Plugins used on pages before executing them.  
+Plugins unlike other blocks can only be added in the page config. In order to retrieve static props of Plugins on server we need to know what Plugins are used on pages before executing them.  
 So in your page you can add a container:
 ```tsx
 <CContainer id="some-plugin-container"></CContainer>
@@ -197,11 +197,11 @@ And add Plugin to the `modifications` of a [page config](#page-config-properties
 
 ## Generic pages
 
-User can create a new page in the Theme Editor. Since there's no way to add Next.js pages at runtime, this feature achieved via adding a dynamic page at `pages/[slug]` route. If your Theme doesn't export component at `src/pages/pages/[slug].(jsx|tsx)`, then it will be generated internally at pre-build phase, but you're encouraged to create it yourself, since probably you want to have it the same layout as in other pages.  
+Users can create a new page in the Theme Editor. Since there's no way to add Next.js pages at runtime, this feature is achieved via adding a dynamic page at `pages/[slug]` route. If your Theme doesn't export component at `src/pages/pages/[slug].(jsx|tsx)`, then it will be generated internally at pre-build phase, but you're encouraged to create it yourself since probably you want to have it the same layout as in other pages.  
 
-Theme author also can create a generic page in the Theme config. Just add a page config with the route: `pages/your-page-name` and put modifications to display some content.  
+Theme authors also can create a generic page in the Theme config. Just add a page config with the route: `pages/your-page-name` and put modifications to display some content.  
 
-The difference of generic pages from other pages that they can have a different page config for a specified slug, while, for example, `/product/[slug]` page will have the same config for every provided slug.
+The difference between generic pages and other pages is that they can have a different page config for a specified slug, while, for example, `/product/[slug]` page will have the same config for every provided slug.
 
 
 ## Publish
@@ -221,7 +221,7 @@ Check that all needed directories are included in your npm package. They should 
 Do not include `.cromwell` and `public` directories, these are CMS runtime directories.   
 
 Make sure you have successfully built your Theme/Plugin.  
-For a Theme `./build` directory should contain `.next` and if there any Admin panel pages - `theme/admin`.  
+For a Theme `./build` directory should contain `.next`.  
 For a Plugin `./build` directory should reflect `src` 3 main directories. 
 Your Theme/Plugin also should work locally at http://localhost:4016/
 
@@ -232,8 +232,8 @@ npm publish --access public
 
 ### Publish in the Cromwell CMS market
 
-For your Theme/Plugin to appear in the Admin panel market at `/admin/#/theme-market` page, we need to add it in our central database. For now there's no automatic process and all new Modules checked manually (to ensure build correctness and acceptable code quality), so please reach us for publication at cromwellcms@gmail.com.  
-Publication is free.
+For your Theme/Plugin to appear in the Admin panel market at `/admin/#/theme-market` page, we need to add it in our central database. For now there's no automatic process and all new Modules are checked manually (to ensure build correctness and acceptable code quality), so please reach us for publication at cromwellcms@gmail.com.  
+The publication is free.
 
 ## Install
 

@@ -25,8 +25,8 @@ import yargs from 'yargs-parser';
 
 const start = async () => {
     const args = yargs(process.argv.slice(2));
-    if (args.serverPort) {
-        process.env.API_PORT = args.serverPort + '';
+    if (args.serverUrl) {
+        process.env.API_URL = args.serverUrl;
     }
     let cmsSettings = readCMSConfigSync();
     setStoreItem('cmsSettings', cmsSettings);
@@ -72,8 +72,7 @@ const start = async () => {
         await symlinkDir(bundledModulesDir, bundledLocalLink);
     }
 
-    const port = cmsSettings.adminPanelPort ?? 4064;
-
+    const port = args.port ?? 4064;
     const app = fastify();
     await app.register(middie);
 
@@ -157,10 +156,11 @@ const start = async () => {
 
     await app.listen(port, '::', 1, (err) => {
         if (err) {
+
             console.error(err);
             if (process.send) process.send(adminPanelMessages.onStartErrorMessage);
         } else {
-            console.log(`Admin Panel server has started at ${serviceLocator.getAdminPanelUrl()}`);
+            console.log(`Admin Panel server has started at http://localhost:${port}/admin/`);
             if (process.send) process.send(adminPanelMessages.onStartMessage);
         }
     });

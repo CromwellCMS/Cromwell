@@ -1,10 +1,11 @@
+
 ---
 sidebar_position: 2
 ---
 
 # Plugin development
 
-Cromwell CMS Plugins are JavaScript modules that can extend functionality of a Theme, Admin panel or API server. They follow specific structure and built with CMS CLI tools. Unlike with Themes there's no Next.js involved in the build process. Although Plugin's frontend follows principles of Next.js pages, so if you are not familiar with Next.js, [you should definitely start with it first](https://nextjs.org/docs/getting-started).    
+Cromwell CMS Plugins are JavaScript modules that can extend functionality of a Theme, Admin panel or API server. They follow specific structure and are built with CMS CLI tools. Unlike with Themes there's no Next.js involved in the build process. Although Plugin's frontend follows principles of Next.js pages, so if you are not familiar with Next.js, [you should definitely start with it first](https://nextjs.org/docs/getting-started).    
 
 
 ### Create a project
@@ -21,7 +22,7 @@ npx @cromwell/cli create --type plugin my-plugin-name
 - **`static`** - Directory for static files (images). Files from this directory will be copied into `public` directory of the CMS, from where they will be served by our server to the frontend. You can access your Plugin files through the following pattern: `/plugins/${packageName}/${pathInStaticDir}`.  
 Image example:  `<img src="/plugins/@cromwell/plugin-newsletter/icon_email.png" />`
 
-From your source directory will be built 3 different bundles designed for a specific place of the CMS to work. So `src` directory divided into 3 main subdirectories:
+From your source directory will be built 3 different bundles designed for a specific place of the CMS to work. So `src` directory is divided into 3 main subdirectories:
 - **`src/admin`** - Directory for Admin panel bundle.
 - **`src/backend`** - Directory for API server bundle.
 - **`src/frontend`** - Directory for frontend (Theme) bundle.
@@ -34,7 +35,7 @@ Any further project structure is up to you. CMS bundler will look for `src/admin
 
 ## Admin
 
-Purpose of the Admin bundle is to register widgets that will be used in specific places of Admin panel. Widget is any valid React component.   
+The purpose of the Admin bundle is to register widgets that will be used in specific places of Admin panel. Widget is any valid React component.   
 You can look into [newsletter plugin](https://github.com/CromwellCMS/Cromwell/blob/master/plugins/newsletter/src/admin/index.tsx) as an example.
 
 If you want your Plugin to have its own page in Admin panel > Plugins, you need to register the settings page:
@@ -77,16 +78,16 @@ All available places you can use in `widgetName`:
 - `CategoryActions` - Widget to display near 'Save' button at Category page.
 - `OrderActions` - Widget to display near 'Save' button at Order page.
 
-For now amount of available widgets is quite small, but we will add much more in future releases!
+For now, amount of available widgets is quite small, but we will add much more in future releases!
 
 
 ## Plugin settings
 
-Plugin settings is any valid JSON. There are two types of settings: `Plugin settings` and `Instance settings`
+Plugin settings are any valid JSON. There are two types of settings: `Plugin settings` and `Instance settings`
 
 ### Plugin global settings
 
-Plugin's global settings passed in `pluginSettings` prop of a SettingsPage and context of `getStaticProps` in [frontend component](#frontend). It is Plugin's main configuration object. It stored in the database as text (serialized JSON) for each Plugin.     
+Plugin's global settings passed in `pluginSettings` prop of a SettingsPage and context of `getStaticProps` in [frontend component](#frontend). It is Plugin's main configuration object. It is stored in the database as text (serialized JSON) for each Plugin.     
 To save/load data you can use frontend API client:
 
 ```tsx title="src/admin/index.tsx"
@@ -126,7 +127,7 @@ Server will reject `getPluginSettings` or `savePluginSettings` request if it cal
 :::
 
 ### Instance settings
-Instance settings passed in `instanceSettings` prop of a [frontend component](#frontend), it is a local settings that can be passed from Admin Panel page builder per placed Plugin (and user can place your Plugin many times on different pages), or they are passed directly to the Plugin Block in Theme's JSX code:
+Instance settings passed in `instanceSettings` prop of a [frontend component](#frontend) are local settings that can be passed from Admin Panel page builder per placed Plugin (and user can place your Plugin many times on different pages), or they are passed directly to the Plugin Block in Theme's JSX code:
 
 ```tsx title="src/pages/index.tsx"
 import { CPlugin } from '@cromwell/core-frontend';
@@ -152,7 +153,7 @@ export default function HomePageOfSomeTheme() {
 
 ## Frontend
 
-Frontend bundle follows principles of Next.js pages. You have to export a React component and optionally you can use `getStaticProps`.  
+Frontend bundle follows the principles of Next.js pages. You have to export a React component and optionally you can use `getStaticProps`.  
 
 ```tsx
 import { TGetStaticProps, TFrontendPluginProps } from '@cromwell/core';
@@ -192,14 +193,14 @@ export const getStaticProps: TGetStaticProps<MyGlobalSettings> = async (context)
 }
 ```
 
-`getStaticProps` here works as in Next.js pages. Cromwell CMS root wrapper will collect props for all Plugins at the requested page and pass them to components. Which means your plugin can be statically pre-rendered with all the data at the Next.js server.  
+`getStaticProps` here works as in Next.js pages. Cromwell CMS root wrapper will collect props for all Plugins on the requested page and pass them to components. This means your plugin can be statically pre-rendered with all the data at the Next.js server.  
 
-Plugin's settings will be passed to `getStaticProps` in the context. Since this function executed only at the backend, you can safely extract your private settings and pass other to the frontend as data.
+Plugin's settings will be passed to `getStaticProps` in the context. Since this function is executed only at the backend, you can safely extract your private settings and pass others to the frontend as data.
 
 
 ## Backend
 
-Backend bundle is a module that will be executed on API server. Server will include your module's exports. These specific exports called extensions.
+Backend bundle is a module that will be executed on API server. The server will include your module's exports. These specific exports are called extensions.
 
 ```ts title="src/backend/index.ts"
 import { TBackendModule } from '@cromwell/core-backend';
@@ -226,8 +227,8 @@ All available properties (extensions):
 :::note
 #### How exported extensions will be applied in the production server?
 
-Basically all systems listed above: TypeORM, TypeGraphQL, Nest.js are designed to initialize all entities/resolvers/controllers at server startup. Updating classes at runtime may lead to problems such as wrong type reflection (for example, if some plugin has updated a class in new release). Another problem is that we cannot have outage of production server during such update.  
-In Cromwell CMS we have a feature called "safe reload". After Plugin installation/update we start a new server instance at next available port. If startup was successful, we redirect traffic to the new instance and kill old one after timeout. If installation/update was not successful, then we remove the Plugin, no server restart will follow. From outside point of view there's zero downtime for API server in both cases.
+Basically, all systems listed above: TypeORM, TypeGraphQL, Nest.js are designed to initialize all entities/resolvers/controllers at server startup. Updating classes at runtime may lead to problems such as wrong type reflection (for example, if some plugin has updated a class in a new release). Another problem is that we cannot have an outage of production server during such update.  
+In Cromwell CMS we have a feature called "safe reload". After Plugin installation/update we start a new server instance at next available port. If startup was successful, we redirect traffic to the new instance and kill old one after timeout. If installation/update was not successful, then we remove the Plugin, no server restart will follow. From an outside point of view, there's zero downtime for API server in both cases.
 :::
 
 ### Backend actions
@@ -297,13 +298,13 @@ If your Plugin adds new TypeORM Entities, it should change database schema. To e
 Now when you start the CMS via `npx cromwell start`, server will update database's schema according to your entities.
 
 :::note
-Using `npx cromwell start` in development may appear slow if you want, for example, only to restart API server. In this case you can manage services separately in different terminals:
+Using `npx cromwell start` in development may appear slow if you want, for example, only to restart API server. In this case, you can manage services separately in different terminals:
 - `npx crw s --sv s` - To start API server.
 - `npx crw s --sv a` - To start Admin panel.
 - `npx crw s --sv r` - To start Frontend (Next.js) server.
 :::
 
-After your Plugin will be installed, we need to update user's database. User's CMS will be in production environment, so there "synchronize" will be disabled. [Migrations](https://typeorm.io/#/migrations) are designed for such update. You can write your custom migrations and export them as `migrations` extension in `src/backend/index.ts` file.   
+After your Plugin will be installed, we need to update user's database since user's CMS will be in a production environment with disabled "synchronize". [Migrations](https://typeorm.io/#/migrations) are designed for such updates. You can write your custom migrations and export them as `migrations` extension in `src/backend/index.ts` file.   
 Important to know that these migrations can potentially run in all supported types of databases: SQLite/MySQL/Postgres. So SQL syntax must be universal. Or you can check database type in connection options and write conditional queries.
 
 To simplify creation of such migrations, there's the suggested workflow:
@@ -329,7 +330,7 @@ To simplify creation of such migrations, there's the suggested workflow:
 4. Launch development databases: `npm run docker:start-dev-mariadb` and `npm run docker:start-dev-postgres`
 5. Generate migrations: `npm run migration:generate:all --name=init`
 
-TypeORM will generate different migrations per each database type. Migrations will be in their named directories. Cromwell CMS already configured to look into them and execute accordingly to database type.   Directory namings should be exactly the same as configured in provided example files: `./migrations/${dbType}`. 
+TypeORM will generate different migrations per database type. Migrations will be in their named directories. Cromwell CMS is already configured to look into them and execute accordingly to database type.   Directory namings should be exactly the same as configured in provided example files: `./migrations/${dbType}`. 
 MySQL and MariaDB use the same directory: `./migrations/mysql`  
 
 Don't forget to include the directory in your `files`, so migrations will be distributed along with your npm package:
@@ -355,7 +356,7 @@ npx cromwell build -w
 ```
 
 Go to Admin panel and make sure your Plugin appeared at /admin/#/plugins page.  
-Settings icon should open `PluginSettings` widget.
+The settings icon should open `PluginSettings` widget.
 
 ## Customize bundler
 
@@ -366,7 +367,7 @@ We use Rollup under the hood to build Plugins. Configurations set in `cromwell.c
 - `backend` - Options for backend bundle.
 
 :::important
-All bundles built with these options will be executed as is. So you have to apply appropriate optimizations such as code minification (terser) and transpilation to older versions of JavaScript like ES5 via Babel/Typescript compiler in the `cromwell.config.js`.
+All bundles built with these options will be executed as-is. So you have to apply appropriate optimizations such as code minification (terser) and transpilation to older versions of JavaScript like ES5 via Babel/Typescript compiler in the `cromwell.config.js`.
 :::
 
 ## Publish

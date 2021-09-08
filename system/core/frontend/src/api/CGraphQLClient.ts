@@ -82,7 +82,7 @@ export class CGraphQLClient {
 
     /** @internal */
     public getBaseUrl = () => {
-        const typeUrl = serviceLocator.getMainApiUrl();
+        const typeUrl = serviceLocator.getApiUrl();
         return `${typeUrl}/api/graphql`;
     }
 

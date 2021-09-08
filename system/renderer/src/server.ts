@@ -1,5 +1,6 @@
-import { findRedirect } from '@cromwell/core';
-import { getLogger } from '@cromwell/core-backend';
+import { findRedirect, setStoreItem, TCmsSettings } from '@cromwell/core';
+import { getLogger, readCMSConfig } from '@cromwell/core-backend';
+import cookie from 'cookie';
 import { createServer } from 'http';
 import next from 'next';
 import { parse } from 'url';
@@ -11,6 +12,9 @@ export const startNextServer = async (options?: {
     port?: number;
     dir?: string;
 }) => {
+    const config = await readCMSConfig();
+    setStoreItem('cmsSettings', config);
+
     const port = options?.port ?? 3000;
     const app = next({
         dev: options?.dev ?? false,
@@ -22,6 +26,16 @@ export const startNextServer = async (options?: {
     const server = createServer((req, res) => {
         const parsedUrl = parse(req.url!, true);
         const { pathname, search } = parsedUrl;
+
+        res.setHeader('Set-Cookie', cookie.serialize('crw_cms_config', JSON.stringify({
+            apiUrl: config.apiUrl,
+            adminUrl: config.adminUrl,
+            frontendUrl: config.frontendUrl,
+            centralServerUrl: config.centralServerUrl,
+        } as TCmsSettings), {
+            maxAge: 60 * 60 * 24 * 7, // 1 week
+            path: '/',
+        }));
 
         if (!pathname) {
             handle(req, res, parsedUrl);

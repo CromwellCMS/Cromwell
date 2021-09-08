@@ -62,7 +62,7 @@ export class CRestApiClient {
     /** @internal */
     private onErrorCallbacks: Record<string, ((info: TErrorInfo) => any)> = {};
     public getBaseUrl = () => {
-        const serverUrl = serviceLocator.getMainApiUrl();
+        const serverUrl = serviceLocator.getApiUrl();
         if (!serverUrl) throw new Error('CRestApiClient: Failed to find base API URL');
         return `${serverUrl}/api`;
     }
@@ -77,18 +77,39 @@ export class CRestApiClient {
 
     /** @internal */
     private async init() {
+        if (!isServer() && !getStoreItem('cmsSettings')?.apiUrl) {
+            try {
+                const getCookie = (name) => {
+                    const value = `; ${document.cookie}`;
+                    const parts = value.split(`; ${name}=`);
+                    if (parts.length === 2) return parts.pop()?.split(';').shift();
+                }
+                const config = getCookie('crw_cms_config');
+                if (config) {
+                    const configParsed = JSON.parse(decodeURIComponent(config));
+                    if (configParsed?.apiUrl) {
+                        setStoreItem('cmsSettings', configParsed)
+                    }
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
 
         if (isServer()) {
             try {
                 // If backend, try to find service secret key to make 
                 // authorized requests to the API server.
+                const nodeRequire = (name: string) => eval(`require('${name}');`);
+                const backend: typeof import('@cromwell/core-backend') = nodeRequire('@cromwell/core-backend');
                 let cmsConfig = getStoreItem('cmsSettings');
-                if (!cmsConfig) cmsConfig = {};
+                if (!cmsConfig) {
+                    cmsConfig = await backend.readCMSConfig();
+                    setStoreItem('cmsSettings', cmsConfig);
+                }
 
                 if (!cmsConfig.serviceSecret) {
                     try {
-                        const nodeRequire = (name: string) => eval(`require('${name}');`);
-                        const backend = nodeRequire('@cromwell/core-backend');
                         const { resolve } = nodeRequire('path');
                         const cacache = nodeRequire('cacache');
                         const tempDir = backend.getServerTempDir();

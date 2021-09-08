@@ -4,44 +4,40 @@ import { TCmsConfig } from './types/data';
 
 const getBaseUrl = (key: keyof TCmsConfig) => {
     const cmsConfig = getCmsSettings();
-    if (!cmsConfig) {
-        console.error('core:serviceLocator: CmsConfig was not found in the global store!');
-        return undefined;
-    }
-    const port = cmsConfig[key] as string;
+    const url = cmsConfig?.[key] ?? serviceLocator.defaultLocations[key] as string;
 
     if (isServer()) {
-        if (!port) {
-            console.error('core:serviceLocator: !port for ' + key);
+        if (!url) {
+            console.error('core:serviceLocator: !url for ' + key);
             return undefined;
         }
-        return `http://localhost:${port}`;
+        return url;
     }
 
     if (window.location.hostname === 'localhost') {
-        if (!port) {
-            console.error('core:serviceLocator: !port for ' + key);
-            return undefined;
-        }
-        return window.location.protocol + '//localhost:' + port;
+        if (url) return url;
     }
-    else return window.location.protocol + '//' + window.location.host;
+
+    return window.location.protocol + '//' + window.location.host;
 }
 
 /**
  * Get base url of a CMS Service
  */
 export const serviceLocator = {
-    getMainApiUrl: () => {
-        return getBaseUrl('apiPort');
-    },
-    getApiWsUrl: () => {
-        return getBaseUrl('apiPort');
+    defaultLocations: {
+        apiUrl: 'http://localhost:4016',
+        adminUrl: 'http://localhost:4064',
+        frontendUrl: 'http://localhost:4128',
+        centralServerUrl: 'https://api.cromwellcms.com',
+    } as TCmsConfig,
+    getApiUrl: () => {
+        return getBaseUrl('apiUrl');
     },
     getFrontendUrl: () => {
-        return getBaseUrl('frontendPort');
+        return getBaseUrl('frontendUrl');
     },
-    getAdminPanelUrl: () => {
-        return getBaseUrl('adminPanelPort');
+    getAdminUrl: () => {
+        return getBaseUrl('adminUrl');
     }
 };

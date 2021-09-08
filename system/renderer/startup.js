@@ -12,7 +12,6 @@ const buildDir = getRendererBuildDir();
 const rendererRootDir = getRendererDir();
 const logger = getLogger();
 
-
 /**
  * 'buildService' - compile "src" files into "build" dir
  * 'dev' - Next.js "dev" command. Will check if service is built
@@ -51,7 +50,6 @@ const main = () => {
         await generator({
             scriptName,
             targetThemeName: args.themeName,
-            serverPort: args.serverPort,
         });
     }
 
@@ -93,7 +91,7 @@ const main = () => {
     const start = async () => {
         try {
             await gen();
-            const port = args.port || config.frontendPort;
+            const port = args.port || 4128;
             const tempDir = getRendererTempDir();
             const startNextServer = require(resolve(buildDir, 'server.js')).startNextServer;
 

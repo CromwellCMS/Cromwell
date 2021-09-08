@@ -10,16 +10,13 @@ export class CmsConfigDto implements TCmsSettings {
     domain?: string;
 
     @ApiProperty()
-    apiPort?: number;
+    apiUrl?: string;
 
     @ApiProperty()
-    adminPanelPort?: number;
+    adminUrl?: string;
 
     @ApiProperty()
-    frontendPort?: number;
-
-    @ApiProperty()
-    managerPort?: number;
+    frontendUrl?: string;
 
     @ApiProperty()
     centralServerUrl?: string;
@@ -69,11 +66,10 @@ export class CmsConfigDto implements TCmsSettings {
     parseConfig(config: TCmsSettings) {
         this.domain = config.domain;
         this.url = config.url;
-        this.apiPort = config.apiPort;
+        this.apiUrl = config.apiUrl;
+        this.adminUrl = config.adminUrl;
+        this.frontendUrl = config.frontendUrl;
         this.centralServerUrl = config.centralServerUrl;
-        this.adminPanelPort = config.adminPanelPort;
-        this.frontendPort = config.frontendPort;
-        this.managerPort = config.managerPort;
         this.themeName = config.themeName;
         this.defaultPageSize = config.defaultPageSize;
         this.currencies = config.currencies;
