@@ -2,7 +2,7 @@ const { spawnSync, spawn } = require("child_process");
 const resolve = require('path').resolve;
 const fs = require('fs-extra');
 
-const cmsconfigPath = resolve(process.cwd(), 'cmsconfig.json');
+const cmsConfigPath = resolve(process.cwd(), 'cmsconfig.json');
 const spawnOpts = { shell: true, cwd: process.cwd(), stdio: 'inherit' };
 let cmsConfig;
 
@@ -17,9 +17,9 @@ if (process.env.DB_TYPE && process.env.DB_DATABASE) {
             password: process.env.DB_PASSWORD,
         }
     }
-    fs.outputFileSync(cmsconfigPath, JSON.stringify(cmsConfig));
+    fs.outputFileSync(cmsConfigPath, JSON.stringify(cmsConfig));
 } else {
-    cmsConfig = fs.readJSONSync(cmsconfigPath);
+    cmsConfig = fs.readJSONSync(cmsConfigPath);
 }
 
 if (!cmsConfig.orm.type) throw new Error('You must provide DB_TYPE as environment variable or orm.type in cmsconfig.json');
@@ -31,7 +31,6 @@ if (!fs.pathExistsSync('/app/nginx/nginx.conf')) {
 
 const main = async () => {
     spawnSync(`/usr/sbin/nginx -c /app/nginx/nginx.conf`, spawnOpts);
-
     spawn(`npx crw s ${process.env.INIT ? '--init' : ''}`, spawnOpts);
 }
 

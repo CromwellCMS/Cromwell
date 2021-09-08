@@ -97,6 +97,7 @@ async function bootstrap(): Promise<void> {
     }
 
     const port = await getPort({ port: getPort.makeRange(4032, 4063) });
+
     await app.listen(port, '::');
     logger.info(`API Server is running on: ${await app.getUrl()}`);
     childRegister(port);

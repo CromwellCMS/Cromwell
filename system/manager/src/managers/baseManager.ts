@@ -10,10 +10,11 @@ import {
 } from '@cromwell/core-backend';
 import { getRestApiClient } from '@cromwell/core-frontend';
 import { ChildProcess, fork, spawn } from 'child_process';
+import fs from 'fs-extra';
 import isRunning from 'is-running';
+import nodeCleanup from 'node-cleanup';
 import { resolve } from 'path';
 import tcpPortUsed from 'tcp-port-used';
-import nodeCleanup from 'node-cleanup';
 import treeKill from 'tree-kill';
 
 import config from '../config';
@@ -67,6 +68,11 @@ export const startService = async ({ path, name, args, dir, sync, watchName, onV
     watchName?: keyof TServiceVersions;
     onVersionChange?: () => Promise<void>;
 }): Promise<ChildProcess> => {
+    if (! await fs.pathExists(path)) {
+        logger.error('Base manager::startService: could not find startup script at: ', path);
+        throw new Error();
+    }
+
     const proc = fork(path, args ?? [], {
         stdio: sync ? 'inherit' : 'pipe',
         cwd: dir ?? process.cwd(),
@@ -257,7 +263,7 @@ export const startWatchService = async (serviceName: keyof TServiceVersions, onV
             const remoteVersion = extractServiceVersion(remoteSettings, serviceName);
             currentVersion = remoteVersion;
         } else {
-            currentVersion = null
+            currentVersion = null;
         }
     } catch (e) {
         // console.error(e)

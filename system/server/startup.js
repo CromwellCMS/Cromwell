@@ -10,7 +10,6 @@ const buildDir = normalizePath(getServerBuildDir());
 const buildProxyPath = getServerBuildProxyPath();
 
 const main = () => {
-
     const buildServer = () => {
         spawnSync(`npx --no-install rollup -c`, [],
             { shell: true, stdio: 'inherit', cwd: serverRootDir });
