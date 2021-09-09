@@ -96,7 +96,7 @@ export class AuthController {
     })
     @ApiBody({ type: LoginDto })
     @ApiResponse({
-        status: 200,
+        status: 201,
         type: AccessTokensDto
     })
     async getTokens(@Body() input: LoginDto): Promise<AccessTokensDto> {

@@ -331,32 +331,44 @@ export class AuthService {
     }
 
     setAccessTokenCookie(response, request: TRequestWithUser, token: TTokenInfo) {
-        response.setCookie(authSettings.accessTokenCookieName, token.token, {
-            path: '/',
-            maxAge: token.maxAge,
-            httpOnly: true,
-        });
+        try {
+            response.setCookie(authSettings.accessTokenCookieName, token.token, {
+                path: '/',
+                maxAge: token.maxAge,
+                httpOnly: true,
+            });
+        } catch (error) {
+            logger.error(error);
+        }
     }
 
     setRefreshTokenCookie(response, request: TRequestWithUser, token: TTokenInfo) {
-        response.setCookie(authSettings.refreshTokenCookieName, token.token, {
-            path: '/',
-            maxAge: token.maxAge,
-            httpOnly: true,
-        });
+        try {
+            response.setCookie(authSettings.refreshTokenCookieName, token.token, {
+                path: '/',
+                maxAge: token.maxAge,
+                httpOnly: true,
+            });
+        } catch (error) {
+            logger.error(error);
+        }
     }
 
     clearTokenCookies(response, request: TRequestWithUser) {
-        response.clearCookie?.(authSettings.accessTokenCookieName, {
-            path: '/',
-            httpOnly: true,
-            domain: this.getDomainFromRequest(request),
-        });
-        response.clearCookie?.(authSettings.refreshTokenCookieName, {
-            path: '/',
-            httpOnly: true,
-            domain: this.getDomainFromRequest(request),
-        });
+        try {
+            response.clearCookie(authSettings.accessTokenCookieName, {
+                path: '/',
+                httpOnly: true,
+                domain: this.getDomainFromRequest(request),
+            });
+            response.clearCookie(authSettings.refreshTokenCookieName, {
+                path: '/',
+                httpOnly: true,
+                domain: this.getDomainFromRequest(request),
+            });
+        } catch (error) {
+            logger.error(error);
+        }
     }
 
     async processRequest(request: TRequestWithUser, response: FastifyReply): Promise<TAuthUserInfo | null> {

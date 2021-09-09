@@ -4,7 +4,7 @@ import { ConnectionOptions, createConnection } from 'typeorm';
 
 import { ORMEntities } from '../src/helpers/constants';
 
-export const mockWorkingDirectory = async (name: string): Promise<string> => {
+export const mockWorkingDirectory = (name: string): string => {
     const testDir = resolve(process.cwd(), '.cromwell/test', name);
 
     const spy = jest.spyOn(process, 'cwd');
@@ -28,6 +28,6 @@ export const connectDatabase = async () => {
 }
 
 export const clearTestDir = () => {
-    const testDir = resolve(process.cwd(), '.cromwell/test');
+    const testDir = resolve(process.cwd(), '.cromwell');
     if (fs.pathExistsSync(testDir)) fs.removeSync(testDir);
 }

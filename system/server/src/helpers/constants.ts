@@ -21,10 +21,10 @@ export type TLoginInfo = {
     refreshToken: string;
     userInfo: TAuthUserInfo;
     userDto: UserDto;
-} | null
+} | null;
 
 export type Writeable<T> = {
-    -readonly [P in keyof T]: T[P]
+    -readonly [P in keyof T]: T[P];
 };
 
 export type DeepWriteable<T> = {

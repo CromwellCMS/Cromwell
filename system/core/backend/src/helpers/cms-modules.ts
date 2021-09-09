@@ -8,11 +8,11 @@ export const readCmsModules = async () => {
     const themes: string[] = [];
     const plugins: string[] = [];
 
-    const proccessed: string[] = [];
+    const processed: string[] = [];
 
     const readPackageCmsModules = async (packageName: string, root?: boolean) => {
-        if (proccessed.includes(packageName)) return;
-        proccessed.push(packageName);
+        if (processed.includes(packageName)) return;
+        processed.push(packageName);
 
         let packagePath;
         try {
