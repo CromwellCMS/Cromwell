@@ -26,3 +26,9 @@ export const incrementServiceVersion = async (serviceName: keyof TServiceVersion
     }
     await cms.save();
 }
+
+/** @internal */
+export const getServiceVersion = async (serviceName: keyof TServiceVersions) => {
+    const cms = await getCmsSettings();
+    return extractServiceVersion(cms, serviceName);
+}

@@ -8,7 +8,6 @@ import { setupConnection } from './helpers';
 
 export const setupController = async (name: string) => {
     const testDir = await setupConnection(name);
-
     const moduleRef = await Test.createTestingModule({
         imports: [AppModule],
     }).compile();

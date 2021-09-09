@@ -12,6 +12,7 @@ const config: Config.InitialOptions = {
     "ts-jest": {
     }
   },
+  testTimeout: 10000,
   globalTeardown: "<rootDir>/teardown.ts",
   globalSetup: "<rootDir>/setup.ts",
   setupFilesAfterEnv: ["<rootDir>/setup-files.ts"],

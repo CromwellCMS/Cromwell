@@ -58,8 +58,7 @@
     "cromwell": {
         "themes": [
             "@cromwell/theme-store",
-            "@cromwell/theme-blog",
-            "theme-test"
+            "@cromwell/theme-blog"
         ]
     },
     "devDependencies": {
