@@ -7,6 +7,7 @@ const config: Config.InitialOptions = {
         "\\.s?css$": "identity-obj-proxy",
     },
     silent: false,
+    testTimeout: 10000,
     testRegex: "/(tests|src)/.*\\.(test|spec)\\.[jt]sx?$",
     maxConcurrency: 1,
     globals: {

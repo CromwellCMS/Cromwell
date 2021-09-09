@@ -11,7 +11,7 @@ describe('theme-config', () => {
     const themeName = "@cromwell/theme-store";
 
     beforeAll(async () => {
-        mockWorkingDirectory('plugin-settings');
+        mockWorkingDirectory('theme-config');
         fs.outputJSONSync(resolve(process.cwd(), 'package.json'), {
             "name": "@cromwell/core-backend",
             "version": "1.0.0",
