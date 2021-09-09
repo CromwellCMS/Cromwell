@@ -11,7 +11,7 @@ const getManager = () => {
         try {
             manager = require('@cromwell/cms');
         } catch (error) {
-            console.error(`Could not locate '@cromwell/cms' package. Make sure you run it a project with installed dependencies`);
+            console.error(`Could not locate '@cromwell/cms' package. Make sure you run it a project with installed dependencies`, error);
             return;
         }
     }

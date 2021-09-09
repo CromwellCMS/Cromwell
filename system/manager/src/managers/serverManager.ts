@@ -28,7 +28,6 @@ export const startServer = async (command?: TServerCommands, argsPort?: string |
         }
     }
 
-
     const env = command ?? servicesEnv.server;
     if (env && serverStartupPath) {
         serverProc = await startService({

@@ -1,4 +1,4 @@
-import { resolvePageRoute, serviceLocator, setStoreItem, sleep, TCmsSettings, TPageInfo } from '@cromwell/core';
+import { resolvePageRoute, setStoreItem, sleep, TCmsSettings, TPageInfo } from '@cromwell/core';
 import {
     buildDirName,
     getLogger,
@@ -77,11 +77,15 @@ export const startRenderer = async (command?: TRendererCommands, options?: {
             watchName: !isBuild ? 'renderer' : undefined,
             onVersionChange: async () => {
                 if (cmsConfig.useWatch) {
-                    await closeRenderer();
                     try {
-                        await tcpPortUsed.waitUntilFree(port, 500, 4000);
-                    } catch (e) { logger.error(e) }
-                    await startRenderer(command, options);
+                        await closeRenderer();
+                        try {
+                            await tcpPortUsed.waitUntilFree(port, 500, 4000);
+                        } catch (e) { logger.error(e) }
+                        await startRenderer(command, options);
+                    } catch (error) {
+                        logger.error(error)
+                    }
                 }
             }
         });
@@ -114,8 +118,9 @@ export const startRenderer = async (command?: TRendererCommands, options?: {
 
             if (success) logger.info(`Renderer has successfully started`);
             else logger.error(`Failed to start renderer`);
-            return success;
 
+            startRendererAliveWatcher(command ?? 'prod', { port });
+            return success;
         } else {
             const mess = 'RendererManager:: failed to start Renderer';
             logger.error(mess);
@@ -282,4 +287,51 @@ const pollPages = async (port: string | number) => {
     });
 
     await Promise.all(promises);
+}
+
+
+let hasWatcherStarted = false;
+const startRendererAliveWatcher = (command: TRendererCommands, options: {
+    port: string | number;
+}) => {
+    if (hasWatcherStarted) return;
+    hasWatcherStarted = true;
+    rendererAliveWatcher(command, options);
+}
+
+const rendererAliveWatcher = async (command: TRendererCommands, options: {
+    port: string | number;
+}) => {
+    await sleep(30);
+    // Watch for the active server and if it's not alive for some reason, restart
+    const { port } = options;
+    let isAlive = true;
+    try {
+        if (port) {
+            isAlive = await tcpPortUsed.check(port, '127.0.0.1');
+        }
+    } catch (error) {
+        logger.error(error);
+    }
+
+    if (!isAlive) {
+        logger.error('Renderer manager watcher: Renderer is not alive. Restarting...');
+        try {
+            await closeRenderer();
+        } catch (error) {
+            logger.error(error)
+        }
+
+        try {
+            await tcpPortUsed.waitUntilFree(port, 500, 4000);
+        } catch (e) { logger.error(e) }
+
+        try {
+            await startRenderer(command, options);
+        } catch (error) {
+            logger.error(error)
+        }
+    }
+
+    rendererAliveWatcher(command, options);
 }

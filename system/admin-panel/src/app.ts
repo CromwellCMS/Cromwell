@@ -27,7 +27,7 @@ import { store } from './redux/store';
         try {
             return await req;
         } catch (e) {
-            console.error(e);
+            console.error('request err', e);
         }
     }
     const [
@@ -57,8 +57,8 @@ import { store } from './redux/store';
         isInstalled = false;
         if (!window.location.hash.includes(welcomePageInfo.route)) {
             window.location.href = '/admin/#' + welcomePageInfo.route;
+            window.location.reload();
             return;
-            // window.location.reload();
         }
     }
 
@@ -75,8 +75,8 @@ import { store } from './redux/store';
         if (!userInfo?.id) {
             if (!window.location.hash.includes(loginPageInfo.route)) {
                 window.location.href = '/admin/#' + loginPageInfo.route;
+                window.location.reload();
                 return;
-                // window.location.reload();
             }
         }
     }
@@ -106,6 +106,7 @@ import { store } from './redux/store';
     if (isInstalled) {
         if (window.location.hash.includes(welcomePageInfo.route)) {
             window.location.href = '/admin/#' + loginPageInfo.route;
+            window.location.reload();
             return;
         }
 
@@ -113,8 +114,8 @@ import { store } from './redux/store';
         if (!userInfo) {
             if (!window.location.hash.includes(loginPageInfo.route)) {
                 window.location.href = '/admin/#' + loginPageInfo.route;
+                window.location.reload();
                 return;
-                // window.location.reload();
             }
         }
         setStoreItem('userInfo', userInfo);
