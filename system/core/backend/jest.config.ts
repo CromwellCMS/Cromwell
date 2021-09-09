@@ -9,6 +9,7 @@ const config: Config.InitialOptions = {
     silent: false,
     testTimeout: 10000,
     testRegex: "/(tests|src)/.*\\.(test|spec)\\.[jt]sx?$",
+    maxWorkers: 1,
     maxConcurrency: 1,
     globals: {
         "ts-jest": {
