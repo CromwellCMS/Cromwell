@@ -72,10 +72,10 @@ svg.fireIcon {
 .quote::before {
   content: "";
   width: 4px;
-  height: 85%;
+  height: 94%;
   position: absolute;
   left: -4px;
-  top: 13%;
+  top: 5%;
   background-color: #333;
 }
 

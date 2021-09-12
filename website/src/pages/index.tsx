@@ -31,10 +31,12 @@ export default function Home() {
                                 className={styles.getStartedBtn}
                             >Get started</Button>
                         </Link>
-                        <Button
-                            variant="contained"
-                            className={styles.examplesBtn}
-                        >Examples</Button>
+                        <Link href="/docs/overview/intro#examples">
+                            <Button
+                                variant="contained"
+                                className={styles.examplesBtn}
+                            >Examples</Button>
+                        </Link>
                     </div>
                     <p className={styles.header2}>Easy to setup and maintain, includes:</p>
                     <div className={styles.features}>
@@ -86,6 +88,7 @@ export default function Home() {
                         </div>
                         <div className={styles.feature}>
                             <div className={styles.featureImg} style={{
+                                backgroundSize: '73%',
                                 backgroundImage: 'url("/img/rocket.svg")',
                             }}></div>
                             <div>
@@ -96,7 +99,7 @@ export default function Home() {
                         </div>
                         <div className={styles.feature}>
                             <div className={styles.featureImg} style={{
-                                backgroundImage: 'url("/img/open-source.svg")'
+                                backgroundImage: 'url("/img/open-source.svg")',
                             }}></div>
                             <div>
                                 <p className={styles.featureTitle}>Free and open source</p>
@@ -135,7 +138,7 @@ export default function Home() {
                     <br style={{ height: '10px' }} />
                     <br style={{ height: '10px' }} />
                     <h3 className={styles.header3}>Advanced theme editor.</h3>
-                    <p>Drag and drop block editor. Configure blocks, add plugins, change styles and more.</p>
+                    <p>Drag and drop editor blocks. Add plugins, change content, styles and more.</p>
                     <br style={{ height: '10px' }} />
                 </div>
                 <div className={styles.screenshots}>
