@@ -32,7 +32,7 @@ export { getGraphQLClient, TCGraphQLClient, TGraphQLErrorInfo, getGraphQLErrorIn
 export { getRestApiClient, TCRestApiClient, TErrorInfo, TRequestOptions } from './api/CRestApiClient';
 export * from './api/CentralServerClient';
 export { getWebSocketClient } from './api/CWebSocketClient';
-export { getCStore } from './CStore';
+export { getCStore } from './helpers/CStore';
 export { iconFromPath } from './helpers/iconFromPath';
 export { loadFrontendBundle, getLoadableFrontendBundle } from './helpers/loadFrontendBundle';
 export { getModuleImporter } from './helpers/importer';

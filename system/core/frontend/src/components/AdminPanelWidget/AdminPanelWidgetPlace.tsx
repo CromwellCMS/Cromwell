@@ -6,7 +6,7 @@ import { useForceUpdate } from '../../helpers/forceUpdate';
 
 export const AdminPanelWidgetPlace = <T extends WidgetNames>(props: {
     widgetName: T;
-    widgetProps: WidgetTypes[T];
+    widgetProps?: WidgetTypes[T];
     pluginName?: string;
 }) => {
     const { widgetName, widgetProps, pluginName } = props;
@@ -20,14 +20,14 @@ export const AdminPanelWidgetPlace = <T extends WidgetNames>(props: {
 
     if (pluginName) {
         // Display specific plugin fot this place (widgetName)
-        return getNamedWidgetForPlace(widgetName, widgetProps, pluginName);
+        return getNamedWidgetForPlace(widgetName, pluginName, widgetProps);
     }
 
-    // Display all plugins for this palce (widgetName)
+    // Display all plugins for this place (widgetName)
     return <>{getWidgetsForPlace(widgetName, widgetProps)}</>;
 }
 
-export const getNamedWidgetForPlace = <T extends WidgetNames>(widgetName: T, widgetProps: WidgetTypes[T], pluginName: string) => {
+export const getNamedWidgetForPlace = <T extends WidgetNames>(widgetName: T, pluginName: string, widgetProps?: WidgetTypes[T]) => {
     const widgets = getWidgets(widgetName) ?? {};
     const Comp = widgets[pluginName];
     if (!Comp) return null;
@@ -38,7 +38,7 @@ export const getNamedWidgetForPlace = <T extends WidgetNames>(widgetName: T, wid
     )
 }
 
-export const getWidgetsForPlace = <T extends WidgetNames>(widgetName: T, widgetProps: WidgetTypes[T]) => {
+export const getWidgetsForPlace = <T extends WidgetNames>(widgetName: T, widgetProps?: WidgetTypes[T]) => {
     const widgets = getWidgets(widgetName) ?? {};
     return Object.keys(widgets).map(pluginName => {
         const Comp = widgets[pluginName];

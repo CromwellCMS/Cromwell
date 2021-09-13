@@ -152,8 +152,17 @@ div.groupField {
     color: #222;
 }
 
+.customIcon {
+    width: 20px;
+    height: 20px;
+}
+
 :global(.modeDark) {
     .settingsHeader {
         border-bottom: 2px solid #fff;
+    }
+
+    .customIcon {
+        filter: invert(1);
     }
 }

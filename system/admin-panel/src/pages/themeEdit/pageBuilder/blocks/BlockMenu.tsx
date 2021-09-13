@@ -4,16 +4,16 @@ import {
     AddCircleOutline as AddCircleOutlineIcon,
     Code as CodeIcon,
     DeleteForever as DeleteForeverIcon,
+    EditOutlined as EditOutlinedIcon,
     Image as ImageIcon,
     PhotoLibrary as PhotoLibraryIcon,
-    Power as PowerIcon,
     Subject as SubjectIcon,
     Widgets as WidgetsIcon,
-    EditOutlined as EditOutlinedIcon,
 } from '@material-ui/icons';
 import React, { Component } from 'react';
 import ReactDom from 'react-dom';
 
+import { PluginIcon } from '../../../../constants/icons';
 import styles from './BaseBlock.module.scss';
 
 export type TBlockMenuProps = {
@@ -101,7 +101,7 @@ export class BlockMenu extends Component<{
         }
         if (bType === 'plugin') {
             icon = <Tooltip title="Plugin block">
-                <PowerIcon />
+                <PluginIcon className={styles.customIcon} />
             </Tooltip>
         }
         if (bType === 'container') {
@@ -199,7 +199,8 @@ export class BlockMenu extends Component<{
                                 <MenuItem className={styles.widgetItem}
                                     onClick={addNewBlock('plugin')}
                                 >
-                                    <PowerIcon />
+                                    <PluginIcon className={styles.customIcon}
+                                        style={{ filter: 'none' }} />
                                     <p>Plugin</p>
                                 </MenuItem>
                             </Grid>

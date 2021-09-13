@@ -15,7 +15,7 @@ import React, { lazy } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 
 import sidebarStyles from '../components/sidebar/Sidebar.module.scss';
-import { CategoryIcon } from './icons';
+import { CategoryIcon, PluginIcon } from './icons';
 
 const AttributesPage = lazy(() => import('../pages/attributes/AttributesPage'));
 const CategoryPage = lazy(() => import('../pages/category/CategoryPage'));
@@ -311,9 +311,11 @@ export const sideBarLinks: SidebarLinkType[] = [
         id: '6_pluginsPage',
         title: 'Plugins',
         route: pluginListPageInfo.route,
-        icon: React.createElement('div', {
+        icon: React.createElement(PluginIcon, {
             className: sidebarStyles.customIcon,
-            style: { backgroundImage: 'url(/admin/static/extension.svg)', filter: 'invert(1)' }
+            style: {
+                filter: 'invert(1)',
+            }
         }),
     },
     {

@@ -1,11 +1,11 @@
 import { TPluginEntity } from '@cromwell/core';
 import { AdminPanelWidgetPlace } from '@cromwell/core-frontend';
-
 import { TextField, Tooltip } from '@material-ui/core';
-import { Power as PowerIcon, Public as PublicIcon } from '@material-ui/icons';
+import { Public as PublicIcon } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
 import React from 'react';
 
+import { PluginIcon } from '../../../../constants/icons';
 import { useForceUpdate } from '../../../../helpers/forceUpdate';
 import { StylesEditor } from '../components/StylesEditor';
 import styles from './BaseBlock.module.scss';
@@ -31,10 +31,17 @@ export function PluginBlockSidebar(props: TBlockMenuProps) {
         return `${entity?.title} [${entity?.name}]`
     }
 
+    const handleChangeInstanceSettings = (settings: any) => {
+        if (!data.plugin) data.plugin = {};
+        data.plugin.instanceSettings = settings;
+        props?.modifyData?.(data);
+        forceUpdate?.();
+    }
+
     return (
         <div>
             <div className={styles.settingsHeader}>
-                <PowerIcon />
+                <PluginIcon className={styles.customIcon} />
                 {props.isGlobalElem(props.getBlockElementById(data?.id)) && (
                     <div className={styles.headerIcon}>
                         <Tooltip title="Global block">
@@ -58,7 +65,10 @@ export function PluginBlockSidebar(props: TBlockMenuProps) {
                     widgetName="ThemeEditor"
                     pluginName={pluginInfo?.name}
                     widgetProps={{
-                        data: { ...props, forceUpdate },
+                        ...props,
+                        forceUpdate,
+                        instanceSettings: data?.plugin?.instanceSettings ?? {},
+                        changeInstanceSettings: handleChangeInstanceSettings,
                     }}
                 />
             )}

@@ -31,6 +31,7 @@ export class Importer implements Required<TCromwellNodeModules> {
     private nodeRequire: any;
     private resolve: any;
     private isServerSide = false;
+    private log = (...args) => this.canShowInfo && console.log(args); // eslint-disable-line no-console
 
     constructor() {
         this.isServerSide = isServer();
@@ -84,9 +85,8 @@ export class Importer implements Required<TCromwellNodeModules> {
      * @returns 
      */
     public importModule(moduleName, namedExports = ['default']): Promise<boolean> | boolean {
-        const canShowInfo = this.canShowInfo;
         this.hasBeenExecuted = true;
-        if (canShowInfo) console.log('Cromwell:importer: importModule ' + moduleName + ' named: ' + namedExports);
+        this.log('Cromwell:importer: importModule ' + moduleName + ' named: ' + namedExports);
 
         if (namedExports.includes('default')) {
             namedExports = ['default'];
@@ -103,7 +103,7 @@ export class Importer implements Required<TCromwellNodeModules> {
             moduleVer = modChunks.pop();
             moduleName = modChunks.join('@');
         }
-        if (canShowInfo) console.log('moduleName', moduleName, 'moduleVer', moduleVer)
+        this.log('moduleName', moduleName, 'moduleVer', moduleVer)
 
         if (this.isServerSide) {
             try {
@@ -126,7 +126,7 @@ export class Importer implements Required<TCromwellNodeModules> {
                 importerEntireLibFilepath,
                 importerFilepath,
             }).then(success => {
-                if (canShowInfo) console.log('Cromwell:importer: Processed module: ' + moduleName, success);
+                this.log('Cromwell:importer: Processed module: ' + moduleName, success);
                 return success;
             });
         }
@@ -141,7 +141,6 @@ export class Importer implements Required<TCromwellNodeModules> {
         metaFilepath: string;
         importerNodeFilepath: string;
     }) {
-        const canShowInfo = this.canShowInfo;
         const { moduleName, metaFilepath, importerNodeFilepath } = options;
 
         if (this.importStatuses[moduleName]) return true;
@@ -189,13 +188,13 @@ export class Importer implements Required<TCromwellNodeModules> {
             // If failed, try to use Node.js resolution
             const reqModule = this.nodeRequire(moduleName);
 
-            if (canShowInfo) console.log('reqModule: ' + moduleName + ' keys: ' + Object.keys(reqModule).length);
+            this.log('reqModule: ' + moduleName + ' keys: ' + Object.keys(reqModule).length);
 
             this.modules[moduleName] = reqModule;
             this.importStatuses[moduleName] = 'default';
         }
 
-        if (canShowInfo) console.log('Cromwell:importer: Successfully loaded module: ' + moduleName);
+        this.log('Cromwell:importer: Successfully loaded module: ' + moduleName);
 
         return true;
     }
@@ -213,7 +212,6 @@ export class Importer implements Required<TCromwellNodeModules> {
         importerEntireLibFilepath: string;
         importerFilepath: string;
     }): Promise<boolean> => {
-        const canShowInfo = this.canShowInfo;
         const { moduleName, moduleVer, metaFilepath, namedExports,
             importerEntireLibFilepath, importerFilepath } = options;
 
@@ -275,7 +273,7 @@ export class Importer implements Required<TCromwellNodeModules> {
                         }
                         await this.importScriptExternals?.(metaInfo);
 
-                        if (canShowInfo) console.log('Cromwell:importer: Successfully loaded all script externals for module: ' + moduleName, metaInfo);
+                        this.log('Cromwell:importer: Successfully loaded all script externals for module: ' + moduleName, metaInfo);
                     }
                 } else {
                     throw new Error('Failed to fetch file:  /' + metaFilepath)
@@ -299,12 +297,12 @@ export class Importer implements Required<TCromwellNodeModules> {
                 });
                 if (!success) throw new Error('');
 
-                if (canShowInfo) console.log(`Cromwell:importer: Importer for module "${moduleName}" executed`);
+                this.log(`Cromwell:importer: Importer for module "${moduleName}" executed`);
 
                 if (isLibImport && this.modules?.[moduleName]) {
                     this.imports[moduleName] = { 'default': () => null } as any;
                 }
-                if (canShowInfo) console.log(`Cromwell:importer: isLibImport:`, isLibImport, 'Cromwell?.modules?.[moduleName]',
+                this.log(`Cromwell:importer: isLibImport:`, isLibImport, 'Cromwell?.modules?.[moduleName]',
                     this.modules?.[moduleName], ' Cromwell.imports[moduleName] ', this.imports[moduleName]);
 
             } catch (e) {
@@ -322,7 +320,7 @@ export class Importer implements Required<TCromwellNodeModules> {
                 return false;
             }
 
-            if (canShowInfo) console.log('Cromwell:importer: Successfully loaded importer for module: ' + moduleName);
+            this.log('Cromwell:importer: Successfully loaded importer for module: ' + moduleName);
 
             const success = await importAllNamed();
 
@@ -332,7 +330,7 @@ export class Importer implements Required<TCromwellNodeModules> {
                 onLoad('failed');
                 return false;
             } else {
-                if (canShowInfo) console.log('Cromwell:importer: All initially requested named exports for module "' + moduleName + '" have been successfully loaded', namedExports);
+                this.log('Cromwell:importer: All initially requested named exports for module "' + moduleName + '" have been successfully loaded', namedExports);
             }
 
             if (isLibImport) {
@@ -350,7 +348,7 @@ export class Importer implements Required<TCromwellNodeModules> {
         // await for another and then start
         const importWithCheck = async () => {
             if (typeof this.importStatuses?.[moduleName] === 'object') {
-                if (canShowInfo) console.log('awaiting... ' + moduleName);
+                this.log('awaiting... ' + moduleName);
                 const status = await this.importStatuses[moduleName];
                 if (status === 'default') return true;
 
@@ -388,7 +386,7 @@ export class Importer implements Required<TCromwellNodeModules> {
 
     public async importScriptExternals(metaInfo: TScriptMetaInfo | undefined): Promise<boolean> {
         this.hasBeenExecuted = true;
-        if (this.canShowInfo) console.log('Cromwell:importScriptExternals: ' + metaInfo?.name, metaInfo);
+        this.log('Cromwell:importScriptExternals: ' + metaInfo?.name, metaInfo);
         const externals = metaInfo?.externalDependencies;
         if (!metaInfo || !externals) return false;
 
@@ -404,8 +402,8 @@ export class Importer implements Required<TCromwellNodeModules> {
         }
 
         if (typeof externals === 'object' && Object.keys(externals).length > 0) {
-            if (this.canShowInfo) console.log('Cromwell:importer: module ' + metaInfo.name + ' has externals: ' + JSON.stringify(externals, null, 4));
-            if (this.canShowInfo) console.log('Cromwell:importer: loading externals first for module ' + metaInfo.name + ' ...');
+            this.log('Cromwell:importer: module ' + metaInfo.name + ' has externals: ' + JSON.stringify(externals, null, 4));
+            this.log('Cromwell:importer: loading externals first for module ' + metaInfo.name + ' ...');
             const promises: Promise<boolean>[] = []
             let success: boolean[] | undefined;
 
@@ -434,7 +432,7 @@ export class Importer implements Required<TCromwellNodeModules> {
             if (success) {
                 success.forEach(s => s && successNum++);
             }
-            if (this.canShowInfo) console.log(`Cromwell:importer: ${successNum}/${Object.keys(externals).length} externals for module ${metaInfo.name} have been loaded`);
+            this.log(`Cromwell:importer: ${successNum}/${Object.keys(externals).length} externals for module ${metaInfo.name} have been loaded`);
 
             if (metaInfo.name) this.scriptStatuses[metaInfo.name] = 'ready';
             if (success && !success.includes(false)) return true;
