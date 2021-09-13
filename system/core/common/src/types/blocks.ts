@@ -106,7 +106,7 @@ export type TCromwellBlockType =
     'link';
 
 /**
- * Modification for a Block. Used in the Page builder to store user's changes. 
+ * Modification for a Block. Used in the Theme Editor to store user's changes. 
  */
 export type TCromwellBlockData = {
     /**
@@ -121,7 +121,7 @@ export type TCromwellBlockData = {
 
     /**
      * 
-     * If true, indicates that this Block was created in Page builder and it doesn't exist in source files as React component. 
+     * If true, indicates that this Block was created in Theme Editor and it doesn't exist in source files as React component. 
      * Exists only in page's config.
      */
     isVirtual?: boolean;

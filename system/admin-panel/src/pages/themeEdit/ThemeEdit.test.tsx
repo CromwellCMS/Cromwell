@@ -41,6 +41,7 @@ jest.mock('@cromwell/core-frontend', () => {
             }
         },
         loadFrontendBundle: jest.fn().mockImplementation(async () => () => <div></div>),
+        iconFromPath: () => null,
     }
 });
 

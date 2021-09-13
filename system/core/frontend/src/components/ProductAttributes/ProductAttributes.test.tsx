@@ -5,7 +5,7 @@ jest.mock('next/link', () => {
     }
 });
 
-jest.mock('../../CStore', () => {
+jest.mock('../../helpers/CStore', () => {
     return {
         getCStore: () => {
             return {

@@ -269,7 +269,7 @@ export class CList<DataType, ListItemProps = any> extends React.PureComponent<TC
         this.minPageBound = 1;
         this.maxPageBound = 1;
         if (props.useQueryPagination) {
-            window.history.pushState({}, '', getPagedUrl(0));
+            window.history.replaceState({}, '', getPagedUrl(0));
         }
         this.dataList = [];
         this.list = [];

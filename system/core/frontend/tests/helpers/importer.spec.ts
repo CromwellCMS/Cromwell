@@ -4,8 +4,8 @@ import * as fs from 'fs-extra';
 import { join, resolve } from 'path';
 import symlinkDir from 'symlink-dir';
 
-import { getModuleImporter } from '../src/helpers/importer';
-import { mockWorkingDirectory, tearDown } from './helpers';
+import { getModuleImporter } from '../../src/helpers/importer';
+import { mockWorkingDirectory, tearDown } from '../helpers';
 
 const testDir = mockWorkingDirectory('importer');
 const moduleName = 'object-assign';

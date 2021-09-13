@@ -16,14 +16,16 @@ export type WidgetTypes = {
     PluginSettings: TPluginSettingsProps;
     Dashboard: Widget_DashboardProps;
     PostActions: Widget_PostActions;
-    ThemeEditor: Widget_EntityActions<{
+    ThemeEditor: {
         block?: TCromwellBlock;
+        instanceSettings?: any;
+        changeInstanceSettings?: (data: any) => void;
         modifyData?: (data: TCromwellBlockData) => void;
         deleteBlock?: () => void;
         addNewBlockAfter?: (bType: TCromwellBlockType) => void;
         updateFramesPosition?: () => any;
         forceUpdate?: () => void;
-    }>;
+    };
     TagActions: Widget_EntityActions<TTag>;
     ProductActions: Widget_EntityActions<TProduct>;
     CategoryActions: Widget_EntityActions<TProductCategory>;
