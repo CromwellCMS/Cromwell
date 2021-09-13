@@ -21,7 +21,7 @@ export const createGetStaticProps = (pageName: TDefaultPageName | string,
 
         // Name to request a page config. Config will be the same for different slugs
         // of a page. There's an exception: generic pages - `pages/[slug]`, 
-        // since they can be edited separately in Page Builder
+        // since they can be edited separately in Theme Editor
         const pageConfigName = (pageName === 'pages/[slug]' && context?.params?.slug) ?
             `pages/${context.params.slug}` : pageName;
 

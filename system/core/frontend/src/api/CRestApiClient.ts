@@ -116,7 +116,9 @@ export class CRestApiClient {
                         if (tempDir) {
                             const serverCachePath = resolve(tempDir, 'cache');
                             if (serverCachePath) {
-                                cmsConfig.serviceSecret = (await cacache?.get(serverCachePath, 'service_secret'))?.data?.toString?.();
+                                cmsConfig.serviceSecret = (await
+                                    cacache?.get(serverCachePath, 'service_secret')
+                                )?.data?.toString?.();
                             }
                         }
                     } catch (error) { }

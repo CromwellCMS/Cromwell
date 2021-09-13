@@ -20,10 +20,9 @@ npx @cromwell/cli create --type theme my-theme-name
 ## Project structure
 
 - **`cromwell.config.js`** - [Optional config file for your Theme/Plugin.](/docs/development/module-config)  
-- **`src/pages`** - Directory for Next.js pages. By default, there's `index.tsx` created by CLI. You can rename it to .jsx if you don't want to work with TypeScript (which is discouraged).
+- **`src/pages`** - Directory for Next.js pages. By default, there's `index.tsx` created by CLI. You can rename it to .jsx if you don't want to work with TypeScript.
 - **`static`** - Directory for static files (images). After installation of this Theme by end-user files from `static` directory will be copied into `public` directory of the CMS, from where they will be served to the frontend. In your code you can access static files of your Theme through the following pattern: `/themes/${packageName}/${pathInStaticDir}`.  
 Image example:  `<img src="/themes/@cromwell/theme-store/free_shipping.png" />`
-
 
 
 ## Compile
@@ -65,14 +64,14 @@ This is a multipurpose phase that happens before we run Webpack compiler of Next
 
 2. Cromwell CMS needs to generate meta info files on your source code. In order to parse your files, we need to transpile them into plain JavaScript first.
 
-3. We make your Frontend dependencies available to re-use for Plugins. See [Frontend dependencies](#todo) page for details.
+3. We make your Frontend dependencies available to re-use for Plugins. See [Frontend dependencies](/docs/development/frontend-dependencies) page for details.
 
 
 ## Customize bundler
 
 We use [Rollup](https://rollupjs.org) for the pre-build phase. This means you need to change Rollup config if you want to customize your build. The purpose of the phase is to build plain JavaScript, so you won't need to customize Next.js's Webpack config.  
 
-By default CMS build command can transpile React and handle CSS/SASS (by passing stylesheets to Next.js).  
+By default CMS build command can transpile React and handle CSS/SASS by passing stylesheets to Next.js.  
 After generating Theme template with Cromwell CLI, you will also have TypeScript compiler in the build config.
 
 Open `cromwell.config.js`. You can see there's `rollupConfig` function that returns configuring object in the format: 
@@ -82,13 +81,13 @@ Open `cromwell.config.js`. You can see there's `rollupConfig` function that retu
 }
 ```
 Usually, `RollupOptions` is an object exported from [Rollup Config File](https://rollupjs.org/guide/en/#configuration-files). But might need to use different configs, so we return them in the `rollupConfig` labeled by properties.
-- `main` - Options used by default for all bundles.
+- `main` - Options used by default for all types of bundles.
 
 
-## Page Builder support
+## Theme Editor support
 
-Admin panel Theme Editor has `Page Builder` tab which allows users to modify layout, change text or images. This feature works only with standard `Blocks` - React components designed for a single purpose: Image Block, Text Block, etc.  
-It doesn't impose any restrictions on how you build your Theme. You still can write any JSX code, but if you want, for example, some image to be modifiable in the Page Builder, you need to use Image Block.  
+Admin panel Theme Editor allows users to modify layout of blocks, change text or images, styles, etc. This feature works only with standard `Blocks` - React components designed for a single purpose: Image Block, Text Block, etc.  
+It doesn't impose any restrictions on how you build your Theme. You still can write any JSX code, but if you want, for example, some image to be modifiable in the Theme Editor, you need to use Image Block.  
 
 Let's look into example:
 
@@ -140,14 +139,14 @@ You can apply some custom configurations to your pages in `cromwell.config.js`. 
 - **`description`** - Meta description (SEO).
 - **`headHtml`** - Custom HTML injected in the head. After Pre-build phase your pages will be wrapped by our root component to make these injections. 
 - **`footerHtml`** - Custom HTML injected at the end of the page.
-- **`modifications`** - Modifications of Blocks. Part of Page builder system. All custom modifications for Blocks (such as dragging, styling) are stored as JSON configs in `modifications`. There are two types of them: author's and user's. Author's modifications stored in `cromwell.config.js` under this property. User's modifications are stored in database.  
+- **`modifications`** - Modifications of Blocks. Part of Theme Editor system. All custom modifications for Blocks (such as dragging, styling) are stored as JSON configs in `modifications`. There are two types of them: author's and user's. Author's modifications stored in `cromwell.config.js` under this property. User's modifications are stored in database.  
 In actual usage your modification from the config will be merged and overwritten by user's modification from DB. 
 When you are making a Theme you can copy modifications from DB into this property. 
-It makes it possible to create a Theme using Page builder (which is not recommended since Page builder doesn't have yet advanced features to make a responsive layout) and it would be fully customizable by user.  
+It makes it possible to create a Theme using Theme Editor (which is not recommended since Theme Editor doesn't have yet advanced features to make a responsive layout) and it would be fully customizable by user.  
 `modifications` property is a flat array of objects (modifications). [See TCromwellBlockData for details](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/blocks.ts#L81). Main properties: 
   - **id**`: string` - Block id, unique on the page
   - **type**`: string` - Block type, one of following: 'container', 'plugin', 'text', 'HTML', 'image', 'gallery', 'list', 'link'  
-  - **isVirtual**`: boolean` - If true, indicates that this Block was created in Page builder and it doesn't exist in source files as React component. Exists only in page's config. 
+  - **isVirtual**`: boolean` - If true, indicates that this Block was created in Theme Editor and it doesn't exist in source files as React component. Exists only in page's config. 
   - **parentId**`: string` - Id of a parent container Block.
   - **index**`: number` - Desirable index (order) inside children array of parent element 
   - **style**`: React.CSSProperties` - CSS styles to apply to this block's wrapper. In a format of React CSS properties

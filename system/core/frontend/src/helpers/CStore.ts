@@ -1,6 +1,6 @@
 import { getStoreItem, isServer, setStoreItem, TAttribute, TProduct, TStoreListItem } from '@cromwell/core';
 
-import { getGraphQLClient } from './api/CGraphQLClient';
+import { getGraphQLClient } from '../api/CGraphQLClient';
 
 const cartKey = 'CromwellShop_CartList';
 const wishlistKey = 'CromwellShop_WishList';
@@ -30,7 +30,7 @@ export type OperationResult = {
  */
 export class CStore {
 
-    // < LISTS >    cart / wishlist / comparision list / watched items
+    // < LISTS >    cart / wishlist / comparison list / watched items
     private localStorage: TLocalStorage & { internalStore: Record<string, any> } = {
         internalStore: {},
         getItem: (key: string) => this.localStorage.internalStore[key],
@@ -336,7 +336,7 @@ export class CStore {
 
     /**
      * For each distinctive productId in cart will make "getProductById" request to backend and then refresh cart.
-     * If item has checked attribues that were deleted at the server, then it will delete
+     * If item has checked attributes that were deleted at the server, then it will delete
      * such items from the cart.
      */
     private updateList = async (listKey: string) => {

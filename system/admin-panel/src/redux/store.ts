@@ -22,4 +22,4 @@ export type StoreAction = ReturnType<typeof store.dispatch>;
 
 setTimeout(() => {
     startUpdateChecker();
-})
+}, 100);

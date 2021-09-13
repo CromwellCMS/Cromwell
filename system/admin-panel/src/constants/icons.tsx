@@ -1,4 +1,4 @@
-import { iconFromPath } from '@cromwell/core-frontend'
+import { iconFromPath } from '@cromwell/core-frontend';
 import React from 'react';
 
 export const CategoryIcon = iconFromPath(<g>
@@ -11,3 +11,15 @@ export const CategoryIcon = iconFromPath(<g>
     <path d="M274.388,166.507h-85.27c-12.469,0-22.612,10.143-22.612,22.612v85.27c0,12.469,10.143,22.612,22.612,22.612h85.27
 				C286.857,297,297,286.857,297,274.388v-85.27C297,176.649,286.857,166.507,274.388,166.507z"/>
 </g>)
+
+export const PluginIcon = (props) => React.createElement('div', {
+    ...props,
+    className: props?.className,
+    style: {
+        backgroundImage: 'url(/admin/static/extension.svg)',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: 'contain',
+        ...(props?.style ?? {}),
+    }
+});

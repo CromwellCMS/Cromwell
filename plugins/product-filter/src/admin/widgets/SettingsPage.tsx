@@ -18,7 +18,7 @@ export function SettingsPage(props: TPluginSettingsProps<TProductFilterSettings>
                         <TextFieldWithTooltip label="List ID"
                             tooltipText="ID of a CList component on the page. See in the source code of a Theme or ask its author"
                             value={pluginSettings?.listId ?? ''}
-                            style={{ marginBottom: '15px', marginRight: '15px', maxWidth: '150px' }}
+                            style={{ marginBottom: '15px', marginRight: '15px', maxWidth: '450px' }}
                             onChange={e => changeSetting('listId', e.target.value)}
                         />
                         <h3 style={{ marginBottom: '15px' }}>Mobile icon position (in pixels):</h3>
