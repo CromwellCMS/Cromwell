@@ -44,7 +44,7 @@ export class ThemeEditActions extends Component<{
     private hasChangedPageInfo: boolean = false;
     private unregisterBlock;
     private unsavedPrompt = 'Your unsaved changes will be lost. Do you want to discard and leave this page?';
-    
+
     public undoBtnRef = React.createRef<HTMLButtonElement>();
     public redoBtnRef = React.createRef<HTMLButtonElement>();
 
@@ -70,6 +70,10 @@ export class ThemeEditActions extends Component<{
 
     componentWillUnmount() {
         this.unregisterBlock?.();
+
+        const parsedUrl = queryString.parseUrl(window.location.href, { parseFragmentIdentifier: true });
+        delete parsedUrl.query['page'];
+        window.history.replaceState({}, '', queryString.stringifyUrl(parsedUrl, { encode: false }));
     }
 
     private getThemeEditor = () => this.props.instances.themeEditor;

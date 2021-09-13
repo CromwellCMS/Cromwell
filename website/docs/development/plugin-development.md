@@ -178,11 +178,11 @@ registerWidget({
 
 Instance settings are loaded and saved via passed props. Your ThemeEditor widget will receive following props:
 - instanceSettings`: any` - Instance settings
-- changeInstanceSettings`: (data: any) => void` - Call this function to modify instance settings
+- changeInstanceSettings`: (data: any) => void` - Call this function to modify instance settings. Note that settings will actually be saved when user will press "save" button at the top of Theme Editor.
 - block`: TCromwellBlock` - Block instance component on the page
-- modifyData`: (data: TCromwellBlockData) => void` - Method to modify block's data (TCromwellBlockData). Block's data can be retrieved from block instance via:  `block.getData()`. Note, that block is a generic definition, it can be text block, image block, etc. Configuration for plugin block stored in: `block.getData().plugin`
+- modifyData`: (data: TCromwellBlockData) => void` - Method to modify block's data (TCromwellBlockData). Block's data can be retrieved from block instance via:  `block.getData()`. Note, that block is a generic definition, it can be text block, image block, etc. Configuration for plugin stored in: `block.getData().plugin`
 - deleteBlock`: () => void` - Call this method if you want to delete block from the page.
-- addNewBlockAfter`: (bType: TCromwellBlockType) => void` - You can add new block on the page right after current plugin block. Specify block type
+- addNewBlockAfter`: (bType: TCromwellBlockType) => void` - You can add new block on the page right after current plugin block. Specify block type.
 
 With loading and saving settings example will be as follows:
 
