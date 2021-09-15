@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function page404() {
+export default function Page404() {
     return (
         <div style={{
             width: '100%', height: '100%', fontSize: '30px',

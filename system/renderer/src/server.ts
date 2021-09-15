@@ -1,8 +1,11 @@
 import { findRedirect, setStoreItem, TCmsSettings } from '@cromwell/core';
 import { getLogger, readCMSConfig } from '@cromwell/core-backend';
 import cookie from 'cookie';
+import fs from 'fs-extra';
 import { createServer } from 'http';
 import next from 'next';
+import { join } from 'path';
+import send from 'send';
 import { parse } from 'url';
 
 const logger = getLogger();
@@ -23,10 +26,22 @@ export const startNextServer = async (options?: {
     const handle = app.getRequestHandler();
     await app.prepare();
 
-    const server = createServer((req, res) => {
+    const server = createServer(async (req, res) => {
         const parsedUrl = parse(req.url!, true);
         const { pathname, search } = parsedUrl;
 
+        // Static file serving
+        try {
+            if (req.url && req.url !== '') {
+                const filePath = join(process.cwd(), 'public', req.url);
+                if ((await fs.lstat(filePath)).isFile()) {
+                    send(req, filePath).pipe(res);
+                    return;
+                }
+            }
+        } catch (err) { }
+
+        // Pass settings to frontend via cookies
         res.setHeader('Set-Cookie', cookie.serialize('crw_cms_config', JSON.stringify({
             apiUrl: config.apiUrl,
             adminUrl: config.adminUrl,
@@ -42,6 +57,7 @@ export const startNextServer = async (options?: {
             return;
         }
 
+        // Handle redirects
         const redirect = findRedirect(pathname, search);
 
         if (redirect) {
@@ -61,6 +77,7 @@ export const startNextServer = async (options?: {
             }
         }
 
+        // Default handle
         handle(req, res, parsedUrl);
     })
 

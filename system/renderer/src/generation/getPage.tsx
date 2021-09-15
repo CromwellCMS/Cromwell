@@ -49,9 +49,15 @@ export const getPage = (pageName: TDefaultPageName | string, PageComponent: TCro
             if (!documentContext.origin)
                 documentContext.origin = window.location.origin;
 
-            if (!documentContext.origin.endsWith('/')) documentContext.origin = documentContext.origin + '/';
+            if (documentContext.origin.endsWith('/'))
+                documentContext.origin = documentContext.origin.slice(0, documentContext.origin.length - 1);
         }
 
+        setStoreItem('routeInfo', {
+            origin: documentContext?.origin,
+            fullUrl: documentContext?.fullUrl,
+        });
+        
         const forcedChildStaticProps = useRef(null);
         if (cmsSettings && !isServer()) setStoreItem('cmsSettings', Object.assign({}, cmsSettings, getStoreItem('cmsSettings')));
         if (plugins) setStoreItem('plugins', plugins);
@@ -102,7 +108,7 @@ export const getPage = (pageName: TDefaultPageName | string, PageComponent: TCro
         let favicon = cmsSettings?.favicon;
         if (favicon && favicon !== '') {
             if (!favicon.startsWith('http')) {
-                if (favicon.startsWith('/')) favicon = favicon.slice(1, favicon.length);
+                if (!favicon.startsWith('/')) favicon = '/' + favicon;
                 if (documentContext?.origin) {
                     favicon = documentContext.origin + favicon;
                 }
