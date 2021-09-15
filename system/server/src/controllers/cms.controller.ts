@@ -23,10 +23,10 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
+import archiver from 'archiver';
 import { FastifyReply } from 'fastify';
 import fs from 'fs-extra';
 import { join } from 'path';
-import { SystemUsageDto } from '../dto/system-usage.dto';
 import { Container } from 'typedi';
 import { getCustomRepository } from 'typeorm';
 
@@ -40,6 +40,7 @@ import { ModuleInfoDto } from '../dto/module-info.dto';
 import { OrderTotalDto } from '../dto/order-total.dto';
 import { PageStatsDto } from '../dto/page-stats.dto';
 import { SetupDto } from '../dto/setup.dto';
+import { SystemUsageDto } from '../dto/system-usage.dto';
 import { publicSystemDirs } from '../helpers/constants';
 import { serverFireAction } from '../helpers/server-fire-action';
 import { CmsService } from '../services/cms.service';
@@ -258,21 +259,28 @@ export class CmsController {
             response.code(404).send({ message: 'File not found' });
             return;
         }
-        if (!(await fs.lstat(fullPath)).isFile()) {
-            response.code(423).send({ message: 'Not a file' });
-            return;
+
+        if ((await fs.lstat(fullPath)).isFile()) {
+            try {
+                const readStream = fs.createReadStream(fullPath);
+                response.type('text/html').send(readStream);
+            } catch (error) {
+                logger.error(error);
+                response.code(500).send({ message: error + '' });
+            }
+        } else {
+            // zip the directory
+            const archive = archiver('zip', {
+                zlib: { level: 9 }
+            });
+            archive.directory(fullPath, '/' + fileName);
+            response.type('text/html').send(archive);
+            await archive.finalize();
         }
 
-        try {
-            const readStream = fs.createReadStream(fullPath);
-            response.type('text/html').send(readStream);
-        } catch (error) {
-            logger.error(error);
-            response.code(500).send({ message: error + '' });
-        }
     }
 
-    
+
     @Post('set-up')
     @UseGuards(JwtAuthGuard)
     @Roles('administrator')

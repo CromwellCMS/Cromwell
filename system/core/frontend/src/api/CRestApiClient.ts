@@ -394,20 +394,13 @@ export class CRestApiClient {
     * Download a public file
     * @auth admin
     */
-    public downloadPublicFile = async (fileName: string, inPath?: string, options?: TRequestOptions) => {
+    public downloadPublicFile = async (fileName: string, type: 'file' | 'dir', inPath?: string, options?: TRequestOptions) => {
         const url = `${this.getBaseUrl()}/v1/cms/download-public-file?inPath=${inPath ?? '/'}&fileName=${fileName}`;
-        const response = await fetch(url, {
-            method: 'GET',
-            credentials: 'include',
-            ...(options ?? {}),
-        });
-        const [data, errorInfo] = await this.handleError(response, await response.blob(), url, options?.disableLog);
-        if (errorInfo) {
-            this.throwError(errorInfo, url, options);
-        }
+        if (type === 'dir') fileName += '.zip';
 
         const a = document.createElement('a');
-        a.href = window.URL.createObjectURL(data);
+        a.href = url;
+        console.log('url', url)
         a.download = fileName;
         document.body.appendChild(a);
         a.click();

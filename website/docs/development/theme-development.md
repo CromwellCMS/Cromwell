@@ -4,10 +4,10 @@ sidebar_position: 1
 
 # Theme development
 
-Cromwell CMS follows principles of headless CMS where API server runs separately from its frontend server. So basically you can create any type of frontend and host it wherever you like. But in this scenario, you need to manage and deploy this frontend by yourself.  
+Cromwell CMS follows principles of headless CMS where API server runs separately from frontend server. So basically you can create any type of frontend and host it wherever you like. But in this scenario, you need to manage and deploy this frontend by yourself.  
 To simply the workflow Cromwell CMS has its theming engine. Users can easily install Themes from the official market right in their Admin panel GUI, make active, delete them, change layout in the Theme Editor as long as Themes follow the guidelines we are going to show.  
 
-Cromwell CMS Theme is a Next.js app. Theme development is basically Next.js development. If you are not familiar with Next.js, [you should definitely start with it first](https://nextjs.org/docs/getting-started).   
+Cromwell CMS Theme is a **Next.js** app. Theme development is basically Next.js development. If you are not familiar with Next.js, [you should definitely start with it first](https://nextjs.org/docs/getting-started).   
 
 
 ## Create a project
@@ -132,8 +132,8 @@ For example, user has modified some Block and then author made a new release whe
 You can apply some custom configurations to your pages in `cromwell.config.js`. The config has `pages` property which is array of page configs. CLI template has already added there home page config.  
 
 ### Page config properties:
-- **`id`** - Unique id of the page. Required. We need it to recognize pages, since `route` can be changed for [Generic pages](#generic-pages).
-- **`route`** - Page's route. Required. Usually it has the same value as Next.js file-routing. For example, if you have created file: `info/contacts.tsx`, then your page will be served at `info/contacts` by Next.js, so `route` value will be `info/contacts`. If your page is dynamic, for example `product/[slug].tsx`, then value is `product/[slug]`. There's one exception with the Home page, we use `index` value for it.
+- **`id`** - Unique id of the page. Required. We need it to recognize pages, since `route` can possibly be changed for [Generic pages](#generic-pages).
+- **`route`** - Page's route. Required. Usually it has the same value as in Next.js file-routing. For example, if you have created file: `info/contacts.tsx`, then your page will be served at `info/contacts` by Next.js, so `route` value will be `info/contacts`. If your page is dynamic, for example `product/[slug].tsx`, then value is `product/[slug]`. There's one exception with the Home page, we use `index` value for it.
 - **`name`** - Name of the page displayed in Theme Editor sidebar.
 - **`title`** - Meta title (SEO). Cromwell CMS will automatically import Head component from `next/head` package for the title to work in the frontend. But you also can use `next/head` in your code. Note that `title` from the page config overrides title in your React component.
 - **`description`** - Meta description (SEO).

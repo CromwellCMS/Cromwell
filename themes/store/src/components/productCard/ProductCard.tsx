@@ -1,4 +1,4 @@
-import { onStoreChange, removeOnStoreChange, TAttribute, TProduct, TStoreListItem } from '@cromwell/core';
+import { getStoreItem, onStoreChange, removeOnStoreChange, TAttribute, TProduct, TStoreListItem } from '@cromwell/core';
 import { getCStore, Link } from '@cromwell/core-frontend';
 import { IconButton, Tooltip, useMediaQuery, useTheme } from '@material-ui/core';
 import { Rating } from '@material-ui/lab';
@@ -39,6 +39,16 @@ export const ProductCard = (props?: {
     const inCart = cstore.isInCart(item);
     const inWishlist = cstore.isInWishlist({ product });
     // const inCompare = cstore.isInCompare({ product });
+
+    const imageLoader = ({ src }: {
+        src: string;
+        width: number;
+        quality?: number;
+    }) => {
+        const origin = getStoreItem('routeInfo')?.origin;
+        if (src.startsWith('/') && origin) src = origin + src;
+        return src;
+    }
 
     useEffect(() => {
         if (data?.id) {
@@ -144,6 +154,7 @@ export const ProductCard = (props?: {
             <div className={styles.imageBlock}>
                 <Link href={productLink}>
                     <a><Image
+                        loader={imageLoader}
                         objectFit="contain"
                         layout="fill"
                         src={mainImage}

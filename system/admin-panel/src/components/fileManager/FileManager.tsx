@@ -1,5 +1,5 @@
-import { isServer } from '@cromwell/core';
-import { CList, getRestApiClient } from '@cromwell/core-frontend';
+import { getBlockInstance, isServer } from '@cromwell/core';
+import { CList, getRestApiClient, TCList } from '@cromwell/core-frontend';
 import { Breadcrumbs, Button, IconButton, TextField, Tooltip } from '@material-ui/core';
 import {
     ArrowBack as ArrowBackIcon,
@@ -46,6 +46,8 @@ class FileManager extends React.Component<{
     private listRef: React.RefObject<HTMLDivElement> = React.createRef();
     private selectedItem: HTMLLIElement | null = null;
     private selectedFileName: string | null = null;
+    private pageSize = 21;
+    private listId = 'FileManager_List';
 
     constructor(props) {
         super(props);
@@ -134,6 +136,11 @@ class FileManager extends React.Component<{
         this.setState({ isLoading: true });
         try {
             this.currentItems = await this.getFilesInPath(this.currentPath);
+            this.currentItems.sort((a, b) => a < b ? -1 : 1);
+            this.currentItems = [
+                ...this.currentItems.filter(item => this.getItemType(item) === 'folder'),
+                ...this.currentItems.filter(item => this.getItemType(item) !== 'folder'),
+            ];
         } catch (e) {
             console.error(e);
         }
@@ -206,21 +213,36 @@ class FileManager extends React.Component<{
         this.applyNavigate();
     }
 
-    private openPath = (fullPath: string) => {
+    private openPath = async (fullPath: string) => {
         this.setState({ isActive: true });
         fullPath = this.normalize(fullPath);
         this.previousPaths.push(this.currentPath);
         this.nextPaths = [];
         this.currentPath = this.normalize('/' + fullPath);
-        this.fetchCurrentItems();
+        await this.fetchCurrentItems();
     }
 
-    private openFileLocation = (fullPath: string, isSelecting?: boolean) => {
+    private openFileLocation = async (fullPath: string, isSelecting?: boolean) => {
         fullPath = this.normalize(fullPath);
         const paths = fullPath.split('/');
         paths.pop();
-        this.openPath(paths.join('/'));
-        if (isSelecting) this.selectItem(fullPath.split('/').pop());
+        await this.openPath(paths.join('/'));
+
+        // Find page of selected file
+        const itemToOpen = fullPath.split('/').pop();
+        let index = 0;
+        this.currentItems.forEach((item, idx) => item === itemToOpen && (index = idx));
+
+        const list = getBlockInstance<TCList>(this.listId)?.getContentInstance();
+        const page = Math.ceil((index + 1) / this.pageSize);
+        list?.openPage(page);
+
+        setTimeout(() => {
+            if (isSelecting) {
+                this.selectItem(itemToOpen);
+                this.selectedItem?.scrollIntoView();
+            }
+        }, 100)
     }
 
     private applyNavigate = () => {
@@ -359,7 +381,11 @@ class FileManager extends React.Component<{
         if (this.selectedItem && this.selectedFileName) {
             this.setState({ hasLoadingStatus: true });
             try {
-                await getRestApiClient()?.downloadPublicFile(this.selectedFileName, this.currentPath)
+                await getRestApiClient()?.downloadPublicFile(
+                    this.selectedFileName,
+                    this.getItemType(this.selectedFileName) === 'folder' ? 'dir' : 'file',
+                    this.currentPath
+                );
             } catch (e) {
                 toast.error(e);
                 console.error(e);
@@ -517,10 +543,10 @@ class FileManager extends React.Component<{
                         <CList
                             className={styles.list}
                             cssClasses={{ page: styles.content }}
-                            id="FileManager_List"
+                            id={this.listId}
                             dataList={this.currentItems}
                             ListItem={FileItem}
-                            pageSize={21}
+                            pageSize={this.pageSize}
                             usePagination
                             listItemProps={{
                                 currentPath: this.currentPath,

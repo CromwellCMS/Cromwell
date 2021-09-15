@@ -1,4 +1,4 @@
-import { TPost, TTag } from '@cromwell/core';
+import { getStoreItem, TPost, TTag } from '@cromwell/core';
 import { Link } from '@cromwell/core-frontend';
 import clsx from 'clsx';
 import { format } from 'date-fns';
@@ -19,7 +19,17 @@ export const PostCard = (props?: {
 }) => {
     const data = props?.data;
     const postLink = `/blog/${data?.slug ?? data?.id}`;
-    const mainImage = data?.mainImage ?? '/themes/@cromwell/theme-store/no-photos.png';
+    const mainImage = (data?.mainImage ?? '/themes/@cromwell/theme-store/no-photos.png');
+
+    const imageLoader = ({ src }: {
+        src: string;
+        width: number;
+        quality?: number;
+    }) => {
+        const origin = getStoreItem('routeInfo')?.origin;
+        if (src.startsWith('/') && origin) src = origin + src;
+        return src;
+    }
 
     return (
         <div className={clsx(styles.PostCard, styles._onHoverLinkContainer, props?.coverImage && styles.coverImage)}>
@@ -29,6 +39,7 @@ export const PostCard = (props?: {
                 <Link href={postLink}>
                     <a style={{ display: 'flex' }}>
                         <Image
+                            loader={imageLoader}
                             objectFit="cover"
                             layout="fill"
                             src={mainImage}

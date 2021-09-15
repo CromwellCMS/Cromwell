@@ -104,6 +104,11 @@ export type TCromwellStore = {
      * Custom components to inject by renderer into Theme
      */
     rendererComponents?: Partial<Record<'root' | 'pageWrapper', React.ComponentType>>;
+
+    routeInfo?: {
+        fullUrl?: string;
+        origin?: string;
+    }
 }
 
 
