@@ -55,7 +55,6 @@ const ProductPage = () => {
 
     const getProduct = async () => {
         if (productId && productId !== 'new') {
-            setIsLoading(true);
             let prod: TProduct | undefined;
             try {
                 prod = await client?.getProductById(productId, gql`
@@ -76,6 +75,7 @@ const ProductPage = () => {
                         description
                         descriptionDelta
                         views
+                        mainCategoryId
                         categories(pagedParams: {pageSize: 9999}) {
                             id
                         }
@@ -106,34 +106,35 @@ const ProductPage = () => {
                     prop: 'selectedItems',
                     payload: Object.assign({}, ...(prod.categories ?? []).map(cat => ({ [cat.id]: true }))),
                 });
+                store.setStateProp({
+                    prop: 'selectedItem',
+                    payload: prod?.mainCategoryId,
+                });
 
                 forceUpdate();
             }
             else setNotFound(true);
 
-            setIsLoading(false);
-
-
         } else if (productId === 'new') {
             setProdData({} as any);
             forceUpdate();
         }
-
     }
 
     const getAttributes = async () => {
-        setIsLoading(true);
         try {
             const attr = await client?.getAttributes();
             if (attr) setAttributes(attr);
         } catch (e) { console.error(e) }
-
-        setIsLoading(false);
     }
 
     useEffect(() => {
-        getProduct();
-        getAttributes();
+        (async () => {
+            setIsLoading(true);
+            await getAttributes();
+            await getProduct();
+            setIsLoading(false);
+        })();
     }, []);
 
 
@@ -164,6 +165,7 @@ const ProductPage = () => {
             const input: TProductInput = {
                 name: product.name,
                 categoryIds: Object.keys(selectedItems).filter(id => selectedItems[id]),
+                mainCategoryId: store.getState().selectedItem ?? null,
                 price: typeof product.price === 'string' ? parseFloat(product.price) : product.price,
                 oldPrice: typeof product.oldPrice === 'string' ? parseFloat(product.oldPrice) : product.oldPrice,
                 sku: product.sku,
@@ -177,9 +179,9 @@ const ProductPage = () => {
                 pageDescription: product.pageDescription,
                 isEnabled: product.isEnabled,
             }
-            setIsLoading(true);
 
             if (productId === 'new') {
+                setIsLoading(true);
                 try {
                     const prod = await client?.createProduct(input);
                     if (prod?.id) {
@@ -194,6 +196,7 @@ const ProductPage = () => {
                     toast.error('Failed to create');
                     console.error(e);
                 }
+                setIsLoading(false);
 
             } else {
                 try {
@@ -206,7 +209,6 @@ const ProductPage = () => {
                 }
             }
 
-            setIsLoading(false);
         }
     }
 

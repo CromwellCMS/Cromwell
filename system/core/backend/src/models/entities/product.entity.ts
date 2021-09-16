@@ -20,6 +20,11 @@ export class Product extends BasePageEntity implements TProduct {
     @JoinTable()
     categories?: TProductCategory[];
 
+    @Field(type => String, { nullable: true })
+    @Index()
+    @Column({ type: "varchar", nullable: true })
+    mainCategoryId?: string;
+
     @Field(type => Number, { nullable: true })
     @Index()
     @Column({ type: "float", nullable: true })

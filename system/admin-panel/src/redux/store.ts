@@ -6,6 +6,7 @@ import { startUpdateChecker } from './helpers';
 export type TAppState = {
     selectedItems: Record<string, boolean>;
     allSelected: boolean;
+    selectedItem?: string;
     selectedBlock?: TCromwellBlock;
     draggable?: Draggable;
     activeTheme?: TThemeConfig;

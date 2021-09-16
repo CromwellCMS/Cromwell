@@ -9,6 +9,8 @@ import {
     ExpandMore as ExpandMoreIcon,
     SubdirectoryArrowRight as SubdirectoryArrowRightIcon,
 } from '@material-ui/icons';
+import StarIcon from '@material-ui/icons/Star';
+import StarBorderIcon from '@material-ui/icons/StarBorder';
 import { Skeleton } from '@material-ui/lab';
 import React, { useEffect, useState } from 'react';
 import { connect, PropsType } from 'react-redux-ts';
@@ -33,6 +35,7 @@ const mapStateToProps = (state: TAppState) => {
     return {
         selectedItems: state.selectedItems,
         allSelected: state.allSelected,
+        selectedItem: state.selectedItem,
     }
 }
 type TPropsType = PropsType<PropsType, TCategoryItemProps,
@@ -43,6 +46,7 @@ const CategoryItem = (props: TPropsType) => {
     const displayType = props.listItemProps.displayType;
     const client = getGraphQLClient();
     let expanded = !!props.collapsedItemsRef?.current[category.id];
+    const embeddedView = props.listItemProps?.embeddedView;
 
     if (props.deletedItemsRef?.current[category.id]) {
         return <></>;
@@ -69,6 +73,20 @@ const CategoryItem = (props: TPropsType) => {
 
     const handleToggleCollapse = async () => {
         setExpanded(expanded);
+    }
+
+    const togglePrimary = () => {
+        if (props.selectedItem !== category.id) {
+            props.setStateProp({
+                prop: 'selectedItem',
+                payload: category.id,
+            });
+        } else {
+            props.setStateProp({
+                prop: 'selectedItem',
+                payload: undefined,
+            });
+        }
     }
 
     const loadChildren = async () => {
@@ -112,7 +130,7 @@ const CategoryItem = (props: TPropsType) => {
     let selected = false;
     if (props.allSelected && !props.selectedItems[category.id]) selected = true;
     if (!props.allSelected && props.selectedItems[category.id]) selected = true;
-
+    const isPrimary = props.selectedItem === category.id;
     return (
 
         <div className={`${styles.CategoryItem} ${displayType === 'list' ? styles.listItem : ''}`}>
@@ -137,6 +155,16 @@ const CategoryItem = (props: TPropsType) => {
                             checked={selected}
                             onChange={() => props.listItemProps.toggleSelection(category)} />
                     </div>
+                    {embeddedView && selected && (
+                        <div className={commonStyles.center}>
+                            <Tooltip title={isPrimary ? 'Primary category' : "Set as primary category"}>
+                                <IconButton
+                                    onClick={togglePrimary}
+                                >{isPrimary ? <StarIcon /> :
+                                    <StarBorderIcon />}</IconButton>
+                            </Tooltip>
+                        </div>
+                    )}
                     <p>{category.name}</p>
                 </Grid>
                 {displayType === 'list' && (
@@ -147,7 +175,7 @@ const CategoryItem = (props: TPropsType) => {
                         </>
                     </Grid>
                 )}
-                <Grid item xs={4} className={`${styles.itemActions} ${props.listItemProps?.embeddedView ? styles.none : ''}`}>
+                <Grid item xs={4} className={`${styles.itemActions} ${embeddedView ? styles.none : ''}`}>
                     <Link to={`${categoryPageInfo.baseRoute}/new?parentId=${category?.id}`}>
                         <Tooltip title="Add subcategory">
                             <IconButton

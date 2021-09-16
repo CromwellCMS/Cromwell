@@ -50,7 +50,7 @@ export type TCromwellBlock<TContentBlock = React.Component> = React.Component<TC
     getBlockRef: () => React.RefObject<HTMLDivElement>;
     contentRender: (getContent?: TBlockContentProvider['getter'] | null) => React.ReactNode | null;
     consumerRender: (jsxParentId?: string) => JSX.Element | null;
-    getDefaultContent: () => React.ReactNode | null;
+    getDefaultContent: (setClasses?: (classes: string) => void) => React.ReactNode | null;
     notifyChildRegistered: (childInst: TCromwellBlock<any>) => void;
     rerender: () => Promise<void> | void;
     addDidUpdateListener: (id: string, func: () => void) => void;
@@ -80,7 +80,8 @@ export type TCromwellBlockProps<TContentBlock = React.Component> = {
     jsxParentId?: string;
     content?: (data: TCromwellBlockData | undefined,
         blockRef: React.RefObject<HTMLDivElement>,
-        setContentInstance: TCromwellBlock<TContentBlock>['setContentInstance']
+        setContentInstance: TCromwellBlock<TContentBlock>['setContentInstance'],
+        setClasses?: (classes: string) => void
     ) => React.ReactNode;
 } & TCromwellBlockData;
 

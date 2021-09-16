@@ -42,6 +42,10 @@ export const resetSelected = () => {
         prop: 'selectedItems',
         payload: {}
     });
+    store.setStateProp({
+        prop: 'selectedItem',
+        payload: undefined,
+    });
 }
 
 export const getSelectedInput = (): TDeleteManyInput => {

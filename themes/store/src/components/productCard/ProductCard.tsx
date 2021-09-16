@@ -5,7 +5,7 @@ import { Rating } from '@material-ui/lab';
 import clsx from 'clsx';
 import * as NextImage from 'next/image';
 import React, { useEffect, useRef } from 'react';
-
+import SearchIcon from '@material-ui/icons/Search';
 import { appState } from '../../helpers/AppState';
 import { useForceUpdate } from '../../helpers/forceUpdate';
 import commonStyles from '../../styles/common.module.scss';
@@ -69,6 +69,12 @@ export const ProductCard = (props?: {
         }
     }, []);
 
+    const handleOpenQuickView = () => {
+        if (!product?.id) return;
+        appState.isQuickViewOpen = true;
+        appState.quickViewProductId = product?.id;
+    }
+
     const handleAddToCart = () => {
         if (inCart) {
             appState.isCartOpen = true;
@@ -91,8 +97,10 @@ export const ProductCard = (props?: {
                 toast.error(`Please pick following attributes: ${result.missingAttributes.map(attr => attr.key).join(', ')}`, {
                     position: toast.POSITION.TOP_RIGHT
                 });
-                appState.isQuickViewOpen = true;
-                appState.quickViewProductId = product?.id;
+                if (product?.id) {
+                    appState.isQuickViewOpen = true;
+                    appState.quickViewProductId = product?.id;
+                }
             }
             forceUpdate();
         }
@@ -162,7 +170,7 @@ export const ProductCard = (props?: {
                 </Link>
             </div>
             <div className={styles.caption}>
-                <div>
+                <div className={styles.productNameContainer}>
                     <Link href={productLink}>
                         <a className={clsx(styles.productName, commonStyles.onHoverLink)}>{data?.name}</a>
                     </Link>
@@ -184,10 +192,21 @@ export const ProductCard = (props?: {
                 <div>
                     <Tooltip title={inCart ? 'Open cart' : 'Add to cart'}>
                         <IconButton onClick={handleAddToCart}
+                            className={styles.actionBtn}
                         >{inCart ? <ShoppingCartIcon /> : <AddShoppingCartIcon />}</IconButton>
                     </Tooltip>
                     <Tooltip title="Add to wishlist">
-                        <IconButton onClick={handleAddToWishlist}>{inWishlist ? <FavoriteIcon /> : <FavoriteBorderIcon />}</IconButton>
+                        <IconButton
+                            onClick={handleAddToWishlist}
+                            className={styles.actionBtn}
+                        >{inWishlist ? <FavoriteIcon /> : <FavoriteBorderIcon />}</IconButton>
+                    </Tooltip>
+                    <Tooltip title="Quick view">
+                        <IconButton 
+                        className={styles.actionBtn}
+                        onClick={handleOpenQuickView}>
+                            <SearchIcon />
+                        </IconButton>
                     </Tooltip>
                     {/* <Tooltip title="Add to compare">
                         <IconButton onClick={handleAddToCompare}>

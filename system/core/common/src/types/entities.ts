@@ -90,6 +90,10 @@ export type TProduct = TBasePageEntity & {
      */
     name?: string;
     /**
+     * Main category of product
+     */
+    mainCategoryId?: string;
+    /**
      * Categories of the prooduct
      */
     categories?: TProductCategory[];

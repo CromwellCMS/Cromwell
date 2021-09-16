@@ -1,7 +1,7 @@
 const { MigrationInterface, QueryRunner } = require("typeorm");
 
-module.exports = class init1630095999760 {
-    name = 'init1630095999760'
+module.exports = class init1631809774123 {
+    name = 'init1631809774123'
 
     async up(queryRunner) {
         await queryRunner.query(`CREATE TABLE "crw_base_page_entity" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "slug" varchar, "pageTitle" varchar, "pageDescription" varchar, "createDate" datetime NOT NULL DEFAULT (datetime('now')), "updateDate" datetime NOT NULL DEFAULT (datetime('now')), "isEnabled" boolean DEFAULT (1), CONSTRAINT "UQ_33d156210ae42177f24eb55b524" UNIQUE ("slug"))`);
@@ -63,11 +63,12 @@ module.exports = class init1630095999760 {
         await queryRunner.query(`CREATE INDEX "IDX_399b21eccdf612065456fb2610" ON "crw_product_review" ("userEmail") `);
         await queryRunner.query(`CREATE INDEX "IDX_dc5af49e3e348deae17df11497" ON "crw_product_review" ("userId") `);
         await queryRunner.query(`CREATE INDEX "IDX_b096b1be8dd42fe22ddc88821d" ON "crw_product_review" ("approved") `);
-        await queryRunner.query(`CREATE TABLE "crw_product" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "slug" varchar, "pageTitle" varchar, "pageDescription" varchar, "createDate" datetime NOT NULL DEFAULT (datetime('now')), "updateDate" datetime NOT NULL DEFAULT (datetime('now')), "isEnabled" boolean DEFAULT (1), "name" varchar, "price" float, "oldPrice" float, "sku" varchar, "mainImage" varchar(300), "images" text, "description" text, "descriptionDelta" text, "attributesJSON" text, "averageRating" decimal, "reviewsCount" integer, CONSTRAINT "UQ_404785f00e4d88df4fa5783830b" UNIQUE ("slug"))`);
+        await queryRunner.query(`CREATE TABLE "crw_product" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "slug" varchar, "pageTitle" varchar, "pageDescription" varchar, "createDate" datetime NOT NULL DEFAULT (datetime('now')), "updateDate" datetime NOT NULL DEFAULT (datetime('now')), "isEnabled" boolean DEFAULT (1), "name" varchar, "mainCategoryId" varchar, "price" float, "oldPrice" float, "sku" varchar, "mainImage" varchar(300), "images" text, "description" text, "descriptionDelta" text, "attributesJSON" text, "averageRating" decimal, "reviewsCount" integer, CONSTRAINT "UQ_404785f00e4d88df4fa5783830b" UNIQUE ("slug"))`);
         await queryRunner.query(`CREATE INDEX "IDX_eb9777ea5f5b04f2cbba1e0af0" ON "crw_product" ("id") `);
         await queryRunner.query(`CREATE INDEX "IDX_a51cbca1c3ed52d289104a4029" ON "crw_product" ("createDate") `);
         await queryRunner.query(`CREATE INDEX "IDX_519eaf50959bea415509872bb9" ON "crw_product" ("updateDate") `);
         await queryRunner.query(`CREATE INDEX "IDX_e734039ba75ee043d3c61466de" ON "crw_product" ("name") `);
+        await queryRunner.query(`CREATE INDEX "IDX_c07a670f3308a2db7824d76d6a" ON "crw_product" ("mainCategoryId") `);
         await queryRunner.query(`CREATE INDEX "IDX_a4383ddcc0498cfacd641f9cf8" ON "crw_product" ("price") `);
         await queryRunner.query(`CREATE INDEX "IDX_c717d9265ea3490790ee35edcd" ON "crw_product" ("sku") `);
         await queryRunner.query(`CREATE INDEX "IDX_ce9152d8ef22b16ce86a6e0fd8" ON "crw_product" ("attributesJSON") `);
@@ -261,6 +262,7 @@ module.exports = class init1630095999760 {
         await queryRunner.query(`DROP INDEX "IDX_ce9152d8ef22b16ce86a6e0fd8"`);
         await queryRunner.query(`DROP INDEX "IDX_c717d9265ea3490790ee35edcd"`);
         await queryRunner.query(`DROP INDEX "IDX_a4383ddcc0498cfacd641f9cf8"`);
+        await queryRunner.query(`DROP INDEX "IDX_c07a670f3308a2db7824d76d6a"`);
         await queryRunner.query(`DROP INDEX "IDX_e734039ba75ee043d3c61466de"`);
         await queryRunner.query(`DROP INDEX "IDX_519eaf50959bea415509872bb9"`);
         await queryRunner.query(`DROP INDEX "IDX_a51cbca1c3ed52d289104a4029"`);

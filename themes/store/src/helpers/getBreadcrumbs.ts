@@ -8,29 +8,36 @@ export const getBreadcrumbs = async (product?: TProduct | null):
     const categories = product.categories;
     const client = getGraphQLClient();
 
-    const getNestedLevel = (category: TProductCategory, level = 0) => {
-        if (!category.parent?.id) return level;
-        for (const cat of categories) {
-            if (cat.id === category.parent.id) {
-                level++;
-                return getNestedLevel(cat, level);
+    let targetCategoryId: string | undefined = product?.mainCategoryId;
+
+    if (!targetCategoryId) {
+        const getNestedLevel = (category: TProductCategory, level = 0) => {
+            if (!category.parent?.id) return level;
+            for (const cat of categories) {
+                if (cat.id === category.parent.id) {
+                    level++;
+                    return getNestedLevel(cat, level);
+                }
             }
+            return level;
         }
-        return level;
+
+        let mostNestedLevel = 0;
+        let mostNested = product.categories[0];
+
+        product.categories.forEach(cat => {
+            if (cat.parent?.id) {
+                const level = getNestedLevel(cat);
+                if (level > mostNestedLevel) {
+                    mostNestedLevel = level;
+                    mostNested = cat;
+                }
+            }
+        });
+        targetCategoryId = mostNested?.id;
     }
 
-    let mostNestedLevel = 0;
-    let mostNested = product.categories[0];
 
-    product.categories.forEach(cat => {
-        if (cat.parent?.id) {
-            const level = getNestedLevel(cat);
-            if (level > mostNestedLevel) {
-                mostNestedLevel = level;
-                mostNested = cat;
-            }
-        }
-    });
 
     try {
         const parentCategories = await client.query({
@@ -56,7 +63,7 @@ export const getBreadcrumbs = async (product?: TProduct | null):
                 }
             `,
             variables: {
-                id: mostNested.id,
+                id: targetCategoryId,
             },
         }, 'getProductCategoryById');
 

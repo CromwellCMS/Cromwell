@@ -271,6 +271,7 @@ export class MigrationService {
             sku: ent.sku,
             mainImage: ent.mainImage,
             images: ent.images,
+            mainCategoryId: ent.mainCategoryId,
             description: ent.description,
             descriptionDelta: ent.descriptionDelta,
             attributes: JSON.stringify(ent.attributes),

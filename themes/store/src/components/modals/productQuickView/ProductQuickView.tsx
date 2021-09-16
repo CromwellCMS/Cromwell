@@ -51,22 +51,26 @@ const ProductQuickView = observer(() => {
             onClose={handleClose}
             blurSelector={"#CB_root"}
         >
+
             <div className={styles.ProductQuickView}>
-                {isLoading && (
-                    <LoadBox />
-                )}
-                {!isLoading && (
-                    <>
-                        <IconButton onClick={handleClose} className={styles.closeBtn}>
-                            <CloseIcon />
-                        </IconButton>
-                        <ProductDetails
-                            compact={true}
-                            product={product}
-                            attributes={attributes}
-                        />
-                    </>
-                )}
+                <IconButton onClick={handleClose} className={styles.closeBtn}>
+                    <CloseIcon />
+                </IconButton>
+                <div className={styles.list}>
+                    {isLoading && (
+                        <LoadBox />
+                    )}
+                    {!isLoading && (
+                        <>
+
+                            <ProductDetails
+                                compact={true}
+                                product={product}
+                                attributes={attributes}
+                            />
+                        </>
+                    )}
+                </div>
             </div>
         </Modal>
     )

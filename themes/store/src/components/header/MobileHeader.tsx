@@ -1,6 +1,16 @@
-import { getCmsSettings } from '@cromwell/core';
-import { CContainer, CPlugin, Link } from '@cromwell/core-frontend';
-import { AppBar, IconButton, Slide, SwipeableDrawer, Toolbar, useScrollTrigger } from '@material-ui/core';
+import { getCmsSettings, TCurrency } from '@cromwell/core';
+import { CContainer, CPlugin, getCStore, Link } from '@cromwell/core-frontend';
+import {
+    AppBar,
+    FormControl,
+    IconButton,
+    MenuItem,
+    Select,
+    Slide,
+    SwipeableDrawer,
+    Toolbar,
+    useScrollTrigger,
+} from '@material-ui/core';
 import Router from 'next/router';
 import React, { useState } from 'react';
 
@@ -19,6 +29,9 @@ Router?.events?.on('routeChangeStart', () => {
 export const MobileHeader = () => {
     const [menuOpen, setMenuOpen] = useState(false);
     const cmsConfig = getCmsSettings();
+    const cstore = getCStore();
+    const [currency, setCurrency] = React.useState<string | null | undefined>(cstore.getActiveCurrencyTag());
+    const currencies: TCurrency[] = cmsConfig?.currencies ?? [];
 
     const handleCloseMenu = () => {
         setMenuOpen(false);
@@ -39,6 +52,12 @@ export const MobileHeader = () => {
     const handleOpenWatched = () => {
         appState.isWatchedOpen = true;
     }
+
+    const handleCurrencyChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+        const val = event.target.value as string;
+        setCurrency(val);
+        cstore.setActiveCurrency(val);
+    };
 
 
     // const handleOpenCompare = () => {
@@ -85,6 +104,19 @@ export const MobileHeader = () => {
             >
                 <div className={styles.drawer}>
                     <div className={styles.menuActions}>
+                        <div className={styles.currencyOption}>
+                            <FormControl className={styles.formControl}>
+                                <Select
+                                    className={styles.select}
+                                    value={currency ?? ''}
+                                    onChange={handleCurrencyChange}
+                                >
+                                    {currencies && Array.isArray(currencies) && currencies.map(curr => (
+                                        <MenuItem value={curr.tag} key={curr.tag}>{curr.tag}</MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+                        </div>
                         <IconButton onClick={handleOpenWatched}>
                             <VisibilityIcon />
                         </IconButton>
@@ -101,6 +133,7 @@ export const MobileHeader = () => {
                             <CloseIcon />
                         </IconButton>
                     </div>
+
                     <div className={styles.mobileSearch}>
                         <HeaderSearch />
                     </div>
