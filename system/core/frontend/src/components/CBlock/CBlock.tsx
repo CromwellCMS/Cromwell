@@ -280,7 +280,6 @@ export class CBlock<TContentBlock = React.Component> extends
     public getDefaultContent(setClasses?: (classes: string) => void): React.ReactNode | null {
         const data = this.getData();
 
-
         if (data?.type === 'container') {
             return (
                 <>
@@ -312,7 +311,7 @@ export class CBlock<TContentBlock = React.Component> extends
             return <></>;
         }
 
-        let customBlockClasses = '';
+        let customBlockClasses;
         const getCustomClasses = (classes: string) => customBlockClasses = classes;
 
         const blockContent = getContent ? getContent(this as TCromwellBlock) : this.getDefaultContent(getCustomClasses);
@@ -323,7 +322,7 @@ export class CBlock<TContentBlock = React.Component> extends
             + (this.data && this.data.type && this.data.type === 'plugin' && this.data.plugin && this.data.plugin.pluginName
                 ? ` ${getHtmlPluginBlockName(this.data.plugin.pluginName)}` : '')
             + (className ? ' ' + className : '')
-            + (customBlockClasses !== '' ? ' ' + customBlockClasses : '');
+            + (customBlockClasses && customBlockClasses !== '' ? ' ' + customBlockClasses : '');
 
         let blockStyles: React.CSSProperties = {};
 

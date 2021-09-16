@@ -21,18 +21,18 @@ export class CImage extends React.Component<CImageProps> {
         const { image, ...rest } = props;
 
         return (
-            <CBlock {...rest} className={styles} type='image'
+            <CBlock {...rest} type='image'
                 content={(data, blockRef, setContentInstance, setClasses) => {
                     setContentInstance(this);
 
                     const _src = data?.image?.src ?? image?.src ?? props.src;
                     const _link = data?.image?.link ?? image?.link ?? props.imgLink;
                     const _alt = data?.image?.alt ?? image?.alt ?? props.alt;
-                    const _withEffect = data?.image?.withEffect ?? image?.withEffect ?? props.withEffect;
                     const _objectFit = data?.image?.objectFit ?? image?.objectFit ?? props.objectFit;
                     const _width = data?.image?.width ?? image?.width ?? props.width;
                     const _height = data?.image?.height ?? image?.height ?? props.height;
-                    _withEffect && setClasses?.(styles.CImageHoverEffect);
+                    const _withEffect = data?.image?.withEffect ?? image?.withEffect ?? props.withEffect;
+                    if (_withEffect && typeof setClasses === 'function') setClasses(styles.CImageHoverEffect);
 
                     const imgEl = (
                         <img src={_src}
