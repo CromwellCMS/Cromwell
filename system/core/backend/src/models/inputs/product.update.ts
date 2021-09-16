@@ -11,6 +11,9 @@ export class UpdateProduct extends BasePageInput implements TProductInput {
     @Field(() => [String], { nullable: true })
     categoryIds: string[];
 
+    @Field(() => String, { nullable: true })
+    mainCategoryId: string;
+
     @Field(() => Number, { nullable: true })
     price: number;
 

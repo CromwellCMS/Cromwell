@@ -2,20 +2,29 @@
 
 .ProductQuickView {
     @include paper;
-    @include styledScrollBar;
     background-color: rgba(255, 255, 255, 0.9);
     backdrop-filter: blur(14px);
     width: 800px;
     min-height: 300px;
     max-height: 90vh;
     max-width: 95vw;
-    overflow: auto;
     position: relative;
+    display: flex;
+    flex-direction: column;
 
     .closeBtn {
+        @include paper;
         position: absolute;
         top: 5px;
         right: 5px;
-        z-index: 5;
+        z-index: 10;
+        border-radius: 100%;
+    }
+
+    .list {
+        overflow: auto;
+        height: 100%;
+        min-height: 300px;
+        @include styledScrollBar;
     }
 }

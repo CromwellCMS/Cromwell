@@ -277,22 +277,28 @@ export class CBlock<TContentBlock = React.Component> extends
         }).filter(Boolean);
     }
 
-    public getDefaultContent(): React.ReactNode | null {
+    public getDefaultContent(setClasses?: (classes: string) => void): React.ReactNode | null {
         const data = this.getData();
 
         if (data?.type === 'container') {
             return (
                 <>
-                    {this.props.content?.(this.data, this.blockRef,
-                        inst => this.contentInstance = inst)}
+                    {this.props.content?.(this.data,
+                        this.blockRef,
+                        inst => this.contentInstance = inst,
+                        setClasses,
+                    )}
                     {this.getChildBlocks()}
                 </>
             )
         }
 
         if (this.props.content) {
-            return this.props.content(this.data, this.blockRef,
-                inst => this.contentInstance = inst);
+            return this.props.content(this.data,
+                this.blockRef,
+                inst => this.contentInstance = inst,
+                setClasses,
+            );
         }
 
         return this.props.children;
@@ -305,15 +311,18 @@ export class CBlock<TContentBlock = React.Component> extends
             return <></>;
         }
 
+        let customBlockClasses;
+        const getCustomClasses = (classes: string) => customBlockClasses = classes;
+
+        const blockContent = getContent ? getContent(this as TCromwellBlock) : this.getDefaultContent(getCustomClasses);
+
         const elementClassName = blockCssClass
             + (this.data && this.data.type ? ' ' + getBlockHtmlType(this.data.type) : '')
             + (this.props.className ? ` ${this.props.className}` : '')
             + (this.data && this.data.type && this.data.type === 'plugin' && this.data.plugin && this.data.plugin.pluginName
                 ? ` ${getHtmlPluginBlockName(this.data.plugin.pluginName)}` : '')
-            + (className ? ' ' + className : '');
-
-
-        const blockContent = getContent ? getContent(this as TCromwellBlock) : this.getDefaultContent();
+            + (className ? ' ' + className : '')
+            + (customBlockClasses && customBlockClasses !== '' ? ' ' + customBlockClasses : '');
 
         let blockStyles: React.CSSProperties = {};
 

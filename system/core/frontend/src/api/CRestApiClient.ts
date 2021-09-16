@@ -394,13 +394,12 @@ export class CRestApiClient {
     * Download a public file
     * @auth admin
     */
-    public downloadPublicFile = async (fileName: string, type: 'file' | 'dir', inPath?: string, options?: TRequestOptions) => {
+    public downloadPublicFile = async (fileName: string, type: 'file' | 'dir', inPath?: string) => {
         const url = `${this.getBaseUrl()}/v1/cms/download-public-file?inPath=${inPath ?? '/'}&fileName=${fileName}`;
         if (type === 'dir') fileName += '.zip';
 
         const a = document.createElement('a');
         a.href = url;
-        console.log('url', url)
         a.download = fileName;
         document.body.appendChild(a);
         a.click();

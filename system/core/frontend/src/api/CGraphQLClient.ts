@@ -560,6 +560,7 @@ export class CGraphQLClient {
             sku
             mainImage
             images
+            mainCategoryId
             description
             views
             rating {

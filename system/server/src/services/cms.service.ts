@@ -543,7 +543,8 @@ ${content}
         orderTotal.cartOldTotalPrice = total.totalOld;
         orderTotal.cartTotalPrice = total.total ?? 0;
         orderTotal.totalQnt = total.amount;
-        orderTotal.shippingPrice = settings?.defaultShippingPrice ?? 0;
+        orderTotal.shippingPrice = settings?.defaultShippingPrice ?
+            parseFloat(settings?.defaultShippingPrice + '') : 0;
         orderTotal.orderTotalPrice = (orderTotal?.cartTotalPrice ?? 0) + (orderTotal?.shippingPrice ?? 0);
         return orderTotal;
     }
