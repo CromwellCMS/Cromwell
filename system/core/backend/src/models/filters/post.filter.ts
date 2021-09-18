@@ -5,17 +5,17 @@ import { Field, InputType } from 'type-graphql';
 export class PostFilterInput implements TPostFilter {
 
     @Field(type => String, { nullable: true })
-    authorId: string;
+    authorId?: string;
 
     @Field(type => String, { nullable: true })
-    titleSearch: string;
+    titleSearch?: string;
 
     @Field(type => [String], { nullable: true })
     tagIds?: string[];
 
     @Field(type => Boolean, { nullable: true })
-    published: boolean;
+    published?: boolean;
 
     @Field(type => Boolean, { nullable: true })
-    featured: boolean;
+    featured?: boolean;
 }

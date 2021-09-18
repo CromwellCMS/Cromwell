@@ -28,6 +28,7 @@
     align-items: center;
     justify-content: space-between;
 }
+
 .filterItem {
     margin-right: 15px;
 }
@@ -35,6 +36,13 @@
 .title {
     font-size: 32px;
     font-weight: 500;
+}
+
+.description {
+    margin-top: 30px;
+    background-color: #fff;
+    border-radius: 6px;
+    padding: 15px;
 }
 
 @media (max-width: 985px) {

@@ -40,7 +40,7 @@ export const ProductCard = (props?: {
     const inWishlist = cstore.isInWishlist({ product });
     // const inCompare = cstore.isInCompare({ product });
 
-    const imageLoader = ({ src }: {
+    const imageLoader = ({ src, width, quality }: {
         src: string;
         width: number;
         quality?: number;
@@ -202,9 +202,9 @@ export const ProductCard = (props?: {
                         >{inWishlist ? <FavoriteIcon /> : <FavoriteBorderIcon />}</IconButton>
                     </Tooltip>
                     <Tooltip title="Quick view">
-                        <IconButton 
-                        className={styles.actionBtn}
-                        onClick={handleOpenQuickView}>
+                        <IconButton
+                            className={styles.actionBtn}
+                            onClick={handleOpenQuickView}>
                             <SearchIcon />
                         </IconButton>
                     </Tooltip>

@@ -1,3 +1,5 @@
+@import "../../styles/common.module.scss";
+
 .GalleryPicker {
     position: relative;
     width: 100%;
@@ -10,8 +12,10 @@
     button.galleryActionBtn {
         background-color: rgba($color: #fff, $alpha: 0.7);
     }
+
     button.galleryActionBtn:hover {
         background-color: rgba(0, 0, 0, 0.3);
+
         svg {
             color: #fff;
         }
@@ -34,7 +38,7 @@
     background-color: #fff;
     border-radius: 5px;
 
-    > div {
+    >div {
         width: 100%;
     }
 }
@@ -44,7 +48,12 @@
 }
 
 .imageItemContent {
-height: 100%;
+    height: 100%;
+}
+
+div.popover {
+    @include paperElevated;
+    padding: 10px 15px;
 }
 
 :global(.modeDark) {
@@ -53,8 +62,10 @@ height: 100%;
             background-color: #222;
             margin-right: 5px;
         }
+
         button.galleryActionBtn:hover {
             background-color: #555;
+
             svg {
                 color: #fff;
             }
@@ -64,6 +75,7 @@ height: 100%;
     .imageItem {
         background-color: #333;
     }
+
     .imageItem:hover {
         background-color: #555;
     }

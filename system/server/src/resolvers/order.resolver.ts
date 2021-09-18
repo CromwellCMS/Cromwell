@@ -50,9 +50,9 @@ export class OrderResolver {
         if (ctx.user.role === 'guest' || ctx.user.role === 'administrator' ||
             ctx.user.id + '' === userId + '') {
             const orders = await this.repository.getOrdersOfUser(userId, pagedParams);
-            console.log('orders', orders)
             return orders;
         }
+        throw new Error('Access denied.');
     }
 
     @Authorized<TAuthRole>("administrator", "guest")

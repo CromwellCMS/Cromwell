@@ -58,19 +58,19 @@ module.exports = {
                         "images": [
                             {
                                 "src": "/themes/@cromwell/theme-store/main_banner_1.png",
-                                "href": "/pages/some_page"
+                                "href": "/category/5"
                             },
                             {
                                 "src": "/themes/@cromwell/theme-store/main_banner_2.png",
-                                "href": "/pages/some_page"
+                                "href": "/category/6"
                             },
                             {
                                 "src": "/themes/@cromwell/theme-store/main_banner_3.png",
-                                "href": "/pages/some_page"
+                                "href": "/category/7"
                             },
                             {
                                 "src": "/themes/@cromwell/theme-store/main_banner_4.png",
-                                "href": "/pages/some_page"
+                                "href": "/category/8"
                             }
                         ],
                         "width": "100%",
@@ -139,7 +139,7 @@ module.exports = {
         {
             id: "tag/[slug]",
             route: "tag/[slug]",
-            name: "Blog tags",
+            name: "Blog tag",
         },
         {
             id: "404",

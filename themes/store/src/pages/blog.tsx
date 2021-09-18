@@ -111,6 +111,7 @@ const BlogPage: TCromwellPage<BlogProps> = (props) => {
                 <CContainer style={{ marginBottom: '20px' }} id="blog-3">
                     <CList<TPost>
                         id={listId}
+                        editorHidden
                         ListItem={(props) => (
                             <div className={styles.postWrapper}>
                                 <PostCard onTagClick={handleTagClick} data={props.data} key={props.data?.id} />

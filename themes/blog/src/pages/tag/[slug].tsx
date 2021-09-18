@@ -92,28 +92,36 @@ const TagPage: TCromwellPage<BlogProps> = (props) => {
                     {(router?.isFallback) ? (
                         <LoadBox />
                     ) : (
-                        <CList<TPost>
-                            id={listId}
-                            ListItem={(props) => (
-                                <div className={styles.postWrapper}>
-                                    <PostCard data={props.data} key={props.data?.id} />
-                                </div>
+                        <>
+                            <CList<TPost>
+                                id={listId}
+                                ListItem={(props) => (
+                                    <div className={styles.postWrapper}>
+                                        <PostCard data={props.data} key={props.data?.id} />
+                                    </div>
+                                )}
+                                usePagination
+                                useShowMoreButton
+                                useQueryPagination
+                                disableCaching
+                                pageSize={20}
+                                scrollContainerSelector={`.${layoutStyles.Layout}`}
+                                firstBatch={props.posts}
+                                loader={handleGetPosts}
+                                cssClasses={{
+                                    page: styles.postList
+                                }}
+                                elements={{
+                                    pagination: Pagination
+                                }}
+                            />
+                            {props.tag?.description && (
+                                <div
+                                    className={styles.description}
+                                    dangerouslySetInnerHTML={{ __html: props.tag.description }}
+                                ></div>
                             )}
-                            usePagination
-                            useShowMoreButton
-                            useQueryPagination
-                            disableCaching
-                            pageSize={20}
-                            scrollContainerSelector={`.${layoutStyles.Layout}`}
-                            firstBatch={props.posts}
-                            loader={handleGetPosts}
-                            cssClasses={{
-                                page: styles.postList
-                            }}
-                            elements={{
-                                pagination: Pagination
-                            }}
-                        />
+                        </>
                     )}
                 </CContainer>
             </CContainer>

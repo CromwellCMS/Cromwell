@@ -160,12 +160,15 @@ const ProductPage = () => {
         }));
 
         const selectedItems = store.getState().selectedItems;
+        const categoryIds = Object.keys(selectedItems).filter(id => selectedItems[id]);
+        let mainCategoryId = store.getState().selectedItem ?? null;
+        if (mainCategoryId && !categoryIds.includes(mainCategoryId)) mainCategoryId = null;
 
         if (product) {
             const input: TProductInput = {
                 name: product.name,
-                categoryIds: Object.keys(selectedItems).filter(id => selectedItems[id]),
-                mainCategoryId: store.getState().selectedItem ?? null,
+                categoryIds,
+                mainCategoryId,
                 price: typeof product.price === 'string' ? parseFloat(product.price) : product.price,
                 oldPrice: typeof product.oldPrice === 'string' ? parseFloat(product.oldPrice) : product.oldPrice,
                 sku: product.sku,

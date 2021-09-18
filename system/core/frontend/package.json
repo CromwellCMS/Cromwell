@@ -3,7 +3,7 @@
   "version": "1.0.9",
   "description": "",
   "license": "MIT",
-  "author": "CromwellCMS",
+  "author": "Astrex LLC",
   "main": "dist/index.js",
   "module": "es/_index.js",
   "types": "es/_index.d.ts",

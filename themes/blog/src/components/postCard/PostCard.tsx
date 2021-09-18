@@ -18,7 +18,7 @@ export const PostCard = (props?: {
     const data = props?.data;
     const postLink = `/post/${data?.slug ?? data?.id}`;
     const mainImage = data?.mainImage ?? '/themes/@cromwell/theme-store/no-photos.png';
-    const imageLoader = ({ src }: {
+    const imageLoader = ({ src, width, quality }: {
         src: string;
         width: number;
         quality?: number;

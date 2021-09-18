@@ -12,6 +12,7 @@ export const ImageItem = (props: {
     };
     data: TImageSettings;
     draggableHandleClass: string;
+    hideSrc?: boolean;
 }) => {
     const onSrcChange = (src: string | undefined) => {
         props.itemProps.onImageChange(props.itemProps.allImages.indexOf(props.data),
@@ -23,5 +24,6 @@ export const ImageItem = (props: {
         value={props.data.src}
         placeholder="Pick an image"
         onChange={onSrcChange}
+        hideSrc={props.hideSrc}
     />)
 }

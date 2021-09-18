@@ -1,10 +1,11 @@
 import { TImageSettings } from '@cromwell/core';
-import { IconButton, Tooltip } from '@material-ui/core';
+import { IconButton, Tooltip, Popover, TextField } from '@material-ui/core';
 import {
     Add as AddIcon,
     DeleteForever as DeleteForeverIcon,
     DeleteOutline as DeleteOutlineIcon,
     DragIndicator as DragIndicatorIcon,
+    Link as LinkIcon,
 } from '@material-ui/icons';
 import clsx from 'clsx';
 import React, { Component } from 'react';
@@ -23,8 +24,14 @@ class GalleryPicker extends Component<{
         imagePicker?: ImagePickerProps['classes'];
     }
     className?: string;
+    hideSrc?: boolean;
+    editLink?: boolean;
+}, {
+    editableLink?: number;
+    editableLinkText: string | undefined;
 }> {
     private uncontrolledInput: TImageSettings[] = [];
+    private editableLinkRef: HTMLButtonElement;
 
     private onImageChange = (index: number, value: TImageSettings | null) => {
         let images = [...(this.props.images ?? this.uncontrolledInput)];
@@ -51,6 +58,36 @@ class GalleryPicker extends Component<{
     private handleDeleteAllImages = () => {
         this.uncontrolledInput = [];
         this.props.onChange?.([]);
+    }
+
+    private handleShowLink = (index: number, event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        const images = [...(this.props.images ?? this.uncontrolledInput)];
+        this.setState({
+            editableLink: index,
+            editableLinkText: images[index]?.href,
+        });
+        this.editableLinkRef = event.target as HTMLButtonElement;
+    }
+
+    private handleChangeImageLink = (value: string) => {
+        this.setState({
+            editableLinkText: value,
+        });
+    }
+
+    private handleCloseLinkEdit = () => {
+        let val = this.state?.editableLinkText;
+        if (val === '') val = undefined;
+        const images = [...(this.props.images ?? this.uncontrolledInput)];
+        if (images[this.state.editableLink]) images[this.state.editableLink].href = val;
+
+        this.uncontrolledInput = images;
+        this.props.onChange?.(images);
+
+        this.setState({
+            editableLink: undefined,
+            editableLinkText: undefined,
+        });
     }
 
     private onLayoutChange = (images: TImageSettings[]) => (layout) => {
@@ -104,17 +141,49 @@ class GalleryPicker extends Component<{
                                 draggableHandleClass="draggableHandle"
                                 key={(image?.id ?? index) + ''}
                                 data={image}
+                                hideSrc={this.props.hideSrc}
                                 itemProps={{
                                     onImageChange: this.onImageChange,
                                     classes: this.props.classes?.imagePicker,
                                     allImages: images,
                                 }}
                             />
+                            {this.props.editLink && (
+                                <IconButton style={{ cursor: 'pointer', marginLeft: '10px' }}
+                                    onClick={(event) => this.handleShowLink(index, event)}
+                                >
+                                    <LinkIcon />
+                                </IconButton>
+                            )}
                             <IconButton style={{ cursor: 'pointer', marginLeft: '10px' }}
                                 onClick={() => this.handleRemoveImage(index)}
                             >
                                 <DeleteOutlineIcon />
                             </IconButton>
+                            {this.props.editLink && this.state?.editableLink === index && (
+                                <Popover
+                                    elevation={0}
+                                    classes={{ paper: styles.popover }}
+                                    open={this.state?.editableLink === index}
+                                    anchorEl={this.editableLinkRef}
+                                    onClose={this.handleCloseLinkEdit}
+                                    anchorOrigin={{
+                                        vertical: 'bottom',
+                                        horizontal: 'left',
+                                    }}
+                                    transformOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'left',
+                                    }}
+                                >
+                                    <TextField
+                                        fullWidth
+                                        onChange={(e) => this.handleChangeImageLink(e.target.value)}
+                                        value={this.state?.editableLinkText ?? ''}
+                                        label="Link"
+                                    />
+                                </Popover>
+                            )}
                         </div>)
                     })}
                 </ResponsiveGridLayout>

@@ -75,7 +75,7 @@ const AttributeItem = (props: { data: TAttribute; handleRemove: (data: TAttribut
             console.error(e);
         }
         if (success) {
-            toast.success('Saved attribute');
+            toast.success('Attribute saved');
         } else {
             toast.error('Failed to save attribute');
         }

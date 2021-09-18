@@ -144,6 +144,12 @@
     width: 100%;
     height: 400px;
     font-size: 30px;
+
+    >div {
+        padding: 30px 40px;
+        border-radius: 10px;
+        background-color: #fff;
+    }
 }
 
 button.button {

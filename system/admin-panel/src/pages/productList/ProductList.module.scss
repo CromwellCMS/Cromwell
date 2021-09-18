@@ -25,19 +25,9 @@
     border-radius: 9px;
     z-index: 1;
 
-    > div {
+    >div {
         display: flex;
         align-items: center;
-    }
-}
-
-:global(.modeDark) {
-    .listHeader {
-        background: #333;
-
-        * {
-            color: #fff;
-        }
     }
 }
 
@@ -61,21 +51,6 @@
 
 .listItem:hover {
     background-color: #eee;
-}
-
-:global(.modeDark) {
-    .listItem {
-        background-color: #333;
-        border-bottom: 1px solid #333;
-
-        * {
-            color: #eee;
-        }
-    }
-
-    .listItem:hover {
-        background-color: #555;
-    }
 }
 
 .list {
@@ -157,22 +132,51 @@ div.filterDrawer {
     align-items: center;
     padding-left: 15px;
 
-    > h3 {
+    >h3 {
         font-weight: 500;
     }
 }
 
 :global(.modeDark) {
+    .listItem {
+        background-color: #333;
+        border-bottom: 1px solid #333;
+
+        * {
+            color: #eee;
+        }
+    }
+
+    .listItem:hover {
+        background-color: #555;
+    }
+
     div.filterDrawer {
         background-color: #333;
 
         * {
             color: #eee;
         }
+
+        :global(.MuiSlider-thumb.MuiSlider-thumbColorPrimary) {
+            >span>span {
+                background-color: #555;
+                color: #fff;
+            }
+        }
+    }
+
+    .listHeader {
+        background: #333;
+
+        * {
+            color: #fff;
+        }
     }
 }
 
 @media screen and (max-width: $mobileBreakpoint) {
+
     // mobile
     div.filterDrawer {
         padding-top: 60px;

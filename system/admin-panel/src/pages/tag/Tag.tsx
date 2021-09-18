@@ -7,11 +7,12 @@ import React, { useEffect, useState } from 'react';
 import { Link, useHistory, useParams } from 'react-router-dom';
 
 import ColorPicker from '../../components/colorPicker/ColorPicker';
+import ImagePicker from '../../components/imagePicker/ImagePicker';
 import { toast } from '../../components/toast/toast';
 import { tagListPageInfo, tagPageInfo } from '../../constants/PageInfos';
+import { getEditorData, getEditorHtml, initTextEditor } from '../../helpers/editor/editor';
 import commonStyles from '../../styles/common.module.scss';
 import styles from './Tag.module.scss';
-import { getEditorData, getEditorHtml, initTextEditor } from '../../helpers/editor/editor';
 
 const TagPage = () => {
     const { id: tagId } = useParams<{ id: string }>();
@@ -192,7 +193,7 @@ const TagPage = () => {
                                 onChange={color => handleInputChange('color', color)}
                             />
                         </Grid>
-                        <Grid item xs={12} sm={6}>
+                        <Grid item xs={12} sm={12}>
                             <TextField
                                 label="Page URL"
                                 className={styles.textField}
@@ -200,6 +201,16 @@ const TagPage = () => {
                                 value={data?.slug || ''}
                                 helperText={pageFullUrl}
                                 onChange={(e) => { handleInputChange('slug', e.target.value) }}
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={12}>
+                            <ImagePicker
+                                label="Image"
+                                className={styles.imageField}
+                                onChange={(val) => handleInputChange('image', val)}
+                                value={data?.image}
+                                backgroundSize='cover'
+                                showRemove
                             />
                         </Grid>
                         <Grid item xs={12}>

@@ -177,7 +177,7 @@ export class CGallery extends React.Component<TCGalleryProps> {
 
                             if (img.href) {
                                 imgItem = (
-                                    <Link href={img.href}>{imgItem}</Link>
+                                    <Link href={img.href}><a>{imgItem}</a></Link>
                                 );
                             }
                             imgItem = (
