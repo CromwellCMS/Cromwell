@@ -49,9 +49,10 @@ export class PostResolver {
         }
     }
 
-    private filterDrafts(posts: Post[], ctx?: TGraphQLContext) {
+    private filterDrafts(posts: (Post | undefined)[], ctx?: TGraphQLContext) {
         return posts.filter(post => {
-            if (post?.published === false) {
+            if (!post) return false;
+            if (post.published === false) {
                 if (this.canGetDraft(ctx)) {
                     return true;
                 } else {
@@ -77,14 +78,16 @@ export class PostResolver {
 
     @Query(() => Post)
     async [getOneBySlugPath](@Arg("slug") slug: string, @Ctx() ctx: TGraphQLContext): Promise<Post | undefined> {
-        const post = await this.repository.getPostBySlug(slug);
-        if (post) return this.filterDrafts([post], ctx)[0];
+        const post = this.filterDrafts([await this.repository.getPostBySlug(slug)], ctx)[0];
+        if (!post) throw new Error(`Post ${slug} not found!`);
+        return post;
     }
 
     @Query(() => Post)
     async [getOneByIdPath](@Arg("id") id: string, @Ctx() ctx: TGraphQLContext): Promise<Post | undefined> {
-        const post = await this.repository.getPostById(id);
-        if (post) return this.filterDrafts([post], ctx)[0];
+        const post = this.filterDrafts([await this.repository.getPostById(id)], ctx)[0];
+        if (!post) throw new Error(`Post ${id} not found!`);
+        return post;
     }
 
     @Authorized<TAuthRole>("administrator")
