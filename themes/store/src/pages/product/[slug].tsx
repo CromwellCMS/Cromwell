@@ -76,7 +76,9 @@ const Product: TCromwellPage<ProductProps> = (props) => {
                                 ListItem={(props) => <ReviewItem data={props.data} key={props.data?.id} />}
                                 usePagination
                                 useShowMoreButton
+                                editorHidden
                                 disableCaching
+                                noDataLabel={'No reviews at the moment. Be the first to leave one!'}
                                 pageSize={10}
                                 blockRef={(block) => reviewsInst.current = block}
                                 loader={async (params) => {

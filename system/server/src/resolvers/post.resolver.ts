@@ -10,11 +10,12 @@ import {
     PostRepository,
     requestPage,
     Tag,
+    TGraphQLContext,
     UpdatePost,
     User,
     UserRepository,
 } from '@cromwell/core-backend';
-import { Arg, Authorized, FieldResolver, Mutation, Query, Resolver, Root } from 'type-graphql';
+import { Arg, Authorized, Ctx, FieldResolver, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
 import { serverFireAction } from '../helpers/server-fire-action';
@@ -39,20 +40,51 @@ export class PostResolver {
     private repository = getCustomRepository(PostRepository);
     private userRepository = getCustomRepository(UserRepository);
 
+    private canGetDraft(ctx?: TGraphQLContext) {
+        if (ctx?.user?.role && (ctx.user.role === 'guest' || ctx.user.role === 'administrator' ||
+            ctx.user.role === 'author')) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private filterDrafts(posts: Post[], ctx?: TGraphQLContext) {
+        return posts.filter(post => {
+            if (post?.published === false) {
+                if (this.canGetDraft(ctx)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            return true;
+        })
+    }
+
     @Query(() => PagedPost)
-    async [getManyPath](@Arg("pagedParams") pagedParams: PagedParamsInput<Post>):
+    async [getManyPath](@Arg("pagedParams") pagedParams: PagedParamsInput<Post>,
+        @Ctx() ctx: TGraphQLContext):
         Promise<TPagedList<TPost>> {
+        if (!this.canGetDraft(ctx)) {
+            // No auth, return only published posts
+            return this.repository.getFilteredPosts(pagedParams, {
+                published: true
+            });
+        }
         return this.repository.getPosts(pagedParams);
     }
 
     @Query(() => Post)
-    async [getOneBySlugPath](@Arg("slug") slug: string): Promise<Post | undefined> {
-        return this.repository.getPostBySlug(slug);
+    async [getOneBySlugPath](@Arg("slug") slug: string, @Ctx() ctx: TGraphQLContext): Promise<Post | undefined> {
+        const post = await this.repository.getPostBySlug(slug);
+        if (post) return this.filterDrafts([post], ctx)[0];
     }
 
     @Query(() => Post)
-    async [getOneByIdPath](@Arg("id") id: string): Promise<Post | undefined> {
-        return this.repository.getPostById(id);
+    async [getOneByIdPath](@Arg("id") id: string, @Ctx() ctx: TGraphQLContext): Promise<Post | undefined> {
+        const post = await this.repository.getPostById(id);
+        if (post) return this.filterDrafts([post], ctx)[0];
     }
 
     @Authorized<TAuthRole>("administrator")
@@ -98,9 +130,15 @@ export class PostResolver {
 
     @Query(() => PagedPost)
     async [getFilteredPath](
+        @Ctx() ctx: TGraphQLContext,
         @Arg("pagedParams", { nullable: true }) pagedParams?: PagedParamsInput<TPost>,
         @Arg("filterParams", { nullable: true }) filterParams?: PostFilterInput,
     ): Promise<TPagedList<TPost> | undefined> {
+        if (!this.canGetDraft(ctx)) {
+            // No auth, return only published posts
+            if (!filterParams) filterParams = {};
+            filterParams.published === true;
+        }
         return this.repository.getFilteredPosts(pagedParams, filterParams);
     }
 
@@ -118,4 +156,3 @@ export class PostResolver {
         return this.repository.getTagsOfPost(post.id);
     }
 }
-

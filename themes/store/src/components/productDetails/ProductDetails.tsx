@@ -57,6 +57,7 @@ export default function ProductDetails(props: {
                     <CContainer id="product_2" className={styles.imageBlock}>
                         <CGallery id="product_1"
                             isConstant
+                            editorHidden
                             gallery={{
                                 images: hasImages ? product.images?.map(i => {
                                     return {
@@ -97,13 +98,13 @@ export default function ProductDetails(props: {
                                 }}
                                 className={styles.productName}>{product?.name}</h1>
                         </CContainer>
-                        <div className={styles.ratingBlock}>
+                        <CContainer id="product_13" className={styles.ratingBlock}>
                             <Rating name="read-only" value={product?.rating?.average} precision={0.5} readOnly />
                             {product?.rating?.reviewsNumber ? (
                                 <a className={styles.ratingCaption} onClick={scrollToReviews}>
                                     ({product?.rating?.average ? product?.rating?.average.toFixed(2) : ''}) {product?.rating?.reviewsNumber} reviews.</a>
                             ) : null}
-                        </div>
+                        </CContainer>
                         <CContainer id="product_5" className={styles.priceBlock}>
                             {(product?.oldPrice !== undefined && product.oldPrice !== null) && (
                                 <p className={styles.oldPrice}>{cstore.getPriceWithCurrency(product.oldPrice)}</p>

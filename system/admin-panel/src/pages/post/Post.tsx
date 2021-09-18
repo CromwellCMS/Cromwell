@@ -215,6 +215,14 @@ const Post = (props) => {
         setIsSaving(false);
     }
 
+    const handleUnpublish = async () => {
+        setIsSaving(true);
+        const input = await getInput();
+        input.published = false;
+        await saveInput(input);
+        setIsSaving(false);
+    }
+
     const handleSave = async () => {
         setIsSaving(true);
         await saveInput(await getInput());
@@ -260,9 +268,7 @@ const Post = (props) => {
                         <p className={styles.title} onClick={handleOpenSettings}>{postData?.title ?? ''}</p>
                     </Tooltip>
                 </div>
-                <div
-                    ref={actionsRef}
-                >
+                <div ref={actionsRef}>
                     <Tooltip title="Post meta info">
                         <IconButton onClick={handleOpenSettings}
                             style={{ marginRight: '10px' }}
@@ -278,9 +284,11 @@ const Post = (props) => {
                             isSettingsOpen={isSettingsOpen}
                             onClose={handleCloseSettings}
                             anchorEl={actionsRef.current}
+                            isSaving={isSaving}
+                            handleUnpublish={handleUnpublish}
                         />
                     )}
-                    {pageFullUrl && (
+                    {pageFullUrl && postData?.published && (
                         <Tooltip title="Open post page in new tab">
                             <IconButton
                                 style={{ marginRight: '10px' }}

@@ -32,6 +32,11 @@
     margin-bottom: 15px;
 }
 
+.imageField {
+    @extend .textField;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.42);
+}
+
 .descriptionEditor {
     @include styledScrollBar;
     border: 1px solid #bbb;
@@ -42,6 +47,7 @@
 }
 
 :global(.modeDark) {
+
     .header,
     .fields {
         background-color: #333;

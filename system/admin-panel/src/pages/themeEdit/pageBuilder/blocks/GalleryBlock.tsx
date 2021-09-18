@@ -66,6 +66,8 @@ export function GalleryBlockSidebar(props: TBlockMenuProps) {
                 images={data?.gallery?.images}
                 onChange={(val) => handleChange('images', val)}
                 className={styles.settingsInput}
+                hideSrc
+                editLink
             />
             <TextField
                 fullWidth
@@ -183,7 +185,7 @@ export function GalleryBlockSidebar(props: TBlockMenuProps) {
             <FormControl
                 fullWidth
                 className={styles.settingsInput} >
-                <InputLabel >Object fit</InputLabel>
+                <InputLabel >Image fit</InputLabel>
                 <Select
                     fullWidth
                     onChange={handleTextInput('backgroundSize')}

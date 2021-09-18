@@ -3,7 +3,7 @@
   "version": "1.0.11",
   "keywords": [],
   "license": "MIT",
-  "author": "CromwellCMS",
+  "author": "Astrex LLC",
   "main": "build/cli.js",
   "bin": {
     "cromwell": "./bin/cromwell",

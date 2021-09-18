@@ -3,7 +3,7 @@
   "version": "1.1.5",
   "description": "",
   "license": "MIT",
-  "author": "CromwellCMS",
+  "author": "Astrex LLC",
   "main": "buld/renderer.js",
   "files": [
     "build",

@@ -2,7 +2,7 @@
   "name": "@cromwell/theme-blog",
   "version": "1.1.3",
   "license": "MIT",
-  "author": "CromwellCMS",
+  "author": "Astrex LLC",
   "main": "package.json",
   "files": [
     "build",
@@ -70,6 +70,7 @@
     "type": "theme",
     "title": "Default Blog",
     "image": "static/blog.png",
+    "author": "Cromwell CMS",
     "excerpt": "Default CromwellCMS Blog theme",
     "description": "<p>Default Blog theme. Includes featured posts, tag pages, tag search, website search, newsletter form, custom pages</p>",
     "plugins": [

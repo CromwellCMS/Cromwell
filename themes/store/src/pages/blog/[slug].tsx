@@ -1,5 +1,5 @@
 import { TCromwellPage, TGetStaticProps, TPost } from '@cromwell/core';
-import { CContainer, getGraphQLClient, Link, LoadBox } from '@cromwell/core-frontend';
+import { CContainer, getGraphQLClient, Link, LoadBox, CText } from '@cromwell/core-frontend';
 import { useRouter } from 'next/router';
 import React from 'react';
 
@@ -36,15 +36,17 @@ const BlogPostPage: TCromwellPage<BlogPostProps> = (props) => {
                         <LoadBox />
                     )}
                     {(!post && !(router && router.isFallback)) && (
-                        <div className={styles.notFound}>
-                            <h3>Post not found</h3>
-                        </div>
+                        <CContainer id="blog_08" className={styles.notFound}>
+                            <CText id="blog_09" text={{ textElementType: 'h3' }}>Post not found</CText>
+                        </CContainer>
                     )}
                     {post?.title && (
-                        <h1 className={styles.postTitle}>{post?.title}</h1>
+                        <CContainer id="blog_04">
+                            <h1 className={styles.postTitle}>{post?.title}</h1>
+                        </CContainer>
                     )}
                     {post?.tags && (
-                        <div className={postStyles.tagsBlock}>
+                        <CContainer className={postStyles.tagsBlock} id="blog_05">
                             {post?.tags?.map(tag => {
                                 return (
                                     <Link href={`/tag/${tag.slug}`} key={tag.id}>
@@ -52,17 +54,19 @@ const BlogPostPage: TCromwellPage<BlogPostProps> = (props) => {
                                     </Link>
                                 )
                             })}
-                        </div>
+                        </CContainer>
                     )}
                     {post && (
-                        <div className={styles.postInfo}>
+                        <CContainer id="blog_06" className={styles.postInfo}>
                             <PostInfo data={post} />
-                        </div>
+                        </CContainer>
                     )}
                     {post?.content && (
-                        <div id="text-editor" dangerouslySetInnerHTML={{
-                            __html: post?.content
-                        }}></div>
+                        <CContainer id="blog_07">
+                            <div id="text-editor" dangerouslySetInnerHTML={{
+                                __html: post?.content
+                            }}></div>
+                        </CContainer>
                     )}
                 </CContainer>
             </CContainer>

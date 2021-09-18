@@ -72,7 +72,7 @@ const ReviewForm = (props: {
 
     return (
         <div className={styles.reviewBox}>
-            <h3 className={styles.reviewBoxTitle}>Leave your review</h3>
+            <h3 className={styles.reviewBoxTitle}>Write a review</h3>
             <Tooltip open={canValidate && (!name || name == '')} title="This field is required" arrow>
                 <TextField label="Name"
                     variant="outlined"

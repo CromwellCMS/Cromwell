@@ -3,7 +3,7 @@
   "version": "1.1.2",
   "keywords": [],
   "license": "MIT",
-  "author": "CromwellCMS",
+  "author": "Astrex LLC",
   "main": "startup.js",
   "types": "build/types/exports.d.ts",
   "files": [

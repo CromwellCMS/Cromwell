@@ -4,7 +4,7 @@
   "description": "",
   "keywords": [],
   "license": "MIT",
-  "author": "CromwellCMS",
+  "author": "Astrex LLC",
   "main": "build/server.js",
   "files": [
     "build",

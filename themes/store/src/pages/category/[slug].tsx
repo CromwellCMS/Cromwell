@@ -65,46 +65,51 @@ const ProductCategory: TCromwellPage<CategoryProps> = (props) => {
                             <CategorySort listId={listId} />
                         </div>
                     </CContainer>
-                    {category && (
-                        <CList<TProduct>
-                            id={listId}
-                            blockRef={(block) => listInst.current = block}
-                            ListItem={(p) => {
-                                return (
-                                    <div className={styles.productWrapper}>
-                                        <ProductCard
-                                            data={p.data}
-                                            className={styles.product}
-                                            key={p.data?.id}
-                                            attributes={props.attributes}
-                                        />
-                                    </div>
-                                )
-                            }}
-                            usePagination
-                            useShowMoreButton
-                            useQueryPagination
-                            disableCaching
-                            pageSize={20}
-                            scrollContainerSelector={`.${layoutStyles.Layout}`}
-                            firstBatch={props.products}
-                            loader={async (params) => {
-                                return client?.getProductsFromCategory(category.id, params)
-                            }}
-                            cssClasses={{
-                                page: styles.productList
-                            }}
-                            elements={{
-                                pagination: Pagination
-                            }}
-                        />
-                    )}
-                    {category?.description && (
-                        <div
-                            className={styles.description}
-                            dangerouslySetInnerHTML={{ __html: category.description }}
-                        ></div>
-                    )}
+                    <CContainer id="category_11">
+                        {category && (
+                            <CList<TProduct>
+                                editorHidden
+                                id={listId}
+                                blockRef={(block) => listInst.current = block}
+                                ListItem={(p) => {
+                                    return (
+                                        <div className={styles.productWrapper}>
+                                            <ProductCard
+                                                data={p.data}
+                                                className={styles.product}
+                                                key={p.data?.id}
+                                                attributes={props.attributes}
+                                            />
+                                        </div>
+                                    )
+                                }}
+                                usePagination
+                                useShowMoreButton
+                                useQueryPagination
+                                disableCaching
+                                pageSize={20}
+                                scrollContainerSelector={`.${layoutStyles.Layout}`}
+                                firstBatch={props.products}
+                                loader={async (params) => {
+                                    return client?.getProductsFromCategory(category.id, params)
+                                }}
+                                cssClasses={{
+                                    page: styles.productList
+                                }}
+                                elements={{
+                                    pagination: Pagination
+                                }}
+                            />
+                        )}
+                    </CContainer>
+                    <CContainer id="category_14">
+                        {category?.description && (
+                            <div
+                                className={styles.description}
+                                dangerouslySetInnerHTML={{ __html: category.description }}
+                            ></div>
+                        )}
+                    </CContainer>
                 </CContainer>
             </CContainer>
         </Layout>

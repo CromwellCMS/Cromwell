@@ -228,38 +228,6 @@ const ProductList = (props: TPropsType) => {
                             <FilterListIcon />
                         </IconButton>
                     </Tooltip>
-                    <Drawer
-                        classes={{ paper: styles.filterDrawer }}
-                        variant="persistent"
-                        anchor={'left'}
-                        open={showFilter}
-                        onClose={() => setShowFilter(false)}>
-                        <div className={styles.filterHeader}>
-                            <h3>Filter</h3>
-                            <Tooltip title="Close">
-                                <IconButton
-                                    onClick={handleToggleFilter}
-                                    aria-label="close filter"
-                                >
-                                    <CloseIcon />
-                                </IconButton>
-                            </Tooltip>
-                        </div>
-                        <CPlugin
-                            plugin={{
-                                instanceSettings: {
-                                    disableMobile: true,
-                                    onChange: onFilterChange,
-                                    getInstance: (inst) => { filterInstRef.current = inst },
-                                    onMount: onFilterMount,
-                                } // as TInstanceSettings
-                            }}
-                            adminPanel={false}
-                            pluginName={filterPluginName}
-                            id="product-filter-plugin"
-                        />
-                    </Drawer>
-
                 </div>
                 <div className={styles.pageActions} >
                     <Tooltip title="Delete selected">
@@ -295,6 +263,37 @@ const ProductList = (props: TPropsType) => {
                     preloader: listPreloader
                 }}
             />
+            <Drawer
+                classes={{ paper: styles.filterDrawer }}
+                variant="persistent"
+                anchor={'left'}
+                open={showFilter}
+                onClose={() => setShowFilter(false)}>
+                <div className={styles.filterHeader}>
+                    <h3>Filter</h3>
+                    <Tooltip title="Close">
+                        <IconButton
+                            onClick={handleToggleFilter}
+                            aria-label="close filter"
+                        >
+                            <CloseIcon />
+                        </IconButton>
+                    </Tooltip>
+                </div>
+                <CPlugin
+                    plugin={{
+                        instanceSettings: {
+                            disableMobile: true,
+                            onChange: onFilterChange,
+                            getInstance: (inst) => { filterInstRef.current = inst },
+                            onMount: onFilterMount,
+                        } // as TInstanceSettings
+                    }}
+                    adminPanel={false}
+                    pluginName={filterPluginName}
+                    id="product-filter-plugin"
+                />
+            </Drawer>
             <ConfirmationModal
                 open={Boolean(productToDelete)}
                 onClose={() => setProductToDelete(null)}

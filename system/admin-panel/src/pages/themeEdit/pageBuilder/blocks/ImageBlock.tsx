@@ -83,7 +83,7 @@ export function ImageBlockSidebar(props: TBlockMenuProps) {
             <FormControl
                 fullWidth
                 className={styles.settingsInput} >
-                <InputLabel >Object fit</InputLabel>
+                <InputLabel >Image fit</InputLabel>
                 <Select
                     fullWidth
                     onChange={handleTextInput('objectFit')}

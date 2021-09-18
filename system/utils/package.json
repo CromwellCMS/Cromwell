@@ -3,7 +3,7 @@
   "version": "1.0.14",
   "keywords": [],
   "license": "MIT",
-  "author": "CromwellCMS",
+  "author": "Astrex LLC",
   "main": "build/exports.js",
   "module": "build/exports.js",
   "types": "build/exports.d.ts",

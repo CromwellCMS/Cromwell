@@ -3,7 +3,7 @@
   "version": "1.1.6",
   "keywords": [],
   "license": "MIT",
-  "author": "CromwellCMS",
+  "author": "Astrex LLC",
   "main": "build/index.js",
   "types": "build",
   "files": [

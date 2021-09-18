@@ -2,7 +2,7 @@ import 'date-fns';
 
 import { resolvePageRoute, serviceLocator, TPost, TTag } from '@cromwell/core';
 import DateFnsUtils from '@date-io/date-fns';
-import { Checkbox, FormControlLabel, IconButton, Popover, TextField } from '@material-ui/core';
+import { Button, Checkbox, FormControlLabel, IconButton, Popover, TextField, Tooltip } from '@material-ui/core';
 import { Close as CloseIcon } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
@@ -18,6 +18,8 @@ const PostSettings = (props: {
     anchorEl: Element;
     allTags?: TTag[] | null;
     onClose: (newData: Partial<TPost>) => void;
+    isSaving?: boolean;
+    handleUnpublish: () => void;
 }) => {
     const { postData } = props;
     const [title, setTitle] = useState<string | undefined>(postData?.title ?? null);
@@ -69,7 +71,7 @@ const PostSettings = (props: {
             }}
         >
             <div className={styles.PostSettings}>
-                <p className={styles.headerText}>Page meta</p>
+                <p className={styles.headerText}>Post meta</p>
                 <IconButton className={styles.closeBtn}
                     id="post-settings-close-btn"
                     onClick={handleClose}>
@@ -154,6 +156,16 @@ const PostSettings = (props: {
                     value={pageDescription ?? ''}
                     onChange={e => setPageDescription(e.target.value)}
                 />
+                {postData?.published && (
+                    <Tooltip title="Remove post from publication">
+                        <Button variant="contained" color="primary"
+                            className={styles.publishBtn}
+                            size="small"
+                            disabled={props.isSaving}
+                            onClick={props.handleUnpublish}
+                        >Unpublish</Button>
+                    </Tooltip>
+                )}
             </div>
         </Popover>
     )
