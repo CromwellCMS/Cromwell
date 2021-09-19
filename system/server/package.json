@@ -4,7 +4,11 @@
   "description": "",
   "keywords": [],
   "license": "MIT",
+  "repository": "https://github.com/CromwellCMS/Cromwell",
   "author": "Astrex LLC",
+  "bugs": {
+    "url": "https://github.com/CromwellCMS/Cromwell/issues"
+  },
   "main": "build/server.js",
   "files": [
     "build",

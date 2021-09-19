@@ -3,7 +3,11 @@
   "version": "1.0.15",
   "keywords": [],
   "license": "MIT",
+  "repository": "https://github.com/CromwellCMS/Cromwell",
   "author": "Astrex LLC",
+  "bugs": {
+    "url": "https://github.com/CromwellCMS/Cromwell/issues"
+  },
   "main": "build/exports.js",
   "module": "build/exports.js",
   "types": "build/exports.d.ts",

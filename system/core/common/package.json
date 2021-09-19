@@ -3,7 +3,11 @@
   "version": "1.1.11",
   "description": "",
   "license": "MIT",
+  "repository": "https://github.com/CromwellCMS/Cromwell",
   "author": "Astrex LLC",
+  "bugs": {
+    "url": "https://github.com/CromwellCMS/Cromwell/issues"
+  },
   "main": "dist/index.js",
   "module": "es/_index.js",
   "types": "es/_index.d.ts",
