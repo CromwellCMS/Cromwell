@@ -1,11 +1,12 @@
 import { getCmsModuleInfo, getLogger, getManagerDir, getModulePackage, getTempDir } from '@cromwell/core-backend';
-import { defaultFrontendDeps, downloader, parseFrontendDeps, TPackage } from '@cromwell/utils';
+import { TPackage } from '@cromwell/utils';
 import fs from 'fs-extra';
 import { resolve } from 'path';
 
 const logger = getLogger(false);
 
 export const checkModules = async (isDevelopment?: boolean, pckgs?: TPackage[]) => {
+    const { downloader } = require('@cromwell/utils/build/downloader');
     // If cms launched for the first time, we need to download bundled modules
     if (!pckgs) {
         await downloader();
@@ -15,7 +16,8 @@ export const checkModules = async (isDevelopment?: boolean, pckgs?: TPackage[]) 
     }
 }
 
-export const checkDepenencies = async () => {
+export const checkDependencies = async () => {
+    const { parseFrontendDeps, defaultFrontendDeps } = require('@cromwell/utils/build/shared');
     // Enforce peerDependencies if some plugin or theme used it as dependency
     const pckg = await getModulePackage();
     const defaultDeps = (await parseFrontendDeps(defaultFrontendDeps)).map(dep => dep.name);

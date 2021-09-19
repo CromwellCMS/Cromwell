@@ -214,7 +214,7 @@ const args = yargs(process.argv.slice(2))
         describe: 'download bundled frontend modules',
         aliases: ['download', 'd'],
         handler: (argv) => {
-            const { downloader } = require('@cromwell/utils');
+            const { downloader } = require('@cromwell/utils/build/downloader');
             downloader();
         }
     })

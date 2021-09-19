@@ -14,7 +14,6 @@ import {
     getThemeBuildDir,
     readCMSConfig,
 } from '@cromwell/core-backend';
-import { downloader } from '@cromwell/utils';
 import fs from 'fs-extra';
 import normalizePath from 'normalize-path';
 import { dirname, resolve } from 'path';
@@ -337,6 +336,7 @@ const linkFiles = async (tempDir: string, themeName: string, options) => {
     await fs.ensureDir(tempDir);
 
     const pckg = await getModulePackage(themeName);
+    const { downloader } = require('@cromwell/utils/build/downloader');
     if (pckg) await downloader({
         rootDir: process.cwd(),
         packages: [pckg],

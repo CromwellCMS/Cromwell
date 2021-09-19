@@ -124,7 +124,7 @@ If you want to edit Nginx settings such as https configuration, you need to edit
 ## 3. Cromwell CLI
 
 Cromwell CMS provides CLI that can create a new Node.js project. 
-First, download and install latest Node.js ** v14-16 ** from https://nodejs.org/en/
+First, download and install latest Node.js ** v14 ** from https://nodejs.org/en/
 
 Navigate to a directory where you want to create a new project subdirectory and run:
 ```sh
@@ -159,7 +159,7 @@ It's recommended to use SQLite only in development. For production, you have to 
 ## 4. NPM
 
 Since the CMS is a set of packages, you can install them via npm.  
-For this example, you also should have installed [Node.js ** v14-16 **](https://nodejs.org/en/) first.  
+For this example, you also should have installed [Node.js ** v14 **](https://nodejs.org/en/) first.  
   
 
 Create a new directory and open terminal/command prompt
