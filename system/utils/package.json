@@ -1,6 +1,6 @@
 {
   "name": "@cromwell/utils",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "keywords": [],
   "license": "MIT",
   "author": "Astrex LLC",
@@ -17,9 +17,9 @@
   },
   "dependencies": {
     "@babel/preset-react": "7.14.5",
-    "@cromwell/core": "1.1.10",
-    "@cromwell/core-backend": "1.0.12",
-    "@cromwell/core-frontend": "1.0.9",
+    "@cromwell/core": "1.1.11",
+    "@cromwell/core-backend": "1.0.13",
+    "@cromwell/core-frontend": "1.0.10",
     "@rollup/plugin-babel": "5.3.0",
     "@rollup/plugin-node-resolve": "13.0.4",
     "@rollup/plugin-virtual": "2.0.3",

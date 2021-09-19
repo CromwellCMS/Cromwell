@@ -1,6 +1,6 @@
 {
   "name": "@cromwell/core-backend",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "",
   "license": "MIT",
   "author": "Astrex LLC",
@@ -17,7 +17,7 @@
     "watch": "npx rollup -cw"
   },
   "dependencies": {
-    "@cromwell/core": "1.1.10",
+    "@cromwell/core": "1.1.11",
     "@nestjs/common": "8.0.6",
     "@nestjs/core": "8.0.6",
     "@nestjs/graphql": "8.0.2",
@@ -26,14 +26,14 @@
     "@nestjs/swagger": "5.0.9",
     "@nestjs/throttler": "2.0.0",
     "bcrypt": "5.0.1",
-    "colors": "1.4.0",
     "class-validator": "0.13.1",
+    "colors": "1.4.0",
     "fastify": "3.20.2",
     "fs-extra": "10.0.0",
     "graphql": "15.5.1",
     "handlebars": "4.7.7",
-    "nodemailer": "6.6.3",
     "node-fetch": "2.6.1",
+    "nodemailer": "6.6.3",
     "normalize-path": "3.0.0",
     "read-package-json-fast": "2.0.3",
     "reading-time": "1.4.0",

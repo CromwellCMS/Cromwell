@@ -1,6 +1,6 @@
 {
   "name": "@cromwell/core-frontend",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "",
   "license": "MIT",
   "author": "Astrex LLC",
@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@apollo/client": "3.2.1",
-    "@cromwell/core": "1.1.10",
+    "@cromwell/core": "1.1.11",
     "@loadable/component": "5.15.0",
     "clsx": "1.1.1",
     "graphql": "15.5.1",
