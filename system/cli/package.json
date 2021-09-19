@@ -1,9 +1,13 @@
 {
   "name": "@cromwell/cli",
-  "version": "1.0.11",
+  "version": "1.0.13",
   "keywords": [],
   "license": "MIT",
+  "repository": "https://github.com/CromwellCMS/Cromwell",
   "author": "Astrex LLC",
+  "bugs": {
+    "url": "https://github.com/CromwellCMS/Cromwell/issues"
+  },
   "main": "build/cli.js",
   "bin": {
     "cromwell": "./bin/cromwell",

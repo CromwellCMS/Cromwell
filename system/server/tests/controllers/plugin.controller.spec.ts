@@ -45,14 +45,14 @@ describe('Plugin Controller', () => {
             })
     });
 
-    it(`/GET admin-bundle`, () => {
-        return request(server)
-            .get(`/v1/plugin/admin-bundle?pluginName=${defaultPlugin}`)
-            .expect(200)
-            .then(response => {
-                expect(response.body).toBeTruthy();
-            })
-    });
+    // it(`/GET admin-bundle`, () => {
+    //     return request(server)
+    //         .get(`/v1/plugin/admin-bundle?pluginName=${defaultPlugin}`)
+    //         .expect(200)
+    //         .then(response => {
+    //             expect(response.body).toBeTruthy();
+    //         })
+    // });
 
     afterAll(async () => {
         await tearDownController(app, testDir);

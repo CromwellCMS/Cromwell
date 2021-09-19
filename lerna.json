@@ -12,7 +12,6 @@
         "plugins/*",
         "system/*",
         "system/core/*",
-        "themes/*",
-        "website"
+        "themes/*"
     ]
 }

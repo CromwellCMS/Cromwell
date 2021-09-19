@@ -12,9 +12,9 @@ export const GraphQLPaths: { [K in Exclude<TDBEntity, 'Theme' | 'Plugin' | 'Post
         deleteMany: "deleteManyGenerics",
     },
     Post: {
-        getOneBySlug: "post",
+        getOneBySlug: "getPostBySlug",
         getOneById: "getPostById",
-        getMany: "posts",
+        getMany: "getPosts",
         create: "createPost",
         update: "updatePost",
         delete: "deletePost",
@@ -23,9 +23,9 @@ export const GraphQLPaths: { [K in Exclude<TDBEntity, 'Theme' | 'Plugin' | 'Post
         getFiltered: "getFilteredPosts",
     },
     Product: {
-        getOneBySlug: "product",
+        getOneBySlug: "getProductBySlug",
         getOneById: "getProductById",
-        getMany: "products",
+        getMany: "getProducts",
         create: "createProduct",
         update: "updateProduct",
         delete: "deleteProduct",
@@ -35,9 +35,9 @@ export const GraphQLPaths: { [K in Exclude<TDBEntity, 'Theme' | 'Plugin' | 'Post
         getFiltered: "getFilteredProducts"
     },
     User: {
-        getOneBySlug: "user",
+        getOneBySlug: "getUserBySlug",
         getOneById: "getUserById",
-        getMany: "users",
+        getMany: "getUsers",
         create: "createUser",
         update: "updateUser",
         delete: "deleteUser",
@@ -46,9 +46,9 @@ export const GraphQLPaths: { [K in Exclude<TDBEntity, 'Theme' | 'Plugin' | 'Post
         getFiltered: "getFilteredUsers"
     },
     ProductCategory: {
-        getOneBySlug: "productCategory",
+        getOneBySlug: "getProductCategoryBySlug",
         getOneById: "getProductCategoryById",
-        getMany: "productCategories",
+        getMany: "getProductCategories",
         create: "createProductCategory",
         update: "updateProductCategory",
         delete: "deleteProductCategory",
@@ -59,7 +59,7 @@ export const GraphQLPaths: { [K in Exclude<TDBEntity, 'Theme' | 'Plugin' | 'Post
     },
     Attribute: {
         getOneBySlug: "",
-        getOneById: "getAttribute",
+        getOneById: "getAttributeById",
         getMany: "getAttributes",
         create: "createAttribute",
         update: "updateAttribute",
@@ -68,7 +68,7 @@ export const GraphQLPaths: { [K in Exclude<TDBEntity, 'Theme' | 'Plugin' | 'Post
     },
     ProductReview: {
         getOneBySlug: "getProductReviewBySlug",
-        getOneById: "getProductReview",
+        getOneById: "getProductReviewById",
         getMany: "getProductReviews",
         create: "createProductReview",
         update: "updateProductReview",

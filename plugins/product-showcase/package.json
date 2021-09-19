@@ -1,9 +1,13 @@
 {
   "name": "@cromwell/plugin-product-showcase",
-  "version": "1.0.8",
+  "version": "1.0.10",
   "description": "",
   "license": "MIT",
+  "repository": "https://github.com/CromwellCMS/Cromwell",
   "author": "Astrex LLC",
+  "bugs": {
+    "url": "https://github.com/CromwellCMS/Cromwell/issues"
+  },
   "files": [
     "build",
     "static",
@@ -44,7 +48,7 @@
     "@cromwell/cli": "^1.0.2",
     "@cromwell/core": "^1.1.3",
     "@cromwell/core-backend": "^1.0.3",
-    "@cromwell/core-frontend": "^1.0.2",
+    "@cromwell/core-frontend": "^1.1.0",
     "@cromwell/utils": "^1.0.2",
     "graphql": "15.5.1",
     "react": "17.0.2",
