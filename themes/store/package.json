@@ -30,7 +30,7 @@
     "@apollo/client": "3.2.1",
     "@cromwell/cli": "1.0.12",
     "@cromwell/core": "1.1.11",
-    "@cromwell/core-frontend": "1.0.10",
+    "@cromwell/core-frontend": "1.1.0",
     "@cromwell/plugin-main-menu": "1.0.12",
     "@cromwell/plugin-product-showcase": "1.0.9",
     "@cromwell/plugin-stripe": "1.0.1",

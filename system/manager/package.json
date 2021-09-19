@@ -20,7 +20,7 @@
     "@cromwell/cli": "1.0.12",
     "@cromwell/core": "1.1.11",
     "@cromwell/core-backend": "1.0.13",
-    "@cromwell/core-frontend": "1.0.10",
+    "@cromwell/core-frontend": "1.1.0",
     "@cromwell/renderer": "1.1.6",
     "@cromwell/server": "1.1.7",
     "@cromwell/utils": "1.0.15",

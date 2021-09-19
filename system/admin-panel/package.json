@@ -40,7 +40,7 @@
     "@codexteam/ajax": "4.2.0",
     "@cromwell/core": "1.1.11",
     "@cromwell/core-backend": "1.0.13",
-    "@cromwell/core-frontend": "1.0.10",
+    "@cromwell/core-frontend": "1.1.0",
     "@cromwell/editorjs-image": "2.7.2",
     "@cromwell/plugin-product-filter": "1.0.10",
     "@cromwell/utils": "1.0.15",
