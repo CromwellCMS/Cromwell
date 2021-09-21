@@ -1,4 +1,7 @@
-import { adminPanelMessages, getAdminPanelStartupPath, getLogger, readCMSConfig } from '@cromwell/core-backend';
+import { readCMSConfig } from '@cromwell/core-backend/dist/helpers/cms-settings';
+import { adminPanelMessages } from '@cromwell/core-backend/dist/helpers/constants';
+import { getLogger } from '@cromwell/core-backend/dist/helpers/logger';
+import { getAdminPanelStartupPath } from '@cromwell/core-backend/dist/helpers/paths';
 import tcpPortUsed from 'tcp-port-used';
 
 import config from '../config';
@@ -37,7 +40,7 @@ export const startAdminPanel = async (command?: TAdminPanelCommands, options?: {
                 if (cmsConfig.useWatch) {
                     await closeAdminPanel();
                     try {
-                        await tcpPortUsed.waitUntilFree(port, 500, 4000);
+                        await tcpPortUsed.waitUntilFree(parseInt(port as any), 500, 4000);
                     } catch (e) { console.error(e) }
                     await startAdminPanel(command);
                 }

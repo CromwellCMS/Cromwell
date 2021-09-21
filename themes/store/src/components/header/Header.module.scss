@@ -127,6 +127,8 @@ div.cart {
 
 .cartExpandIcon {
     display: flex;
+    width: 18px;
+    height: 18px;
 }
 
 .itemsInCart {
@@ -288,7 +290,6 @@ li.optionsItem {
 }
 
 @media screen and (max-width: $mobileBreakpoint) {
-
     .topPanel,
     .mainPanel,
     .mainMenu {

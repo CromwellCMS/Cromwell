@@ -1,7 +1,7 @@
 const fs = require('fs-extra');
 const { resolve } = require('path');
 const { spawn, spawnSync } = require('child_process');
-const { getAdminPanelServiceBuildDir } = require('@cromwell/core-backend');
+const { getAdminPanelServiceBuildDir } = require('@cromwell/core-backend/dist/helpers/paths');
 const yargs = require('yargs-parser');
 
 // 'build' | 'dev' | 'prod'

@@ -5,6 +5,7 @@ import {
     NotificationsNone as NotificationsNoneIcon,
     Update as UpdateIcon,
 } from '@material-ui/icons';
+import { HelpOutline as HelpOutlineIcon } from '@material-ui/icons';
 import { Alert, AlertProps } from '@material-ui/lab';
 import clsx from 'clsx';
 import React, { useRef, useState } from 'react';
@@ -26,7 +27,7 @@ type TPropsType = PropsType<PropsType, { color?: string },
 
 
 function NotificationCenter(props: TPropsType) {
-    const [open, setopen] = useState(false);
+    const [open, setOpen] = useState(false);
     const popperAnchorEl = useRef<HTMLDivElement | null>(null);
     const client = getRestApiClient();
 
@@ -41,7 +42,8 @@ function NotificationCenter(props: TPropsType) {
     const notifications = props.status?.notifications;
 
     const handleOpen = () => {
-        setopen(true)
+        if (!notifications?.length) return;
+        setOpen(true)
     }
 
     const handleStartUpdate = async () => {
@@ -68,13 +70,17 @@ function NotificationCenter(props: TPropsType) {
             <Tooltip title={tipText}>
                 <IconButton
                     onClick={handleOpen}
+                    style={{
+                        cursor: notifications?.length ? 'pointer' : 'initial',
+                        opacity: notifications?.length ? '1' : '0.6',
+                    }}
                 >
                     <NotificationIcon htmlColor={props.color} />
                 </IconButton>
             </Tooltip>
             <Popover open={open} anchorEl={popperAnchorEl.current}
                 style={{ zIndex: 9999 }}
-                onClose={() => setopen(false)}
+                onClose={() => setOpen(false)}
                 anchorOrigin={{
                     vertical: 'bottom',
                     horizontal: 'right',
@@ -107,7 +113,18 @@ function NotificationCenter(props: TPropsType) {
                             if (note.type === 'error') severity = 'error';
                             return (
                                 <Grid key={index} item container xs={12} className={styles.item}>
-                                    <Alert severity={severity} className={styles.alert}>{note.message}</Alert>
+                                    <Alert severity={severity} className={styles.alert}
+                                        classes={{ message: styles.message }}>
+                                        <p>{note.message}</p>
+                                        {note.documentationLink && (
+                                            <Tooltip title="Documentation">
+                                                <IconButton
+                                                    onClick={() => window.open(note.documentationLink, '_blank')}>
+                                                    <HelpOutlineIcon />
+                                                </IconButton>
+                                            </Tooltip>
+                                        )}
+                                    </Alert>
                                 </Grid>
                             )
                         })

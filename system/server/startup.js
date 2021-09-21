@@ -1,6 +1,7 @@
 const fs = require('fs-extra');
 const { spawn, spawnSync } = require('child_process');
-const { getServerDir, serverMessages, getServerBuildProxyPath, getServerBuildDir } = require('@cromwell/core-backend');
+const { getServerDir, getServerBuildProxyPath, getServerBuildDir } = require('@cromwell/core-backend/dist/helpers/paths');
+const { serverMessages } = require('@cromwell/core-backend/dist/helpers/constants');
 const normalizePath = require('normalize-path');
 
 // 'build' | 'prod' | 'dev'

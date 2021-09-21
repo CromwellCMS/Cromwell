@@ -1,6 +1,6 @@
 {
   "name": "@cromwell/core-backend",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "",
   "license": "MIT",
   "repository": "https://github.com/CromwellCMS/Cromwell",
@@ -8,9 +8,9 @@
   "bugs": {
     "url": "https://github.com/CromwellCMS/Cromwell/issues"
   },
-  "main": "dist/index.js",
+  "main": "dist/_index.js",
   "module": "es/_index.js",
-  "types": "es/_index.d.ts",
+  "types": "dist/_index.d.ts",
   "files": [
     "/dist",
     "/es"
@@ -21,7 +21,7 @@
     "watch": "npx rollup -cw"
   },
   "dependencies": {
-    "@cromwell/core": "1.1.12",
+    "@cromwell/core": "1.1.13",
     "@nestjs/common": "8.0.6",
     "@nestjs/core": "8.0.6",
     "@nestjs/graphql": "8.0.2",

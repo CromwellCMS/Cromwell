@@ -1,5 +1,4 @@
 import commonjs from '@rollup/plugin-commonjs';
-import nodeResolve from '@rollup/plugin-node-resolve';
 import { isAbsolute, resolve } from 'path';
 import postcss from 'rollup-plugin-postcss';
 import typescript from 'rollup-plugin-ts-compiler';
@@ -16,7 +15,7 @@ const getOutput = (format = 'esm') => {
     if (format === 'esm') {
         return { dir: resolve(__dirname, 'es'), format, sourcemap: true, };
     }
-    return { file: resolve(__dirname, 'dist/index.js'), format };
+    return { dir: resolve(__dirname, 'dist'), format };
 };
 
 const sharedState = {};
@@ -28,17 +27,16 @@ const getPlugins = () => {
             compilerOptions: {
                 declaration: true,
                 declarationMap: true,
-                declarationDir: resolve(__dirname, 'es')
+                declarationDir: resolve(__dirname, 'dist')
             },
             monorepo: true,
         }),
-        nodeResolve(),
         commonjs(),
         postcss({
-            extract: false,
+            extract: true,
             modules: true,
             writeDefinitions: false,
-            inject: true,
+            inject: false,
             use: ['sass'],
         }),
         // terser(),
@@ -50,6 +48,7 @@ export default [
         input,
         output: getOutput('cjs'),
         plugins: getPlugins(),
+        preserveModules: true,
         external,
         watch: {
             clearScreen: false,
@@ -65,6 +64,7 @@ export default [
         input,
         output: getOutput('esm'),
         plugins: getPlugins(),
+        preserveModules: true,
         external,
         watch: {
             clearScreen: false,

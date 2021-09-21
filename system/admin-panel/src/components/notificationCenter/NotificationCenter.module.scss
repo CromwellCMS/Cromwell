@@ -4,10 +4,10 @@
     position: relative;
 }
 
-.list {
+div.list {
     padding: 15px;
     background-color: #f3f3f3;
-    max-width: 300px;
+    max-width: 350px;
     width: 300px;
     overflow: auto;
     max-height: 90vh;
@@ -59,6 +59,13 @@ div.alert {
     :global(.MuiAlert-message) {
         padding: 0;
     }
+}
+
+div.message {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
 }
 
 .changelogTitle {

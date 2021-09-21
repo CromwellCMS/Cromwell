@@ -17,6 +17,7 @@ export const usePatchForRedirects = () => {
                 const redirect = findRedirect(url);
                 if (redirect?.type === 'rewrite' && redirect.from) {
                     logInfo('router.push rewrite', redirect);
+                    if (!options) options = {};
                     (options as any).rewriteTo = url;
                     (options as any).rewriteFrom = redirect.from;
 

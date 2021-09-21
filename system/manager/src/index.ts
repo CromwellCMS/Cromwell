@@ -1,5 +1,5 @@
 import { setStoreItem } from '@cromwell/core';
-import { readCMSConfigSync } from '@cromwell/core-backend';
+import { readCMSConfigSync } from '@cromwell/core-backend/dist/helpers/cms-settings';
 
 const cmsConfig = readCMSConfigSync();
 setStoreItem('cmsSettings', cmsConfig);

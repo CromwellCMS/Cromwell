@@ -4,7 +4,8 @@ let normalizePath;
 let nodeRequire;
 let fs: typeof import('fs-extra');
 let requireFromString;
-let coreBackend: typeof import('@cromwell/core-backend');
+let coreBackendPaths: typeof import('@cromwell/core-backend/dist/helpers/paths');
+let coreBackendCmsSettings: typeof import('@cromwell/core-backend/dist/helpers/cms-settings');
 let pathResolve: (typeof import('path'))['resolve'];
 let hasRequired = false;
 
@@ -16,7 +17,8 @@ const checkBackendModules = () => {
     nodeRequire = (name: string) => eval(`require('${normalizePath(name)}');`);
     fs = nodeRequire('fs-extra');
     requireFromString = nodeRequire('require-from-string');
-    coreBackend = nodeRequire('@cromwell/core-backend');
+    coreBackendPaths = nodeRequire('@cromwell/core-backend/dist/helpers/paths');
+    coreBackendCmsSettings = nodeRequire('@cromwell/core-backend/dist/helpers/cms-settings');
     pathResolve = nodeRequire('path').resolve;
 }
 
@@ -24,16 +26,16 @@ export const checkCMSConfig = (): void => {
     if (!isServer()) return undefined;
     checkBackendModules();
 
-    const cmsConfigPath = coreBackend.getCmsConfigPathSync();
-    const config = coreBackend.readCMSConfigSync(cmsConfigPath);
+    const cmsConfigPath = coreBackendPaths.getCmsConfigPathSync();
+    const config = coreBackendCmsSettings.readCMSConfigSync(cmsConfigPath);
 
     if (!config.serviceSecret) {
         (async () => {
             try {
-                let serverCachePath = pathResolve(coreBackend.getServerTempDir(), 'cache');
+                let serverCachePath = pathResolve(coreBackendPaths.getServerTempDir(), 'cache');
                 if (!fs.pathExistsSync(serverCachePath)) {
                     serverCachePath = pathResolve(
-                        coreBackend.getServerTempDir(pathResolve(process.cwd(), '../../')),
+                        coreBackendPaths.getServerTempDir(pathResolve(process.cwd(), '../../')),
                         'cache');
                 }
 
@@ -56,15 +58,15 @@ export const getPluginCjsPath = async (pluginName: string): Promise<{
 } | undefined> => {
     if (!isServer()) return undefined;
     checkBackendModules();
-    const pluginDir = await coreBackend.getNodeModuleDir(pluginName);
+    const pluginDir = await coreBackendPaths.getNodeModuleDir(pluginName);
     if (!pluginDir) return;
-    const buildDir = pathResolve(pluginDir, coreBackend.buildDirName);
+    const buildDir = pathResolve(pluginDir, coreBackendPaths.buildDirName);
 
-    let cjsPath = coreBackend.getPluginFrontendCjsPath(buildDir);
+    let cjsPath = coreBackendPaths.getPluginFrontendCjsPath(buildDir);
     if (cjsPath) cjsPath = normalizePath(cjsPath);
     if (cjsPath && !(await fs.pathExists(cjsPath))) return undefined;
 
-    let metaPath: string | undefined = coreBackend.getPluginFrontendMetaPath(buildDir);
+    let metaPath: string | undefined = coreBackendPaths.getPluginFrontendMetaPath(buildDir);
     if (!(await fs.pathExists(metaPath))) metaPath = undefined;
 
     return {

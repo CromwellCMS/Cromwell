@@ -1,31 +1,25 @@
 import { sleep, TModuleConfig, TPackageCromwellConfig } from '@cromwell/core';
+import { getLogger } from '@cromwell/core-backend/dist/helpers/logger';
 import {
     getCmsModuleConfig,
     getCmsModuleInfo,
-    getLogger,
     getRendererTempDevDir,
     getThemeNextBuildDirByPath,
-} from '@cromwell/core-backend';
-import { rollupConfigWrapper } from '@cromwell/utils';
-import dateTime from 'date-time';
+} from '@cromwell/core-backend/dist/helpers/paths';
 import fs from 'fs-extra';
-import prettyBytes from 'pretty-bytes';
-import ms from 'pretty-ms';
-import { OutputOptions, rollup, RollupWatcherEvent, watch as rollupWatch } from 'rollup';
+import { OutputOptions, RollupWatcherEvent } from 'rollup';
 
 import { rendererBuildAndSaveTheme, rendererStartWatchDev } from '../managers/rendererManager';
-import { checkDepenencies, checkModules } from './checkModules';
+import { checkDependencies, checkModules } from './checkModules';
 
-const { handleError, bold, underline, cyan, stderr, green } = require('rollup/dist/shared/loadConfigFile.js');
-const { relativeId } = require('rollup/dist/shared/rollup.js');
+
 const logger = getLogger(false);
 
 export const buildTask = async (watch?: boolean, port?: string) => {
     const workingDir = process.cwd();
-
     const moduleInfo = await getCmsModuleInfo();
     const moduleConfig = await getCmsModuleConfig();
-    await checkDepenencies();
+    await checkDependencies();
 
     const errorExample = `
     {
@@ -107,7 +101,10 @@ export const buildTask = async (watch?: boolean, port?: string) => {
 const rollupBuild = async (moduleInfo: TPackageCromwellConfig, moduleConfig?: TModuleConfig, watch?: boolean): Promise<boolean> => {
     if (!moduleInfo || !moduleInfo.type) return false;
     let rollupBuildSuccess = false;
+    const { rollup, watch: rollupWatch } = require('rollup');
+
     try {
+        const { rollupConfigWrapper } = require('@cromwell/utils');
         const rollupConfig = await rollupConfigWrapper(moduleInfo, moduleConfig, watch);
 
         if (rollupConfig.length === 0) {
@@ -176,9 +173,31 @@ const rollupBuild = async (moduleInfo: TPackageCromwellConfig, moduleConfig?: TM
     return rollupBuildSuccess;
 }
 
+let handleError, bold, underline, cyan, stderr, green, relativeId, dateTime, prettyBytes, ms;
+
+const requireDevDeps = () => {
+    if (!handleError || !bold) {
+        const loadConfigFile = require('rollup/dist/shared/loadConfigFile.js');
+        handleError = loadConfigFile.handleError;
+        bold = loadConfigFile.bold;
+        underline = loadConfigFile.underline;
+        cyan = loadConfigFile.cyan;
+        stderr = loadConfigFile.stderr;
+        green = loadConfigFile.green;
+        relativeId = loadConfigFile.relativeId;
+        const rollupShared = require('rollup/dist/shared/rollup.js');
+        relativeId = rollupShared.relativeId
+
+        dateTime = require('date-time');
+        prettyBytes = require('pretty-bytes');
+        ms = require('pretty-ms');
+    }
+}
 
 // Copied from rollup's repo
 const onRollupEvent = (done?: (success: boolean) => void) => (event: RollupWatcherEvent) => {
+    requireDevDeps();
+
     let input = (event as any)?.input;
     switch (event.code) {
         case 'ERROR':
@@ -220,6 +239,7 @@ const onRollupEvent = (done?: (success: boolean) => void) => (event: RollupWatch
 
 
 const onRollupEventShort = (done?: (success: boolean) => void) => (event: RollupWatcherEvent) => {
+    requireDevDeps();
     switch (event.code) {
         case 'ERROR':
             handleError(event.error, true);
@@ -239,6 +259,7 @@ const onRollupEventShort = (done?: (success: boolean) => void) => (event: Rollup
 }
 
 function printTimings(timings: any) {
+    requireDevDeps();
     Object.keys(timings).forEach(label => {
         const appliedColor =
             label[0] === '#' ? (label[1] !== '#' ? underline : bold) : (text: string) => text;

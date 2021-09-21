@@ -1,4 +1,4 @@
-import { bundledModulesDirName, serviceLocator, setStoreItem } from '@cromwell/core';
+import { bundledModulesDirName, setStoreItem } from '@cromwell/core';
 import {
     adminPanelMessages,
     getAdminPanelServiceBuildDir,
@@ -11,7 +11,6 @@ import {
     readCMSConfigSync,
 } from '@cromwell/core-backend';
 import { getRestApiClient } from '@cromwell/core-frontend';
-import { downloader } from '@cromwell/utils';
 import compress from 'compression';
 import fastify from 'fastify';
 import fastifyStatic from 'fastify-static';
@@ -45,6 +44,7 @@ const start = async () => {
     if (!isDevelopment && !isProduction)
         throw (`devServer::startDevServer: process.argv[2] is invalid - ${env} valid values - "development" and "production"`);
 
+    const { downloader } = require('@cromwell/utils/build/downloader');
     await downloader();
 
     const projectPublicDir = normalizePath(getPublicDir());

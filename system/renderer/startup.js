@@ -4,8 +4,12 @@ const { resolve } = require('path');
 const npmRunPath = require('npm-run-path');
 const { setStoreItem } = require('@cromwell/core');
 const {
-    getRendererDir, getRendererTempDir, getRendererTempDevDir, getRendererBuildDir, readCMSConfigSync, rendererMessages, getLogger
-} = require('@cromwell/core-backend');
+    getRendererDir, getRendererTempDir, getRendererTempDevDir, getRendererBuildDir
+} = require('@cromwell/core-backend/dist/helpers/paths');
+const { readCMSConfigSync } = require('@cromwell/core-backend/dist/helpers/cms-settings');
+const { rendererMessages } = require('@cromwell/core-backend/dist/helpers/constants');
+const { getLogger } = require('@cromwell/core-backend/dist/helpers/logger');
+
 const yargs = require('yargs-parser');
 
 const buildDir = getRendererBuildDir();

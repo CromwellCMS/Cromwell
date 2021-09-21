@@ -51,6 +51,7 @@ import { fetch as isomorphicFetch } from '../helpers/isomorphicFetch';
 export type TGraphQLErrorInfo = {
     graphQLErrors: any;
     networkError: any;
+    resultErrors: any;
     message: string;
     extraInfo: any;
 }
@@ -61,6 +62,7 @@ export const getGraphQLErrorInfo = (error: any): TGraphQLErrorInfo => {
         networkError: error?.networkError,
         message: error?.message,
         extraInfo: error?.extraInfo,
+        resultErrors: error?.networkError?.result?.errors
     }
 }
 

@@ -732,7 +732,9 @@ ${content}
         if (!settings?.smtpConnectionString) {
             status.notifications.push({
                 type: 'warning',
-                message: 'Setup SMTP settings'
+                message: 'Setup SMTP settings',
+                documentationLink: 'https://cromwellcms.com/docs/features/mail',
+                pageLink: '/admin/#//settings'
             })
         }
 

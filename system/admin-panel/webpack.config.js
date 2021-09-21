@@ -1,12 +1,12 @@
 const path = require('path');
 const webpack = require('webpack');
 const resolveFrom = require('resolve-from');
-const coreBackend = require('@cromwell/core-backend');
+const { getAdminPanelDir } = require('@cromwell/core-backend/dist/helpers/paths');
 
-const styleLoaderPath = resolveFrom(coreBackend.getAdminPanelDir(), 'style-loader');
-const cssLoaderPath = resolveFrom(coreBackend.getAdminPanelDir(), 'css-loader');
-const sassLoaderPath = resolveFrom(coreBackend.getAdminPanelDir(), 'sass-loader');
-const tsLoaderPath = resolveFrom(coreBackend.getAdminPanelDir(), 'ts-loader');
+const styleLoaderPath = resolveFrom(getAdminPanelDir(), 'style-loader');
+const cssLoaderPath = resolveFrom(getAdminPanelDir(), 'css-loader');
+const sassLoaderPath = resolveFrom(getAdminPanelDir(), 'sass-loader');
+const tsLoaderPath = resolveFrom(getAdminPanelDir(), 'ts-loader');
 const buildMode = process.env.NODE_ENV || 'production';
 const isProduction = buildMode === 'production';
 const styleLoaderOptions = {

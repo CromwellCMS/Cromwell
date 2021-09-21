@@ -14,7 +14,6 @@ import {
     getThemeBuildDir,
     readCMSConfig,
 } from '@cromwell/core-backend';
-import { downloader } from '@cromwell/utils';
 import fs from 'fs-extra';
 import normalizePath from 'normalize-path';
 import { dirname, resolve } from 'path';
@@ -255,6 +254,7 @@ const devGenerate = async (themeName: string, options) => {
             import 'pure-react-carousel/dist/react-carousel.es.css';
             import 'react-image-lightbox/style.css';
             import '@cromwell/renderer/build/editor-styles.css';
+            import '@cromwell/core-frontend/dist/_index.css';
             `;
 
             pageContent = globalStyles + '\n' + pageContent;
@@ -337,6 +337,7 @@ const linkFiles = async (tempDir: string, themeName: string, options) => {
     await fs.ensureDir(tempDir);
 
     const pckg = await getModulePackage(themeName);
+    const { downloader } = require('@cromwell/utils/build/downloader');
     if (pckg) await downloader({
         rootDir: process.cwd(),
         packages: [pckg],
