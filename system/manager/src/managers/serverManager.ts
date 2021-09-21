@@ -1,4 +1,7 @@
-import { getLogger, getServerStartupPath, readCMSConfig, serverMessages } from '@cromwell/core-backend';
+import { readCMSConfig } from '@cromwell/core-backend/dist/helpers/cms-settings';
+import { serverMessages } from '@cromwell/core-backend/dist/helpers/constants';
+import { getLogger } from '@cromwell/core-backend/dist/helpers/logger';
+import { getServerStartupPath } from '@cromwell/core-backend/dist/helpers/paths';
 import tcpPortUsed from 'tcp-port-used';
 
 import config from '../config';
@@ -43,7 +46,7 @@ export const startServer = async (command?: TServerCommands, argsPort?: string |
                 if (cmsConfig.useWatch) {
                     await closeServer();
                     try {
-                        await tcpPortUsed.waitUntilFree(port, 500, 4000);
+                        await tcpPortUsed.waitUntilFree(parseInt(port as any), 500, 4000);
                     } catch (e) { console.error(e) }
                     await startServer(command);
                 }

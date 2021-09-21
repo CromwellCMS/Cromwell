@@ -1,7 +1,9 @@
 import { resolvePageRoute, setStoreItem, sleep, TCmsSettings, TPageInfo } from '@cromwell/core';
+import { readCMSConfig } from '@cromwell/core-backend/dist/helpers/cms-settings';
+import { rendererMessages } from '@cromwell/core-backend/dist/helpers/constants';
+import { getLogger } from '@cromwell/core-backend/dist/helpers/logger';
 import {
     buildDirName,
-    getLogger,
     getNodeModuleDir,
     getRendererStartupPath,
     getRendererTempDevDir,
@@ -9,10 +11,8 @@ import {
     getThemeBuildDir,
     getThemeRollupBuildDir,
     getThemeTempAdminPanelDir,
-    readCMSConfig,
-    rendererMessages,
-} from '@cromwell/core-backend';
-import { getRestApiClient } from '@cromwell/core-frontend';
+} from '@cromwell/core-backend/dist/helpers/paths';
+import { getRestApiClient } from '@cromwell/core-frontend/dist/api/CRestApiClient';
 import fs from 'fs-extra';
 import fetch, { Response } from 'node-fetch';
 import { resolve } from 'path';
@@ -21,6 +21,7 @@ import tcpPortUsed from 'tcp-port-used';
 import managerConfig from '../config';
 import { TRendererCommands } from '../constants';
 import { closeService, isPortUsed, isServiceRunning, startService } from './baseManager';
+
 
 const { cacheKeys, servicesEnv } = managerConfig;
 const logger = getLogger();
@@ -80,7 +81,7 @@ export const startRenderer = async (command?: TRendererCommands, options?: {
                     try {
                         await closeRenderer();
                         try {
-                            await tcpPortUsed.waitUntilFree(port, 500, 4000);
+                            await tcpPortUsed.waitUntilFree(parseInt(port as any), 500, 4000);
                         } catch (e) { logger.error(e) }
                         await startRenderer(command, options);
                     } catch (error) {
@@ -308,7 +309,7 @@ const rendererAliveWatcher = async (command: TRendererCommands, options: {
     let isAlive = true;
     try {
         if (port) {
-            isAlive = await tcpPortUsed.check(port, '127.0.0.1');
+            isAlive = await tcpPortUsed.check(parseInt(port as any), '127.0.0.1');
         }
     } catch (error) {
         logger.error(error);
@@ -323,7 +324,7 @@ const rendererAliveWatcher = async (command: TRendererCommands, options: {
         }
 
         try {
-            await tcpPortUsed.waitUntilFree(port, 500, 4000);
+            await tcpPortUsed.waitUntilFree(parseInt(port as any), 500, 4000);
         } catch (e) { logger.error(e) }
 
         try {

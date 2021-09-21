@@ -1,4 +1,5 @@
-import { getLogger, getTempDir } from '@cromwell/core-backend';
+import { getLogger } from '@cromwell/core-backend/dist/helpers/logger';
+import { getTempDir } from '@cromwell/core-backend/dist/helpers/paths';
 import { spawn } from 'child_process';
 import normalizePath from 'normalize-path';
 import { resolve } from 'path';

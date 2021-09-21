@@ -1,6 +1,6 @@
 const { resolve } = require('path');
 const fs = require('fs-extra');
-const { getManagerTempDir } = require('@cromwell/core-backend');
+const { getManagerTempDir } = require('@cromwell/core-backend/dist/helpers/paths');
 
 // Do not edit this config. This is default settings.
 // Create your own copy at "/usr/share/cromwell/devconfig.json"

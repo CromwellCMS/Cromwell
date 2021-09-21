@@ -1,14 +1,14 @@
 import { getStoreItem, setStoreItem, TServiceVersions } from '@cromwell/core';
+import { readCMSConfig } from '@cromwell/core-backend/dist/helpers/cms-settings';
+import { getLogger } from '@cromwell/core-backend/dist/helpers/logger';
 import {
-    extractServiceVersion,
     getCoreBackendDir,
     getCoreCommonDir,
     getCoreFrontendDir,
-    getLogger,
     getModulePackage,
-    readCMSConfig,
-} from '@cromwell/core-backend';
-import { getRestApiClient } from '@cromwell/core-frontend';
+} from '@cromwell/core-backend/dist/helpers/paths';
+import { extractServiceVersion } from '@cromwell/core-backend/dist/helpers/service-versions';
+import { getRestApiClient } from '@cromwell/core-frontend/dist/api/CRestApiClient';
 import { ChildProcess, fork, spawn } from 'child_process';
 import fs from 'fs-extra';
 import isRunning from 'is-running';
@@ -31,6 +31,7 @@ const { cacheKeys } = config;
 const serviceProcesses: Record<string, ChildProcess> = {};
 
 export const closeService = async (name: string): Promise<boolean> => {
+    await new Promise(resolve => loadCache(resolve));
     return new Promise(done => {
         const kill = (pid: number) => {
             treeKill(pid, 'SIGTERM', async (err) => {
@@ -54,7 +55,7 @@ export const closeService = async (name: string): Promise<boolean> => {
         } else {
             getProcessPid(name, (pid: number) => {
                 kill(pid);
-            })
+            });
         }
     })
 }
@@ -77,7 +78,7 @@ export const startService = async ({ path, name, args, dir, sync, watchName, onV
         stdio: sync ? 'inherit' : 'pipe',
         cwd: dir ?? process.cwd(),
     });
-    await saveProcessPid(name, proc.pid);
+    await saveProcessPid(name, process.pid);
     serviceProcesses[name] = proc;
     proc?.stdout?.on('data', buff => console.log(buff?.toString?.() ?? buff));
     proc?.stderr?.on('data', buff => console.error(buff?.toString?.() ?? buff));
@@ -97,7 +98,7 @@ export const isServiceRunning = (name: string): Promise<boolean> => {
 }
 
 export const isPortUsed = (port: number): Promise<boolean> => {
-    return tcpPortUsed.check(port, '127.0.0.1');
+    return tcpPortUsed.check(parseInt(port as any), '127.0.0.1');
 }
 
 type TStartOptions = {
@@ -114,12 +115,11 @@ export const startSystem = async (options: TStartOptions) => {
     const isDevelopment = scriptName === 'development';
 
     const cmsconfig = await readCMSConfig();
+    await new Promise(resolve => loadCache(resolve));
 
     setStoreItem('environment', {
         mode: cmsconfig.env ?? isDevelopment ? 'dev' : 'prod',
     });
-
-    await new Promise(resolve => loadCache(resolve));
 
     await checkConfigs();
 
@@ -129,8 +129,6 @@ export const startSystem = async (options: TStartOptions) => {
         await startAdminPanel('build');
         return;
     }
-
-    await saveProcessPid(cacheKeys.manager, process.pid);
 
     if (isDevelopment) {
 
@@ -176,6 +174,7 @@ export const startServiceByName = async (options: TStartOptions) => {
     }
 
     const cmsconfig = await readCMSConfig();
+    await new Promise(resolve => loadCache(resolve));
 
     setStoreItem('environment', {
         mode: cmsconfig.env ?? isDevelopment ? 'dev' : 'prod',
@@ -235,7 +234,6 @@ export const closeSystem = async () => {
     await closeAdminPanel();
     await closeRenderer();
     await closeServer();
-    await closeService(cacheKeys.manager);
 }
 
 /**
@@ -311,7 +309,7 @@ export const killByPid = async (pid: number) => {
 nodeCleanup(() => {
     Object.values(serviceProcesses).forEach(child => {
         try {
-            child?.kill()
+            child?.kill();
         } catch (error) {
             logger.error(error);
         }

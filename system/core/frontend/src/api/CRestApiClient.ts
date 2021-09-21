@@ -101,18 +101,24 @@ export class CRestApiClient {
                 // If backend, try to find service secret key to make 
                 // authorized requests to the API server.
                 const nodeRequire = (name: string) => eval(`require('${name}');`);
-                const backend: typeof import('@cromwell/core-backend') = nodeRequire('@cromwell/core-backend');
+
+                const readCMSConfig: typeof import('@cromwell/core-backend')['readCMSConfig']
+                    = nodeRequire('@cromwell/core-backend/dist/helpers/cms-settings').readCMSConfig;
+
+                const getServerTempDir: typeof import('@cromwell/core-backend')['getServerTempDir']
+                    = nodeRequire('@cromwell/core-backend/dist/helpers/paths').getServerTempDir;
+
                 let cmsConfig = getStoreItem('cmsSettings');
                 if (!cmsConfig) {
-                    cmsConfig = await backend.readCMSConfig();
+                    cmsConfig = await readCMSConfig();
                     setStoreItem('cmsSettings', cmsConfig);
                 }
 
-                if (!cmsConfig.serviceSecret) {
+                if (cmsConfig && !cmsConfig.serviceSecret) {
                     try {
                         const { resolve } = nodeRequire('path');
                         const cacache = nodeRequire('cacache');
-                        const tempDir = backend.getServerTempDir();
+                        const tempDir = getServerTempDir();
                         if (tempDir) {
                             const serverCachePath = resolve(tempDir, 'cache');
                             if (serverCachePath) {

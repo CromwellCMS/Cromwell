@@ -1,4 +1,5 @@
-import { getCmsModuleInfo, getLogger, getManagerDir, getModulePackage, getTempDir } from '@cromwell/core-backend';
+import { getLogger } from '@cromwell/core-backend/dist/helpers/logger';
+import { getCmsModuleInfo, getManagerDir, getModulePackage, getTempDir } from '@cromwell/core-backend/dist/helpers/paths';
 import { TPackage } from '@cromwell/utils';
 import fs from 'fs-extra';
 import { resolve } from 'path';

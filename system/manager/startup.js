@@ -1,7 +1,8 @@
 const fs = require('fs-extra');
 const { resolve } = require('path');
 const { execSync } = require('child_process');
-const { getUtilsBuildDir, getUtilsDir, getRendererBuildDir, getRendererDir } = require('@cromwell/core-backend');
+const { getUtilsBuildDir, getUtilsDir, getRendererBuildDir, getRendererDir }
+  = require('@cromwell/core-backend/dist/helpers/paths');
 
 const localProjectRootDir = resolve(__dirname);
 const buildScriptPath = resolve(localProjectRootDir, 'build/index.js');

@@ -8,9 +8,9 @@
   "bugs": {
     "url": "https://github.com/CromwellCMS/Cromwell/issues"
   },
-  "main": "dist/index.js",
+  "main": "dist/_index.js",
   "module": "es/_index.js",
-  "types": "es/_index.d.ts",
+  "types": "dist/_index.d.ts",
   "files": [
     "/dist",
     "/es"

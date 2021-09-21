@@ -10,7 +10,7 @@ const getOutput = (format = 'esm') => {
     if (format === 'esm') {
         return { dir: resolve(__dirname, 'es'), format, sourcemap: true, };
     }
-    return { file: resolve(__dirname, 'dist/index.js'), format };
+    return { dir: resolve(__dirname, 'dist'), format };
 };
 const sharedState = {};
 
@@ -21,7 +21,7 @@ const getPlugins = () => {
             compilerOptions: {
                 declaration: true,
                 declarationMap: true,
-                declarationDir: resolve(__dirname, 'es')
+                declarationDir: resolve(__dirname, 'dist')
             },
             monorepo: true,
         }),
@@ -34,6 +34,7 @@ export default [
         output: getOutput('cjs'),
         plugins: getPlugins(),
         external,
+        preserveModules: true,
         watch: {
             clearScreen: false,
             buildDelay: 1000,
@@ -44,6 +45,7 @@ export default [
         output: getOutput('esm'),
         plugins: getPlugins(),
         external,
+        preserveModules: true,
         watch: {
             clearScreen: false,
             buildDelay: 1000,

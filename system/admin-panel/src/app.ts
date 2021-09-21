@@ -5,6 +5,7 @@ import 'pure-react-carousel/dist/react-carousel.es.css';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import 'react-toastify/dist/ReactToastify.css';
+import '@cromwell/core-frontend/dist/_index.css';
 
 import { getStoreItem, onStoreChange, setStoreItem, TUser } from '@cromwell/core';
 import { getGraphQLClient, getRestApiClient, TErrorInfo } from '@cromwell/core-frontend';

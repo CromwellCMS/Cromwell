@@ -16,3 +16,13 @@ Main features of Cromwell CMS:
 [See our docs](https://cromwellcms.com/docs/overview/installation)
 
 ## Contribution
+
+### Have a question?
+
+Ask in [Discord server](https://discord.com/invite/mxmJNSZ2gn)
+
+### Have a problem or found a bug?
+
+If you find a bug, you can help us by submitting an issue to our [GitHub Repository](https://github.com/CromwellCMS/Cromwell/issues)  
+
+Read further in the [contributing doc](https://github.com/CromwellCMS/Cromwell/blob/master/CONTRIBUTING.md)

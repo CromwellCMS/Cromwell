@@ -99,13 +99,13 @@ export const filterCList = (filterOptions: TProductFilter,
     }
 }
 
-let backend: typeof import('@cromwell/core-backend');
+let getLogger: typeof import('@cromwell/core-backend')['getLogger'];
 
 export const getStaticProps: TGetStaticProps = async (context): Promise<TProductFilterData> => {
-    if (!backend) backend = require('@cromwell/core-backend');
+    if (!getLogger) getLogger = require('@cromwell/core-backend/dist/helpers/logger').getLogger;
 
     const { pluginSettings } = context ?? {};
-    const logger = backend.getLogger();
+    const logger = getLogger();
     const slug = context?.params?.slug ?? null;
     const client = getGraphQLClient();
 

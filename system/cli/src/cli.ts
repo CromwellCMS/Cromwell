@@ -73,16 +73,40 @@ const args = yargs(process.argv.slice(2))
                 if (port) command += ` --port ${port}`;
                 if (init) command += ` --init`;
 
-                const subprocess = spawn(command, {
-                    shell: true,
-                    detached: true,
-                    stdio: 'ignore',
-                });
-                subprocess.unref();
+                if (serviceToStart) {
+                    const subprocess = spawn(command, {
+                        shell: true,
+                        detached: true,
+                        stdio: 'ignore',
+                    });
+                    subprocess.unref();
+                } else {
+                    const server = spawn(command + ' --sv s', {
+                        shell: true,
+                        detached: true,
+                        stdio: 'ignore',
+                    });
+                    server.unref();
+
+                    const admin = spawn(command + ' --sv a', {
+                        shell: true,
+                        detached: true,
+                        stdio: 'ignore',
+                    });
+                    admin.unref();
+
+                    const renderer = spawn(command + ' --sv r', {
+                        shell: true,
+                        detached: true,
+                        stdio: 'ignore',
+                    });
+                    renderer.unref();
+                }
+
                 return;
             }
 
-            const { startServiceByName, startSystem, closeSystem, closeServiceByName } = getManager();
+            const { startServiceByName, startSystem, closeServiceByName } = getManager();
             if (serviceToStart) {
                 await startServiceByName({
                     scriptName: development ? 'development' : 'production',
@@ -90,19 +114,58 @@ const args = yargs(process.argv.slice(2))
                     port,
                     init,
                 });
-                if (argv.try) {
+                if (serviceToStart === 's' || serviceToStart === 'server') {
+                    process.title = '@cromwell/server';
+                }
+                if (serviceToStart === 'r' || serviceToStart === 'renderer') {
+                    process.title = '@cromwell/renderer';
+                }
+                if (serviceToStart === 'a' || serviceToStart === 'adminPanel') {
+                    process.title = '@cromwell/admin-panel';
+                }
+
+            } else {
+                if (development) {
+                    await startSystem({
+                        scriptName: 'development',
+                        port,
+                        init,
+                    });
+
+                } else {
+                    await startServiceByName({
+                        scriptName: 'production',
+                        serviceName: 'server',
+                        port,
+                        init,
+                    });
+
+                    await startServiceByName({
+                        scriptName: 'production',
+                        serviceName: 'adminPanel',
+                        port,
+                        init,
+                    });
+
+                    await startServiceByName({
+                        scriptName: 'production',
+                        serviceName: 'renderer',
+                        port,
+                        init,
+                    });
+                }
+            }
+
+            if (argv.try) {
+
+                if (serviceToStart) {
                     await closeServiceByName(serviceToStart);
                     process.exit(0);
-                }
-            } else {
-                await startSystem({
-                    scriptName: development ? 'development' : 'production',
-                    port,
-                    init,
-                });
-                if (argv.try) {
-                    await closeSystem();
-                    process.exit(0);
+
+                } else {
+                    await closeServiceByName('server');
+                    await closeServiceByName('adminPanel');
+                    await closeServiceByName('renderer');
                 }
             }
         }
@@ -123,12 +186,14 @@ const args = yargs(process.argv.slice(2))
         handler: async (argv) => {
             const serviceToClose = argv.service as TServiceNames;
 
-            const { closeServiceByName, closeSystem } = getManager();
+            const { closeServiceByName } = getManager();
 
             if (serviceToClose) {
                 await closeServiceByName(serviceToClose);
             } else {
-                await closeSystem();
+                await closeServiceByName('server');
+                await closeServiceByName('adminPanel');
+                await closeServiceByName('renderer');
             }
         }
     })
