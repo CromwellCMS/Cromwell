@@ -40,7 +40,7 @@ export const createTask = async (name?: string, noInstall?: boolean, type?: stri
         , [], { shell: true, stdio: 'inherit', cwd: dir });
 
     } else {
-      spawnSync(`npm i @cromwell/cms @cromwell/theme-store @cromwell/theme-blog @cromwell/plugin-main-menu @cromwell/plugin-newsletter @cromwell/plugin-product-filter @cromwell/plugin-product-showcase --save-exact`
+      spawnSync(`npm i @cromwell/cms @cromwell/theme-store @cromwell/theme-blog @cromwell/plugin-main-menu @cromwell/plugin-newsletter @cromwell/plugin-product-filter @cromwell/plugin-product-showcase @cromwell/plugin-stripe --save-exact`
         , [], { shell: true, stdio: 'inherit', cwd: dir });
     }
   }

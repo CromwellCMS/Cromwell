@@ -179,7 +179,7 @@ npm i @cromwell/cms --save-exact
 
 You also can specify what themes and plugins your want to use. Usually we install the following by default (but you also will be able to install them later in the admin panel):
 ```sh
-npm i @cromwell/theme-store @cromwell/theme-blog @cromwell/plugin-main-menu @cromwell/plugin-newsletter @cromwell/plugin-product-filter @cromwell/plugin-product-showcase --save-exact
+npm i @cromwell/theme-store @cromwell/theme-blog @cromwell/plugin-main-menu @cromwell/plugin-newsletter @cromwell/plugin-product-filter @cromwell/plugin-product-showcase @cromwell/plugin-stripe --save-exact
 ```
 
 Run the CMS:
