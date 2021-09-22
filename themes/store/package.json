@@ -32,7 +32,7 @@
   },
   "devDependencies": {
     "@apollo/client": "3.2.1",
-    "@cromwell/cli": "1.0.15",
+    "@cromwell/cli": "^1.0.15",
     "@cromwell/core-frontend": "1.1.3",
     "@cromwell/plugin-main-menu": "1.0.15",
     "@cromwell/plugin-product-showcase": "1.0.12",
