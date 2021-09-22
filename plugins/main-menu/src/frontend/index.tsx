@@ -51,7 +51,7 @@ const MainMenu = (props: TFrontendPluginProps<TMainMenuSettings>) => {
                     }}
                         className={isMobile ? classes.menuSubitemsMobile : classes.menuSubitems}
                     >
-                        {i.sublinks && i.sublinks.map((sub, subIndex) => {
+                        {i.sublinks?.length && i.sublinks.map((sub, subIndex) => {
                             return (
                                 <MenuItem
                                     style={{
@@ -75,7 +75,7 @@ const MainMenu = (props: TFrontendPluginProps<TMainMenuSettings>) => {
                     >
                         <div className={classes.listItem}>
                             <p className={classes.linkTitle}>{i.title}</p>
-                            {isMobile && (i.sublinks || i.html) && (
+                            {isMobile && (i.sublinks?.length || i.html) && (
                                 <IconButton onClick={handleItemMobileClick(i)}>
                                     <ExpandMoreIcon
                                         className={classes.expandMoreIcon}
@@ -85,12 +85,12 @@ const MainMenu = (props: TFrontendPluginProps<TMainMenuSettings>) => {
                             )}
 
                         </div>
-                        {(i.sublinks || i.html) && isMobile && (
+                        {(i.sublinks?.length || i.html) && isMobile && (
                             <Collapse in={isActive} timeout="auto" unmountOnExit>
                                 {menuSubitems}
                             </Collapse>
                         )}
-                        {(i.sublinks || i.html) && !isMobile && (
+                        {(i.sublinks?.length || i.html) && !isMobile && (
                             <Popover
                                 id={i.title}
                                 open={isActive}
