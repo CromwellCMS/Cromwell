@@ -1,6 +1,6 @@
 {
   "name": "@cromwell/cms",
-  "version": "1.1.10",
+  "version": "1.1.11",
   "keywords": [],
   "license": "MIT",
   "repository": "https://github.com/CromwellCMS/Cromwell",
@@ -20,7 +20,7 @@
     "watch": "npx rollup -cw"
   },
   "dependencies": {
-    "@cromwell/admin-panel": "1.1.6",
+    "@cromwell/admin-panel": "1.1.7",
     "@cromwell/cli": "1.0.15",
     "@cromwell/core": "1.1.14",
     "@cromwell/core-backend": "1.0.16",
