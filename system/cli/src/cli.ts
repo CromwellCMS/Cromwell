@@ -170,22 +170,21 @@ const args = yargs(process.argv.slice(2))
             }
         }
     })
-    // CLOSE SERVICE
+    // STOP SERVICE
     .command<{ service?: string; development?: boolean }>({
-        command: 'close [options]',
-        describe: `closes CMS or a specified service by it's saved PID`,
-        aliases: ['close', 'cl'],
+        command: 'stop [options]',
+        describe: `Stops CMS or a specified service by it's saved PID`,
+        aliases: ['stop', 'st'],
         builder: (yargs) => {
             return yargs
                 .option('service', {
                     alias: 'sv',
-                    desc: 'Specify service to close: "server", "renderer", "adminPanel", "nginx',
+                    desc: 'Specify service to stop: "server", "renderer", "adminPanel", "nginx',
                     choices: ["server", "s", "renderer", "r", "adminPanel", "a", "nginx", "n"]
                 })
         },
         handler: async (argv) => {
             const serviceToClose = argv.service as TServiceNames;
-
             const { closeServiceByName } = getManager();
 
             if (serviceToClose) {
