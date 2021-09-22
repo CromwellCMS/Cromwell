@@ -83,7 +83,7 @@ export const startService = async ({ path, name, args, dir, sync, watchName, onV
     });
     await saveProcessPid(name, process.pid, child.pid);
     serviceProcesses[name] = child;
-    serviceProcesses[`${name}_manager`] = child;
+    serviceProcesses[`${name}_manager`] = process;
 
     child?.stdout?.on('data', buff => console.log(buff?.toString?.() ?? buff));
     child?.stderr?.on('data', buff => console.error(buff?.toString?.() ?? buff));
