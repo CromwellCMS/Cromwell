@@ -12,11 +12,14 @@ const getCacheKey = (serviceName) => {
     return `${cachePath}_${serviceName}`
 }
 
-const saveProcessPid = async (title, pid) => {
+const saveProcessPid = async (title, managerPid, procPid) => {
     // console.log('saveProcessPid', title, pid);
     await saveServiceName(title);
     await new Promise(done => {
-        cacache.put(cachePath, getCacheKey(title), String(pid)).finally(done);
+        cacache.put(cachePath, getCacheKey(title), String(procPid)).finally(done);
+    });
+    await new Promise(done => {
+        cacache.put(cachePath, getCacheKey(`${title}_manager`), String(managerPid)).finally(done);
     });
 }
 

@@ -21,13 +21,12 @@ import config from '../config';
 import { serviceNames, TScriptName, TServiceNames } from '../constants';
 import { checkConfigs, checkModules } from '../tasks/checkModules';
 import { getProcessPid, loadCache, saveProcessPid } from '../utils/cacheManager';
-import { closeAdminPanel, startAdminPanel } from './adminPanelManager';
+import { closeAdminPanel, closeAdminPanelManager, startAdminPanel } from './adminPanelManager';
 import { closeNginx, startNginx } from './dockerManager';
-import { closeRenderer, startRenderer } from './rendererManager';
-import { closeServer, startServer } from './serverManager';
+import { closeRenderer, closeRendererManager, startRenderer } from './rendererManager';
+import { closeServer, closeServerManager, startServer } from './serverManager';
 
 const logger = getLogger();
-const { cacheKeys } = config;
 const serviceProcesses: Record<string, ChildProcess> = {};
 
 export const closeService = async (name: string): Promise<boolean> => {
@@ -60,6 +59,10 @@ export const closeService = async (name: string): Promise<boolean> => {
     })
 }
 
+export const closeServiceManager = async (name: string): Promise<boolean> => {
+    return closeService(`${name}_manager`);
+}
+
 export const startService = async ({ path, name, args, dir, sync, watchName, onVersionChange }: {
     path: string;
     name: string;
@@ -74,19 +77,21 @@ export const startService = async ({ path, name, args, dir, sync, watchName, onV
         throw new Error();
     }
 
-    const proc = fork(path, args ?? [], {
+    const child = fork(path, args ?? [], {
         stdio: sync ? 'inherit' : 'pipe',
         cwd: dir ?? process.cwd(),
     });
-    await saveProcessPid(name, process.pid);
-    serviceProcesses[name] = proc;
-    proc?.stdout?.on('data', buff => console.log(buff?.toString?.() ?? buff));
-    proc?.stderr?.on('data', buff => console.error(buff?.toString?.() ?? buff));
+    await saveProcessPid(name, process.pid, child.pid);
+    serviceProcesses[name] = child;
+    serviceProcesses[`${name}_manager`] = child;
+
+    child?.stdout?.on('data', buff => console.log(buff?.toString?.() ?? buff));
+    child?.stderr?.on('data', buff => console.error(buff?.toString?.() ?? buff));
 
     if (watchName && onVersionChange) {
         startWatchService(watchName, onVersionChange);
     }
-    return proc;
+    return child;
 }
 
 export const isServiceRunning = (name: string): Promise<boolean> => {
@@ -229,11 +234,45 @@ export const closeServiceByName = async (serviceName: TServiceNames) => {
     }
 }
 
+export const closeServiceManagerByName = async (serviceName: TServiceNames) => {
+    if (!serviceNames.includes(serviceName)) {
+        logger.warn('Invalid service name. Available names are: ' + serviceNames);
+    }
 
-export const closeSystem = async () => {
-    await closeAdminPanel();
-    await closeRenderer();
-    await closeServer();
+    if (serviceName === 'adminPanel' || serviceName === 'a') {
+        await closeAdminPanelManager();
+    }
+
+    if (serviceName === 'renderer' || serviceName === 'r') {
+        await closeRendererManager();
+    }
+
+    if (serviceName === 'server' || serviceName === 's') {
+        await closeServerManager();
+    }
+
+    if (serviceName === 'nginx' || serviceName === 'n') {
+        await closeNginx();
+    }
+}
+
+
+export const shutDownSystem = async () => {
+    try {
+        await closeAdminPanelManager();
+    } catch (error) {
+        console.error(error);
+    }
+    try {
+        await closeRendererManager();
+    } catch (error) {
+        console.error(error);
+    }
+    try {
+        await closeServerManager();
+    } catch (error) {
+        console.error(error);
+    }
 }
 
 /**

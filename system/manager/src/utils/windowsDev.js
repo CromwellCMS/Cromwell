@@ -73,7 +73,7 @@ const winStart = () => {
         // console.log('startTerminal childProcess newPid: ', newPid);
         newPid = parseInt(newPid);
         if (newPid && !isNaN(newPid)) {
-            await saveProcessPid(title, newPid);
+            await saveProcessPid(title, process.pid, newPid);
             windowManager.getWindows().forEach(w => {
                 if (w.processId === newPid) {
                     // console.log('w.processId', w.getTitle(), w.id, w.processId);

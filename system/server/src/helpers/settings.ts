@@ -106,7 +106,7 @@ export const checkCmsVersion = async () => {
                 await cmsEntity.save();
             }
         } catch (error) {
-            logger.error(error);
+            logger.warn(error);
         }
 
         if (!cmsEntity?.internalSettings?.version) {

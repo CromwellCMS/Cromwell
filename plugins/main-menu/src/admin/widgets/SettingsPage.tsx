@@ -23,7 +23,7 @@ export function SettingsPage(props: TPluginSettingsProps<TMainMenuSettings>) {
                             return <Item i={i} updateList={forceUpdate} items={pluginSettings.items} />
                         })}
                     </div>
-                    <div className={`${classes.card} ${classes.paper}`}>
+                    <div className={`${classes.card} PluginMainMenu-paper`}>
                         <MenuItem
                             className={classes.addBtn}
                             onClick={() => changeSetting('items',

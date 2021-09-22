@@ -6,7 +6,7 @@ import tcpPortUsed from 'tcp-port-used';
 
 import config from '../config';
 import { TAdminPanelCommands } from '../constants';
-import { closeService, isPortUsed, startService } from './baseManager';
+import { closeService, closeServiceManager, isPortUsed, startService } from './baseManager';
 
 const logger = getLogger();
 const adminPanelStartupPath = getAdminPanelStartupPath();
@@ -38,11 +38,21 @@ export const startAdminPanel = async (command?: TAdminPanelCommands, options?: {
             watchName: command !== 'build' ? 'admin' : undefined,
             onVersionChange: async () => {
                 if (cmsConfig.useWatch) {
-                    await closeAdminPanel();
+                    try {
+                        await closeAdminPanel();
+                    } catch (error) {
+                        logger.error(error);
+                    }
+
                     try {
                         await tcpPortUsed.waitUntilFree(parseInt(port as any), 500, 4000);
-                    } catch (e) { console.error(e) }
-                    await startAdminPanel(command);
+                    } catch (e) { logger.error(e) }
+
+                    try {
+                        await startAdminPanel(command);
+                    } catch (error) {
+                        logger.error(error);
+                    }
                 }
             }
         })
@@ -69,6 +79,15 @@ export const startAdminPanel = async (command?: TAdminPanelCommands, options?: {
 export const closeAdminPanel = async (): Promise<boolean> => {
     const { cacheKeys } = config;
     const success = await closeService(cacheKeys.adminPanel);
+    if (success) {
+        logger.log(`AdminPanelManager::closeAdminPanel: AdminPanel has been closed`)
+    }
+    return success;
+}
+
+export const closeAdminPanelManager = async (): Promise<boolean> => {
+    const { cacheKeys } = config;
+    const success = await closeServiceManager(cacheKeys.adminPanel);
     if (success) {
         logger.log(`AdminPanelManager::closeAdminPanel: AdminPanel has been closed`)
     }

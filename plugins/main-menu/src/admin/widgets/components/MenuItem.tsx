@@ -29,7 +29,7 @@ export const Item = (props: {
     if (!item) return null;
 
     return (
-        <div className={`${classes.card} ${classes.paper}`}>
+        <div className={`${classes.card} PluginMainMenu-paper`}>
             <CardActionArea
                 className={classes.cardHeader}
                 onClick={handleExpandClick}
@@ -89,7 +89,7 @@ export const Item = (props: {
                         <h3 className={classes.sublinksTitle}>Sublinks</h3>
                         {item.sublinks && item.sublinks.map((sl, slIndex) => {
                             return (
-                                <div className={`${classes.sublinkItem} ${classes.paper}`} >
+                                <div className={`${classes.sublinkItem} PluginMainMenu-paper`} >
                                     <TextField label="Sublink title" variant="outlined"
                                         value={sl.title}
                                         className={classes.subField}
@@ -110,7 +110,7 @@ export const Item = (props: {
                                 </div>
                             )
                         })}
-                        <div className={`${classes.paper} ${classes.card}`}>
+                        <div className={`PluginMainMenu-paper ${classes.card}`}>
                             <MenuItem
                                 className={classes.addBtn}
                                 onClick={() => {

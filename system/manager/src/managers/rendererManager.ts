@@ -20,7 +20,7 @@ import tcpPortUsed from 'tcp-port-used';
 
 import managerConfig from '../config';
 import { TRendererCommands } from '../constants';
-import { closeService, isPortUsed, isServiceRunning, startService } from './baseManager';
+import { closeService, closeServiceManager, isPortUsed, isServiceRunning, startService } from './baseManager';
 
 
 const { cacheKeys, servicesEnv } = managerConfig;
@@ -80,12 +80,18 @@ export const startRenderer = async (command?: TRendererCommands, options?: {
                 if (cmsConfig.useWatch) {
                     try {
                         await closeRenderer();
-                        try {
-                            await tcpPortUsed.waitUntilFree(parseInt(port as any), 500, 4000);
-                        } catch (e) { logger.error(e) }
+                    } catch (error) {
+                        logger.error(error);
+                    }
+
+                    try {
+                        await tcpPortUsed.waitUntilFree(parseInt(port as any), 500, 4000);
+                    } catch (e) { logger.error(e) }
+
+                    try {
                         await startRenderer(command, options);
                     } catch (error) {
-                        logger.error(error)
+                        logger.error(error);
                     }
                 }
             }
@@ -130,21 +136,6 @@ export const startRenderer = async (command?: TRendererCommands, options?: {
     }
 
     return false;
-}
-
-
-export const closeRenderer = async (): Promise<boolean> => {
-    if (await isRendererRunning()) {
-        const success = await closeService(cacheKeys.renderer);
-        if (!success) {
-            logger.error('RendererManager::closeRenderer: failed to close Renderer by pid. Renderer is still active');
-        } else {
-            logger.log('RendererManager::closeRenderer: Renderer has been closed');
-        }
-        return success;
-    }
-    return true;
-
 }
 
 export const isRendererRunning = async (): Promise<boolean> => {
@@ -335,4 +326,31 @@ const rendererAliveWatcher = async (command: TRendererCommands, options: {
     }
 
     rendererAliveWatcher(command, options);
+}
+
+export const closeRenderer = async (): Promise<boolean> => {
+    if (await isRendererRunning()) {
+        const success = await closeService(cacheKeys.renderer);
+        if (!success) {
+            logger.error('RendererManager::closeRenderer: failed to close Renderer by pid. Renderer is still active');
+        } else {
+            logger.log('RendererManager::closeRenderer: Renderer has been closed');
+        }
+        return success;
+    }
+    return true;
+
+}
+
+export const closeRendererManager = async (): Promise<boolean> => {
+    if (await isRendererRunning()) {
+        const success = await closeServiceManager(cacheKeys.renderer);
+        if (!success) {
+            logger.error('RendererManager::closeRenderer: failed to close Renderer by pid. Renderer is still active');
+        } else {
+            logger.log('RendererManager::closeRenderer: Renderer has been closed');
+        }
+        return success;
+    }
+    return true;
 }

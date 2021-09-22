@@ -403,7 +403,6 @@ export class PluginService {
         if (defaultSettings) {
             try {
                 input.defaultSettings = JSON.stringify(defaultSettings);
-                input.settings = JSON.stringify(defaultSettings);
             } catch (e) {
                 logger.error(e);
             }
@@ -434,8 +433,14 @@ export class PluginService {
         // Create new if not found
         if (!entity) {
             try {
+                if (defaultSettings) {
+                    try {
+                        input.settings = JSON.stringify(defaultSettings);
+                    } catch (e) {
+                        logger.error(e);
+                    }
+                }
                 entity = await pluginRepo.createEntity(input);
-
                 await serverFireAction('install_plugin', { pluginName });
             } catch (e) {
                 logger.error(e);

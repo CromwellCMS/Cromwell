@@ -6,7 +6,7 @@ import tcpPortUsed from 'tcp-port-used';
 
 import config from '../config';
 import { TServerCommands } from '../constants';
-import { closeService, isPortUsed, startService } from './baseManager';
+import { closeService, closeServiceManager, isPortUsed, startService } from './baseManager';
 
 const { cacheKeys, servicesEnv } = config;
 const logger = getLogger();
@@ -44,11 +44,21 @@ export const startServer = async (command?: TServerCommands, argsPort?: string |
             watchName: command !== 'build' ? 'server' : undefined,
             onVersionChange: async () => {
                 if (cmsConfig.useWatch) {
-                    await closeServer();
+                    try {
+                        await closeServer();
+                    } catch (error) {
+                        logger.error(error);
+                    }
+
                     try {
                         await tcpPortUsed.waitUntilFree(parseInt(port as any), 500, 4000);
-                    } catch (e) { console.error(e) }
-                    await startServer(command);
+                    } catch (e) { logger.error(e) }
+
+                    try {
+                        await startServer(command);
+                    } catch (error) {
+                        logger.error(error);
+                    }
                 }
             }
         });
@@ -77,6 +87,15 @@ export const startServer = async (command?: TServerCommands, argsPort?: string |
 export const closeServer = async (): Promise<boolean> => {
     try {
         return closeService(cacheKeys.serverMain);
+    } catch (e) {
+        console.error(e);
+    }
+    return false;
+}
+
+export const closeServerManager = async (): Promise<boolean> => {
+    try {
+        return closeServiceManager(cacheKeys.serverMain);
     } catch (e) {
         console.error(e);
     }
