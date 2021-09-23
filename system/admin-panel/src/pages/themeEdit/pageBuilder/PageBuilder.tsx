@@ -167,6 +167,8 @@ export class PageBuilder extends Component<{
 
     public updateDraggable = () => {
         this.draggable?.updateBlocks();
+        this.editingFrameRef.current?.addEventListener('scroll', this.onAnyElementScroll);
+        this.contentWindow.document.addEventListener('scroll', this.onAnyElementScroll);
 
         const allElements = Array.from(this.contentWindow.document.getElementsByTagName('*') ?? []);
         allElements.forEach((el: HTMLElement) => {
@@ -226,10 +228,8 @@ export class PageBuilder extends Component<{
     private setFramePosition = (block: HTMLElement, frame: HTMLElement) => {
         const bounding = block.getBoundingClientRect();
         frame.style.position = 'absolute';
-        frame.style.top = (this.contentWindow.pageYOffset
-            + bounding.top + this.selectableFrameMargin) + 'px';
-        frame.style.left = (this.contentWindow.pageXOffset
-            + bounding.left + this.selectableFrameMargin) + 'px';
+        frame.style.top = (bounding.top + this.selectableFrameMargin) + 'px';
+        frame.style.left = (bounding.left + this.selectableFrameMargin) + 'px';
 
         frame.style.height = block.offsetHeight + 'px';
         frame.style.width = block.offsetWidth + 'px';

@@ -18,7 +18,7 @@ export const PostCard = (props?: {
     const data = props?.data;
     const postLink = `/post/${data?.slug ?? data?.id}`;
     const mainImage = data?.mainImage ?? '/themes/@cromwell/theme-store/no-photos.png';
-    const imageLoader = ({ src, width, quality }: {
+    const imageLoader = ({ src }: {
         src: string;
         width: number;
         quality?: number;
@@ -37,6 +37,7 @@ export const PostCard = (props?: {
                     <a style={{ display: 'flex' }}>
                         {Image && (
                             <Image
+                                unoptimized
                                 loader={imageLoader}
                                 objectFit="cover"
                                 layout="fill"

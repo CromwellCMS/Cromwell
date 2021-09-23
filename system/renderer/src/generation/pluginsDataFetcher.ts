@@ -1,4 +1,4 @@
-import { StaticPageContext, TDefaultPageName } from '@cromwell/core';
+import { TStaticPageContext, TDefaultPageName } from '@cromwell/core';
 import { getModuleImporter } from '@cromwell/core-frontend';
 
 import { fsRequire, getPluginCjsPath } from '../helpers/checkCMSConfig';
@@ -14,7 +14,7 @@ const cachedPlugins: Record<string, {
  * @param pageName 
  * @param context - StaticPageContext of Page
  */
-export const pluginsDataFetcher = async (pageName: TDefaultPageName | string, context: StaticPageContext,
+export const pluginsDataFetcher = async (pageName: TDefaultPageName | string, context: TStaticPageContext,
     pluginsData?: {
         pluginName: string;
         version?: string;

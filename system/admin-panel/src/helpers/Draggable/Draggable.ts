@@ -69,6 +69,7 @@ export type TDraggableOptions = {
     iframeSelector?: string;
 
     disableClickAwayDeselect?: boolean;
+    applyZIndex?: boolean;
 }
 
 export class Draggable {
@@ -491,7 +492,7 @@ export class Draggable {
 
     private styleHoveredBlock = (block: HTMLElement) => {
         if (block) {
-            block.style.zIndex = '1005';
+            if (this.options.applyZIndex) block.style.zIndex = '1005';
 
             const styleParent = (block: HTMLElement) => {
                 const parent = block.parentElement;
@@ -507,7 +508,7 @@ export class Draggable {
 
     private styleSelectedBlock = (block: HTMLElement) => {
         if (block) {
-            block.style.zIndex = '1006';
+            if (this.options.applyZIndex) block.style.zIndex = '1006';
 
             const styleParent = (block: HTMLElement) => {
                 const parent = block.parentElement;
@@ -522,6 +523,6 @@ export class Draggable {
     }
 
     private styleDeselectedBlock = (block: HTMLElement) => {
-        if (block) block.style.zIndex = '1002';
+        if (this.options.applyZIndex) if (block) block.style.zIndex = '1002';
     }
 }

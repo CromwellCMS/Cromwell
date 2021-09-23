@@ -26,6 +26,7 @@ import styles from '../../styles/pages/Blog.module.scss';
 interface BlogProps {
     posts?: TPagedList<TPost>;
     tag?: TTag;
+    notFound?: boolean;
 }
 const TagPage: TCromwellPage<BlogProps> = (props) => {
     const filterInput = useRef<TPostFilter>({});
@@ -142,6 +143,12 @@ export const getStaticProps: TGetStaticProps = async (context): Promise<BlogProp
         }
     } catch (e) {
         console.error(e)
+    }
+
+    if (!tag) {
+        return {
+            notFound: true
+        }
     }
 
     let posts: TPagedList<TPost> | undefined;

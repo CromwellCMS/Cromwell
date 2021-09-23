@@ -81,7 +81,7 @@ export const buildTask = async (watch?: boolean, port?: string) => {
             const nextBuildDir = getThemeNextBuildDirByPath(workingDir);
             if (nextBuildDir && await fs.pathExists(nextBuildDir)) await fs.remove(nextBuildDir);
 
-            await rendererBuildAndSaveTheme(moduleInfo.name)
+            await rendererBuildAndSaveTheme(moduleInfo.name);
         }
     }
 

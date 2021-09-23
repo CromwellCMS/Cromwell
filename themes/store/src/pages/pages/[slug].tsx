@@ -1,4 +1,4 @@
-import { TCromwellPage } from '@cromwell/core';
+import { TCromwellPage, TGetStaticProps } from '@cromwell/core';
 import { CContainer } from '@cromwell/core-frontend';
 import React from 'react';
 
@@ -18,6 +18,12 @@ const SomePage: TCromwellPage = () => {
     );
 }
 export default SomePage;
+
+export const getStaticProps: TGetStaticProps = async (context): Promise<any> => {
+    if (!context.pageConfig?.id || !context.pageConfig.route) return {
+        notFound: true,
+    }
+}
 
 export const getStaticPaths = () => {
     return {

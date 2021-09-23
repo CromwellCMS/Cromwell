@@ -28,6 +28,7 @@ export interface ProductProps {
     product?: TProduct | null;
     attributes?: TAttribute[];
     breadcrumbs?: TProductCategory[];
+    notFound?: boolean;
 }
 
 const Product: TCromwellPage<ProductProps> = (props) => {
@@ -134,6 +135,11 @@ export const getStaticProps: TGetStaticProps = async (context): Promise<ProductP
         console.error('Product::getStaticProps: !pid')
     }
 
+    if (!product) {
+        return {
+            notFound: true,
+        }
+    }
 
     let attributes: TAttribute[] | undefined;
 

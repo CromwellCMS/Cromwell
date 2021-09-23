@@ -1,15 +1,22 @@
-import { getCmsSettings } from '@cromwell/core';
+import { getCmsSettings, onStoreChange } from '@cromwell/core';
 import { CContainer, CPlugin, Link } from '@cromwell/core-frontend';
 import { AppBar, IconButton, Slide, SwipeableDrawer, Toolbar, useScrollTrigger } from '@material-ui/core';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import commonStyles from '../../styles/common.module.scss';
 import { CloseIcon, MenuIcon } from '../icons';
 import styles from './Header.module.scss';
 import { HeaderSearch } from './HeaderSearch';
 
+export function useForceUpdate() {
+    const state = useState(0);
+    return () => state[1](value => ++value);
+}
+
+
 const Header = () => {
     const cmsConfig = getCmsSettings();
+    const forceUpdate = useForceUpdate();
     const [menuOpen, setMenuOpen] = useState(false);
     const handleCloseMenu = () => {
         setMenuOpen(false);
@@ -17,6 +24,12 @@ const Header = () => {
     const handleOpenMenu = () => {
         setMenuOpen(true);
     }
+
+    useEffect(() => {
+        onStoreChange('cmsSettings', () => {
+            forceUpdate();
+        });
+    }, []);
 
     return (
         <CContainer global id="header-01">
