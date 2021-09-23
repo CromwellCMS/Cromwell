@@ -1,13 +1,13 @@
 import {
+    resolvePageRoute,
     setStoreItem,
-    StaticPageContext,
     TCmsConfig,
     TCromwellPageCoreProps,
     TDefaultPageName,
     TPageConfig,
     TPageInfo,
+    TStaticPageContext,
     TThemeConfig,
-    resolvePageRoute,
 } from '@cromwell/core';
 import { getRestApiClient } from '@cromwell/core-frontend';
 
@@ -15,9 +15,14 @@ import { getThemeStaticProps } from './getThemeStaticProps';
 import { pluginsDataFetcher } from './pluginsDataFetcher';
 
 export const createGetStaticProps = (pageName: TDefaultPageName | string,
-    pageGetStaticProps: ((context: StaticPageContext) => any) | undefined | null) => {
-    return async function (context: StaticPageContext): Promise<
-        { props: TCromwellPageCoreProps; revalidate?: number }> {
+    pageGetStaticProps: ((context: TStaticPageContext) => any) | undefined | null) => {
+    return async function (context: TStaticPageContext): Promise<
+        {
+            props?: TCromwellPageCoreProps;
+            revalidate?: number;
+            notFound?: boolean;
+            redirect?: any;
+        }> {
 
         // Name to request a page config. Config will be the same for different slugs
         // of a page. There's an exception: generic pages - `pages/[slug]`, 
@@ -52,6 +57,11 @@ export const createGetStaticProps = (pageName: TDefaultPageName | string,
         if (themeConfig?.defaultPages) setStoreItem('defaultPages', themeConfig?.defaultPages);
         const resolvedPageRoute = resolvePageRoute(pageConfigName, { slug: context?.params?.slug as string })
 
+        context.pageConfig = rendererData.pageConfig;
+        context.themeConfig = rendererData.themeConfig;
+        context.cmsSettings = rendererData.cmsSettings;
+        context.themeCustomConfig = rendererData.themeCustomConfig;
+        context.pagesInfo = rendererData.pagesInfo;
         const [childStaticProps, plugins] = await Promise.all([
             getThemeStaticProps(pageName, pageGetStaticProps, context),
             pluginsDataFetcher(pageConfigName, context, pluginsSettings),
@@ -78,7 +88,9 @@ export const createGetStaticProps = (pageName: TDefaultPageName | string,
 
         return {
             props: JSON.parse(JSON.stringify(props)),
-            revalidate: 1
+            revalidate: childStaticProps?.revalidate ?? 1,
+            notFound: childStaticProps?.notFound ? true : undefined,
+            redirect: childStaticProps?.redirect,
         }
     }
 }

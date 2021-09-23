@@ -1,4 +1,4 @@
-import { StaticPageContext, TDefaultPageName } from '@cromwell/core';
+import { TDefaultPageName, TStaticPageContext } from '@cromwell/core';
 
 /**
  * Server-side only
@@ -7,8 +7,8 @@ import { StaticPageContext, TDefaultPageName } from '@cromwell/core';
  * @param context 
  */
 export const getThemeStaticProps = async (pageName: TDefaultPageName | string,
-    pageGetStaticProps: ((context: StaticPageContext) => any) | undefined | null,
-    context: StaticPageContext): Promise<Record<string, any>> => {
+    pageGetStaticProps: ((context: TStaticPageContext) => any) | undefined | null,
+    context: TStaticPageContext): Promise<Record<string, any>> => {
 
     let childStaticProps = {}
     if (pageGetStaticProps) {

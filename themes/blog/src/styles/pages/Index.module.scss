@@ -31,12 +31,13 @@
     font-size: 48px;
     font-weight: 500;
     color: #fff;
+    margin-bottom: 10px;
+    border-bottom: 3px solid #fff;
 }
 
 .description {
     font-size: 22px;
     max-width: 700px;
-    width: 700px;
     color: #fff;
     text-align: center;
 }
@@ -47,9 +48,11 @@ div.coverImage {
     bottom: 0;
     left: 0;
     right: 0;
+    background-color: #000;
 
     img {
         height: 100%;
+        opacity: 0.85;
     }
 }
 

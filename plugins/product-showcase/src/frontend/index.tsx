@@ -3,7 +3,7 @@ import {
     ECommonComponentNames,
     getCommonComponent,
     getRandStr,
-    StaticPageContext,
+    TStaticPageContext,
     TAttribute,
     TFrontendPluginProps,
     TPagedList,
@@ -69,7 +69,7 @@ const ProductShowcase = (props: TFrontendPluginProps<ProductShowcaseProps>): JSX
     )
 }
 
-export const getStaticProps = async (context: StaticPageContext): Promise<ProductShowcaseProps> => {
+export const getStaticProps = async (context: TStaticPageContext): Promise<ProductShowcaseProps> => {
     // slug of a product page
     const client = getGraphQLClient();
     const slug = context?.params?.slug ?? null;

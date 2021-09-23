@@ -26,6 +26,7 @@ interface CategoryProps {
     products?: TPagedList<TProduct> | null;
     attributes?: TAttribute[];
     slug?: string;
+    notFound?: boolean;
 }
 
 
@@ -130,6 +131,13 @@ export const getStaticProps: TGetStaticProps = async (context): Promise<Category
     } else {
         console.error('ProductCategory::getStaticProps: !pid')
     }
+
+    if (!category) {
+        return {
+            notFound: true,
+        }
+    }
+
     let products: TPagedList<TProduct> | undefined | null = null;
     if (category) {
         try {

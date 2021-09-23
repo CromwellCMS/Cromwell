@@ -2,19 +2,24 @@ import { NextPage } from 'next';
 import { DocumentContext } from 'next/document';
 import React from 'react';
 
-import { TCmsConfig, TCmsSettings, TDefaultPageName, TPageConfig, TPageInfo, TPalette } from './data';
+import { TCmsConfig, TCmsSettings, TDefaultPageName, TPageConfig, TPageInfo, TPalette, TThemeConfig } from './data';
 import { TPost, TProduct } from './entities';
 
 type ParsedUrlQuery = NodeJS.Dict<string | string[]>;
-export type StaticPageContext<TPluginSettings = any, Q extends ParsedUrlQuery = ParsedUrlQuery> = {
+export type TStaticPageContext<TPluginSettings = any, Q extends ParsedUrlQuery = ParsedUrlQuery> = {
     pluginSettings?: TPluginSettings;
     params?: Q;
     preview?: boolean;
     previewData?: any;
+    pageConfig?: TPageConfig;
+    themeConfig?: TThemeConfig;
+    cmsSettings?: TCmsConfig;
+    themeCustomConfig?: any;
+    pagesInfo?: TPageInfo[];
 }
 export type TGetStaticProps<
     TPluginSettings = any,
-    Q extends ParsedUrlQuery = ParsedUrlQuery> = (ctx: StaticPageContext<TPluginSettings, Q>) => Promise<any>;
+    Q extends ParsedUrlQuery = ParsedUrlQuery> = (ctx: TStaticPageContext<TPluginSettings, Q>) => Promise<any>;
 
 export type TCromwellPage<Props = any | undefined> = NextPage<Props & TCromwellPageCoreProps>;
 
@@ -43,7 +48,7 @@ export type CrwDocumentContextType = Partial<DocumentContext> & {
     cmsConfig?: TCmsConfig;
 }
 
-export type TCromwellBlock<TContentBlock = React.Component> = React.Component<TCromwellBlockProps<TContentBlock>> & {
+export type TCromwellBlock<TContentBlock = React.Component<TCromwellBlockProps>> = React.Component<TCromwellBlockProps<TContentBlock>> & {
     getContentInstance: () => (React.Component & TContentBlock) | undefined;
     setContentInstance: (contentInstance: React.Component & TContentBlock) => void;
     getData: () => TCromwellBlockData | undefined;

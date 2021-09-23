@@ -192,6 +192,10 @@ export type TPost = {
      */
     author?: TUser;
     /**
+     * Id of user-author
+     */
+    authorId?: string;
+    /**
      * Href of main image
      */
     mainImage?: string | null;

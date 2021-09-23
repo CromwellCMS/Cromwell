@@ -178,3 +178,7 @@ For now, there are two limitations with load balancing setup:
 In future updates we are planning to distribute installation requests among a group to make automatic installation possible.
 2. Uploaded content via file manager (Media) GUI will appear in the public directory of only one API server. For now solution is to copy public content across servers manually.  
 Same as before, with distributing API, content can be copied over all servers specified in a config.
+
+
+While full scaling support will be added natively later, there are other options available that solve the limitation above. 
+For example, EFS and AWS Fargate. [See the introduction and an example of scaling with Wordpress](https://pages.awscloud.com/Modernize-Content-Management-Systems-with-EFS-and-AWS-Fargate_2021_0407-CON_OD.html)

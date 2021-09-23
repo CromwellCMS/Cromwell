@@ -18,7 +18,7 @@ const IndexPage: TCromwellPage<BlogProps> = (props) => {
     const featuredPost1 = props.featuredPosts?.elements?.[0];
     const featuredPost2 = props.featuredPosts?.elements?.[1];
     const otherPosts = (props.posts?.elements ?? []).filter(post =>
-        post.id !== featuredPost1?.id && post.id !== featuredPost2?.id)
+        post.id !== featuredPost1?.id && post.id !== featuredPost2?.id);
 
     return (
         <Layout>

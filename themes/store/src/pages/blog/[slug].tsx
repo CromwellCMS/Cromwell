@@ -12,6 +12,7 @@ import styles from '../../styles/pages/BlogPost.module.scss';
 
 interface BlogPostProps {
     post?: TPost | undefined;
+    notFound?: boolean;
 }
 
 const BlogPostPage: TCromwellPage<BlogPostProps> = (props) => {
@@ -93,6 +94,10 @@ export const getStaticProps: TGetStaticProps = async (context): Promise<BlogPost
         }
     } else {
         console.error('BlogPostPage::getStaticProps: !pid')
+    }
+
+    if (!post) return {
+        notFound: true,
     }
 
     return {

@@ -4,8 +4,8 @@ import { ToastContainer } from 'react-toastify';
 
 function App(props: AppProps) {
     React.useEffect(() => {
-        const jssStyles = document.querySelector('#jss-server-side');
-        jssStyles?.parentElement?.removeChild(jssStyles);
+        // const jssStyles = document.querySelector('#jss-server-side');
+        // jssStyles?.parentElement?.removeChild(jssStyles);
     }, []);
 
     return (

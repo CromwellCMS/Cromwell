@@ -15,6 +15,7 @@ export class Post extends BasePageEntity implements TPost {
     @Column({ type: "varchar", nullable: true })
     title?: string | null;
 
+    @Field(type => String, { nullable: true })
     @Index()
     @Column()
     authorId: string;
