@@ -79,6 +79,6 @@ export const getBreadcrumbs = async (product?: TProduct | null):
 
         return breadCrumbs.reverse();
     } catch (error) {
-        console.error(error, getGraphQLErrorInfo(error));
+        console.error(getGraphQLErrorInfo(error));
     }
 }

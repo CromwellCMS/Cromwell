@@ -1,5 +1,5 @@
 import { CrwDocumentContextType } from '@cromwell/core';
-import { getModuleImporter } from '@cromwell/core-frontend';
+import { getModuleImporter } from '@cromwell/core-frontend/dist/helpers/importer';
 import { DocumentContext } from 'next/document';
 import React from 'react';
 

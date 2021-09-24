@@ -230,25 +230,6 @@ export class ThemeController {
     }
 
 
-    @Get('renderer')
-    @UseGuards(JwtAuthGuard)
-    @Roles('administrator')
-    @ApiOperation({
-        description: `Gather all data for Renderer service required to render a page`,
-        parameters: [{ name: 'pageRoute', in: 'query', required: true }]
-    })
-    @ApiResponse({
-        status: 200,
-    })
-    async getRendererData(@Query('pageRoute') pageRoute: string) {
-        logger.log('ThemeController::getRendererData');
-        if (!pageRoute || pageRoute === '')
-            throw new HttpException('Page route is not valid: ' + pageRoute, HttpStatus.NOT_ACCEPTABLE);
-
-        return await this.themeService.getRendererData(pageRoute);
-    }
-
-
     @Get('check-update')
     @UseGuards(JwtAuthGuard)
     @Roles('administrator', 'guest')

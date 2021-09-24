@@ -8,7 +8,7 @@ import {
     TPostFilter,
     TTag,
 } from '@cromwell/core';
-import { CContainer, CList, getGraphQLClient, TCList } from '@cromwell/core-frontend';
+import { CContainer, CList, getGraphQLClient, getGraphQLErrorInfo, TCList } from '@cromwell/core-frontend';
 import { FormControl, InputLabel, MenuItem, Select, TextField } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 import React, { useEffect, useRef, useState } from 'react';
@@ -147,14 +147,14 @@ export const getStaticProps: TGetStaticProps = async (): Promise<BlogProps> => {
     try {
         posts = await handleGetFilteredPosts({ pageSize: 20, order: 'DESC', orderBy: 'publishDate' });
     } catch (e) {
-        console.error('BlogPage::getStaticProps', e)
+        console.error('BlogPage::getStaticProps', getGraphQLErrorInfo(e))
     }
 
     let tags: TTag[] | undefined;
     try {
         tags = (await client?.getTags({ pageSize: 99999 }))?.elements;
     } catch (e) {
-        console.error('BlogPage::getStaticProps', e)
+        console.error('BlogPage::getStaticProps', getGraphQLErrorInfo(e))
     }
     return {
         posts,

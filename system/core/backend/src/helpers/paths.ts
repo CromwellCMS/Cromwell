@@ -150,6 +150,8 @@ export const getServerDefaultEmailsDir = () => {
     const serverDir = getServerDir();
     if (serverDir) resolve(serverDir, 'static/emails');
 }
+export const getServerCachePath = () => resolve(getServerTempDir(), 'cache');
+
 
 
 // Utils

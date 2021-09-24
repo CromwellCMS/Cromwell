@@ -54,15 +54,17 @@ export type TGraphQLErrorInfo = {
     resultErrors: any;
     message: string;
     extraInfo: any;
+    stack: any;
 }
 
 export const getGraphQLErrorInfo = (error: any): TGraphQLErrorInfo => {
     return {
-        graphQLErrors: error?.graphQLErrors,
+        graphQLErrors: error?.graphQLErrors ? JSON.stringify(error?.graphQLErrors, null, 2) : undefined,
         networkError: error?.networkError,
         message: error?.message,
         extraInfo: error?.extraInfo,
-        resultErrors: error?.networkError?.result?.errors
+        resultErrors: error?.networkError?.result ? JSON.stringify(error?.networkError?.result, null, 2) : undefined,
+        stack: error?.stack,
     }
 }
 
@@ -169,7 +171,7 @@ export class CGraphQLClient {
     private async handleError<T>(func: () => Promise<T>): Promise<T> {
         try {
             return await func();
-        } catch (e) {
+        } catch (e: any) {
             Object.values(this.onErrorCallbacks).forEach(cb => cb(getGraphQLErrorInfo(e)));
 
             if (e?.message?.includes?.('Access denied') && !isServer()) {
@@ -878,6 +880,25 @@ export class CGraphQLClient {
     public deleteManyFilteredUsers = this.createDeleteManyFiltered<TUserFilter>('User', 'UserFilterInput');
     public getFilteredUsers = this.createGetFiltered<TUser, TUserFilter>('User', this.UserFragment, 'UserFragment', 'UserFilterInput');
 
+    public getUserByEmail = (email: string, customFragment?: DocumentNode, customFragmentName?: string): Promise<TUser | undefined> => {
+        const path = GraphQLPaths.User.getOneByEmail;
+        const fragment = customFragment ?? this.UserFragment;
+        const fragmentName = customFragmentName ?? 'UserFragment';
+
+        return this.query({
+            query: gql`
+              query core${path}($id: String!) {
+                  ${path}(id: $id) {
+                      ...${fragmentName}
+                  }
+              }
+              ${fragment}
+          `,
+            variables: {
+                email,
+            }
+        }, path);
+    }
     // </User>
 
 

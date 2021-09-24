@@ -1,5 +1,5 @@
 import { TAttribute, TStoreListItem } from '@cromwell/core';
-import { getCStore, getGraphQLClient } from '@cromwell/core-frontend';
+import { getCStore, getGraphQLClient, getGraphQLErrorInfo } from '@cromwell/core-frontend';
 import { IconButton } from '@material-ui/core';
 import clsx from 'clsx';
 import { observer } from 'mobx-react';
@@ -30,7 +30,7 @@ export const CompareModal = observer(() => {
             const data = await getGraphQLClient()?.getAttributes();
             if (data) setAttributes(data);
         } catch (e) {
-            console.error(e);
+            console.error(getGraphQLErrorInfo(e));
         }
     }
 

@@ -9,7 +9,7 @@ import {
     ProductCategoryFilterInput,
     ProductCategoryRepository,
     ProductRepository,
-    requestPage,
+    resetPageCache,
     UpdateProductCategory,
 } from '@cromwell/core-backend';
 import { Arg, Authorized, FieldResolver, Mutation, Query, Resolver, Root } from 'type-graphql';
@@ -57,7 +57,7 @@ export class ProductCategoryResolver {
     async [createPath](@Arg("data") data: CreateProductCategory) {
         const category = await this.repository.createProductCategory(data);
         serverFireAction('create_product_category', category);
-        requestPage('category', { slug: category.slug });
+        resetPageCache('category', { slug: category.slug });
         return category;
     }
 
@@ -66,7 +66,7 @@ export class ProductCategoryResolver {
     async [updatePath](@Arg("id") id: string, @Arg("data") data: UpdateProductCategory) {
         const category = await this.repository.updateProductCategory(id, data);
         serverFireAction('update_product_category', category);
-        requestPage('category', { slug: category.slug });
+        resetPageCache('category', { slug: category.slug });
         return category;
     }
 

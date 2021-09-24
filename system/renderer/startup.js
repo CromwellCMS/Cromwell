@@ -102,6 +102,7 @@ const main = () => {
             const success = await startNextServer({
                 port,
                 dir: tempDir,
+                targetThemeName: args.themeName,
                 dev: false,
             });
 

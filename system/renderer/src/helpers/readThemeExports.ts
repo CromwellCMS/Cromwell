@@ -4,7 +4,7 @@ import {
     getNodeModuleDir,
     getThemePagesMetaPath,
     getThemeTempRollupBuildDir,
-} from '@cromwell/core-backend';
+} from '@cromwell/core-backend/dist/helpers/paths';
 import fs from 'fs-extra';
 import normalizePath from 'normalize-path';
 import { resolve } from 'path';

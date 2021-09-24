@@ -1,5 +1,7 @@
 import { findRedirect, setStoreItem, TCmsSettings } from '@cromwell/core';
-import { getLogger, readCMSConfig } from '@cromwell/core-backend';
+import { getAuthSettings } from '@cromwell/core-backend/dist/helpers/auth-settings';
+import { readCMSConfig } from '@cromwell/core-backend/dist/helpers/cms-settings';
+import { getLogger } from '@cromwell/core-backend/dist/helpers/logger';
 import cookie from 'cookie';
 import fs from 'fs-extra';
 import { createServer } from 'http';
@@ -8,15 +10,25 @@ import { join } from 'path';
 import send from 'send';
 import { parse } from 'url';
 
+import { processCacheRequest } from './helpers/cacheManager';
+
 const logger = getLogger();
 
 export const startNextServer = async (options?: {
     dev?: boolean;
     port?: number;
     dir?: string;
+    targetThemeName?: string;
 }) => {
     const config = await readCMSConfig();
+    const authSettings = await getAuthSettings();
     setStoreItem('cmsSettings', config);
+
+    const themeName = options?.targetThemeName ?? config?.defaultSettings?.publicSettings?.themeName;
+    if (!themeName) {
+        logger.error('No theme name provided');
+        return;
+    }
 
     const port = options?.port ?? 3000;
     const app = next({
@@ -51,6 +63,8 @@ export const startNextServer = async (options?: {
             maxAge: 60 * 60 * 24 * 7, // 1 week
             path: '/',
         }));
+
+        await processCacheRequest({ app: app as any, req, res, authSettings, port, themeName });
 
         if (!pathname) {
             handle(req, res, parsedUrl);

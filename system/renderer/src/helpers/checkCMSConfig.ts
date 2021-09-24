@@ -6,6 +6,7 @@ let fs: typeof import('fs-extra');
 let requireFromString;
 let coreBackendPaths: typeof import('@cromwell/core-backend/dist/helpers/paths');
 let coreBackendCmsSettings: typeof import('@cromwell/core-backend/dist/helpers/cms-settings');
+let coreBackendAuthSettings: typeof import('@cromwell/core-backend/dist/helpers/auth-settings');
 let pathResolve: (typeof import('path'))['resolve'];
 let hasRequired = false;
 
@@ -19,6 +20,8 @@ const checkBackendModules = () => {
     requireFromString = nodeRequire('require-from-string');
     coreBackendPaths = nodeRequire('@cromwell/core-backend/dist/helpers/paths');
     coreBackendCmsSettings = nodeRequire('@cromwell/core-backend/dist/helpers/cms-settings');
+    coreBackendAuthSettings = nodeRequire('@cromwell/core-backend/dist/helpers/auth-settings');
+
     pathResolve = nodeRequire('path').resolve;
 }
 
@@ -28,6 +31,7 @@ export const checkCMSConfig = (): void => {
 
     const cmsConfigPath = coreBackendPaths.getCmsConfigPathSync();
     const config = coreBackendCmsSettings.readCMSConfigSync(cmsConfigPath);
+    setStoreItem('cmsSettings', config);
 
     if (!config.serviceSecret) {
         (async () => {
@@ -40,16 +44,15 @@ export const checkCMSConfig = (): void => {
                 }
 
                 if (fs.pathExistsSync(serverCachePath)) {
-                    const cacache = nodeRequire('cacache');
-                    config.serviceSecret = (await cacache?.get(serverCachePath, 'service_secret'))?.data?.toString?.();
+                    const authSettings = await coreBackendAuthSettings.getAuthSettings({
+                        serverCachePath,
+                    });
+                    config.serviceSecret = authSettings.serviceSecret;
+                    setStoreItem('cmsSettings', config);
                 }
-
             } catch (error) { }
-        })()
-
+        })();
     }
-
-    setStoreItem('cmsSettings', config);
 }
 
 export const getPluginCjsPath = async (pluginName: string): Promise<{

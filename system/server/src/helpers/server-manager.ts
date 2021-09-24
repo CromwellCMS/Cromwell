@@ -1,11 +1,13 @@
 import { getRandStr, sleep } from '@cromwell/core';
-import { getLogger, getServerBuildPath, serverMessages } from '@cromwell/core-backend';
+import { serverMessages } from '@cromwell/core-backend/dist/helpers/constants';
+import { getLogger } from '@cromwell/core-backend/dist/helpers/logger';
+import { getServerBuildPath } from '@cromwell/core-backend/dist/helpers/paths';
 import { ChildProcess, fork } from 'child_process';
 import fs from 'fs-extra';
 import tcpPortUsed from 'tcp-port-used';
 
-import { loadEnv } from './settings';
 import { restartMessage } from './constants';
+import { loadEnv } from './settings';
 
 const logger = getLogger();
 

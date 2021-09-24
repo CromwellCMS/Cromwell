@@ -129,7 +129,7 @@ export const getStaticProps: TGetStaticProps = async (context): Promise<ProductP
                 }
             `, 'ProductListFragment');
         } catch (e) {
-            console.error('Product::getStaticProps', e, getGraphQLErrorInfo(e))
+            console.error('Product::getStaticProps', getGraphQLErrorInfo(e))
         }
     } else {
         console.error('Product::getStaticProps: !pid')
@@ -146,7 +146,7 @@ export const getStaticProps: TGetStaticProps = async (context): Promise<ProductP
     try {
         attributes = await client?.getAttributes();
     } catch (e) {
-        console.error('Product::getStaticProps', e, getGraphQLErrorInfo(e))
+        console.error('Product::getStaticProps', getGraphQLErrorInfo(e))
     }
 
     // Breadcrumbs

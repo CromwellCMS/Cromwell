@@ -84,7 +84,8 @@
       "@cromwell/plugin-product-filter",
       "@cromwell/plugin-main-menu",
       "@cromwell/plugin-product-showcase",
-      "@cromwell/plugin-newsletter"
+      "@cromwell/plugin-newsletter",
+      "@cromwell/plugin-stripe"
     ],
     "frontendDependencies": [
       "mobx",
