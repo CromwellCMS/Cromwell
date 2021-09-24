@@ -8,7 +8,6 @@ import {
     Post,
     PostFilterInput,
     PostRepository,
-    requestPage,
     Tag,
     TGraphQLContext,
     UpdatePost,
@@ -18,6 +17,7 @@ import {
 import { Arg, Authorized, Ctx, FieldResolver, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
+import { resetPageCache } from '../helpers/reset-page';
 import { serverFireAction } from '../helpers/server-fire-action';
 
 const getOneBySlugPath = GraphQLPaths.Post.getOneBySlug;
@@ -95,7 +95,7 @@ export class PostResolver {
     async [createPath](@Arg("data") data: CreatePost): Promise<Post> {
         const post = await this.repository.createPost(data);
         serverFireAction('create_post', post);
-        requestPage('post', { slug: post.slug });
+        resetPageCache('post', { slug: post.slug });
         return post;
     }
 
@@ -104,7 +104,7 @@ export class PostResolver {
     async [updatePath](@Arg("id") id: string, @Arg("data") data: UpdatePost): Promise<Post> {
         const post = await this.repository.updatePost(id, data);
         serverFireAction('update_post', post);
-        requestPage('post', { slug: post.slug });
+        resetPageCache('post', { slug: post.slug });
         return post;
     }
 

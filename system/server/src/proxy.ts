@@ -1,5 +1,6 @@
-import { getLogger, readCMSConfigSync } from '@cromwell/core-backend';
 import { serviceLocator, setStoreItem } from '@cromwell/core';
+import { readCMSConfigSync } from '@cromwell/core-backend/dist/helpers/cms-settings';
+import { getLogger } from '@cromwell/core-backend/dist/helpers/logger';
 import http from 'http';
 import httpProxy from 'http-proxy';
 import nodeCleanup from 'node-cleanup';
@@ -38,7 +39,7 @@ async function main(): Promise<void> {
                 });
             } else {
                 res.writeHead(500, { 'Content-Type': 'text/plain' });
-                res.end('Proxy: Server is down');
+                res.end({ message: 'Proxy: Server is down' });
             }
         }
 

@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 import { TPagedParams, TProduct } from '@cromwell/core';
-import { getCStore, getGraphQLClient, Link, LoadBox } from '@cromwell/core-frontend';
+import { getCStore, getGraphQLClient, getGraphQLErrorInfo, Link, LoadBox } from '@cromwell/core-frontend';
 import { ClickAwayListener, Fade, Grid, Popper } from '@material-ui/core';
 import React from 'react';
 import { debounce } from 'throttle-debounce';
@@ -68,7 +68,7 @@ export class HeaderSearch extends React.Component<unknown, {
             if (products) this.setState({ searchItems: products });
 
         } catch (e) {
-            console.error(e);
+            console.error(getGraphQLErrorInfo(e));
         }
         this.setState({ isLoading: false });
     });

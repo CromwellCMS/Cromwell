@@ -16,6 +16,7 @@ import { serverFireAction } from '../helpers/server-fire-action';
 
 
 const getOneByIdPath = GraphQLPaths.User.getOneById;
+const getOneByEmailPath = GraphQLPaths.User.getOneByEmail;
 const getManyPath = GraphQLPaths.User.getMany;
 const createPath = GraphQLPaths.User.create;
 const updatePath = GraphQLPaths.User.update;
@@ -26,7 +27,13 @@ const deleteManyFilteredPath = GraphQLPaths.User.deleteManyFiltered;
 @Resolver(User)
 export class UserResolver {
 
-    private repository = getCustomRepository(UserRepository)
+    private repository = getCustomRepository(UserRepository);
+
+    @Authorized<TAuthRole>("administrator", "author", "guest")
+    @Query(() => User)
+    async [getOneByEmailPath](@Arg("email") email: string): Promise<User | undefined> {
+        return this.repository.getUserByEmail(email);
+    }
 
     @Authorized<TAuthRole>("administrator", "author", "guest")
     @Query(() => PagedUser)

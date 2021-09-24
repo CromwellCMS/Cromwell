@@ -1,10 +1,11 @@
 import { bundledModulesDirName, genericPageName, getRandStr, setStoreItem, sleep, TScriptMetaInfo } from '@cromwell/core';
+import { readCMSConfig } from '@cromwell/core-backend/dist/helpers/cms-settings';
+import { getLogger } from '@cromwell/core-backend/dist/helpers/logger';
 import {
     configFileName,
     getBundledModulesDir,
     getCmsModuleConfig,
     getCmsModuleInfo,
-    getLogger,
     getModulePackage,
     getNodeModuleDir,
     getPublicDir,
@@ -12,15 +13,15 @@ import {
     getRendererTempDevDir,
     getRendererTempDir,
     getThemeBuildDir,
-    readCMSConfig,
-} from '@cromwell/core-backend';
+} from '@cromwell/core-backend/dist/helpers/paths';
 import fs from 'fs-extra';
 import normalizePath from 'normalize-path';
 import { dirname, resolve } from 'path';
 import symlinkDir from 'symlink-dir';
 
-import { readThemeExports } from './helpers/readThemeExports';
 import { jsOperators } from './helpers/helpers';
+import { readThemeExports } from './helpers/readThemeExports';
+
 
 const localThemeBuildDurChunk = 'theme';
 const disableSSR = false;
@@ -30,7 +31,7 @@ export const generator = async (options: {
     scriptName: string;
     targetThemeName?: string;
 }) => {
-    const { scriptName, targetThemeName } = options
+    const { scriptName, targetThemeName } = options;
     const config = await readCMSConfig();
     if (config) setStoreItem('cmsSettings', config);
 

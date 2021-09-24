@@ -1,6 +1,13 @@
 import 'reflect-metadata';
 
-import { getLogger, graphQlAuthChecker, readCMSConfigSync, serverMessages, TGraphQLContext } from '@cromwell/core-backend';
+import {
+    getAuthSettings,
+    getLogger,
+    graphQlAuthChecker,
+    readCMSConfigSync,
+    serverMessages,
+    TGraphQLContext,
+} from '@cromwell/core-backend';
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
@@ -16,7 +23,7 @@ import { connectDatabase } from './helpers/connect-database';
 import { corsHandler } from './helpers/cors-handler';
 import { getResolvers } from './helpers/get-resolvers';
 import { childRegister } from './helpers/server-manager';
-import { authSettings, checkCmsVersion, checkConfigs, loadEnv } from './helpers/settings';
+import { checkCmsVersion, checkConfigs, loadEnv } from './helpers/settings';
 import { AppModule } from './modules/app.module';
 import { authServiceInst } from './services/auth.service';
 
@@ -31,6 +38,7 @@ async function bootstrap(): Promise<void> {
     checkCmsVersion();
 
     const envMode = loadEnv();
+    const authSettings = await getAuthSettings();
 
     // Init Fastify as Nest.js server
     const apiPrefix = 'api';
@@ -106,7 +114,7 @@ async function bootstrap(): Promise<void> {
 (async () => {
     try {
         await bootstrap();
-    } catch (e) {
+    } catch (e: any) {
         logger.error('Server: error on launch:', e.stack);
         if (process.send) process.send(JSON.stringify({
             message: serverMessages.onStartErrorMessage,

@@ -9,7 +9,7 @@ import {
     TStaticPageContext,
     TThemeConfig,
 } from '@cromwell/core';
-import { getRestApiClient } from '@cromwell/core-frontend';
+import { getRestApiClient } from '@cromwell/core-frontend/dist/api/CRestApiClient';
 
 import { getThemeStaticProps } from './getThemeStaticProps';
 import { pluginsDataFetcher } from './pluginsDataFetcher';
@@ -46,7 +46,7 @@ export const createGetStaticProps = (pageName: TDefaultPageName | string,
         } = {};
 
         try {
-            rendererData = (await getRestApiClient().batchRendererData(pageConfigName)) ?? {};
+            rendererData = (await getRestApiClient().getRendererRage(pageConfigName)) ?? {};
         } catch (e) {
             console.error(e);
         }
@@ -88,7 +88,7 @@ export const createGetStaticProps = (pageName: TDefaultPageName | string,
 
         return {
             props: JSON.parse(JSON.stringify(props)),
-            revalidate: childStaticProps?.revalidate ?? 1,
+            revalidate: childStaticProps?.revalidate ?? 60,
             notFound: childStaticProps?.notFound ? true : undefined,
             redirect: childStaticProps?.redirect,
         }

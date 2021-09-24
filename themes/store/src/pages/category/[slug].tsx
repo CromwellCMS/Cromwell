@@ -7,7 +7,7 @@ import {
     TProduct,
     TProductCategory,
 } from '@cromwell/core';
-import { CContainer, CList, getGraphQLClient, TCList } from '@cromwell/core-frontend';
+import { CContainer, CList, getGraphQLClient, getGraphQLErrorInfo, TCList } from '@cromwell/core-frontend';
 import clsx from 'clsx';
 import { useRouter } from 'next/router';
 import React, { useEffect, useRef } from 'react';
@@ -126,7 +126,7 @@ export const getStaticProps: TGetStaticProps = async (context): Promise<Category
         try {
             category = await client?.getProductCategoryBySlug(slug);
         } catch (e) {
-            console.error('ProductCategory::getStaticProps 1, slug: ' + slug, e)
+            console.error('ProductCategory::getStaticProps 1, slug: ' + slug, getGraphQLErrorInfo(e))
         }
     } else {
         console.error('ProductCategory::getStaticProps: !pid')
@@ -144,7 +144,7 @@ export const getStaticProps: TGetStaticProps = async (context): Promise<Category
             products = await client?.getProductsFromCategory(category.id,
                 { pageSize: 20 })
         } catch (e) {
-            console.error('ProductCategory::getStaticProps 2, slug: ' + slug, e)
+            console.error('ProductCategory::getStaticProps 2, slug: ' + slug, getGraphQLErrorInfo(e))
         }
     }
 
@@ -153,7 +153,7 @@ export const getStaticProps: TGetStaticProps = async (context): Promise<Category
     try {
         attributes = await client?.getAttributes();
     } catch (e) {
-        console.error('Product::getStaticProps', e)
+        console.error('Product::getStaticProps', getGraphQLErrorInfo(e))
     }
 
     return {

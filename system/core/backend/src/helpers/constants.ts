@@ -98,3 +98,4 @@ export const defaultCmsConfig: TCmsConfig = {
 }
 
 export const cmsPackageName = '@cromwell/cms';
+

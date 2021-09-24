@@ -37,6 +37,7 @@ export const GraphQLPaths: { [K in Exclude<TDBEntity, 'Theme' | 'Plugin' | 'Post
     User: {
         getOneBySlug: "getUserBySlug",
         getOneById: "getUserById",
+        getOneByEmail: "getUserByEmail",
         getMany: "getUsers",
         create: "createUser",
         update: "updateUser",

@@ -21,11 +21,11 @@ import {
     getModulePackage,
     getModuleStaticDir,
     getNodeModuleDir,
+    getPluginSettings,
     getPublicThemesDir,
     getThemeConfigs,
     runShellCommand,
     TAllThemeConfigs,
-    getPluginSettings,
 } from '@cromwell/core-backend';
 import { getCentralServerClient } from '@cromwell/core-frontend';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
@@ -35,8 +35,7 @@ import { resolve } from 'path';
 import { Container, Service } from 'typedi';
 import { getConnection, getCustomRepository } from 'typeorm';
 
-import { CmsConfigDto } from '../dto/cms-config.dto';
-import { ThemeConfigDto } from '../dto/theme-config.dto';
+import { resetAllPagesCache, resetPageCache } from '../helpers/reset-page';
 import { serverFireAction } from '../helpers/server-fire-action';
 import { childSendMessage } from '../helpers/server-manager';
 import { endTransaction, restartService, setPendingKill, startTransaction } from '../helpers/state-manager';
@@ -44,7 +43,6 @@ import { CmsService } from './cms.service';
 import { PluginService } from './plugin.service';
 
 const logger = getLogger();
-
 
 
 @Injectable()
@@ -315,7 +313,6 @@ export class ThemeService {
             }
         }
 
-        // Merge global mods
         const globalMods: TCromwellBlockData[] = [];
         userPageConfig.modifications = userPageConfig.modifications.filter(mod => {
             if (mod.global) {
@@ -324,6 +321,19 @@ export class ThemeService {
             }
             return true;
         });
+
+        // User has modified global blocks or dynamic pages. Now we need to
+        // update more than one page. Since we don't exactly all these pages
+        // we need to reset entire Next.js cache 
+        if (globalMods.length || userPageConfig.route.includes('[slug]')
+            || userPageConfig.route.includes('[id]')) {
+            resetAllPagesCache();
+        } else {
+            // Otherwise reset one modified page
+            resetPageCache(userPageConfig.route);
+        }
+
+        // Merge global mods
         userConfig.globalModifications = this.mergeMods(userConfig?.globalModifications, globalMods);
 
         // Remove recently deleted user's blocks from oldUserPageConfig if they aren't in theme's;
@@ -629,7 +639,7 @@ export class ThemeService {
         try {
             return await getCentralServerClient().checkThemeUpdate(
                 name, pckg?.version ?? '0', isBeta);
-        } catch (error) {
+        } catch (error: any) {
             if (error.statusCode === 404) return;
             getLogger(false).error(error);
         }
@@ -638,7 +648,7 @@ export class ThemeService {
     async getThemeLatest(name: string): Promise<TCCSModuleShortInfo | undefined> {
         try {
             return await getCentralServerClient().getThemeInfo(name);
-        } catch (error) {
+        } catch (error: any) {
             if (error.statusCode === 404) return;
             getLogger(false).error(error);
         }
@@ -811,23 +821,5 @@ export class ThemeService {
 
         await serverFireAction('uninstall_theme', { themeName });
         return true;
-    }
-
-    public async getRendererData(pageRoute: string) {
-        const allConfigs = await getThemeConfigs();
-        const [pageConfig, pagesInfo] = await Promise.all([
-            this.getPageConfig(pageRoute, allConfigs),
-            this.getPagesInfo(allConfigs),
-        ]);
-        const pluginsSettings = await this.getPluginsAtPage(pageRoute, pageConfig);
-
-        return {
-            pageConfig,
-            pluginsSettings,
-            themeConfig: new ThemeConfigDto().parse(allConfigs.themeConfig),
-            cmsSettings: allConfigs.cmsSettings && new CmsConfigDto().parseConfig(allConfigs.cmsSettings),
-            themeCustomConfig: Object.assign({}, allConfigs.themeConfig?.themeCustomConfig, allConfigs.userConfig?.themeCustomConfig),
-            pagesInfo,
-        }
     }
 }

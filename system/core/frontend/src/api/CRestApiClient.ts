@@ -102,34 +102,20 @@ export class CRestApiClient {
                 // authorized requests to the API server.
                 const nodeRequire = (name: string) => eval(`require('${name}');`);
 
-                const readCMSConfig: typeof import('@cromwell/core-backend')['readCMSConfig']
-                    = nodeRequire('@cromwell/core-backend/dist/helpers/cms-settings').readCMSConfig;
-
-                const getServerTempDir: typeof import('@cromwell/core-backend')['getServerTempDir']
-                    = nodeRequire('@cromwell/core-backend/dist/helpers/paths').getServerTempDir;
+                const getAuthSettings: typeof import('@cromwell/core-backend')['getAuthSettings']
+                    = nodeRequire('@cromwell/core-backend/dist/helpers/auth-settings').getAuthSettings;
 
                 let cmsConfig = getStoreItem('cmsSettings');
                 if (!cmsConfig) {
+                    const readCMSConfig: typeof import('@cromwell/core-backend')['readCMSConfig']
+                        = nodeRequire('@cromwell/core-backend/dist/helpers/cms-settings').readCMSConfig;
                     cmsConfig = await readCMSConfig();
                     setStoreItem('cmsSettings', cmsConfig);
                 }
-
-                if (cmsConfig && !cmsConfig.serviceSecret) {
-                    try {
-                        const { resolve } = nodeRequire('path');
-                        const cacache = nodeRequire('cacache');
-                        const tempDir = getServerTempDir();
-                        if (tempDir) {
-                            const serverCachePath = resolve(tempDir, 'cache');
-                            if (serverCachePath) {
-                                cmsConfig.serviceSecret = (await
-                                    cacache?.get(serverCachePath, 'service_secret')
-                                )?.data?.toString?.();
-                            }
-                        }
-                    } catch (error) { }
+                if (!cmsConfig.serviceSecret) {
+                    cmsConfig.serviceSecret = (await getAuthSettings())?.serviceSecret;
                 }
-                this.serviceSecret = cmsConfig?.serviceSecret;
+                this.serviceSecret = cmsConfig.serviceSecret;
             } catch (error) {
                 console.error(error);
             }
@@ -739,15 +725,37 @@ export class CRestApiClient {
         return this.get(`v1/theme/custom-config`, options);
     }
 
+    // < / Theme >
+
+
+    // < Renderer >
+
     /** 
      * @internal 
      * @auth admin
      */
-    public batchRendererData = async (pageRoute: string, options?: TRequestOptions): Promise<any> => {
-        return this.get(`v1/theme/renderer?pageRoute=${pageRoute}`, options);
+    public getRendererRage = async (pageRoute: string, options?: TRequestOptions): Promise<any> => {
+        return this.get(`v1/renderer/page?pageRoute=${pageRoute}`, options);
     }
 
-    // < / Theme >
+    /** 
+     * @internal 
+     * @auth admin
+     */
+    public purgeRendererPageCache = async (pageRoute: string, options?: TRequestOptions): Promise<any> => {
+        return this.get(`v1/renderer/purge-page-cache?pageRoute=${pageRoute}`, options);
+    }
+
+    /** 
+     * @internal 
+     * @auth admin
+     */
+    public purgeRendererEntireCache = async (options?: TRequestOptions): Promise<any> => {
+        return this.get(`v1/renderer/purge-entire-cache`, options);
+    }
+
+
+    // < / Renderer >
 
 
     // < Plugin >

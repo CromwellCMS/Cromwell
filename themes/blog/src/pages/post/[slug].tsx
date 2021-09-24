@@ -1,5 +1,5 @@
 import { TCromwellPage, TGetStaticProps, TPost } from '@cromwell/core';
-import { CContainer, getGraphQLClient, Link, LoadBox } from '@cromwell/core-frontend';
+import { CContainer, getGraphQLClient, getGraphQLErrorInfo, Link, LoadBox } from '@cromwell/core-frontend';
 import { useRouter } from 'next/router';
 import React from 'react';
 
@@ -85,7 +85,7 @@ export const getStaticProps: TGetStaticProps = async (context): Promise<BlogPost
             // Don't allow unpublished posts to be seen by customers
             if (!post?.published) post = undefined;
         } catch (e) {
-            console.error('BlogPostPage::getStaticProps', e)
+            console.error('BlogPostPage::getStaticProps', getGraphQLErrorInfo(e))
         }
     } else {
         console.error('BlogPostPage::getStaticProps: !pid')

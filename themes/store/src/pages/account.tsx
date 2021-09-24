@@ -1,5 +1,12 @@
 import { setStoreItem, TOrder, TStoreListItem, TUpdateUser, TUser } from '@cromwell/core';
-import { CContainer, CText, getCStore, getGraphQLClient, getRestApiClient } from '@cromwell/core-frontend';
+import {
+    CContainer,
+    CText,
+    getCStore,
+    getGraphQLClient,
+    getGraphQLErrorInfo,
+    getRestApiClient,
+} from '@cromwell/core-frontend';
 import { Button, Grid, TextField } from '@material-ui/core';
 import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
@@ -118,7 +125,7 @@ const Account = () => {
 
         } catch (e) {
             toast.error('Failed to save');
-            console.error(e)
+            console.error(getGraphQLErrorInfo(e))
         }
     }
 

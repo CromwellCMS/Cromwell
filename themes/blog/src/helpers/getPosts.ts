@@ -16,7 +16,12 @@ export const handleGetFilteredPosts = async (params: TPagedParams<TPost>, filter
                 title
                 createDate
                 excerpt
-                authorId
+                author {
+                    id
+                    email
+                    fullName
+                    avatar
+                }
                 mainImage
                 readTime
                 tags {
@@ -33,32 +38,5 @@ export const handleGetFilteredPosts = async (params: TPagedParams<TPost>, filter
         customFragmentName: 'PostListFragment',
         filterParams: filter,
     });
-
-    if (!posts?.elements?.length) return;
-
-    const authorIds: string[] = [];
-    posts.elements.forEach(post => {
-        if (post.authorId && !authorIds.includes(post.authorId)) {
-            authorIds.push(post.authorId);
-        }
-    });
-
-    const authors = await Promise.all(authorIds.map(async id => {
-        try {
-            return await client.getUserById(id);
-        } catch (error) {
-            console.error(error);
-        }
-    }));
-
-    posts.elements.forEach(post => {
-        if (post.authorId) {
-            const author = authors.find(a => a?.id + '' === post.authorId + '')
-            if (author) {
-                post.author = author;
-            }
-        }
-    });
-
     return posts;
 }

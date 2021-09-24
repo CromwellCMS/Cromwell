@@ -1,5 +1,5 @@
 import { TCromwellPage, TGetStaticProps, TPagedList, TPost } from '@cromwell/core';
-import { CContainer, CImage, CText } from '@cromwell/core-frontend';
+import { CContainer, CImage, CText, getGraphQLErrorInfo } from '@cromwell/core-frontend';
 import React from 'react';
 
 import Layout from '../components/layout/Layout';
@@ -78,7 +78,7 @@ export const getStaticProps: TGetStaticProps = async (): Promise<BlogProps> => {
     try {
         posts = await handleGetFilteredPosts({ pageSize: 20, order: 'DESC', orderBy: 'publishDate' });
     } catch (e) {
-        console.error('IndexPage::getStaticProps', e)
+        console.error('IndexPage::getStaticProps', getGraphQLErrorInfo(e))
     }
 
     let featuredPosts: TPagedList<TPost> | undefined;
@@ -91,7 +91,7 @@ export const getStaticProps: TGetStaticProps = async (): Promise<BlogProps> => {
             featured: true
         });
     } catch (e) {
-        console.error('IndexPage::getStaticProps', e)
+        console.error('IndexPage::getStaticProps', getGraphQLErrorInfo(e))
     }
 
     return {

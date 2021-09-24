@@ -1,5 +1,5 @@
 import { TAttribute, TProduct } from '@cromwell/core';
-import { getGraphQLClient } from '@cromwell/core-frontend';
+import { getGraphQLClient, getGraphQLErrorInfo } from '@cromwell/core-frontend';
 import { IconButton } from '@material-ui/core';
 import { observer } from 'mobx-react';
 import React, { useEffect, useState } from 'react';
@@ -33,7 +33,7 @@ const ProductQuickView = observer(() => {
             if (prod) setProduct(prod);
             if (attrs) setAttributes(attrs);
         } catch (e) {
-            console.error(e);
+            console.error(getGraphQLErrorInfo(e));
         }
         setIsLoading(false);
     }

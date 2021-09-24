@@ -187,7 +187,7 @@ export class PluginService {
         try {
             return await getCentralServerClient().checkPluginUpdate(
                 pluginName, pckg?.version ?? '0', isBeta);
-        } catch (error) {
+        } catch (error: any) {
             if (error.statusCode === 404) return;
             getLogger(false).error(error);
         }
@@ -197,7 +197,7 @@ export class PluginService {
         try {
             return await getCentralServerClient().getPluginInfo(
                 pluginName);
-        } catch (error) {
+        } catch (error: any) {
             if (error.statusCode === 404) return;
             getLogger(false).error(error);
         }

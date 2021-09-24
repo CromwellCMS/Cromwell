@@ -1,8 +1,11 @@
 import { sleep, TCreateUser } from '@cromwell/core';
 import {
+    bcryptSaltRounds,
+    getAuthSettings,
     getEmailTemplate,
     getLogger,
     sendEmail,
+    TAuthSettings,
     TAuthUserInfo,
     TRequestWithUser,
     TTokenInfo,
@@ -21,7 +24,6 @@ import { LoginDto } from '../dto/login.dto';
 import { ResetPasswordDto } from '../dto/reset-password.dto';
 import { UserDto } from '../dto/user.dto';
 import { TLoginInfo } from '../helpers/constants';
-import { authSettings, bcryptSaltRounds } from '../helpers/settings';
 
 const logger = getLogger();
 
@@ -36,11 +38,17 @@ export class AuthService {
     }> = {};
 
     private tokensDelimiter = '$$'
+    private authSettings: TAuthSettings;
 
     constructor(
         private jwtService: JwtService,
     ) {
         authServiceInst = this;
+        this.init();
+    }
+
+    private async init() {
+        this.authSettings = await getAuthSettings();
     }
 
     async validateUser(email: string, pass: string): Promise<User | null> {
@@ -153,7 +161,7 @@ export class AuthService {
         } else {
             this.resetPasswordAttempts[user.email].attempts++;
 
-            if (this.resetPasswordAttempts[user.email].attempts > authSettings.resetPasswordAttempts) {
+            if (this.resetPasswordAttempts[user.email].attempts > this.authSettings.resetPasswordAttempts) {
                 logger.warn('Exceeded reset password attempts');
                 delete this.resetPasswordAttempts[user.email];
                 await resetUserCode();
@@ -162,7 +170,7 @@ export class AuthService {
         }
 
         if (user.resetPasswordDate.getTime() +
-            authSettings.resetPasswordCodeExpirationAccessTime < new Date(Date.now()).getTime()) {
+            this.authSettings.resetPasswordCodeExpirationAccessTime < new Date(Date.now()).getTime()) {
             logger.warn('Tried to reset password with expired code');
             await resetUserCode();
             throw new HttpException('Failed', HttpStatus.BAD_REQUEST);
@@ -202,22 +210,22 @@ export class AuthService {
         };
 
         const token = await this.jwtService.signAsync(payload, {
-            secret: authSettings.accessSecret,
-            expiresIn: authSettings.expirationAccessTime + 's'
+            secret: this.authSettings.accessSecret,
+            expiresIn: this.authSettings.expirationAccessTime + 's'
         });
 
         return {
             token,
-            maxAge: authSettings.expirationAccessTime + '',
-            cookie: `${authSettings.accessTokenCookieName}=${token}; HttpOnly; Path=/; Max-Age=${authSettings.expirationAccessTime}`
+            maxAge: this.authSettings.expirationAccessTime + '',
+            cookie: `${this.authSettings.accessTokenCookieName}=${token}; HttpOnly; Path=/; Max-Age=${this.authSettings.expirationAccessTime}`
         }
     }
 
     getAccessTokenInfo(token: string): TTokenInfo {
         return {
             token,
-            maxAge: authSettings.expirationAccessTime + '',
-            cookie: `${authSettings.accessTokenCookieName}=${token}; HttpOnly; Path=/; Max-Age=${authSettings.expirationAccessTime}`
+            maxAge: this.authSettings.expirationAccessTime + '',
+            cookie: `${this.authSettings.accessTokenCookieName}=${token}; HttpOnly; Path=/; Max-Age=${this.authSettings.expirationAccessTime}`
         }
     }
 
@@ -229,22 +237,22 @@ export class AuthService {
         };
         // Generate new token and save to DB
         const token = await this.jwtService.signAsync(payload, {
-            secret: authSettings.refreshSecret,
-            expiresIn: authSettings.expirationRefreshTime + 's'
+            secret: this.authSettings.refreshSecret,
+            expiresIn: this.authSettings.expirationRefreshTime + 's'
         });
 
         return {
             token,
-            maxAge: authSettings.expirationRefreshTime + '',
-            cookie: `${authSettings.refreshTokenCookieName}=${token}; HttpOnly; Path=/; Max-Age=${authSettings.expirationRefreshTime}`
+            maxAge: this.authSettings.expirationRefreshTime + '',
+            cookie: `${this.authSettings.refreshTokenCookieName}=${token}; HttpOnly; Path=/; Max-Age=${this.authSettings.expirationRefreshTime}`
         }
     }
 
     getRefreshTokenInfo(token: string): TTokenInfo {
         return {
             token,
-            maxAge: authSettings.expirationRefreshTime + '',
-            cookie: `${authSettings.refreshTokenCookieName}=${token}; HttpOnly; Path=/; Max-Age=${authSettings.expirationRefreshTime}`
+            maxAge: this.authSettings.expirationRefreshTime + '',
+            cookie: `${this.authSettings.refreshTokenCookieName}=${token}; HttpOnly; Path=/; Max-Age=${this.authSettings.expirationRefreshTime}`
         }
     }
 
@@ -282,7 +290,7 @@ export class AuthService {
     async validateAccessToken(accessToken: string): Promise<TTokenPayload | undefined> {
         try {
             return await this.jwtService.verifyAsync<TTokenPayload>(accessToken, {
-                secret: authSettings.accessSecret,
+                secret: this.authSettings.accessSecret,
             });
         } catch (e) {
             // logger.error(e);
@@ -292,7 +300,7 @@ export class AuthService {
     async validateRefreshToken(refreshToken: string): Promise<TTokenPayload | undefined> {
         try {
             return await this.jwtService.verifyAsync<TTokenPayload>(refreshToken, {
-                secret: authSettings.refreshSecret,
+                secret: this.authSettings.refreshSecret,
             });
         } catch (e) {
             logger.log(e);
@@ -317,8 +325,8 @@ export class AuthService {
 
     getCookiesForLogOut() {
         return [
-            `${authSettings.accessTokenCookieName}=; HttpOnly; Path=/; Max-Age=0`,
-            `${authSettings.refreshTokenCookieName}=; HttpOnly; Path=/; Max-Age=0`,
+            `${this.authSettings.accessTokenCookieName}=; HttpOnly; Path=/; Max-Age=0`,
+            `${this.authSettings.refreshTokenCookieName}=; HttpOnly; Path=/; Max-Age=0`,
         ];
     }
 
@@ -332,7 +340,7 @@ export class AuthService {
 
     setAccessTokenCookie(response, request: TRequestWithUser, token: TTokenInfo) {
         try {
-            response.setCookie(authSettings.accessTokenCookieName, token.token, {
+            response.setCookie(this.authSettings.accessTokenCookieName, token.token, {
                 path: '/',
                 maxAge: token.maxAge,
                 httpOnly: true,
@@ -344,7 +352,7 @@ export class AuthService {
 
     setRefreshTokenCookie(response, request: TRequestWithUser, token: TTokenInfo) {
         try {
-            response.setCookie(authSettings.refreshTokenCookieName, token.token, {
+            response.setCookie(this.authSettings.refreshTokenCookieName, token.token, {
                 path: '/',
                 maxAge: token.maxAge,
                 httpOnly: true,
@@ -356,12 +364,12 @@ export class AuthService {
 
     clearTokenCookies(response, request: TRequestWithUser) {
         try {
-            response.clearCookie(authSettings.accessTokenCookieName, {
+            response.clearCookie(this.authSettings.accessTokenCookieName, {
                 path: '/',
                 httpOnly: true,
                 domain: this.getDomainFromRequest(request),
             });
-            response.clearCookie(authSettings.refreshTokenCookieName, {
+            response.clearCookie(this.authSettings.refreshTokenCookieName, {
                 path: '/',
                 httpOnly: true,
                 domain: this.getDomainFromRequest(request),
@@ -378,7 +386,7 @@ export class AuthService {
             if (authHeader.startsWith('Service ')) {
                 // Access by secret token from other services such as Renderer
                 const serviceSecret = authHeader.substring(8, authHeader.length);
-                if (serviceSecret === authSettings.serviceSecret) {
+                if (serviceSecret === this.authSettings.serviceSecret) {
                     request.user = {
                         id: 'service',
                         email: 'service',
@@ -388,8 +396,8 @@ export class AuthService {
                 }
             }
 
-            let accessToken = request?.cookies?.[authSettings.accessTokenCookieName];
-            const refreshToken = request?.cookies?.[authSettings.refreshTokenCookieName];
+            let accessToken = request?.cookies?.[this.authSettings.accessTokenCookieName];
+            const refreshToken = request?.cookies?.[this.authSettings.refreshTokenCookieName];
 
             if (!accessToken) {
                 if (authHeader.startsWith('Bearer ')) {
@@ -437,7 +445,7 @@ export class AuthService {
 
             return authUserInfo;
 
-        } catch (err) {
+        } catch (err: any) {
             logger.log('processRequest: ', err.message);
             this.clearTokenCookies(response, request);
         }
@@ -457,7 +465,7 @@ export class AuthService {
                 // remove old/expired resetPasswordAttempts from memory
                 for (const email of Object.keys(this.resetPasswordAttempts)) {
                     if (this.resetPasswordAttempts[email].firstDate.getTime() +
-                        authSettings.resetPasswordCodeExpirationAccessTime < new Date(Date.now()).getTime()) {
+                        this.authSettings.resetPasswordCodeExpirationAccessTime < new Date(Date.now()).getTime()) {
                         delete this.resetPasswordAttempts[email];
                     }
                 }

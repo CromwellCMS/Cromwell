@@ -8,7 +8,7 @@ import {
     TPostFilter,
     TTag,
 } from '@cromwell/core';
-import { CContainer, CList, getGraphQLClient, LoadBox, TCList } from '@cromwell/core-frontend';
+import { CContainer, CList, getGraphQLClient, getGraphQLErrorInfo, LoadBox, TCList } from '@cromwell/core-frontend';
 import { FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
 import { useRouter } from 'next/router';
 import React, { useEffect, useRef } from 'react';
@@ -142,7 +142,7 @@ export const getStaticProps: TGetStaticProps = async (context): Promise<BlogProp
             tag = await client?.getTagBySlug(slug);
         }
     } catch (e) {
-        console.error(e)
+        console.error(getGraphQLErrorInfo(e))
     }
 
     if (!tag) {
@@ -157,7 +157,7 @@ export const getStaticProps: TGetStaticProps = async (context): Promise<BlogProp
             tagIds: [tag.id]
         }) : {};
     } catch (e) {
-        console.error('TagPage::getStaticProps', e)
+        console.error('TagPage::getStaticProps', getGraphQLErrorInfo(e))
     }
 
     return {
