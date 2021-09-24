@@ -24,8 +24,6 @@ import {
     getPluginSettings,
     getPublicThemesDir,
     getThemeConfigs,
-    resetAllPagesCache,
-    resetPageCache,
     runShellCommand,
     TAllThemeConfigs,
 } from '@cromwell/core-backend';
@@ -37,6 +35,7 @@ import { resolve } from 'path';
 import { Container, Service } from 'typedi';
 import { getConnection, getCustomRepository } from 'typeorm';
 
+import { resetAllPagesCache, resetPageCache } from '../helpers/reset-page';
 import { serverFireAction } from '../helpers/server-fire-action';
 import { childSendMessage } from '../helpers/server-manager';
 import { endTransaction, restartService, setPendingKill, startTransaction } from '../helpers/state-manager';

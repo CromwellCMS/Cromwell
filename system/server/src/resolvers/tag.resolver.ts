@@ -4,13 +4,13 @@ import {
     InputTag,
     PagedParamsInput,
     PagedTag,
-    resetPageCache,
     Tag,
     TagRepository,
 } from '@cromwell/core-backend';
 import { Arg, Authorized, Mutation, Query, Resolver } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
+import { resetPageCache } from '../helpers/reset-page';
 import { serverFireAction } from '../helpers/server-fire-action';
 
 const getOneBySlugPath = GraphQLPaths.Tag.getOneBySlug;

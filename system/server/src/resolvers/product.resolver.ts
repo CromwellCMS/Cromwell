@@ -21,12 +21,12 @@ import {
     ProductFilterInput,
     ProductRating,
     ProductRepository,
-    resetPageCache,
     UpdateProduct,
 } from '@cromwell/core-backend';
 import { Arg, Authorized, FieldResolver, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
+import { resetPageCache } from '../helpers/reset-page';
 import { serverFireAction } from '../helpers/server-fire-action';
 
 const categoriesKey: keyof TProduct = 'categories';

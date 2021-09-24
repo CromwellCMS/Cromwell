@@ -8,7 +8,6 @@ import {
     Post,
     PostFilterInput,
     PostRepository,
-    resetPageCache,
     Tag,
     TGraphQLContext,
     UpdatePost,
@@ -18,6 +17,7 @@ import {
 import { Arg, Authorized, Ctx, FieldResolver, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
+import { resetPageCache } from '../helpers/reset-page';
 import { serverFireAction } from '../helpers/server-fire-action';
 
 const getOneBySlugPath = GraphQLPaths.Post.getOneBySlug;

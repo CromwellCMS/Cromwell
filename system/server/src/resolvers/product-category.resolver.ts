@@ -9,12 +9,12 @@ import {
     ProductCategoryFilterInput,
     ProductCategoryRepository,
     ProductRepository,
-    resetPageCache,
     UpdateProductCategory,
 } from '@cromwell/core-backend';
 import { Arg, Authorized, FieldResolver, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
+import { resetPageCache } from '../helpers/reset-page';
 import { serverFireAction } from '../helpers/server-fire-action';
 
 const getOneBySlugPath = GraphQLPaths.ProductCategory.getOneBySlug;

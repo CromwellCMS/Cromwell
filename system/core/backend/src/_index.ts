@@ -16,7 +16,6 @@ export * from './helpers/actions';
 export * from './helpers/shell';
 export * from './helpers/generic-entities';
 export * from './helpers/theme-config';
-export * from './helpers/reset-page';
 export * from './helpers/base-queries';
 export * from './helpers/plugin-settings';
 

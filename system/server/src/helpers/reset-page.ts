@@ -1,8 +1,6 @@
 import { getStoreItem, resolvePageRoute, setStoreItem } from '@cromwell/core';
+import { getLogger, getThemeConfigs } from '@cromwell/core-backend';
 import { getRestApiClient } from '@cromwell/core-frontend';
-
-import { getLogger } from './logger';
-import { getThemeConfigs } from './theme-config';
 
 let lastUsedTheme: string | undefined;
 

@@ -82,10 +82,9 @@ const purgePageCache = async (options: ManagerOptions, pathname: string) => {
             cache.del(pathname);
         }
 
-        logger.log(`Cache of ${fullPathname} was successfully purged`);
+        logger.log(`Next.js cache of ${pathname} was successfully purged`);
     } catch (err) {
-        logger.error(err);
-        logger.error(`Could not purge cache of ${fullPathname} - ${err}`);
+        logger.error(`Could not purge Next.js cache of ${fullPathname} - ${err}`);
     }
 }
 
@@ -118,8 +117,8 @@ const purgeEntireCache = async (options: ManagerOptions) => {
         } catch (e) {
             logger.error(e);
         }
+        logger.log(`Entire Next.js cache was successfully purged`);
     } catch (error) {
-        logger.error(error);
-        logger.error(`Could not purge entire cache`);
+        logger.error(`Could not purge entire Next.js cache - ${error}`);
     }
 }
