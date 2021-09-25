@@ -33,8 +33,8 @@
   "devDependencies": {
     "@apollo/client": "3.2.1",
     "@cromwell/cli": "^1.0.18",
-    "@cromwell/core-frontend": "1.1.5",
-    "@cromwell/utils": "1.0.20",
+    "@cromwell/core-frontend": "^1.1.5",
+    "@cromwell/utils": "^1.0.20",
     "@rollup/plugin-alias": "3.1.5",
     "@rollup/plugin-commonjs": "20.0.0",
     "@rollup/plugin-json": "4.1.0",
