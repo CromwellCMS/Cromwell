@@ -168,7 +168,7 @@ export const getStaticProps: TGetStaticProps = async (context): Promise<Category
 export const getStaticPaths = () => {
     return {
         paths: [],
-        fallback: true
+        fallback: 'blocking',
     };
 }
 

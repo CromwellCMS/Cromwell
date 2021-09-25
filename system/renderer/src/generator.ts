@@ -232,7 +232,7 @@ const devGenerate = async (themeName: string, options) => {
          export const getStaticPaths = function () {
             return {
                 paths: [],
-                fallback: true
+                fallback: 'blocking',
             };
         };
          ` : ''}
@@ -257,7 +257,6 @@ const devGenerate = async (themeName: string, options) => {
             import '@cromwell/renderer/build/editor-styles.css';
             import '@cromwell/core-frontend/dist/_index.css';
             `;
-
             pageContent = globalStyles + '\n' + pageContent;
         }
 

@@ -28,6 +28,6 @@ export const getStaticProps: TGetStaticProps = async (context): Promise<any> => 
 export const getStaticPaths = () => {
     return {
         paths: [],
-        fallback: true
+        fallback: 'blocking',
     };
 }

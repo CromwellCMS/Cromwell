@@ -263,7 +263,7 @@ const pollPages = async (port: string | number) => {
     }
     if (!infos) return;
 
-    const promises = infos.map(async (info) => {
+    const promises = infos.filter(info => !info.route.startsWith('pages/')).map(async (info) => {
         for (let i = 0; i < 2; i++) {
             const pageRoute = await resolvePageRoute(info.route, {
                 slug: 'test'

@@ -38,7 +38,10 @@ type ManagerOptions = {
     themeName: string;
 }
 
+let isPurgingAll = false;
+
 export const processCacheRequest = async (options: ManagerOptions) => {
+    if (isPurgingAll) return;
     const { req, authSettings, port } = options;
     const url = new URL(`http://localhost:${port}${req.url!}`);
     const purgeParam = url.searchParams.get('purge');
@@ -51,7 +54,13 @@ export const processCacheRequest = async (options: ManagerOptions) => {
         await purgePageCache(options, pageRoute);
     }
     if (purgeParam === 'all') {
-        await purgeEntireCache(options);
+        isPurgingAll = true;
+        try {
+            await purgeEntireCache(options);
+        } catch (error) {
+            logger.error(error);
+        }
+        isPurgingAll = false;
     }
 }
 
