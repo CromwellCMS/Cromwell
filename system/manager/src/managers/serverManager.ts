@@ -55,7 +55,7 @@ export const startServer = async (command?: TServerCommands, argsPort?: string |
                     } catch (e) { logger.error(e) }
 
                     try {
-                        await startServer(command);
+                        await startServer(command, argsPort);
                     } catch (error) {
                         logger.error(error);
                     }

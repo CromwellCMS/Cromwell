@@ -49,7 +49,7 @@ export const startAdminPanel = async (command?: TAdminPanelCommands, options?: {
                     } catch (e) { logger.error(e) }
 
                     try {
-                        await startAdminPanel(command);
+                        await startAdminPanel(command, options);
                     } catch (error) {
                         logger.error(error);
                     }
