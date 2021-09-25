@@ -128,7 +128,7 @@ Server will reject `getPluginSettings` or `savePluginSettings` request if it cal
 ### Instance settings
 Instance settings passed in `instanceSettings` prop of a [frontend component](#frontend) are local settings that can be passed from Admin Panel Theme Editor per placed Plugin (and user can place your Plugin many times on different pages), or they are passed directly to the Plugin Block in Theme's JSX code:
 
-```tsx title="src/pages/index.tsx"
+```tsx title="my-theme/src/pages/index.tsx"
 import { CPlugin } from '@cromwell/core-frontend';
 import React from 'react';
 
@@ -146,6 +146,81 @@ export default function HomePageOfSomeTheme() {
         }
       }}
     />
+  )
+}
+```
+
+### Settings default interface
+
+Admin panel has a set of components that can help you to build admin panel interface. Moreover standard interface can make an interface of all Plugins to be intuitively comprehensive for a user which results in better UX.  
+
+One main component amidst them all is `PluginSettingsLayout` which creates a default settings interface. It allows you to easily make an interface for modifications and saving of Plugin's settings.
+To use a default interface for your Plugin import `PluginSettingsLayout` React component and use it this way:
+
+```tsx title="src/admin/index.tsx"
+import { PluginSettingsLayout, TextFieldWithTooltip } from '@cromwell/admin-panel';
+import { TPluginSettingsProps } from '@cromwell/core';
+import React from 'react';
+
+type TSettings = {
+  mySettingProp: string;
+}
+
+export function SettingsPage(props: TPluginSettingsProps<TSettings>) {
+  const onSave = () => {
+      // Do something on Save button click
+  }
+  return (
+    <PluginSettingsLayout<TSettings> {...props} onSave={onSave}>
+      {({ pluginSettings, changeSetting }) => {
+        return (
+          <TextFieldWithTooltip 
+            label="My setting"
+            tooltipText="My setting tooltip..."
+            value={pluginSettings?.mySettingProp ?? ''}
+            style={{ marginBottom: '15px', marginRight: '15px', maxWidth: '450px' }}
+            onChange={e => changeSetting('mySettingProp', e.target.value)}
+          />
+        )
+      }}
+    </PluginSettingsLayout>
+  )
+}
+```
+
+Note that your settings won't be saved into the database on calling `changeSetting`. They only will be saved when user presses `Save` button provided by `PluginSettingsLayout` component. 
+
+
+### Clearing frontend cache
+
+Frontend Themes usually built using Next.js SSG pages. This feature in Next.js uses caching to make serving faster. Different Themes can set different [lifetime of a cache in `revalidate` property](https://nextjs.org/docs/basic-features/data-fetching#incremental-static-regeneration), but generally it means that after updating data in the database at least for some time Next.js can possibly serve outdated pages. To avoid this internally in the Cromwell CMS we always purge the cache when data updated/deleted. If you use default API client and update, for example, a product, then cache will be purged automatically and all pages updated.   
+But if you are making a Plugin that has a frontend part dependent on some settings from database or any other place, then you need to purge cache manually. Such request can be performed from default API client by calling `purgeRendererEntireCache` property. Note that this request requires administrator privileges.  
+
+For example if you want to purge the cache when a user (admin logged in the admin panel) modified settings of your Plugin:
+
+```tsx title="src/admin/index.tsx"
+import { PluginSettingsLayout, TextFieldWithTooltip } from '@cromwell/admin-panel';
+import { TPluginSettingsProps } from '@cromwell/core';
+import { getRestApiClient } from '@cromwell/core-frontend';
+import React from 'react';
+
+export function SettingsPage(props: TPluginSettingsProps) {
+  const onSave = () => {
+    getRestApiClient().purgeRendererEntireCache();
+  }
+  return (
+    <PluginSettingsLayout<TSettings> {...props} onSave={onSave}>
+      {({ pluginSettings, changeSetting }) => {
+        return (
+          <>
+          {/* 
+            <TextFieldWithTooltip
+              ...
+            /> */}
+          </>
+        )
+      }}
+    </PluginSettingsLayout>
   )
 }
 ```

@@ -169,6 +169,6 @@ export const getStaticProps: TGetStaticProps = async (context): Promise<BlogProp
 export const getStaticPaths = () => {
     return {
         paths: [],
-        fallback: true
+        fallback: 'blocking',
     };
 }

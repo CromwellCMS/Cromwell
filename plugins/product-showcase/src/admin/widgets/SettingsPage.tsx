@@ -1,5 +1,6 @@
 import { PluginSettingsLayout } from '@cromwell/admin-panel';
 import { TPluginSettingsProps } from '@cromwell/core';
+import { getRestApiClient } from '@cromwell/core-frontend';
 import { createStyles, makeStyles, TextField } from '@material-ui/core';
 import React from 'react';
 
@@ -8,8 +9,12 @@ import { TSettings } from '../../types';
 export function SettingsPage(props: TPluginSettingsProps<TSettings>) {
     const classes = useStyles();
 
+    const onSave = () => {
+        getRestApiClient().purgeRendererEntireCache();
+    }
+
     return (
-        <PluginSettingsLayout<TSettings> {...props}>
+        <PluginSettingsLayout<TSettings> {...props} onSave={onSave}>
             {({ pluginSettings, changeSetting }) => {
                 const size = pluginSettings?.size ?? 20;
 

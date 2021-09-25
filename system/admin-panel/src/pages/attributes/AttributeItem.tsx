@@ -1,5 +1,5 @@
 import { TAttribute, TAttributeInput } from '@cromwell/core';
-import { getGraphQLClient, getRestApiClient } from '@cromwell/core-frontend';
+import { getGraphQLClient } from '@cromwell/core-frontend';
 import { createStyles, IconButton, makeStyles, Radio, TextField, Tooltip } from '@material-ui/core';
 import {
     AddCircleOutline as AddCircleOutlineIcon,
@@ -64,7 +64,6 @@ const AttributeItem = (props: { data: TAttribute; handleRemove: (data: TAttribut
             }
             if (attribute.current.id) {
                 // update
-                getRestApiClient().purgeRendererEntireCache();
                 await graphClient.updateAttribute(attribute.current.id, update);
             } else {
                 // create new

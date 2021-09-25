@@ -42,7 +42,7 @@ function NotificationCenter(props: TPropsType) {
     const notifications = props.status?.notifications;
 
     const handleOpen = () => {
-        if (!notifications?.length) return;
+        if (!notifications?.length && !updateInfo) return;
         setOpen(true)
     }
 

@@ -14,7 +14,7 @@ import {
 import { Arg, Authorized, FieldResolver, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
-import { resetPageCache } from '../helpers/reset-page';
+import { resetAllPagesCache } from '../helpers/reset-page';
 import { serverFireAction } from '../helpers/server-fire-action';
 
 const getOneBySlugPath = GraphQLPaths.ProductCategory.getOneBySlug;
@@ -57,7 +57,7 @@ export class ProductCategoryResolver {
     async [createPath](@Arg("data") data: CreateProductCategory) {
         const category = await this.repository.createProductCategory(data);
         serverFireAction('create_product_category', category);
-        resetPageCache('category', { slug: category.slug });
+        resetAllPagesCache();
         return category;
     }
 
@@ -66,7 +66,7 @@ export class ProductCategoryResolver {
     async [updatePath](@Arg("id") id: string, @Arg("data") data: UpdateProductCategory) {
         const category = await this.repository.updateProductCategory(id, data);
         serverFireAction('update_product_category', category);
-        resetPageCache('category', { slug: category.slug });
+        resetAllPagesCache();
         return category;
     }
 
@@ -75,6 +75,7 @@ export class ProductCategoryResolver {
     async [deletePath](@Arg("id") id: string) {
         const category = await this.repository.deleteProductCategory(id);
         serverFireAction('delete_product_category', { id });
+        resetAllPagesCache();
         return category;
     }
 
@@ -90,7 +91,9 @@ export class ProductCategoryResolver {
         @Arg("input") input: DeleteManyInput,
         @Arg("filterParams", { nullable: true }) filterParams?: ProductCategoryFilterInput,
     ): Promise<boolean | undefined> {
-        return this.repository.deleteManyCategories(input, filterParams);
+        const res = await this.repository.deleteManyCategories(input, filterParams);
+        resetAllPagesCache();
+        return res;
     }
 
     @Query(() => PagedProductCategory)

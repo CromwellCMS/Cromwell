@@ -16,8 +16,9 @@ import nodeCleanup from 'node-cleanup';
 import { resolve } from 'path';
 import tcpPortUsed from 'tcp-port-used';
 import treeKill from 'tree-kill';
+import colorsdef from 'colors/safe';
 
-import config from '../config';
+import managerConfig from '../config';
 import { serviceNames, TScriptName, TServiceNames } from '../constants';
 import { checkConfigs, checkModules } from '../tasks/checkModules';
 import { getProcessPid, loadCache, saveProcessPid } from '../utils/cacheManager';
@@ -28,6 +29,8 @@ import { closeServer, closeServerManager, startServer } from './serverManager';
 
 const logger = getLogger();
 const serviceProcesses: Record<string, ChildProcess> = {};
+const { cacheKeys } = managerConfig;
+const colors: any = colorsdef;
 
 export const closeService = async (name: string): Promise<boolean> => {
     await new Promise(resolve => loadCache(resolve));
@@ -84,7 +87,7 @@ export const startService = async ({ path, name, args, dir, sync, watchName, onV
     await saveProcessPid(name, process.pid, child.pid);
     serviceProcesses[name] = child;
 
-    child?.stdout?.on('data', buff => console.log(buff?.toString?.() ?? buff));
+    child?.stdout?.on('data', buff => console.log(buff?.toString?.() ?? buff)); // eslint-disable-line
     child?.stderr?.on('data', buff => console.error(buff?.toString?.() ?? buff));
 
     if (watchName && onVersionChange) {
@@ -143,7 +146,7 @@ export const startSystem = async (options: TStartOptions) => {
         spawn(`npx rollup -cw`, [],
             { shell: true, stdio: 'inherit', cwd: getCoreFrontendDir() });
 
-        const { windowsDev } = config;
+        const { windowsDev } = managerConfig;
 
         windowsDev.otherDirs.forEach((dir) => {
             spawn(`npx rollup -cw`, [],
@@ -353,3 +356,15 @@ nodeCleanup(() => {
         }
     })
 });
+
+
+export const getServicesStatus = async () => {
+    isServiceRunning(cacheKeys.adminPanel)
+    isServiceRunning(cacheKeys.renderer)
+    logger.info(
+`Services status:
+  - Server:.............${await isServiceRunning(cacheKeys.serverMain) ? colors.brightGreen('Active') : colors.brightRed('Inactive')}
+  - Admin panel:........${await isServiceRunning(cacheKeys.adminPanel) ? colors.brightGreen('Active') : colors.brightRed('Inactive')}
+  - Renderer (Next.js):.${await isServiceRunning(cacheKeys.renderer) ? colors.brightGreen('Active') : colors.brightRed('Inactive')}
+`)
+}

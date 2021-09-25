@@ -1,14 +1,16 @@
 import { sleep } from '@cromwell/core';
 import { TAuthSettings } from '@cromwell/core-backend/dist/helpers/auth-settings';
 import { getLogger } from '@cromwell/core-backend/dist/helpers/logger';
-import { getRendererTempDir, getThemeBuildDir } from '@cromwell/core-backend/dist/helpers/paths';
+import { getRendererTempDir } from '@cromwell/core-backend/dist/helpers/paths';
 import fs from 'fs-extra';
+import glob from 'glob';
 import { IncomingMessage, ServerResponse } from 'http';
 import LRUCache from 'lru-cache';
 import { IncrementalCacheValue } from 'next/dist/server/incremental-cache';
 import { NextServer as _NextServer } from 'next/dist/server/next';
 import _Server from 'next/dist/server/next-server';
 import fetch from 'node-fetch';
+import normalizePath from 'normalize-path';
 import { join, resolve } from 'path';
 
 type IncrementalCacheEntry = {
@@ -38,7 +40,10 @@ type ManagerOptions = {
     themeName: string;
 }
 
+let isPurgingAll = false;
+
 export const processCacheRequest = async (options: ManagerOptions) => {
+    if (isPurgingAll) return;
     const { req, authSettings, port } = options;
     const url = new URL(`http://localhost:${port}${req.url!}`);
     const purgeParam = url.searchParams.get('purge');
@@ -51,7 +56,13 @@ export const processCacheRequest = async (options: ManagerOptions) => {
         await purgePageCache(options, pageRoute);
     }
     if (purgeParam === 'all') {
-        await purgeEntireCache(options);
+        isPurgingAll = true;
+        try {
+            await purgeEntireCache(options);
+        } catch (error) {
+            logger.error(error);
+        }
+        isPurgingAll = false;
     }
 }
 
@@ -94,18 +105,27 @@ const purgeEntireCache = async (options: ManagerOptions) => {
     if (!cache) return;
 
     try {
-        await fs.remove(pagesDir);
-        await sleep(0.05);
+        const generatedPages = await new Promise<string[] | undefined>(done => {
+            glob(`${normalizePath(pagesDir)}/**/*.+(html|json)`, (err, matches) => {
+                if (err) {
+                    logger.error(err);
+                    done(undefined);
+                    return;
+                }
+                done(matches);
+            });
+        });
 
-        const themeBuildDir = await getThemeBuildDir(options.themeName);
-        if (!themeBuildDir) {
-            logger.error('purgeEntireCache: !themeBuildDir');
-            return;
+        if (generatedPages) {
+            generatedPages.forEach(pageFile => {
+                try {
+                    fs.removeSync(pageFile);
+                } catch (error) {
+                    logger.error(error);
+                }
+            });
+            await sleep(0.05);
         }
-        const pagesOriginalDir = resolve(themeBuildDir, `.next/server/pages`);
-
-        await fs.copy(pagesOriginalDir, pagesDir);
-        await sleep(0.05);
 
         cache.reset();
         await sleep(0.05);

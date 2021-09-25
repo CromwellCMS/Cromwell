@@ -38,7 +38,7 @@ export const getPage = (pageName: TDefaultPageName | string, PageComponent: TCro
     const pageComp = (props: PageProps): JSX.Element => {
         const { plugins, pageConfig, themeCustomConfig,
             childStaticProps, cmsSettings, themeHeadHtml,
-            themeFooterHtml, pagesInfo, documentContext,
+            themeFooterHtml, documentContext,
             palette, defaultPages, pageConfigName,
             resolvedPageRoute } = props;
 
@@ -64,7 +64,6 @@ export const getPage = (pageName: TDefaultPageName | string, PageComponent: TCro
         if (pageConfig) setStoreItem('pageConfig', pageConfig);
         if (defaultPages) setStoreItem('defaultPages', defaultPages);
         if (themeCustomConfig) setStoreItem('themeCustomConfig', themeCustomConfig);
-        if (pagesInfo) setStoreItem('pagesInfo', pagesInfo);
         if (palette) {
             const theme = getStoreItem('theme') ?? {};
             theme.palette = palette;

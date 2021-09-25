@@ -3,6 +3,7 @@ import { Attribute, AttributeInput, AttributeRepository } from '@cromwell/core-b
 import { Arg, Authorized, Mutation, Query, Resolver } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
+import { resetAllPagesCache } from '../helpers/reset-page';
 import { serverFireAction } from '../helpers/server-fire-action';
 
 const getOneByIdPath = GraphQLPaths.Attribute.getOneById;
@@ -39,6 +40,7 @@ export class AttributeResolver {
     async [updatePath](@Arg("id") id: string, @Arg("data") data: AttributeInput): Promise<Attribute> {
         const attr = await this.repository.updateAttribute(id, data);
         serverFireAction('update_attribute', attr);
+        resetAllPagesCache();
         return attr;
     }
 
@@ -47,6 +49,7 @@ export class AttributeResolver {
     async [deletePath](@Arg("id") id: string): Promise<boolean> {
         const attr = await this.repository.deleteAttribute(id);
         serverFireAction('delete_attribute', { id });
+        resetAllPagesCache();
         return attr;
     }
 

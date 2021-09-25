@@ -12,8 +12,9 @@ import {
 } from '@cromwell/core-backend';
 import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
-import { serverFireAction } from '../helpers/server-fire-action';
 
+import { resetAllPagesCache } from '../helpers/reset-page';
+import { serverFireAction } from '../helpers/server-fire-action';
 
 const getOneByIdPath = GraphQLPaths.User.getOneById;
 const getOneByEmailPath = GraphQLPaths.User.getOneByEmail;
@@ -66,6 +67,7 @@ export class UserResolver {
 
         const user = await this.repository.updateUser(id, data);
         serverFireAction('update_user', user);
+        resetAllPagesCache();
         return user;
     }
 
@@ -74,7 +76,19 @@ export class UserResolver {
     async [deletePath](@Arg("id") id: string): Promise<boolean> {
         const user = await this.repository.deleteUser(id);
         serverFireAction('delete_user', { id });
+        resetAllPagesCache();
         return user;
+    }
+
+    @Authorized<TAuthRole>("administrator")
+    @Mutation(() => Boolean)
+    async [deleteManyFilteredPath](
+        @Arg("input") input: DeleteManyInput,
+        @Arg("filterParams", { nullable: true }) filterParams?: UserFilterInput,
+    ): Promise<boolean | undefined> {
+        const res = await this.repository.deleteManyFilteredUsers(input, filterParams);
+        resetAllPagesCache();
+        return res;
     }
 
     @Authorized<TAuthRole>("administrator", 'author', "guest")
@@ -85,14 +99,4 @@ export class UserResolver {
     ): Promise<TPagedList<TUser> | undefined> {
         return this.repository.getFilteredUsers(pagedParams, filterParams);
     }
-
-    @Authorized<TAuthRole>("administrator")
-    @Mutation(() => Boolean)
-    async [deleteManyFilteredPath](
-        @Arg("input") input: DeleteManyInput,
-        @Arg("filterParams", { nullable: true }) filterParams?: UserFilterInput,
-    ): Promise<boolean | undefined> {
-        return this.repository.deleteManyFilteredUsers(input, filterParams);
-    }
-
 }

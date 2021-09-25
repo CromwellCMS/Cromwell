@@ -1,5 +1,6 @@
 import { PluginSettingsLayout } from '@cromwell/admin-panel';
 import { TPluginSettingsProps } from '@cromwell/core';
+import { getRestApiClient } from '@cromwell/core-frontend';
 import { MenuItem } from '@material-ui/core';
 import React from 'react';
 
@@ -13,8 +14,12 @@ export function SettingsPage(props: TPluginSettingsProps<TMainMenuSettings>) {
     const classes = useStyles();
     const forceUpdate = useForceUpdate();
 
+    const onSave = () => {
+        getRestApiClient().purgeRendererEntireCache();
+    }
+
     return (
-        <PluginSettingsLayout<TMainMenuSettings> {...props}>
+        <PluginSettingsLayout<TMainMenuSettings> {...props} onSave={onSave}>
             {({ pluginSettings, changeSetting }) => (
                 <>
                     <h2>Menu items</h2>

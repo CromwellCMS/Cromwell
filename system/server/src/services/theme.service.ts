@@ -35,7 +35,7 @@ import { resolve } from 'path';
 import { Container, Service } from 'typedi';
 import { getConnection, getCustomRepository } from 'typeorm';
 
-import { resetAllPagesCache, resetPageCache } from '../helpers/reset-page';
+import { resetAllPagesCache } from '../helpers/reset-page';
 import { serverFireAction } from '../helpers/server-fire-action';
 import { childSendMessage } from '../helpers/server-manager';
 import { endTransaction, restartService, setPendingKill, startTransaction } from '../helpers/state-manager';
@@ -322,17 +322,6 @@ export class ThemeService {
             return true;
         });
 
-        // User has modified global blocks or dynamic pages. Now we need to
-        // update more than one page. Since we don't exactly all these pages
-        // we need to reset entire Next.js cache 
-        if (globalMods.length || userPageConfig.route.includes('[slug]')
-            || userPageConfig.route.includes('[id]')) {
-            resetAllPagesCache();
-        } else {
-            // Otherwise reset one modified page
-            resetPageCache(userPageConfig.route);
-        }
-
         // Merge global mods
         userConfig.globalModifications = this.mergeMods(userConfig?.globalModifications, globalMods);
 
@@ -372,7 +361,11 @@ export class ThemeService {
 
         // Save config
         if (cmsSettings) {
-            return this.saveThemeUserConfig(userConfig);
+            const success = await this.saveThemeUserConfig(userConfig);
+
+            // Reset Next.js cached pages
+            if (success) resetAllPagesCache();
+            return success;
         }
 
         return false;

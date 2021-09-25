@@ -1,5 +1,6 @@
 import { PluginSettingsLayout, TextFieldWithTooltip } from '@cromwell/admin-panel';
 import { TPluginSettingsProps } from '@cromwell/core';
+import { getRestApiClient } from '@cromwell/core-frontend';
 import { Checkbox, FormControlLabel, TextField } from '@material-ui/core';
 import React from 'react';
 
@@ -7,8 +8,12 @@ import { defaultSettings } from '../../constants';
 import { TProductFilterSettings } from '../../types';
 
 export function SettingsPage(props: TPluginSettingsProps<TProductFilterSettings>) {
+    const onSave = () => {
+        getRestApiClient().purgeRendererEntireCache();
+    }
+
     return (
-        <PluginSettingsLayout<TProductFilterSettings> {...props}>
+        <PluginSettingsLayout<TProductFilterSettings> {...props} onSave={onSave}>
             {({ pluginSettings, changeSetting }) => {
                 const mobileIconPosition = pluginSettings?.mobileIconPosition ?? defaultSettings.mobileIconPosition;
                 const collapsedByDefault = pluginSettings?.collapsedByDefault ?? defaultSettings.collapsedByDefault;
