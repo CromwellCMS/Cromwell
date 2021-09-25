@@ -17,7 +17,7 @@ import {
 import { Arg, Authorized, Ctx, FieldResolver, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
-import { resetPageCache } from '../helpers/reset-page';
+import { resetAllPagesCache } from '../helpers/reset-page';
 import { serverFireAction } from '../helpers/server-fire-action';
 
 const getOneBySlugPath = GraphQLPaths.Post.getOneBySlug;
@@ -95,7 +95,7 @@ export class PostResolver {
     async [createPath](@Arg("data") data: CreatePost): Promise<Post> {
         const post = await this.repository.createPost(data);
         serverFireAction('create_post', post);
-        resetPageCache('post', { slug: post.slug });
+        resetAllPagesCache();
         return post;
     }
 
@@ -104,7 +104,7 @@ export class PostResolver {
     async [updatePath](@Arg("id") id: string, @Arg("data") data: UpdatePost): Promise<Post> {
         const post = await this.repository.updatePost(id, data);
         serverFireAction('update_post', post);
-        resetPageCache('post', { slug: post.slug });
+        resetAllPagesCache();
         return post;
     }
 
@@ -113,13 +113,16 @@ export class PostResolver {
     async [deletePath](@Arg("id") id: string): Promise<boolean> {
         const success = await this.repository.deletePost(id);
         serverFireAction('delete_post', { id });
+        resetAllPagesCache();
         return success;
     }
 
     @Authorized<TAuthRole>("administrator")
     @Mutation(() => Boolean)
     async [deleteManyPath](@Arg("data") data: DeleteManyInput): Promise<boolean | undefined> {
-        return this.repository.deleteMany(data);
+        const res = await this.repository.deleteMany(data);
+        resetAllPagesCache();
+        return res;
     }
 
     @Authorized<TAuthRole>("administrator")
@@ -128,7 +131,9 @@ export class PostResolver {
         @Arg("input") input: DeleteManyInput,
         @Arg("filterParams", { nullable: true }) filterParams?: PostFilterInput,
     ): Promise<boolean | undefined> {
-        return this.repository.deleteManyFilteredPosts(input, filterParams);
+        const res = await this.repository.deleteManyFilteredPosts(input, filterParams);
+        resetAllPagesCache();
+        return res;
     }
 
     @Query(() => PagedPost)

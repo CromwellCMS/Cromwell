@@ -14,7 +14,9 @@ import {
 } from '@cromwell/core-backend/dist/helpers/paths';
 import { getRestApiClient } from '@cromwell/core-frontend/dist/api/CRestApiClient';
 import fs from 'fs-extra';
+import glob from 'glob';
 import fetch, { Response } from 'node-fetch';
+import normalizePath from 'normalize-path';
 import { resolve } from 'path';
 import tcpPortUsed from 'tcp-port-used';
 
@@ -201,9 +203,19 @@ export const rendererBuildAndSaveTheme = async (themeModuleName: string): Promis
     }
     await sleep(0.2);
 
+    // Remove cache
     const nextCacheDir = resolve(tempNextDir, 'cache');
     if (await fs.pathExists(nextCacheDir)) await fs.remove(nextCacheDir);
     await sleep(0.1);
+
+    // Remove generated HTML & JSON since either they generated with Theme's
+    // author data or with no data at all, in any case, end-user will
+    // have to re-generate them all.
+    const nextPagesDir = resolve(tempNextDir, 'server/pages');
+    const generatedPages = glob.sync(`${normalizePath(nextPagesDir)}/**/*.+(html|json)`);
+    generatedPages.forEach(pageFile => {
+        fs.removeSync(pageFile);
+    });
 
     await fs.move(tempNextDir, themeBuildNextDir);
     await sleep(0.2);

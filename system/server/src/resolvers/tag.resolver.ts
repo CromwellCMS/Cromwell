@@ -10,7 +10,7 @@ import {
 import { Arg, Authorized, Mutation, Query, Resolver } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
-import { resetPageCache } from '../helpers/reset-page';
+import { resetAllPagesCache } from '../helpers/reset-page';
 import { serverFireAction } from '../helpers/server-fire-action';
 
 const getOneBySlugPath = GraphQLPaths.Tag.getOneBySlug;
@@ -48,7 +48,7 @@ export class TagResolver {
     async [createPath](@Arg("data") data: InputTag): Promise<TTag> {
         const tag = await this.repository.createTag(data);
         serverFireAction('create_tag', tag);
-        resetPageCache('tag', { slug: tag.slug });
+        resetAllPagesCache();
         return tag;
     }
 
@@ -57,7 +57,7 @@ export class TagResolver {
     async [updatePath](@Arg("id") id: string, @Arg("data") data: InputTag): Promise<TTag | undefined> {
         const tag = await this.repository.updateTag(id, data);
         serverFireAction('update_tag', tag);
-        resetPageCache('tag', { slug: tag.slug });
+        resetAllPagesCache();
         return tag;
     }
 
@@ -66,13 +66,16 @@ export class TagResolver {
     async [deletePath](@Arg("id") id: string): Promise<boolean> {
         const tag = await this.repository.deleteTag(id);
         serverFireAction('delete_tag', { id });
+        resetAllPagesCache();
         return tag;
     }
 
     @Authorized<TAuthRole>("administrator")
     @Mutation(() => Boolean)
     async [deleteManyPath](@Arg("data") data: DeleteManyInput): Promise<boolean | undefined> {
-        return this.repository.deleteMany(data);
+        const res = await this.repository.deleteMany(data);
+        resetAllPagesCache();
+        return res;
     }
 }
 

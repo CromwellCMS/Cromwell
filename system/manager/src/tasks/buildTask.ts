@@ -121,11 +121,10 @@ const rollupBuild = async (moduleInfo: TPackageCromwellConfig, moduleConfig?: TM
             }
             rollupBuildSuccess = await new Promise(done => {
                 watcher.on('event', eventHandler(done));
-            })
+            });
         } else {
 
             for (const optionsObj of rollupConfig) {
-
                 const outputFiles: (string | undefined)[] = []
 
                 if (optionsObj?.output && Array.isArray(optionsObj?.output)) {

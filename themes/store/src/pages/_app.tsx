@@ -24,7 +24,6 @@ function App(props: AppProps) {
         // const jssStyles = document.querySelector('#jss-server-side');
         // jssStyles?.parentElement?.removeChild(jssStyles);
 
-        getUser();
 
         if (!isServer()) {
             getRestApiClient()?.onError((info) => {
@@ -32,6 +31,8 @@ function App(props: AppProps) {
                     toast.error('Too many requests. Try again later');
                 }
             }, '_app');
+
+            getUser();
         }
     }, []);
 

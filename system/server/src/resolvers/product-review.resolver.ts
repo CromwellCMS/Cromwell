@@ -11,6 +11,7 @@ import {
 import { Arg, Authorized, Mutation, Query, Resolver } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
+import { resetAllPagesCache } from '../helpers/reset-page';
 import { serverFireAction } from '../helpers/server-fire-action';
 
 const getOneByIdPath = GraphQLPaths.ProductReview.getOneById;
@@ -50,6 +51,7 @@ export class ProductReviewResolver {
     async [updatePath](@Arg("id") id: string, @Arg("data") data: ProductReviewInput): Promise<ProductReview> {
         const review = await this.repository.updateProductReview(id, data);
         serverFireAction('update_product_review', review);
+        resetAllPagesCache();
         return review;
     }
 
@@ -58,13 +60,16 @@ export class ProductReviewResolver {
     async [deletePath](@Arg("id") id: string): Promise<boolean> {
         const review = await this.repository.deleteProductReview(id);
         serverFireAction('delete_product_review', { id });
+        resetAllPagesCache();
         return review;
     }
 
     @Authorized<TAuthRole>("administrator")
     @Mutation(() => Boolean)
     async [deleteManyPath](@Arg("data") data: DeleteManyInput): Promise<boolean | undefined> {
-        return this.repository.deleteMany(data);
+        const res = await this.repository.deleteMany(data);
+        resetAllPagesCache();
+        return res;
     }
 
     @Authorized<TAuthRole>("administrator")
@@ -73,7 +78,9 @@ export class ProductReviewResolver {
         @Arg("input") input: DeleteManyInput,
         @Arg("filterParams", { nullable: true }) filterParams?: ProductReviewFilter,
     ): Promise<boolean | undefined> {
-        return this.repository.deleteManyFilteredProductReviews(input, filterParams);
+        const res = await this.repository.deleteManyFilteredProductReviews(input, filterParams);
+        resetAllPagesCache();
+        return res;
     }
 
     @Query(() => PagedProductReview)
