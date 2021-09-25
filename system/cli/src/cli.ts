@@ -194,6 +194,16 @@ const args = yargs(process.argv.slice(2))
             }
         }
     })
+    // SERVICE STATUS
+    .command<{ service?: string; development?: boolean }>({
+        command: 'status',
+        describe: `Shows status (active/inactive) of CMS services`,
+        aliases: ['status'],
+        handler: async () => {
+            const { getServicesStatus } = getManager();
+            await getServicesStatus();
+        }
+    })
     // BUILD
     .command<{ watch?: boolean; port?: string; admin?: boolean; force?: boolean; }>({
         command: 'build [options]',
