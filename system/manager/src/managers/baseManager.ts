@@ -80,6 +80,15 @@ export const startService = async ({ path, name, args, dir, sync, watchName, onV
         throw new Error();
     }
 
+    if (await isServiceRunning(name)) {
+        let serviceName: TServiceNames | undefined;
+        if (name === cacheKeys.adminPanel) serviceName = 'adminPanel';
+        if (name === cacheKeys.serverMain) serviceName = 'server';
+        if (name === cacheKeys.renderer) serviceName = 'renderer';
+        logger.error(`Base manager:: Service ${serviceName} is already running. You may want to run stop command: npx cromwell stop --sv ${serviceName}`);
+        throw new Error();
+    }
+
     const child = fork(path, args ?? [], {
         stdio: sync ? 'inherit' : 'pipe',
         cwd: dir ?? process.cwd(),
@@ -362,9 +371,9 @@ export const getServicesStatus = async () => {
     isServiceRunning(cacheKeys.adminPanel)
     isServiceRunning(cacheKeys.renderer)
     logger.info(
-`Services status:
-  - Server:.............${await isServiceRunning(cacheKeys.serverMain) ? colors.brightGreen('Active') : colors.brightRed('Inactive')}
-  - Admin panel:........${await isServiceRunning(cacheKeys.adminPanel) ? colors.brightGreen('Active') : colors.brightRed('Inactive')}
-  - Renderer (Next.js):.${await isServiceRunning(cacheKeys.renderer) ? colors.brightGreen('Active') : colors.brightRed('Inactive')}
+        `CMS services status:
+  - API Server:..........${await isServiceRunning(cacheKeys.serverMain) ? colors.brightGreen('Active') : colors.brightRed('Inactive')}
+  - Admin panel:.........${await isServiceRunning(cacheKeys.adminPanel) ? colors.brightGreen('Active') : colors.brightRed('Inactive')}
+  - Renderer (Next.js):..${await isServiceRunning(cacheKeys.renderer) ? colors.brightGreen('Active') : colors.brightRed('Inactive')}
 `)
 }

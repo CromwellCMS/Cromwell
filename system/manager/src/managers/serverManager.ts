@@ -23,7 +23,7 @@ export const startServer = async (command?: TServerCommands, argsPort?: string |
     if (command !== 'build') {
         let message;
         if (await isPortUsed(port)) {
-            message = `Manager: Failed to start Server: api port ${port} is already in use. You may want to run close command: cromwell close --sv server`;
+            message = `Manager: Failed to start Server: api port ${port} is already in use. You may want to run stop command: npx cromwell stop --sv server`;
         }
         if (message) {
             logger.error(message);

@@ -21,7 +21,7 @@ export default class PluginNewsletterResolver {
     @Query(() => String)
     async pluginNewsletterStats(@Ctx() ctx: TGraphQLContext): Promise<string> {
         
-        // Or via checking manually user info: (both methods will work independently)
+        // Or via checking manually user info: (both methods can work independently)
         if (ctx.user?.role !== 'administrator')
             throw new UnauthorizedException('Forbidden');
 

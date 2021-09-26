@@ -147,6 +147,23 @@ export default function Home() {
                         "/img/demo-theme-2.png"
                     ]} />
                 </div>
+
+                <div className={styles.content}>
+                    <br style={{ height: '10px' }} />
+                    <br style={{ height: '10px' }} />
+                    <h3 className={styles.header3}>Good looking default themes</h3>
+                    <p>Fully featured free online store and blog out the box.</p>
+                    <br style={{ height: '10px' }} />
+                </div>
+                <div className={styles.screenshots}>
+                    <CoverFlowImages images={[
+                        "/img/demo-site1.png",
+                        "/img/demo-site2.png",
+                        "/img/demo-site3.png",
+                        "/img/demo-site4.png",
+                    ]} />
+                </div>
+
                 <div className={styles.content}>
                     <br />
                     <br />
