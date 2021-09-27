@@ -29,8 +29,10 @@ export const Dashboard = (props: WidgetTypes['Dashboard']) => {
 
     return (
         <div className={classes.dashboard}>
-            <img src={`${getPluginStaticUrl('@cromwell/plugin-newsletter')}/icon_email.png`}
-                className={classes.dashboardIcon}></img>
+            <img
+                className={classes.dashboardIcon + ' PluginNewsletter-dashboardImage'}
+                src={`${getPluginStaticUrl('@cromwell/plugin-newsletter')}/icon_email.png`}
+            ></img>
             <h3 className={classes.dashboardText}>{newsletterCount} total newsletters</h3>
         </div>
     );

@@ -24,6 +24,11 @@
 .list {
     @include styledScrollBar;
     border-radius: 10px;
+    padding-right: 10px;
+}
+
+.listContent {
+    padding-bottom: 70px;
 }
 
 .treeList {

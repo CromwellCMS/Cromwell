@@ -161,7 +161,10 @@ const TagList = (props: TPropsType) => {
                 useQueryPagination
                 listItemProps={{ handleDeleteBtnClick, toggleSelection: handleToggleItemSelection }}
                 loader={handleGetTags}
-                cssClasses={{ scrollBox: styles.list }}
+                cssClasses={{
+                    scrollBox: styles.list,
+                    contentWrapper: styles.listContent,
+                }}
                 elements={{
                     pagination: Pagination,
                     preloader: listPreloader

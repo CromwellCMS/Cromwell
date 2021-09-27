@@ -33,6 +33,11 @@ export const useStyles = makeStyles(() =>
             height: '50px',
             objectFit: 'contain',
             marginRight: '25px'
+        },
+        "@global": {
+            '.modeDark .PluginNewsletter-dashboardImage': {
+                filter: 'invert(1)',
+            },
         }
     }),
 );

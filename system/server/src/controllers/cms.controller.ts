@@ -145,7 +145,7 @@ export class CmsController {
 
     @Get('read-public-dir')
     @UseGuards(JwtAuthGuard)
-    @Roles('administrator', 'guest')
+    @Roles('administrator', 'guest', 'author')
     @ApiOperation({
         description: 'Read files and directories in specified subfolder of "public" files',
         parameters: [{ name: 'path', in: 'query' }]
@@ -163,7 +163,7 @@ export class CmsController {
 
     @Get('create-public-dir')
     @UseGuards(JwtAuthGuard)
-    @Roles('administrator')
+    @Roles('administrator', 'author')
     @ApiOperation({
         description: 'Creates new directory in specified subfolder of "public" files',
         parameters: [
@@ -187,7 +187,7 @@ export class CmsController {
 
     @Get('remove-public-dir')
     @UseGuards(JwtAuthGuard)
-    @Roles('administrator')
+    @Roles('administrator', 'author')
     @ApiOperation({
         description: 'Removes directory in specified subfolder of "public" files',
         parameters: [
@@ -210,7 +210,7 @@ export class CmsController {
 
     @Post('upload-public-file')
     @UseGuards(JwtAuthGuard)
-    @Roles('administrator')
+    @Roles('administrator', 'author')
     @Header('content-type', 'multipart/form-data')
     @ApiOperation({
         description: 'Uploads a file to specified subfolder of "public" files',
@@ -239,7 +239,7 @@ export class CmsController {
 
     @Get('download-public-file')
     @UseGuards(JwtAuthGuard)
-    @Roles('administrator', 'guest')
+    @Roles('administrator', 'guest', 'author')
     @ApiOperation({
         description: 'Downloads a file from specified subfolder of "public" files',
         parameters: [

@@ -3,6 +3,7 @@ import React from 'react';
 
 export type TCssClasses = {
     scrollBox?: string;
+    contentWrapper?: string;
     page?: string;
     pagination?: string;
     paginationLink?: string;

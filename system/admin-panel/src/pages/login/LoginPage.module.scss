@@ -56,8 +56,22 @@ button.loginBtn {
     margin-top: 15px;
 }
 
-
 .logo {
     margin-bottom: 50px;
     opacity: 0.8;
+}
+
+:global(.modeDark) {
+    .LoginPage {
+        background-color: #333;
+
+        * {
+            color: #eee;
+        }
+    }
+
+    .logo {
+        filter: invert(1);
+        opacity: 1;
+    }
 }

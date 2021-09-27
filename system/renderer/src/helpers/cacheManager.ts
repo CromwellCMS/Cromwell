@@ -116,24 +116,22 @@ const purgeEntireCache = async (options: ManagerOptions) => {
             });
         });
 
-        if (generatedPages) {
-            generatedPages.forEach(pageFile => {
+        if (generatedPages?.length) {
+            await Promise.all(generatedPages.map(async pageFile => {
                 try {
-                    fs.removeSync(pageFile);
+                    await fs.remove(pageFile);
                 } catch (error) {
                     logger.error(error);
                 }
-            });
+            }));
             await sleep(0.05);
         }
 
         cache.reset();
         await sleep(0.05);
 
-        const rendererUrl = `http://localhost:${options.port}`;
         try {
-            await fetch(rendererUrl);
-            await fetch(rendererUrl);
+            await fetch(`http://localhost:${options.port}`);
         } catch (e) {
             logger.error(e);
         }

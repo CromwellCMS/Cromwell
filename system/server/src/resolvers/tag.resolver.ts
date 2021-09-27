@@ -43,7 +43,7 @@ export class TagResolver {
         return this.repository.getTagById(id);
     }
 
-    @Authorized<TAuthRole>("administrator")
+    @Authorized<TAuthRole>("administrator", 'author')
     @Mutation(() => Tag)
     async [createPath](@Arg("data") data: InputTag): Promise<TTag> {
         const tag = await this.repository.createTag(data);
@@ -52,7 +52,7 @@ export class TagResolver {
         return tag;
     }
 
-    @Authorized<TAuthRole>("administrator")
+    @Authorized<TAuthRole>("administrator", 'author')
     @Mutation(() => Tag)
     async [updatePath](@Arg("id") id: string, @Arg("data") data: InputTag): Promise<TTag | undefined> {
         const tag = await this.repository.updateTag(id, data);
@@ -61,7 +61,7 @@ export class TagResolver {
         return tag;
     }
 
-    @Authorized<TAuthRole>("administrator")
+    @Authorized<TAuthRole>("administrator", 'author')
     @Mutation(() => Boolean)
     async [deletePath](@Arg("id") id: string): Promise<boolean> {
         const tag = await this.repository.deleteTag(id);
@@ -70,7 +70,7 @@ export class TagResolver {
         return tag;
     }
 
-    @Authorized<TAuthRole>("administrator")
+    @Authorized<TAuthRole>("administrator", 'author')
     @Mutation(() => Boolean)
     async [deleteManyPath](@Arg("data") data: DeleteManyInput): Promise<boolean | undefined> {
         const res = await this.repository.deleteMany(data);

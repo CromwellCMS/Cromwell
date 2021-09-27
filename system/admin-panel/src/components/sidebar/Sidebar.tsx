@@ -124,6 +124,7 @@ export default function Sidebar() {
                     forceUpdate={forceUpdate}
                     activeId={activeId}
                     setActiveId={setActiveId}
+                    userInfo={userInfo}
                 />)}
             </div>
             <div className={styles.sidebarBottom}>

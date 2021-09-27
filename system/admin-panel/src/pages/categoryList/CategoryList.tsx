@@ -328,7 +328,10 @@ const CategoryList = (props: TPropsType) => {
                     }}
                     useQueryPagination={!props.embeddedView}
                     loader={handleGetProductCategories}
-                    cssClasses={{ scrollBox: styles.list }}
+                    cssClasses={{
+                        scrollBox: styles.list,
+                        contentWrapper: styles.listContent,
+                    }}
                     elements={{
                         pagination: Pagination,
                         preloader: listPreloader

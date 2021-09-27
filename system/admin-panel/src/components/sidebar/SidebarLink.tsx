@@ -1,7 +1,8 @@
+import { TUser } from '@cromwell/core';
 import { Accordion, AccordionDetails, AccordionSummary, MenuItem as MuiMenuItem, withStyles } from '@material-ui/core';
 import { ExpandMore as ExpandMoreIcon } from '@material-ui/icons';
-import React, { useState } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import React from 'react';
+import { Link } from 'react-router-dom';
 
 import { SidebarLinkType } from '../../constants/PageInfos';
 import styles from './Sidebar.module.scss';
@@ -37,13 +38,20 @@ const MenuItem = withStyles({
 
 const SidebarLink = (props: {
     data: SidebarLinkType,
-    toggleSubmenu: (panel: string) => (event: React.ChangeEvent<{}>, isExpanded: boolean) => void,
+    toggleSubmenu: (panel: string) => (event: React.ChangeEvent, isExpanded: boolean) => void,
     expanded: string | false;
     forceUpdate: () => void;
     setActiveId: (id: string) => void;
     activeId: string;
+    userInfo: TUser | undefined;
 }) => {
     const isExpanded = props.expanded === props.data.id;
+
+    if (props.data?.roles) {
+        if (!props.data.roles.includes(props.userInfo.role)) {
+            return null;
+        }
+    }
 
     let head = (
         <MenuItem
@@ -89,6 +97,7 @@ const SidebarLink = (props: {
                             forceUpdate={props.forceUpdate}
                             activeId={props.activeId}
                             setActiveId={props.setActiveId}
+                            userInfo={props.userInfo}
                         />
                     ))}
                 </div>

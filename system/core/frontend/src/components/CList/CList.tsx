@@ -516,13 +516,13 @@ export class CList<DataType, ListItemProps = any> extends React.PureComponent<TC
 
         content = (
             <>
-                <div className={`${styles.scrollBox} ${props.cssClasses?.scrollBox || ''}`}
+                <div className={`${styles.scrollBox} ${props.cssClasses?.scrollBox ?? ''}`}
                     ref={this.scrollBoxRef}
                     onScroll={this.onScroll}
                     style={props.useAutoLoading ?
                         { height: '100%', overflow: 'auto' } : {}}
                 >
-                    <div className={styles.wrapper} ref={this.wrapperRef}>
+                    <div className={`${styles.wrapper} ${props.cssClasses?.contentWrapper ?? ''}`} ref={this.wrapperRef}>
                         {/* {props.useAutoLoading && (
                             <div ref={this.throbberAutoloadingBefore} style={{ display: 'none' }}>
                                 <div className={styles.throbberAutoloading}

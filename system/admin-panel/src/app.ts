@@ -134,13 +134,16 @@ import { store } from './redux/store';
         if (info?.role) {
             setTimeout(() => loadPlugins({ onlyNew: true }), 50);
 
-            try {
-                const settings = await restClient.getAdminCmsSettings();
-                if (settings) {
-                    setStoreItem('cmsSettings', settings)
+            if (getStoreItem('userInfo')?.role === 'administrator'
+                || getStoreItem('userInfo')?.role === 'guest') {
+                try {
+                    const settings = await restClient.getAdminCmsSettings();
+                    if (settings) {
+                        setStoreItem('cmsSettings', settings)
+                    }
+                } catch (error) {
+                    console.error(error);
                 }
-            } catch (error) {
-                console.error(error);
             }
         }
     }

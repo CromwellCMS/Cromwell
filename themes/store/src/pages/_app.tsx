@@ -40,7 +40,7 @@ function App(props: AppProps) {
         const userInfo = getStoreItem('userInfo');
         if (!userInfo) {
             try {
-                const user = await getRestApiClient()?.getUserInfo();
+                const user = await getRestApiClient()?.getUserInfo({ disableLog: true });
                 if (user) {
                     setStoreItem('userInfo', user);
                 }

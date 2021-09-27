@@ -1,4 +1,5 @@
 import { JwtAuthGuard, Roles, TRequestWithUser } from '@cromwell/core-backend';
+import { TUserRole } from '@cromwell/core';
 import {
     Body,
     Controller,
@@ -7,7 +8,7 @@ import {
     HttpStatus,
     Post,
     Request,
-    UnauthorizedException,
+    ForbiddenException,
     UseGuards,
 } from '@nestjs/common';
 import { ApiBody, ApiForbiddenResponse, ApiOperation, ApiProperty, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -66,7 +67,7 @@ class PluginNewsletterController {
     @Get('stats')
     /** You can restrict route by assigning JwtAuthGuard and passing allowed roles as a decorator: */
     @UseGuards(JwtAuthGuard)
-    @Roles('administrator', 'guest')
+    @Roles('administrator', 'guest', 'author')
     @ApiOperation({ description: 'Get newsletters count' })
     @ApiResponse({
         status: 200,
@@ -76,8 +77,9 @@ class PluginNewsletterController {
     async getStats(@Request() request: TRequestWithUser): Promise<string> {
 
         // Or you can retrieve user info and validate permissions in the method:
-        if (request.user?.role !== 'administrator')
-            throw new UnauthorizedException('Forbidden');
+        const allowedRoles: TUserRole[] = ['administrator', 'guest', 'author'];
+        if (!allowedRoles.includes(request.user?.role))
+            throw new ForbiddenException('Forbidden');
 
         return (await getManager().find(PluginNewsletter) ?? []).length + '';
     }

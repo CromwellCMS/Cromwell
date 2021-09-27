@@ -211,7 +211,10 @@ const OrderList = (props: TPropsType) => {
                 useQueryPagination
                 listItemProps={{ handleDeleteBtnClick, toggleSelection: handleToggleItemSelection }}
                 loader={handleGetOrders}
-                cssClasses={{ scrollBox: styles.list }}
+                cssClasses={{
+                    scrollBox: styles.list,
+                    contentWrapper: styles.listContent,
+                }}
                 elements={{
                     pagination: Pagination,
                     preloader: listPreloader

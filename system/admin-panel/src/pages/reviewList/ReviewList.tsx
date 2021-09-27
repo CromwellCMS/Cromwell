@@ -247,7 +247,10 @@ const ReviewList = (props: TPropsType) => {
                     handleApproveReview,
                 }}
                 loader={handleGetReview}
-                cssClasses={{ scrollBox: styles.list }}
+                cssClasses={{
+                    scrollBox: styles.list,
+                    contentWrapper: styles.listContent,
+                }}
                 elements={{
                     pagination: Pagination,
                     preloader: listPreloader
@@ -278,7 +281,7 @@ const ReviewList = (props: TPropsType) => {
                     <div className={styles.itemToViewHeader}>
                         <p className={styles.userName}>{itemToView?.userName}</p>
                         <Rating name="read-only"
-                        className={styles.rating}
+                            className={styles.rating}
                             value={itemToView?.rating}
                             precision={0.5}
                             readOnly />

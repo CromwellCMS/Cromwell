@@ -310,7 +310,11 @@ const PostList = (props: TPropsType) => {
                 useQueryPagination
                 listItemProps={{ handleDeletePostBtnClick, toggleSelection: handleToggleItemSelection }}
                 loader={handleGetPosts}
-                cssClasses={{ scrollBox: styles.list }}
+                cssClasses={{
+                    scrollBox: styles.list,
+                    contentWrapper: styles.listContent
+                    
+                }}
                 elements={{
                     pagination: Pagination,
                     preloader: listPreloader

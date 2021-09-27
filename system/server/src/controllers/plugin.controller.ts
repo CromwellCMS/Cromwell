@@ -83,6 +83,8 @@ export class PluginController {
 
 
     @Get('admin-bundle')
+    @UseGuards(JwtAuthGuard)
+    @Roles('administrator', 'guest', 'author')
     @ApiOperation({
         description: `Returns plugin's JS admin bundle info.`,
         parameters: [{ name: 'pluginName', in: 'query', required: true }]

@@ -50,7 +50,7 @@ const Account = () => {
         let data: TUser | undefined;
         setLoading(true);
         try {
-            data = await getRestApiClient().getUserInfo();
+            data = await getRestApiClient().getUserInfo({ disableLog: true });
             if (data?.id) {
                 setUserData(data);
                 getOrders(data?.id);

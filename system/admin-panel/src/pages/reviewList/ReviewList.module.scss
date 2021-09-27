@@ -18,6 +18,10 @@
     padding-top: 15px;
 }
 
+.listContent {
+    padding-bottom: 70px;
+}
+
 .listHeader {
     @include paper;
     display: flex;
