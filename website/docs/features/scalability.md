@@ -63,6 +63,9 @@ http {
       add_header 'Access-Control-Allow-Credentials' 'true';
       proxy_hide_header 'Access-Control-Allow-Origin';
       add_header 'Access-Control-Allow-Origin' "$host";
+      proxy_read_timeout 300;
+      proxy_connect_timeout 300;
+      proxy_send_timeout 300;
 
       proxy_pass http://api;
       default_type application/json;

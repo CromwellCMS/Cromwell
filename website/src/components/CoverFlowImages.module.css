@@ -16,3 +16,7 @@
     border: 6px solid #e4e4e4;
     border-style: double;
 }
+
+.image {
+    user-select: none;
+}
