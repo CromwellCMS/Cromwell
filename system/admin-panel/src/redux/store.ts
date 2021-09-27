@@ -1,5 +1,5 @@
 import { createStore } from 'react-redux-ts';
-import { TCromwellBlock, TThemeConfig, TCmsStatus } from '@cromwell/core';
+import { TCromwellBlock, TThemeConfig, TCmsStatus, onStoreChange } from '@cromwell/core';
 import { Draggable } from '../helpers/Draggable/Draggable';
 import { startUpdateChecker } from './helpers';
 
@@ -23,4 +23,9 @@ export type StoreAction = ReturnType<typeof store.dispatch>;
 
 setTimeout(() => {
     startUpdateChecker();
+
+    onStoreChange('userInfo', () => {
+        startUpdateChecker();
+    })
 }, 100);
+

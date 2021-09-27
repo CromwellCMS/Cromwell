@@ -70,7 +70,7 @@ export default function WelcomePage() {
     }
 
     const checkAuth = async () => {
-        const userInfo = await apiClient.getUserInfo();
+        const userInfo = await apiClient.getUserInfo({ disableLog: true });
         if (userInfo) {
             setStoreItem('userInfo', userInfo);
             history?.push?.(`/`);

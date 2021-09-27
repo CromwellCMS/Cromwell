@@ -25,7 +25,7 @@
     border-radius: 9px;
     z-index: 1;
 
-    >div {
+    > div {
         display: flex;
         align-items: center;
     }
@@ -60,6 +60,10 @@
     border-radius: 10px;
     padding-right: 10px;
     padding-top: 15px;
+}
+
+.listContent {
+    padding-bottom: 70px;
 }
 
 .itemMain {
@@ -132,7 +136,7 @@ div.filterDrawer {
     align-items: center;
     padding-left: 15px;
 
-    >h3 {
+    > h3 {
         font-weight: 500;
     }
 }
@@ -159,7 +163,7 @@ div.filterDrawer {
         }
 
         :global(.MuiSlider-thumb.MuiSlider-thumbColorPrimary) {
-            >span>span {
+            > span > span {
                 background-color: #555;
                 color: #fff;
             }
@@ -176,7 +180,6 @@ div.filterDrawer {
 }
 
 @media screen and (max-width: $mobileBreakpoint) {
-
     // mobile
     div.filterDrawer {
         padding-top: 60px;

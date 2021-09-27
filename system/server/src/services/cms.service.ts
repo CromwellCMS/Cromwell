@@ -158,7 +158,6 @@ export class CmsService {
         }
     }
 
-
     public async parseModuleConfigImages(moduleInfo: TPackageCromwellConfig, moduleName: string) {
         if (!moduleInfo) return;
 
@@ -199,7 +198,7 @@ export class CmsService {
         const cmsEntity = await getCmsEntity();
         if (cmsEntity?.internalSettings?.installed) {
             logger.error('CMS already installed');
-            throw new HttpException('CMS already installed', HttpStatus.FORBIDDEN);
+            throw new HttpException('CMS already installed', HttpStatus.BAD_REQUEST);
         }
 
         cmsEntity.internalSettings = {

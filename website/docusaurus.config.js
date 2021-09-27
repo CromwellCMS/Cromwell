@@ -76,7 +76,7 @@
               },
               {
                 label: 'Features',
-                to: '/docs/features/features',
+                to: '/docs/features/overview',
               },
               {
                 label: 'Development',

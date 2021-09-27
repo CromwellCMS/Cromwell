@@ -257,7 +257,10 @@ const ProductList = (props: TPropsType) => {
                 listItemProps={{ handleDeleteProductBtnClick, toggleSelection: handleToggleItemSelection }}
                 useQueryPagination
                 loader={handleGetProducts}
-                cssClasses={{ scrollBox: styles.list }}
+                cssClasses={{
+                    scrollBox: styles.list,
+                    contentWrapper: styles.listContent,
+                }}
                 elements={{
                     pagination: Pagination,
                     preloader: listPreloader

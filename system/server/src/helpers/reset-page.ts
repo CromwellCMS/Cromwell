@@ -1,6 +1,8 @@
 import { getStoreItem, resolvePageRoute, setStoreItem } from '@cromwell/core';
 import { getLogger, getThemeConfigs } from '@cromwell/core-backend';
-import { getRestApiClient } from '@cromwell/core-frontend';
+import { Container } from 'typedi';
+
+import { RendererService } from '../services/renderer.service';
 
 let lastUsedTheme: string | undefined;
 
@@ -22,7 +24,7 @@ export const resetPageCache = async (pageName: string, routeOptions?: {
     const pageRoute = resolvePageRoute(pageName, routeOptions);
 
     try {
-        await getRestApiClient().purgeRendererPageCache(pageRoute);
+        await Container.get(RendererService).purgePageCache(pageRoute);
     } catch (error) {
         getLogger(false).error(error);
     }
@@ -34,7 +36,7 @@ export const resetPageCache = async (pageName: string, routeOptions?: {
  */
 export const resetAllPagesCache = async () => {
     try {
-        await getRestApiClient().purgeRendererEntireCache();
+        await Container.get(RendererService).purgeEntireCache();
     } catch (error) {
         getLogger(false).error(error);
     }

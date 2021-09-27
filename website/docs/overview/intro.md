@@ -23,12 +23,12 @@ There are two production-ready examples of how your website can look out the box
 
 Right after installation you get a free full-featured online store.
 
-**Example frontend**: https://demo-store.cromwellcms.com/
-**Example admin panel**: https://demo-store.cromwellcms.com/admin
+**Example frontend**: https://demo-store.cromwellcms.com/  
+**Example admin panel**: https://demo-store.cromwellcms.com/admin  
 
-Admin panel credentials for a guest user:
-email: `user@example.com`
-password: `qwerty`
+Admin panel credentials for a guest user:  
+email: `guest@example.com`  
+password: `qwerty`  
 
 The theme includes:
 - Customer account page with order history
@@ -45,11 +45,11 @@ The theme includes:
 
 While previous theme includes both store and blog, you may want more simple website. Blog is a second theme available after installation, so you need just to switch to it in the admin panel. Also, you may want to tweak navigation menu in Main menu Plugin's interface.
 
-**Example frontend**: https://demo-blog.cromwellcms.com
-**Example admin panel**: https://demo-blog.cromwellcms.com/admin
+**Example frontend**: https://demo-blog.cromwellcms.com  
+**Example admin panel**: https://demo-blog.cromwellcms.com/admin  
 
-Admin panel credentials for a guest user:
-email: `user@example.com`
-password: `qwerty`
+Admin panel credentials for a guest user:  
+email: `guest@example.com`  
+password: `qwerty`  
 
 The theme includes featured posts, tag pages, tag search, website search, newsletter form, custom pages

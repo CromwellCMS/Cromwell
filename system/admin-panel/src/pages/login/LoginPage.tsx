@@ -1,4 +1,4 @@
-import { setStoreItem } from '@cromwell/core';
+import { setStoreItem, TUser } from '@cromwell/core';
 import { getRestApiClient } from '@cromwell/core-frontend';
 import { Button, IconButton, InputAdornment, TextField } from '@material-ui/core';
 import { Visibility as VisibilityIcon, VisibilityOff as VisibilityOffIcon } from '@material-ui/icons';
@@ -46,10 +46,10 @@ const LoginPage = () => {
     }
 
     const checkAuth = async (showError?: boolean) => {
-        const userInfo = await apiClient.getUserInfo();
+        const userInfo = await apiClient.getUserInfo({ disableLog: true });
         if (userInfo) {
             setStoreItem('userInfo', userInfo);
-            loginSuccess();
+            loginSuccess(userInfo);
         } else {
             if (showError)
                 toast.error('Incorrect email or password');
@@ -60,8 +60,14 @@ const LoginPage = () => {
         checkAuth();
     }, []);
 
-    const loginSuccess = () => {
-        history?.push?.(`/`);
+    const loginSuccess = (userInfo: TUser) => {
+        if (userInfo.role === 'administrator' || userInfo.role === 'guest') {
+            history?.push?.(`/`);
+        } else if (userInfo.role === 'author') {
+            history?.push?.(`/post-list`);
+        } else {
+            toast.error('Access forbidden');
+        }
     }
 
     const handleSubmit = () => {

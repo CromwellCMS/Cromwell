@@ -1,3 +1,4 @@
+import { onStoreChange } from '@cromwell/core';
 import { getStoreItem, setStoreItem } from '@cromwell/core';
 import { createMuiTheme, ThemeProvider, Toolbar } from '@material-ui/core';
 import clsx from 'clsx';
@@ -17,9 +18,18 @@ import { ConfirmPrompt } from '../modal/Confirmation';
 import Sidebar from '../sidebar/Sidebar';
 import styles from './Layout.module.scss';
 
+let userRole = getStoreItem('userInfo')?.role;
+
 function Layout() {
   const forceUpdate = useForceUpdate();
   setStoreItem('forceUpdatePage', forceUpdate);
+
+  onStoreChange('userInfo', (user) => {
+    if (user && user.role !== userRole) {
+      userRole = user.role;
+      forceUpdate();
+    }
+  })
 
   const darkMode = getStoreItem('theme')?.mode === 'dark';
 
@@ -65,6 +75,9 @@ function Layout() {
             <Toolbar className={styles.dummyToolbar} />
             <Switch>
               {pageInfos.map(page => {
+                if (page.roles && !page.roles.includes(getStoreItem('userInfo')?.role))
+                  return null;
+
                 return (
                   <Route exact={!page.baseRoute}
                     path={page.route}

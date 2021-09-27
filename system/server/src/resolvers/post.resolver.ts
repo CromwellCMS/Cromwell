@@ -90,7 +90,7 @@ export class PostResolver {
         return post;
     }
 
-    @Authorized<TAuthRole>("administrator")
+    @Authorized<TAuthRole>("administrator", 'author')
     @Mutation(() => Post)
     async [createPath](@Arg("data") data: CreatePost): Promise<Post> {
         const post = await this.repository.createPost(data);
@@ -99,7 +99,7 @@ export class PostResolver {
         return post;
     }
 
-    @Authorized<TAuthRole>("administrator")
+    @Authorized<TAuthRole>("administrator", 'author')
     @Mutation(() => Post)
     async [updatePath](@Arg("id") id: string, @Arg("data") data: UpdatePost): Promise<Post> {
         const post = await this.repository.updatePost(id, data);
@@ -108,7 +108,7 @@ export class PostResolver {
         return post;
     }
 
-    @Authorized<TAuthRole>("administrator")
+    @Authorized<TAuthRole>("administrator", 'author')
     @Mutation(() => Boolean)
     async [deletePath](@Arg("id") id: string): Promise<boolean> {
         const success = await this.repository.deletePost(id);
@@ -117,7 +117,7 @@ export class PostResolver {
         return success;
     }
 
-    @Authorized<TAuthRole>("administrator")
+    @Authorized<TAuthRole>("administrator", 'author')
     @Mutation(() => Boolean)
     async [deleteManyPath](@Arg("data") data: DeleteManyInput): Promise<boolean | undefined> {
         const res = await this.repository.deleteMany(data);
@@ -125,7 +125,7 @@ export class PostResolver {
         return res;
     }
 
-    @Authorized<TAuthRole>("administrator")
+    @Authorized<TAuthRole>("administrator", 'author')
     @Mutation(() => Boolean)
     async [deleteManyFilteredPath](
         @Arg("input") input: DeleteManyInput,

@@ -1,4 +1,4 @@
-import { TDeleteManyInput } from '@cromwell/core';
+import { getStoreItem, TDeleteManyInput } from '@cromwell/core';
 import { getRestApiClient } from '@cromwell/core-frontend';
 
 import { store } from './store';
@@ -73,8 +73,12 @@ export const updateStatus = async () => {
 let isChecking = false;
 export const startUpdateChecker = () => {
     if (isChecking) return;
-    isChecking = true;
-    updateChecker();
+
+    if (getStoreItem('userInfo')?.role === 'administrator'
+        || getStoreItem('userInfo')?.role === 'guest') {
+        isChecking = true;
+        updateChecker();
+    }
 }
 
 const updateChecker = async () => {

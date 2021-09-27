@@ -1,3 +1,4 @@
+import { TUserRole } from '@cromwell/core';
 import {
     Dashboard as DashboardIcon,
     FilterList as FilterListIcon,
@@ -49,6 +50,7 @@ export type SidebarLinkType = {
     baseRoute?: string;
     sublinks?: SidebarLinkType[];
     icon?: React.ReactNode;
+    roles: TUserRole[];
 }
 
 export type PageInfo = {
@@ -57,75 +59,88 @@ export type PageInfo = {
     baseRoute?: string;
     component: React.ComponentType<Partial<RouteComponentProps>>;
     disableSidebar?: boolean;
+    roles?: TUserRole[];
 }
 
 export const homePageInfo: PageInfo = {
     name: 'Dashboard',
     route: '/',
-    component: DashboardPage
+    component: DashboardPage,
+    roles: ['administrator', 'guest'],
 };
 export const themeListPageInfo: PageInfo = {
     name: 'ThemeList',
     route: '/theme-list',
-    component: ThemeListPage
+    component: ThemeListPage,
+    roles: ['administrator', 'guest'],
 };
 export const themeEditPageInfo: PageInfo = {
     name: 'ThemeEdit',
     route: '/theme-edit',
     baseRoute: '/theme-edit',
-    component: ThemeEditPage
+    component: ThemeEditPage,
+    roles: ['administrator', 'guest'],
 };
 export const productListInfo: PageInfo = {
     name: 'ProductList',
     route: '/product-list',
-    component: ProductListPage
+    component: ProductListPage,
+    roles: ['administrator', 'guest'],
 };
 export const productPageInfo: PageInfo = {
     name: 'ProductList',
     route: '/product/:id',
     baseRoute: '/product',
-    component: ProductPage
+    component: ProductPage,
+    roles: ['administrator', 'guest'],
 };
 
 export const categoryListPageInfo: PageInfo = {
     name: 'CategoryList',
     route: '/category-list',
     component: CategoryListPage,
+    roles: ['administrator', 'guest'],
 };
 export const categoryPageInfo: PageInfo = {
     name: 'Category',
     route: '/category/:id',
     component: CategoryPage,
     baseRoute: '/category',
+    roles: ['administrator', 'guest'],
 };
 
 export const attributesInfo: PageInfo = {
     name: 'Attributes',
     route: '/product-attributes',
-    component: AttributesPage
+    component: AttributesPage,
+    roles: ['administrator', 'guest'],
 };
 export const pluginListPageInfo: PageInfo = {
     name: 'PluginList',
     route: '/plugins',
-    component: PluginListPage
+    component: PluginListPage,
+    roles: ['administrator', 'guest'],
 };
 export const pluginPageInfo: PageInfo = {
     name: 'Plugin',
     baseRoute: '/plugin',
     route: '/plugin',
-    component: PluginPage
+    component: PluginPage,
+    roles: ['administrator', 'guest'],
 };
 
 export const postListInfo: PageInfo = {
     name: 'Posts',
     route: '/post-list',
-    component: PostListPage
+    component: PostListPage,
+    roles: ['administrator', 'guest', 'author'],
 };
 export const postPageInfo: PageInfo = {
     name: 'Post',
     route: '/post/:id',
     component: PostPage,
     baseRoute: '/post',
+    roles: ['administrator', 'guest', 'author'],
 };
 
 export const loginPageInfo: PageInfo = {
@@ -141,6 +156,7 @@ export const orderListPageInfo: PageInfo = {
     route: '/order-list',
     component: OrderListPage,
     baseRoute: '/order-list',
+    roles: ['administrator', 'guest'],
 };
 
 export const orderPageInfo: PageInfo = {
@@ -148,6 +164,7 @@ export const orderPageInfo: PageInfo = {
     route: '/order/:id',
     baseRoute: '/order',
     component: OrderPage,
+    roles: ['administrator', 'guest'],
 };
 
 export const welcomePageInfo: PageInfo = {
@@ -161,18 +178,21 @@ export const settingsPageInfo: PageInfo = {
     name: 'Settings',
     route: '/settings',
     component: SettingsPage,
+    roles: ['administrator', 'guest'],
 };
 
 export const userListPageInfo: PageInfo = {
     name: 'User List',
     route: '/user-list',
     component: UserListPage,
+    roles: ['administrator', 'guest'],
 };
 export const userPageInfo: PageInfo = {
     name: 'User',
     route: '/user/:id',
     baseRoute: '/user',
     component: UserPage,
+    roles: ['administrator', 'guest', 'author'],
 };
 
 export const tagPageInfo: PageInfo = {
@@ -180,27 +200,32 @@ export const tagPageInfo: PageInfo = {
     route: '/tag/:id',
     baseRoute: '/tag',
     component: TagPage,
+    roles: ['administrator', 'guest', 'author'],
 }
 export const tagListPageInfo: PageInfo = {
     name: 'Tag List',
     route: '/tag-list',
     component: TagListPage,
+    roles: ['administrator', 'guest', 'author'],
 }
 export const reviewListPageInfo: PageInfo = {
     name: 'Reviews',
     route: '/review-list',
     component: ReviewListPage,
+    roles: ['administrator', 'guest'],
 }
 
 export const pluginMarketPageInfo: PageInfo = {
     name: 'Plugin Market',
     route: '/plugin-market',
     component: PluginMarket,
+    roles: ['administrator', 'guest'],
 }
 export const themeMarketPageInfo: PageInfo = {
     name: 'Theme Market',
     route: '/theme-market',
     component: ThemeMarket,
+    roles: ['administrator', 'guest'],
 }
 
 // Export all pages for react-router
@@ -208,7 +233,6 @@ export const pageInfos: PageInfo[] = [
     homePageInfo,
     themeEditPageInfo,
     themeListPageInfo,
-    productListInfo,
     productListInfo,
     productPageInfo,
     pluginListPageInfo,
@@ -238,24 +262,28 @@ export const sideBarLinks: SidebarLinkType[] = [
         id: '1_homePage',
         title: homePageInfo.name,
         route: homePageInfo.route,
-        icon: React.createElement(DashboardIcon)
+        icon: React.createElement(DashboardIcon),
+        roles: ['administrator', 'guest'],
     },
     {
         id: '2_Store',
         title: 'Store',
         icon: React.createElement(LocalMallIcon),
+        roles: ['administrator', 'guest'],
         sublinks: [
             {
                 id: '3_productList',
                 title: 'Products',
                 route: productListInfo.route,
                 icon: React.createElement(StorageIcon),
+                roles: ['administrator', 'guest'],
             },
             {
                 id: '4_Attributes',
                 title: 'Attributes',
                 route: attributesInfo.route,
-                icon: React.createElement(FilterListIcon)
+                icon: React.createElement(FilterListIcon),
+                roles: ['administrator', 'guest'],
             },
             {
                 id: '5_Categories',
@@ -264,18 +292,21 @@ export const sideBarLinks: SidebarLinkType[] = [
                 icon: React.createElement(CategoryIcon, {
                     viewBox: "-50 -50 400 400"
                 }),
+                roles: ['administrator', 'guest'],
             },
             {
                 id: '11_Order_list',
                 title: 'Orders',
                 route: orderListPageInfo.route,
-                icon: React.createElement(ShoppingBasketIcon)
+                icon: React.createElement(ShoppingBasketIcon),
+                roles: ['administrator', 'guest'],
             },
             {
                 id: 'Review_list',
                 title: 'Reviews',
                 route: reviewListPageInfo.route,
-                icon: React.createElement(StarsIcon)
+                icon: React.createElement(StarsIcon),
+                roles: ['administrator', 'guest'],
             }
         ]
     },
@@ -286,18 +317,21 @@ export const sideBarLinks: SidebarLinkType[] = [
             className: sidebarStyles.customIcon,
             style: { backgroundImage: 'url(/admin/static/icon_blogging.png)' }
         }),
+        roles: ['administrator', 'guest', 'author'],
         sublinks: [
             {
                 id: '7_Posts',
                 title: 'Posts',
                 route: postListInfo.route,
                 icon: React.createElement(LibraryBooksIcon),
+                roles: ['administrator', 'guest', 'author'],
             },
             {
                 id: 'tags_page',
                 title: 'Tags',
                 route: tagListPageInfo.route,
                 icon: React.createElement(LocalOfferOutlinedIcon),
+                roles: ['administrator', 'guest', 'author'],
             },
         ]
     },
@@ -305,7 +339,8 @@ export const sideBarLinks: SidebarLinkType[] = [
         id: '5_themeListPage',
         title: 'Themes',
         route: themeListPageInfo.route,
-        icon: React.createElement(FormatPaintIcon)
+        icon: React.createElement(FormatPaintIcon),
+        roles: ['administrator', 'guest'],
     },
     {
         id: '6_pluginsPage',
@@ -317,18 +352,21 @@ export const sideBarLinks: SidebarLinkType[] = [
                 filter: 'invert(1)',
             }
         }),
+        roles: ['administrator', 'guest'],
     },
     {
         id: 'users_page',
         title: 'Users',
         route: userListPageInfo.route,
-        icon: React.createElement(PeopleAltIcon)
+        icon: React.createElement(PeopleAltIcon),
+        roles: ['administrator', 'guest'],
     },
     {
         id: 'settings_page',
         title: 'Settings',
         route: settingsPageInfo.route,
-        icon: React.createElement(SettingsIcon)
+        icon: React.createElement(SettingsIcon),
+        roles: ['administrator', 'guest'],
     }
 ]
 

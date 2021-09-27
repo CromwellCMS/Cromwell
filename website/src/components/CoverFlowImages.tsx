@@ -15,7 +15,7 @@ export const CoverFlowImages = (props: {
     const containerRef = useRef<HTMLDivElement>();
 
     useEffect(() => {
-        const swiper = new Swiper(containerRef.current, {
+        new Swiper(containerRef.current, {
             effect: "coverflow",
             grabCursor: true,
             // slidesPerView: 1.3,
@@ -41,7 +41,7 @@ export const CoverFlowImages = (props: {
                         className={clsx("swiper-slide", styles.slide)}>
                         <img
                             data-src={image}
-                            className="swiper-lazy"
+                            className={clsx("swiper-lazy", styles.image)}
                         />
                         <div className="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
                     </div>
