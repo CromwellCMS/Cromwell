@@ -1,6 +1,6 @@
 {
   "name": "@cromwell/renderer",
-  "version": "1.1.13",
+  "version": "1.1.14",
   "description": "",
   "license": "MIT",
   "repository": "https://github.com/CromwellCMS/Cromwell",
@@ -26,10 +26,10 @@
     "webpack": "5.50.0"
   },
   "dependencies": {
-    "@cromwell/core": "1.1.17",
-    "@cromwell/core-backend": "1.0.20",
-    "@cromwell/core-frontend": "1.1.7",
-    "@cromwell/utils": "1.0.22",
+    "@cromwell/core": "1.1.18",
+    "@cromwell/core-backend": "1.0.21",
+    "@cromwell/core-frontend": "1.1.8",
+    "@cromwell/utils": "1.0.23",
     "cookie": "0.4.1",
     "fs-extra": "10.0.0",
     "glob": "7.1.7",

@@ -1,6 +1,6 @@
 {
   "name": "@cromwell/core-backend",
-  "version": "1.0.20",
+  "version": "1.0.21",
   "description": "",
   "license": "MIT",
   "repository": "https://github.com/CromwellCMS/Cromwell",
@@ -21,7 +21,7 @@
     "watch": "npx rollup -cw"
   },
   "dependencies": {
-    "@cromwell/core": "1.1.17",
+    "@cromwell/core": "1.1.18",
     "@nestjs/common": "8.0.6",
     "@nestjs/core": "8.0.6",
     "@nestjs/graphql": "8.0.2",
