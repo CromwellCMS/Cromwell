@@ -1,12 +1,15 @@
 import { TOrder } from '@cromwell/core';
 import { Field, ObjectType } from 'type-graphql';
-import { Column, Entity, Index } from 'typeorm';
-
-import { BasePageEntity } from './base-page.entity';
+import { BaseEntity, Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity()
 @ObjectType()
-export class Order extends BasePageEntity implements TOrder {
+export class Order extends BaseEntity implements TOrder {
+
+    @Field(() => String, { nullable: true })
+    @Index()
+    @PrimaryGeneratedColumn()
+    id: string;
 
     @Field(() => String, { nullable: true })
     @Index()
@@ -76,4 +79,14 @@ export class Order extends BasePageEntity implements TOrder {
     @Field(() => String, { nullable: true })
     @Column({ type: "varchar", nullable: true })
     currency?: string;
+
+    @Field(() => Date)
+    @Index()
+    @CreateDateColumn()
+    createDate: Date;
+
+    @Field(() => Date)
+    @Index()
+    @UpdateDateColumn()
+    updateDate: Date;
 }

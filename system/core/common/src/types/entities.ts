@@ -18,6 +18,10 @@ export type TBasePageEntity = {
      */
     pageDescription?: string;
     /**
+     * Other meta (SEO) data
+     */
+    meta?: TBasePageMeta | null;
+    /**
      * DB createDate
      */
     createDate?: Date;
@@ -29,6 +33,11 @@ export type TBasePageEntity = {
      * Is displaying at frontend
      */
     isEnabled?: boolean;
+}
+
+export type TBasePageMeta = {
+    keywords?: string[];
+    socialImage?: string;
 }
 
 export type TDBAuxiliaryColumns = 'id' | 'createDate' | 'updateDate';
@@ -367,6 +376,9 @@ export type TProductReviewFilter = {
  * Store order
  */
 export type TOrderCore = {
+    id?: string;
+    createDate?: Date;
+    updateDate?: Date;
     status?: string;
     cart?: string | TStoreListItem[];
     orderTotalPrice?: number;
@@ -386,9 +398,9 @@ export type TOrderCore = {
     currency?: string;
 }
 
-export type TOrder = TOrderCore & TBasePageEntity;
+export type TOrder = TOrderCore;
 
-export type TOrderInput = TOrderCore & TBasePageEntityInput;
+export type TOrderInput = TOrderCore;
 
 export type TOrderFilter = {
     status?: string;

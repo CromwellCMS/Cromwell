@@ -66,6 +66,9 @@ const ProductPage = () => {
                         isEnabled
                         pageTitle
                         pageDescription
+                        meta {
+                            keywords
+                        }
                         name
                         price
                         oldPrice
@@ -180,6 +183,9 @@ const ProductPage = () => {
                 attributes: productAttributes,
                 pageTitle: product.pageTitle,
                 pageDescription: product.pageDescription,
+                meta: product.meta && {
+                    keywords: product.meta.keywords
+                },
                 isEnabled: product.isEnabled,
             }
 

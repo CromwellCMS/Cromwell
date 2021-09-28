@@ -1,5 +1,6 @@
-import { TOrder, TOrderInput } from '@cromwell/core';
-import { InputType, Field, Int } from "type-graphql";
+import { TOrderInput } from '@cromwell/core';
+import { Field, InputType } from 'type-graphql';
+
 import { BasePageInput } from './base-page.input';
 
 @InputType('OrderInput')

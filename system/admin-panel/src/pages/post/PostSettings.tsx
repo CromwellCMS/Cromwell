@@ -25,6 +25,7 @@ const PostSettings = (props: {
     const [title, setTitle] = useState<string | undefined>(postData?.title ?? null);
     const [mainImage, setMainImage] = useState<string | undefined>(postData?.mainImage ?? null);
     const [pageDescription, setPageDescription] = useState<string | undefined>(postData?.pageDescription ?? null);
+    const [pageKeywords, setPageKeywords] = useState<string[] | undefined>(postData?.meta?.keywords ?? null);
     const [pageTitle, setPageTitle] = useState<string | undefined>(postData?.pageTitle ?? null);
     const [slug, setSlug] = useState<string | undefined>(postData?.slug ?? null);
     const [tags, setTags] = useState<TTag[] | undefined>(postData?.tags ?? []);
@@ -33,6 +34,9 @@ const PostSettings = (props: {
 
     const handleChangeTags = (event: any, newValue: TTag[]) => {
         setTags(newValue);
+    }
+    const handleChangeKeywords = (event: any, newValue: string[]) => {
+        setPageKeywords(newValue);
     }
 
     const handleClose = () => {
@@ -45,6 +49,10 @@ const PostSettings = (props: {
         newData.tags = tags;
         newData.publishDate = publishDate;
         newData.featured = featured;
+        if (pageKeywords) {
+            if (!newData.meta) newData.meta = {};
+            newData.meta.keywords = pageKeywords;
+        }
         props.onClose(newData);
     }
 
@@ -155,6 +163,22 @@ const PostSettings = (props: {
                     fullWidth
                     value={pageDescription ?? ''}
                     onChange={e => setPageDescription(e.target.value)}
+                />
+                <Autocomplete
+                    multiple
+                    freeSolo
+                    options={[]}
+                    className={styles.settingItem}
+                    value={(pageKeywords ?? []) as any}
+                    getOptionLabel={(option) => option}
+                    onChange={handleChangeKeywords}
+                    renderInput={(params) => (
+                        <TextField
+                            {...params}
+                            variant="standard"
+                            label="Meta keywords"
+                        />
+                    )}
                 />
                 {postData?.published && (
                     <Tooltip title="Remove post from publication">

@@ -1,5 +1,14 @@
-import { TBasePageEntityInput } from '@cromwell/core';
+import { TBasePageEntityInput, TBasePageMeta } from '@cromwell/core';
 import { Field, InputType } from 'type-graphql';
+
+@InputType()
+export class BasePageMetaInput implements TBasePageMeta {
+    @Field(() => [String], { nullable: true })
+    keywords?: string[];
+
+    @Field(() => String, { nullable: true })
+    socialImage?: string;
+}
 
 @InputType()
 export class BasePageInput implements TBasePageEntityInput {
@@ -14,4 +23,7 @@ export class BasePageInput implements TBasePageEntityInput {
 
     @Field(() => Boolean, { nullable: true })
     isEnabled?: boolean;
+
+    @Field(() => BasePageMetaInput, { nullable: true })
+    meta?: TBasePageMeta | null | undefined;
 }

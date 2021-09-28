@@ -9,7 +9,7 @@
     "entityPrefix": "crw_",
     "migrationsRun": true,
     "entities": [
-        "../core/backend/dist/index.js"
+        "../core/backend/dist/models/**/*.js"
     ],
     "migrationsTableName": "crw_migrations",
     "migrations": [

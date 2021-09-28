@@ -2,7 +2,7 @@ import { resolvePageRoute, serviceLocator, TTag, TTagInput } from '@cromwell/cor
 import { getGraphQLClient } from '@cromwell/core-frontend';
 import { Button, Grid, IconButton, TextField, Tooltip } from '@material-ui/core';
 import { ArrowBack as ArrowBackIcon, OpenInNew as OpenInNewIcon } from '@material-ui/icons';
-import { Skeleton } from '@material-ui/lab';
+import { Autocomplete as MuiAutocomplete, Skeleton } from '@material-ui/lab';
 import React, { useEffect, useState } from 'react';
 import { Link, useHistory, useParams } from 'react-router-dom';
 
@@ -82,6 +82,9 @@ const TagPage = () => {
             slug: data.slug,
             pageTitle: data.pageTitle,
             pageDescription: data.pageDescription,
+            meta: data.meta && {
+                keywords: data.meta.keywords,
+            },
             name: data.name,
             color: data.color,
             image: data.image,
@@ -234,6 +237,28 @@ const TagPage = () => {
                                 fullWidth
                                 value={data?.pageDescription || ''}
                                 onChange={(e) => { handleInputChange('pageDescription', e.target.value) }}
+                            />
+                        </Grid>
+                        <Grid item xs={12} >
+                            <MuiAutocomplete
+                                multiple
+                                freeSolo
+                                options={[]}
+                                className={styles.textField}
+                                value={data?.meta?.keywords ?? []}
+                                getOptionLabel={(option) => option as any}
+                                onChange={(e, newVal) => {
+                                    handleInputChange('meta', {
+                                        ...(data.meta ?? {}),
+                                        keywords: newVal
+                                    })
+                                }}
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        label="Meta keywords"
+                                    />
+                                )}
                             />
                         </Grid>
                     </Grid>

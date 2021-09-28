@@ -18,8 +18,16 @@ if (process.env.DB_TYPE && process.env.DB_DATABASE) {
         }
     }
     fs.outputFileSync(cmsConfigPath, JSON.stringify(cmsConfig));
-} else {
+} else if (fs.existsSync(cmsConfigPath)) {
     cmsConfig = fs.readJSONSync(cmsConfigPath);
+} else {
+    cmsConfig = {
+        orm: {
+            type: 'sqlite',
+            database: '.cromwell/server/db.sqlite3',
+        }
+    }
+    fs.outputFileSync(cmsConfigPath, JSON.stringify(cmsConfig));
 }
 
 if (!cmsConfig.orm.type) throw new Error('You must provide DB_TYPE as environment variable or orm.type in cmsconfig.json');

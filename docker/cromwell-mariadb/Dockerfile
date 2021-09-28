@@ -1,11 +1,11 @@
 # syntax=docker/dockerfile:1
 FROM mariadb:latest
 
-COPY ./cromwell /app
+COPY ./cromwell-mariadb /app
 COPY ./nginx.conf /app/nginx.conf
 
 RUN apt update && apt install nginx curl -y \
-    && curl -sL https://deb.nodesource.com/setup_16.x -o nodesource_setup.sh \
+    && curl -sL https://deb.nodesource.com/setup_14.x -o nodesource_setup.sh \
     && bash nodesource_setup.sh \
     && apt install nodejs -y \
     && mkdir -p /.cromwell/nginx \
@@ -14,7 +14,10 @@ RUN apt update && apt install nginx curl -y \
     && crw create app \
     && cd app \
     && npx crw s --sv r --try \
-    && npx crw s --sv a --try
+    && npx crw s --sv a --try \
+    && rm -rf /app/.cromwell/server \
+    && rm -rf /app/.cromwell/logs \
+    && rm -rf /app/.cromwell/manager
 
 VOLUME ["/app/public", "/app/nginx", "/app/.cromwell/server", "/app/.cromwell/logs"]
 EXPOSE 80

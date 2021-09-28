@@ -3,6 +3,7 @@ import { resolvePageRoute, serviceLocator, TPagedParams, TProductCategory, TProd
 import { getGraphQLClient } from '@cromwell/core-frontend';
 import { Button, IconButton, TextField, Tooltip } from '@material-ui/core';
 import { ArrowBack as ArrowBackIcon, OpenInNew as OpenInNewIcon } from '@material-ui/icons';
+import { Autocomplete as MuiAutocomplete } from '@material-ui/lab';
 import React, { useEffect, useState } from 'react';
 import { Link, useHistory, useParams } from 'react-router-dom';
 
@@ -40,6 +41,9 @@ export default function CategoryPage(props) {
                         isEnabled
                         pageTitle
                         pageDescription
+                        meta {
+                            keywords
+                        }
                         name
                         mainImage
                         description
@@ -149,6 +153,9 @@ export default function CategoryPage(props) {
         slug: category.slug,
         pageTitle: category.pageTitle,
         pageDescription: category.pageDescription,
+        meta: category.meta && {
+            keywords: category.meta.keywords,
+        },
         name: category.name,
         mainImage: category.mainImage,
         isEnabled: category.isEnabled,
@@ -288,6 +295,26 @@ export default function CategoryPage(props) {
                     fullWidth
                     className={styles.textField}
                     onChange={(e) => { handleInputChange('pageDescription', e.target.value) }}
+                />
+                <MuiAutocomplete
+                    multiple
+                    freeSolo
+                    options={[]}
+                    className={styles.textField}
+                    value={category?.meta?.keywords ?? []}
+                    getOptionLabel={(option) => option as any}
+                    onChange={(e, newVal) => {
+                        handleInputChange('meta', {
+                            ...(category.meta ?? {}),
+                            keywords: newVal
+                        })
+                    }}
+                    renderInput={(params) => (
+                        <TextField
+                            {...params}
+                            label="Meta keywords"
+                        />
+                    )}
                 />
             </div>
         </div>

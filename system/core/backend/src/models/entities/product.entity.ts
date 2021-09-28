@@ -67,6 +67,7 @@ export class Product extends BasePageEntity implements TProduct {
 
     public set attributes(data: AttributeInstance[] | undefined) {
         if (data) this.attributesJSON = JSON.stringify(data);
+        else this.attributesJSON = data;
     }
 
     @Index()
