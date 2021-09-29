@@ -14,8 +14,7 @@ module.exports = class addMeta1632843115244 {
         await queryRunner.query(`ALTER TABLE \`cromwell\`.\`crw_order\` DROP COLUMN \`pageTitle\``);
         await queryRunner.query(`ALTER TABLE \`cromwell\`.\`crw_order\` DROP COLUMN \`pageDescription\``);
         await queryRunner.query(`ALTER TABLE \`cromwell\`.\`crw_order\` DROP COLUMN \`isEnabled\``);
-        await queryRunner.query(`ALTER TABLE \`cromwell\`.\`crw_user\` DROP COLUMN \`bio\``);
-        await queryRunner.query(`ALTER TABLE \`cromwell\`.\`crw_user\` ADD \`bio\` text NULL`);
+        await queryRunner.query(`ALTER TABLE \`cromwell\`.\`crw_user\` MODIFY \`bio\` TEXT NULL`);
         await queryRunner.query(`ALTER TABLE \`cromwell\`.\`crw_user\` ADD \`_meta\` varchar(5000) NULL`);
         await queryRunner.query(`ALTER TABLE \`cromwell\`.\`crw_base_page_entity\` ADD \`_meta\` varchar(5000) NULL`);
         await queryRunner.query(`ALTER TABLE \`cromwell\`.\`crw_attribute\` ADD \`_meta\` varchar(5000) NULL`);
@@ -30,8 +29,6 @@ module.exports = class addMeta1632843115244 {
     }
 
     async down(queryRunner) {
-        await queryRunner.query(`ALTER TABLE \`cromwell\`.\`crw_user\` DROP COLUMN \`bio\``);
-        await queryRunner.query(`ALTER TABLE \`cromwell\`.\`crw_user\` ADD \`bio\` varchar(6000) NULL`);
         await queryRunner.query(`ALTER TABLE \`cromwell\`.\`crw_user\` DROP COLUMN \`_meta\``);
         await queryRunner.query(`ALTER TABLE \`cromwell\`.\`crw_theme\` DROP COLUMN \`_meta\``);
         await queryRunner.query(`ALTER TABLE \`cromwell\`.\`crw_product_category\` DROP COLUMN \`_meta\``);

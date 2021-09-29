@@ -81,12 +81,16 @@ export const getPage = (pageName: TDefaultPageName | string, PageComponent: TCro
 
         let title;
         let description;
+        let keywords;
         if (pageConfig) {
             if (pageConfig.title && pageConfig.title !== "") {
                 title = pageConfig.title;
             }
             if (pageConfig.description && pageConfig.description !== "") {
                 description = pageConfig.description;
+            }
+            if (pageConfig.keywords?.length) {
+                keywords = pageConfig.keywords;
             }
         }
 
@@ -120,7 +124,6 @@ export const getPage = (pageName: TDefaultPageName | string, PageComponent: TCro
         const content = (
             <>
                 <Head>
-                    <meta charSet="utf-8" />
                     {favicon && (
                         <link rel="shortcut icon"
                             type={favicon.endsWith('.png') ? 'image/png' : 'image/jpg'}
@@ -141,16 +144,21 @@ export const getPage = (pageName: TDefaultPageName | string, PageComponent: TCro
                 <Head>
                     {themeHeadHtml && ReactHtmlParser(themeHeadHtml, { transform: parserTransform })}
                     {cmsSettings?.headHtml && ReactHtmlParser(cmsSettings.headHtml, { transform: parserTransform })}
-                    {title && title !== '' && (
+                    {title && (
                         <>
                             <title>{title}</title>
                             <meta property="og:title" content={title} />
                         </>
                     )}
-                    {description && description !== '' && (
+                    {description && (
                         <>
-                            <meta property="description" content={description} />
+                            <meta name="description" content={description} />
                             <meta property="og:description" content={description} />
+                        </>
+                    )}
+                    {keywords && (
+                        <>
+                            <meta name="keywords" content={keywords.join(',')} />
                         </>
                     )}
                     {pageConfig?.headHtml && ReactHtmlParser(pageConfig?.headHtml, { transform: parserTransform })}

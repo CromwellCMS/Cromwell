@@ -1,5 +1,6 @@
 import { TPageConfig } from '@cromwell/core';
 import { TextField } from '@material-ui/core';
+import { Autocomplete } from '@material-ui/lab';
 import React from 'react';
 
 import styles from './PageSettings.module.scss';
@@ -43,6 +44,24 @@ export const PageSettings = (props: {
                 value={pageConfig.description ?? ''}
                 className={styles.textField}
                 onChange={(e) => { handlePageSettingsChange('description', e.target.value) }}
+            />
+            <Autocomplete
+                multiple
+                freeSolo
+                options={[]}
+                className={styles.textField}
+                value={pageConfig?.keywords ?? []}
+                getOptionLabel={(option) => option as any}
+                onChange={(e, newVal) => {
+                    handlePageSettingsChange('keywords', newVal);
+                }}
+                renderInput={(params) => (
+                    <TextField
+                        {...params}
+                        variant="outlined"
+                        label="Meta keywords"
+                    />
+                )}
             />
             <TextField label="Head HTML" variant="outlined"
                 value={pageConfig.headHtml ?? ''}
