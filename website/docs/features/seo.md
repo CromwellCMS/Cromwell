@@ -16,8 +16,9 @@ That's how in Cromwell CMS we can serve static HTML files for every page even wi
 We have support for major meta-tags (although it may depend on Theme implementation):
 - `<title>` 
 - `<meta property="og:title" />`
-- `<meta property="description" />`
+- `<meta name="description" />`
 - `<meta property="og:description" />`
+- `<meta name="keywords" />`
 - `<meta property="og:url" />`
 - `<meta property="og:image" />`
 

@@ -7,6 +7,7 @@ export const getHead = ({ data, documentContext, image }: {
     documentContext?: CrwDocumentContextType;
     image?: string | null;
 }) => {
+    const keywords = data?.meta?.keywords;
     return (
         <Head>
             {data?.pageTitle && data.pageTitle !== '' && (
@@ -20,12 +21,15 @@ export const getHead = ({ data, documentContext, image }: {
             )}
             {data?.pageDescription && data.pageDescription !== '' && (
                 <>
-                    <meta property="description" content={data.pageDescription} />
+                    <meta name="description" content={data.pageDescription} />
                     <meta property="og:description" content={data.pageDescription} />
                 </>
             )}
             {image && documentContext?.origin && (
                 <meta property="og:image" content={documentContext.origin + image} />
+            )}
+            {keywords && keywords?.length && (
+                <meta name="keywords" content={keywords.join(',')} />
             )}
         </Head>
     )

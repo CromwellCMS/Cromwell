@@ -284,6 +284,8 @@ export type TPageInfo = {
     title?: string;
     /** Meta description (SEO) */
     description?: string;
+    /** Meta keywords (SEO) */
+    keywords?: string[];
     /** If true, this page created in PageBuilder or manually in config and does not have a corresponding source file with React component */
     isVirtual?: boolean;
 }
