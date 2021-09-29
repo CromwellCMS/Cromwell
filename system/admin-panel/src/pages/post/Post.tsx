@@ -57,6 +57,9 @@ const Post = (props) => {
                     slug
                     pageTitle
                     pageDescription
+                    meta {
+                        keywords
+                    }
                     createDate
                     updateDate
                     isEnabled
@@ -171,6 +174,9 @@ const Post = (props) => {
         published: postData.published,
         featured: postData.featured,
         isEnabled: postData.isEnabled,
+        meta: {
+            keywords: postData.meta?.keywords,
+        },
         tagIds: postData.tags?.map(tag => tag.id),
         authorId: postData?.author?.id ?? userInfo?.id,
         delta: JSON.stringify(await getEditorData(editorId)),

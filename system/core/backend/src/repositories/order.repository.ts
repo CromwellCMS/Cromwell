@@ -39,8 +39,6 @@ export class OrderRepository extends BaseRepository<Order> {
         if (input.customerEmail && !validateEmail(input.customerEmail))
             throw new Error('Provided e-mail is not valid');
 
-        handleBaseInput(order, input);
-
         order.status = input.status;
         order.cart = Array.isArray(input.cart) ? JSON.stringify(input.cart) : input.cart;
         order.orderTotalPrice = input.orderTotalPrice;
@@ -51,6 +49,7 @@ export class OrderRepository extends BaseRepository<Order> {
         order.userId = input.userId;
         order.customerName = input.customerName;
         order.customerPhone = input.customerPhone?.replace?.(/\W/g, '');
+        if (input.customerPhone?.startsWith('+')) order.customerPhone = '+' + order.customerPhone;
         order.customerEmail = input.customerEmail;
         order.customerAddress = input.customerAddress;
         order.customerComment = input.customerComment ? sanitizeHtml(input.customerComment, {
@@ -68,8 +67,6 @@ export class OrderRepository extends BaseRepository<Order> {
 
         await this.handleBaseOrderInput(order, inputData);
         order = await this.save(order);
-        await checkEntitySlug(order, Order);
-
         return order;
     }
 
@@ -83,8 +80,6 @@ export class OrderRepository extends BaseRepository<Order> {
 
         await this.handleBaseOrderInput(order, inputData);
         order = await this.save(order);
-        await checkEntitySlug(order, Order);
-
         return order;
     }
 

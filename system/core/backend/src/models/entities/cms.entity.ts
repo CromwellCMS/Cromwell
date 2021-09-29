@@ -1,10 +1,12 @@
 import { TCmsAdminSettings, TCmsEntity, TCmsInternalSettings, TCmsPublicSettings } from '@cromwell/core';
-import { Column, Entity } from 'typeorm';
-
-import { BasePageEntity } from './base-page.entity';
+import { BaseEntity, Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity('cms')
-export class CmsEntity extends BasePageEntity implements TCmsEntity {
+export class CmsEntity extends BaseEntity implements TCmsEntity {
+
+    @Index()
+    @PrimaryGeneratedColumn()
+    id: string;
 
     public get publicSettings(): TCmsPublicSettings | undefined {
         return this._publicSettings ? JSON.parse(this._publicSettings) : undefined;
@@ -34,4 +36,13 @@ export class CmsEntity extends BasePageEntity implements TCmsEntity {
     }
     @Column({ type: "text", nullable: true })
     private _internalSettings?: string;
+
+    @Index()
+    @CreateDateColumn()
+    createDate: Date;
+
+    @Index()
+    @UpdateDateColumn()
+    updateDate: Date;
+
 }

@@ -558,6 +558,9 @@ export class CGraphQLClient {
             isEnabled
             pageTitle
             pageDescription
+            meta {
+                keywords
+            }
             name
             price
             oldPrice
@@ -677,6 +680,9 @@ export class CGraphQLClient {
             isEnabled
             pageTitle
             pageDescription
+            meta {
+                keywords
+            }
             name
             mainImage
             description
@@ -807,6 +813,9 @@ export class CGraphQLClient {
             slug
             pageTitle
             pageDescription
+            meta {
+                keywords
+            }
             createDate
             updateDate
             isEnabled
@@ -860,6 +869,9 @@ export class CGraphQLClient {
             isEnabled
             pageTitle
             pageDescription
+            meta {
+                keywords
+            }
             fullName
             email
             avatar
@@ -907,10 +919,8 @@ export class CGraphQLClient {
     public OrderFragment = gql`
         fragment OrderFragment on Order {
             id
-            slug
             createDate
             updateDate
-            isEnabled
             status
             cart
             orderTotalPrice
@@ -929,7 +939,6 @@ export class CGraphQLClient {
             currency
         }
     `;
-
 
     public getOrders = this.createGetMany<TOrder>('Order', this.OrderFragment, 'OrderFragment');
     public getOrderById = this.createGetById<TOrder>('Order', this.OrderFragment, 'OrderFragment');
@@ -983,6 +992,9 @@ export class CGraphQLClient {
             updateDate
             pageTitle
             pageDescription
+            meta {
+                keywords
+            }
             isEnabled
             name
             color

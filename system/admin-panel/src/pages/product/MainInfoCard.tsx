@@ -1,11 +1,12 @@
 import { resolvePageRoute, serviceLocator, TAttributeProductVariant, TProduct } from '@cromwell/core';
 import { TextField } from '@material-ui/core';
+import { Autocomplete } from '@material-ui/lab';
 import React, { useEffect, useRef } from 'react';
 
 import GalleryPicker from '../../components/galleryPicker/GalleryPicker';
+import { getEditorData, getEditorHtml, initTextEditor } from '../../helpers/editor/editor';
 import { useForceUpdate } from '../../helpers/forceUpdate';
 import { NumberFormatCustom } from '../../helpers/NumberFormatCustom';
-import { getEditorData, getEditorHtml, initTextEditor } from '../../helpers/editor/editor';
 import { editorId, TInfoCardRef } from './Product';
 import styles from './Product.module.scss';
 
@@ -161,6 +162,29 @@ const MainInfoCard = (props: {
                     value={(product as TProduct).pageDescription ?? ''}
                     className={styles.textField}
                     onChange={(e) => { handleChange('pageDescription', e.target.value) }}
+                />
+            )}
+            {props.isProductVariant !== true && (
+                <Autocomplete
+                    multiple
+                    freeSolo
+                    options={[]}
+                    className={styles.textField}
+                    value={((product as TProduct).meta?.keywords ?? []) as any}
+                    getOptionLabel={(option) => option}
+                    onChange={(e, newVal) => {
+                        handleChange('meta', {
+                            ...((product as TProduct).meta ?? {}),
+                            keywords: newVal
+                        })
+                    }}
+                    renderInput={(params) => (
+                        <TextField
+                            {...params}
+                            variant="outlined"
+                            label="Meta keywords"
+                        />
+                    )}
                 />
             )}
         </div>

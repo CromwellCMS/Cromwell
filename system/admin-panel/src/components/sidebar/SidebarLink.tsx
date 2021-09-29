@@ -54,9 +54,7 @@ const SidebarLink = (props: {
     }
 
     let head = (
-        <MenuItem
-            className={styles.linkHead}
-        >
+        <MenuItem className={styles.linkHead}>
             <div className={styles.linkHeadContent}>
                 <div className={styles.sidebarlinkIcon}>{props.data.icon}</div>
                 <p>{props.data.title}</p>

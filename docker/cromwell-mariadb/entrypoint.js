@@ -72,7 +72,7 @@ const main = async () => {
     });
 
     spawnSync(`/usr/sbin/nginx -c /app/nginx.conf`, spawnOpts);
-    spawn(`npx crw s ${isNew ? '--init' : ''}`, spawnOpts);
+    spawn(`npx crw s`, spawnOpts);
 }
 
 main();

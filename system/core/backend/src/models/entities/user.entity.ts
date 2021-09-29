@@ -22,7 +22,7 @@ export class User extends BasePageEntity implements TUser {
     avatar?: string;
 
     @Field(() => String, { nullable: true })
-    @Column({ type: "varchar", nullable: true, length: 6000 })
+    @Column({ type: "text", nullable: true })
     bio?: string;
 
     @Field(() => String, { nullable: true })

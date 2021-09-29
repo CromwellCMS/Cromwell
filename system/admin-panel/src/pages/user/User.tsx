@@ -40,7 +40,7 @@ export default function UserPage() {
         let data: TUser | undefined;
         try {
             data = await client?.getUserById(id);
-        } catch (e) { console.log(e) }
+        } catch (e) { console.error(e) }
 
         return data;
     }

@@ -64,6 +64,11 @@ export const handleBaseInput = (entity: TBasePageEntity, input: TBasePageEntityI
     entity.pageTitle = input.pageTitle;
     entity.pageDescription = input.pageDescription;
     entity.isEnabled = input.isEnabled;
+    if (input.meta) {
+        entity.meta = {
+            keywords: input.meta?.keywords
+        }
+    }
 }
 
 export const checkEntitySlug = async <T extends BasePageEntity>(entity: T, EntityClass: new (...args: any[]) => T): Promise<T> => {

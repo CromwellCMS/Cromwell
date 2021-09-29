@@ -25,15 +25,15 @@ export class RendererService {
 
     private authSettings: TAuthSettings;
 
-    constructor() {
-        this.init();
-    }
-
-    private async init() {
-        this.authSettings = await getAuthSettings();
+    private async loadSettings() {
+        if (!this.authSettings) {
+            this.authSettings = await getAuthSettings();
+        }
     }
 
     public async getRendererData(pageRoute: string) {
+        await this.loadSettings();
+
         const allConfigs = await getThemeConfigs();
         const [pageConfig, pagesInfo] = await Promise.all([
             this.themeService.getPageConfig(pageRoute, allConfigs),
@@ -64,6 +64,7 @@ export class RendererService {
         input?: any;
         headers?: Record<string, string>;
     }) {
+        await this.loadSettings();
         const baseUrl = serviceLocator.getFrontendUrl();
         const input = options?.input;
         const url = `${baseUrl}/${route}`;

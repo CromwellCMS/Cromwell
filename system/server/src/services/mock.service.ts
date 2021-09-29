@@ -24,6 +24,7 @@ import cryptoRandomString from 'crypto-random-string';
 import nameGenerator from 'project-name-generator';
 import { Service } from 'typedi';
 import { getCustomRepository } from 'typeorm';
+import { resetAllPagesCache } from '../helpers/reset-page';
 
 @Injectable()
 @Service()
@@ -134,6 +135,7 @@ export class MockService {
         await this.mockProducts();
         await this.mockReviews();
         await this.mockOrders();
+        resetAllPagesCache();
 
         return true;
     }
