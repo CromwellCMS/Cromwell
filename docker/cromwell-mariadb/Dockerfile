@@ -1,14 +1,14 @@
-# syntax=docker/dockerfile:1
 FROM mariadb:latest
 
 COPY ./cromwell-mariadb /app
 COPY ./nginx.conf /app/nginx.conf
 
-RUN apt update && apt install nginx curl -y \
+RUN apt update && apt install nginx curl python -y \
     && curl -sL https://deb.nodesource.com/setup_14.x -o nodesource_setup.sh \
     && bash nodesource_setup.sh \
-    && apt install nodejs -y \
-    && mkdir -p /.cromwell/nginx \
+    && apt install nodejs -y
+
+RUN mkdir -p /.cromwell/nginx \
     && mkdir -p /run/nginx \
     && npm i @cromwell/cli -g \
     && crw create app \
