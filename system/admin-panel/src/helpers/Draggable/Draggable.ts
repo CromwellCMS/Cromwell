@@ -498,7 +498,8 @@ export class Draggable {
                 const parent = block.parentElement;
                 if (parent) {
                     if (parent === this.options.rootElement) return;
-                    if (this.draggableBlocks.includes(parent)) parent.style.zIndex = '1005';
+                    if (this.draggableBlocks.includes(parent) && this.options.applyZIndex)
+                        parent.style.zIndex = '1005';
                     styleParent(parent);
                 }
             }

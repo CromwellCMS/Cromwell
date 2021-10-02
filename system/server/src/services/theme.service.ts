@@ -62,22 +62,7 @@ export class ThemeService {
     }
 
     private async init() {
-        await sleep(1);
         if (!getConnection()?.isConnected) return;
-
-        const entities = await this.getAll();
-        for (const entity of entities) {
-            if (await this.getIsUpdating(entity.name)) {
-                // Limit updating time in case if previous server instance
-                // crashed and was unable to set isUpdating to false
-                setTimeout(async () => {
-                    if (await this.getIsUpdating(entity.name)) {
-                        logger.error(`Server: ${entity.name} is still updating after minute of running a new server instance. Setting isUpdating to false`);
-                        await this.setIsUpdating(entity.name, false);
-                    }
-                }, 60000);
-            }
-        }
     }
 
     async findOne(themeName: string): Promise<TThemeEntity | undefined> {
@@ -103,29 +88,6 @@ export class ThemeService {
         const themeRepo = getCustomRepository(GenericTheme.repository);
         return themeRepo.find();
     }
-
-    private async setIsUpdating(name: string, updating: boolean) {
-        try {
-            const repo = getCustomRepository(GenericTheme.repository);
-            const entity = await this.findOne(name);
-            if (entity) {
-                entity.isUpdating = updating;
-                await repo.save(entity);
-            }
-        } catch (error) {
-            logger.error(error);
-        }
-    }
-
-    private async getIsUpdating(name: string) {
-        try {
-            return (await this.findOne(name))?.isUpdating;
-        } catch (error) {
-            logger.error(error);
-        }
-        return false;
-    }
-
 
     /**
     * Asynchronously saves user's theme config by theme name from cmsConfig
@@ -649,11 +611,12 @@ export class ThemeService {
 
 
     async handleThemeUpdate(themeName: string): Promise<boolean> {
-        if (await this.getIsUpdating(themeName)) return false;
-
+        if (await this.cmsService.getIsRunningNpm()) {
+            throw new HttpException('Only one install/update available at the time', HttpStatus.METHOD_NOT_ALLOWED);
+        }
+        await this.cmsService.setIsRunningNpm(true);
         const transactionId = getRandStr(8);
         startTransaction(transactionId);
-        await this.setIsUpdating(themeName, true);
 
         let success = false;
         let error: any;
@@ -665,9 +628,9 @@ export class ThemeService {
         }
 
         if (success) await this.cmsService.installModuleDependencies(themeName);
-        await this.setIsUpdating(themeName, false);
 
         endTransaction(transactionId);
+        await this.cmsService.setIsRunningNpm(false);
 
         if (!success) {
             throw new HttpException(error?.message, error?.status);
@@ -731,6 +694,10 @@ export class ThemeService {
 
 
     async handleInstallTheme(themeName: string): Promise<boolean> {
+        if (await this.cmsService.getIsRunningNpm()) {
+            throw new HttpException('Only one install/update available at the time', HttpStatus.METHOD_NOT_ALLOWED);
+        }
+        await this.cmsService.setIsRunningNpm(true);
         const transactionId = getRandStr(8);
         startTransaction(transactionId);
 
@@ -745,6 +712,7 @@ export class ThemeService {
 
         if (success) await this.cmsService.installModuleDependencies(themeName);
 
+        await this.cmsService.setIsRunningNpm(false);
         endTransaction(transactionId);
 
         if (!success) {
@@ -774,9 +742,10 @@ export class ThemeService {
 
 
     async handleDeleteTheme(name: string): Promise<boolean> {
-        if (await this.getIsUpdating(name)) return false;
-
-        await this.setIsUpdating(name, true);
+        if (await this.cmsService.getIsRunningNpm()) {
+            throw new HttpException('Only one install/update available at the time', HttpStatus.METHOD_NOT_ALLOWED);
+        }
+        await this.cmsService.setIsRunningNpm(true);
         const transactionId = getRandStr(8);
         startTransaction(transactionId);
 
@@ -788,7 +757,7 @@ export class ThemeService {
             error = e;
             success = false;
         }
-        await this.setIsUpdating(name, false);
+        await this.cmsService.setIsRunningNpm(false);
         endTransaction(transactionId);
 
         if (!success) {
