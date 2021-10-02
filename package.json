@@ -63,5 +63,6 @@
     },
     "devDependencies": {
         "lerna": "^4.0.0"
-    }
+    },
+    "circleci-cache-version": "8; modify this string to reset circleci cache"
 }

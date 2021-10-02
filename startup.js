@@ -1,6 +1,13 @@
 const { spawnSync, spawn } = require("child_process");
 const resolve = require('path').resolve;
-const fs = require('fs');
+
+let fs;
+try {
+    fs = require('fs-extra');
+} catch (error) {
+    spawnSync(`npm i fs-extra --no-save --no-package-lock`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
+    fs = require('fs-extra');
+}
 
 (async () => {
 
@@ -38,6 +45,16 @@ const fs = require('fs');
     // Check node_modules
     if ((!hasNodeModules() || scriptName === 'build') && !noInstall) {
         spawnSync(`npm i --workspaces --force`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
+
+        // For some reason npm duplicates @nestjs packages which leads to
+        // multiple instances in one app, so Server unable to compile and run.
+        // Clean them manually
+        try {
+            fs.removeSync(resolve(projectRootDir, 'system/core/backend/node_modules'));
+            fs.removeSync(resolve(projectRootDir, 'system/server/node_modules'));
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     // Build core

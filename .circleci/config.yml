@@ -10,7 +10,7 @@ jobs:
 
       - restore_cache:
           keys:
-            - cache-v3
+            - cache-v4-{{ checksum "package.json" }}
 
       - run:
           name: Git reset source code
@@ -26,7 +26,7 @@ jobs:
             NODE_OPTIONS: --max_old_space_size=4096
 
       - save_cache:
-          key: cache-v3
+          key: cache-v4-{{ checksum "package.json" }}
           paths:
             - node_modules
             - package-lock.json
