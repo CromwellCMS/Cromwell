@@ -39,7 +39,10 @@ async function main(): Promise<void> {
                 });
             } else {
                 res.writeHead(500, { 'Content-Type': 'text/plain' });
-                res.end({ message: 'Proxy: Server is down' });
+                res.end(JSON.stringify({
+                    message: 'INTERNAL SERVER ERROR. Proxy: Server is down',
+                    code: 500,
+                }, null, 2));
             }
         }
 
@@ -60,10 +63,9 @@ async function main(): Promise<void> {
         }
     });
 
-    server.on("error", err => logger.log(err));
-
     await launchServerManager(argsPort, args.init);
 
+    server.on("error", err => logger.log(err));
     await server.listen(port);
     logger.info(`Proxy Server is running on: http://localhost:${port}`);
 

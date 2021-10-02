@@ -29,12 +29,11 @@ Below listed core services with default settings (ports at localhost address can
 ### 1. API Server and Proxy
 - Path - system/server
 - NPM Module - @cromwell/server
-- Url main - http://localhost:4016
-- Url extension - http://localhost:4032
+- Url - http://localhost:4016
 - Run command - `npx crw s --sv s`
 
 API server and Proxy. That's two servers in one service.  
-Proxy server handles all incoming requests and distributes them for other services. So all services of CMS will be available at http://localhost:4016 in development.  In production it's recommended to setup Nginx config to proxy services instead. CMS goes with configured Nginx config for this purpose.
+Proxy server handles all incoming requests and distributes them for other services. So all services of CMS will be available at http://localhost:4016 in development. In production it's recommended to setup Nginx config to proxy services instead. CMS goes with configured Nginx config for this purpose.
 Proxy manages API Server, that's how [`safe reloads`](https://cromwellcms.com/docs/development/plugin-development#how-exported-extensions-will-be-applied-in-the-production-server) are working.
 
 API Server Implements REST API for transactions or internal usage and GraphQL API for data flow. Uses Fastify and Nest.js
