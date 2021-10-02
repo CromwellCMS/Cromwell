@@ -63,22 +63,7 @@ export class PluginService {
     }
 
     private async init() {
-        await sleep(1);
         if (!getConnection()?.isConnected) return;
-
-        const entities = await this.getAll();
-        for (const entity of entities) {
-            if (await this.getIsUpdating(entity.name)) {
-                // Limit updating time in case if previous server instance
-                // crashed and was unable to set isUpdating to false
-                setTimeout(async () => {
-                    if (await this.getIsUpdating(entity.name)) {
-                        logger.error(`Server: ${entity.name} is still updating after minute of running a new server instance. Setting isUpdating to false`);
-                        await this.setIsUpdating(entity.name, false);
-                    }
-                }, 60000);
-            }
-        }
     }
 
     public async findOne(pluginName: string): Promise<TPluginEntity | undefined> {
@@ -99,29 +84,6 @@ export class PluginService {
         const pluginRepo = getCustomRepository(GenericPlugin.repository);
         return pluginRepo.find();
     }
-
-    private async setIsUpdating(pluginName: string, updating: boolean) {
-        try {
-            const pluginRepo = getCustomRepository(GenericPlugin.repository);
-            const entity = await this.findOne(pluginName);
-            if (entity) {
-                entity.isUpdating = updating;
-                await pluginRepo.save(entity);
-            }
-        } catch (error) {
-            logger.error(error);
-        }
-    }
-
-    private async getIsUpdating(pluginName: string) {
-        try {
-            return (await this.findOne(pluginName))?.isUpdating;
-        } catch (error) {
-            logger.error(error);
-        }
-        return false;
-    }
-
 
     /**
      * Reads files of a plugin in frontend or admin directory.
@@ -204,11 +166,12 @@ export class PluginService {
     }
 
     async handlePluginUpdate(pluginName: string): Promise<boolean> {
-        if (await this.getIsUpdating(pluginName)) return false;
-
+        if (await this.cmsService.getIsRunningNpm()) {
+            throw new HttpException('Only one install/update available at the time', HttpStatus.METHOD_NOT_ALLOWED);
+        }
+        await this.cmsService.setIsRunningNpm(true);
         const transactionId = getRandStr(8);
         startTransaction(transactionId);
-        await this.setIsUpdating(pluginName, true);
 
         let success = false;
         let error: any;
@@ -220,7 +183,7 @@ export class PluginService {
         }
 
         if (success) await this.cmsService.installModuleDependencies(pluginName);
-        await this.setIsUpdating(pluginName, false);
+        await this.cmsService.setIsRunningNpm(false);
 
         endTransaction(transactionId);
 
@@ -282,8 +245,10 @@ export class PluginService {
 
 
     async handleInstallPlugin(pluginName: string): Promise<boolean> {
-        if (await this.getIsUpdating(pluginName)) return false;
-
+        if (await this.cmsService.getIsRunningNpm()) {
+            throw new HttpException('Only one install/update available at the time', HttpStatus.METHOD_NOT_ALLOWED);
+        }
+        await this.cmsService.setIsRunningNpm(true);
         const transactionId = getRandStr(8);
         startTransaction(transactionId);
 
@@ -299,6 +264,7 @@ export class PluginService {
         if (success) await this.cmsService.installModuleDependencies(pluginName);
 
         endTransaction(transactionId);
+        await this.cmsService.setIsRunningNpm(false);
 
         if (!success) {
             logger.error('Failed to install plugin: ', error?.message, error);
@@ -455,12 +421,13 @@ export class PluginService {
 
 
     async handleDeletePlugin(pluginName: string): Promise<boolean> {
-        if (await this.getIsUpdating(pluginName)) return false;
-
+        if (await this.cmsService.getIsRunningNpm()) {
+            throw new HttpException('Only one install/update available at the time', HttpStatus.METHOD_NOT_ALLOWED);
+        }
+        await this.cmsService.setIsRunningNpm(true);
         const transactionId = getRandStr(8);
         startTransaction(transactionId);
-        await this.setIsUpdating(pluginName, true);
-
+        
         let success = false;
         let error: any;
         try {
@@ -469,8 +436,8 @@ export class PluginService {
             error = e;
             success = false;
         }
-        await this.setIsUpdating(pluginName, false);
         endTransaction(transactionId);
+        await this.cmsService.setIsRunningNpm(false);
 
         if (!success) {
             throw new HttpException(error?.message, error?.status);

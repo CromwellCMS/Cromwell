@@ -1,9 +1,9 @@
-# syntax=docker/dockerfile:1
 FROM node:14-alpine
 
 COPY ./cromwell /app
 COPY ./nginx.conf /app/nginx.conf
 
+RUN apk add --no-cache python
 RUN apk add nginx --update-cache \
     && mkdir -p /run/nginx \ 
     && npm i @cromwell/cli -g \

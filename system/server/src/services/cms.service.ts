@@ -97,6 +97,7 @@ export class CmsService {
         this.init();
     }
 
+    private isRunningNpm = false;
     private cpuLoads: {
         time: Date;
         load: number;
@@ -106,32 +107,16 @@ export class CmsService {
         await sleep(1);
         if (!getConnection()?.isConnected) return;
 
-        if (await this.getIsUpdating()) {
-            // Limit updating time in case if previous server instance
-            // crashed and was unable to set isUpdating to false
-            setTimeout(async () => {
-                if (await this.getIsUpdating()) {
-                    logger.error('Server: CMS is still updating after minute of running a new server instance. Setting isUpdating to false');
-                    await this.setIsUpdating(false);
-                }
-            }, 60000);
-        }
-
         // Schedule sitemap re-build once in a day
         setInterval(() => this.buildSitemap, 1000 * 60 * 60 * 24);
     }
 
-    private async setIsUpdating(isUpdating: boolean) {
-        const entity = await getCmsEntity();
-        entity.internalSettings = {
-            ...(entity.internalSettings ?? {}),
-            isUpdating,
-        }
-        await entity.save();
+    public async getIsRunningNpm() {
+        return this.isRunningNpm;
     }
 
-    private async getIsUpdating() {
-        return (await getCmsEntity())?.internalSettings?.isUpdating;
+    public async setIsRunningNpm(isRunning) {
+        this.isRunningNpm = isRunning;
     }
 
     public async setThemeName(themeName: string) {
@@ -743,8 +728,10 @@ ${content}
     async handleUpdateCms() {
         const transactionId = getRandStr(8);
         startTransaction(transactionId);
-        if (await this.getIsUpdating()) return false;
-        this.setIsUpdating(true);
+        if (await this.getIsRunningNpm()) {
+            throw new HttpException('Only one install/update available at the time', HttpStatus.METHOD_NOT_ALLOWED);
+        }
+        this.setIsRunningNpm(true);
 
         let success = false;
         let error: any;
@@ -754,7 +741,7 @@ ${content}
             error = err;
         }
 
-        await this.setIsUpdating(false);
+        await this.setIsRunningNpm(false);
         endTransaction(transactionId);
 
         if (!success) {

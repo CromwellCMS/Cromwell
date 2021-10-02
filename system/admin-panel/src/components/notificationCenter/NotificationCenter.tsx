@@ -1,11 +1,11 @@
 import { getRestApiClient } from '@cromwell/core-frontend';
 import { Grid, IconButton, LinearProgress, Popover, Tooltip } from '@material-ui/core';
 import {
+    HelpOutline as HelpOutlineIcon,
     NotificationImportant as NotificationImportantIcon,
     NotificationsNone as NotificationsNoneIcon,
     Update as UpdateIcon,
 } from '@material-ui/icons';
-import { HelpOutline as HelpOutlineIcon } from '@material-ui/icons';
 import { Alert, AlertProps } from '@material-ui/lab';
 import clsx from 'clsx';
 import React, { useRef, useState } from 'react';
@@ -13,8 +13,10 @@ import { connect, PropsType } from 'react-redux-ts';
 
 import { updateStatus } from '../../redux/helpers';
 import { store, TAppState } from '../../redux/store';
+import { toast } from '../toast/toast';
 import styles from './NotificationCenter.module.scss';
 import UpdateInfoCard from './UpdateInfoCard';
+import { askConfirmation } from '../modal/Confirmation';
 
 
 const mapStateToProps = (state: TAppState) => {
@@ -55,13 +57,25 @@ function NotificationCenter(props: TPropsType) {
             }
         });
 
+        let success = false;
         try {
-            await client.launchCmsUpdate();
+            success = await client.launchCmsUpdate();
         } catch (error) {
             console.error(error);
         }
-
         await updateStatus();
+
+        if (success) {
+            toast.success('CMS updated');
+            const confirm = await askConfirmation({
+                title: `CMS has been updated. Please reload this page to apply changes`,
+            });
+            if (confirm) {
+                window.location.reload();
+            }
+        }
+        else toast.error('Failed to update CMS');
+
     }
 
 

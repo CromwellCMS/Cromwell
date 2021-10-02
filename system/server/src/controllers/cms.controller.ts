@@ -47,6 +47,7 @@ import { CmsService } from '../services/cms.service';
 import { MigrationService } from '../services/migration.service';
 import { PluginService } from '../services/plugin.service';
 import { ThemeService } from '../services/theme.service';
+import { resetAllPagesCache } from '../helpers/reset-page';
 
 const logger = getLogger();
 
@@ -109,7 +110,9 @@ export class CmsController {
         type: AdminCmsConfigDto,
     })
     async updateCmsSettings(@Body() input: AdminCmsConfigDto): Promise<AdminCmsConfigDto | undefined> {
-        return this.cmsService.updateCmsSettings(input);
+        const settings = await this.cmsService.updateCmsSettings(input);
+        resetAllPagesCache();
+        return settings;
     }
 
 
@@ -297,7 +300,9 @@ export class CmsController {
         if (config.installed)
             throw new HttpException('CmsController::setUp CMS already installed', HttpStatus.BAD_REQUEST);
 
-        return await this.cmsService.installCms(input);
+        const res = await this.cmsService.installCms(input);
+        resetAllPagesCache();
+        return res;
     }
 
 
@@ -558,6 +563,7 @@ export class CmsController {
             logger.error(error);
             throw new HttpException(String(error), HttpStatus.INTERNAL_SERVER_ERROR);
         }
+        resetAllPagesCache();
     }
 
 

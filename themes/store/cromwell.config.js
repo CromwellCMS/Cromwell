@@ -154,6 +154,39 @@ module.exports = {
             title: "checkout page",
         },
         {
+            id: "pages/faq",
+            route: "pages/faq",
+            name: "FAQ",
+            title: "FAQ",
+            isVirtual: true,
+            modifications: [
+                {
+                    "id": "faq_content",
+                    "jsxParentId": "PagesGenericPage_content",
+                    "type": "editor",
+                    "isVirtual": true,
+                    "style": {
+                        "minWidth": "50px",
+                        "minHeight": "30px",
+                        "backgroundColor": "#ffffff",
+                        "marginBottom": "30px",
+                        "marginTop": "30px",
+                        "paddingTop": "0px",
+                        "paddingBottom": "20px",
+                        "paddingLeft": "20px",
+                        "paddingRight": "20px",
+                        "borderRadius": "9px"
+                    },
+                    "parentId": "PagesGenericPage_content",
+                    "index": 1,
+                    "editor": {
+                        "data": "{\"time\":1630764783219,\"blocks\":[{\"id\":\"R81SLM-otU\",\"type\":\"header\",\"data\":{\"text\":\"FAQ\",\"level\":1}},{\"id\":\"8cX7U93w4F\",\"type\":\"paragraph\",\"data\":{\"text\":\"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\"}},{\"id\":\"9cFps_xNV-\",\"type\":\"list\",\"data\":{\"style\":\"ordered\",\"items\":[\"<b>Lorem ipsum dolor sit amet</b>\",\"<span class=\\\"fontSize\\\" style=\\\"font-size: 16px; line-height: 26px;\\\">Lorem ipsum dolor sit amet</span>\",\"<mark class=\\\"cdx-marker\\\">Lorem ipsum dolor sit amet</mark>\"]}}],\"version\":\"2.22.2\"}",
+                        "html": "<div class=\"codex-editor__redactor\" style=\"\"><div class=\"ce-block\"><div class=\"ce-block__content\"><h1 class=\"ce-header\">FAQ</h1></div></div><div class=\"ce-block\"><div class=\"ce-block__content\"><div class=\"ce-paragraph cdx-block\">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</div></div></div><div class=\"ce-block\"><div class=\"ce-block__content\"><ol class=\"cdx-block cdx-list cdx-list--ordered\"><li class=\"cdx-list__item\"><b>Lorem ipsum dolor sit amet</b></li><li class=\"cdx-list__item\"><span class=\"fontSize\" style=\"font-size: 16px; line-height: 26px;\">Lorem ipsum dolor sit amet</span></li><li class=\"cdx-list__item\"><mark class=\"cdx-marker\">Lorem ipsum dolor sit amet</mark></li></ol></div></div></div>"
+                    }
+                },
+            ]
+        },
+        {
             id: "pages/shipping",
             route: "pages/shipping",
             name: "Shipping and Delivery",

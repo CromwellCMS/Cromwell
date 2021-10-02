@@ -1,6 +1,7 @@
 const { spawnSync, spawn } = require("child_process");
 const resolve = require('path').resolve;
-const fs = require('fs');
+const projectRootDir = process.cwd();
+let fs = require('fs');
 
 (async () => {
 
@@ -18,7 +19,6 @@ const fs = require('fs');
     }
 
 
-    const projectRootDir = process.cwd();
     const coreDir = resolve(projectRootDir, 'system/core');
     const rootNodeModulesDir = resolve(projectRootDir, 'node_modules');
 
@@ -37,8 +37,20 @@ const fs = require('fs');
 
     // Check node_modules
     if ((!hasNodeModules() || scriptName === 'build') && !noInstall) {
-2
         spawnSync(`npm i --workspaces --force`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
+
+        fs = require('fs-extra');
+        // For some reason npm duplicates @nestjs packages which leads to
+        // multiple instances in one app, so Server unable to compile and run.
+        // Clean them manually
+        try {
+            fs.removeSync(resolve(projectRootDir, 'system/core/backend/node_modules'));
+            fs.removeSync(resolve(projectRootDir, 'system/server/node_modules'));
+        } catch (error) {
+            console.error(error);
+        }
+    } else {
+        fs = require('fs-extra');
     }
 
     // Build core
@@ -103,14 +115,12 @@ const fs = require('fs');
     }
 
     // Start system
-    if (scriptName !== 'build') {
-        try {
-            spawn(`node ${managerStartupPath} ${scriptName}`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
-        } catch (e) {
-            console.log(e);
-            console.log('\x1b[31m%s\x1b[0m', 'Cromwell::startup. Manager: Failed to Start system');
-            throw new Error('Failed to Start system');
-        }
+    try {
+        spawn(`node ${managerStartupPath} ${scriptName}`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
+    } catch (e) {
+        console.log(e);
+        console.log('\x1b[31m%s\x1b[0m', 'Cromwell::startup. Manager: Failed to Start system');
+        throw new Error('Failed to Start system');
     }
 
 })();

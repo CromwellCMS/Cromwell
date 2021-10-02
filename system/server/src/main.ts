@@ -73,8 +73,10 @@ async function bootstrap(): Promise<void> {
     });
 
     // REST API
-    const app = await NestFactory.create<NestFastifyApplication>(AppModule,
-        new FastifyAdapter(fastifyInstance as any));
+    const app = await NestFactory.create<NestFastifyApplication>(
+        AppModule,
+        new FastifyAdapter(fastifyInstance as any),
+    );
 
     app.setGlobalPrefix(apiPrefix);
     app.useGlobalFilters(new ExceptionFilter());

@@ -106,7 +106,8 @@ export const getPage = (pageName: TDefaultPageName | string, PageComponent: TCro
         const pageCompProps = forcedChildStaticProps.current ?? childStaticProps;
         const Head = getModuleImporter()?.modules?.['next/head']?.default;
         const pageId = documentContext?.fullUrl ?? resolvedPageRoute as string;
-        const parserTransform = getParserTransform(pageId);
+        const parserTransformHead = getParserTransform(pageId);
+        const parserTransformBody = getParserTransform(pageId, { executeScripts: true });
 
         let favicon = cmsSettings?.favicon;
         if (favicon && favicon !== '') {
@@ -136,14 +137,14 @@ export const getPage = (pageName: TDefaultPageName | string, PageComponent: TCro
                         <PageWrapperComp>
                             <PageComponent {...pageCompProps} {...props} />
                         </PageWrapperComp>
-                        {cmsSettings?.footerHtml && ReactHtmlParser(cmsSettings.footerHtml, { transform: parserTransform })}
-                        {themeFooterHtml && ReactHtmlParser(themeFooterHtml, { transform: parserTransform })}
-                        {pageConfig?.footerHtml && ReactHtmlParser(pageConfig?.footerHtml, { transform: parserTransform })}
+                        {cmsSettings?.footerHtml && ReactHtmlParser(cmsSettings.footerHtml, { transform: parserTransformBody })}
+                        {themeFooterHtml && ReactHtmlParser(themeFooterHtml, { transform: parserTransformBody })}
+                        {pageConfig?.footerHtml && ReactHtmlParser(pageConfig?.footerHtml, { transform: parserTransformBody })}
                     </CContainer>
                 </RootComp>
                 <Head>
-                    {themeHeadHtml && ReactHtmlParser(themeHeadHtml, { transform: parserTransform })}
-                    {cmsSettings?.headHtml && ReactHtmlParser(cmsSettings.headHtml, { transform: parserTransform })}
+                    {themeHeadHtml && ReactHtmlParser(themeHeadHtml, { transform: parserTransformHead })}
+                    {cmsSettings?.headHtml && ReactHtmlParser(cmsSettings.headHtml, { transform: parserTransformHead })}
                     {title && (
                         <>
                             <title>{title}</title>
@@ -161,7 +162,7 @@ export const getPage = (pageName: TDefaultPageName | string, PageComponent: TCro
                             <meta name="keywords" content={keywords.join(',')} />
                         </>
                     )}
-                    {pageConfig?.headHtml && ReactHtmlParser(pageConfig?.headHtml, { transform: parserTransform })}
+                    {pageConfig?.headHtml && ReactHtmlParser(pageConfig?.headHtml, { transform: parserTransformHead })}
                 </Head>
             </>
         );

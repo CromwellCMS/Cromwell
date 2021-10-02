@@ -241,7 +241,7 @@ class SettingsPage extends React.Component<any, {
         const isExpanded = !!this.state.expandedItems[props.title];
 
         return (
-            <div className={styles.category}>
+            <div className={styles.category} key={props.title}>
                 <div className={styles.categoryHeaderWrapper}
                     onClick={() => this.setState(prevState => {
                         return {

@@ -17,7 +17,7 @@ export class CHTML extends React.Component<CHTMLProps> {
                     let content = children;
                     if (data?.html?.innerHTML) {
                         content = ReactHtmlParser(data.html.innerHTML, {
-                            transform: getParserTransform(data.id)
+                            transform: getParserTransform(data.id, { executeScripts: true })
                         });
                         cleanParseContext(data.id);
                     }

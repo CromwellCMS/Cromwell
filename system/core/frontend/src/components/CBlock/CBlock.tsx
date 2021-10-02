@@ -12,17 +12,16 @@ import React, { Component, useEffect } from 'react';
 
 import {
     BlockContentConsumer,
-    getBlockHtmlType,
     blockCssClass,
-    getHtmlPluginBlockName,
     getBlockHtmlId,
-    getDynamicLoader,
+    getBlockHtmlType,
+    getHtmlPluginBlockName,
 } from '../../constants';
 import { useForceUpdate } from '../../helpers/forceUpdate';
 import { CContainer } from '../CContainer/CContainer';
+import { CEditor } from '../CEditor/CEditor';
 import { CGallery } from '../CGallery/CGallery';
 import { CHTML } from '../CHTML/CHTML';
-import { CEditor } from '../CEditor/CEditor';
 import { CImage } from '../CImage/CImage';
 import { CPlugin } from '../CPlugin/CPlugin';
 import { CText } from '../CText/CText';
@@ -39,12 +38,12 @@ export class CBlock<TContentBlock = React.Component> extends
     private hasBeenMoved?: boolean = false;
     private blockRef = React.createRef<HTMLDivElement>();
     private movedBlockRef = React.createRef<HTMLDivElement>();
-    private childResolvers: Record<string, ((block: TCromwellBlock) => void) | undefined> = {};
-    private childPromises: Record<string, (Promise<TCromwellBlock>) | undefined> = {};
     private rerenderResolver?: (() => void | undefined);
     private rerenderPromise: Promise<void> | undefined;
     private unmounted: boolean = false;
     public movedCompForceUpdate?: () => void;
+    private childStubsInfo: Record<string, number> = {};
+    private childBlockStubsJsx: React.ReactNode[] = [];
 
     private didUpdateListeners: Record<string, (() => void)> = {};
 
@@ -64,7 +63,7 @@ export class CBlock<TContentBlock = React.Component> extends
 
         let instances = getStoreItem('blockInstances');
         if (!instances) instances = {}
-        instances[this.props.id] = this as TCromwellBlock;
+        instances[this.props.id] = this as any;
         setStoreItem('blockInstances', instances);
 
         this.readConfig();
@@ -72,7 +71,7 @@ export class CBlock<TContentBlock = React.Component> extends
         if (this.data?.parentId && this.hasBeenMoved) {
             const parentInst = this.getBlockInstance(this.data?.parentId);
             if (parentInst) {
-                parentInst.notifyChildRegistered(this as TCromwellBlock);
+                parentInst.notifyChildRegistered(this as any);
             }
         }
 
@@ -109,11 +108,6 @@ export class CBlock<TContentBlock = React.Component> extends
             this.rerenderResolver();
             this.rerenderResolver = undefined;
             this.rerenderPromise = undefined;
-        }
-
-        const childPromises = Object.values(this.childPromises).filter(p => Boolean(p?.then));
-        if (childPromises.length > 0) {
-            await Promise.all(childPromises);
         }
 
         Object.values(this.didUpdateListeners).forEach(func => func());
@@ -222,59 +216,57 @@ export class CBlock<TContentBlock = React.Component> extends
     }
 
 
-    public notifyChildRegistered(inst) {
-        const id = inst.getData()?.id;
-        if (id) {
-            const resolver = this.childResolvers[id];
-            if (resolver) {
-                this.childResolvers[id] = undefined;
-                this.childPromises[id] = undefined;
-                resolver(inst);
+    public notifyChildRegistered(childInst) {
+        const childId = childInst.getData()?.id;
+        if (!childId) return;
+        if (this.childStubsInfo[childId] !== undefined) {
+            // Replace stub by child's content
+            const MovedComp = () => {
+                childInst.movedCompForceUpdate = useForceUpdate();
+                useEffect(() => {
+                    this.componentDidUpdate();
+                }, []);
+                return childInst.consumerRender();
             }
+            this.childBlockStubsJsx[this.childStubsInfo[childId]] = (
+                <MovedComp key={childId + 'movedComp'} />
+            );
         }
     }
 
     public getChildBlocks(): React.ReactNode[] {
-        const data = this.getData();
         this.childBlocks = this.childBlocks.sort((a, b) => (a?.index ?? 0) - (b?.index ?? 0));
 
-        return this.childBlocks.map(block => {
+        this.childBlockStubsJsx = this.childBlocks.map((block, index) => {
             if (block.isVirtual) {
                 return this.getVirtualBlock(block);
             }
 
             const blockInst = this.getBlockInstance(block.id);
+
+            // Works only for initialized components at the time of render of this component.
+            // If some JSX component was moved from other place as child of this
+            // and at time of execution wasn't constructed by React, then
+            // `blockInst` will be `undefined` and nothing will return at the first render,
             if (blockInst) {
                 const MovedComp = () => {
                     blockInst.movedCompForceUpdate = useForceUpdate();
                     useEffect(() => {
                         this.componentDidUpdate();
                     }, []);
-                    return blockInst.consumerRender(data?.id);
+                    return blockInst.consumerRender();
                 }
                 return <MovedComp key={block.id + 'movedComp'} />
 
             } else {
-                // Child wasn't initialized yet. Wait until it registers in the store 
-                // and notifies this parent component
-                const childPromise = new Promise<TCromwellBlock>(done => {
-                    this.childResolvers[block.id] = done;
-                });
-                this.childPromises[block.id] = childPromise;
-
-                const DynamicComp = getDynamicLoader()(async (): Promise<React.ComponentType> => {
-                    const child = await childPromise;
-                    return () => {
-                        child.movedCompForceUpdate = useForceUpdate();
-                        useEffect(() => {
-                            this.componentDidUpdate();
-                        }, []);
-                        return child.consumerRender(data?.id) ?? <></>;
-                    }
-                });
-                return <DynamicComp key={block.id + 'dynamicComp'} />;
+                // Otherwise return stub for now, when child will be constructed, it will
+                // notify parent and parent will replace stub jsx by child's jsx in  
+                // `notifyChildRegistered` method
+                this.childStubsInfo[block.id] = index;
+                return <></>
             }
-        }).filter(Boolean);
+        });
+        return this.childBlockStubsJsx;
     }
 
     public getDefaultContent(setClasses?: (classes: string) => void): React.ReactNode | null {
@@ -314,7 +306,7 @@ export class CBlock<TContentBlock = React.Component> extends
         let customBlockClasses;
         const getCustomClasses = (classes: string) => customBlockClasses = classes;
 
-        const blockContent = getContent ? getContent(this as TCromwellBlock) : this.getDefaultContent(getCustomClasses);
+        const blockContent = getContent ? getContent(this as any) : this.getDefaultContent(getCustomClasses);
 
         const elementClassName = blockCssClass
             + (this.data && this.data.type ? ' ' + getBlockHtmlType(this.data.type) : '')
@@ -397,10 +389,7 @@ export class CBlock<TContentBlock = React.Component> extends
         // console.log('CBlock::render id: ' + this.props.id, this.hasBeenMoved, this.getData());
 
         if (this.hasBeenMoved) {
-            // For some reason React copies properties of this block to next one if we return <></> or null here
-            // Test case: jsx container with 2 jsx elements and 4 virtual. First 2 virtual blocks will have 
-            // id and className copied from 2 jsx, content might be messed up from both blocks
-            return <div ref={this.movedBlockRef} key={this.htmlId + '_stub'} style={{ display: 'none' }}></div>;
+            return null;
         }
         return <React.Fragment key={this.htmlId + '_render'}>{this.consumerRender()}</React.Fragment>
     }
