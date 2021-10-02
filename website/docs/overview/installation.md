@@ -12,10 +12,12 @@ The most simple way to deploy the CMS is to run it inside a Docker container. Ou
 
 After installation run a single command in your terminal / command prompt to create and run a container:
 ```sh
-docker run -d -p 80:80 --name my-website cromwell-mariadb:latest
+docker run -d -p 80:80 --name my-website cromwellcms/cromwell-mariadb:latest
 ```
 Open http://127.0.0.1/ if you installed locally or your web-server IP address in a web browser. For the first time system needs to run some configuration scripts, so it will be up and running under one minute.    
 Open http://127.0.0.1/admin to see the admin panel.  
+
+Note that you can use `localhost:port` only in development, for production or local docker container open `127.0.0.1:port`.  
 
 Stop the container: 
 ```
@@ -65,7 +67,7 @@ services:
     restart: unless-stopped
 
   cromwell:
-    image: cromwell:latest
+    image: cromwellcms/cromwell:latest
     container_name: cromwell_container
     depends_on:
       - db
@@ -102,11 +104,6 @@ Open http://127.0.0.1/ in a web browser to see your website.
 Open http://127.0.0.1/admin to see the admin panel.  
 Open http://127.0.0.1:8081 to see phpMyAdmin. 
 
-
-Stop all services and remove containers:
-```sh
-docker-compose down
-```
 
 #### Working directories
 As you can see in your current directory appeared new files:

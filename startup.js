@@ -115,12 +115,14 @@ let fs = require('fs');
     }
 
     // Start system
-    try {
-        spawn(`node ${managerStartupPath} ${scriptName}`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
-    } catch (e) {
-        console.log(e);
-        console.log('\x1b[31m%s\x1b[0m', 'Cromwell::startup. Manager: Failed to Start system');
-        throw new Error('Failed to Start system');
+    if (scriptName !== 'build') {
+        try {
+            spawn(`node ${managerStartupPath} ${scriptName}`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
+        } catch (e) {
+            console.log(e);
+            console.log('\x1b[31m%s\x1b[0m', 'Cromwell::startup. Manager: Failed to Start system');
+            throw new Error('Failed to Start system');
+        }
     }
 
 })();
