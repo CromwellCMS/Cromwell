@@ -64,22 +64,18 @@ module.exports = {
                 title: 'Pages',
                 sublinks: [
                     {
-                        title: "About us",
-                        href: '/about_us'
-                    },
-                    {
                         title: "Contact us",
-                        href: '/contact_us'
+                        href: '/pages/contact-us'
                     },
                     {
                         title: "FAQ",
-                        href: '/faq'
+                        href: '/pages/faq'
                     }
                 ]
             },
             {
                 title: "Sale!",
-                href: '/sale'
+                href: '/category/1'
             },
             {
                 title: 'Blog',

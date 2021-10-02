@@ -1,5 +1,6 @@
 const { spawnSync, spawn } = require("child_process");
 const resolve = require('path').resolve;
+const projectRootDir = process.cwd();
 
 let fs;
 try {
@@ -25,7 +26,6 @@ try {
     }
 
 
-    const projectRootDir = process.cwd();
     const coreDir = resolve(projectRootDir, 'system/core');
     const rootNodeModulesDir = resolve(projectRootDir, 'node_modules');
 
