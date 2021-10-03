@@ -1,6 +1,7 @@
-import { ReactElement } from "react";
+import { isServer } from '@cromwell/core';
+import { DomElement } from 'htmlparser2';
+import { ReactElement } from 'react';
 import React from 'react';
-import { DomElement } from "htmlparser2";
 
 const context: Record<string, {
     index: number;
@@ -14,15 +15,17 @@ const ScriptTag = (props: {
 }) => {
     let scriptTag: HTMLScriptElement;
 
-    React.useLayoutEffect(() => {
-        scriptTag = document.createElement('script');
-        scriptTag.type = 'text/javascript';
+    if (!isServer()) {
+        React.useLayoutEffect(() => {
+            scriptTag = document.createElement('script');
+            scriptTag.type = 'text/javascript';
 
-        if (props.content) scriptTag.text = props.content;
-        if (props.src) scriptTag.src = props.src;
+            if (props.content) scriptTag.text = props.content;
+            if (props.src) scriptTag.src = props.src;
 
-        document.body.appendChild(scriptTag);
-    });
+            document.body.appendChild(scriptTag);
+        });
+    }
 
     React.useEffect(() => {
         return () => {

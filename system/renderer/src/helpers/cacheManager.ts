@@ -9,7 +9,6 @@ import LRUCache from 'lru-cache';
 import { IncrementalCacheValue } from 'next/dist/server/incremental-cache';
 import { NextServer as _NextServer } from 'next/dist/server/next';
 import _Server from 'next/dist/server/next-server';
-import fetch from 'node-fetch';
 import normalizePath from 'normalize-path';
 import { join, resolve } from 'path';
 
@@ -126,15 +125,10 @@ const purgeEntireCache = async (options: ManagerOptions) => {
             }));
             await sleep(0.05);
         }
-
+        cache.prune();
         cache.reset();
         await sleep(0.05);
 
-        try {
-            await fetch(`http://localhost:${options.port}`);
-        } catch (e) {
-            logger.error(e);
-        }
         logger.log(`Entire Next.js cache was successfully purged`);
     } catch (error) {
         logger.error(`Could not purge entire Next.js cache - ${error}`);

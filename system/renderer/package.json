@@ -14,7 +14,6 @@
     "startup.js"
   ],
   "scripts": {
-    "build": "node startup.js build",
     "buildService": "node startup.js buildService",
     "build:css": "node postcss-build",
     "dev": "node startup.js dev",
