@@ -32,15 +32,16 @@ export const createTask = async (name?: string, noInstall?: boolean, type?: stri
   }
 
   if (!noInstall) {
+    spawnSync(`npm i -g yarn`, [], { shell: true, stdio: 'inherit', cwd: dir });
+
     if (type === 'theme' || type === 'plugin') {
+      spawnSync(`yarn`, [], { shell: true, stdio: 'inherit', cwd: dir });
 
-      spawnSync(`npm i`, [], { shell: true, stdio: 'inherit', cwd: dir });
-
-      spawnSync(`npm update @cromwell/cms @cromwell/core @cromwell/core-frontend @cromwell/core-backend @rollup/plugin-commonjs @rollup/plugin-json rollup-plugin-postcss rollup-plugin-terser rollup-plugin-ts-compiler -D`
+      spawnSync(`yarn upgrade @cromwell/cms @cromwell/core @cromwell/core-frontend @cromwell/core-backend @rollup/plugin-commonjs @rollup/plugin-json rollup-plugin-postcss rollup-plugin-terser rollup-plugin-ts-compiler --non-interactive`
         , [], { shell: true, stdio: 'inherit', cwd: dir });
 
     } else {
-      spawnSync(`npm i @cromwell/cms @cromwell/theme-store @cromwell/theme-blog @cromwell/plugin-main-menu @cromwell/plugin-newsletter @cromwell/plugin-product-filter @cromwell/plugin-product-showcase @cromwell/plugin-stripe --save-exact`
+      spawnSync(`yarn add @cromwell/cms @cromwell/theme-store @cromwell/theme-blog @cromwell/plugin-main-menu @cromwell/plugin-newsletter @cromwell/plugin-product-filter @cromwell/plugin-product-showcase @cromwell/plugin-stripe --exact --non-interactive`
         , [], { shell: true, stdio: 'inherit', cwd: dir });
     }
   }

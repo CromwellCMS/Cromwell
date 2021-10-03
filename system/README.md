@@ -1,7 +1,7 @@
 # CMS Core Development
 
 ### Prerequisites
-- Node.js v16
+- Node.js v12-16
 
 ### Install
 
@@ -10,7 +10,7 @@ $ git clone https://github.com/CromwellCMS/Cromwell
 $ npm run build
 $ npx cromwell start
 ``` 
-**You don't need to run `npm install`**, installation/build handled by startup.js script in the root which invoked by `npm run build`
+**You don't need to run `npm install`**, installation/build handled by startup.js script in the root which invoked by `npm run build`. In development use yarn to install/update dependencies.
 
 ### Configure
 

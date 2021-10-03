@@ -177,7 +177,7 @@ No further configuration with tokens is required, since tokens will be synchroni
 
 For now, there are two limitations with load balancing setup:
 
-1. Admin cannot install plugins in GUI. Since a request to install a Plugin will be processed by only one server in a group, other servers will not have installed this Plugin. It can be solved by installing Plugins in terminal via `npm install` on all machines.  
+1. Admin cannot install plugins in GUI. Since a request to install a Plugin will be processed by only one server in a group, other servers will not have installed this Plugin. It can be solved by installing Plugins in terminal via `yarn install` on all machines.  
 In future updates we are planning to distribute installation requests among a group to make automatic installation possible.
 2. Uploaded content via file manager (Media) GUI will appear in the public directory of only one API server. For now solution is to copy public content across servers manually.  
 Same as before, with distributing API, content can be copied over all servers specified in a config.

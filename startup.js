@@ -8,6 +8,7 @@ let fs = require('fs');
     const scriptName = process.argv[2] ? process.argv[2] : 'production';
     const noInstall = process.argv.includes('--no-install')
     const onlySystem = process.argv.includes('--system')
+    const spawnOpts = { shell: true, stdio: 'inherit' };
 
     const isCoreBuilt = () => {
         return !(!fs.existsSync(resolve(coreDir, 'common/dist')) ||
@@ -37,7 +38,8 @@ let fs = require('fs');
 
     // Check node_modules
     if ((!hasNodeModules() || scriptName === 'build') && !noInstall) {
-        spawnSync(`npm i --workspaces --force`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
+        spawnSync(`npm i -g yarn`, spawnOpts);
+        spawnSync(`yarn`, spawnOpts);
 
         fs = require('fs-extra');
         // For some reason npm duplicates @nestjs packages which leads to

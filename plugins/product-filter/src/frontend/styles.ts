@@ -106,7 +106,7 @@ export const styles = {
 const iOSBoxShadow =
     '0 3px 1px rgba(0,0,0,0.1),0 4px 8px rgba(0,0,0,0.13),0 0 0 1px rgba(0,0,0,0.02)';
 
-export const IOSSliderStyles = withStyles((theme: Theme) => ({
+export const IOSSliderStyles: any = withStyles((theme: Theme) => ({
     root: {
         color: theme.palette.primary.main,
         height: 2,

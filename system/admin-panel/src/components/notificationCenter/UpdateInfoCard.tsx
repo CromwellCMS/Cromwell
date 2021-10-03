@@ -36,7 +36,7 @@ export default function UpdateInfoCard(props: {
                 <div className={styles.warning}>
                     <WarningRoundedIcon />
                     <p style={{ margin: '0 0 0 5px' }}>Cannot launch automatic update. Please update using
-                    <span className={styles.command}>npm install @cromwell/cms@{updateInfo.packageVersion} --save-exact</span>
+                    <span className={styles.command}>yarn upgrade @cromwell/cms@{updateInfo.packageVersion} --exact</span>
                     command and restart CMS</p>
                 </div>
             )}

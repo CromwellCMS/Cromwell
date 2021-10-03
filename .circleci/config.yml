@@ -30,6 +30,7 @@ jobs:
           paths:
             - node_modules
             - package-lock.json
+            - yarn.lock
             - .cromwell
             - themes/store/.cromwell
             - themes/blog/.cromwell
