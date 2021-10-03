@@ -31,6 +31,8 @@
     "yargs": "17.1.1"
   },
   "devDependencies": {
+    "@cromwell/cms": "^1.1.21",
+    "@cromwell/utils": "^1.0.25",
     "@rollup/plugin-commonjs": "20.0.0",
     "@rollup/plugin-json": "4.1.0",
     "@rollup/plugin-node-resolve": "13.0.4",
@@ -45,9 +47,5 @@
     "ts-jest": "27.0.5",
     "ts-node": "10.2.0",
     "typescript": "4.3.5"
-  },
-  "peerDependencies": {
-    "@cromwell/cms": "1.0.0",
-    "@cromwell/utils": "1.0.0"
   }
 }

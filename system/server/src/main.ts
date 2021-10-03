@@ -12,6 +12,10 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import {
+    ApolloServerPluginLandingPageLocalDefault,
+    ApolloServerPluginLandingPageDisabled,
+} from 'apollo-server-core';
 import { ApolloServer } from 'apollo-server-fastify';
 import fastify from 'fastify';
 import getPort from 'get-port';
@@ -54,11 +58,17 @@ async function bootstrap(): Promise<void> {
     });
 
     const apolloServer = new ApolloServer({
-        debug: envMode.envMode === 'dev',
         schema,
         context: (context): TGraphQLContext => {
             return { user: context?.request?.user }
-        }
+        },
+        debug: envMode.envMode === 'dev',
+        introspection: envMode.envMode === 'dev',
+        plugins: [
+            envMode.envMode === 'dev' ?
+                ApolloServerPluginLandingPageLocalDefault({ footer: false }) :
+                ApolloServerPluginLandingPageDisabled()
+        ]
     });
     await apolloServer.start();
 

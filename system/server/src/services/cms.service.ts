@@ -119,6 +119,18 @@ export class CmsService {
         this.isRunningNpm = isRunning;
     }
 
+    private checkedYarn = false;
+
+    public async checkYarn() {
+        if (this.checkedYarn) return;
+        this.checkedYarn = true;
+        try {
+            await runShellCommand(`npm i -g yarn`);
+        } catch (error) {
+            logger.error(error);
+        }
+    }
+
     public async setThemeName(themeName: string) {
         const entity = await getCmsEntity();
         if (entity) {
@@ -732,6 +744,7 @@ ${content}
             throw new HttpException('Only one install/update available at the time', HttpStatus.METHOD_NOT_ALLOWED);
         }
         this.setIsRunningNpm(true);
+        await this.checkYarn();
 
         let success = false;
         let error: any;
@@ -765,7 +778,7 @@ ${content}
         if (!versionOld)
             throw new HttpException(`Update failed: Could not find ${cmsPackageName} package`, HttpStatus.INTERNAL_SERVER_ERROR);
 
-        await runShellCommand(`npm install ${cmsPackageName}@${availableUpdate.packageVersion} -S --save-exact`);
+        await runShellCommand(`yarn upgrade ${cmsPackageName}@${availableUpdate.packageVersion} --exact --non-interactive`);
         await sleep(1);
 
         const cmsPckg = await getModulePackage(cmsPackageName);
@@ -794,7 +807,7 @@ ${content}
             const resp1 = await childSendMessage('make-new');
             if (resp1.message !== 'success') {
                 // Rollback
-                await runShellCommand(`npm install ${cmsPackageName}@${versionOld} -S --save-exact`);
+                await runShellCommand(`yarn upgrade ${cmsPackageName}@${versionOld} --save --non-interactive`);
                 await sleep(1);
 
                 throw new HttpException('Could not start server after update', HttpStatus.INTERNAL_SERVER_ERROR);

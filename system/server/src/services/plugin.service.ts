@@ -170,6 +170,8 @@ export class PluginService {
             throw new HttpException('Only one install/update available at the time', HttpStatus.METHOD_NOT_ALLOWED);
         }
         await this.cmsService.setIsRunningNpm(true);
+        await this.cmsService.checkYarn();
+
         const transactionId = getRandStr(8);
         startTransaction(transactionId);
 
@@ -203,7 +205,7 @@ export class PluginService {
         if (!updateInfo || !updateInfo.packageVersion) throw new HttpException('No update available', HttpStatus.METHOD_NOT_ALLOWED);
         if (updateInfo.onlyManualUpdate) throw new HttpException(`Update failed: Cannot launch automatic update. Please update using npm install command and restart CMS`, HttpStatus.FORBIDDEN);
 
-        await runShellCommand(`npm install ${pluginName}@${updateInfo.packageVersion} -S --save-exact`, process.cwd());
+        await runShellCommand(`yarn upgrade ${pluginName}@${updateInfo.packageVersion} --exact --non-interactive`, process.cwd());
         await sleep(1);
 
         const pluginPckgNew = await getModulePackage(pluginName);
@@ -225,7 +227,7 @@ export class PluginService {
             const resp1 = await childSendMessage('make-new');
             if (resp1.message !== 'success') {
                 // Rollback
-                await runShellCommand(`npm install ${pluginName}@${oldVersion} -S --save-exact`);
+                await runShellCommand(`yarn upgrade ${pluginName}@${oldVersion} --exact --non-interactive`);
                 await sleep(1);
 
                 throw new HttpException('Could not start server with new plugin', HttpStatus.INTERNAL_SERVER_ERROR);
@@ -249,6 +251,8 @@ export class PluginService {
             throw new HttpException('Only one install/update available at the time', HttpStatus.METHOD_NOT_ALLOWED);
         }
         await this.cmsService.setIsRunningNpm(true);
+        await this.cmsService.checkYarn();
+
         const transactionId = getRandStr(8);
         startTransaction(transactionId);
 
@@ -281,7 +285,7 @@ export class PluginService {
         const isBeta = !!settings?.beta;
         const version = isBeta ? (info.betaVersion ?? info.version) : info.version;
 
-        await runShellCommand(`npm install ${pluginName}@${version} -S --save-exact`);
+        await runShellCommand(`yarn add ${pluginName}@${version} --exact --non-interactive`);
         await sleep(1);
 
         const pluginPckgNew = await getModulePackage(pluginName);
@@ -296,7 +300,7 @@ export class PluginService {
             const resp1 = await childSendMessage('make-new');
             if (resp1.message !== 'success') {
                 // Rollback
-                await runShellCommand(`npm uninstall ${pluginName} -S`);
+                await runShellCommand(`yarn remove ${pluginName} --non-interactive`);
                 await sleep(1);
 
                 throw new HttpException('Could not start server with the new plugin', HttpStatus.INTERNAL_SERVER_ERROR);
@@ -425,9 +429,11 @@ export class PluginService {
             throw new HttpException('Only one install/update available at the time', HttpStatus.METHOD_NOT_ALLOWED);
         }
         await this.cmsService.setIsRunningNpm(true);
+        await this.cmsService.checkYarn();
+
         const transactionId = getRandStr(8);
         startTransaction(transactionId);
-        
+
         let success = false;
         let error: any;
         try {
@@ -453,7 +459,7 @@ export class PluginService {
         const pluginExports = (await readPluginsExports()).find(p => p.pluginName === pluginName);
         if (!pluginExports) throw new HttpException('Plugin in not a CMS module', HttpStatus.INTERNAL_SERVER_ERROR);
 
-        await runShellCommand(`npm uninstall ${pluginName} -S`);
+        await runShellCommand(`yarn remove ${pluginName} --non-interactive`);
         await sleep(1);
 
         const pluginPckgNew = await getModulePackage(pluginName);

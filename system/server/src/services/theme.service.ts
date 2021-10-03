@@ -615,6 +615,8 @@ export class ThemeService {
             throw new HttpException('Only one install/update available at the time', HttpStatus.METHOD_NOT_ALLOWED);
         }
         await this.cmsService.setIsRunningNpm(true);
+        await this.cmsService.checkYarn();
+
         const transactionId = getRandStr(8);
         startTransaction(transactionId);
 
@@ -647,7 +649,7 @@ export class ThemeService {
         if (!updateInfo || !updateInfo.packageVersion) throw new HttpException('No update available', HttpStatus.METHOD_NOT_ALLOWED);
         if (updateInfo.onlyManualUpdate) throw new HttpException(`Update failed: Cannot launch automatic update. Please update using npm install command and restart CMS`, HttpStatus.FORBIDDEN);
 
-        await runShellCommand(`npm install ${themeName}@${updateInfo.packageVersion} -S --save-exact`, process.cwd());
+        await runShellCommand(`yarn upgrade ${themeName}@${updateInfo.packageVersion} --exact --non-interactive`, process.cwd());
         await sleep(1);
 
         const pckgNew = await getModulePackage(themeName);
@@ -674,7 +676,7 @@ export class ThemeService {
             const resp1 = await childSendMessage('make-new');
             if (resp1.message !== 'success') {
                 // Rollback
-                await runShellCommand(`npm install ${themeName}@${oldVersion} -S --save-exact`);
+                await runShellCommand(`yarn upgrade ${themeName}@${oldVersion} --exact --non-interactive`);
                 await sleep(1);
 
                 throw new HttpException('Could not start server with new theme', HttpStatus.INTERNAL_SERVER_ERROR);
@@ -698,6 +700,8 @@ export class ThemeService {
             throw new HttpException('Only one install/update available at the time', HttpStatus.METHOD_NOT_ALLOWED);
         }
         await this.cmsService.setIsRunningNpm(true);
+        await this.cmsService.checkYarn();
+
         const transactionId = getRandStr(8);
         startTransaction(transactionId);
 
@@ -729,7 +733,7 @@ export class ThemeService {
         const isBeta = !!settings?.beta;
         const version = isBeta ? (info.betaVersion ?? info.version) : info.version;
 
-        await runShellCommand(`npm install ${themeName}@${version} -S --save-exact`);
+        await runShellCommand(`yarn add ${themeName}@${version} --exact --non-interactive`);
         await sleep(1);
 
         const pckgNew = await getModulePackage(themeName);
@@ -746,6 +750,8 @@ export class ThemeService {
             throw new HttpException('Only one install/update available at the time', HttpStatus.METHOD_NOT_ALLOWED);
         }
         await this.cmsService.setIsRunningNpm(true);
+        await this.cmsService.checkYarn();
+
         const transactionId = getRandStr(8);
         startTransaction(transactionId);
 
@@ -771,7 +777,7 @@ export class ThemeService {
         const oldVersion = pckgOld?.version;
         if (!themeName || themeName === '' || !oldVersion) throw new HttpException('Plugin package not found', HttpStatus.INTERNAL_SERVER_ERROR);
 
-        await runShellCommand(`npm uninstall ${themeName} -S`);
+        await runShellCommand(`yarn remove ${themeName} --non-interactive`);
         await sleep(1);
 
         const pckgNew = await getModulePackage(themeName);

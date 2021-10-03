@@ -247,7 +247,7 @@ npx @cromwell/cli create my-website
 
 Install your Theme:
 ```bash
-npm i my-theme-name -S
+yarn add my-theme-name --exact
 ```
 
 You don't have to restart CMS, your Theme will be found and displayed in the Admin panel. Now you can set it as active to see at the frontend.  
