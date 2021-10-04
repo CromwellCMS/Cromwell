@@ -1,6 +1,7 @@
 import './CBlock.module.scss';
 
 import {
+    getRandStr,
     getStoreItem,
     setStoreItem,
     TBlockContentProvider,
@@ -8,16 +9,17 @@ import {
     TCromwellBlockData,
     TCromwellBlockProps,
 } from '@cromwell/core';
-import React, { Component, useEffect } from 'react';
+import React, { Component } from 'react';
 
 import {
     BlockContentConsumer,
     blockCssClass,
+    BlockStoreConsumer,
     getBlockHtmlId,
     getBlockHtmlType,
+    getDynamicLoader,
     getHtmlPluginBlockName,
 } from '../../constants';
-import { useForceUpdate } from '../../helpers/forceUpdate';
 import { CContainer } from '../CContainer/CContainer';
 import { CEditor } from '../CEditor/CEditor';
 import { CGallery } from '../CGallery/CGallery';
@@ -42,8 +44,11 @@ export class CBlock<TContentBlock = React.Component> extends
     private rerenderPromise: Promise<void> | undefined;
     private unmounted: boolean = false;
     public movedCompForceUpdate?: () => void;
-    private childStubsInfo: Record<string, number> = {};
-    private childBlockStubsJsx: React.ReactNode[] = [];
+    private pageInstances: Record<string, TCromwellBlock | undefined> | undefined;
+    private childResolvers: Record<string, ((block: TCromwellBlock) => void) | undefined> = {};
+    private childPromises: Record<string, (Promise<TCromwellBlock>) | undefined> = {};
+    private instanceId = getRandStr(12);
+    public getInstanceId = () => this.instanceId;
 
     private didUpdateListeners: Record<string, (() => void)> = {};
 
@@ -56,25 +61,29 @@ export class CBlock<TContentBlock = React.Component> extends
     public getBlockRef = () => this.blockRef;
     public getContentInstance = () => this.contentInstance;
     public setContentInstance = (contentInstance) => this.contentInstance = contentInstance;
-    public getBlockInstance = (id: string): TCromwellBlock | undefined => getStoreItem('blockInstances')?.[id];
+
+    public getBlockInstance = (id: string): TCromwellBlock | undefined => {
+        return this.pageInstances?.[id];
+    }
+    public setBlockInstance = (id: string, inst: TCromwellBlock | undefined) => {
+        if (this.pageInstances) {
+            this.pageInstances[id] = inst;
+        }
+    }
+    public registerGlobalBlockInstance = () => {
+        let instances = getStoreItem('blockInstances');
+        if (!instances) {
+            instances = {};
+            setStoreItem('blockInstances', instances);
+        }
+        instances[this.props.id] = this as any;
+    }
 
     constructor(props: TCromwellBlockProps<TContentBlock>) {
         super(props);
 
-        let instances = getStoreItem('blockInstances');
-        if (!instances) instances = {}
-        instances[this.props.id] = this as any;
-        setStoreItem('blockInstances', instances);
-
+        this.registerGlobalBlockInstance();
         this.readConfig();
-
-        if (this.data?.parentId && this.hasBeenMoved) {
-            const parentInst = this.getBlockInstance(this.data?.parentId);
-            if (parentInst) {
-                parentInst.notifyChildRegistered(this as any);
-            }
-        }
-
         this.props.blockRef?.(this);
     }
 
@@ -91,6 +100,12 @@ export class CBlock<TContentBlock = React.Component> extends
     componentWillUnmount() {
         this.didUpdate();
         this.unmounted = true;
+
+        const data = this.getData();
+        const blockInst = this.getBlockInstance(data.id);
+        if (blockInst?.getInstanceId() === this.instanceId) {
+            this.setBlockInstance(data.id, undefined);
+        }
     }
 
     private contextComponentDidUpdate: undefined | (() => void) = undefined;
@@ -215,29 +230,22 @@ export class CBlock<TContentBlock = React.Component> extends
         )
     }
 
-
     public notifyChildRegistered(childInst) {
         const childId = childInst.getData()?.id;
-        if (!childId) return;
-        if (this.childStubsInfo[childId] !== undefined) {
-            // Replace stub by child's content
-            const MovedComp = () => {
-                childInst.movedCompForceUpdate = useForceUpdate();
-                useEffect(() => {
-                    this.componentDidUpdate();
-                }, []);
-                return childInst.consumerRender();
+        if (childId) {
+            const resolver = this.childResolvers[childId];
+            if (resolver) {
+                this.childResolvers[childId] = undefined;
+                this.childPromises[childId] = undefined;
+                resolver(childInst);
             }
-            this.childBlockStubsJsx[this.childStubsInfo[childId]] = (
-                <MovedComp key={childId + 'movedComp'} />
-            );
         }
     }
 
     public getChildBlocks(): React.ReactNode[] {
         this.childBlocks = this.childBlocks.sort((a, b) => (a?.index ?? 0) - (b?.index ?? 0));
 
-        this.childBlockStubsJsx = this.childBlocks.map((block, index) => {
+        return this.childBlocks.map((block) => {
             if (block.isVirtual) {
                 return this.getVirtualBlock(block);
             }
@@ -249,24 +257,25 @@ export class CBlock<TContentBlock = React.Component> extends
             // and at time of execution wasn't constructed by React, then
             // `blockInst` will be `undefined` and nothing will return at the first render,
             if (blockInst) {
-                const MovedComp = () => {
-                    blockInst.movedCompForceUpdate = useForceUpdate();
-                    useEffect(() => {
-                        this.componentDidUpdate();
-                    }, []);
-                    return blockInst.consumerRender();
-                }
-                return <MovedComp key={block.id + 'movedComp'} />
+                return blockInst.consumerRender();
 
             } else {
-                // Otherwise return stub for now, when child will be constructed, it will
-                // notify parent and parent will replace stub jsx by child's jsx in  
-                // `notifyChildRegistered` method
-                this.childStubsInfo[block.id] = index;
-                return <></>
+                // Child wasn't initialized yet. Return dynamic loader that supports
+                // promises in SSR and wait until child notifies this parent component
+                const childPromise = new Promise<TCromwellBlock>(done => {
+                    this.childResolvers[block.id] = done;
+                });
+                this.childPromises[block.id] = childPromise;
+
+                const DynamicComp = getDynamicLoader()(async (): Promise<React.ComponentType> => {
+                    const child = await childPromise;
+                    return () => {
+                        return child.consumerRender() ?? null;
+                    }
+                });
+                return <DynamicComp key={block.id + 'dynamicComp'} />;
             }
         });
-        return this.childBlockStubsJsx;
     }
 
     public getDefaultContent(setClasses?: (classes: string) => void): React.ReactNode | null {
@@ -376,21 +385,35 @@ export class CBlock<TContentBlock = React.Component> extends
     }
 
     public consumerRender(): JSX.Element | null {
-        return <BlockContentConsumer key={this.htmlId + '_cons'}>
+        return (<BlockContentConsumer>
             {(content) => {
                 this.contextComponentDidUpdate = content?.componentDidUpdate;
                 return this.contentRender(content?.getter, content?.blockClass)
             }}
-        </BlockContentConsumer>
+        </BlockContentConsumer>);
     }
 
     render(): React.ReactNode | null {
         this.readConfig();
         // console.log('CBlock::render id: ' + this.props.id, this.hasBeenMoved, this.getData());
 
-        if (this.hasBeenMoved) {
-            return null;
-        }
-        return <React.Fragment key={this.htmlId + '_render'}>{this.consumerRender()}</React.Fragment>
+        return (<BlockStoreConsumer key={this.htmlId + '_render'}>
+            {(value) => {
+                this.pageInstances = value?.instances;
+                if (this.pageInstances && !this.pageInstances[this.props.id]) {
+                    this.setBlockInstance(this.props.id, this as any);
+                    if (this.data?.parentId && this.hasBeenMoved) {
+                        const parentInst = this.getBlockInstance(this.data?.parentId);
+                        if (parentInst) {
+                            parentInst.notifyChildRegistered(this as any);
+                        }
+                    }
+                }
+                if (this.hasBeenMoved) {
+                    return null;
+                }
+                return this.consumerRender();
+            }}
+        </BlockStoreConsumer>);
     }
 }

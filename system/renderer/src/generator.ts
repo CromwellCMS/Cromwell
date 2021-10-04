@@ -323,7 +323,11 @@ const prodGenerate = async (themeName: string, options) => {
     if (themeBuildDir) {
         const themeNextBuildDir = resolve(themeBuildDir, '.next');
         if (fs.existsSync(themeNextBuildDir)) {
-            await fs.remove(rendererTempNextDir);
+            try {
+                await fs.remove(rendererTempNextDir);
+            } catch (error) {
+                logger.error(error);
+            }
             await sleep(0.1);
             await fs.copy(themeNextBuildDir, rendererTempNextDir);
             await sleep(0.1);

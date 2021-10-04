@@ -21,6 +21,7 @@ export {
     getBlockDataById,
     isAdminPanel,
     BlockContentProvider,
+    BlockStoreProvider,
     getBlockData,
     getBlockById,
     getBlockElementById,

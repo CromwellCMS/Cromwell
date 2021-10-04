@@ -32,29 +32,27 @@ const rendererStartupPath = getRendererStartupPath();
 export const startRenderer = async (command?: TRendererCommands, options?: {
     port?: string | number;
 }): Promise<boolean> => {
-
+    const isBuild = command === 'build' || command === 'buildService';
+    const port = options?.port ?? 4128;
     const cmsConfig = await readCMSConfig();
     setStoreItem('cmsSettings', cmsConfig);
+    let cmsSettings: TCmsSettings | undefined = cmsConfig;
 
-    let cmsSettings: TCmsSettings | undefined;
-    try {
-        cmsSettings = await getRestApiClient()?.getCmsSettings({ disableLog: true });
-    } catch (error) {
-        logger.error(error);
+    if (!isBuild) {
+        try {
+            cmsSettings = await getRestApiClient()?.getCmsSettings({ disableLog: true });
+        } catch (error) {
+            logger.error(error);
+        }
+        if (!cmsSettings) {
+            logger.error(`Failed to get cmsSettings from API server. Renderer will be launched with default theme`);
+        }
     }
-
-    const port = options?.port ?? 4128;
-
-    const isBuild = command === 'build' || command === 'buildService';
 
     if (!isBuild && await isPortUsed(Number(port))) {
         const message = `Manager: Failed to start Renderer: port ${port} is already in use. You may want to run stop command: npx cromwell stop --sv renderer`;
         logger.error(message);
         throw new Error(message);
-    }
-
-    if (!cmsSettings) {
-        logger.error(`Failed to get cmsSettings from API server. Renderer will be launched with default theme`);
     }
 
     const themeName = cmsSettings?.themeName ?? cmsSettings?.defaultSettings?.publicSettings?.themeName ??

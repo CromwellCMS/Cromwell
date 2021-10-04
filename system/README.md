@@ -2,6 +2,7 @@
 
 ### Prerequisites
 - Node.js v12-16
+- Python
 
 ### Install
 
