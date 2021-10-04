@@ -3,6 +3,7 @@ const { spawn, spawnSync } = require('child_process');
 const { getServerDir, getServerBuildProxyPath, getServerBuildDir } = require('@cromwell/core-backend/dist/helpers/paths');
 const { serverMessages } = require('@cromwell/core-backend/dist/helpers/constants');
 const normalizePath = require('normalize-path');
+const npmRunPath = require('npm-run-path');
 
 // 'build' | 'prod' | 'dev'
 const scriptName = process.argv[2];
@@ -13,7 +14,7 @@ const buildProxyPath = getServerBuildProxyPath();
 const main = () => {
     const buildServer = () => {
         spawnSync(`npx --no-install rollup -c`, [],
-            { shell: true, stdio: 'inherit', cwd: serverRootDir });
+            { shell: true, stdio: 'inherit', cwd: serverRootDir, env: npmRunPath.env() });
     }
 
     const isServiceBuild = () => {

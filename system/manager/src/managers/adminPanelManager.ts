@@ -16,7 +16,6 @@ export const startAdminPanel = async (command?: TAdminPanelCommands, options?: {
 }): Promise<boolean> => {
     const { cacheKeys, servicesEnv } = config;
     const env = command ?? servicesEnv.adminPanel;
-
     const cmsConfig = await readCMSConfig();
     const port = options?.port ?? 4064;
 

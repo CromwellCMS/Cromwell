@@ -43,7 +43,8 @@ The theme includes:
 
 ### Secondary. Blog.
 
-While previous theme includes both store and blog, you may want more simple website. Blog is a second theme available after installation, so you need just to switch to it in the admin panel. Also, you may want to tweak navigation menu in Main menu Plugin's interface.
+While previous theme includes both store and blog, you may want more simple website. Blog is a second theme available after installation, so you need just to switch to it in the admin panel. Also, you may want to tweak navigation menu in Main menu Plugin's interface.   
+Blog comments provided by [Disqus](https://disqus.com/).
 
 **Example frontend**: https://demo-blog.cromwellcms.com  
 **Example admin panel**: https://demo-blog.cromwellcms.com/admin  

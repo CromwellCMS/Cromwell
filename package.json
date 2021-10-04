@@ -50,8 +50,7 @@
         "plugins/stripe",
         "themes/blog",
         "themes/store",
-        "website",
-        ".cromwell/bundled-modules"
+        "website"
     ],
     "engines": {
         "node": "16.x"

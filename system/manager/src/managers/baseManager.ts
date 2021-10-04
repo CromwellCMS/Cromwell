@@ -127,7 +127,6 @@ type TStartOptions = {
 
 export const startSystem = async (options: TStartOptions) => {
     const { scriptName } = options;
-
     const isDevelopment = scriptName === 'development';
 
     const cmsconfig = await readCMSConfig();
@@ -141,8 +140,8 @@ export const startSystem = async (options: TStartOptions) => {
 
     if (scriptName === 'build') {
         await startServer('build');
-        await startRenderer('buildService');
         await startAdminPanel('build');
+        await startRenderer('buildService');
         return;
     }
 

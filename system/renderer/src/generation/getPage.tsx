@@ -14,6 +14,7 @@ import {
     getParserTransform,
     getRestApiClient,
     pageRootContainerId,
+    BlockStoreProvider,
 } from '@cromwell/core-frontend';
 import { NextRouter, withRouter } from 'next/router';
 import React, { useRef } from 'react';
@@ -133,14 +134,16 @@ export const getPage = (pageName: TDefaultPageName | string, PageComponent: TCro
                     )}
                 </Head>
                 <RootComp>
-                    <CContainer id={pageRootContainerId} isConstant={true}>
-                        <PageWrapperComp>
-                            <PageComponent {...pageCompProps} {...props} />
-                        </PageWrapperComp>
-                        {cmsSettings?.footerHtml && ReactHtmlParser(cmsSettings.footerHtml, { transform: parserTransformBody })}
-                        {themeFooterHtml && ReactHtmlParser(themeFooterHtml, { transform: parserTransformBody })}
-                        {pageConfig?.footerHtml && ReactHtmlParser(pageConfig?.footerHtml, { transform: parserTransformBody })}
-                    </CContainer>
+                    <BlockStoreProvider value={{ instances: {} }}>
+                        <CContainer id={pageRootContainerId} isConstant={true}>
+                            <PageWrapperComp>
+                                <PageComponent {...pageCompProps} {...props} />
+                            </PageWrapperComp>
+                            {cmsSettings?.footerHtml && ReactHtmlParser(cmsSettings.footerHtml, { transform: parserTransformBody })}
+                            {themeFooterHtml && ReactHtmlParser(themeFooterHtml, { transform: parserTransformBody })}
+                            {pageConfig?.footerHtml && ReactHtmlParser(pageConfig?.footerHtml, { transform: parserTransformBody })}
+                        </CContainer>
+                    </BlockStoreProvider>
                 </RootComp>
                 <Head>
                     {themeHeadHtml && ReactHtmlParser(themeHeadHtml, { transform: parserTransformHead })}

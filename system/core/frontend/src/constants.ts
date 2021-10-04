@@ -2,6 +2,7 @@ import {
     getStore,
     getStoreItem,
     TBlockContentProvider,
+    TBlockStoreProvider,
     TCromwellBlock,
     TCromwellBlockData,
     TCromwellBlockType,
@@ -52,6 +53,8 @@ export const isAdminPanel = (): boolean => getStoreItem('environment')?.isAdminP
 
 
 export const { Consumer: BlockContentConsumer, Provider: BlockContentProvider } = React.createContext<TBlockContentProvider | null>(null);
+export const { Consumer: BlockStoreConsumer, Provider: BlockStoreProvider } = React.createContext<TBlockStoreProvider | null>(null);
+
 
 // In Next.js environment there will be available "dynamic" function, in any other env Next.js module
 // will be excluded and @loadable/component used instead

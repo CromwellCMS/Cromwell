@@ -78,6 +78,7 @@ export const getStaticProps: TGetStaticProps = async (context): Promise<BlogPost
     const client = getGraphQLClient();
     let post: TPost | undefined = undefined;
 
+
     if (slug && typeof slug === 'string') {
         try {
             post = await client?.getPostBySlug(slug);

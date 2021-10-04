@@ -59,6 +59,7 @@ export type TCromwellBlock<TContentBlock = React.Component<TCromwellBlockProps>>
     rerender: () => Promise<void> | void;
     addDidUpdateListener: (id: string, func: () => void) => void;
     movedCompForceUpdate?: () => void;
+    getInstanceId: () => string;
 }
 
 export type TDataComponentProps<Data> = {
@@ -278,4 +279,8 @@ export type TBlockContentProvider = {
 
     /** Additional function to run in internal componentDidUpdate of any block */
     componentDidUpdate?: () => void;
+}
+
+export type TBlockStoreProvider = {
+    instances: Record<string, TCromwellBlock | undefined>;
 }
