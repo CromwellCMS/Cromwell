@@ -17,6 +17,7 @@ import {
     BlockStoreConsumer,
     getBlockHtmlId,
     getBlockHtmlType,
+    getDynamicLoader,
     getHtmlPluginBlockName,
 } from '../../constants';
 import { CContainer } from '../CContainer/CContainer';
@@ -43,9 +44,9 @@ export class CBlock<TContentBlock = React.Component> extends
     private rerenderPromise: Promise<void> | undefined;
     private unmounted: boolean = false;
     public movedCompForceUpdate?: () => void;
-    private childStubsInfo: Record<string, number> = {};
-    private childBlockStubsJsx: React.ReactNode[] = [];
     private pageInstances: Record<string, TCromwellBlock | undefined> | undefined;
+    private childResolvers: Record<string, ((block: TCromwellBlock) => void) | undefined> = {};
+    private childPromises: Record<string, (Promise<TCromwellBlock>) | undefined> = {};
     private instanceId = getRandStr(12);
     public getInstanceId = () => this.instanceId;
 
@@ -231,9 +232,14 @@ export class CBlock<TContentBlock = React.Component> extends
 
     public notifyChildRegistered(childInst) {
         const childId = childInst.getData()?.id;
-        if (!childId) return;
-        this.childBlockStubsJsx[childId] = childInst.consumerRender();
-        // Replace stub by child's content
+        if (childId) {
+            const resolver = this.childResolvers[childId];
+            if (resolver) {
+                this.childResolvers[childId] = undefined;
+                this.childPromises[childId] = undefined;
+                resolver(childInst);
+            }
+        }
     }
 
     public getChildBlocks(): React.ReactNode[] {
@@ -254,12 +260,20 @@ export class CBlock<TContentBlock = React.Component> extends
                 return blockInst.consumerRender();
 
             } else {
-                // Otherwise return generated component with postponed result. 
-                // When child will be constructed, it will
-                // notify parent (this) and parent will store its jsx in  
-                // `notifyChildRegistered` method. 
-                const Comp: any = () => this.childBlockStubsJsx[block.id];
-                return <Comp />;
+                // Child wasn't initialized yet. Return dynamic loader that supports
+                // promises in SSR and wait until child notifies this parent component
+                const childPromise = new Promise<TCromwellBlock>(done => {
+                    this.childResolvers[block.id] = done;
+                });
+                this.childPromises[block.id] = childPromise;
+
+                const DynamicComp = getDynamicLoader()(async (): Promise<React.ComponentType> => {
+                    const child = await childPromise;
+                    return () => {
+                        return child.consumerRender() ?? null;
+                    }
+                });
+                return <DynamicComp key={block.id + 'dynamicComp'} />;
             }
         });
     }
