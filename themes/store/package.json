@@ -1,6 +1,6 @@
 {
   "name": "@cromwell/theme-store",
-  "version": "1.1.20",
+  "version": "1.1.21",
   "license": "MIT",
   "repository": "https://github.com/CromwellCMS/Cromwell",
   "author": "Astrex LLC",
@@ -29,9 +29,9 @@
   },
   "devDependencies": {
     "@apollo/client": "3.2.1",
-    "@cromwell/cli": "1.0.22",
-    "@cromwell/core-frontend": "1.1.12",
-    "@cromwell/utils": "1.0.27",
+    "@cromwell/cli": "1.0.23",
+    "@cromwell/core-frontend": "1.1.13",
+    "@cromwell/utils": "1.0.28",
     "@rollup/plugin-alias": "3.1.5",
     "@rollup/plugin-commonjs": "20.0.0",
     "@rollup/plugin-json": "4.1.0",
