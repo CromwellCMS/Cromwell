@@ -37,7 +37,7 @@ export const createTask = async (name?: string, noInstall?: boolean, type?: stri
     if (type === 'theme' || type === 'plugin') {
       spawnSync(`yarn`, [], { shell: true, stdio: 'inherit', cwd: dir });
 
-      spawnSync(`yarn upgrade @cromwell/cms @cromwell/core @cromwell/core-frontend @cromwell/core-backend @rollup/plugin-commonjs @rollup/plugin-json rollup-plugin-postcss rollup-plugin-terser rollup-plugin-ts-compiler --non-interactive`
+      spawnSync(`yarn upgrade @cromwell/cms @cromwell/core @cromwell/core-frontend @cromwell/core-backend @rollup/plugin-commonjs @rollup/plugin-json rollup-plugin-postcss rollup-plugin-terser rollup-plugin-ts-compiler @babel/core --non-interactive`
         , [], { shell: true, stdio: 'inherit', cwd: dir });
 
     } else {
