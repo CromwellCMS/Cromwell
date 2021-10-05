@@ -17,9 +17,6 @@
     "test": "cd tests && npx --no-install jest",
     "watch": "npx --no-install cromwell b -w"
   },
-  "resolutions": {
-    "webpack": "5.50.0"
-  },
   "dependencies": {
     "@material-ui/core": "4.12.3",
     "@material-ui/icons": "4.11.2",

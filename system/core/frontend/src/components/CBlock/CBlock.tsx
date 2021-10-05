@@ -3,6 +3,7 @@ import './CBlock.module.scss';
 import {
     getRandStr,
     getStoreItem,
+    isServer,
     setStoreItem,
     TBlockContentProvider,
     TCromwellBlock,
@@ -250,6 +251,10 @@ export class CBlock<TContentBlock = React.Component> extends
                 return this.getVirtualBlock(block);
             }
 
+            if (isServer()) {
+                return null;
+            }
+
             const blockInst = this.getBlockInstance(block.id);
 
             // Works only for initialized components at the time of render of this component.
@@ -260,8 +265,11 @@ export class CBlock<TContentBlock = React.Component> extends
                 return blockInst.consumerRender();
 
             } else {
-                // Child wasn't initialized yet. Return dynamic loader that supports
-                // promises in SSR and wait until child notifies this parent component
+                // Child wasn't initialized yet. Return dynamic loader 
+                // and wait until child notifies this parent component
+                // to render its content. Works only client-side. At server all elements
+                // will be at their original position. next/dynamic doesn't work with SSR
+                // this way.
                 const childPromise = new Promise<TCromwellBlock>(done => {
                     this.childResolvers[block.id] = done;
                 });
@@ -309,7 +317,7 @@ export class CBlock<TContentBlock = React.Component> extends
         const data = this.getData();
 
         if (this.data?.isDeleted) {
-            return <></>;
+            return null;
         }
 
         let customBlockClasses;
@@ -409,7 +417,7 @@ export class CBlock<TContentBlock = React.Component> extends
                         }
                     }
                 }
-                if (this.hasBeenMoved) {
+                if (this.hasBeenMoved && !isServer()) {
                     return null;
                 }
                 return this.consumerRender();
