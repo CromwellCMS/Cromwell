@@ -55,7 +55,7 @@ export const FileItem = (props: TFileItemProps) => {
             id={'item__' + item}
             key={item}
         >
-            {itemType === 'image' && (
+            {(itemType === 'image') && (
                 <IconButton className={styles.zoomItemBtn}
                     onClick={(e) => {
                         e.stopPropagation();

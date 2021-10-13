@@ -47,7 +47,7 @@ export const cleanParseContext = (contextName: string) => {
 }
 
 export const getParserTransform = (contextName: string, options?: {
-    /** Since usually React does not execute content of <script> tag, we'll use ScriptTag component above
+    /** Since usually React does not execute content of `script` tag, we'll use ScriptTag component above
      * for usage in body. But for the head we usually use Next.js Head component
      * that executes scripts for us and we don't need to use ScriptTag with it.
      * In fact, Next.js Head will even crash with ScriptTag.

@@ -100,6 +100,8 @@
         max-width: 60px;
         width: auto;
         height: auto;
+        user-select: none;
+        -webkit-user-drag: none;
     }
 
     .zoomItemBtn {
@@ -129,8 +131,16 @@
         height: 40px;
     }
 
+    .zoomItemBtn {
+        display: none;
+    }
+
     .selectedItem {
         border: 2px solid #333;
+
+        .zoomItemBtn {
+            display: block;
+        }
     }
 
     .selectBtn {
