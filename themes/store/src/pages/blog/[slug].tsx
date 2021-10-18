@@ -24,7 +24,7 @@ const BlogPostPage: TCromwellPage<BlogPostProps> = (props) => {
             {getHead({
                 documentContext: props.documentContext,
                 image: post?.mainImage,
-                data: post,
+                data: Object.assign({ pageTitle: post?.title }, post),
             })}
             <CContainer className={styles.BlogPost} id="blog-1">
                 <CContainer className={commonStyles.content} id="blog-2">

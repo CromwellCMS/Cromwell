@@ -69,7 +69,7 @@ const TagPage: TCromwellPage<BlogProps> = (props) => {
             {getHead({
                 documentContext: props.documentContext,
                 image: props?.tag?.image,
-                data: props?.tag,
+                data: Object.assign({ pageTitle: props?.tag?.name }, props?.tag),
             })}
             <CContainer className={commonStyles.content} id="tag_01">
                 <CContainer className={styles.filter} id="tag_02">

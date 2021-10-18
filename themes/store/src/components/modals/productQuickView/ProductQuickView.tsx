@@ -53,7 +53,9 @@ const ProductQuickView = observer(() => {
         >
 
             <div className={styles.ProductQuickView}>
-                <IconButton onClick={handleClose} className={styles.closeBtn}>
+                <IconButton
+                    aria-label="Open product quick view"
+                    onClick={handleClose} className={styles.closeBtn}>
                     <CloseIcon />
                 </IconButton>
                 <div className={styles.list}>

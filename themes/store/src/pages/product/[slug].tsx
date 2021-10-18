@@ -49,7 +49,7 @@ const Product: TCromwellPage<ProductProps> = (props) => {
             {getHead({
                 documentContext: props.documentContext,
                 image: product?.mainImage,
-                data: product,
+                data: Object.assign({ pageTitle: product?.name }, product),
             })}
             <CContainer className={clsx(commonStyles.content, styles.ProductPage)} id="product-1">
                 {!!props.breadcrumbs?.length && (

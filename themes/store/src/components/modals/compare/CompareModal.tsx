@@ -66,7 +66,9 @@ export const CompareModal = observer(() => {
             blurSelector={"#CB_root"}
         >
             <div className={clsx(styles.compareModal)}>
-                <IconButton onClick={handleClose} className={styles.closeBtn}>
+                <IconButton
+                    aria-label="Close compare"
+                    onClick={handleClose} className={styles.closeBtn}>
                     <CloseIcon />
                 </IconButton>
                 {isLoading && (

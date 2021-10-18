@@ -161,12 +161,14 @@ export const ProductCard = (props?: {
             ref={wrapperRef}>
             <div className={styles.imageBlock}>
                 <Link href={productLink}>
-                    <a><Image
-                        loader={imageLoader}
-                        objectFit="contain"
-                        layout="fill"
-                        src={mainImage}
-                    /></a>
+                    <a aria-label={`Product ${data?.name}`}>
+                        <Image
+                            alt={data?.name}
+                            loader={imageLoader}
+                            objectFit="contain"
+                            layout="fill"
+                            src={mainImage}
+                        /></a>
                 </Link>
             </div>
             <div className={styles.caption}>
@@ -191,18 +193,22 @@ export const ProductCard = (props?: {
                 </div>
                 <div>
                     <Tooltip title={inCart ? 'Open cart' : 'Add to cart'}>
-                        <IconButton onClick={handleAddToCart}
+                        <IconButton
+                            aria-label="Add product to cart"
+                            onClick={handleAddToCart}
                             className={styles.actionBtn}
                         >{inCart ? <ShoppingCartIcon /> : <AddShoppingCartIcon />}</IconButton>
                     </Tooltip>
                     <Tooltip title="Add to wishlist">
                         <IconButton
+                            aria-label="Add product wishlist"
                             onClick={handleAddToWishlist}
                             className={styles.actionBtn}
                         >{inWishlist ? <FavoriteIcon /> : <FavoriteBorderIcon />}</IconButton>
                     </Tooltip>
                     <Tooltip title="Quick view">
                         <IconButton
+                            aria-label="Open product in quick view"
                             className={styles.actionBtn}
                             onClick={handleOpenQuickView}>
                             <SearchIcon />

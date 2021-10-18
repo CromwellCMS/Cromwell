@@ -66,7 +66,9 @@ export const WatchedModal = observer(() => {
             blurSelector={"#CB_root"}
         >
             <div className={clsx(styles.watchedModal)}>
-                <IconButton onClick={handleClose} className={styles.closeBtn}>
+                <IconButton
+                    aria-label="Close recently viewed items"
+                    onClick={handleClose} className={styles.closeBtn}>
                     <CloseIcon />
                 </IconButton>
                 {isLoading && (

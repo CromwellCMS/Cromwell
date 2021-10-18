@@ -22,7 +22,9 @@ export const CartModal = observer(() => {
             blurSelector={"#CB_root"}
         >
             <div className={styles.cartModal}>
-                <IconButton onClick={handleCartClose} className={styles.closeBtn}>
+                <IconButton
+                    aria-label="Close shopping cart"
+                    onClick={handleCartClose} className={styles.closeBtn}>
                     <CloseIcon />
                 </IconButton>
                 <div className={styles.cartList}>
@@ -31,6 +33,7 @@ export const CartModal = observer(() => {
                 <Link href="/checkout">
                     <a onClick={handleCartClose} style={{ display: 'flex' }}>
                         <Button
+                            aria-label={"Open checkout"}
                             className={styles.checkoutBtn}
                             variant="contained"
                             color="primary"

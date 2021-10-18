@@ -63,7 +63,7 @@ export const CategorySort = (props: {
 
     return (
         <FormControl variant="filled">
-            <InputLabel>Sort</InputLabel>
+            <InputLabel style={{color: '#111'}}>Sort</InputLabel>
             <Select
                 value={sortTitle}
                 onChange={handleKeyChange}

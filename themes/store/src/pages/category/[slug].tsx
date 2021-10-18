@@ -53,7 +53,7 @@ const ProductCategory: TCromwellPage<CategoryProps> = (props) => {
             {getHead({
                 documentContext: props.documentContext,
                 image: category?.mainImage,
-                data: category,
+                data: Object.assign({ pageTitle: category?.name }, category),
             })}
             <CContainer id="category_1" className={clsx(commonStyles.content, styles.content)}>
                 <CContainer id="category_3" className={styles.sidebar}>
