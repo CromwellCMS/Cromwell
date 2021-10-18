@@ -83,13 +83,19 @@ export const MobileHeader = () => {
 
                             </div>
                             <div className={styles.rightActions}>
-                                <IconButton onClick={handleOpenWishlist}>
+                                <IconButton
+                                    aria-label="Open wishlist"
+                                    onClick={handleOpenWishlist}>
                                     <FavoriteIcon />
                                 </IconButton>
-                                <IconButton onClick={handleOpenCart}>
+                                <IconButton
+                                    aria-label="Open cart"
+                                    onClick={handleOpenCart}>
                                     <ShoppingCartIcon />
                                 </IconButton>
-                                <IconButton onClick={handleOpenMenu}>
+                                <IconButton
+                                    aria-label="Open main menu"
+                                    onClick={handleOpenMenu}>
                                     <MenuIcon />
                                 </IconButton>
                             </div>
@@ -117,19 +123,27 @@ export const MobileHeader = () => {
                                 </Select>
                             </FormControl>
                         </div>
-                        <IconButton onClick={handleOpenWatched}>
+                        <IconButton
+                            aria-label="Open recently viewed items"
+                            onClick={handleOpenWatched}>
                             <VisibilityIcon />
                         </IconButton>
                         {/* <IconButton onClick={handleOpenCompare}>
                             <EqualizerIcon />
                         </IconButton> */}
-                        <IconButton onClick={handleOpenWishlist}>
+                        <IconButton
+                            aria-label="Open wishlist"
+                            onClick={handleOpenWishlist}>
                             <FavoriteIcon />
                         </IconButton>
-                        <IconButton onClick={handleOpenCart}>
+                        <IconButton
+                            aria-label="Open shopping cart"
+                            onClick={handleOpenCart}>
                             <ShoppingCartIcon />
                         </IconButton>
-                        <IconButton onClick={handleCloseMenu}>
+                        <IconButton
+                            aria-label="Close main menu"
+                            onClick={handleCloseMenu}>
                             <CloseIcon />
                         </IconButton>
                     </div>

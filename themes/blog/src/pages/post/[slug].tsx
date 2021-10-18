@@ -18,6 +18,12 @@ const BlogPostPage: TCromwellPage<BlogPostProps> = (props) => {
     const { post } = props;
     const router = useRouter?.();
 
+    if (post) {
+        if (!post.pageTitle || post.pageTitle === '') {
+            post.pageTitle = post.title ?? undefined;
+        }
+    }
+
     return (
         <Layout>
             {getHead({

@@ -55,7 +55,9 @@ const Header = () => {
                                     <HeaderSearch />
                                 </CContainer>
                                 <CContainer className={styles.mobileActions} id="header-05">
-                                    <IconButton onClick={handleOpenMenu}>
+                                    <IconButton
+                                        aria-label={"Open main menu"}
+                                        onClick={handleOpenMenu}>
                                         <MenuIcon color="#111" />
                                     </IconButton>
                                 </CContainer>
@@ -72,7 +74,9 @@ const Header = () => {
                 <div className={styles.drawer}>
                     <div className={styles.menuActions}>
                         <div></div>
-                        <IconButton onClick={handleCloseMenu}>
+                        <IconButton
+                            aria-label="Close main menu"
+                            onClick={handleCloseMenu}>
                             <CloseIcon color="#111" />
                         </IconButton>
                     </div>

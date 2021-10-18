@@ -63,6 +63,7 @@ export const defaultCmsConfig: TCmsConfig = {
             logo: "/themes/@cromwell/theme-store/shopping-cart.png",
             defaultPageSize: 15,
             defaultShippingPrice: 10,
+            language: 'en',
             currencies: [
                 {
                     id: '1',

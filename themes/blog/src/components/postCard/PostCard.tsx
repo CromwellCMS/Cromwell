@@ -34,9 +34,11 @@ export const PostCard = (props?: {
                 style={{ height: props?.imageHeight }}
             >
                 <Link href={postLink}>
-                    <a style={{ display: 'flex' }}>
+                    <a aria-label={`Post ${data?.title}`}
+                        style={{ display: 'flex' }}>
                         {Image && (
                             <Image
+                                alt={data?.title ?? undefined}
                                 unoptimized
                                 loader={imageLoader}
                                 objectFit="cover"

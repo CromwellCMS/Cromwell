@@ -64,6 +64,12 @@ const TagPage: TCromwellPage<BlogProps> = (props) => {
         resetList();
     }
 
+    if (props?.tag) {
+        if (!props.tag.pageTitle || props.tag.pageTitle === '') {
+            props.tag.pageTitle = props.tag.name;
+        }
+    }
+
     return (
         <Layout>
             {getHead({

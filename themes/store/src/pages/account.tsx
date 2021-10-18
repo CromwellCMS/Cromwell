@@ -175,8 +175,8 @@ const Account = () => {
                     <Button variant="contained" color="primary"
                         className={styles.saveBtn}
                         size="small"
-                        onClick={handleSave}>
-                        Update</Button>
+                        onClick={handleSave}
+                        >Update</Button>
                 </Grid>
             </Grid>
             <h2 className={styles.subheader}>Order history</h2>

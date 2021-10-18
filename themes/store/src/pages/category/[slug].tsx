@@ -48,6 +48,12 @@ const ProductCategory: TCromwellPage<CategoryProps> = (props) => {
         prevPath.current = router?.asPath;
     }, [router?.asPath]);
 
+    if (category) {
+        if (!category.pageTitle || category.pageTitle === '') {
+            category.pageTitle = category.name;
+        }
+    }
+
     return (
         <Layout>
             {getHead({

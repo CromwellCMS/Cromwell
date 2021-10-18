@@ -44,6 +44,12 @@ const Product: TCromwellPage<ProductProps> = (props) => {
         }
     }, [router?.asPath]);
 
+    if (product) {
+        if (!product.pageTitle || product.pageTitle === '') {
+            product.pageTitle = product.name;
+        }
+    }
+
     return (
         <Layout>
             {getHead({

@@ -116,7 +116,7 @@ export const CartProductList = (props: {
                                 <div className={styles.actions} >
                                     {!isStatic && (
                                         <IconButton
-                                            aria-label="Delete"
+                                            aria-label="Delete from cart"
                                             onClick={() => { handleDeleteItem(it); }}
                                         >
                                             <DeleteForeverIcon />
@@ -146,7 +146,9 @@ export const CartProductList = (props: {
                     {/* <p className={styles.itemsText}>Items: {amount}</p> */}
                 </div>
                 {isMobile && !!_collapsedByDefault.current && (
-                    <IconButton>
+                    <IconButton
+                        aria-label="Expand cart"
+                    >
                         <ExpandMoreIcon
                             // className={classes.expandMoreIcon}
                             color="#111"

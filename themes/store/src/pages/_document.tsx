@@ -1,9 +1,7 @@
+import { TCmsSettings } from '@cromwell/core';
 import { ServerStyleSheets } from '@material-ui/core';
-import { DocumentContext } from 'next/document';
-import * as NextDocument from 'next/document';
+import Document, { DocumentContext, Head, Html, Main, NextScript } from 'next/document';
 import React from 'react';
-
-const Document = NextDocument.default;
 
 export default class MyDocument extends Document {
 
@@ -22,14 +20,24 @@ export default class MyDocument extends Document {
             const initialProps = await Document.getInitialProps(ctx)
             return {
                 ...initialProps,
-                styles: (
-                    <>
-                        {initialProps.styles}
-                        {sheet.getStyleElement()}
-                    </>
-                ),
+                styles: [
+                    ...React.Children.toArray(initialProps.styles),
+                    sheet.getStyleElement()
+                ],
             }
         } finally { }
     }
 
+    render() {
+        const cmsSettings: TCmsSettings = this.props.__NEXT_DATA__.props?.pageProps?.cmsSettings;
+        return (
+            <Html lang={cmsSettings?.language ?? 'en'}>
+                <Head />
+                <body>
+                    <Main />
+                    <NextScript />
+                </body>
+            </Html>
+        )
+    }
 }

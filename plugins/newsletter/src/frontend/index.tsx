@@ -51,7 +51,12 @@ export default function NewsletterPlugin(): JSX.Element {
                     //     <CustomAlert severity="warning">Invalid e-mail</CustomAlert>
                     // }
                     arrow>
-                    <InputBase className={classes.subscribeInput}
+                    <InputBase
+                        className={classes.subscribeInput}
+                        inputComponent={(props) =>
+                            <input {...props}
+                                aria-label="Leave e-mail to subscribe for newsletter"
+                            />}
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                     />

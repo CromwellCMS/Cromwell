@@ -182,6 +182,7 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
                             'productFilter_expandOpen': isExpanded,
                         })}
                         aria-expanded={isExpanded}
+                        aria-label={`Toggle ${props.title} filter visibility`}
                     >
                         <ExpandMoreIcon />
                     </IconButton>
@@ -219,6 +220,7 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
                     <div className="productFilter_mobileHeader">
                         <p>Filter</p>
                         <IconButton
+                            aria-label="Close filter"
                             className="productFilter_mobileCloseBtn"
                             onClick={this.handleMobileClose}>
                             <CloseIcon />
@@ -331,8 +333,8 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
                                         className={clsx('productFilter_expand', {
                                             'productFilter_expandOpen': isExpanded,
                                         })}
+                                        aria-label="Toggle filter visibility"
                                         aria-expanded={isExpanded}
-                                        aria-label="show more"
                                     >
                                         <ExpandMoreIcon />
                                     </IconButton>
@@ -392,6 +394,7 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
             return (
                 <div>
                     <IconButton
+                        aria-label="Open product filter"
                         className="productFilter_mobileOpenBtn"
                         style={{
                             top: mobileIconPosition.top + 'px',

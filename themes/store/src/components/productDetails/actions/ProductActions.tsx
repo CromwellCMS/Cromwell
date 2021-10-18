@@ -138,6 +138,7 @@ export const ProductActions = (props: {
                                 return (
                                     <Button
                                         onClick={attrProps.onClick}
+                                        aria-label={`Attribute ${attrProps?.attribute?.key} - value: ${attrProps?.value}`}
                                         variant={attrProps.isChecked ? 'contained' : 'outlined'}
                                         className={clsx(styles.attrValue, !isValid && styles.invalidAttrValue,
                                             attrProps.isChecked && styles.attrValueChecked)}
@@ -183,6 +184,7 @@ export const ProductActions = (props: {
                         }}
                         startAdornment={
                             <IconButton
+                                aria-label="Decrease amount"
                                 onClick={() => {
                                     if (amount > 1) {
                                         setAmount(amount - 1)
@@ -194,6 +196,7 @@ export const ProductActions = (props: {
                         }
                         endAdornment={
                             <IconButton
+                                aria-label="Increase amount"
                                 onClick={() => {
                                     setAmount(amount + 1)
                                 }}

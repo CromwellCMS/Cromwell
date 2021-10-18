@@ -24,7 +24,11 @@ const IndexPage: TCromwellPage<BlogProps> = (props) => {
         <Layout>
             <div className={`${styles.IndexPage}`}>
                 <CContainer id="main_1" className={styles.main}>
-                    <CImage id="main_2" src="/themes/@cromwell/theme-blog/cover.jpg" objectFit="cover" className={styles.coverImage} />
+                    <CImage id="main_2"
+                        src="/themes/@cromwell/theme-blog/cover.jpg"
+                        objectFit="cover"
+                        alt="Website background"
+                        className={styles.coverImage} />
                     <CContainer id="main_3" className={commonStyles.content}>
                         <CContainer id="main_10" className={styles.titleWrapper}>
                             <CText id="main_11" className={styles.title}>My New Blog</CText>
