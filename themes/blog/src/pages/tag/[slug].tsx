@@ -64,12 +64,18 @@ const TagPage: TCromwellPage<BlogProps> = (props) => {
         resetList();
     }
 
+    if (props?.tag) {
+        if (!props.tag.pageTitle || props.tag.pageTitle === '') {
+            props.tag.pageTitle = props.tag.name;
+        }
+    }
+
     return (
         <Layout>
             {getHead({
                 documentContext: props.documentContext,
                 image: props?.tag?.image,
-                data: Object.assign({ pageTitle: props?.tag?.name }, props?.tag),
+                data: props?.tag,
             })}
             <CContainer className={commonStyles.content} id="tag_01">
                 <CContainer className={styles.filter} id="tag_02">

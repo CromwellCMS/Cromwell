@@ -30,6 +30,7 @@ interface BlogProps {
 }
 
 const TagPage: TCromwellPage<BlogProps> = (props) => {
+    const { tag } = props;
     const filterInput = useRef<TPostFilter>({});
     const listId = 'Blog_list_01';
     const publishSort = useRef<"ASC" | "DESC">('DESC');
@@ -65,12 +66,19 @@ const TagPage: TCromwellPage<BlogProps> = (props) => {
         resetList();
     }
 
+
+    if (tag) {
+        if (!tag.pageTitle || tag.pageTitle === '') {
+            tag.pageTitle = tag.name;
+        }
+    }
+
     return (
         <Layout>
             {getHead({
                 documentContext: props.documentContext,
                 image: props.tag?.image,
-                data: Object.assign({ pageTitle: props.tag?.name }, props.tag),
+                data: tag,
             })}
             <CContainer className={commonStyles.content} id="tag-1">
                 <CContainer className={styles.filter} id="tag-2">

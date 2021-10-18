@@ -18,12 +18,18 @@ const BlogPostPage: TCromwellPage<BlogPostProps> = (props) => {
     const { post } = props;
     const router = useRouter?.();
 
+    if (post) {
+        if (!post.pageTitle || post.pageTitle === '') {
+            post.pageTitle = post.title ?? undefined;
+        }
+    }
+
     return (
         <Layout>
             {getHead({
                 documentContext: props.documentContext,
                 image: post?.mainImage,
-                data: Object.assign({ pageTitle: post?.title }, post),
+                data: post,
             })}
             <CContainer className={styles.BlogPost} id="post_01">
                 <CContainer className={commonStyles.content} id="post_02">

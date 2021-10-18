@@ -48,12 +48,18 @@ const ProductCategory: TCromwellPage<CategoryProps> = (props) => {
         prevPath.current = router?.asPath;
     }, [router?.asPath]);
 
+    if (category) {
+        if (!category.pageTitle || category.pageTitle === '') {
+            category.pageTitle = category.name;
+        }
+    }
+
     return (
         <Layout>
             {getHead({
                 documentContext: props.documentContext,
                 image: category?.mainImage,
-                data: Object.assign({ pageTitle: category?.name }, category),
+                data: category,
             })}
             <CContainer id="category_1" className={clsx(commonStyles.content, styles.content)}>
                 <CContainer id="category_3" className={styles.sidebar}>

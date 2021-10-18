@@ -44,12 +44,18 @@ const Product: TCromwellPage<ProductProps> = (props) => {
         }
     }, [router?.asPath]);
 
+    if (product) {
+        if (!product.pageTitle || product.pageTitle === '') {
+            product.pageTitle = product.name;
+        }
+    }
+
     return (
         <Layout>
             {getHead({
                 documentContext: props.documentContext,
                 image: product?.mainImage,
-                data: Object.assign({ pageTitle: product?.name }, product),
+                data: product,
             })}
             <CContainer className={clsx(commonStyles.content, styles.ProductPage)} id="product-1">
                 {!!props.breadcrumbs?.length && (
