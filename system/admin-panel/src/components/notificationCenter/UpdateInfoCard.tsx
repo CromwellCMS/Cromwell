@@ -1,7 +1,7 @@
 import { TUpdateInfo } from '@cromwell/core';
-import { Button, Collapse, Grid } from '@material-ui/core';
-import { ExpandMore as ExpandMoreIcon, WarningRounded as WarningRoundedIcon } from '@material-ui/icons';
-import UpdateIcon from '@material-ui/icons/Update';
+import { Button, Collapse, Grid } from '@mui/material';
+import { ExpandMore as ExpandMoreIcon, WarningRounded as WarningRoundedIcon } from '@mui/icons-material';
+import UpdateIcon from '@mui/icons-material/Update';
 import clsx from 'clsx';
 import React, { useState } from 'react';
 

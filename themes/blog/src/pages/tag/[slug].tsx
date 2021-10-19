@@ -9,7 +9,7 @@ import {
     TTag,
 } from '@cromwell/core';
 import { CContainer, CList, getGraphQLClient, getGraphQLErrorInfo, LoadBox, TCList } from '@cromwell/core-frontend';
-import { FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
+import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import { useRouter } from 'next/router';
 import React, { useEffect, useRef } from 'react';
 
@@ -58,7 +58,7 @@ const TagPage: TCromwellPage<BlogProps> = (props) => {
         } return { elements: [] }
     }
 
-    const handleChangeSort = (event: React.ChangeEvent<{ value: unknown }>) => {
+    const handleChangeSort = (event: SelectChangeEvent<unknown>) => {
         if (event.target.value === 'Newest') publishSort.current = 'DESC';
         if (event.target.value === 'Oldest') publishSort.current = 'ASC';
         resetList();
@@ -87,6 +87,7 @@ const TagPage: TCromwellPage<BlogProps> = (props) => {
                         <Select
                             style={{ width: '100px' }}
                             onChange={handleChangeSort}
+                            variant="standard"
                             defaultValue='Newest'
                         >
                             {['Newest', 'Oldest'].map(sort => (

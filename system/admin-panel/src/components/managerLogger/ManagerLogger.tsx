@@ -1,5 +1,5 @@
 import { getWebSocketClient } from '@cromwell/core-frontend';
-import { Modal } from '@material-ui/core';
+import { Modal } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 

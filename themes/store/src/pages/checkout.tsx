@@ -12,6 +12,7 @@ import {
 } from '@cromwell/core';
 import { CContainer, getCStore, getRestApiClient, LoadBox } from '@cromwell/core-frontend';
 import {
+    Alert,
     Button,
     FormControl,
     FormControlLabel,
@@ -21,8 +22,7 @@ import {
     Tooltip,
     useMediaQuery,
     useTheme,
-} from '@material-ui/core';
-import { Alert } from '@material-ui/lab';
+} from '@mui/material';
 import queryString from 'query-string';
 import React, { useEffect, useState } from 'react';
 

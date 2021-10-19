@@ -10,8 +10,9 @@ import {
     MenuItem,
     Select,
     TextField,
-} from '@material-ui/core';
-import { Visibility as VisibilityIcon, VisibilityOff as VisibilityOffIcon } from '@material-ui/icons';
+    SelectChangeEvent,
+} from '@mui/material';
+import { Visibility as VisibilityIcon, VisibilityOff as VisibilityOffIcon } from '@mui/icons-material';
 import React, { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
@@ -152,6 +153,7 @@ export default function UserPage() {
                             label="Name"
                             value={userData?.fullName || ''}
                             fullWidth
+                            variant="standard"
                             className={styles.field}
                             onChange={(e) => { handleInputChange('fullName', e.target.value) }}
                         />
@@ -175,6 +177,7 @@ export default function UserPage() {
                             label="E-mail"
                             value={userData?.email || ''}
                             fullWidth
+                            variant="standard"
                             className={styles.field}
                             onChange={(e) => { handleInputChange('email', e.target.value) }}
                         />
@@ -186,6 +189,7 @@ export default function UserPage() {
                                 value={passwordInput || ''}
                                 type={showPassword ? 'text' : 'password'}
                                 fullWidth
+                                variant="standard"
                                 className={styles.field}
                                 onChange={(e) => { setPasswordInput(e.target.value) }}
                                 InputProps={{
@@ -209,8 +213,9 @@ export default function UserPage() {
                             <InputLabel>Role</InputLabel>
                             <Select
                                 fullWidth
+                                variant="standard"
                                 value={(userData?.role ?? 'customer') as TUserRole}
-                                onChange={(event: React.ChangeEvent<{ value: unknown }>) => {
+                                onChange={(event: SelectChangeEvent<unknown>) => {
                                     handleInputChange('role', event.target.value)
                                 }}
                             >
@@ -225,6 +230,7 @@ export default function UserPage() {
                             label="Bio"
                             value={userData?.bio || ''}
                             fullWidth
+                            variant="standard"
                             multiline
                             className={styles.field}
                             onChange={(e) => { handleInputChange('bio', e.target.value) }}
@@ -235,6 +241,7 @@ export default function UserPage() {
                             label="Address"
                             value={userData?.address || ''}
                             fullWidth
+                            variant="standard"
                             className={styles.field}
                             onChange={(e) => { handleInputChange('address', e.target.value) }}
                         />
@@ -244,6 +251,7 @@ export default function UserPage() {
                             label="Phone"
                             value={userData?.phone || ''}
                             fullWidth
+                            variant="standard"
                             className={styles.field}
                             onChange={(e) => { handleInputChange('phone', e.target.value) }}
                         />

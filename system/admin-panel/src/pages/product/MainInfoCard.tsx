@@ -1,6 +1,5 @@
 import { resolvePageRoute, serviceLocator, TAttributeProductVariant, TProduct } from '@cromwell/core';
-import { TextField } from '@material-ui/core';
-import { Autocomplete } from '@material-ui/lab';
+import { Autocomplete, TextField } from '@mui/material';
 import React, { useEffect, useRef } from 'react';
 
 import GalleryPicker from '../../components/galleryPicker/GalleryPicker';

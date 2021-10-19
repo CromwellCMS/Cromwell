@@ -1,5 +1,5 @@
-import { IconButton, MenuItem, Tooltip } from '@material-ui/core';
-import { AddPhotoAlternateOutlined as AddPhotoAlternateOutlinedIcon, HighlightOffOutlined } from '@material-ui/icons';
+import { IconButton, MenuItem, Tooltip } from '@mui/material';
+import { AddPhotoAlternateOutlined as AddPhotoAlternateOutlinedIcon, HighlightOffOutlined } from '@mui/icons-material';
 import React, { useState } from 'react';
 
 import { getFileManager } from '../../components/fileManager/helpers';

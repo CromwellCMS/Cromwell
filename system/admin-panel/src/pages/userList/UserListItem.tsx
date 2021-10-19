@@ -1,10 +1,10 @@
 import { TUser } from '@cromwell/core';
-import { Checkbox, Grid, IconButton } from '@material-ui/core';
+import { Checkbox, Grid, IconButton } from '@mui/material';
 import {
     AccountCircleOutlined as AccountCircleIcon,
     DeleteForever as DeleteForeverIcon,
     Edit as EditIcon,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
 import React from 'react';
 import { connect, PropsType } from 'react-redux-ts';
 import { Link } from 'react-router-dom';

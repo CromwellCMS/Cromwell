@@ -1,9 +1,8 @@
 import { gql } from '@apollo/client';
-import { getBlockInstance, TPagedParams, TPost, TPostFilter, TUser, TTag } from '@cromwell/core';
+import { getBlockInstance, TPagedParams, TPost, TPostFilter, TTag, TUser } from '@cromwell/core';
 import { CList, getGraphQLClient, TCList } from '@cromwell/core-frontend';
-import { Checkbox, IconButton, TextField, Tooltip, Select, MenuItem } from '@material-ui/core';
-import { AddCircle as AddCircleIcon, Delete as DeleteIcon } from '@material-ui/icons';
-import { Autocomplete } from '@material-ui/lab';
+import { AddCircle as AddCircleIcon, Delete as DeleteIcon } from '@mui/icons-material';
+import { Autocomplete, Checkbox, IconButton, MenuItem, Select, TextField, Tooltip } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import { connect, PropsType } from 'react-redux-ts';
 import { useHistory } from 'react-router-dom';
@@ -239,6 +238,7 @@ const PostList = (props: TPropsType) => {
                         className={styles.filterItem}
                         id={titleSearchId}
                         placeholder="Search by title"
+                        variant="standard"
                         onChange={handleFilterInput}
                     />
                     <Autocomplete
@@ -252,6 +252,7 @@ const PostList = (props: TPropsType) => {
                         renderInput={(params) =>
                             <TextField {...params}
                                 placeholder="Author"
+                                variant="standard"
                                 // variant="outlined"
                                 size="medium"
                             />}
@@ -275,6 +276,7 @@ const PostList = (props: TPropsType) => {
                     <Select
                         className={styles.filterItem}
                         defaultValue="all"
+                        variant="standard"
                         onChange={handleChangePublished}
                     >
                         <MenuItem value={'all'}>All</MenuItem>
@@ -313,7 +315,7 @@ const PostList = (props: TPropsType) => {
                 cssClasses={{
                     scrollBox: styles.list,
                     contentWrapper: styles.listContent
-                    
+
                 }}
                 elements={{
                     pagination: Pagination,

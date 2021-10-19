@@ -1,5 +1,5 @@
 import { setStoreItem, TCromwellNotify } from '@cromwell/core';
-import { Alert } from '@material-ui/lab';
+import { Alert } from '@mui/material';
 import React from 'react';
 import { toast as toastify, ToastOptions } from 'react-toastify';
 

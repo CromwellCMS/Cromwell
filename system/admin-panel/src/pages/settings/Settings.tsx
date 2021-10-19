@@ -1,21 +1,6 @@
 import { setStoreItem, TCmsInfo, TCmsSettings, TCurrency, TDBEntity } from '@cromwell/core';
 import { getCStore, getRestApiClient } from '@cromwell/core-frontend';
 import {
-    Badge,
-    Button,
-    Checkbox,
-    Collapse,
-    FormControl,
-    FormControlLabel,
-    Grid,
-    IconButton,
-    InputLabel,
-    MenuItem,
-    Select,
-    TextField,
-    Tooltip,
-} from '@material-ui/core';
-import {
     Add as AddIcon,
     Code as CodeIcon,
     DeleteForever as DeleteForeverIcon,
@@ -29,7 +14,23 @@ import {
     Public as PublicIcon,
     Search as SearchIcon,
     Store as StoreIcon,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
+import {
+    Badge,
+    Button,
+    Checkbox,
+    Collapse,
+    FormControl,
+    FormControlLabel,
+    Grid,
+    IconButton,
+    InputLabel,
+    MenuItem,
+    Select,
+    SelectChangeEvent,
+    TextField,
+    Tooltip,
+} from '@mui/material';
 import clsx from 'clsx';
 import React from 'react';
 import { Responsive, WidthProvider } from 'react-grid-layout';
@@ -320,6 +321,7 @@ class SettingsPage extends React.Component<any, {
                                             value={settings?.url ?? ''}
                                             className={styles.textField}
                                             fullWidth
+                                            variant="standard"
                                             onChange={this.handleTextFieldChange('url')}
                                         />
                                     </FormControl>
@@ -329,8 +331,9 @@ class SettingsPage extends React.Component<any, {
                                         <InputLabel>Timezone</InputLabel>
                                         <Select
                                             fullWidth
+                                            variant="standard"
                                             value={settings?.timezone ?? 0}
-                                            onChange={(event: React.ChangeEvent<{ value: unknown }>) => {
+                                            onChange={(event: SelectChangeEvent<unknown>) => {
                                                 this.changeSettings('timezone', parseInt(event.target.value as string));
                                             }}
                                         >
@@ -346,9 +349,10 @@ class SettingsPage extends React.Component<any, {
                                         <Select
                                             disabled
                                             fullWidth
+                                            variant="standard"
                                             className={styles.field}
                                             value={settings?.language ?? 'en'}
-                                            onChange={(event: React.ChangeEvent<{ value: unknown }>) => {
+                                            onChange={(event: SelectChangeEvent<unknown>) => {
                                                 this.changeSettings('language', event.target.value);
                                             }}
                                         >
@@ -485,12 +489,14 @@ class SettingsPage extends React.Component<any, {
                                                     value={currency.tag ?? ''}
                                                     className={styles.textField + ' draggableCancel'}
                                                     fullWidth
+                                                    variant="standard"
                                                     onChange={handleTextFieldChange('tag')}
                                                 />
                                                 <TextField label="Title"
                                                     value={currency.title ?? ''}
                                                     className={styles.textField + ' draggableCancel'}
                                                     fullWidth
+                                                    variant="standard"
                                                     onChange={handleTextFieldChange('title')}
                                                 />
                                                 <TextField label="Ratio"
@@ -498,12 +504,14 @@ class SettingsPage extends React.Component<any, {
                                                     className={styles.textField + ' draggableCancel'}
                                                     fullWidth
                                                     type="number"
+                                                    variant="standard"
                                                     onChange={handleTextFieldChange('ratio', 'number')}
                                                 />
                                                 <TextField label="Symbol"
                                                     value={currency.symbol ?? ''}
                                                     className={styles.textField + ' draggableCancel'}
                                                     fullWidth
+                                                    variant="standard"
                                                     onChange={handleTextFieldChange('symbol')}
                                                 />
                                             </div>

@@ -24,8 +24,8 @@ import {
     Theme,
     Typography,
     useMediaQuery,
-    withStyles,
-} from '@material-ui/core';
+} from '@mui/material';
+import { withStyles } from '@mui/styles';
 import clsx from 'clsx';
 import { NextRouter, withRouter } from 'next/router';
 import React from 'react';
@@ -237,6 +237,7 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
                                 width: '100%',
                             }}
                             placeholder="type to search..."
+                            variant="standard"
                             onChange={e => this.onSearchChange(e.target.value)}
                         />
                     )

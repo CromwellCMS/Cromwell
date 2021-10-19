@@ -1,8 +1,7 @@
 import { TPluginEntity } from '@cromwell/core';
 import { AdminPanelWidgetPlace } from '@cromwell/core-frontend';
-import { TextField, Tooltip } from '@material-ui/core';
-import { Public as PublicIcon } from '@material-ui/icons';
-import { Autocomplete } from '@material-ui/lab';
+import { Public as PublicIcon } from '@mui/icons-material';
+import { Autocomplete, TextField, Tooltip } from '@mui/material';
 import React from 'react';
 
 import { PluginIcon } from '../../../../constants/icons';

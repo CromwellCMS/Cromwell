@@ -10,13 +10,13 @@ import {
 } from '@cromwell/core';
 import { CList, CPlugin, getGraphQLClient, TCList } from '@cromwell/core-frontend';
 // import { IFrontendFilter, TInstanceSettings } from '@cromwell/plugin-product-filter/build/types/types';
-import { Checkbox, Drawer, IconButton, Tooltip } from '@material-ui/core';
+import { Checkbox, Drawer, IconButton, Tooltip } from '@mui/material';
 import {
     AddCircle as AddCircleIcon,
     Close as CloseIcon,
     Delete as DeleteIcon,
     FilterList as FilterListIcon,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
 import React, { useEffect, useRef, useState } from 'react';
 import { connect, PropsType } from 'react-redux-ts';
 import { useHistory } from 'react-router-dom';

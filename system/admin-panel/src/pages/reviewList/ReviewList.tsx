@@ -1,8 +1,7 @@
 import { getBlockInstance, TPagedParams, TProduct, TProductReview, TProductReviewFilter } from '@cromwell/core';
 import { CList, getGraphQLClient, TCList } from '@cromwell/core-frontend';
-import { Checkbox, IconButton, MenuItem, Select, TextField, Tooltip } from '@material-ui/core';
-import { Delete as DeleteIcon, ThumbUp as ThumbUpIcon } from '@material-ui/icons';
-import { Rating } from '@material-ui/lab';
+import { Delete as DeleteIcon, ThumbUp as ThumbUpIcon } from '@mui/icons-material';
+import { Checkbox, IconButton, MenuItem, Rating, Select, TextField, Tooltip } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import { connect, PropsType } from 'react-redux-ts';
 import { debounce } from 'throttle-debounce';
@@ -199,6 +198,7 @@ const ReviewList = (props: TPropsType) => {
                     </div>
                     <Select
                         defaultValue="all"
+                        variant="standard"
                         onChange={handleChangeApproved}
                     >
                         <MenuItem value={'all'}>All</MenuItem>
@@ -208,6 +208,7 @@ const ReviewList = (props: TPropsType) => {
                     <TextField
                         className={styles.filterItem}
                         placeholder="Customer name"
+                        variant="standard"
                         onChange={(event) => {
                             filterInput.current.userName = event.target.value;
                             handleFilterInput();
@@ -216,6 +217,7 @@ const ReviewList = (props: TPropsType) => {
                     <TextField
                         className={styles.filterItem}
                         placeholder="Product id"
+                        variant="standard"
                         onChange={(event) => {
                             filterInput.current.productId = event.target.value;
                             handleFilterInput();

@@ -1,9 +1,8 @@
 import { gql } from '@apollo/client';
 import { resolvePageRoute, serviceLocator, TAttribute, TProduct, TProductInput } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
-import { Button, IconButton, Tab, Tabs, Tooltip } from '@material-ui/core';
-import { ArrowBack as ArrowBackIcon, OpenInNew as OpenInNewIcon } from '@material-ui/icons';
-import { Skeleton } from '@material-ui/lab';
+import { ArrowBack as ArrowBackIcon, OpenInNew as OpenInNewIcon } from '@mui/icons-material';
+import { Button, IconButton, Skeleton, Tab, Tabs, Tooltip } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { Link, useHistory, useParams } from 'react-router-dom';
 

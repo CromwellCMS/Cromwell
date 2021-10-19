@@ -1,6 +1,6 @@
 import { getBlockInstance, TProduct } from '@cromwell/core';
 import { TCList } from '@cromwell/core-frontend';
-import { FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
+import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import React, { useState } from 'react';
 
 type TSortOption = {
@@ -13,11 +13,8 @@ export const CategorySort = (props: {
     listId: string;
 }) => {
     const [sortTitle, setSortTitle] = useState('Default');
-    const handleKeyChange = (event: React.ChangeEvent<{
-        name?: string | undefined;
-        value: unknown;
-    }>) => {
-        const val = event.target.value as string
+    const handleKeyChange = (event: SelectChangeEvent<unknown>) => {
+        const val = event.target.value as string;
         setSortTitle(val);
         setTimeout(() => {
             const listId = props.listId;
@@ -63,9 +60,10 @@ export const CategorySort = (props: {
 
     return (
         <FormControl variant="filled">
-            <InputLabel style={{color: '#111'}}>Sort</InputLabel>
+            <InputLabel style={{ color: '#111' }}>Sort</InputLabel>
             <Select
                 value={sortTitle}
+                variant="standard"
                 onChange={handleKeyChange}
             >
                 {sortOptions.map(opt => (

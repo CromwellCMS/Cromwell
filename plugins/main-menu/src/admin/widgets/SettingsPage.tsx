@@ -1,7 +1,7 @@
 import { PluginSettingsLayout } from '@cromwell/admin-panel';
 import { TPluginSettingsProps } from '@cromwell/core';
 import { getRestApiClient } from '@cromwell/core-frontend';
-import { MenuItem } from '@material-ui/core';
+import { MenuItem } from '@mui/material';
 import React from 'react';
 
 import { useForceUpdate } from '../../helpers';

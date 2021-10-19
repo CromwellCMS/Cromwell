@@ -1,8 +1,8 @@
 import { TCCSModuleInfo, TPackageCromwellConfig } from '@cromwell/core';
 import { CGallery } from '@cromwell/core-frontend';
-import { Badge, Button, Typography, Tooltip, IconButton } from '@material-ui/core';
+import { Badge, Button, Typography, Tooltip, IconButton } from '@mui/material';
 import React, { useState } from 'react';
-import { HelpOutline as HelpOutlineIcon } from '@material-ui/icons';
+import { HelpOutline as HelpOutlineIcon } from '@mui/icons-material';
 
 import styles from './MarketModal.module.scss';
 

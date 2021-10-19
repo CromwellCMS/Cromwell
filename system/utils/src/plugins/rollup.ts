@@ -688,7 +688,7 @@ const generatePagesMeta = async (pagesMetaInfo: TPagesMetaInfo, buildDir: string
     // List mapped from package.json's cromwell.firstLoadedDependencies
     // Beware! For now this feature works in a way that 
     // modules are going to be bundled entirely without any tree-shaking
-    // We definitely don't want @material-ui/icons in this list!
+    // We definitely don't want @mui/icons-material in this list!
     const packageJson: TPackageJson = require(resolve(process.cwd(), 'package.json'));
 
     for (const pagePath of pagesMetaInfo.paths) {

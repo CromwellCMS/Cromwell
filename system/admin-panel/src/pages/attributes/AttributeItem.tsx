@@ -1,12 +1,13 @@
 import { TAttribute, TAttributeInput } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
-import { createStyles, IconButton, makeStyles, Radio, TextField, Tooltip } from '@material-ui/core';
 import {
     AddCircleOutline as AddCircleOutlineIcon,
     Delete as DeleteIcon,
     Image as ImageIcon,
     Save as SaveIcon,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
+import { IconButton, Radio, TextField, Tooltip } from '@mui/material';
+import { createStyles, makeStyles } from '@mui/styles';
 import React, { useRef, useState } from 'react';
 
 import { getFileManager } from '../../components/fileManager/helpers';
@@ -137,6 +138,7 @@ const AttributeItem = (props: { data: TAttribute; handleRemove: (data: TAttribut
             {attribute.current && <CheckList
                 title={<TextField
                     size="small"
+                    variant="standard"
                     placeholder="Attribute title"
                     style={{ marginRight: '15px' }}
                     defaultValue={attribute.current.key}
@@ -194,6 +196,7 @@ const AttributeItem = (props: { data: TAttribute; handleRemove: (data: TAttribut
                     return (
                         <div style={{ display: 'flex', alignItems: 'center' }}>
                             <TextField
+                                variant="standard"
                                 style={{ marginRight: '15px' }}
                                 defaultValue={props.value}
                                 onChange={handleValueNameChange}

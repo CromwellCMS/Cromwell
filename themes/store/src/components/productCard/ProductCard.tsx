@@ -1,11 +1,11 @@
 import { getStoreItem, onStoreChange, removeOnStoreChange, TAttribute, TProduct, TStoreListItem } from '@cromwell/core';
 import { getCStore, Link } from '@cromwell/core-frontend';
-import { IconButton, Tooltip, useMediaQuery, useTheme } from '@material-ui/core';
-import { Rating } from '@material-ui/lab';
+import SearchIcon from '@mui/icons-material/Search';
+import { IconButton, Rating, Tooltip, useMediaQuery, useTheme } from '@mui/material';
 import clsx from 'clsx';
 import * as NextImage from 'next/image';
 import React, { useEffect, useRef } from 'react';
-import SearchIcon from '@material-ui/icons/Search';
+
 import { appState } from '../../helpers/AppState';
 import { useForceUpdate } from '../../helpers/forceUpdate';
 import commonStyles from '../../styles/common.module.scss';

@@ -1,6 +1,6 @@
 import { TAttribute, TProduct, TStoreListItem } from '@cromwell/core';
 import { getCStore, ProductAttributes } from '@cromwell/core-frontend';
-import { Button, IconButton, Input } from '@material-ui/core';
+import { Button, IconButton, Input } from '@mui/material';
 import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
 

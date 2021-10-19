@@ -1,4 +1,4 @@
-import { InputAdornment, Popover, TextField } from '@material-ui/core';
+import { InputAdornment, Popover, TextField } from '@mui/material';
 import React, { useRef, useState } from 'react';
 import { SketchPicker } from 'react-color';
 
@@ -53,6 +53,7 @@ export default function ColorPicker(props: {
                         </InputAdornment>
                     ),
                 }}
+                variant="standard"
                 className={props.className}
                 label={props.label}
                 fullWidth

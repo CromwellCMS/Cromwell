@@ -1,6 +1,6 @@
 import { TAttribute, TProduct } from '@cromwell/core';
 import { getGraphQLClient, getGraphQLErrorInfo } from '@cromwell/core-frontend';
-import { IconButton } from '@material-ui/core';
+import { IconButton } from '@mui/material';
 import { observer } from 'mobx-react';
 import React, { useEffect, useState } from 'react';
 

@@ -1,6 +1,5 @@
 import { getRestApiClient } from '@cromwell/core-frontend';
-import { Button, InputBase, Tooltip } from '@material-ui/core';
-import { Alert, AlertProps } from '@material-ui/lab';
+import { Alert, AlertProps, Button, InputBase, Tooltip } from '@mui/material';
 import React, { useState } from 'react';
 
 import { useStyles } from './styles';

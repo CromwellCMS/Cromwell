@@ -1,6 +1,6 @@
 import { getCmsSettings, onStoreChange } from '@cromwell/core';
 import { CContainer, CPlugin, Link } from '@cromwell/core-frontend';
-import { AppBar, IconButton, Slide, SwipeableDrawer, Toolbar, useScrollTrigger } from '@material-ui/core';
+import { AppBar, IconButton, Slide, SwipeableDrawer, Toolbar, useScrollTrigger } from '@mui/material';
 import React, { useState, useEffect } from 'react';
 
 import commonStyles from '../../styles/common.module.scss';

@@ -1,6 +1,6 @@
 import { TCromwellBlock } from '@cromwell/core';
-import { Drawer, IconButton, Tooltip } from '@material-ui/core';
-import { Close as CloseIcon } from '@material-ui/icons';
+import { Drawer, IconButton, Tooltip } from '@mui/material';
+import { Close as CloseIcon } from '@mui/icons-material';
 import React from 'react';
 
 import { Draggable } from '../../../helpers/Draggable/Draggable';

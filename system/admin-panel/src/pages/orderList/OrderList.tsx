@@ -1,8 +1,7 @@
 import { getBlockInstance, TOrder, TOrderFilter, TPagedParams } from '@cromwell/core';
 import { CList, getGraphQLClient, TCList } from '@cromwell/core-frontend';
-import { Checkbox, IconButton, TextField, Tooltip } from '@material-ui/core';
-import { Delete as DeleteIcon } from '@material-ui/icons';
-import { Autocomplete } from '@material-ui/lab';
+import { Delete as DeleteIcon } from '@mui/icons-material';
+import { Autocomplete, Checkbox, IconButton, TextField, Tooltip } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import { connect, PropsType } from 'react-redux-ts';
 import { debounce } from 'throttle-debounce';
@@ -155,12 +154,14 @@ const OrderList = (props: TPropsType) => {
                         getOptionLabel={(option) => option}
                         className={styles.filterItem}
                         renderInput={(params) => <TextField {...params}
+                            variant="standard"
                             placeholder="Status"
                         />}
                     />
                     <TextField
                         className={styles.filterItem}
                         placeholder="Order id"
+                        variant="standard"
                         onChange={(event) => {
                             filterInput.current.orderId = event.target.value;
                             handleFilterInput();
@@ -169,6 +170,7 @@ const OrderList = (props: TPropsType) => {
                     <TextField
                         className={styles.filterItem}
                         placeholder="Customer name"
+                        variant="standard"
                         onChange={(event) => {
                             filterInput.current.customerName = event.target.value;
                             handleFilterInput();
@@ -177,6 +179,7 @@ const OrderList = (props: TPropsType) => {
                     <TextField
                         className={styles.filterItem}
                         placeholder="Customer phone"
+                        variant="standard"
                         onChange={(event) => {
                             filterInput.current.customerPhone = event.target.value;
                             handleFilterInput();
@@ -185,6 +188,7 @@ const OrderList = (props: TPropsType) => {
                     <TextField
                         className={styles.filterItem}
                         placeholder="Customer email"
+                        variant="standard"
                         onChange={(event) => {
                             filterInput.current.customerEmail = event.target.value;
                             handleFilterInput();

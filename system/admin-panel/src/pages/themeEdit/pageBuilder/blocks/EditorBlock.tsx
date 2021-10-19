@@ -1,5 +1,5 @@
-import { Tooltip } from '@material-ui/core';
-import { EditOutlined as EditOutlinedIcon, Public as PublicIcon } from '@material-ui/icons';
+import { Tooltip } from '@mui/material';
+import { EditOutlined as EditOutlinedIcon, Public as PublicIcon } from '@mui/icons-material';
 import React from 'react';
 import { debounce } from 'throttle-debounce';
 

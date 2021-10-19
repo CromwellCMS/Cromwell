@@ -19,7 +19,8 @@
     "watch": "npx --no-install cromwell b -w"
   },
   "dependencies": {
-    "@material-ui/core": "4.12.3"
+    "@mui/material": "5.0.4",
+    "@mui/styles": "5.0.1"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "20.0.0",
@@ -65,7 +66,8 @@
     "description": "Adds a carousel with products. On a product page will fetch products from same categories, on other pages - most recent products",
     "icon": "static/icon_showcase.png",
     "frontendDependencies": [
-      "@material-ui/core"
+      "@mui/material",
+      "@mui/styles"
     ]
   }
 }

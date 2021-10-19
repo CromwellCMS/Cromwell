@@ -1,5 +1,6 @@
 import { setStoreItem, TCCSVersion, TCmsSettings, TPackageCromwellConfig, TThemeEntity } from '@cromwell/core';
 import { getGraphQLClient, getRestApiClient } from '@cromwell/core-frontend';
+import { AddCircleOutline as AddCircleOutlineIcon, Close as CloseIcon, Update as UpdateIcon } from '@mui/icons-material';
 import {
     Badge,
     Button,
@@ -9,10 +10,9 @@ import {
     Grid,
     IconButton,
     LinearProgress,
+    Skeleton,
     Typography,
-} from '@material-ui/core';
-import { AddCircleOutline as AddCircleOutlineIcon, Close as CloseIcon, Update as UpdateIcon } from '@material-ui/icons';
-import { Skeleton } from '@material-ui/lab';
+} from '@mui/material';
 import React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 
@@ -286,7 +286,7 @@ class ThemeList extends React.Component<Partial<RouteComponentProps>, {
                 {isLoading && (
                     <div className={styles.list}>
                         {Array(2).fill(1).map((it, index) => (
-                            <Skeleton key={index} variant="rect" height="388px" width="300px" style={{ margin: '0 10px 20px 10px' }} > </Skeleton>
+                            <Skeleton key={index} variant="rectangular" height="388px" width="300px" style={{ margin: '0 10px 20px 10px' }} > </Skeleton>
                         ))}
                     </div>
                 )}

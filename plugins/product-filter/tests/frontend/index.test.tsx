@@ -7,9 +7,9 @@ jest.mock('@cromwell/admin-panel', () => {
     }
 });
 
-jest.mock('@material-ui/core', () => {
+jest.mock('@mui/material', () => {
     return {
-        ...jest.requireActual('@material-ui/core'),
+        ...jest.requireActual('@mui/material'),
         useMediaQuery: () => null,
     }
 });

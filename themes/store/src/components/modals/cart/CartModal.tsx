@@ -1,5 +1,5 @@
 import { Link } from '@cromwell/core-frontend';
-import { Button, IconButton } from '@material-ui/core';
+import { Button, IconButton } from '@mui/material';
 import { observer } from 'mobx-react';
 import React from 'react';
 

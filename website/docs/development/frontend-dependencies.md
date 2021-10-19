@@ -22,10 +22,10 @@ All imports are centralized, if one Plugin is importing a dependency, and anothe
 
 You can use Frontend dependencies as usual ES modules with the condition that everything is imported from the root of the module:
 ```ts
-import { Button, TextField } from '@material-ui/core';
+import { Button, TextField } from '@mui/material';
 import React from 'react';
 ``` 
-Not: <s>`import TextField from '@material-ui/core/TextField'`</s>
+Not: <s>`import TextField from '@mui/material/TextField'`</s>
 
 You need to add Frontend dependencies into `frontendDependencies` array of your package.json and use them with **exact** version in "dependencies":
 ```json
@@ -33,12 +33,12 @@ You need to add Frontend dependencies into `frontendDependencies` array of your 
   "name": "your-plugin-name",
   "version": "1.0.0",
   "dependencies": {
-    "@material-ui/core": "4.12.3"
+    "@mui/material": "4.12.3"
   },
   "cromwell": {
     "type": "plugin",
     "frontendDependencies": [
-      "@material-ui/core"
+      "@mui/material"
     ]
   }
 }
@@ -77,11 +77,11 @@ When making a new Plugin you don't want to support all previous versions of Fron
 
 ## Big modules
 
-As we stated before bundled node modules are chunked, so we can load only things we need. It works well on medium-size modules such as `@material-ui/core`, but not well with big such as `@material-ui/icons` which has more than 5000 exports.
-In order for browser imports to work, Webpack has to generate a manifest to know what chunk to request for imports used in our app. While it's possible to make a couple-Kb chunk for each of 5000 icons from `@material-ui/icons`, the manifest for all of them will be more than 500kb. Which is clearly will be much more than size of icons we are going to ever use from it. In this case, it makes sense to avoid using Frontend dependency. You can still use it as usual via `import`, but don't include it in `frontendDependencies` in `package.json`.
+As we stated before bundled node modules are chunked, so we can load only things we need. It works well on medium-size modules such as `@mui/material`, but not well with big such as `@mui/icons-material` which has more than 5000 exports.
+In order for browser imports to work, Webpack has to generate a manifest to know what chunk to request for imports used in our app. While it's possible to make a couple-Kb chunk for each of 5000 icons from `@mui/icons-material`, the manifest for all of them will be more than 500kb. Which is clearly will be much more than size of icons we are going to ever use from it. In this case, it makes sense to avoid using Frontend dependency. You can still use it as usual via `import`, but don't include it in `frontendDependencies` in `package.json`.
 
 :::note
-When developing a Plugin, you may get a problem bundling huge modules, because bundling is handled by Rollup instead of Webpack as with Themes. For example, Rollup has a problem bundling `@material-ui/icons`. So you may want to include full code of icons in your source code instead of importing it from the package.
+When developing a Plugin, you may get a problem bundling huge modules, because bundling is handled by Rollup instead of Webpack as with Themes. For example, Rollup has a problem bundling `@mui/icons-material`. So you may want to include full code of icons in your source code instead of importing it from the package.
 :::
 
 
@@ -96,10 +96,10 @@ Just list them in package.json's cromwell info under `firstLoadedDependencies` p
   "cromwell": {
     "type": "plugin",
     "frontendDependencies": [
-      "@material-ui/core"
+      "@mui/material"
     ],
     "firstLoadedDependencies": [
-      "@material-ui/core",
+      "@mui/material",
       "jss",
       "jss-plugin-global",
       "jss-plugin-nested",
@@ -112,7 +112,7 @@ This option will improve performance of Cromwell CMS builder.
 
 :::note
 Example: In @cromwell/theme-store compiler had to generate chunks for more than 8k possible export keys from packages, it slowed down compilation time. With `firstLoadedDependencies` we have cut most of them and reduced compiling time.  
-Often, if an app used a lot of exports from a library, size of requested chunks at run-time may be close to size of entire library, so it makes sense to include it in "firstLoadedDependencies". For us it was better to bundle "@material-ui/core" entirely, though it's a huge package.  
+Often, if an app used a lot of exports from a library, size of requested chunks at run-time may be close to size of entire library, so it makes sense to include it in "firstLoadedDependencies". For us it was better to bundle "@mui/material" entirely, though it's a huge package.  
 :::
 
-Listing sub-dependencies will also help to optimize compilation and usage in run-time. For example, we know that "@material-ui/core" uses "jss" and it will be bundled entirely with it anyway, so we listed it as well.
+Listing sub-dependencies will also help to optimize compilation and usage in run-time. For example, we know that "@mui/material" uses "jss" and it will be bundled entirely with it anyway, so we listed it as well.

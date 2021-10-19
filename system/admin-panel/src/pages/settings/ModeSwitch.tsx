@@ -1,7 +1,9 @@
 import { getStoreItem, setStoreItem } from '@cromwell/core';
-import { createStyles, Switch, SwitchClassKey, SwitchProps, Theme, withStyles, Tooltip } from '@material-ui/core';
+import { createStyles, Switch, SwitchClassKey, SwitchProps, Theme, Tooltip } from '@mui/material';
+import { withStyles } from '@mui/styles';
 import clsx from 'clsx';
 import React from 'react';
+
 import styles from './ModeSwitch.module.scss';
 
 interface Styles extends Partial<Record<SwitchClassKey, string>> {

@@ -1,5 +1,5 @@
-import { CContainer, CGallery, CImage, getBlockHtmlId, CText, getCStore } from '@cromwell/core-frontend';
-import { Rating } from '@material-ui/lab';
+import { CContainer, CGallery, CImage, CText, getBlockHtmlId, getCStore } from '@cromwell/core-frontend';
+import { Rating } from '@mui/material';
 import { useRouter } from 'next/router';
 import React, { useEffect, useRef } from 'react';
 

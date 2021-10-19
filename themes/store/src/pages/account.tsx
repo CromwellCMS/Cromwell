@@ -7,7 +7,7 @@ import {
     getGraphQLErrorInfo,
     getRestApiClient,
 } from '@cromwell/core-frontend';
-import { Button, Grid, TextField } from '@material-ui/core';
+import { Button, Grid, TextField } from '@mui/material';
 import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
 
@@ -140,6 +140,7 @@ const Account = () => {
                         label="Name"
                         value={userData?.fullName || ''}
                         fullWidth
+                        variant="standard"
                         className={styles.field}
                         onChange={(e) => { handleInputChange('fullName', e.target.value) }}
                     />
@@ -149,6 +150,7 @@ const Account = () => {
                         label="E-mail"
                         value={userData?.email || ''}
                         fullWidth
+                        variant="standard"
                         className={styles.field}
                         onChange={(e) => { handleInputChange('email', e.target.value) }}
                     />
@@ -158,6 +160,7 @@ const Account = () => {
                         label="Address"
                         value={userData?.address || ''}
                         fullWidth
+                        variant="standard"
                         className={styles.field}
                         onChange={(e) => { handleInputChange('address', e.target.value) }}
                     />
@@ -167,6 +170,7 @@ const Account = () => {
                         label="Phone"
                         value={userData?.phone || ''}
                         fullWidth
+                        variant="standard"
                         className={styles.field}
                         onChange={(e) => { handleInputChange('phone', e.target.value) }}
                     />
@@ -176,7 +180,7 @@ const Account = () => {
                         className={styles.saveBtn}
                         size="small"
                         onClick={handleSave}
-                        >Update</Button>
+                    >Update</Button>
                 </Grid>
             </Grid>
             <h2 className={styles.subheader}>Order history</h2>

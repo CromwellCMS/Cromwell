@@ -1,22 +1,21 @@
 import { getRestApiClient } from '@cromwell/core-frontend';
-import { Grid, IconButton, LinearProgress, Popover, Tooltip } from '@material-ui/core';
 import {
     HelpOutline as HelpOutlineIcon,
     NotificationImportant as NotificationImportantIcon,
     NotificationsNone as NotificationsNoneIcon,
     Update as UpdateIcon,
-} from '@material-ui/icons';
-import { Alert, AlertProps } from '@material-ui/lab';
+} from '@mui/icons-material';
+import { Alert, AlertProps, Grid, IconButton, LinearProgress, Popover, Tooltip } from '@mui/material';
 import clsx from 'clsx';
 import React, { useRef, useState } from 'react';
 import { connect, PropsType } from 'react-redux-ts';
 
 import { updateStatus } from '../../redux/helpers';
 import { store, TAppState } from '../../redux/store';
+import { askConfirmation } from '../modal/Confirmation';
 import { toast } from '../toast/toast';
 import styles from './NotificationCenter.module.scss';
 import UpdateInfoCard from './UpdateInfoCard';
-import { askConfirmation } from '../modal/Confirmation';
 
 
 const mapStateToProps = (state: TAppState) => {

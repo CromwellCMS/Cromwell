@@ -1,4 +1,4 @@
-import { Button, Grid } from '@material-ui/core';
+import { Button, Grid } from '@mui/material';
 import React from 'react';
 
 import { CheckList } from './CheckList';
@@ -31,7 +31,7 @@ export default function TransferList(props: {
     };
 
     return (
-        <Grid container spacing={2} justify="center" alignItems="center" className={styles.root}>
+        <Grid container spacing={2} justifyContent="center" alignItems="center" className={styles.root}>
             <Grid item>
                 <CheckList title='Choices'
                     items={left}

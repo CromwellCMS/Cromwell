@@ -11,7 +11,7 @@ import {
     ShoppingBasket as ShoppingBasketIcon,
     Stars as StarsIcon,
     Storage as StorageIcon,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
 import React, { lazy } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 

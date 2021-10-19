@@ -1,5 +1,5 @@
 import { TCromwellBlockData } from '@cromwell/core';
-import { TextField, MenuItem, Select, FormControl, InputLabel } from '@material-ui/core';
+import { TextField, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
 import React from 'react';
 import ColorPicker from '../../../../components/colorPicker/ColorPicker';
 

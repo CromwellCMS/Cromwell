@@ -67,29 +67,21 @@ import * as react_resize_detector_a4lv from 'react-resize-detector';
 importer.modules['react-resize-detector'] = interopDefault(react_resize_detector_a4lv, 'default');
 importer.importStatuses['react-resize-detector'] = 'default';
 
-import * as _material_ui_core_26sp from '@material-ui/core';
-importer.modules['@material-ui/core'] = interopDefault(_material_ui_core_26sp, 'default');
-importer.importStatuses['@material-ui/core'] = 'default';
+import * as _material_ui_core_26sp from '@mui/material';
+importer.modules['@mui/material'] = interopDefault(_material_ui_core_26sp, 'default');
+importer.importStatuses['@mui/material'] = 'default';
 
-import * as _material_ui_styles_n37c from '@material-ui/styles';
-importer.modules['@material-ui/styles'] = interopDefault(_material_ui_styles_n37c, 'default');
-importer.importStatuses['@material-ui/styles'] = 'default';
+import * as _material_ui_lab_n37c from '@mui/lab';
+importer.modules['@mui/lab'] = interopDefault(_material_ui_lab_n37c, 'default');
+importer.importStatuses['@mui/lab'] = 'default';
 
-import * as _material_ui_lab_n37c from '@material-ui/lab';
-importer.modules['@material-ui/lab'] = interopDefault(_material_ui_lab_n37c, 'default');
-importer.importStatuses['@material-ui/lab'] = 'default';
+import * as muiStyles from '@mui/styles';
+importer.modules['@mui/styles'] = interopDefault(muiStyles, 'default');
+importer.importStatuses['@mui/styles'] = 'default';
 
-import * as _material_ui_pickers_n37c from '@material-ui/pickers';
-importer.modules['@material-ui/pickers'] = interopDefault(_material_ui_pickers_n37c, 'default');
-importer.importStatuses['@material-ui/pickers'] = 'default';
-
-import * as _material_ui_utils_056s from '@material-ui/utils';
-importer.modules['@material-ui/utils'] = interopDefault(_material_ui_utils_056s, 'default');
-importer.importStatuses['@material-ui/utils'] = 'default';
-
-import * as _material_ui_system_tllw from '@material-ui/system';
-importer.modules['@material-ui/system'] = interopDefault(_material_ui_system_tllw, 'default');
-importer.importStatuses['@material-ui/system'] = 'default';
+import emotionReact from '@emotion/react';
+importer.modules['@emotion/react'] = interopDefault(emotionReact, 'default');
+importer.importStatuses['@emotion/react'] = 'default';
 
 import * as react_toastify_swhg from 'react-toastify';
 importer.modules['react-toastify'] = interopDefault(react_toastify_swhg, 'default');
@@ -114,10 +106,6 @@ importer.importStatuses['clsx'] = 'default';
 import * as react_is_xltt from 'react-is';
 importer.modules['react-is'] = interopDefault(react_is_xltt, 'default');
 importer.importStatuses['react-is'] = 'default';
-
-import * as popper_js_9mf9 from 'popper.js';
-importer.modules['popper.js'] = interopDefault(popper_js_9mf9, 'default');
-importer.importStatuses['popper.js'] = 'default';
 
 import * as object_assign_r3ie from 'object-assign';
 importer.modules['object-assign'] = interopDefault(object_assign_r3ie, 'default');

@@ -1,7 +1,8 @@
-import { Pagination as MUIPagination, UsePaginationProps } from '@material-ui/lab';
-import React, { useEffect, useRef, useState } from 'react';
-import styles from './Pagination.module.scss';
 import { TPaginationProps } from '@cromwell/core-frontend';
+import { Pagination as MUIPagination } from '@mui/material';
+import React from 'react';
+
+import styles from './Pagination.module.scss';
 
 const Pagination = (props: TPaginationProps) => {
     return (

@@ -1,8 +1,7 @@
 import { getBlockInstance, TPagedParams, TUser, TUserFilter, TUserRole } from '@cromwell/core';
 import { CList, getGraphQLClient, TCList } from '@cromwell/core-frontend';
-import { Checkbox, IconButton, TextField, Tooltip } from '@material-ui/core';
-import { AddCircle as AddCircleIcon, Delete as DeleteIcon } from '@material-ui/icons';
-import { Autocomplete } from '@material-ui/lab';
+import { AddCircle as AddCircleIcon, Delete as DeleteIcon } from '@mui/icons-material';
+import { Autocomplete, Checkbox, IconButton, TextField, Tooltip } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import { connect, PropsType } from 'react-redux-ts';
 import { useHistory } from 'react-router-dom';
@@ -152,6 +151,7 @@ const UserList = (props: TPropsType) => {
                     <TextField
                         className={styles.filterItem}
                         placeholder="Name"
+                        variant="standard"
                         onChange={(event) => {
                             filterInput.current.fullName = event.target.value;
                             handleFilterInput();
@@ -160,6 +160,7 @@ const UserList = (props: TPropsType) => {
                     <TextField
                         className={styles.filterItem}
                         placeholder="Email"
+                        variant="standard"
                         onChange={(event) => {
                             filterInput.current.email = event.target.value;
                             handleFilterInput();
@@ -177,6 +178,7 @@ const UserList = (props: TPropsType) => {
                         }}
                         renderInput={(params) =>
                             <TextField {...params}
+                                variant="standard"
                                 placeholder="Role"
                                 size="medium"
                             />}

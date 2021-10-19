@@ -1,6 +1,6 @@
 import { TAttribute, TAttributeInstanceValue, TAttributeProductVariant, TProduct } from '@cromwell/core';
-import { Button, Fade, IconButton, MenuItem, Paper, Popper, Tooltip } from '@material-ui/core';
-import { DeleteForever as DeleteForeverIcon, Edit as EditIcon, HighlightOff as HighlightOffIcon } from '@material-ui/icons';
+import { Button, Fade, IconButton, MenuItem, Paper, Popper, Tooltip } from '@mui/material';
+import { DeleteForever as DeleteForeverIcon, Edit as EditIcon, HighlightOff as HighlightOffIcon } from '@mui/icons-material';
 import React, { useEffect, useState } from 'react';
 
 import TransferList from '../../components/transferList/TransferList';

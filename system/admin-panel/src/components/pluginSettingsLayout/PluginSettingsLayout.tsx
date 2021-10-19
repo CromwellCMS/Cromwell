@@ -1,7 +1,7 @@
 import { TPluginSettingsProps } from '@cromwell/core';
 import { getRestApiClient } from '@cromwell/core-frontend';
-import { Button, IconButton, Tooltip } from '@material-ui/core';
-import { ArrowBack, InfoOutlined as InfoIcon } from '@material-ui/icons';
+import { Button, IconButton, Tooltip } from '@mui/material';
+import { ArrowBack, InfoOutlined as InfoIcon } from '@mui/icons-material';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 

@@ -57,7 +57,7 @@ jest.mock('echarts', () => {
 jest.mock('react-resize-detector', () => {
     return () => <></>;
 });
-jest.mock('@material-ui/lab', () => {
+jest.mock('@mui/material', () => {
     return {
         Rating: () => <></>,
     }

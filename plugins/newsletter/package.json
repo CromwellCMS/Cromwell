@@ -27,8 +27,9 @@
     "migration:generate:all-example": "npm run migration:generate:all --name=init"
   },
   "dependencies": {
-    "@material-ui/core": "4.12.3",
-    "@material-ui/lab": "4.0.0-alpha.60"
+    "@mui/material": "5.0.4",
+    "@mui/lab": "5.0.0-alpha.51",
+    "@mui/styles": "5.0.1"
   },
   "devDependencies": {
     "@nestjs/testing": "8.0.6",
@@ -78,8 +79,8 @@
     "description": "Provides a way for web-site visitors to leave their e-mails for newsletter subscription. E-mails can be CSV exported in Admin panel",
     "icon": "static/icon_email.png",
     "frontendDependencies": [
-      "@material-ui/core",
-      "@material-ui/lab"
+      "@mui/material",
+      "@mui/lab"
     ]
   }
 }

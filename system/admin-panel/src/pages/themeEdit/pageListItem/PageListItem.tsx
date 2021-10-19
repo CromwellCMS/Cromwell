@@ -1,10 +1,10 @@
 import { TPageInfo } from '@cromwell/core';
-import { IconButton, MenuItem, Popover, TextField, Tooltip } from '@material-ui/core';
+import { IconButton, MenuItem, Popover, TextField, Tooltip } from '@mui/material';
 import {
     DeleteForever as DeleteForeverIcon,
     KeyboardArrowRight as KeyboardArrowRightIcon,
     Link as LinkIcon,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
 import React, { useRef, useState } from 'react';
 
 import { TExtendedPageInfo } from '../ThemeEdit';
@@ -79,6 +79,7 @@ export const PageListItem = (props: {
                                         fullWidth
                                         value={previewUrl ?? ''}
                                         className={styles.settingsInput}
+                                        variant="standard"
                                         label="Preview URL" />
                                 </div>
                             </Popover>

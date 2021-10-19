@@ -1,7 +1,8 @@
 import { gql } from '@apollo/client';
 import { TPagedParams, TPost, TPostFilter } from '@cromwell/core';
 import { getGraphQLClient, getGraphQLErrorInfo, Link, LoadBox } from '@cromwell/core-frontend';
-import { ClickAwayListener, Fade, Grid, Popper, TextField as MuiTextField, withStyles } from '@material-ui/core';
+import { ClickAwayListener, Fade, Grid, Popper, TextField as MuiTextField } from '@mui/material';
+import { withStyles } from '@mui/styles';
 import React from 'react';
 import { debounce } from 'throttle-debounce';
 

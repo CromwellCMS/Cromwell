@@ -8,8 +8,9 @@ import {
     Select,
     TextField,
     Tooltip,
-} from '@material-ui/core';
-import { PhotoLibrary as PhotoLibraryIcon, Public as PublicIcon } from '@material-ui/icons';
+    SelectChangeEvent
+} from '@mui/material';
+import { PhotoLibrary as PhotoLibraryIcon, Public as PublicIcon } from '@mui/icons-material';
 import React from 'react';
 
 import GalleryPicker from '../../../../components/galleryPicker/GalleryPicker';
@@ -39,7 +40,7 @@ export function GalleryBlockSidebar(props: TBlockMenuProps) {
         handleChange(name, val);
     }
 
-    const handleTextInput = (name: keyof TCromwellBlockData['gallery']) => (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+    const handleSelectTextInput = (name: keyof TCromwellBlockData['gallery']) => (e: SelectChangeEvent<unknown>) => {
         let val = e.target.value;
         if (val === '') val = undefined;
         handleChange(name, val);
@@ -75,6 +76,7 @@ export function GalleryBlockSidebar(props: TBlockMenuProps) {
                 value={data?.gallery?.visibleSlides ?? 1}
                 className={styles.settingsInput}
                 type="number"
+                variant="standard"
                 label="Slides Per View" />
             <TextField
                 fullWidth
@@ -82,6 +84,7 @@ export function GalleryBlockSidebar(props: TBlockMenuProps) {
                 value={data?.gallery?.width ?? ''}
                 className={styles.settingsInput}
                 type="number"
+                variant="standard"
                 label="Width (px)" />
             <TextField
                 onChange={handleNumberInput('height')}
@@ -89,6 +92,7 @@ export function GalleryBlockSidebar(props: TBlockMenuProps) {
                 value={data?.gallery?.height ?? ''}
                 className={styles.settingsInput}
                 type="number"
+                variant="standard"
                 label="Height (px)" />
             <TextField
                 onChange={handleNumberInput('ratio')}
@@ -96,6 +100,7 @@ export function GalleryBlockSidebar(props: TBlockMenuProps) {
                 value={data?.gallery?.ratio ?? ''}
                 className={styles.settingsInput}
                 type="number"
+                variant="standard"
                 label="Ratio width:height" />
             <TextField
                 onChange={(event) => {
@@ -107,6 +112,7 @@ export function GalleryBlockSidebar(props: TBlockMenuProps) {
                 value={data?.gallery?.interval ?? ''}
                 className={styles.settingsInput}
                 type="number"
+                variant="standard"
                 label="Interval between slides, ms" />
             {/* <TextField
                 onChange={handleNumberInput('speed')}
@@ -114,6 +120,7 @@ export function GalleryBlockSidebar(props: TBlockMenuProps) {
                 value={data?.gallery?.speed ?? null}
                 className={styles.settingsInput}
                 type="number"
+                    variant="standard"
                 label="Transition time between slides, ms" /> */}
             <FormControlLabel
                 control={
@@ -181,6 +188,7 @@ export function GalleryBlockSidebar(props: TBlockMenuProps) {
                 value={data?.gallery?.spaceBetween ?? null}
                 className={styles.settingsInput}
                 type="number"
+                variant="standard"
                 label="Space between slides, px" />
             <FormControl
                 fullWidth
@@ -188,7 +196,8 @@ export function GalleryBlockSidebar(props: TBlockMenuProps) {
                 <InputLabel >Image fit</InputLabel>
                 <Select
                     fullWidth
-                    onChange={handleTextInput('backgroundSize')}
+                    onChange={handleSelectTextInput('backgroundSize')}
+                    variant="standard"
                     value={data?.gallery?.backgroundSize ?? 'cover'}
                 >
                     <MenuItem value={'contain'}>Contain</MenuItem>
@@ -202,6 +211,7 @@ export function GalleryBlockSidebar(props: TBlockMenuProps) {
                 <Select
                     fullWidth
                     onChange={handleTextInput('effect')}
+                                variant="standard"
                     value={data?.gallery?.effect ?? 'slide'}
                 >
                     <MenuItem value={'slide'}>slide</MenuItem>

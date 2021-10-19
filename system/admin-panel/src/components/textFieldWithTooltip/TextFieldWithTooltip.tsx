@@ -1,5 +1,5 @@
-import { IconButton, InputAdornment, TextField, TextFieldProps, Tooltip } from '@material-ui/core';
-import { HelpOutlineOutlined } from '@material-ui/icons';
+import { IconButton, InputAdornment, TextField, TextFieldProps, Tooltip } from '@mui/material';
+import { HelpOutlineOutlined } from '@mui/icons-material';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 
@@ -32,6 +32,7 @@ export default function TextFieldWithTooltip(props: TextFieldProps & {
                     </InputAdornment>
                 ),
             }}
+            variant="standard"
             {...props}
         />
     )

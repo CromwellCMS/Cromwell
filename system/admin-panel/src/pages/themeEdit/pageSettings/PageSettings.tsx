@@ -1,6 +1,5 @@
 import { TPageConfig } from '@cromwell/core';
-import { TextField } from '@material-ui/core';
-import { Autocomplete } from '@material-ui/lab';
+import { Autocomplete, TextField } from '@mui/material';
 import React from 'react';
 
 import styles from './PageSettings.module.scss';

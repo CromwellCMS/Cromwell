@@ -1,8 +1,7 @@
 import { TAttribute } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
-import { Button, Grid } from '@material-ui/core';
-import { AddCircleOutline as AddCircleOutlineIcon } from '@material-ui/icons';
-import { Skeleton } from '@material-ui/lab';
+import { AddCircleOutline as AddCircleOutlineIcon } from '@mui/icons-material';
+import { Button, Grid, Skeleton } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 
 import { useForceUpdate } from '../../helpers/forceUpdate';
@@ -74,7 +73,7 @@ export default function AttributesPage() {
                 {isLoading && Array(3).fill(1).map((it, index) => {
                     return (
                         <Grid item xs={12} sm={12} md={6} key={index}>
-                            <Skeleton key={index} className={styles.listItem} variant="rect" height="315px" width="100%" style={{ margin: '0 10px 20px 10px' }} > </Skeleton>
+                            <Skeleton key={index} className={styles.listItem} variant="rectangular" height="315px" width="100%" style={{ margin: '0 10px 20px 10px' }} > </Skeleton>
                         </Grid>
                     )
                 })}

@@ -1,7 +1,6 @@
 import Link from '@docusaurus/Link';
-import { CircularProgress, Collapse, IconButton, TextField } from '@material-ui/core';
-import { ExpandMore as ExpandMoreIcon } from '@material-ui/icons';
-import { Autocomplete } from '@material-ui/lab';
+import { ExpandMore as ExpandMoreIcon } from '@mui/icons-material';
+import { Autocomplete, CircularProgress, Collapse, IconButton, TextField } from '@mui/material';
 import Layout from '@theme/Layout';
 import compareVersions from 'compare-versions';
 import React, { useEffect, useState } from 'react';

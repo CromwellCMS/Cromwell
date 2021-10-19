@@ -48,7 +48,7 @@
     "@cromwell/editorjs-image": "2.7.2",
     "@cromwell/plugin-product-filter": "1.0.18",
     "@cromwell/utils": "1.0.28",
-    "@date-io/date-fns": "1.3.13",
+    "@date-io/date-fns": "2.11.0",
     "@editorjs/code": "2.7.0",
     "@editorjs/delimiter": "1.2.0",
     "@editorjs/editorjs": "2.22.2",
@@ -62,17 +62,17 @@
     "@editorjs/raw": "2.3.0",
     "@editorjs/table": "2.0.1",
     "@editorjs/warning": "1.2.0",
+    "@emotion/react": "11.5.0",
+    "@emotion/styled": "11.3.0",
     "@loadable/component": "5.15.0",
-    "@material-ui/core": "4.12.3",
-    "@material-ui/icons": "4.11.2",
-    "@material-ui/lab": "4.0.0-alpha.60",
-    "@material-ui/pickers": "3.3.10",
-    "@material-ui/styles": "4.11.4",
-    "@material-ui/utils": "4.11.2",
+    "@mui/material": "5.0.4",
+    "@mui/icons-material": "5.0.4",
+    "@mui/lab": "5.0.0-alpha.51",
+    "@mui/styles": "5.0.1",
     "clsx": "1.1.1",
     "compression": "1.7.4",
     "countup.js": "2.0.8",
-    "date-fns": "2.23.0",
+    "date-fns": "2.25.0",
     "echarts": "5.1.2",
     "fast-deep-equal": "3.1.3",
     "fastify": "3.22.0",
@@ -164,174 +164,10 @@
       "react-router-dom",
       "react-toastify",
       "tslib",
-      "@material-ui/core",
-      {
-        "name": "@material-ui/pickers",
-        "externals": [
-          {
-            "usedName": "@material-ui/core/Typography",
-            "moduleName": "@material-ui/core",
-            "importName": "Typography"
-          },
-          {
-            "usedName": "@material-ui/core/Button",
-            "moduleName": "@material-ui/core",
-            "importName": "Button"
-          },
-          {
-            "usedName": "@material-ui/core/Toolbar",
-            "moduleName": "@material-ui/core",
-            "importName": "Toolbar"
-          },
-          {
-            "usedName": "@material-ui/core/TextField",
-            "moduleName": "@material-ui/core",
-            "importName": "TextField"
-          },
-          {
-            "usedName": "@material-ui/core/IconButton",
-            "moduleName": "@material-ui/core",
-            "importName": "IconButton"
-          },
-          {
-            "usedName": "@material-ui/core/SvgIcon",
-            "moduleName": "@material-ui/core",
-            "importName": "SvgIcon"
-          },
-          {
-            "usedName": "@material-ui/core/InputAdornment",
-            "moduleName": "@material-ui/core",
-            "importName": "InputAdornment"
-          },
-          {
-            "usedName": "@material-ui/core/CircularProgress",
-            "moduleName": "@material-ui/core",
-            "importName": "CircularProgress"
-          },
-          {
-            "usedName": "@material-ui/core/DialogActions",
-            "moduleName": "@material-ui/core",
-            "importName": "DialogActions"
-          },
-          {
-            "usedName": "@material-ui/core/DialogContent",
-            "moduleName": "@material-ui/core",
-            "importName": "DialogContent"
-          },
-          {
-            "usedName": "@material-ui/core/Dialog",
-            "moduleName": "@material-ui/core",
-            "importName": "Dialog"
-          },
-          {
-            "usedName": "@material-ui/core/Popover",
-            "moduleName": "@material-ui/core",
-            "importName": "Popover"
-          },
-          {
-            "usedName": "@material-ui/core/Grid",
-            "moduleName": "@material-ui/core",
-            "importName": "Grid"
-          },
-          {
-            "usedName": "@material-ui/core/Tab",
-            "moduleName": "@material-ui/core",
-            "importName": "Tab"
-          },
-          {
-            "usedName": "@material-ui/core/Tabs",
-            "moduleName": "@material-ui/core",
-            "importName": "Tabs"
-          },
-          {
-            "usedName": "@material-ui/core/Paper",
-            "moduleName": "@material-ui/core",
-            "importName": "Paper"
-          },
-          {
-            "usedName": "@material-ui/core/styles",
-            "moduleName": "@material-ui/core"
-          }
-        ]
-      },
-      {
-        "name": "@material-ui/lab",
-        "externals": [
-          {
-            "usedName": "@material-ui/core/styles",
-            "moduleName": "@material-ui/core"
-          },
-          {
-            "usedName": "@material-ui/core/ButtonBase",
-            "moduleName": "@material-ui/core",
-            "importName": "ButtonBase"
-          },
-          {
-            "usedName": "@material-ui/core/utils",
-            "moduleName": "@material-ui/core"
-          },
-          {
-            "usedName": "@material-ui/core/Tabs",
-            "moduleName": "@material-ui/core",
-            "importName": "Tabs"
-          },
-          {
-            "usedName": "@material-ui/core/Fab",
-            "moduleName": "@material-ui/core",
-            "importName": "Fab"
-          },
-          {
-            "usedName": "@material-ui/core/Tooltip",
-            "moduleName": "@material-ui/core",
-            "importName": "Tooltip"
-          },
-          {
-            "usedName": "@material-ui/core/Avatar",
-            "moduleName": "@material-ui/core",
-            "importName": "Avatar"
-          },
-          {
-            "usedName": "@material-ui/core/Popper",
-            "moduleName": "@material-ui/core",
-            "importName": "Popper"
-          },
-          {
-            "usedName": "@material-ui/core/ListSubheader",
-            "moduleName": "@material-ui/core",
-            "importName": "ListSubheader"
-          },
-          {
-            "usedName": "@material-ui/core/Paper",
-            "moduleName": "@material-ui/core",
-            "importName": "Paper"
-          },
-          {
-            "usedName": "@material-ui/core/IconButton",
-            "moduleName": "@material-ui/core",
-            "importName": "IconButton"
-          },
-          {
-            "usedName": "@material-ui/core/Chip",
-            "moduleName": "@material-ui/core",
-            "importName": "Chip"
-          },
-          {
-            "usedName": "@material-ui/core/Zoom",
-            "moduleName": "@material-ui/core",
-            "importName": "Zoom"
-          },
-          {
-            "usedName": "@material-ui/core/Typography",
-            "moduleName": "@material-ui/core",
-            "importName": "Typography"
-          },
-          {
-            "usedName": "@material-ui/core/Collapse",
-            "moduleName": "@material-ui/core",
-            "importName": "Collapse"
-          }
-        ]
-      }
+      "@mui/material",
+      "@emotion/react",
+      "@emotion/styled",
+      "@mui/styles"
     ]
   }
 }

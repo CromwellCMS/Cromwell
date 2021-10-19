@@ -1,5 +1,5 @@
-import { IconButton, MenuItem } from '@material-ui/core';
-import { Description as DescriptionIcon, FolderOpen as FolderOpenIcon, ZoomIn as ZoomInIcon } from '@material-ui/icons';
+import { IconButton, MenuItem } from '@mui/material';
+import { Description as DescriptionIcon, FolderOpen as FolderOpenIcon, ZoomIn as ZoomInIcon } from '@mui/icons-material';
 import React from 'react';
 import LazyLoad from 'react-lazy-load';
 

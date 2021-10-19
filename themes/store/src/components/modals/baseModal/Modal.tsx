@@ -1,4 +1,4 @@
-import { Modal as MuiModal } from '@material-ui/core';
+import { Modal as MuiModal } from '@mui/material';
 import React, { useEffect, useRef } from 'react';
 
 import styles from './Modal.module.scss';

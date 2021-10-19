@@ -1,12 +1,11 @@
 import { TOrder, TOrderInput, TStoreListItem } from '@cromwell/core';
 import { getCStore, getGraphQLClient } from '@cromwell/core-frontend';
-import { Button, Grid, IconButton, TextField } from '@material-ui/core';
 import {
     ArrowBack as ArrowBackIcon,
     DeleteForever as DeleteForeverIcon,
     WarningRounded as WarningRoundedIcon,
-} from '@material-ui/icons';
-import { Autocomplete, Skeleton } from '@material-ui/lab';
+} from '@mui/icons-material';
+import { Autocomplete, Button, Grid, IconButton, Skeleton, TextField } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
@@ -179,36 +178,42 @@ const OrderPage = () => {
                                 style={{ width: 300 }}
                                 renderInput={(params) => <TextField {...params}
                                     label="Status"
+                                    variant="standard"
                                     fullWidth
                                 />}
                             />
                             <TextField label="Name"
                                 value={data?.customerName || ''}
                                 fullWidth
+                                variant="standard"
                                 className={styles.textField}
                                 onChange={(e) => { handleInputChange('customerName', e.target.value) }}
                             />
                             <TextField label="Phone"
                                 value={data?.customerPhone || ''}
                                 fullWidth
+                                variant="standard"
                                 className={styles.textField}
                                 onChange={(e) => { handleInputChange('customerPhone', e.target.value) }}
                             />
                             <TextField label="Email"
                                 value={data?.customerEmail || ''}
                                 fullWidth
+                                variant="standard"
                                 className={styles.textField}
                                 onChange={(e) => { handleInputChange('customerEmail', e.target.value) }}
                             />
                             <TextField label="Address"
                                 value={data?.customerAddress || ''}
                                 fullWidth
+                                variant="standard"
                                 className={styles.textField}
                                 onChange={(e) => { handleInputChange('customerAddress', e.target.value) }}
                             />
                             <TextField label="Comment"
                                 value={data?.customerComment || ''}
                                 fullWidth
+                                variant="standard"
                                 className={styles.textField}
                                 onChange={(e) => { handleInputChange('customerComment', e.target.value) }}
                             />
@@ -216,17 +221,20 @@ const OrderPage = () => {
                                 disabled
                                 value={data?.paymentMethod}
                                 fullWidth
+                                variant="standard"
                                 className={styles.textField}
                             />
                             <TextField label="Shipping method"
                                 disabled
                                 value={data?.shippingMethod}
                                 fullWidth
+                                variant="standard"
                                 className={styles.textField}
                             />
                             <TextField label="Shipping price"
                                 value={data?.shippingPrice ?? 0}
                                 className={styles.textField}
+                                variant="standard"
                                 onChange={(e) => {
                                     let newPrice = parseInt(e.target.value);
                                     if (isNaN(newPrice)) newPrice = 0;
@@ -240,11 +248,13 @@ const OrderPage = () => {
                             <TextField label="Created"
                                 value={toLocaleDateString(data?.createDate)}
                                 fullWidth
+                                variant="standard"
                                 className={styles.textField}
                             />
                             <TextField label="Last updated"
                                 value={toLocaleDateString(data?.updateDate)}
                                 fullWidth
+                                variant="standard"
                                 className={styles.textField}
                             />
                         </>

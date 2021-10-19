@@ -7,7 +7,7 @@ import {
     onWidgetRegister,
     WidgetTypes,
 } from '@cromwell/core-frontend';
-import { Rating } from '@material-ui/lab';
+import { Rating } from '@mui/material';
 import { CountUp } from 'countup.js';
 import React from 'react';
 import { Responsive, WidthProvider } from 'react-grid-layout';

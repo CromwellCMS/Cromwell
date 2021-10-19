@@ -1,7 +1,6 @@
 import { getBlockInstance, TCCSModuleInfo, TPackageCromwellConfig } from '@cromwell/core';
 import { CList, getCentralServerClient, getRestApiClient, TCList } from '@cromwell/core-frontend';
-import { Grid, TextField } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
+import { Grid, Skeleton, TextField } from '@mui/material';
 import React, { Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { debounce } from 'throttle-debounce';
@@ -97,6 +96,7 @@ export default class PluginMarket extends Component<Partial<RouteComponentProps>
                     <TextField
                         className={styles.filterItem}
                         placeholder="Search"
+                        variant="standard"
                         onChange={(event) => {
                             this.filterInput.search = event.target.value;
                             this.handleFilterInput();
@@ -151,7 +151,7 @@ const preloader = (<div className={styles.listContainer}>
     {Array(4).fill(1).map((it, index) => {
         return (
             <Grid key={index} item xs={6} lg={4} className={styles.listItem}>
-                <Skeleton variant="rect" height="388px" width="100%" style={{ margin: '0 10px 20px 10px' }} > </Skeleton>
+                <Skeleton variant="rectangular" height="388px" width="100%" style={{ margin: '0 10px 20px 10px' }} > </Skeleton>
             </Grid>
         )
     })}

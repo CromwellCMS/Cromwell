@@ -19,8 +19,9 @@
     "watch": "npx --no-install cromwell b -w"
   },
   "dependencies": {
-    "@material-ui/core": "4.12.3",
-    "@material-ui/lab": "4.0.0-alpha.60",
+    "@mui/material": "5.0.4",
+    "@mui/lab": "5.0.0-alpha.51",
+    "@mui/styles": "5.0.1",
     "reset-css": "5.0.1"
   },
   "devDependencies": {
@@ -81,23 +82,21 @@
       "@cromwell/theme-blog"
     ],
     "frontendDependencies": [
-      "@material-ui/lab",
-      "@material-ui/core",
+      "@mui/lab",
+      "@mui/material",
+      "@mui/styles",
       "date-fns"
     ],
     "firstLoadedDependencies": [
       "date-fns",
-      "@material-ui/core",
-      "@material-ui/styles",
-      "@material-ui/utils",
-      "@material-ui/system",
+      "@mui/material",
+      "@mui/styles",
       "react-toastify",
       "prop-types",
       "hoist-non-react-statics",
       "react-transition-group",
       "clsx",
       "react-is",
-      "popper.js",
       "object-assign",
       "jss",
       "jss-plugin-rule-value-function",
