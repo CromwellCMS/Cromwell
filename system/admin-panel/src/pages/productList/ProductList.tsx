@@ -3,24 +3,25 @@ import {
     getBlockInstance,
     getStoreItem,
     setStoreItem,
+    TAttribute,
     TFilteredProductList,
     TPagedParams,
     TProduct,
     TProductFilter,
 } from '@cromwell/core';
-import { CList, CPlugin, getGraphQLClient, TCList } from '@cromwell/core-frontend';
-// import { IFrontendFilter, TInstanceSettings } from '@cromwell/plugin-product-filter/build/types/types';
-import { Checkbox, Drawer, IconButton, Tooltip } from '@mui/material';
+import { CList, getGraphQLClient, TCList } from '@cromwell/core-frontend';
 import {
     AddCircle as AddCircleIcon,
     Close as CloseIcon,
     Delete as DeleteIcon,
     FilterList as FilterListIcon,
 } from '@mui/icons-material';
+import { Checkbox, Drawer, IconButton, Tooltip } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import { connect, PropsType } from 'react-redux-ts';
 import { useHistory } from 'react-router-dom';
 
+import ProductFilter from '../../../../../plugins/product-filter/src/frontend/components/Filter';
 import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
 import ConfirmationModal from '../../components/modal/Confirmation';
 import Pagination from '../../components/pagination/Pagination';
@@ -58,6 +59,7 @@ const ProductList = (props: TPropsType) => {
     const filterInput = useRef<TProductFilter>({});
     const listId = "Admin_ProductsList";
     const history = useHistory();
+    const [attributes, setAttributes] = useState<TAttribute[] | null>(null);
     const [productToDelete, setProductToDelete] = useState<TProduct | null>(null);
     const [deleteSelectedOpen, setDeleteSelectedOpen] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -79,13 +81,7 @@ const ProductList = (props: TPropsType) => {
 
     const init = async () => {
         const attributes = await client?.getAttributes();
-        const plugins = getStoreItem('plugins') ?? {};
-        if (!plugins[filterPluginName]) plugins[filterPluginName] = {};
-        plugins[filterPluginName].data = {
-            ...(plugins[filterPluginName]?.data ?? {}),
-            attributes: attributes,
-        }
-        setStoreItem('plugins', plugins);
+        setAttributes(attributes);
     }
 
     const onFilterChange = (params: TProductFilter) => {
@@ -283,18 +279,16 @@ const ProductList = (props: TPropsType) => {
                         </IconButton>
                     </Tooltip>
                 </div>
-                <CPlugin
-                    plugin={{
-                        instanceSettings: {
-                            disableMobile: true,
-                            onChange: onFilterChange,
-                            getInstance: (inst) => { filterInstRef.current = inst },
-                            onMount: onFilterMount,
-                        } // as TInstanceSettings
+                <ProductFilter
+                    instanceSettings={{
+                        disableMobile: true,
+                        onChange: onFilterChange,
+                        getInstance: (inst) => { filterInstRef.current = inst },
+                        onMount: onFilterMount,
                     }}
-                    adminPanel={false}
-                    pluginName={filterPluginName}
-                    id="product-filter-plugin"
+                    data={{
+                        attributes
+                    }}
                 />
             </Drawer>
             <ConfirmationModal

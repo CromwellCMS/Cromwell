@@ -67,17 +67,25 @@ import * as react_resize_detector_a4lv from 'react-resize-detector';
 importer.modules['react-resize-detector'] = interopDefault(react_resize_detector_a4lv, 'default');
 importer.importStatuses['react-resize-detector'] = 'default';
 
+import * as muiStyles from '@mui/styles';
+importer.modules['@mui/styles'] = interopDefault(muiStyles, 'default');
+importer.importStatuses['@mui/styles'] = 'default';
+importer.modules['@material-ui/styles'] = interopDefault(muiStyles, 'default');
+importer.importStatuses['@material-ui/styles'] = 'default';
+
 import * as _material_ui_core_26sp from '@mui/material';
 importer.modules['@mui/material'] = interopDefault(_material_ui_core_26sp, 'default');
 importer.importStatuses['@mui/material'] = 'default';
+importer.modules['@material-ui/core'] = interopDefault(_material_ui_core_26sp, 'default');
+importer.importStatuses['@material-ui/core'] = 'default';
+importer.modules['@material-ui/lab'] = interopDefault(_material_ui_core_26sp, 'default');
+importer.importStatuses['@material-ui/lab'] = 'default';
+importer.modules['@material-ui/core'].makeStyles = importer.modules['@mui/styles'].makeStyles;
+importer.modules['@material-ui/core'].createStyles = importer.modules['@mui/styles'].createStyles;
 
 import * as _material_ui_lab_n37c from '@mui/lab';
 importer.modules['@mui/lab'] = interopDefault(_material_ui_lab_n37c, 'default');
 importer.importStatuses['@mui/lab'] = 'default';
-
-import * as muiStyles from '@mui/styles';
-importer.modules['@mui/styles'] = interopDefault(muiStyles, 'default');
-importer.importStatuses['@mui/styles'] = 'default';
 
 import emotionReact from '@emotion/react';
 importer.modules['@emotion/react'] = interopDefault(emotionReact, 'default');

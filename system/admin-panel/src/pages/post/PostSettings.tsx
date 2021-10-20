@@ -125,7 +125,7 @@ const PostSettings = (props: {
                         />
                     )}
                 />
-                <LocalizationProvider dateAdapter={AdapterDateFns as any}>
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
                     <DatePicker
                         label="Publish date"
                         value={publishDate}

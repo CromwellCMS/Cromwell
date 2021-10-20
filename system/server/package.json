@@ -51,7 +51,7 @@
     "colors": "1.4.0",
     "cors": "2.8.5",
     "crypto-random-string": "3.3.0",
-    "date-fns": "2.23.0",
+    "date-fns": "2.25.0",
     "decache": "4.6.0",
     "fastify": "3.22.0",
     "fastify-cookie": "5.3.1",

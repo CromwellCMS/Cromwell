@@ -22,7 +22,7 @@
     "@mui/icons-material": "5.0.4",
     "@mui/lab": "5.0.0-alpha.51",
     "@mui/styles": "5.0.1",
-    "date-fns": "2.23.0",
+    "date-fns": "2.25.0",
     "mobx": "6.3.2",
     "mobx-react": "7.2.0",
     "reset-css": "5.0.1"
