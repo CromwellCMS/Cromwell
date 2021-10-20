@@ -63,7 +63,7 @@ export const CategorySort = (props: {
             <InputLabel style={{ color: '#111' }}>Sort</InputLabel>
             <Select
                 value={sortTitle}
-                variant="standard"
+                variant="filled"
                 onChange={handleKeyChange}
             >
                 {sortOptions.map(opt => (

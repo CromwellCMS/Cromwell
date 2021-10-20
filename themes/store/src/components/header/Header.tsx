@@ -39,7 +39,6 @@ import { MobileHeader } from './MobileHeader';
 
 const Select = withStyles({
     root: {
-        width: '300px',
         fontSize: '1em',
         padding: '4px'
     }
