@@ -1,6 +1,6 @@
 import { getStoreItem, setStoreItem } from '@cromwell/core';
-import { createStyles, Switch, SwitchClassKey, SwitchProps, Theme, Tooltip } from '@mui/material';
-import { withStyles } from '@mui/styles';
+import { Switch, SwitchClassKey, SwitchProps, Theme, Tooltip } from '@mui/material';
+import { createStyles, withStyles } from '@mui/styles';
 import clsx from 'clsx';
 import React from 'react';
 
@@ -18,7 +18,7 @@ export const ModeSwitch = withStyles((theme: Theme) =>
     createStyles({
         track: {
             backgroundImage: "url('/admin/static/sun.svg')",
-            transition: theme.transitions.create(['background-color', 'border']),
+            transition: theme?.transitions?.create(['background-color', 'border']),
         },
         switchBase: {
             '&$checked': {
