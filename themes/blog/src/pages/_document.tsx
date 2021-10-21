@@ -1,5 +1,5 @@
 import { TCmsSettings } from '@cromwell/core';
-import { ServerStyleSheets } from '@material-ui/core';
+import { ServerStyleSheets } from '@mui/styles';
 import Document, { DocumentContext, Head, Html, Main, NextScript } from 'next/document';
 import React from 'react';
 

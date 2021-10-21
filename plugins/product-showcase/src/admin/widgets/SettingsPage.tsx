@@ -1,7 +1,8 @@
 import { PluginSettingsLayout } from '@cromwell/admin-panel';
 import { TPluginSettingsProps } from '@cromwell/core';
 import { getRestApiClient } from '@cromwell/core-frontend';
-import { createStyles, makeStyles, TextField } from '@material-ui/core';
+import { TextField } from '@mui/material';
+import { createStyles, makeStyles } from '@mui/styles';
 import React from 'react';
 
 import { TSettings } from '../../types';
@@ -35,6 +36,7 @@ export function SettingsPage(props: TPluginSettingsProps<TSettings>) {
                                 className={classes.item}
                                 value={size}
                                 onChange={handleChangeSize}
+                                variant="standard"
                             />
                         </div>
                     </>

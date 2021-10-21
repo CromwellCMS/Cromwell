@@ -1,7 +1,6 @@
 import { getStoreItem, onStoreChange, removeOnStoreChange, TProductReview, TUser } from '@cromwell/core';
 import { getRestApiClient } from '@cromwell/core-frontend';
-import { Button, TextField, Tooltip } from '@material-ui/core';
-import { Alert, Rating } from '@material-ui/lab';
+import { Alert, Button, Rating, TextField, Tooltip } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 
 import { toast } from '../../toast/toast';

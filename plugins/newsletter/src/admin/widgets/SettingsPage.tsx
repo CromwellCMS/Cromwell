@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 import { LoadingStatus, PluginSettingsLayout } from '@cromwell/admin-panel';
 import { getGraphQLClient } from '@cromwell/core-frontend';
-import { Button } from '@material-ui/core';
+import { Button } from '@mui/material';
 import React, { useState } from 'react';
 
 import { NewsletterForm } from '../../types';

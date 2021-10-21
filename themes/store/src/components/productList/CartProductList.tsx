@@ -1,6 +1,6 @@
 import { TProduct, TStoreListItem } from '@cromwell/core';
 import { getCStore, Link } from '@cromwell/core-frontend';
-import { Collapse, Grid, IconButton, useMediaQuery, useTheme } from '@material-ui/core';
+import { Collapse, Grid, IconButton, useMediaQuery, useTheme } from '@mui/material';
 import clsx from 'clsx';
 import React, { useEffect, useRef, useState } from 'react';
 

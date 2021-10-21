@@ -1,5 +1,5 @@
-import { TextField, Tooltip } from '@material-ui/core';
-import { Code as CodeIcon, Public as PublicIcon } from '@material-ui/icons';
+import { TextField, Tooltip } from '@mui/material';
+import { Code as CodeIcon, Public as PublicIcon } from '@mui/icons-material';
 import React from 'react';
 
 import { useForceUpdate } from '../../../../helpers/forceUpdate';
@@ -42,6 +42,7 @@ export function HTMLBlockSidebar(props: TBlockMenuProps) {
                 value={blockValue}
                 onChange={(e) => { setBlockValue(e.target.value) }}
                 multiline
+                variant="standard"
                 className={styles.textField}
             />
             <StylesEditor

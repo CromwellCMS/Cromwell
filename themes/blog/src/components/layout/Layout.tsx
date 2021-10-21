@@ -1,8 +1,9 @@
-import { createMuiTheme, ThemeProvider } from '@material-ui/core';
+import { ThemeProvider } from '@mui/material';
+import { createTheme } from '@mui/material/styles';
 import React from 'react';
 
-import Header from '../header/Header';
 import Footer from '../footer/Footer';
+import Header from '../header/Header';
 import styles from './Layout.module.scss';
 
 type TProps = {
@@ -10,7 +11,7 @@ type TProps = {
 }
 const primaryColor = "#9900CC";
 
-const theme = createMuiTheme({
+const theme = createTheme({
     palette: {
         primary: {
             main: primaryColor,

@@ -1,17 +1,16 @@
 import { gql } from '@apollo/client';
 import { TProductCategory } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
-import { Checkbox, Collapse, Grid, IconButton, Tooltip } from '@material-ui/core';
-import { TransitionProps } from '@material-ui/core/transitions';
 import {
     DeleteForever as DeleteForeverIcon,
     Edit as EditIcon,
     ExpandMore as ExpandMoreIcon,
     SubdirectoryArrowRight as SubdirectoryArrowRightIcon,
-} from '@material-ui/icons';
-import StarIcon from '@material-ui/icons/Star';
-import StarBorderIcon from '@material-ui/icons/StarBorder';
-import { Skeleton } from '@material-ui/lab';
+} from '@mui/icons-material';
+import StarIcon from '@mui/icons-material/Star';
+import StarBorderIcon from '@mui/icons-material/StarBorder';
+import { Checkbox, Collapse, Grid, IconButton, Skeleton, Tooltip } from '@mui/material';
+import { TransitionProps } from '@mui/material/transitions';
 import React, { useEffect, useState } from 'react';
 import { connect, PropsType } from 'react-redux-ts';
 import { Link } from 'react-router-dom';

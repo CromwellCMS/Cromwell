@@ -1,6 +1,6 @@
 import { TCCSVersion, TPackageCromwellConfig, TPluginEntity } from '@cromwell/core';
 import { getGraphQLClient, getRestApiClient } from '@cromwell/core-frontend';
-import { Button, Grid, IconButton, LinearProgress, Tooltip } from '@material-ui/core';
+import { Button, Grid, IconButton, LinearProgress, Tooltip } from '@mui/material';
 import {
     AddCircleOutline as AddCircleOutlineIcon,
     Close as CloseIcon,
@@ -9,7 +9,7 @@ import {
     LibraryAdd as LibraryAddIcon,
     Settings as SettingsIcon,
     Update as UpdateIcon,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
 import React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 

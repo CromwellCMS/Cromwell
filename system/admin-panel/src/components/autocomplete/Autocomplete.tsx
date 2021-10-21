@@ -1,16 +1,8 @@
 import { getBlockInstance, getRandStr, TPagedList, TPagedParams } from '@cromwell/core';
 import { CList, TCList } from '@cromwell/core-frontend';
-import {
-    Fade,
-    IconButton,
-    InputAdornment,
-    ListItem,
-    Popper,
-    TextField as MuiTextField,
-    withStyles,
-} from '@material-ui/core';
-import { Close as CloseIcon } from '@material-ui/icons';
-import { Skeleton } from '@material-ui/lab';
+import { Close as CloseIcon } from '@mui/icons-material';
+import { Fade, IconButton, InputAdornment, ListItem, Popper, Skeleton, TextField as MuiTextField } from '@mui/material';
+import { withStyles } from '@mui/styles';
 import React from 'react';
 import { debounce } from 'throttle-debounce';
 
@@ -157,7 +149,7 @@ class Autocomplete<TItemDataType> extends React.Component<{
             <>
                 <TextField
                     label={this.props.label ?? "Search..."}
-                    variant={this.props.variant}
+                    variant={this.props.variant ?? 'standard'}
                     size="small"
                     ref={this.searchAnchorRef}
                     value={this.state.searchText}

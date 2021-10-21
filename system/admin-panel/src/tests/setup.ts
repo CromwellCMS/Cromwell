@@ -11,6 +11,6 @@ const idObj = new Proxy({}, {
 });
 
 // For perfomance reasons
-jest.mock('@material-ui/icons', () => {
+jest.mock('@mui/icons-material', () => {
     return idObj;
 });

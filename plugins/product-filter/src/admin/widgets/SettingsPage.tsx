@@ -1,7 +1,7 @@
 import { PluginSettingsLayout, TextFieldWithTooltip } from '@cromwell/admin-panel';
 import { TPluginSettingsProps } from '@cromwell/core';
 import { getRestApiClient } from '@cromwell/core-frontend';
-import { Checkbox, FormControlLabel, TextField } from '@material-ui/core';
+import { Checkbox, FormControlLabel, TextField } from '@mui/material';
 import React from 'react';
 
 import { defaultSettings } from '../../constants';
@@ -34,6 +34,7 @@ export function SettingsPage(props: TPluginSettingsProps<TProductFilterSettings>
                                 ...mobileIconPosition,
                                 top: parseInt(e.target.value)
                             })}
+                            variant="standard"
                         />
                         <TextField label="Left"
                             value={mobileIconPosition.left}
@@ -42,6 +43,7 @@ export function SettingsPage(props: TPluginSettingsProps<TProductFilterSettings>
                                 ...mobileIconPosition,
                                 left: parseInt(e.target.value)
                             })}
+                            variant="standard"
                         />
                         <h3 style={{ marginBottom: '10px', marginTop: '10px' }}>Options visibility</h3>
                         <FormControlLabel

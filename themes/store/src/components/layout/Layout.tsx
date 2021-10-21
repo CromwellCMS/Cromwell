@@ -1,4 +1,5 @@
-import { createMuiTheme, ThemeProvider } from '@material-ui/core';
+import { ThemeProvider } from '@mui/material';
+import { createTheme } from '@mui/material/styles';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 
@@ -10,14 +11,14 @@ import { CartModal } from '../modals/cart/CartModal';
 import ProductQuickView from '../modals/productQuickView/ProductQuickView';
 import { WatchedModal } from '../modals/watched/WatchedModal';
 import { WishlistModal } from '../modals/wishlist/WishlistModal';
-// import { CompareModal } from '../modals/compare/CompareModal';
 import styles from './Layout.module.scss';
 
+// import { CompareModal } from '../modals/compare/CompareModal';
 type TProps = {
     children: React.ReactNode;
 }
 
-const theme = createMuiTheme({
+const theme = createTheme({
     palette: {
         primary: {
             main: primaryColor,

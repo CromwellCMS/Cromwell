@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 import { TPagedParams, TProduct } from '@cromwell/core';
 import { getCStore, getGraphQLClient, getGraphQLErrorInfo, Link, LoadBox } from '@cromwell/core-frontend';
-import { ClickAwayListener, Fade, Grid, Popper } from '@material-ui/core';
+import { ClickAwayListener, Fade, Grid, Popper } from '@mui/material';
 import React from 'react';
 import { debounce } from 'throttle-debounce';
 

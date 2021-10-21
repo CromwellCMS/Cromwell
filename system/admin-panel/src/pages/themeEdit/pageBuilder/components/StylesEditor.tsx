@@ -1,12 +1,12 @@
 import { TCromwellBlockData } from '@cromwell/core';
-import { FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
+import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import React from 'react';
 
 import styles from '../blocks/BaseBlock.module.scss';
 import { TBlockMenuProps } from '../blocks/BlockMenu';
 import { StyleField } from './StyleField';
 import { StyleOffset } from './StyleOffset';
-import FormatPaintIcon from '@material-ui/icons/FormatPaint';
+import FormatPaintIcon from '@mui/icons-material/FormatPaint';
 
 export function StylesEditor(props: {
     forceUpdate: () => any;
@@ -89,6 +89,7 @@ export function StylesEditor(props: {
                 <InputLabel>horizontal align</InputLabel>
                 <Select
                     fullWidth
+                    variant="standard"
                     onChange={(e) => handleEditorStyleChange('align', e.target.value as any)}
                     value={data?.editorStyles?.align}
                 >

@@ -1,9 +1,8 @@
 import { gql } from '@apollo/client';
 import { resolvePageRoute, serviceLocator, TPagedParams, TProductCategory, TProductCategoryInput } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
-import { Button, IconButton, TextField, Tooltip } from '@material-ui/core';
-import { ArrowBack as ArrowBackIcon, OpenInNew as OpenInNewIcon } from '@material-ui/icons';
-import { Autocomplete as MuiAutocomplete } from '@material-ui/lab';
+import { ArrowBack as ArrowBackIcon, OpenInNew as OpenInNewIcon } from '@mui/icons-material';
+import { Autocomplete as MuiAutocomplete, Button, IconButton, TextField, Tooltip } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { Link, useHistory, useParams } from 'react-router-dom';
 
@@ -250,6 +249,7 @@ export default function CategoryPage(props) {
             </div>
             <div className={styles.fields}>
                 <TextField label="Name"
+                    variant="standard"
                     value={category?.name || ''}
                     fullWidth
                     className={styles.textField}
@@ -280,6 +280,7 @@ export default function CategoryPage(props) {
                 <TextField label="Page URL"
                     value={category?.slug || ''}
                     fullWidth
+                    variant="standard"
                     className={styles.textField}
                     helperText={pageFullUrl}
                     onChange={(e) => { handleInputChange('slug', e.target.value) }}
@@ -287,12 +288,14 @@ export default function CategoryPage(props) {
                 <TextField label="Meta title"
                     value={category?.pageTitle || ''}
                     fullWidth
+                    variant="standard"
                     className={styles.textField}
                     onChange={(e) => { handleInputChange('pageTitle', e.target.value) }}
                 />
                 <TextField label="Meta description"
                     value={category?.pageDescription || ''}
                     fullWidth
+                    variant="standard"
                     className={styles.textField}
                     onChange={(e) => { handleInputChange('pageDescription', e.target.value) }}
                 />
@@ -312,6 +315,7 @@ export default function CategoryPage(props) {
                     renderInput={(params) => (
                         <TextField
                             {...params}
+                            variant="standard"
                             label="Meta keywords"
                         />
                     )}

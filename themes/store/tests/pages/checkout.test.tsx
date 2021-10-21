@@ -22,9 +22,9 @@ jest.mock('@cromwell/core-frontend', () => {
     }
 });
 
-jest.mock('@material-ui/core', () => {
+jest.mock('@mui/material', () => {
     return {
-        ...jest.requireActual('@material-ui/core'),
+        ...jest.requireActual('@mui/material'),
         useMediaQuery: () => false,
     }
 });

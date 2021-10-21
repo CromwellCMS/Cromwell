@@ -1,6 +1,6 @@
-import { onStoreChange } from '@cromwell/core';
-import { getStoreItem, setStoreItem } from '@cromwell/core';
-import { createMuiTheme, ThemeProvider, Toolbar } from '@material-ui/core';
+import { getStoreItem, onStoreChange, setStoreItem } from '@cromwell/core';
+import { ThemeProvider, Toolbar } from '@mui/material';
+import { createTheme } from '@mui/material/styles';
 import clsx from 'clsx';
 import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
@@ -36,7 +36,7 @@ function Layout() {
   document.body.classList.remove('modeDark', 'modeLight');
   document.body.classList.add(darkMode ? 'modeDark' : 'modeLight');
 
-  const theme = createMuiTheme(darkMode ? {
+  const theme = createTheme(darkMode ? {
     palette: {
       primary: {
         main: '#9747d3',

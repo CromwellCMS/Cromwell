@@ -1,5 +1,5 @@
 import { getCStore } from '@cromwell/core-frontend';
-import { Slider as MUISlider } from '@material-ui/core';
+import { Slider as MUISlider } from '@mui/material';
 import React, { useState } from 'react';
 
 import { IOSSliderStyles } from '../styles';

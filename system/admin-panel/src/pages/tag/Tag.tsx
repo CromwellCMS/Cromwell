@@ -1,8 +1,7 @@
 import { resolvePageRoute, serviceLocator, TTag, TTagInput } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
-import { Button, Grid, IconButton, TextField, Tooltip } from '@material-ui/core';
-import { ArrowBack as ArrowBackIcon, OpenInNew as OpenInNewIcon } from '@material-ui/icons';
-import { Autocomplete as MuiAutocomplete, Skeleton } from '@material-ui/lab';
+import { ArrowBack as ArrowBackIcon, OpenInNew as OpenInNewIcon } from '@mui/icons-material';
+import { Autocomplete as MuiAutocomplete, Button, Grid, IconButton, Skeleton, TextField, Tooltip } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { Link, useHistory, useParams } from 'react-router-dom';
 
@@ -184,6 +183,7 @@ const TagPage = () => {
                             <TextField label="Name"
                                 value={data?.name || ''}
                                 fullWidth
+                                variant="standard"
                                 className={styles.textField}
                                 onChange={(e) => { handleInputChange('name', e.target.value) }}
                             />
@@ -201,6 +201,7 @@ const TagPage = () => {
                                 label="Page URL"
                                 className={styles.textField}
                                 fullWidth
+                                variant="standard"
                                 value={data?.slug || ''}
                                 helperText={pageFullUrl}
                                 onChange={(e) => { handleInputChange('slug', e.target.value) }}
@@ -226,6 +227,7 @@ const TagPage = () => {
                                 label="Meta title"
                                 className={styles.textField}
                                 fullWidth
+                                variant="standard"
                                 value={data?.pageTitle || ''}
                                 onChange={(e) => { handleInputChange('pageTitle', e.target.value) }}
                             />
@@ -235,6 +237,7 @@ const TagPage = () => {
                                 label="Meta description"
                                 className={styles.textField}
                                 fullWidth
+                                variant="standard"
                                 value={data?.pageDescription || ''}
                                 onChange={(e) => { handleInputChange('pageDescription', e.target.value) }}
                             />
@@ -256,6 +259,7 @@ const TagPage = () => {
                                 renderInput={(params) => (
                                     <TextField
                                         {...params}
+                                        variant="standard"
                                         label="Meta keywords"
                                     />
                                 )}

@@ -1,5 +1,6 @@
+import { Skeleton } from '@mui/material';
 import React from 'react';
-import { Skeleton } from '@material-ui/lab';
+
 import styles from './SkeletonPreloader.module.scss';
 
 const listSkeleton = [];

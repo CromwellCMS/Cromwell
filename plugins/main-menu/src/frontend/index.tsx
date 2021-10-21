@@ -1,6 +1,6 @@
 import { TFrontendPluginProps, TGetStaticProps } from '@cromwell/core';
 import { iconFromPath, Link } from '@cromwell/core-frontend';
-import { Collapse, IconButton, MenuItem, Popover, useMediaQuery, useTheme } from '@material-ui/core';
+import { Collapse, IconButton, MenuItem, Popover, useMediaQuery, useTheme } from '@mui/material';
 import React, { useState } from 'react';
 
 import { TMainMenuItem, TMainMenuSettings } from '../types';

@@ -10,7 +10,7 @@ import {
     Toolbar,
     Tooltip,
     useScrollTrigger,
-} from '@material-ui/core';
+} from '@mui/material';
 import {
     AccountCircle as AccountCircleIcon,
     AccountCircleOutlined as AccountCircleOutlinedIcon,
@@ -22,7 +22,7 @@ import {
     Menu as MenuIcon,
     MoreVertOutlined as MoreVertOutlinedIcon,
     PermMediaOutlined as PermMediaOutlinedIcon,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 

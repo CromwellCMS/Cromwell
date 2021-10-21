@@ -1,6 +1,6 @@
 import { getBlockInstance, isServer } from '@cromwell/core';
 import { CList, getRestApiClient, TCList } from '@cromwell/core-frontend';
-import { Breadcrumbs, Button, IconButton, TextField, Tooltip } from '@material-ui/core';
+import { Breadcrumbs, Button, IconButton, TextField, Tooltip } from '@mui/material';
 import {
     ArrowBack as ArrowBackIcon,
     ArrowDownward as ArrowDownwardIcon,
@@ -12,7 +12,7 @@ import {
     Home as HomeIcon,
     NavigateNext as NavigateNextIcon,
     Publish as PublishIcon,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
 import React from 'react';
 
 import LoadBox from '../loadBox/LoadBox';
@@ -464,7 +464,7 @@ class FileManager extends React.Component<{
                             className={styles.createFolderWindow}
                             style={{ display: 'none' }}
                         >
-                            <TextField id="create-new-folder-input" />
+                            <TextField variant="standard" id="create-new-folder-input" />
                             <IconButton
                                 onClick={this.handleApplyCreateFolder}
                             >

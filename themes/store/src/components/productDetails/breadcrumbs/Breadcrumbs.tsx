@@ -1,6 +1,7 @@
 import { TProductCategory } from '@cromwell/core';
 import { Link } from '@cromwell/core-frontend';
-import { Breadcrumbs as MuiBreadcrumbs, Chip, emphasize, Theme, withStyles } from '@material-ui/core';
+import { Breadcrumbs as MuiBreadcrumbs, Chip, emphasize, Theme } from '@mui/material';
+import { withStyles } from '@mui/styles';
 import React from 'react';
 
 import { HomeIcon } from '../../icons';

@@ -1,6 +1,6 @@
 import { TUser } from '@cromwell/core';
 import { getRestApiClient } from '@cromwell/core-frontend';
-import { Button, IconButton, InputAdornment, Tab, Tabs, TextField } from '@material-ui/core';
+import { Button, IconButton, InputAdornment, Tab, Tabs, TextField } from '@mui/material';
 import React, { useState } from 'react';
 
 import commonStyles from '../../../styles/common.module.scss';
@@ -222,6 +222,7 @@ export default function SingIn(props: {
                         className={styles.textField}
                         onChange={e => setEmailInput(e.target.value)}
                         fullWidth
+                        variant="standard"
                         error={emailInput === '' && submitPressed}
                         helperText={emailInput === '' && submitPressed ? "This field is required" : undefined}
                         id="email-input"
@@ -233,6 +234,7 @@ export default function SingIn(props: {
                             className={styles.textField}
                             onChange={e => setNameInput(e.target.value)}
                             fullWidth
+                            variant="standard"
                             error={nameInput === '' && submitPressed}
                             helperText={nameInput === '' && submitPressed ? "This field is required" : undefined}
                             id="name-input"
@@ -245,6 +247,7 @@ export default function SingIn(props: {
                             className={styles.textField}
                             onChange={e => setCodeInput(e.target.value)}
                             fullWidth
+                            variant="standard"
                             error={codeInput === '' && submitPressed}
                             helperText={codeInput === '' && submitPressed ? "This field is required" : undefined}
                             id="name-input"
@@ -258,6 +261,7 @@ export default function SingIn(props: {
                             onChange={e => setPasswordInput(e.target.value)}
                             className={styles.textField}
                             fullWidth
+                            variant="standard"
                             error={passwordInput === '' && submitPressed}
                             helperText={passwordInput === '' && submitPressed ? "This field is required" : undefined}
                             id="password-input"

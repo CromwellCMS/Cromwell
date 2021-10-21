@@ -1,7 +1,8 @@
 import { setStoreItem } from '@cromwell/core';
 import { getGraphQLClient, getRestApiClient } from '@cromwell/core-frontend';
-import { Button, IconButton, InputAdornment, TextField, withStyles } from '@material-ui/core';
-import { Visibility as VisibilityIcon, VisibilityOff as VisibilityOffIcon } from '@material-ui/icons';
+import { Visibility as VisibilityIcon, VisibilityOff as VisibilityOffIcon } from '@mui/icons-material';
+import { Button, IconButton, InputAdornment, TextField } from '@mui/material';
+import { withStyles } from '@mui/styles';
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 

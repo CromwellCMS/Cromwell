@@ -1,8 +1,6 @@
 import { gql } from '@apollo/client';
 import { getBlockInstance, TPagedParams, TProductCategory, TProductCategoryFilter } from '@cromwell/core';
 import { CList, getGraphQLClient, TCList } from '@cromwell/core-frontend';
-import { Checkbox, IconButton, Tooltip, TextField } from '@material-ui/core';
-import { debounce } from 'throttle-debounce';
 import {
     AccountTreeOutlined as AccountTreeOutlinedIcon,
     Add as AddIcon,
@@ -10,11 +8,12 @@ import {
     List as ListIcon,
     UnfoldLess as UnfoldLessIcon,
     UnfoldMore as UnfoldMoreIcon,
-} from '@material-ui/icons';
-import { Skeleton } from '@material-ui/lab';
+} from '@mui/icons-material';
+import { Checkbox, IconButton, Skeleton, TextField, Tooltip } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import { connect, PropsType } from 'react-redux-ts';
 import { useHistory } from 'react-router-dom';
+import { debounce } from 'throttle-debounce';
 
 import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
 import ConfirmationModal from '../../components/modal/Confirmation';
@@ -259,6 +258,7 @@ const CategoryList = (props: TPropsType) => {
                         <TextField
                             className={styles.filterItem}
                             placeholder="Category name or id"
+                            variant="standard"
                             onChange={(event) => {
                                 filterInput.current.nameSearch = event.target.value;
                                 handleFilterInput();

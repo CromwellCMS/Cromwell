@@ -1,4 +1,5 @@
-import { Theme, withStyles } from '@material-ui/core';
+import { Theme } from '@mui/material';
+import { withStyles } from '@mui/styles';
 
 export const styles = {
     "@global": {
@@ -118,8 +119,6 @@ export const IOSSliderStyles: any = withStyles((theme: Theme) => ({
         backgroundColor: '#fff',
         color: '#222',
         boxShadow: iOSBoxShadow,
-        marginTop: -14,
-        marginLeft: -14,
         '&:focus, &:hover, &$active': {
             boxShadow: '0 3px 1px rgba(0,0,0,0.1),0 4px 8px rgba(0,0,0,0.3),0 0 0 1px rgba(0,0,0,0.02)',
             // Reset on touch devices, it doesn't add specificity
@@ -132,7 +131,7 @@ export const IOSSliderStyles: any = withStyles((theme: Theme) => ({
     valueLabel: {
         // left: 'calc(-50% + 12px)',
         // top: -22
-        marginLeft: '50%'
+        // marginLeft: '50%'
     },
     track: {
         height: 2,

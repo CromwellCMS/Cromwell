@@ -1,7 +1,7 @@
 import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
-import { Button } from '@material-ui/core';
-import WhatshotIcon from '@material-ui/icons/Whatshot';
+import { Button } from '@mui/material';
+import WhatshotIcon from '@mui/icons-material/Whatshot';
 import Layout from '@theme/Layout';
 import React from 'react';
 

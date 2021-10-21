@@ -1,5 +1,5 @@
 import { TCromwellBlock, TCromwellBlockData, TCromwellBlockType, TPluginEntity } from '@cromwell/core';
-import { Grid, IconButton, MenuItem, Popover, Tooltip } from '@material-ui/core';
+import { Grid, IconButton, MenuItem, Popover, Tooltip } from '@mui/material';
 import {
     AddCircleOutline as AddCircleOutlineIcon,
     Code as CodeIcon,
@@ -9,7 +9,7 @@ import {
     PhotoLibrary as PhotoLibraryIcon,
     Subject as SubjectIcon,
     Widgets as WidgetsIcon,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
 import React, { Component } from 'react';
 import ReactDom from 'react-dom';
 

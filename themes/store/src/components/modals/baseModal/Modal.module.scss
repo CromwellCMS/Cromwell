@@ -1,6 +1,5 @@
 .Modal {
     display: flex;
-    position: relative;
     align-items: center;
     justify-content: center;
     outline: none;
@@ -11,7 +10,7 @@
         outline: none;
     }
 
-    > div:first-child {
+    >div:first-child {
         background-color: transparent !important;
     }
 }

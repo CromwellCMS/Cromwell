@@ -1,4 +1,4 @@
-import { Checkbox, Divider, List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
+import { Checkbox, Divider, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import React from 'react';
 
 import { intersection, not, union } from './helpers';

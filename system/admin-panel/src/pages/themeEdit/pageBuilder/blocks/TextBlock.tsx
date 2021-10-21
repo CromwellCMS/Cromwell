@@ -1,5 +1,5 @@
-import { TextField, Tooltip } from '@material-ui/core';
-import { Public as PublicIcon, Subject as SubjectIcon } from '@material-ui/icons';
+import { TextField, Tooltip } from '@mui/material';
+import { Public as PublicIcon, Subject as SubjectIcon } from '@mui/icons-material';
 import React from 'react';
 
 import { useForceUpdate } from '../../../../helpers/forceUpdate';
@@ -54,6 +54,7 @@ export const TextBlockSidebar = (props: TBlockMenuProps) => {
                 value={blockValue}
                 onChange={(e) => { setBlockValue(e.target.value) }}
                 multiline
+                variant="standard"
                 className={styles.settingsInput}
             />
             <TextField
@@ -61,6 +62,7 @@ export const TextBlockSidebar = (props: TBlockMenuProps) => {
                 onChange={(e) => handleChangeLink(e.target.value)}
                 value={data?.text?.href ?? (props.block.getContentInstance().props as any)?.href ?? ''}
                 className={styles.settingsInput}
+                variant="standard"
                 label="Link"
             />
             <StylesEditor

@@ -1,4 +1,4 @@
-import { Pagination as MUIPagination } from '@material-ui/lab';
+import { Pagination as MUIPagination } from '@mui/material';
 import React from 'react';
 
 import styles from './Pagination.module.scss';

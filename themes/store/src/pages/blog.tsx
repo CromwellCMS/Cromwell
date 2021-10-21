@@ -9,8 +9,7 @@ import {
     TTag,
 } from '@cromwell/core';
 import { CContainer, CList, getGraphQLClient, getGraphQLErrorInfo, TCList } from '@cromwell/core-frontend';
-import { FormControl, InputLabel, MenuItem, Select, TextField } from '@material-ui/core';
-import { Autocomplete } from '@material-ui/lab';
+import { Autocomplete, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 
 import Layout from '../components/layout/Layout';
@@ -60,7 +59,7 @@ const BlogPage: TCromwellPage<BlogProps> = (props) => {
         return handleGetFilteredPosts(params, filterInput.current);
     }
 
-    const handleChangeSort = (event: React.ChangeEvent<{ value: unknown }>) => {
+    const handleChangeSort = (event: SelectChangeEvent<unknown>) => {
         if (event.target.value === 'Newest') publishSort.current = 'DESC';
         if (event.target.value === 'Oldest') publishSort.current = 'ASC';
         resetList();
@@ -96,10 +95,10 @@ const BlogPage: TCromwellPage<BlogProps> = (props) => {
                         )}
                     />
                     <FormControl className={styles.filterItem}>
-                        <InputLabel>Sort</InputLabel>
+                        <InputLabel className={styles.sortLabel}>Sort</InputLabel>
                         <Select
-                            style={{ width: '100px' }}
                             onChange={handleChangeSort}
+                            variant="standard"
                             defaultValue='Newest'
                         >
                             {['Newest', 'Oldest'].map(sort => (

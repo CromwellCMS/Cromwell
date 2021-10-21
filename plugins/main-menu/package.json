@@ -21,7 +21,8 @@
     "watch": "npx --no-install cromwell b -w"
   },
   "dependencies": {
-    "@material-ui/core": "4.12.3"
+    "@mui/material": "5.0.4",
+    "@mui/styles": "5.0.1"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "20.0.0",
@@ -68,7 +69,8 @@
     "description": "Adds a navigation menu for web-site header or sidebar",
     "icon": "static/icon_menu.png",
     "frontendDependencies": [
-      "@material-ui/core"
+      "@mui/material",
+      "@mui/styles"
     ]
   }
 }

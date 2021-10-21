@@ -1,6 +1,6 @@
 import { getRandStr, TPageConfig } from '@cromwell/core';
 import { getRestApiClient } from '@cromwell/core-frontend';
-import { Button, Drawer, IconButton, MenuItem, Popover, Tooltip } from '@material-ui/core';
+import { Button, Drawer, IconButton, MenuItem, Popover, Tooltip } from '@mui/material';
 import {
     AddCircle as AddCircleIcon,
     Close as CloseIcon,
@@ -11,7 +11,7 @@ import {
     Redo as RedoIcon,
     SettingsBackupRestore as SettingsBackupRestoreIcon,
     Undo as UndoIcon,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
 import clsx from 'clsx';
 import { History } from 'history';
 import queryString from 'query-string';

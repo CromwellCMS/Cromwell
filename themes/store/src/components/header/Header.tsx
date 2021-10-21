@@ -15,9 +15,10 @@ import {
     MenuItem,
     Popover,
     Select as MuiSelect,
+    SelectChangeEvent,
     Tooltip,
-    withStyles,
-} from '@material-ui/core';
+} from '@mui/material';
+import { withStyles } from '@mui/styles';
 import clsx from 'clsx';
 import React, { useEffect, useRef, useState } from 'react';
 
@@ -38,7 +39,6 @@ import { MobileHeader } from './MobileHeader';
 
 const Select = withStyles({
     root: {
-        width: '300px',
         fontSize: '1em',
         padding: '4px'
     }
@@ -57,7 +57,7 @@ export const Header = () => {
 
     const [currency, setCurrency] = React.useState<string | null | undefined>(cstore.getActiveCurrencyTag());
 
-    const handleCurrencyChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+    const handleCurrencyChange = (event: SelectChangeEvent<unknown>) => {
         const val = event.target.value as string;
         setCurrency(val);
         cstore.setActiveCurrency(val);
@@ -117,7 +117,8 @@ export const Header = () => {
                                 <Select
                                     className={styles.select}
                                     value={currency ?? ''}
-                                    onChange={handleCurrencyChange}
+                                    variant="standard"
+                                    onChange={(event) => handleCurrencyChange(event)}
                                 >
                                     {currencies && Array.isArray(currencies) && currencies.map(curr => (
                                         <MenuItem value={curr.tag} key={curr.tag}>{curr.tag}</MenuItem>

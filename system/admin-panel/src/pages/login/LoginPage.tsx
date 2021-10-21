@@ -1,7 +1,7 @@
 import { setStoreItem, TUser } from '@cromwell/core';
 import { getRestApiClient } from '@cromwell/core-frontend';
-import { Button, IconButton, InputAdornment, TextField } from '@material-ui/core';
-import { Visibility as VisibilityIcon, VisibilityOff as VisibilityOffIcon } from '@material-ui/icons';
+import { Button, IconButton, InputAdornment, TextField } from '@mui/material';
+import { Visibility as VisibilityIcon, VisibilityOff as VisibilityOffIcon } from '@mui/icons-material';
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
@@ -156,6 +156,7 @@ const LoginPage = () => {
                             className={styles.textField}
                             onChange={e => setEmailInput(e.target.value)}
                             fullWidth
+                            variant="standard"
                             id="email-input"
                         />
                         <TextField
@@ -166,6 +167,7 @@ const LoginPage = () => {
                             className={styles.textField}
                             fullWidth
                             id="password-input"
+                            variant="standard"
                             InputProps={{
                                 endAdornment: (
                                     <InputAdornment position="end">
@@ -198,6 +200,7 @@ const LoginPage = () => {
                             className={styles.textField}
                             onChange={e => setEmailInput(e.target.value)}
                             fullWidth
+                            variant="standard"
                             id="email-input"
                         />
                         <Button
@@ -219,6 +222,7 @@ const LoginPage = () => {
                             className={styles.textField}
                             onChange={e => setCodeInput(e.target.value)}
                             fullWidth
+                            variant="standard"
                             id="code-input"
                         />
                         <TextField
@@ -229,6 +233,7 @@ const LoginPage = () => {
                             className={styles.textField}
                             fullWidth
                             id="password-input"
+                            variant="standard"
                             InputProps={{
                                 endAdornment: (
                                     <InputAdornment position="end">

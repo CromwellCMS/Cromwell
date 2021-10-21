@@ -1,5 +1,5 @@
-import { Tooltip } from '@material-ui/core';
-import { Public as PublicIcon, Widgets as WidgetsIcon } from '@material-ui/icons';
+import { Tooltip } from '@mui/material';
+import { Public as PublicIcon, Widgets as WidgetsIcon } from '@mui/icons-material';
 import React from 'react';
 
 import { useForceUpdate } from '../../../../helpers/forceUpdate';

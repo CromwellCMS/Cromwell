@@ -1,6 +1,7 @@
 import { TUser } from '@cromwell/core';
-import { Accordion, AccordionDetails, AccordionSummary, MenuItem as MuiMenuItem, withStyles } from '@material-ui/core';
-import { ExpandMore as ExpandMoreIcon } from '@material-ui/icons';
+import { ExpandMore as ExpandMoreIcon } from '@mui/icons-material';
+import { Accordion, AccordionDetails, AccordionSummary, MenuItem as MuiMenuItem } from '@mui/material';
+import { withStyles } from '@mui/styles';
 import React from 'react';
 import { Link } from 'react-router-dom';
 

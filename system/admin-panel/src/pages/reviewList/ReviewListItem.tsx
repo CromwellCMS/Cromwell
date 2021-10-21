@@ -1,13 +1,12 @@
 import { TProductReview } from '@cromwell/core';
-import { Checkbox, Grid, IconButton, Tooltip } from '@material-ui/core';
 import {
     DeleteForever as DeleteForeverIcon,
     Done as DoneIcon,
     HourglassEmpty as HourglassEmptyIcon,
     ThumbUp as ThumbUpIcon,
     Visibility as VisibilityIcon,
-} from '@material-ui/icons';
-import { Rating } from '@material-ui/lab';
+} from '@mui/icons-material';
+import { Checkbox, Grid, IconButton, Rating, Tooltip } from '@mui/material';
 import React from 'react';
 import { connect, PropsType } from 'react-redux-ts';
 

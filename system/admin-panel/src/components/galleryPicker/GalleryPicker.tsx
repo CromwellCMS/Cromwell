@@ -1,12 +1,12 @@
 import { TImageSettings } from '@cromwell/core';
-import { IconButton, Tooltip, Popover, TextField } from '@material-ui/core';
+import { IconButton, Tooltip, Popover, TextField } from '@mui/material';
 import {
     Add as AddIcon,
     DeleteForever as DeleteForeverIcon,
     DeleteOutline as DeleteOutlineIcon,
     DragIndicator as DragIndicatorIcon,
     Link as LinkIcon,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
 import clsx from 'clsx';
 import React, { Component } from 'react';
 import { Responsive, WidthProvider } from 'react-grid-layout';
@@ -181,6 +181,7 @@ class GalleryPicker extends Component<{
                                         onChange={(e) => this.handleChangeImageLink(e.target.value)}
                                         value={this.state?.editableLinkText ?? ''}
                                         label="Link"
+                                        variant="standard"
                                     />
                                 </Popover>
                             )}

@@ -6,11 +6,12 @@ import {
     IconButton,
     MenuItem,
     Select,
+    SelectChangeEvent,
     Slide,
     SwipeableDrawer,
     Toolbar,
     useScrollTrigger,
-} from '@material-ui/core';
+} from '@mui/material';
 import Router from 'next/router';
 import React, { useState } from 'react';
 
@@ -53,7 +54,7 @@ export const MobileHeader = () => {
         appState.isWatchedOpen = true;
     }
 
-    const handleCurrencyChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+    const handleCurrencyChange = (event: SelectChangeEvent<unknown>) => {
         const val = event.target.value as string;
         setCurrency(val);
         cstore.setActiveCurrency(val);
@@ -115,6 +116,7 @@ export const MobileHeader = () => {
                                 <Select
                                     className={styles.select}
                                     value={currency ?? ''}
+                                    variant="standard"
                                     onChange={handleCurrencyChange}
                                 >
                                     {currencies && Array.isArray(currencies) && currencies.map(curr => (

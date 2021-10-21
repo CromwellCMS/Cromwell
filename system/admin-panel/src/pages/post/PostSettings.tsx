@@ -1,11 +1,11 @@
 import 'date-fns';
 
 import { resolvePageRoute, serviceLocator, TPost, TTag } from '@cromwell/core';
-import DateFnsUtils from '@date-io/date-fns';
-import { Button, Checkbox, FormControlLabel, IconButton, Popover, TextField, Tooltip } from '@material-ui/core';
-import { Close as CloseIcon } from '@material-ui/icons';
-import { Autocomplete } from '@material-ui/lab';
-import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
+import { Close as CloseIcon } from '@mui/icons-material';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import DatePicker from '@mui/lab/DatePicker';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import { Autocomplete, Button, Checkbox, FormControlLabel, IconButton, Popover, TextField, Tooltip } from '@mui/material';
 import React, { useState } from 'react';
 
 import ImagePicker from '../../components/imagePicker/ImagePicker';
@@ -90,6 +90,7 @@ const PostSettings = (props: {
                     value={title ?? ''}
                     fullWidth
                     className={styles.settingItem}
+                    variant="standard"
                     onChange={e => setTitle(e.target.value)}
                 />
                 <TextField
@@ -98,6 +99,7 @@ const PostSettings = (props: {
                     fullWidth
                     value={slug ?? ''}
                     onChange={e => setSlug(e.target.value)}
+                    variant="standard"
                     helperText={pageFullUrl}
                 />
                 <ImagePicker
@@ -110,7 +112,6 @@ const PostSettings = (props: {
                 />
                 <Autocomplete
                     multiple
-                    className={styles.settingItem}
                     options={props.allTags ?? []}
                     defaultValue={tags?.map(tag => (props.allTags ?? []).find(allTag => allTag.name === tag.name)) ?? []}
                     getOptionLabel={(option) => option.name}
@@ -118,26 +119,26 @@ const PostSettings = (props: {
                     renderInput={(params) => (
                         <TextField
                             {...params}
+                            className={styles.settingItem}
                             variant="standard"
                             label="Tags"
                         />
                     )}
                 />
-                <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                    <KeyboardDatePicker
-                        fullWidth
-                        disableToolbar
-                        variant="inline"
-                        format="MM/dd/yyyy"
-                        margin="normal"
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <DatePicker
                         label="Publish date"
                         value={publishDate}
-                        onChange={setPublishDate}
-                        KeyboardButtonProps={{
-                            'aria-label': 'change date',
+                        onChange={(newValue) => {
+                            setPublishDate(newValue);
                         }}
+                        renderInput={(params) => <TextField
+                            variant="standard"
+                            fullWidth
+                            {...params} />}
+                    // disableToolbar
                     />
-                </MuiPickersUtilsProvider>
+                </LocalizationProvider>
                 <FormControlLabel
                     control={
                         <Checkbox
@@ -154,6 +155,7 @@ const PostSettings = (props: {
                     label="Meta title"
                     className={styles.settingItem}
                     fullWidth
+                    variant="standard"
                     value={pageTitle ?? ''}
                     onChange={e => setPageTitle(e.target.value)}
                 />
@@ -161,6 +163,7 @@ const PostSettings = (props: {
                     label="Meta description"
                     className={styles.settingItem}
                     fullWidth
+                    variant="standard"
                     value={pageDescription ?? ''}
                     onChange={e => setPageDescription(e.target.value)}
                 />
@@ -168,13 +171,13 @@ const PostSettings = (props: {
                     multiple
                     freeSolo
                     options={[]}
-                    className={styles.settingItem}
                     value={(pageKeywords ?? []) as any}
                     getOptionLabel={(option) => option}
                     onChange={handleChangeKeywords}
                     renderInput={(params) => (
                         <TextField
                             {...params}
+                            className={styles.settingItem}
                             variant="standard"
                             label="Meta keywords"
                         />

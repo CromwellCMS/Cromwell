@@ -1,6 +1,6 @@
 import { TCromwellBlockData } from '@cromwell/core';
-import { FormControl, InputLabel, MenuItem, Select, TextField, Tooltip } from '@material-ui/core';
-import { Image as ImageIcon, Public as PublicIcon } from '@material-ui/icons';
+import { FormControl, InputLabel, MenuItem, Select, TextField, Tooltip, SelectChangeEvent } from '@mui/material';
+import { Image as ImageIcon, Public as PublicIcon } from '@mui/icons-material';
 import React from 'react';
 
 import ImagePicker from '../../../../components/imagePicker/ImagePicker';
@@ -28,7 +28,7 @@ export function ImageBlockSidebar(props: TBlockMenuProps) {
         handleChange(name, val)
     }
 
-    const handleTextInput = (name: keyof TCromwellBlockData['image']) => (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+    const handleTextInput = (name: keyof TCromwellBlockData['image']) => (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement> | SelectChangeEvent<unknown>) => {
         let val = e.target.value;
         if (val === '') val = undefined;
         handleChange(name, val)
@@ -59,6 +59,7 @@ export function ImageBlockSidebar(props: TBlockMenuProps) {
                 onChange={handleTextInput('link')}
                 value={imageData?.link}
                 className={styles.settingsInput}
+                variant="standard"
                 label="Link to" />
             <TextField
                 fullWidth
@@ -66,6 +67,7 @@ export function ImageBlockSidebar(props: TBlockMenuProps) {
                 value={imageData?.width}
                 className={styles.settingsInput}
                 type="number"
+                variant="standard"
                 label="Width (px)" />
             <TextField
                 onChange={handleNumberInput('height')}
@@ -73,12 +75,14 @@ export function ImageBlockSidebar(props: TBlockMenuProps) {
                 value={imageData?.height}
                 className={styles.settingsInput}
                 type="number"
+                variant="standard"
                 label="Height (px)" />
             <TextField
                 onChange={handleTextInput('alt')}
                 fullWidth
                 value={imageData?.alt}
                 className={styles.settingsInput}
+                variant="standard"
                 label="Alt" />
             <FormControl
                 fullWidth
@@ -86,6 +90,7 @@ export function ImageBlockSidebar(props: TBlockMenuProps) {
                 <InputLabel >Image fit</InputLabel>
                 <Select
                     fullWidth
+                    variant="standard"
                     onChange={handleTextInput('objectFit')}
                     value={imageData?.objectFit ?? 'contain'}
                 >

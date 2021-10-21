@@ -1,5 +1,5 @@
 import { TCCSModuleInfo, TPackageCromwellConfig } from '@cromwell/core';
-import { Badge, Button, CardActionArea, Grid, LinearProgress, Typography } from '@material-ui/core';
+import { Badge, Button, CardActionArea, Grid, LinearProgress, Typography } from '@mui/material';
 import clsx from 'clsx';
 import React, { useState } from 'react';
 

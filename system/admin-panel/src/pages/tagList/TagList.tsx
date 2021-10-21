@@ -1,7 +1,7 @@
 import { getBlockInstance, TPagedParams, TTag } from '@cromwell/core';
 import { CList, getGraphQLClient, TCList } from '@cromwell/core-frontend';
-import { Checkbox, IconButton, Tooltip } from '@material-ui/core';
-import { AddCircle as AddCircleIcon, Delete as DeleteIcon } from '@material-ui/icons';
+import { Checkbox, IconButton, Tooltip } from '@mui/material';
+import { AddCircle as AddCircleIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import React, { useEffect, useRef, useState } from 'react';
 import { connect, PropsType } from 'react-redux-ts';
 import { useHistory } from 'react-router-dom';

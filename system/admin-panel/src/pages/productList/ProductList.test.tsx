@@ -23,6 +23,10 @@ jest.mock('../../constants/PageInfos', () => {
     }
 });
 
+jest.mock('../../../../../plugins/product-filter/src/frontend/components/Filter', () => {
+    return () => <></>;
+});
+
 jest.mock('@cromwell/core-frontend', () => {
     return {
         CList: (props: any) => {

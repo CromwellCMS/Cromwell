@@ -10,9 +10,8 @@ import {
     TUser,
 } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
-import { Button, IconButton, Tooltip } from '@material-ui/core';
-import { MoreHoriz as MoreHorizIcon, OpenInNew as OpenInNewIcon } from '@material-ui/icons';
-import { Skeleton } from '@material-ui/lab';
+import { MoreHoriz as MoreHorizIcon, OpenInNew as OpenInNewIcon } from '@mui/icons-material';
+import { Button, IconButton, Skeleton, Tooltip } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useHistory, useParams } from 'react-router-dom';
 
