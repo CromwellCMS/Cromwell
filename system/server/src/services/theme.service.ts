@@ -7,6 +7,7 @@ import {
     TCromwellBlockData,
     TPageConfig,
     TPageInfo,
+    TPalette,
     TThemeConfig,
     TThemeEntity,
     TThemeEntityInput,
@@ -331,7 +332,25 @@ export class ThemeService {
         }
 
         return false;
+    }
 
+
+    public async getThemePalette(): Promise<TPalette> {
+        const configs = await getThemeConfigs();
+        return Object.assign({}, configs.themeConfig?.palette,
+            configs.userConfig?.palette);
+    }
+
+    public async saveThemePalette(palette: TPalette) {
+        if (!palette) {
+            logger.error('Server::saveThemePalette: Invalid palette')
+            return false;
+        }
+
+        const userConfig = (await getThemeConfigs()).userConfig ?? {};
+        if (!userConfig.palette) userConfig.palette = {};
+        userConfig.palette = Object.assign({}, userConfig.palette, palette);
+        return await this.saveThemeUserConfig(userConfig);
     }
 
     /**

@@ -1,6 +1,5 @@
-import { getRandStr, TPageConfig } from '@cromwell/core';
+import { getRandStr, TPageConfig, TPalette } from '@cromwell/core';
 import { getRestApiClient } from '@cromwell/core-frontend';
-import { Button, Drawer, IconButton, MenuItem, Popover, Tooltip } from '@mui/material';
 import {
     AddCircle as AddCircleIcon,
     Close as CloseIcon,
@@ -9,17 +8,23 @@ import {
     MoreVertOutlined as MoreVertOutlinedIcon,
     Pages as PagesIcon,
     Redo as RedoIcon,
+    Settings as SettingsIcon,
     SettingsBackupRestore as SettingsBackupRestoreIcon,
     Undo as UndoIcon,
 } from '@mui/icons-material';
+import { Button, Drawer, IconButton, MenuItem, Popover, Tooltip } from '@mui/material';
 import clsx from 'clsx';
 import { History } from 'history';
 import queryString from 'query-string';
 import React, { Component } from 'react';
 
 import { LoadingStatus } from '../../../components/loadBox/LoadingStatus';
+import ColorPicker from '../../../components/colorPicker/ColorPicker';
 import { askConfirmation } from '../../../components/modal/Confirmation';
+import Modal from '../../../components/modal/Modal';
+import { ModeSwitch } from '../../../components/modeSwitch/ModeSwitch';
 import { toast } from '../../../components/toast/toast';
+import commonStyles from '../../../styles/common.module.scss';
 import { PageListItem } from '../pageListItem/PageListItem';
 import { PageSettings } from '../pageSettings/PageSettings';
 import { TEditorInstances, TExtendedPageInfo } from '../ThemeEdit';
@@ -32,10 +37,12 @@ export class ThemeEditActions extends Component<{
     undoModification: () => void;
     redoModification: () => void;
 }, {
+    themePalette?: TPalette;
     pageOptionsOpen: boolean;
     pageMetaOpen: boolean;
     loadingStatus: boolean;
     isSidebarOpen: boolean;
+    themeSettingsOpen: boolean;
     pageInfos: TExtendedPageInfo[] | null;
 }> {
 
@@ -44,6 +51,7 @@ export class ThemeEditActions extends Component<{
     private hasChangedPageInfo: boolean = false;
     private unregisterBlock;
     private unsavedPrompt = 'Your unsaved changes will be lost. Do you want to discard and leave this page?';
+    private changedPalette = false;
 
     public undoBtnRef = React.createRef<HTMLButtonElement>();
     public redoBtnRef = React.createRef<HTMLButtonElement>();
@@ -56,6 +64,7 @@ export class ThemeEditActions extends Component<{
             pageMetaOpen: false,
             loadingStatus: false,
             isSidebarOpen: true,
+            themeSettingsOpen: false,
             pageInfos: null,
         }
     }
@@ -78,12 +87,13 @@ export class ThemeEditActions extends Component<{
 
     private getThemeEditor = () => this.props.instances.themeEditor;
 
-    public hasUnsavedModifications = () => !!(this.hasChangedPageInfo
+    public hasUnsavedModifications = () => this.changedPalette || !!(this.hasChangedPageInfo
         || this.getThemeEditor()?.getChangedModifications()?.length > 0);
 
 
     private init = async () => {
         const infos = await this.getPageInfos();
+        this.getThemePalette();
 
         const parsedUrl = queryString.parseUrl(window.location.href, { parseFragmentIdentifier: true });
         const route = parsedUrl.query['page'];
@@ -107,6 +117,19 @@ export class ThemeEditActions extends Component<{
                 this.setState({ pageInfos: infos });
             }
             return infos;
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    private getThemePalette = async () => {
+        try {
+            const palette = await getRestApiClient().getThemePalette();
+            if (palette) {
+                this.setState({
+                    themePalette: palette,
+                })
+            }
         } catch (error) {
             console.error(error);
         }
@@ -136,6 +159,14 @@ export class ThemeEditActions extends Component<{
         if (this.props.instances.pageBuilder.getSelectedBlock()) {
             this.props.instances.pageBuilder.deselectCurrentBlock();
         }
+    }
+
+    private handleThemeSettingsToggle = () => {
+        this.setState(prev => {
+            return {
+                themeSettingsOpen: !prev.themeSettingsOpen,
+            }
+        })
     }
 
     private handleAddCustomPage = () => {
@@ -238,6 +269,17 @@ export class ThemeEditActions extends Component<{
             return;
         }
 
+        const changedPalette = this.changedPalette;
+
+        if (this.changedPalette && this.state.themePalette) {
+            try {
+                await getRestApiClient().saveThemePalette(this.state.themePalette);
+            } catch (error) {
+                console.error(error);
+            }
+            this.changedPalette = false;
+        }
+
         const modifications = themeEditor.getChangedModifications() ?? [];
 
         if (!editingPageConfig) return;
@@ -276,7 +318,7 @@ export class ThemeEditActions extends Component<{
                 }
             });
 
-            if (hasChangedRoute) {
+            if (hasChangedRoute || changedPalette) {
                 this.handleOpenPage(pageConfig);
             }
         } else {
@@ -370,6 +412,10 @@ export class ThemeEditActions extends Component<{
                 return page;
             }),
         }));
+    }
+
+    private toggleThemeMode = () => {
+
     }
 
     render() {
@@ -493,13 +539,22 @@ export class ThemeEditActions extends Component<{
                     <div className={styles.pageList} key="_2_">
                         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                             <p className={styles.pageListHeader}>Theme pages</p>
-                            <Tooltip title="Close">
-                                <IconButton
-                                    className={styles.sidebarCloseBtn}
-                                    onClick={this.handlePagesToggle}>
-                                    <CloseIcon />
-                                </IconButton>
-                            </Tooltip>
+                            <div style={{ display: 'flex' }}>
+                                <Tooltip title="Theme settings">
+                                    <IconButton
+                                        className={styles.sidebarCloseBtn}
+                                        onClick={this.handleThemeSettingsToggle}>
+                                        <SettingsIcon />
+                                    </IconButton>
+                                </Tooltip>
+                                <Tooltip title="Close">
+                                    <IconButton
+                                        className={styles.sidebarCloseBtn}
+                                        onClick={this.handlePagesToggle}>
+                                        <CloseIcon />
+                                    </IconButton>
+                                </Tooltip>
+                            </div>
                         </div>
                         {defaultPages?.map(p => (
                             <PageListItem
@@ -541,6 +596,72 @@ export class ThemeEditActions extends Component<{
                         </div>
                     )}
                 </div>
+                <Modal
+                    open={this.state?.themeSettingsOpen}
+                    blurSelector="#root"
+                    className={commonStyles.center}
+                    onClose={this.handleThemeSettingsToggle}
+                >
+                    <div className={styles.themeSettings}>
+                        <div className={styles.themeSettingsItem}
+                            style={{ justifyContent: 'space-between' }}
+                        >
+                            <h3 className={styles.themeSettingsTitle}>Theme settings</h3>
+                            <IconButton
+                                onClick={this.handleThemeSettingsToggle}>
+                                <CloseIcon />
+                            </IconButton>
+                        </div>
+                        <div className={styles.themeSettingsItem}>
+                            <ModeSwitch
+                                value={this.state?.themePalette?.mode ?? 'light'}
+                                onToggle={() => {
+                                    this.changedPalette = true;
+                                    this.setState(prev => {
+                                        const isLight = prev.themePalette?.mode !== 'dark';
+                                        return {
+                                            themePalette: Object.assign({}, prev.themePalette, {
+                                                mode: isLight ? 'dark' : 'light'
+                                            })
+                                        }
+                                    });
+                                }}
+                            />
+                        </div>
+                        <div className={styles.themeSettingsItem}>
+                            <ColorPicker
+                                label="Primary color"
+                                value={this.state.themePalette?.primaryColor}
+                                onChange={(color) => {
+                                    this.changedPalette = true;
+                                    this.setState(prev => {
+                                        return {
+                                            themePalette: Object.assign({}, prev.themePalette, {
+                                                primaryColor: color,
+                                            })
+                                        }
+                                    })
+                                }}
+                            />
+                        </div>
+                        <div className={styles.themeSettingsItem}>
+                            <ColorPicker
+                                label="Secondary color"
+                                value={this.state.themePalette?.secondaryColor}
+                                onChange={(color) => {
+                                    this.changedPalette = true;
+                                    this.setState(prev => {
+                                        return {
+                                            themePalette: Object.assign({}, prev.themePalette, {
+                                                secondaryColor: color,
+                                            })
+                                        }
+                                    })
+                                }}
+                            />
+                        </div>
+                    </div>
+                </Modal>
             </Drawer>
         </>)
     }

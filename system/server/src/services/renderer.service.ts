@@ -45,6 +45,7 @@ export class RendererService {
             pageConfig,
             pluginsSettings,
             themeConfig: new ThemeConfigDto().parse(allConfigs.themeConfig),
+            userConfig: new ThemeConfigDto().parse(allConfigs.userConfig),
             cmsSettings: allConfigs.cmsSettings && new CmsConfigDto().parseConfig(allConfigs.cmsSettings),
             themeCustomConfig: Object.assign({}, allConfigs.themeConfig?.themeCustomConfig, allConfigs.userConfig?.themeCustomConfig),
             pagesInfo,

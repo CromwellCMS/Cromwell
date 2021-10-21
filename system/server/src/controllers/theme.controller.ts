@@ -1,12 +1,13 @@
 import { TPackageCromwellConfig, TPageConfig, TPageInfo, TThemeConfig } from '@cromwell/core';
 import { getLogger, getThemeConfigs, JwtAuthGuard, Roles } from '@cromwell/core-backend';
 import { Body, Controller, Delete, Get, HttpException, HttpStatus, Post, Query, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { ModuleInfoDto } from '../dto/module-info.dto';
 import { PageConfigDto } from '../dto/page-config.dto';
 import { PageInfoDto } from '../dto/page-info.dto';
 import { ThemeConfigDto } from '../dto/theme-config.dto';
+import { ThemePaletteDto } from '../dto/theme-palette.dto';
 import { UpdateInfoDto } from '../dto/update-info.dto';
 import { CmsService } from '../services/cms.service';
 import { ThemeService } from '../services/theme.service';
@@ -53,6 +54,7 @@ export class ThemeController {
         status: 200,
         type: Boolean
     })
+    @ApiBody({ type: PageConfigDto })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async savePageConfig(@Body() input: PageConfigDto): Promise<boolean> {
         logger.log('ThemeController::savePageConfig');
@@ -102,6 +104,41 @@ export class ThemeController {
             throw new HttpException('Page route is not valid: ' + pageRoute, HttpStatus.NOT_ACCEPTABLE);
 
         return await this.themeService.resetPage(pageRoute);
+    }
+
+
+    @Get('palette')
+    @ApiOperation({
+        description: `Get palette of an active theme`,
+    })
+    @ApiResponse({
+        status: 200,
+        type: ThemePaletteDto
+    })
+    async getThemePalette(): Promise<ThemePaletteDto> {
+        logger.log('ThemeController::getThemePalette');
+        return await this.themeService.getThemePalette();
+    }
+
+
+    @Post('palette')
+    @UseGuards(JwtAuthGuard)
+    @Roles('administrator')
+    @ApiOperation({
+        description: `Update palette of an active theme`,
+    })
+    @ApiResponse({
+        status: 201,
+        type: Boolean
+    })
+    @ApiBody({ type: ThemePaletteDto })
+    @ApiForbiddenResponse({ description: 'Forbidden.' })
+    async saveThemePalette(@Body() input: ThemePaletteDto): Promise<boolean> {
+        logger.log('ThemeController::saveThemePalette');
+        if (input && typeof input === 'object') {
+            return await this.themeService.saveThemePalette(input);
+        }
+        return false;
     }
 
 

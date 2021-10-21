@@ -84,7 +84,7 @@
   },
   "rendererFrontendDependencies": {
     "@cromwell/core": "1.1.1",
-    "@cromwell/core-frontend": "1.1.0",
+    "@cromwell/core-frontend": "^1.1.0",
     "react-is": "17.0.2",
     "react-html-parser": "2.0.2"
   }

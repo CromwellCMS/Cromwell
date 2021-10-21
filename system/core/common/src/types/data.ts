@@ -263,6 +263,7 @@ export type TDefaultPageName = 'index' | 'category' | 'product' | 'post' | 'tag'
 export type TPalette = {
     primaryColor?: string;
     secondaryColor?: string;
+    mode?: 'light' | 'dark';
 };
 
 export type TPageInfo = {

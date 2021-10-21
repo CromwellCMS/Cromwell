@@ -100,6 +100,25 @@ li.optionsItem {
     padding-left: 20px;
 }
 
+.themeSettings {
+    @include paper;
+    min-width: 400px;
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+}
+
+.themeSettingsItem {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.themeSettingsTitle {
+    font-size: 22px;
+}
+
 :global(.modeDark) {
     .pageBarActions {
         background-color: #333;
