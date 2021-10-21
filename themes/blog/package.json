@@ -1,6 +1,6 @@
 {
   "name": "@cromwell/theme-blog",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "license": "MIT",
   "repository": "https://github.com/CromwellCMS/Cromwell",
   "author": "Astrex LLC",
@@ -19,16 +19,16 @@
     "watch": "npx --no-install cromwell b -w"
   },
   "dependencies": {
-    "@mui/material": "5.0.4",
     "@mui/lab": "5.0.0-alpha.51",
+    "@mui/material": "5.0.4",
     "@mui/styles": "5.0.1",
     "reset-css": "5.0.1"
   },
   "devDependencies": {
     "@apollo/client": "3.2.1",
-    "@cromwell/cli": "1.0.25",
-    "@cromwell/core": "^1.1.21",
-    "@cromwell/core-frontend": "1.1.14",
+    "@cromwell/cli": "1.0.26",
+    "@cromwell/core": "1.1.22",
+    "@cromwell/core-frontend": "1.1.15",
     "@rollup/plugin-alias": "3.1.5",
     "@rollup/plugin-commonjs": "20.0.0",
     "@rollup/plugin-json": "4.1.0",

@@ -1,6 +1,6 @@
 {
   "name": "@cromwell/plugin-newsletter",
-  "version": "1.0.17",
+  "version": "1.0.18",
   "description": "",
   "license": "MIT",
   "repository": "https://github.com/CromwellCMS/Cromwell",
@@ -27,8 +27,8 @@
     "migration:generate:all-example": "npm run migration:generate:all --name=init"
   },
   "dependencies": {
-    "@mui/material": "5.0.4",
     "@mui/lab": "5.0.0-alpha.51",
+    "@mui/material": "5.0.4",
     "@mui/styles": "5.0.1"
   },
   "devDependencies": {
