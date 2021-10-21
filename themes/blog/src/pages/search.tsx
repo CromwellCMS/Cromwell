@@ -103,7 +103,7 @@ const SearchPage: TCromwellPage<BlogProps> = (props) => {
                         />
                     </div>
                     <FormControl className={styles.filterItem}>
-                        <InputLabel>Sort</InputLabel>
+                        <InputLabel className={styles.sortLabel}>Sort</InputLabel>
                         <Select
                             style={{ width: '100px' }}
                             onChange={handleChangeSort}

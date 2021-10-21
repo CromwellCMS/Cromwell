@@ -40,7 +40,7 @@ export const ProductCard = (props?: {
     const inWishlist = cstore.isInWishlist({ product });
     // const inCompare = cstore.isInCompare({ product });
 
-    const imageLoader = ({ src, width, quality }: {
+    const imageLoader = ({ src }: {
         src: string;
         width: number;
         quality?: number;
@@ -165,6 +165,7 @@ export const ProductCard = (props?: {
                         <Image
                             alt={data?.name}
                             loader={imageLoader}
+                            unoptimized
                             objectFit="contain"
                             layout="fill"
                             src={mainImage}

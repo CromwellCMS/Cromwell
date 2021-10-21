@@ -45,6 +45,13 @@ div.filterItem {
     font-weight: 500;
 }
 
+.sortLabel {
+    -webkit-transform: translate(0px, 0px) scale(0.75);
+    -moz-transform: translate(0px, 0px) scale(0.75);
+    -ms-transform: translate(0px, 0px) scale(0.75);
+    transform: translate(0px, 0px) scale(0.75);
+}
+
 .description {
     margin-top: 30px;
     background-color: #fff;

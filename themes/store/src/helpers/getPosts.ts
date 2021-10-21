@@ -6,7 +6,6 @@ export const handleGetFilteredPosts = async (params: TPagedParams<TPost>, filter
     if (!filter) filter = {};
     filter.published = true;
 
-
     const client = getGraphQLClient();
     const posts = await client?.getFilteredPosts({
         pagedParams: params,

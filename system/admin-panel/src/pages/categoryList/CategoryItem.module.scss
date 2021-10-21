@@ -82,6 +82,10 @@ button.expandBtn {
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-end;
+
+    a {
+        display: flex;
+    }
 }
 
 .treeInfo {

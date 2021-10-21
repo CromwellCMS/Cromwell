@@ -4,8 +4,10 @@ import colorsdef from 'colors/safe';
 import extractZip from 'extract-zip';
 import fs from 'fs-extra';
 import moduleDownloader from 'github-directory-downloader';
+import { glob } from 'glob';
 import fetch from 'node-fetch';
-import { resolve } from 'path';
+import normalizePath from 'normalize-path';
+import { dirname, resolve } from 'path';
 import readline from 'readline';
 import { promisify } from 'util';
 
@@ -54,28 +56,33 @@ export const downloader = async (options?: {
         return true;
     });
 
-    const bundledModulesDir = getBundledModulesDir();
+    const bundledModulesDir = normalizePath(getBundledModulesDir());
 
     await fs.ensureDir(bundledModulesDir);
 
-    const dowloadDepsRecursively = async (depName: string) => {
+    const processedDependencies: string[] = []
+
+    const downloadDepsRecursively = async (depName: string) => {
+        if (processedDependencies.includes(depName)) return;
+        processedDependencies.push(depName);
         const depDir = resolve(bundledModulesDir, depName);
-        if (await fs.pathExists(depDir)) return;
 
-        readline.clearLine(process.stdout, -1);
-        readline.clearLine(process.stdout, 0);
-        process.stdout.write(colors.cyan(`Cromwell:: Downloading frontend module: ${colors.brightCyan(depName)}`));
-        readline.cursorTo(process.stdout, 0);
+        if (!await fs.pathExists(depDir)) {
+            readline.clearLine(process.stdout, -1);
+            readline.clearLine(process.stdout, 0);
+            process.stdout.write(colors.cyan(`Cromwell:: Downloading frontend module: ${colors.brightCyan(depName)}`));
+            readline.cursorTo(process.stdout, 0);
 
-        downloads++;
-        const success = await downloadBundleZipped(depName, bundledModulesDir);
-        if (!success) {
-            colors.cyan(`Cromwell:: Downloading frontend module, second attempt: ${colors.brightCyan(depName)}`)
-            const success2 = await downloadBundleZipped(depName, bundledModulesDir);
-            if (!success2) return;
+            downloads++;
+            const success = await downloadBundleZipped(depName, bundledModulesDir);
+            if (!success) {
+                colors.cyan(`Cromwell:: Downloading frontend module, second attempt: ${colors.brightCyan(depName)}`)
+                const success2 = await downloadBundleZipped(depName, bundledModulesDir);
+                if (!success2) return;
+            }
+            successfulDownloads++;
+            // await downloadBundle(depName, bundledModulesDir);
         }
-        successfulDownloads++;
-        // await downloadBundle(depName, bundledModulesDir);
 
         let meta: TScriptMetaInfo;
         try {
@@ -83,11 +90,7 @@ export const downloader = async (options?: {
             if (meta?.externalDependencies) {
                 const subdeps = Object.keys(meta.externalDependencies);
                 for (const subdep of subdeps) {
-
-                    const subdepDir = resolve(bundledModulesDir, subdep);
-                    if (!await fs.pathExists(subdepDir)) {
-                        await dowloadDepsRecursively(subdep);
-                    }
+                    await downloadDepsRecursively(subdep);
                 }
             }
         } catch (e) { }
@@ -98,8 +101,20 @@ export const downloader = async (options?: {
 
     await parallelFlows(requests, frontendDeps, (dep) => {
         const depName = `${dep.name}@${dep.version}`;
-        return dowloadDepsRecursively(depName);
-    })
+        return downloadDepsRecursively(depName);
+    });
+
+
+    // Cleanup unused dependencies
+    const allDeps = glob.sync(bundledModulesDir + '/**/*.zip').map(zipPath => {
+        return normalizePath(dirname(zipPath)).replace(bundledModulesDir + '/', '');
+    });
+    for (const dep of allDeps) {
+        if (!processedDependencies.includes(dep)) {
+            await fs.remove(resolve(bundledModulesDir, dep));
+        }
+    }
+
 
     if (downloads > 0) {
         readline.clearLine(process.stdout, -1);

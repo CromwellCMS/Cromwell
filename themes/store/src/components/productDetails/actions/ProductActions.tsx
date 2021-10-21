@@ -137,6 +137,7 @@ export const ProductActions = (props: {
 
                                 return (
                                     <Button
+                                        color="inherit"
                                         onClick={attrProps.onClick}
                                         aria-label={`Attribute ${attrProps?.attribute?.key} - value: ${attrProps?.value}`}
                                         variant={attrProps.isChecked ? 'contained' : 'outlined'}
