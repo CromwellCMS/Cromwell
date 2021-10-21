@@ -539,7 +539,7 @@ export class ThemeEditActions extends Component<{
                     <div className={styles.pageList} key="_2_">
                         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                             <p className={styles.pageListHeader}>Theme pages</p>
-                            <div style={{ display: 'flex' }}>
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
                                 <Tooltip title="Theme settings">
                                     <IconButton
                                         className={styles.sidebarCloseBtn}
