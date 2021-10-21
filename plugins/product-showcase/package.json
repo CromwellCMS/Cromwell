@@ -45,7 +45,7 @@
   },
   "peerDependencies": {
     "@apollo/client": "3.2.1",
-    "@cromwell/admin-panel": "^1.1.2",
+    "@cromwell/admin-panel": "^1.2.0",
     "@cromwell/cli": "^1.0.2",
     "@cromwell/core": "^1.1.3",
     "@cromwell/core-backend": "^1.0.3",

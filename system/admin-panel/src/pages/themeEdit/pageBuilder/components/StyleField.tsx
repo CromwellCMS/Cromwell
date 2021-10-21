@@ -40,6 +40,7 @@ export function StyleField(props: {
                 }
                 props.handleStyleChange(props.name, value);
             }}
+            variant="standard"
             value={val ?? ''}
             type={props.dataType === 'px' ? 'number' : 'string'}
             label={noWrapper ? props.label : undefined}

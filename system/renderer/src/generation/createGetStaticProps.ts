@@ -40,6 +40,7 @@ export const createGetStaticProps = (pageName: TDefaultPageName | string,
                 globalSettings?: any;
             }[];
             themeConfig?: TThemeConfig;
+            userConfig?: TThemeConfig;
             cmsSettings?: TCmsConfig;
             themeCustomConfig?: any;
             pagesInfo?: TPageInfo[];
@@ -52,13 +53,19 @@ export const createGetStaticProps = (pageName: TDefaultPageName | string,
         }
 
         const { pageConfig, themeConfig, cmsSettings,
-            themeCustomConfig, pluginsSettings } = rendererData;
+            themeCustomConfig, pluginsSettings, userConfig } = rendererData;
 
         if (themeConfig?.defaultPages) setStoreItem('defaultPages', themeConfig?.defaultPages);
         const resolvedPageRoute = resolvePageRoute(pageConfigName, { slug: context?.params?.slug as string })
 
+        if (themeConfig) {
+            themeConfig.palette = Object.assign({}, themeConfig.palette,
+                userConfig?.palette);
+        }
+
         context.pageConfig = rendererData.pageConfig;
         context.themeConfig = rendererData.themeConfig;
+        context.userConfig = rendererData.userConfig;
         context.cmsSettings = rendererData.cmsSettings;
         context.themeCustomConfig = rendererData.themeCustomConfig;
         context.pagesInfo = rendererData.pagesInfo;

@@ -13,6 +13,7 @@ export type TStaticPageContext<TPluginSettings = any, Q extends ParsedUrlQuery =
     previewData?: any;
     pageConfig?: TPageConfig;
     themeConfig?: TThemeConfig;
+    userConfig?: TThemeConfig;
     cmsSettings?: TCmsConfig;
     themeCustomConfig?: any;
     pagesInfo?: TPageInfo[];

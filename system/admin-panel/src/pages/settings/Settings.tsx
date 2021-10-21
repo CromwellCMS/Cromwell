@@ -43,7 +43,7 @@ import { languages } from '../../constants/languages';
 import { timezones } from '../../constants/timezones';
 import { NumberFormatCustom } from '../../helpers/NumberFormatCustom';
 import commonStyles from '../../styles/common.module.scss';
-import { ModeSwitch } from './ModeSwitch';
+import { AdminModeSwitch } from '../../components/modeSwitch/ModeSwitch';
 import styles from './Settings.module.scss';
 
 
@@ -299,7 +299,7 @@ class SettingsPage extends React.Component<any, {
                     <p className={commonStyles.pageTitle}>settings</p>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                         <div style={{ marginRight: '20px' }}>
-                            <ModeSwitch />
+                            <AdminModeSwitch />
                         </div>
                         <Button
                             color="primary"

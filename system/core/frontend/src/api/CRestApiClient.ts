@@ -15,6 +15,7 @@ import {
     TPackageCromwellConfig,
     TPageConfig,
     TPageInfo,
+    TPalette,
     TPaymentSession,
     TProductReview,
     TProductReviewInput,
@@ -723,6 +724,23 @@ export class CRestApiClient {
     /** @internal */
     public getThemeCustomConfig = async (options?: TRequestOptions): Promise<Record<string, any> | undefined> => {
         return this.get(`v1/theme/custom-config`, options);
+    }
+
+    /**
+     * Update page config by page route of currently active Theme
+     * @auth admin
+     */
+    public getThemePalette = async (options?: TRequestOptions): Promise<TPalette> => {
+        return this.get(`v1/theme/palette`, options);
+    }
+
+    /**
+     * Update page config by page route of currently active Theme
+     * @auth admin
+     */
+    public saveThemePalette = async (palette: TPalette, options?: TRequestOptions): Promise<boolean> => {
+        const data = await this.post<boolean>(`v1/theme/palette`, palette, options);
+        return data ?? false;
     }
 
     // < / Theme >
