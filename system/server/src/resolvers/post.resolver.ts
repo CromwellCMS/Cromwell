@@ -2,6 +2,7 @@ import { GraphQLPaths, TAuthRole, TPagedList, TPost, TTag, TUser } from '@cromwe
 import {
     CreatePost,
     DeleteManyInput,
+    EntityMetaRepository,
     getLogger,
     PagedParamsInput,
     PagedPost,
@@ -14,6 +15,7 @@ import {
     User,
     UserRepository,
 } from '@cromwell/core-backend';
+import { GraphQLJSONObject } from 'graphql-type-json';
 import { Arg, Authorized, Ctx, FieldResolver, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
@@ -162,5 +164,10 @@ export class PostResolver {
     @FieldResolver(() => [Tag], { nullable: true })
     async [tagsKey](@Root() post: Post): Promise<TTag[] | undefined | null> {
         return this.repository.getTagsOfPost(post.id);
+    }
+
+    @FieldResolver(() => GraphQLJSONObject, { nullable: true })
+    async customMeta(@Root() entity: Post, @Arg("fields", () => [String]) fields: string[]): Promise<any> {
+        return getCustomRepository(EntityMetaRepository).getEntityMetaValuesByKeys(entity.metaId, fields);
     }
 }

@@ -114,5 +114,4 @@ export class BaseRepository<EntityType, EntityInputType = EntityType> extends Re
         await qb.execute();
         return true;
     }
-
 }

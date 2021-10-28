@@ -1,4 +1,4 @@
-import { TPagedList, TStoreListItem } from './data';
+import { TPagedList, TStoreListItem, EDBEntity } from './data';
 
 export type TBasePageEntity = {
     /**
@@ -33,6 +33,14 @@ export type TBasePageEntity = {
      * Is displaying at frontend
      */
     isEnabled?: boolean;
+    /**
+     * Unique (uuid) entity meta id to match a custom meta records in EntityMeta table
+     */
+    metaId?: string;
+    /**
+     * Unique (uuid) entity meta id to match a custom meta records in EntityMeta table
+     */
+    customMeta?: Record<string, string>;
 }
 
 export type TBasePageMeta = {
@@ -42,7 +50,9 @@ export type TBasePageMeta = {
 
 export type TDBAuxiliaryColumns = 'id' | 'createDate' | 'updateDate';
 
-export type TBasePageEntityInput = Omit<TBasePageEntity, TDBAuxiliaryColumns>;
+export type TBasePageEntityInput = Omit<TBasePageEntity, TDBAuxiliaryColumns> & {
+    customMeta?: Record<string, string>;
+};
 
 
 /**
@@ -165,6 +175,7 @@ export type TProductRating = {
 
 export type TProductInput = Omit<TProduct, TDBAuxiliaryColumns | 'categories' | 'rating' | 'reviews'> & {
     categoryIds?: string[];
+    customMeta?: Record<string, string>;
 };
 
 export type TProductFilter = {
@@ -396,6 +407,8 @@ export type TOrderCore = {
     paymentMethod?: string;
     fromUrl?: string;
     currency?: string;
+    metaId?: string;
+    customMeta?: Record<string, string>;
 }
 
 export type TOrder = TOrderCore;
@@ -569,6 +582,10 @@ export type TCmsAdminSettings = {
      * E-mail to send mails from
      */
     sendFromEmail?: string;
+    /**
+     * Custom fields data
+     */
+    customFields?: TAdminCustomField[];
 }
 
 /**
@@ -604,6 +621,15 @@ export type TServiceVersions = {
     admin?: number;
 };
 
+export type TAdminCustomField = {
+    entityType: EDBEntity | string;
+    fieldType: 'text' | 'select' | 'image' | 'gallery' | 'color';
+    key: string;
+    id: string;
+    label?: string;
+    order?: number;
+}
+
 export type TCmsEntity = TCmsEntityCore & TBasePageEntity;
 
 
@@ -632,3 +658,10 @@ export type TCmsRedirectObject = {
 export type TCmsRedirectFunction = (pathname: string, search?: string | null) => TCmsRedirectObject | undefined | void;
 
 export type TCmsRedirect = TCmsRedirectObject | TCmsRedirectFunction;
+
+export type TEntityMeta = {
+    id: string;
+    entityMetaId: string;
+    key?: string | null;
+    value?: string | null;
+}

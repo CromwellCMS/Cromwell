@@ -2,6 +2,7 @@ import { GraphQLPaths, TAuthRole, TPagedList, TUser } from '@cromwell/core';
 import {
     CreateUser,
     DeleteManyInput,
+    EntityMetaRepository,
     PagedParamsInput,
     PagedUser,
     TGraphQLContext,
@@ -10,7 +11,8 @@ import {
     UserFilterInput,
     UserRepository,
 } from '@cromwell/core-backend';
-import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
+import { GraphQLJSONObject } from 'graphql-type-json';
+import { Arg, Authorized, Ctx, FieldResolver, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
 import { resetAllPagesCache } from '../helpers/reset-page';
@@ -98,5 +100,10 @@ export class UserResolver {
         @Arg("filterParams", { nullable: true }) filterParams?: UserFilterInput,
     ): Promise<TPagedList<TUser> | undefined> {
         return this.repository.getFilteredUsers(pagedParams, filterParams);
+    }
+
+    @FieldResolver(() => GraphQLJSONObject, { nullable: true })
+    async customMeta(@Root() entity: User, @Arg("fields", () => [String]) fields: string[]): Promise<any> {
+        return getCustomRepository(EntityMetaRepository).getEntityMetaValuesByKeys(entity.metaId, fields);
     }
 }

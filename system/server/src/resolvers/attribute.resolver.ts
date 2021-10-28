@@ -1,6 +1,7 @@
 import { GraphQLPaths, TAttribute, TAuthRole } from '@cromwell/core';
-import { Attribute, AttributeInput, AttributeRepository } from '@cromwell/core-backend';
-import { Arg, Authorized, Mutation, Query, Resolver } from 'type-graphql';
+import { Attribute, AttributeInput, AttributeRepository, EntityMetaRepository } from '@cromwell/core-backend';
+import { Arg, Authorized, FieldResolver, Mutation, Query, Resolver, Root } from 'type-graphql';
+import { GraphQLJSONObject } from 'graphql-type-json';
 import { getCustomRepository } from 'typeorm';
 
 import { resetAllPagesCache } from '../helpers/reset-page';
@@ -51,6 +52,11 @@ export class AttributeResolver {
         serverFireAction('delete_attribute', { id });
         resetAllPagesCache();
         return attr;
+    }
+
+    @FieldResolver(() => GraphQLJSONObject, { nullable: true })
+    async customMeta(@Root() entity: Attribute, @Arg("fields", () => [String]) fields: string[]): Promise<any> {
+        return getCustomRepository(EntityMetaRepository).getEntityMetaValuesByKeys(entity.metaId, fields);
     }
 
 }

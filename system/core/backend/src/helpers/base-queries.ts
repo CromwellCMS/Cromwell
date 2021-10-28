@@ -1,7 +1,8 @@
 import { getRandStr, getStoreItem, TBasePageEntity, TBasePageEntityInput, TPagedList, TPagedParams } from '@cromwell/core';
-import { getManager, SelectQueryBuilder, ConnectionOptions } from 'typeorm';
-
+import { getManager, SelectQueryBuilder, ConnectionOptions, getCustomRepository } from 'typeorm';
+import { v4 as uuidv4 } from 'uuid';
 import { BasePageEntity } from '../models/entities/base-page.entity';
+import { EntityMetaRepository } from '../repositories/entity-meta.repository';
 
 const MAX_PAGE_SIZE = 300;
 
@@ -56,7 +57,7 @@ export const getPaged = async <T>(qb: SelectQueryBuilder<T>, sortByTableName?: s
     return { pagedMeta, elements };
 }
 
-export const handleBaseInput = (entity: TBasePageEntity, input: TBasePageEntityInput) => {
+export const handleBaseInput = async (entity: TBasePageEntity, input: TBasePageEntityInput) => {
     entity.slug = input.slug;
     if (entity.slug) {
         entity.slug = (entity.slug + '').replace(/\W/g, '-').toLowerCase();
@@ -68,6 +69,25 @@ export const handleBaseInput = (entity: TBasePageEntity, input: TBasePageEntityI
         entity.meta = {
             keywords: input.meta?.keywords
         }
+    }
+
+    await handleCustomMetaInput(entity, input);
+}
+
+export const handleCustomMetaInput = async <
+    T extends { customMeta?: Record<string, string>; }
+>(entity: TBasePageEntity, input: T) => {
+    if (input.customMeta && typeof input.customMeta === 'object'
+        && Object.keys(input.customMeta).length) {
+        if (!entity.metaId) {
+            entity.metaId = uuidv4();
+        }
+
+        await Promise.all(Object.keys(input.customMeta).map(async key => {
+            if (entity.metaId && input.customMeta)
+                return getCustomRepository(EntityMetaRepository).setEntityMeta(
+                    entity.metaId, key, input.customMeta[key]);
+        }));
     }
 }
 

@@ -12,7 +12,7 @@ import {
 import { getRestApiClient } from '@cromwell/core-frontend/dist/api/CRestApiClient';
 
 import { getThemeStaticProps } from './getThemeStaticProps';
-import { pluginsDataFetcher } from './pluginsDataFetcher';
+import { pluginsDataFetcher, TPluginsSettings } from './pluginsDataFetcher';
 
 export const createGetStaticProps = (pageName: TDefaultPageName | string,
     pageGetStaticProps: ((context: TStaticPageContext) => any) | undefined | null) => {
@@ -34,11 +34,7 @@ export const createGetStaticProps = (pageName: TDefaultPageName | string,
         // const timestamp = Date.now();
         let rendererData: {
             pageConfig?: TPageConfig;
-            pluginsSettings?: {
-                pluginName: string;
-                version?: string;
-                globalSettings?: any;
-            }[];
+            pluginsSettings?: TPluginsSettings;
             themeConfig?: TThemeConfig;
             userConfig?: TThemeConfig;
             cmsSettings?: TCmsConfig;

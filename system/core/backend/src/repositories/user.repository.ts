@@ -49,7 +49,7 @@ export class UserRepository extends BaseRepository<User> {
         if (userInput.email && !validateEmail(userInput.email))
             throw new Error('Provided e-mail is not valid');
 
-        handleBaseInput(user, userInput);
+        await handleBaseInput(user, userInput);
         user.fullName = userInput.fullName;
         user.email = userInput.email;
         user.avatar = userInput.avatar;

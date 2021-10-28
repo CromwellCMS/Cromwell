@@ -13,6 +13,7 @@ import { ProductReview } from '../models/entities/product-review.entity';
 import { Tag } from '../models/entities/tag.entity';
 import { ThemeEntity } from '../models/entities/theme.entity';
 import { User } from '../models/entities/user.entity';
+import { EntityMeta } from '../models/entities/entity-meta.entity';
 
 
 export const ORMEntities = [
@@ -20,6 +21,7 @@ export const ORMEntities = [
     Product, ProductCategory, Post, User,
     Attribute, ProductReview, Order,
     CmsEntity, Tag, PageStats, PostComment,
+    EntityMeta,
 ]
 
 export const rendererMessages = {

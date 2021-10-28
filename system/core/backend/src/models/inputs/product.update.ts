@@ -1,7 +1,8 @@
-import { InputType, Field, ID } from "type-graphql";
 import { TProductInput } from '@cromwell/core';
-import { BasePageInput } from './base-page.input';
+import { Field, InputType } from 'type-graphql';
+
 import { AttributeInstance } from '../entities/attribute-instance.entity';
+import { BasePageInput } from './base-page.input';
 
 @InputType({ description: "Update Product data" })
 export class UpdateProduct extends BasePageInput implements TProductInput {

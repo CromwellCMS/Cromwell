@@ -22,7 +22,7 @@ export class AttributeRepository extends BaseRepository<Attribute> {
     }
 
     async handleAttributeInput(attribute: Attribute, input: TAttributeInput) {
-        handleBaseInput(attribute, input);
+        await handleBaseInput(attribute, input);
         attribute.key = input.key;
         attribute.type = input.type;
         attribute.values = input.values.sort((a, b) => (a.value > b.value) ? 1 : -1);

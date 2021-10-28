@@ -1,4 +1,5 @@
 import { TBasePageEntityInput, TBasePageMeta } from '@cromwell/core';
+import { GraphQLJSONObject } from 'graphql-type-json';
 import { Field, InputType } from 'type-graphql';
 
 @InputType()
@@ -26,4 +27,7 @@ export class BasePageInput implements TBasePageEntityInput {
 
     @Field(() => BasePageMetaInput, { nullable: true })
     meta?: TBasePageMeta | null | undefined;
+
+    @Field(() => GraphQLJSONObject, { nullable: true })
+    customMeta?: Record<string, string>;
 }

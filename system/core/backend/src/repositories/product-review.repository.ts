@@ -30,7 +30,7 @@ export class ProductReviewRepository extends BaseRepository<ProductReview> {
     }
 
     async handleProductReviewInput(productReview: ProductReview, input: TProductReviewInput) {
-        handleBaseInput(productReview, input);
+        await handleBaseInput(productReview, input);
 
         const product = await this.productRepo.getProductById(input.productId);
         if (!product) throw new Error(`ProductReviewRepository:handleProductReviewInput productId ${input.productId} not found!`);

@@ -36,7 +36,7 @@ export class TagRepository extends BaseRepository<Tag> {
     }
 
     private async handleBaseTagInput(tag: Tag, input: TTagInput) {
-        handleBaseInput(tag, input);
+        await handleBaseInput(tag, input);
 
         tag.name = input.name;
         tag.color = input.color;

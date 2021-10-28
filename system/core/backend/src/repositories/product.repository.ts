@@ -11,12 +11,12 @@ import {
 } from '@cromwell/core';
 import { Brackets, DeleteQueryBuilder, EntityRepository, getCustomRepository, SelectQueryBuilder } from 'typeorm';
 
-import { ProductFilterInput } from '../models/filters/product.filter';
+import { applyGetManyFromOne, checkEntitySlug, getPaged, handleBaseInput } from '../helpers/base-queries';
+import { getLogger } from '../helpers/logger';
 import { PageStats } from '../models/entities/page-stats.entity';
 import { ProductReview } from '../models/entities/product-review.entity';
 import { Product } from '../models/entities/product.entity';
-import { applyGetManyFromOne, checkEntitySlug, getPaged, handleBaseInput } from '../helpers/base-queries';
-import { getLogger } from '../helpers/logger';
+import { ProductFilterInput } from '../models/filters/product.filter';
 import { PagedParamsInput } from '../models/inputs/paged-params.input';
 import { BaseRepository } from './base.repository';
 import { PageStatsRepository } from './page-stats.repository';
@@ -88,7 +88,7 @@ export class ProductRepository extends BaseRepository<Product> {
     }
 
     async handleProductInput(product: Product, input: TProductInput) {
-        handleBaseInput(product, input);
+        await handleBaseInput(product, input);
         product.name = input.name;
         product.price = input.price;
         product.oldPrice = input.oldPrice;
@@ -314,5 +314,4 @@ export class ProductRepository extends BaseRepository<Product> {
         await qb.execute();
         return true;
     }
-
 }

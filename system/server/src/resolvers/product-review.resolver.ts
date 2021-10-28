@@ -1,6 +1,7 @@
 import { GraphQLPaths, TAuthRole, TPagedList, TProductReview } from '@cromwell/core';
 import {
     DeleteManyInput,
+    EntityMetaRepository,
     PagedParamsInput,
     PagedProductReview,
     ProductReview,
@@ -8,7 +9,8 @@ import {
     ProductReviewInput,
     ProductReviewRepository,
 } from '@cromwell/core-backend';
-import { Arg, Authorized, Mutation, Query, Resolver } from 'type-graphql';
+import { GraphQLJSONObject } from 'graphql-type-json';
+import { Arg, Authorized, FieldResolver, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
 import { resetAllPagesCache } from '../helpers/reset-page';
@@ -91,4 +93,8 @@ export class ProductReviewResolver {
         return this.repository.getFilteredProductReviews(pagedParams, filterParams);
     }
 
+    @FieldResolver(() => GraphQLJSONObject, { nullable: true })
+    async customMeta(@Root() entity: ProductReview, @Arg("fields", () => [String]) fields: string[]): Promise<any> {
+        return getCustomRepository(EntityMetaRepository).getEntityMetaValuesByKeys(entity.metaId, fields);
+    }
 }

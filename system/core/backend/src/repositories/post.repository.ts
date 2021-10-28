@@ -41,7 +41,7 @@ export class PostRepository extends BaseRepository<Post> {
         const author = await getCustomRepository(UserRepository).getUserById(input.authorId);
         if (!author) throw new Error(`Author for the new post was not found`);
 
-        handleBaseInput(post, input);
+        await handleBaseInput(post, input);
 
         if (input.tagIds) {
             const tags = await getCustomRepository(TagRepository).getTagsByIds(input.tagIds);

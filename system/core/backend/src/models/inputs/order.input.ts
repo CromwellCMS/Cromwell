@@ -1,4 +1,5 @@
 import { TOrderInput } from '@cromwell/core';
+import { GraphQLJSONObject } from 'graphql-type-json';
 import { Field, InputType } from 'type-graphql';
 
 import { BasePageInput } from './base-page.input';
@@ -53,4 +54,7 @@ export class OrderInput extends BasePageInput implements TOrderInput {
 
     @Field(() => String, { nullable: true })
     currency?: string;
+
+    @Field(() => GraphQLJSONObject, { nullable: true })
+    customMeta?: Record<string, string>;
 }

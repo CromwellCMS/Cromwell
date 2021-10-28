@@ -89,4 +89,8 @@ export class Order extends BaseEntity implements TOrder {
     @Index()
     @UpdateDateColumn()
     updateDate: Date;
+
+    @Field(() => String, { nullable: true })
+    @Column({ type: "varchar", nullable: true })
+    metaId?: string;
 }

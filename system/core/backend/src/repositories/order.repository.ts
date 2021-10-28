@@ -3,12 +3,12 @@ import sanitizeHtml from 'sanitize-html';
 import { DeleteQueryBuilder, EntityRepository, SelectQueryBuilder } from 'typeorm';
 import { DateUtils } from 'typeorm/util/DateUtils';
 
-import { OrderFilterInput } from '../models/filters/order.filter';
-import { Order } from '../models/entities/order.entity';
+import { getPaged, handleCustomMetaInput } from '../helpers/base-queries';
 import { getLogger } from '../helpers/logger';
 import { validateEmail } from '../helpers/validation';
+import { Order } from '../models/entities/order.entity';
+import { OrderFilterInput } from '../models/filters/order.filter';
 import { PagedParamsInput } from '../models/inputs/paged-params.input';
-import { checkEntitySlug, getPaged, handleBaseInput } from '../helpers/base-queries';
 import { BaseRepository } from './base.repository';
 
 const logger = getLogger();
@@ -38,6 +38,8 @@ export class OrderRepository extends BaseRepository<Order> {
     private async handleBaseOrderInput(order: Order, input: TOrderInput) {
         if (input.customerEmail && !validateEmail(input.customerEmail))
             throw new Error('Provided e-mail is not valid');
+
+        await handleCustomMetaInput(order, input);
 
         order.status = input.status;
         order.cart = Array.isArray(input.cart) ? JSON.stringify(input.cart) : input.cart;

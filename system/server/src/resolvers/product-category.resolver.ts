@@ -2,6 +2,7 @@ import { GraphQLPaths, TAuthRole, TPagedList, TProduct, TProductCategory } from 
 import {
     CreateProductCategory,
     DeleteManyInput,
+    EntityMetaRepository,
     PagedParamsInput,
     PagedProduct,
     PagedProductCategory,
@@ -11,6 +12,7 @@ import {
     ProductRepository,
     UpdateProductCategory,
 } from '@cromwell/core-backend';
+import { GraphQLJSONObject } from 'graphql-type-json';
 import { Arg, Authorized, FieldResolver, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
@@ -124,8 +126,8 @@ export class ProductCategoryResolver {
         return await this.repository.getChildCategories(productCategory);
     }
 
-    @FieldResolver()
-    views(): number {
-        return Math.floor(Math.random() * 10);
+    @FieldResolver(() => GraphQLJSONObject, { nullable: true })
+    async customMeta(@Root() entity: ProductCategory, @Arg("fields", () => [String]) fields: string[]): Promise<any> {
+        return getCustomRepository(EntityMetaRepository).getEntityMetaValuesByKeys(entity.metaId, fields);
     }
 }

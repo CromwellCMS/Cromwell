@@ -139,6 +139,22 @@ export type TDBEntity = keyof {
     CMS;
 }
 
+export enum EDBEntity {
+    Post = 'Post',
+    PostComment = 'PostComment',
+    Tag = 'Tag',
+    Product = 'Product',
+    ProductCategory = 'ProductCategory',
+    ProductReview = 'ProductReview',
+    Attribute = 'Attribute',
+    Order = 'Order',
+    User = 'User',
+    Theme = 'Theme',
+    Plugin = 'Plugin',
+    Generic = 'Generic',
+    CMS = 'CMS',
+}
+
 export type GraphQLPathsType = { [K in TDBEntity]: TGraphQLNode };
 
 export type TGraphQLNode = {
@@ -541,6 +557,7 @@ export type TPluginSettingsProps<TSettings = any> = {
 
 export type TFrontendPluginProps<TData = any, TInstanceSettings = any> = {
     data?: TData;
+    blockId?: string;
     pluginName: string;
     instanceSettings?: TInstanceSettings;
 }

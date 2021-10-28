@@ -83,7 +83,7 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
     }
 
     async handleProductCategoryInput(productCategory: ProductCategory, input: TProductCategoryInput) {
-        handleBaseInput(productCategory, input);
+        await handleBaseInput(productCategory, input);
 
         productCategory.name = input.name;
         productCategory.mainImage = input.mainImage;

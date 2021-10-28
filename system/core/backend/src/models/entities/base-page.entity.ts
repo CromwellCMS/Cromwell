@@ -57,4 +57,8 @@ export class BasePageEntity extends BaseEntity implements TBasePageEntity {
     @Field(() => Boolean, { nullable: true })
     @Column({ type: "boolean", default: true, nullable: true })
     isEnabled?: boolean;
+
+    @Field(() => String, { nullable: true })
+    @Column({ type: "varchar", nullable: true })
+    metaId?: string;
 }

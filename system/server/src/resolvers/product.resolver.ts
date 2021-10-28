@@ -11,6 +11,7 @@ import {
 import {
     CreateProduct,
     DeleteManyInput,
+    EntityMetaRepository,
     FilteredProduct,
     PagedParamsInput,
     PagedProduct,
@@ -23,6 +24,7 @@ import {
     ProductRepository,
     UpdateProduct,
 } from '@cromwell/core-backend';
+import { GraphQLJSONObject } from 'graphql-type-json';
 import { Arg, Authorized, FieldResolver, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
@@ -142,6 +144,11 @@ export class ProductResolver {
             reviewsNumber: product.reviewsCount,
             average: product.averageRating,
         }
+    }
+
+    @FieldResolver(() => GraphQLJSONObject, { nullable: true })
+    async customMeta(@Root() entity: Product, @Arg("fields", () => [String]) fields: string[]): Promise<any> {
+        return getCustomRepository(EntityMetaRepository).getEntityMetaValuesByKeys(entity.metaId, fields);
     }
 }
 

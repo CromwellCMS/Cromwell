@@ -676,7 +676,7 @@ export class CRestApiClient {
     public getPluginsAtPage = async (pageRoute: string, options?: TRequestOptions): Promise<{
         pluginName: string;
         version?: string;
-        instanceSettings: any;
+        pluginInstances?: any;
     }[] | undefined> => {
         return this.get(`v1/theme/plugins?pageRoute=${pageRoute}`, options);
     }

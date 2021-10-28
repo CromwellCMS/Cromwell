@@ -31,7 +31,7 @@ export class PluginRepository extends BaseRepository<PluginEntity> {
     }
 
     private async handleBasePluginInput(plugin: PluginEntity, input: TPluginEntityInput) {
-        handleBaseInput(plugin, input);
+        await handleBaseInput(plugin, input);
 
         plugin.name = input.name;
         plugin.title = input.title;

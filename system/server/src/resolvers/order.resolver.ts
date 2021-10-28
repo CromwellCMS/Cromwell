@@ -1,15 +1,17 @@
 import { GraphQLPaths, TAuthRole, TOrder, TPagedList } from '@cromwell/core';
 import {
     DeleteManyInput,
-    OrderInput,
-    TGraphQLContext,
+    EntityMetaRepository,
     Order,
     OrderFilterInput,
+    OrderInput,
     OrderRepository,
     PagedOrder,
     PagedParamsInput,
+    TGraphQLContext,
 } from '@cromwell/core-backend';
-import { Arg, Ctx, Authorized, Mutation, Query, Resolver } from 'type-graphql';
+import { GraphQLJSONObject } from 'graphql-type-json';
+import { Arg, Authorized, Ctx, FieldResolver, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
 import { serverFireAction } from '../helpers/server-fire-action';
@@ -121,5 +123,10 @@ export class OrderResolver {
         @Arg("filterParams", { nullable: true }) filterParams?: OrderFilterInput,
     ): Promise<TPagedList<TOrder> | undefined> {
         return this.repository.getFilteredOrders(pagedParams, filterParams);
+    }
+
+    @FieldResolver(() => GraphQLJSONObject, { nullable: true })
+    async customMeta(@Root() entity: Order, @Arg("fields", () => [String]) fields: string[]): Promise<any> {
+        return getCustomRepository(EntityMetaRepository).getEntityMetaValuesByKeys(entity.metaId, fields);
     }
 }

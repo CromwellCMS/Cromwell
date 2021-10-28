@@ -1,13 +1,15 @@
 import { GraphQLPaths, TAuthRole, TPagedList, TTag } from '@cromwell/core';
 import {
     DeleteManyInput,
+    EntityMetaRepository,
     InputTag,
     PagedParamsInput,
     PagedTag,
     Tag,
     TagRepository,
 } from '@cromwell/core-backend';
-import { Arg, Authorized, Mutation, Query, Resolver } from 'type-graphql';
+import { GraphQLJSONObject } from 'graphql-type-json';
+import { Arg, Authorized, FieldResolver, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
 import { resetAllPagesCache } from '../helpers/reset-page';
@@ -76,6 +78,11 @@ export class TagResolver {
         const res = await this.repository.deleteMany(data);
         resetAllPagesCache();
         return res;
+    }
+
+    @FieldResolver(() => GraphQLJSONObject, { nullable: true })
+    async customMeta(@Root() entity: Tag, @Arg("fields", () => [String]) fields: string[]): Promise<any> {
+        return getCustomRepository(EntityMetaRepository).getEntityMetaValuesByKeys(entity.metaId, fields);
     }
 }
 
