@@ -6,7 +6,7 @@ import { withStyles } from '@mui/styles';
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
-import ImagePicker from '../../components/imagePicker/ImagePicker';
+import { ImagePicker } from '../../components/imagePicker/ImagePicker';
 import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
 import { toast } from '../../components/toast/toast';
 import styles from './Welcome.module.scss';
@@ -98,6 +98,7 @@ export default function WelcomePage() {
                             value={nameInput}
                             onChange={e => setNameInput(e.target.value)}
                             fullWidth
+                            variant="standard"
                             error={nameInput === '' && submitPressed}
                             helperText={nameInput === '' && submitPressed ? "This field is required" : undefined}
                             id="name-input"
@@ -110,6 +111,7 @@ export default function WelcomePage() {
                         className={styles.textField}
                         onChange={e => setEmailInput(e.target.value)}
                         fullWidth
+                        variant="standard"
                         error={emailInput === '' && submitPressed}
                         helperText={emailInput === '' && submitPressed ? "This field is required" : undefined}
                         id="email-input"
@@ -121,6 +123,7 @@ export default function WelcomePage() {
                         onChange={e => setPasswordInput(e.target.value)}
                         className={styles.textField}
                         fullWidth
+                        variant="standard"
                         error={passwordInput === '' && submitPressed}
                         helperText={passwordInput === '' && submitPressed ? "This field is required" : undefined}
                         id="password-input"

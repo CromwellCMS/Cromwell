@@ -1,4 +1,4 @@
-import { TFrontendPluginProps, TGetStaticProps } from '@cromwell/core';
+import { TFrontendPluginProps, TGetPluginStaticProps } from '@cromwell/core';
 import { iconFromPath, Link } from '@cromwell/core-frontend';
 import { Collapse, IconButton, MenuItem, Popover, useMediaQuery, useTheme } from '@mui/material';
 import React, { useState } from 'react';
@@ -128,6 +128,6 @@ const MainMenu = (props: TFrontendPluginProps<TMainMenuSettings>) => {
 
 export default MainMenu;
 
-export const getStaticProps: TGetStaticProps<TMainMenuSettings> = async (context): Promise<TMainMenuSettings | undefined> => {
+export const getStaticProps: TGetPluginStaticProps<TMainMenuSettings> = async (context): Promise<TMainMenuSettings | undefined> => {
     return context.pluginSettings;
 }

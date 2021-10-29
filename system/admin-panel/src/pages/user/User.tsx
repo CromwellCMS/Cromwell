@@ -1,5 +1,7 @@
-import { getStoreItem, setStoreItem, TCreateUser, TUpdateUser, TUser, TUserRole } from '@cromwell/core';
+import { gql } from '@apollo/client';
+import { EDBEntity, getStoreItem, setStoreItem, TCreateUser, TUpdateUser, TUser, TUserRole } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
+import { Visibility as VisibilityIcon, VisibilityOff as VisibilityOffIcon } from '@mui/icons-material';
 import {
     Button,
     FormControl,
@@ -9,17 +11,17 @@ import {
     InputLabel,
     MenuItem,
     Select,
-    TextField,
     SelectChangeEvent,
+    TextField,
 } from '@mui/material';
-import { Visibility as VisibilityIcon, VisibilityOff as VisibilityOffIcon } from '@mui/icons-material';
 import React, { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
-import ImagePicker from '../../components/imagePicker/ImagePicker';
+import { ImagePicker } from '../../components/imagePicker/ImagePicker';
 import { toast } from '../../components/toast/toast';
 import { userPageInfo } from '../../constants/PageInfos';
 import { userRoles } from '../../constants/roles';
+import { getCustomMetaFor, getCustomMetaKeysFor, renderCustomFieldsFor } from '../../helpers/customFields';
 import commonStyles from '../../styles/common.module.scss';
 import styles from './User.module.scss';
 
@@ -40,7 +42,28 @@ export default function UserPage() {
     const getUser = async (id: string) => {
         let data: TUser | undefined;
         try {
-            data = await client?.getUserById(id);
+            data = await client?.getUserById(id,
+                gql`
+                fragment AdminPanelUserFragment on User {
+                    id
+                    slug
+                    createDate
+                    updateDate
+                    isEnabled
+                    pageTitle
+                    pageDescription
+                    meta {
+                        keywords
+                    }
+                    fullName
+                    email
+                    avatar
+                    bio
+                    phone
+                    address
+                    role
+                    customMeta (fields: ${JSON.stringify(getCustomMetaKeysFor(EDBEntity.User))})
+                }`, 'AdminPanelUserFragment');
         } catch (e) { console.error(e) }
 
         return data;
@@ -84,6 +107,7 @@ export default function UserPage() {
         phone: userData.phone,
         address: userData.address,
         role: userData.role,
+        customMeta: Object.assign({}, userData.customMeta, getCustomMetaFor(EDBEntity.User)),
     });
 
     const handleSave = async () => {
@@ -148,7 +172,7 @@ export default function UserPage() {
             </div>
             <div className={styles.fields}>
                 <Grid container spacing={3}>
-                    <Grid item xs={12} sm={6}>
+                    <Grid item xs={12} sm={6} style={{ display: 'flex', alignItems: 'flex-end' }}>
                         <TextField
                             label="Name"
                             value={userData?.fullName || ''}
@@ -255,6 +279,9 @@ export default function UserPage() {
                             className={styles.field}
                             onChange={(e) => { handleInputChange('phone', e.target.value) }}
                         />
+                    </Grid>
+                    <Grid item xs={12} sm={12}>
+                        {userData && renderCustomFieldsFor(EDBEntity.User, userData)}
                     </Grid>
                 </Grid>
             </div>

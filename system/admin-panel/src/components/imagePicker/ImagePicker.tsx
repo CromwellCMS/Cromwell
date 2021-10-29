@@ -24,7 +24,7 @@ export type ImagePickerProps = {
     style?: React.CSSProperties;
 }
 
-const ImagePicker = (props: ImagePickerProps) => {
+export const ImagePicker = (props: ImagePickerProps) => {
     const [internalValue, setInternalValue] = useState<string | undefined>();
     const value = (props.value !== undefined && props.value !== '') ? props.value : internalValue;
 
@@ -85,5 +85,3 @@ const ImagePicker = (props: ImagePickerProps) => {
     );
     return element;
 }
-
-export default ImagePicker;

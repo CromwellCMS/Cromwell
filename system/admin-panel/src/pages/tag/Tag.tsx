@@ -1,4 +1,5 @@
-import { resolvePageRoute, serviceLocator, TTag, TTagInput } from '@cromwell/core';
+import { gql } from '@apollo/client';
+import { EDBEntity, resolvePageRoute, serviceLocator, TTag, TTagInput } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
 import { ArrowBack as ArrowBackIcon, OpenInNew as OpenInNewIcon } from '@mui/icons-material';
 import { Autocomplete as MuiAutocomplete, Button, Grid, IconButton, Skeleton, TextField, Tooltip } from '@mui/material';
@@ -6,9 +7,10 @@ import React, { useEffect, useState } from 'react';
 import { Link, useHistory, useParams } from 'react-router-dom';
 
 import ColorPicker from '../../components/colorPicker/ColorPicker';
-import ImagePicker from '../../components/imagePicker/ImagePicker';
+import { ImagePicker } from '../../components/imagePicker/ImagePicker';
 import { toast } from '../../components/toast/toast';
 import { tagListPageInfo, tagPageInfo } from '../../constants/PageInfos';
+import { getCustomMetaFor, getCustomMetaKeysFor, renderCustomFieldsFor } from '../../helpers/customFields';
 import { getEditorData, getEditorHtml, initTextEditor } from '../../helpers/editor/editor';
 import commonStyles from '../../styles/common.module.scss';
 import styles from './Tag.module.scss';
@@ -26,7 +28,26 @@ const TagPage = () => {
     const getTagData = async (id: string) => {
         let tagData: TTag;
         try {
-            tagData = await client.getTagById(id);
+            tagData = await client.getTagById(id,
+                gql`
+                    fragment AdminPanelTagFragment on Tag {
+                        id
+                        slug
+                        createDate
+                        updateDate
+                        pageTitle
+                        pageDescription
+                        meta {
+                            keywords
+                        }
+                        isEnabled
+                        name
+                        color
+                        image
+                        description
+                        descriptionDelta
+                        customMeta (fields: ${JSON.stringify(getCustomMetaKeysFor(EDBEntity.Tag))})
+                    }`, 'AdminPanelTagFragment');
             if (tagData) {
                 setData(tagData);
             }
@@ -90,6 +111,7 @@ const TagPage = () => {
             isEnabled: data.isEnabled,
             description: await getEditorHtml(editorId),
             descriptionDelta: JSON.stringify(await getEditorData(editorId)),
+            customMeta: Object.assign({}, data.customMeta, getCustomMetaFor(EDBEntity.Tag)),
         }
 
         if (data?.id === 'new') {
@@ -264,6 +286,9 @@ const TagPage = () => {
                                     />
                                 )}
                             />
+                        </Grid>
+                        <Grid item xs={12} >
+                            {data && renderCustomFieldsFor(EDBEntity.Tag, data)}
                         </Grid>
                     </Grid>
                 )}

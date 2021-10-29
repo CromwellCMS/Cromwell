@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client';
-import { resolvePageRoute, serviceLocator, TAttribute, TProduct, TProductInput } from '@cromwell/core';
+import { EDBEntity, resolvePageRoute, serviceLocator, TAttribute, TProduct, TProductInput } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
 import { ArrowBack as ArrowBackIcon, OpenInNew as OpenInNewIcon } from '@mui/icons-material';
 import { Button, IconButton, Skeleton, Tab, Tabs, Tooltip } from '@mui/material';
@@ -8,6 +8,7 @@ import { Link, useHistory, useParams } from 'react-router-dom';
 
 import { toast } from '../../components/toast/toast';
 import { productListInfo, productPageInfo } from '../../constants/PageInfos';
+import { getCustomMetaFor, getCustomMetaKeysFor, renderCustomFieldsFor } from '../../helpers/customFields';
 import { useForceUpdate } from '../../helpers/forceUpdate';
 import { resetSelected } from '../../redux/helpers';
 import { store } from '../../redux/store';
@@ -81,6 +82,7 @@ const ProductPage = () => {
                         categories(pagedParams: {pageSize: 9999}) {
                             id
                         }
+                        customMeta (fields: ${JSON.stringify(getCustomMetaKeysFor(EDBEntity.Product))})
                         attributes {
                             key
                             values {
@@ -185,6 +187,7 @@ const ProductPage = () => {
                 meta: product.meta && {
                     keywords: product.meta.keywords
                 },
+                customMeta: Object.assign({}, product.customMeta, getCustomMetaFor(EDBEntity.Product)),
                 isEnabled: product.isEnabled,
             }
 
@@ -299,6 +302,7 @@ const ProductPage = () => {
                                 setProdData={setProdData}
                                 infoCardRef={infoCardRef}
                             />
+                            {renderCustomFieldsFor(EDBEntity.Product, product)}
                         </div>
                     </TabPanel>
                     <TabPanel value={activeTabNum} index={1}>

@@ -63,10 +63,6 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
     constructor(props) {
         super(props);
         const filterMeta = this.props.data?.filterMeta;
-
-        this.props.data?.attributes
-
-        this.props.instanceSettings
         this.state = {
             collapsedItems: {},
             minPrice: filterMeta?.minPrice ?? 0,

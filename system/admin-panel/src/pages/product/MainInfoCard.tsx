@@ -2,7 +2,7 @@ import { resolvePageRoute, serviceLocator, TAttributeProductVariant, TProduct } 
 import { Autocomplete, TextField } from '@mui/material';
 import React, { useEffect, useRef } from 'react';
 
-import GalleryPicker from '../../components/galleryPicker/GalleryPicker';
+import { GalleryPicker } from '../../components/galleryPicker/GalleryPicker';
 import { getEditorData, getEditorHtml, initTextEditor } from '../../helpers/editor/editor';
 import { useForceUpdate } from '../../helpers/forceUpdate';
 import { NumberFormatCustom } from '../../helpers/NumberFormatCustom';

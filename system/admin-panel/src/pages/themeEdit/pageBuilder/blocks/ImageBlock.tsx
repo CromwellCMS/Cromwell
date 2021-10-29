@@ -1,9 +1,9 @@
 import { TCromwellBlockData } from '@cromwell/core';
-import { FormControl, InputLabel, MenuItem, Select, TextField, Tooltip, SelectChangeEvent } from '@mui/material';
 import { Image as ImageIcon, Public as PublicIcon } from '@mui/icons-material';
+import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField, Tooltip } from '@mui/material';
 import React from 'react';
 
-import ImagePicker from '../../../../components/imagePicker/ImagePicker';
+import { ImagePicker } from '../../../../components/imagePicker/ImagePicker';
 import { useForceUpdate } from '../../../../helpers/forceUpdate';
 import { StylesEditor } from '../components/StylesEditor';
 import styles from './BaseBlock.module.scss';

@@ -26,10 +26,12 @@
     flex-wrap: wrap;
     z-index: 20;
 }
+
 .headerLeft {
     display: flex;
     align-items: center;
 }
+
 .headerActions {
     padding-right: 15px;
 }
@@ -91,7 +93,8 @@
     @include paper;
     // border: 1px solid #bbb;
     border-radius: 5px;
-    margin-bottom: 20px;
+    width: 670px;
+    margin: 0 auto 20px;
 }
 
 .attributeHeader {
@@ -121,6 +124,7 @@
     margin: 10px;
     border-radius: 5px;
 }
+
 .editingProductVariantCard {
     padding: 10px;
 }
@@ -132,6 +136,10 @@
     .tag {
         margin-left: 15px;
     }
+}
+
+.addAttributeBtn {
+    margin: 20px auto 30px;
 }
 
 .notFoundPage {
@@ -159,8 +167,10 @@
 button.galleryActionBtn {
     background-color: rgba($color: #fff, $alpha: 0.7);
 }
+
 button.galleryActionBtn:hover {
     background-color: rgba(0, 0, 0, 0.3);
+
     svg {
         color: #fff;
     }
@@ -177,6 +187,7 @@ button.galleryAddImageBtn {
 .newAttributesList {
     background-color: #fff;
 }
+
 .newAttributeOption {
     min-width: 130px;
 }
@@ -196,6 +207,7 @@ button.galleryAddImageBtn {
 }
 
 @media screen and (max-width: 1069px) {
+
     // mobile
     .Product .header {
         justify-content: space-around;
@@ -209,6 +221,7 @@ button.galleryAddImageBtn {
 }
 
 :global(.modeDark) {
+
     .mainTab,
     .header,
     .paper,

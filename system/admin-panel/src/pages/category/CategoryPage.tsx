@@ -1,5 +1,12 @@
 import { gql } from '@apollo/client';
-import { resolvePageRoute, serviceLocator, TPagedParams, TProductCategory, TProductCategoryInput } from '@cromwell/core';
+import {
+    EDBEntity,
+    resolvePageRoute,
+    serviceLocator,
+    TPagedParams,
+    TProductCategory,
+    TProductCategoryInput,
+} from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
 import { ArrowBack as ArrowBackIcon, OpenInNew as OpenInNewIcon } from '@mui/icons-material';
 import { Autocomplete as MuiAutocomplete, Button, IconButton, TextField, Tooltip } from '@mui/material';
@@ -7,9 +14,10 @@ import React, { useEffect, useState } from 'react';
 import { Link, useHistory, useParams } from 'react-router-dom';
 
 import Autocomplete from '../../components/autocomplete/Autocomplete';
-import ImagePicker from '../../components/imagePicker/ImagePicker';
+import { ImagePicker } from '../../components/imagePicker/ImagePicker';
 import { toast } from '../../components/toast/toast';
 import { categoryListPageInfo, categoryPageInfo } from '../../constants/PageInfos';
+import { getCustomMetaFor, getCustomMetaKeysFor, renderCustomFieldsFor } from '../../helpers/customFields';
 import { getEditorData, getEditorHtml, initTextEditor } from '../../helpers/editor/editor';
 import commonStyles from '../../styles/common.module.scss';
 import styles from './CategoryPage.module.scss';
@@ -55,6 +63,7 @@ export default function CategoryPage(props) {
                             id
                             slug
                         }
+                        customMeta (fields: ${JSON.stringify(getCustomMetaKeysFor(EDBEntity.ProductCategory))})
                     }`,
                 'AdminPanelProductCategoryFragment'
             );
@@ -161,6 +170,7 @@ export default function CategoryPage(props) {
         description: await getEditorHtml(editorId),
         descriptionDelta: JSON.stringify(await getEditorData(editorId)),
         parentId: category.parent?.id,
+        customMeta: Object.assign({}, category.customMeta, getCustomMetaFor(EDBEntity.ProductCategory)),
     });
 
     const handleSave = async () => {
@@ -320,6 +330,7 @@ export default function CategoryPage(props) {
                         />
                     )}
                 />
+                {category && renderCustomFieldsFor(EDBEntity.ProductCategory, category)}
             </div>
         </div>
     );

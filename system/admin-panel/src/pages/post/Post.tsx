@@ -1,5 +1,6 @@
 import { gql } from '@apollo/client';
 import {
+    EDBEntity,
     getStoreItem,
     onStoreChange,
     resolvePageRoute,
@@ -17,6 +18,7 @@ import { Link, useHistory, useParams } from 'react-router-dom';
 
 import { toast } from '../../components/toast/toast';
 import { postListInfo, postPageInfo } from '../../constants/PageInfos';
+import { getCustomMetaKeysFor } from '../../helpers/customFields';
 import { getEditorData, getEditorHtml, initTextEditor } from '../../helpers/editor/editor';
 import { useForceUpdate } from '../../helpers/forceUpdate';
 import styles from './Post.module.scss';
@@ -31,7 +33,7 @@ for (let i = 0; i < 30; i++) {
 
 const Post = (props) => {
     const { id: postId } = useParams<{ id: string }>();
-    const [postData, setPostData] = useState<Partial<TPost> | undefined>(undefined);
+    const [postData, setPostData] = useState<TPost | undefined>(undefined);
     const userInfo: TUser | undefined = getStoreItem('userInfo');
     const client = getGraphQLClient();
     const [allTags, setAllTags] = useState<TTag[] | null>(null);
@@ -81,6 +83,7 @@ const Post = (props) => {
                     content
                     delta
                     published 
+                    customMeta (fields: ${JSON.stringify(getCustomMetaKeysFor(EDBEntity.Post))})
                 }`, 'AdminPanelPostFragment'
             );
             if (post) setPostData(post);
@@ -145,7 +148,7 @@ const Post = (props) => {
             setPostData({
                 title: 'Untitled',
                 published: false,
-            });
+            } as any);
             await _initEditor();
         }
     }
@@ -180,6 +183,7 @@ const Post = (props) => {
         authorId: postData?.author?.id ?? userInfo?.id,
         delta: JSON.stringify(await getEditorData(editorId)),
         content: await getEditorHtml(editorId),
+        customMeta: postData.customMeta,
     });
 
     const saveInput = async (input: TPostInput) => {

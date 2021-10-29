@@ -1,12 +1,12 @@
 import { gql } from '@apollo/client';
-import { TAttribute, TGetStaticProps, TProductFilterMeta } from '@cromwell/core';
+import { TAttribute, TGetPluginStaticProps, TProductFilterMeta } from '@cromwell/core';
 import { getGraphQLClient, getGraphQLErrorInfo } from '@cromwell/core-frontend';
 
 import { TProductFilterData, getFiltered } from './service';
 
 let getLogger: typeof import('@cromwell/core-backend')['getLogger'];
 
-export const getStaticProps: TGetStaticProps = async (context): Promise<TProductFilterData> => {
+export const getStaticProps: TGetPluginStaticProps = async (context): Promise<TProductFilterData> => {
     if (!getLogger) getLogger = require('@cromwell/core-backend/dist/helpers/logger').getLogger;
 
     const { pluginSettings } = context ?? {};

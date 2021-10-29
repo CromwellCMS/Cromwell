@@ -1000,7 +1000,6 @@ export class CGraphQLClient {
             color
             image
             description
-            descriptionDelta
         }
     `;
 

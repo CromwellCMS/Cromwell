@@ -1,6 +1,6 @@
 import 'date-fns';
 
-import { resolvePageRoute, serviceLocator, TPost, TTag } from '@cromwell/core';
+import { EDBEntity, resolvePageRoute, serviceLocator, TPost, TTag } from '@cromwell/core';
 import { Close as CloseIcon } from '@mui/icons-material';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import DatePicker from '@mui/lab/DatePicker';
@@ -8,12 +8,13 @@ import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import { Autocomplete, Button, Checkbox, FormControlLabel, IconButton, Popover, TextField, Tooltip } from '@mui/material';
 import React, { useState } from 'react';
 
-import ImagePicker from '../../components/imagePicker/ImagePicker';
+import { ImagePicker } from '../../components/imagePicker/ImagePicker';
+import { getCustomMetaFor, renderCustomFieldsFor } from '../../helpers/customFields';
 import styles from './PostSettings.module.scss';
 
 
 const PostSettings = (props: {
-    postData?: Partial<TPost>;
+    postData?: TPost;
     isSettingsOpen: boolean;
     anchorEl: Element;
     allTags?: TTag[] | null;
@@ -53,6 +54,7 @@ const PostSettings = (props: {
             if (!newData.meta) newData.meta = {};
             newData.meta.keywords = pageKeywords;
         }
+        newData.customMeta = Object.assign({}, postData.customMeta, getCustomMetaFor(EDBEntity.Post));
         props.onClose(newData);
     }
 
@@ -193,6 +195,7 @@ const PostSettings = (props: {
                         >Unpublish</Button>
                     </Tooltip>
                 )}
+                {postData && renderCustomFieldsFor(EDBEntity.Post, postData)}
             </div>
         </Popover>
     )

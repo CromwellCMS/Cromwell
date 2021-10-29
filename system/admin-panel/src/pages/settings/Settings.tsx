@@ -1,4 +1,13 @@
-import { setStoreItem, TCmsInfo, TCmsSettings, TCurrency, TDBEntity } from '@cromwell/core';
+import {
+    EDBEntity,
+    getRandStr,
+    setStoreItem,
+    TAdminCustomField,
+    TCmsInfo,
+    TCmsSettings,
+    TCurrency,
+    TDBEntity,
+} from '@cromwell/core';
 import { getCStore, getRestApiClient } from '@cromwell/core-frontend';
 import {
     Add as AddIcon,
@@ -15,6 +24,7 @@ import {
     Search as SearchIcon,
     Store as StoreIcon,
 } from '@mui/icons-material';
+import DashboardCustomizeIcon from '@mui/icons-material/DashboardCustomize';
 import {
     Badge,
     Button,
@@ -36,14 +46,21 @@ import React from 'react';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 
 import CmsInfo from '../../components/cmsInfo/CmsInfo';
-import ImagePicker from '../../components/imagePicker/ImagePicker';
+import { DraggableList } from '../../components/draggableList/DraggableList';
+import { ImagePicker } from '../../components/imagePicker/ImagePicker';
 import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
+import { AdminModeSwitch } from '../../components/modeSwitch/ModeSwitch';
 import { toast } from '../../components/toast/toast';
 import { languages } from '../../constants/languages';
 import { timezones } from '../../constants/timezones';
+import {
+    getCustomMetaFor,
+    registerCustomFieldOfType,
+    renderCustomFieldsFor,
+    unregisterAllCustomFields,
+} from '../../helpers/customFields';
 import { NumberFormatCustom } from '../../helpers/NumberFormatCustom';
 import commonStyles from '../../styles/common.module.scss';
-import { AdminModeSwitch } from '../../components/modeSwitch/ModeSwitch';
 import styles from './Settings.module.scss';
 
 
@@ -89,6 +106,36 @@ class SettingsPage extends React.Component<any, {
         { key: 'Theme', title: 'Themes', checked: false, },
         { key: 'CMS', title: 'CMS settings', checked: false, },
     ];
+
+    private defaultEntitiesWithCustomFields: {
+        entity: EDBEntity;
+        label: string;
+    }[] = [
+            {
+                entity: EDBEntity.Product,
+                label: 'Product',
+            },
+            {
+                entity: EDBEntity.ProductCategory,
+                label: 'Category',
+            },
+            {
+                entity: EDBEntity.Post,
+                label: 'Post',
+            },
+            {
+                entity: EDBEntity.Tag,
+                label: 'Tag',
+            },
+            {
+                entity: EDBEntity.User,
+                label: 'User',
+            },
+            {
+                entity: EDBEntity.CMS,
+                label: 'CMS Settings',
+            },
+        ];
 
     componentDidMount() {
         this.getConfig();
@@ -143,11 +190,20 @@ class SettingsPage extends React.Component<any, {
                 defaultShippingPrice: settings.defaultShippingPrice,
                 sendFromEmail: settings.sendFromEmail,
                 smtpConnectionString: settings.smtpConnectionString,
+                customFieldsDeclarations: settings.customFieldsDeclarations?.filter(field => field.key),
+                customMeta: Object.assign({}, settings.customMeta, getCustomMetaFor(EDBEntity.CMS)),
             });
             toast.success?.('Settings saved');
             this.setState({ settings: newConfig });
             setStoreItem('cmsSettings', newConfig);
-            cstore.setActiveCurrency(newConfig.currencies?.[0]?.tag);
+
+            const activeCurrency = newConfig.currencies?.[0]?.tag;
+            if (activeCurrency && activeCurrency !== cstore.getActiveCurrencyTag()) {
+                cstore.setActiveCurrency(activeCurrency);
+            }
+
+            unregisterAllCustomFields();
+            newConfig?.customFieldsDeclarations?.forEach(registerCustomFieldOfType);
         } catch (e) {
             console.error(e);
             toast.error('Failed to save settings');
@@ -289,6 +345,68 @@ class SettingsPage extends React.Component<any, {
         )
     }
 
+    private getCustomFieldsEntities = () => this.defaultEntitiesWithCustomFields;
+
+    private customFieldSettings = (props: {
+        data: TAdminCustomField & { id: string };
+    }) => {
+        const changeFieldValue = (key: keyof TAdminCustomField, value: any) => {
+            const customFieldsDeclarations = (this.state?.settings?.customFieldsDeclarations ?? []).map(field => {
+                if (field.id === props.data.id) {
+                    (field as any)[key] = value;
+                }
+                return field;
+            })
+            this.changeSettings('customFieldsDeclarations', customFieldsDeclarations)
+        }
+        const data = props.data;
+        return (
+            <div className={styles.customFieldItem}>
+                <TextField
+                    label="Key"
+                    value={data.key}
+                    onChange={e => changeFieldValue('key', e.target.value)}
+                    size="small"
+                    className={styles.customFieldItemField}
+                />
+                <TextField
+                    label="Label"
+                    value={data.label}
+                    onChange={e => changeFieldValue('label', e.target.value)}
+                    size="small"
+                    className={styles.customFieldItemField}
+                />
+                <FormControl>
+                    <InputLabel>Type</InputLabel>
+                    <Select
+                        value={data.fieldType}
+                        onChange={e => changeFieldValue('fieldType', e.target.value)}
+                        size="small"
+                        className={styles.customFieldItemField}
+                    >
+                        {(['text', 'select', 'image', 'gallery', 'color'] as TAdminCustomField['fieldType'][])
+                            .map(option => (
+                                <MenuItem value={option} key={option}>{option}</MenuItem>
+                            ))}
+                    </Select>
+                </FormControl>
+            </div>
+        );
+    }
+
+    private addCustomField = (entityType: EDBEntity) => {
+        const customFieldsDeclarations = this.state?.settings?.customFieldsDeclarations ?? [];
+        const orderMax = customFieldsDeclarations.reduce((prev, curr) => curr.order > prev ? curr.order : prev, 0);
+        customFieldsDeclarations.push({
+            entityType,
+            key: '',
+            fieldType: 'text',
+            order: orderMax + 1,
+            id: getRandStr(8)
+        })
+        this.changeSettings('customFieldsDeclarations', customFieldsDeclarations)
+    }
+
     render() {
         const { settings } = this.state;
         const currencies = settings?.currencies ?? [];
@@ -384,6 +502,9 @@ class SettingsPage extends React.Component<any, {
                                         showRemove
                                     />
                                 </Grid>
+                                <Grid item xs={12} sm={12}>
+                                    {settings && renderCustomFieldsFor(EDBEntity.CMS, { ...settings } as any)}
+                                </Grid>
                             </>
                         )
                     })}
@@ -397,6 +518,7 @@ class SettingsPage extends React.Component<any, {
                                     <TextField label="Standard shipping price"
                                         value={settings?.defaultShippingPrice ?? 0}
                                         className={styles.textField}
+                                        variant="standard"
                                         fullWidth
                                         InputProps={{
                                             inputComponent: NumberFormatCustom as any,
@@ -540,6 +662,7 @@ class SettingsPage extends React.Component<any, {
                                         value={settings?.sendFromEmail ?? ''}
                                         onChange={this.handleTextFieldChange('sendFromEmail')}
                                         className={styles.field}
+                                        variant="standard"
                                     />
                                 </Grid>
                                 <Grid item xs={12} >
@@ -549,6 +672,7 @@ class SettingsPage extends React.Component<any, {
                                         value={settings?.smtpConnectionString ?? ''}
                                         onChange={this.handleTextFieldChange('smtpConnectionString')}
                                         className={styles.field}
+                                        variant="standard"
                                     />
                                 </Grid>
                             </>
@@ -672,6 +796,40 @@ class SettingsPage extends React.Component<any, {
                             </>
                         )
                     })}
+
+                    {this.makeCategory({
+                        title: 'Custom data',
+                        icon: <DashboardCustomizeIcon />,
+                        content: (
+                            <>
+                                {this.getCustomFieldsEntities().map(entityType => {
+                                    const fields = this.state?.settings?.customFieldsDeclarations?.
+                                        filter(field => field.entityType === entityType.entity)?.
+                                        sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+                                    return (
+                                        <Grid item xs={12} key={entityType.entity} className={styles.customEntity}>
+                                            <h3 style={{ marginBottom: '10px' }}>{entityType.label}</h3>
+                                            {!!fields?.length && (
+                                                <DraggableList
+                                                    data={fields}
+                                                    onChange={changedFields => {
+                                                        changedFields.forEach((field, index) => field.order = index);
+                                                    }}
+                                                    component={this.customFieldSettings}
+                                                />
+                                            )}
+                                            <Tooltip title="Add custom field">
+                                                <IconButton onClick={() => this.addCustomField(entityType.entity)}>
+                                                    <AddIcon />
+                                                </IconButton>
+                                            </Tooltip>
+                                        </Grid>
+                                    )
+                                })}
+                            </>
+                        )
+                    })}
+
                     <p className={styles.cmsVersion}
                         onClick={() => this.setState({ cmsInfoOpen: true })}
                     >Cromwell CMS v.{settings?.cmsInfo?.packages['@cromwell/cms']}</p>

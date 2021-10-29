@@ -3,7 +3,7 @@ import {
     ECommonComponentNames,
     getCommonComponent,
     getRandStr,
-    TStaticPageContext,
+    TStaticPagePluginContext,
     TAttribute,
     TFrontendPluginProps,
     TPagedList,
@@ -69,7 +69,7 @@ const ProductShowcase = (props: TFrontendPluginProps<ProductShowcaseProps>): JSX
     )
 }
 
-export const getStaticProps = async (context: TStaticPageContext): Promise<ProductShowcaseProps> => {
+export const getStaticProps = async (context: TStaticPagePluginContext): Promise<ProductShowcaseProps> => {
     // slug of a product page
     const client = getGraphQLClient();
     const slug = context?.params?.slug ?? null;
@@ -102,7 +102,7 @@ export const getStaticProps = async (context: TStaticPageContext): Promise<Produ
             }
         });
 
-    } catch (e) {
+    } catch (e: any) {
         console.error('ProductShowcase::getStaticProps', e, JSON.stringify(e?.result?.errors ?? null), null, 2)
     }
 

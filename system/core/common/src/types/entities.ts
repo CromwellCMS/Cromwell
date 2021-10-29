@@ -160,6 +160,14 @@ export type TProduct = TBasePageEntity & {
      * Qnt of page requests
      */
     views?: number;
+    /**
+     * Total amount of items in stock
+     */
+    stockAmount?: number;
+    /**
+     * Manually set is the item available in stock
+     */
+    inStock?: boolean;
 }
 
 export type TProductRating = {
@@ -568,6 +576,11 @@ export type TCmsPublicSettings = {
      * HTTP rewrites for Next.js server
      */
     rewrites?: TCmsRedirect[];
+
+    /**
+     * Data of custom fields
+     */
+    customMeta?: Record<string, string>;
 }
 
 /**
@@ -585,7 +598,7 @@ export type TCmsAdminSettings = {
     /**
      * Custom fields data
      */
-    customFields?: TAdminCustomField[];
+    customFieldsDeclarations?: TAdminCustomField[];
 }
 
 /**
@@ -626,6 +639,7 @@ export type TAdminCustomField = {
     fieldType: 'text' | 'select' | 'image' | 'gallery' | 'color';
     key: string;
     id: string;
+    options?: string[];
     label?: string;
     order?: number;
 }

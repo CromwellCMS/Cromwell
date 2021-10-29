@@ -17,6 +17,7 @@ import Layout from './components/layout/Layout';
 import { toast } from './components/toast/toast';
 import { loginPageInfo, welcomePageInfo } from './constants/PageInfos';
 import { loadPlugins } from './helpers/loadPlugins';
+import { registerCustomFieldOfType } from './helpers/customFields';
 import { store } from './redux/store';
 
 (async () => {
@@ -139,7 +140,9 @@ import { store } from './redux/store';
                 try {
                     const settings = await restClient.getAdminCmsSettings();
                     if (settings) {
-                        setStoreItem('cmsSettings', settings)
+                        setStoreItem('cmsSettings', settings);
+
+                        settings?.customFieldsDeclarations?.forEach(registerCustomFieldOfType);
                     }
                 } catch (error) {
                     console.error(error);

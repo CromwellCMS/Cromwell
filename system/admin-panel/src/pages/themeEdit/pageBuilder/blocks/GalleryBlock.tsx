@@ -1,4 +1,5 @@
 import { TCromwellBlockData } from '@cromwell/core';
+import { PhotoLibrary as PhotoLibraryIcon, Public as PublicIcon } from '@mui/icons-material';
 import {
     Checkbox,
     FormControl,
@@ -6,14 +7,13 @@ import {
     InputLabel,
     MenuItem,
     Select,
+    SelectChangeEvent,
     TextField,
     Tooltip,
-    SelectChangeEvent
 } from '@mui/material';
-import { PhotoLibrary as PhotoLibraryIcon, Public as PublicIcon } from '@mui/icons-material';
 import React from 'react';
 
-import GalleryPicker from '../../../../components/galleryPicker/GalleryPicker';
+import { GalleryPicker } from '../../../../components/galleryPicker/GalleryPicker';
 import { useForceUpdate } from '../../../../helpers/forceUpdate';
 import { StylesEditor } from '../components/StylesEditor';
 import styles from './BaseBlock.module.scss';
