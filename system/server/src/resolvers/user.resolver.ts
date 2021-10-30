@@ -1,8 +1,8 @@
-import { GraphQLPaths, TAuthRole, TPagedList, TUser } from '@cromwell/core';
+import { EDBEntity, GraphQLPaths, TAuthRole, TPagedList, TUser } from '@cromwell/core';
 import {
     CreateUser,
     DeleteManyInput,
-    EntityMetaRepository,
+    entityMetaRepository,
     PagedParamsInput,
     PagedUser,
     TGraphQLContext,
@@ -12,7 +12,7 @@ import {
     UserRepository,
 } from '@cromwell/core-backend';
 import { GraphQLJSONObject } from 'graphql-type-json';
-import { Arg, Authorized, Ctx, FieldResolver, Mutation, Query, Resolver, Root } from 'type-graphql';
+import { Arg, Authorized, Ctx, FieldResolver, Int, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
 import { resetAllPagesCache } from '../helpers/reset-page';
@@ -47,7 +47,7 @@ export class UserResolver {
 
     @Authorized<TAuthRole>("administrator", "author", "guest", "self")
     @Query(() => User)
-    async [getOneByIdPath](@Arg("id") id: string): Promise<User | undefined> {
+    async [getOneByIdPath](@Arg("id", () => Int) id: number): Promise<User | undefined> {
         return this.repository.getUserById(id);
     }
 
@@ -61,7 +61,7 @@ export class UserResolver {
 
     @Authorized<TAuthRole>("administrator", "self")
     @Mutation(() => User)
-    async [updatePath](@Arg("id") id: string, @Arg("data") data: UpdateUser, @Ctx() ctx: TGraphQLContext): Promise<User> {
+    async [updatePath](@Arg("id", () => Int) id: number, @Arg("data") data: UpdateUser, @Ctx() ctx: TGraphQLContext): Promise<User> {
         const message = "Access denied! You don't have permission for this action!";
         if (!ctx?.user?.role) throw new Error(message);
         if (data.role && data.role !== ctx.user.role && ctx.user.role !== 'administrator') throw new Error(message);
@@ -75,7 +75,7 @@ export class UserResolver {
 
     @Authorized<TAuthRole>("administrator")
     @Mutation(() => Boolean)
-    async [deletePath](@Arg("id") id: string): Promise<boolean> {
+    async [deletePath](@Arg("id", () => Int) id: number): Promise<boolean> {
         const user = await this.repository.deleteUser(id);
         serverFireAction('delete_user', { id });
         resetAllPagesCache();
@@ -104,6 +104,6 @@ export class UserResolver {
 
     @FieldResolver(() => GraphQLJSONObject, { nullable: true })
     async customMeta(@Root() entity: User, @Arg("fields", () => [String]) fields: string[]): Promise<any> {
-        return getCustomRepository(EntityMetaRepository).getEntityMetaValuesByKeys(entity.metaId, fields);
+        return entityMetaRepository.getEntityMetaValuesByKeys(EDBEntity.User, entity.id, fields);
     }
 }

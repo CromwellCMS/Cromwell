@@ -1,48 +1,44 @@
-import { TAttribute, TAttributeValue } from '@cromwell/core';
+import { TAttribute } from '@cromwell/core';
 import { Field, ObjectType } from 'type-graphql';
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, Index, OneToMany } from 'typeorm';
+
+import { AttributeValue } from './attribute-value.entity';
 import { BasePageEntity } from './base-page.entity';
-
-@ObjectType("AttributeValue")
-export class AttributeValue implements TAttributeValue {
-    @Field(type => String)
-    value: string;
-
-    @Field(type => String, { nullable: true })
-    title?: string;
-
-    @Field(type => String, { nullable: true })
-    icon?: string;
-}
+import { AttributeMeta } from './meta/attribute-meta.entity';
 
 @Entity()
-@ObjectType("Attribute")
+@ObjectType()
 export class Attribute extends BasePageEntity implements TAttribute {
+
     @Field(type => String)
-    @Column({ type: "varchar" })
+    @Column({ type: "varchar", length: 255 })
+    @Index()
     key: string;
 
+    @Field(type => String, { nullable: true })
+    @Column({ type: "varchar", length: 255, nullable: true })
+    title?: string;
+
     @Field(type => [AttributeValue])
-    public get values(): AttributeValue[] {
-        return JSON.parse(this.valuesJSON);
-    }
+    @OneToMany(() => AttributeValue, value => value.attribute, {
+        onDelete: "CASCADE"
+    })
+    values: AttributeValue[];
 
-    public set values(data: AttributeValue[]) {
-        this.valuesJSON = JSON.stringify(data);
-    }
-
-    @Column({ type: 'text', nullable: true })
-    private valuesJSON: string;
-
-    @Field(type => String)
-    @Column({ type: "varchar" })
+    @Field(type => String, { nullable: true })
+    @Column({ type: "varchar", length: 255, nullable: true })
     type: 'radio' | 'checkbox';
 
     @Field(type => String, { nullable: true })
-    @Column({ type: "varchar", nullable: true, length: 300 })
+    @Column({ type: "varchar", nullable: true, length: 400 })
     icon?: string;
 
     @Field(type => Boolean, { nullable: true })
     @Column({ type: "boolean", nullable: true })
     required?: boolean;
+
+    @OneToMany(() => AttributeMeta, meta => meta.entity, {
+        onDelete: "CASCADE"
+    })
+    metaRecords?: AttributeMeta[];
 }

@@ -203,7 +203,6 @@ export class MigrationService {
             featured: ent.featured,
             publishDate: ent.publishDate,
             commentIds: ent.comments?.map(comment => comment.id)?.join(','),
-            metaId: ent.metaId,
         }));
 
         this.fillSheet(workbook, 'Posts', postSheet);
@@ -226,7 +225,6 @@ export class MigrationService {
             image: ent.image,
             description: ent.description,
             descriptionDelta: ent.descriptionDelta,
-            metaId: ent.metaId,
         }));
 
         this.fillSheet(workbook, 'Tags', tagsSheet);
@@ -251,7 +249,6 @@ export class MigrationService {
             userEmail: ent.userEmail,
             userId: ent.userId,
             approved: ent.approved,
-            metaId: ent.metaId,
         }));
 
         this.fillSheet(workbook, 'Comments', commentsSheet);
@@ -281,9 +278,7 @@ export class MigrationService {
             mainCategoryId: ent.mainCategoryId,
             description: ent.description,
             descriptionDelta: ent.descriptionDelta,
-            attributes: JSON.stringify(ent.attributes),
             views: ent.views,
-            metaId: ent.metaId,
         }));
 
         this.fillSheet(workbook, 'Products', productsSheet);
@@ -307,7 +302,6 @@ export class MigrationService {
             description: ent.description,
             descriptionDelta: ent.descriptionDelta,
             parentId: (await categoryRepo.getParentCategory(ent))?.id,
-            metaId: ent.metaId,
         })));
 
         this.fillSheet(workbook, 'Categories', categoriesSheet);
@@ -330,7 +324,6 @@ export class MigrationService {
             type: ent.type,
             icon: ent.icon,
             required: ent.required,
-            metaId: ent.metaId,
         }));
 
         this.fillSheet(workbook, 'Attributes', attributesSheet);
@@ -356,7 +349,6 @@ export class MigrationService {
             userEmail: ent.userEmail,
             userId: ent.userId,
             approved: ent.approved,
-            metaId: ent.metaId,
         }));
 
         this.fillSheet(workbook, 'Reviews', reviewsSheet);
@@ -385,7 +377,6 @@ export class MigrationService {
             shippingMethod: ent.shippingMethod,
             paymentMethod: ent.paymentMethod,
             currency: ent.currency,
-            metaId: ent.metaId,
         }));
 
         this.fillSheet(workbook, 'Orders', ordersSheet);
@@ -410,7 +401,6 @@ export class MigrationService {
             phone: ent.phone,
             address: ent.address,
             role: ent.role,
-            metaId: ent.metaId,
         }));
 
         this.fillSheet(workbook, 'Users', usersSheet);
@@ -437,7 +427,6 @@ export class MigrationService {
             defaultSettings: ent.defaultSettings,
             moduleInfo: ent.moduleInfo,
             isUpdating: ent.isUpdating,
-            metaId: ent.metaId,
         }));
 
         this.fillSheet(workbook, 'Plugins', pluginsSheet);
@@ -464,7 +453,6 @@ export class MigrationService {
             defaultSettings: ent.defaultSettings,
             moduleInfo: ent.moduleInfo,
             isUpdating: ent.isUpdating,
-            metaId: ent.metaId,
         }));
 
         this.fillSheet(workbook, 'Themes', themesSheet);
@@ -518,13 +506,13 @@ export class MigrationService {
         return entities;
     }
 
-    private async importBase<TEntity extends TBasePageEntityInput & { id?: string }>(
+    private async importBase<TEntity extends TBasePageEntityInput & { id?: number }>(
         workbook: any,
         sheetName: string,
         EntityClass: typeof BasePageEntity,
-        transformInput: (input: TEntity & { id?: string }) => TEntity,
-        update: (input: TEntity & { id?: string }) => Promise<any>,
-        create: (input: TEntity & { id?: string }) => Promise<any>,
+        transformInput: (input: TEntity & { id?: number }) => TEntity,
+        update: (input: TEntity & { id?: number }) => Promise<any>,
+        create: (input: TEntity & { id?: number }) => Promise<any>,
     ) {
         const inputs = this.readSheet(workbook, sheetName)?.map(input => {
             try {
@@ -536,7 +524,7 @@ export class MigrationService {
         });
         if (!inputs) return;
 
-        let entities: { id: string }[] = await EntityClass.find({ select: ['id'] });
+        let entities: { id: number }[] = await EntityClass.find({ select: ['id'] });
 
         // Remove from DB that aren't in the sheet
         entities = (await Promise.all(entities.map(async entity => {
@@ -549,7 +537,7 @@ export class MigrationService {
                 return null;
             }
             return entity;
-        }))).filter(Boolean) as { id: string }[];
+        }))).filter(Boolean) as { id: number }[];
 
         await Promise.all(inputs.map(async input => {
             const entity = entities.find(ent => ent.id + '' === input.id + '');
@@ -588,7 +576,7 @@ export class MigrationService {
             (input) => ({
                 ...input,
                 tagIds: typeof input.tagIds === 'string' || typeof input.tagIds === 'number' ?
-                    (input.tagIds + '').split(',') : input.tagIds
+                    (input.tagIds + '').split(',').map(parseInt) : input.tagIds
             }),
             async (input) => input.id && getCustomRepository(PostRepository).updatePost(input.id, input),
             (input) => getCustomRepository(PostRepository).createPost(input, input.id),
@@ -626,7 +614,7 @@ export class MigrationService {
             (input) => ({
                 ...input,
                 categoryIds: typeof input.categoryIds === 'string' || typeof input.categoryIds === 'number' ?
-                    (input.categoryIds + '').split(',') : input.categoryIds,
+                    (input.categoryIds + '').split(',').map(parseInt) : input.categoryIds,
                 attributes: typeof input.attributes === 'string' ?
                     JSON.parse(input.attributes as string) : input.attributes,
             }),
@@ -661,7 +649,7 @@ export class MigrationService {
             User,
             (input) => input,
             async (input) => input.id && getCustomRepository(UserRepository).updateUser(input.id, input),
-            (input: TCreateUser & { id?: string }) => getCustomRepository(UserRepository).createUser({
+            (input: TCreateUser & { id?: number }) => getCustomRepository(UserRepository).createUser({
                 ...input,
                 password: cryptoRandomString({ length: 14, type: 'url-safe' }),
             }, input.id),

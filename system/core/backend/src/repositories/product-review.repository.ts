@@ -20,7 +20,7 @@ export class ProductReviewRepository extends BaseRepository<ProductReview> {
         return getPaged(this.createQueryBuilder(this.metadata.tablePath), this.metadata.tablePath, params);
     }
 
-    async getProductReview(id: string): Promise<ProductReview> {
+    async getProductReview(id: number): Promise<ProductReview> {
         logger.log('ProductReviewRepository::getProductReview id: ' + id);
         const productReview = await this.findOne({
             where: { id }
@@ -51,7 +51,7 @@ export class ProductReviewRepository extends BaseRepository<ProductReview> {
         productReview.userId = input.userId;
     }
 
-    async createProductReview(createProductReview: TProductReviewInput, id?: string): Promise<TProductReview> {
+    async createProductReview(createProductReview: TProductReviewInput, id?: number): Promise<TProductReview> {
         logger.log('ProductReviewRepository::createProductReview');
         let productReview = new ProductReview();
         if (id) productReview.id = id;
@@ -64,7 +64,7 @@ export class ProductReviewRepository extends BaseRepository<ProductReview> {
         return productReview;
     }
 
-    async updateProductReview(id: string, updateProductReview: TProductReviewInput): Promise<ProductReview> {
+    async updateProductReview(id: number, updateProductReview: TProductReviewInput): Promise<ProductReview> {
         logger.log('ProductReviewRepository::updateProductReview; id: ' + id);
         let productReview = await this.findOne({
             where: { id }
@@ -79,7 +79,7 @@ export class ProductReviewRepository extends BaseRepository<ProductReview> {
         return productReview;
     }
 
-    async deleteProductReview(id: string): Promise<boolean> {
+    async deleteProductReview(id: number): Promise<boolean> {
         logger.log('ProductReviewRepository::deleteProductReview; id: ' + id);
 
         const productReview = await this.getProductReview(id);
@@ -108,13 +108,13 @@ export class ProductReviewRepository extends BaseRepository<ProductReview> {
         }
 
         // Search by productId
-        if (filterParams?.productId && filterParams.productId !== '') {
+        if (filterParams?.productId !== undefined && filterParams?.productId !== null) {
             const query = `${this.metadata.tablePath}.${this.quote('productId')} = :productId`;
             qb.andWhere(query, { productId: filterParams.productId });
         }
 
         // Search by userId
-        if (filterParams?.userId && filterParams.userId !== '') {
+        if (filterParams?.userId) {
             const query = `${this.metadata.tablePath}.${this.quote('userId')} = :userId`;
             qb.andWhere(query, { userId: filterParams.userId });
         }

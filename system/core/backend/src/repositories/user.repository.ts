@@ -25,7 +25,7 @@ export class UserRepository extends BaseRepository<User> {
         return this.getPaged(params)
     }
 
-    async getUserById(id: string): Promise<User | undefined> {
+    async getUserById(id: number): Promise<User | undefined> {
         logger.log('UserRepository::getUserById id: ' + id);
         return this.getById(id);
     }
@@ -59,7 +59,7 @@ export class UserRepository extends BaseRepository<User> {
         user.role = userInput.role;
     }
 
-    async createUser(createUser: TCreateUser, id?: string): Promise<User> {
+    async createUser(createUser: TCreateUser, id?: number): Promise<User> {
         logger.log('UserRepository::createUser');
         if (!createUser.password || !createUser.email) throw new Error('No credentials provided')
         let user = new User();
@@ -89,7 +89,7 @@ export class UserRepository extends BaseRepository<User> {
         return bcrypt.hash(password, bcryptSaltRounds);
     }
 
-    async updateUser(id: string, updateUser: TUpdateUser): Promise<User> {
+    async updateUser(id: number, updateUser: TUpdateUser): Promise<User> {
         logger.log('UserRepository::updateUser id: ' + id);
 
         let user = await this.findOne({
@@ -105,7 +105,7 @@ export class UserRepository extends BaseRepository<User> {
         return user;
     }
 
-    async deleteUser(id: string): Promise<boolean> {
+    async deleteUser(id: number): Promise<boolean> {
         logger.log('UserRepository::deleteUser; id: ' + id);
 
         const user = await this.getUserById(id);
@@ -158,7 +158,7 @@ export class UserRepository extends BaseRepository<User> {
         const qb = this.createQueryBuilder(this.metadata.tablePath);
         qb.select();
         this.applyUserFilter(qb, filterParams);
-        return await getPaged(qb, this.metadata.tablePath, pagedParams);
+        return await getPaged<TUser>(qb, this.metadata.tablePath, pagedParams);
     }
 
     async deleteManyFilteredUsers(input: TDeleteManyInput, filterParams?: UserFilterInput): Promise<boolean | undefined> {

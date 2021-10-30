@@ -4,11 +4,11 @@ import { TProductCategory, TPagedList } from '@cromwell/core';
 const testData: TPagedList<TProductCategory> = {
     elements: [
         {
-            id: '1',
+            id: 1,
             name: '_test1_',
         },
         {
-            id: '2',
+            id: 2,
             name: '_test2_',
         }
     ]

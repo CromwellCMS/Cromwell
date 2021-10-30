@@ -50,7 +50,7 @@ describe('Product-review resolver', () => {
         expect(data.pagedMeta.pageSize === 10).toBeTruthy();
     });
 
-    const getProductReview = async (productReviewId: string) => {
+    const getProductReview = async (productReviewId: string | number) => {
         const path = GraphQLPaths.ProductReview.getOneById;
         const res = await server.executeOperation({
             query: gql`

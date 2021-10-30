@@ -1,7 +1,7 @@
-import { GraphQLPaths, TAuthRole, TPagedList, TTag } from '@cromwell/core';
+import { EDBEntity, GraphQLPaths, TAuthRole, TPagedList, TTag } from '@cromwell/core';
 import {
     DeleteManyInput,
-    EntityMetaRepository,
+    entityMetaRepository,
     InputTag,
     PagedParamsInput,
     PagedTag,
@@ -9,7 +9,7 @@ import {
     TagRepository,
 } from '@cromwell/core-backend';
 import { GraphQLJSONObject } from 'graphql-type-json';
-import { Arg, Authorized, FieldResolver, Mutation, Query, Resolver, Root } from 'type-graphql';
+import { Arg, Authorized, FieldResolver, Int, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
 import { resetAllPagesCache } from '../helpers/reset-page';
@@ -22,7 +22,7 @@ const createPath = GraphQLPaths.Tag.create;
 const updatePath = GraphQLPaths.Tag.update;
 const deletePath = GraphQLPaths.Tag.delete;
 const deleteManyPath = GraphQLPaths.Tag.deleteMany;
-
+const viewsKey: keyof TTag = 'views';
 
 @Resolver(Tag)
 export class TagResolver {
@@ -41,7 +41,7 @@ export class TagResolver {
     }
 
     @Query(() => Tag)
-    async [getOneByIdPath](@Arg("id") id: string): Promise<TTag | undefined> {
+    async [getOneByIdPath](@Arg("id", () => Int) id: number): Promise<TTag | undefined> {
         return this.repository.getTagById(id);
     }
 
@@ -56,7 +56,7 @@ export class TagResolver {
 
     @Authorized<TAuthRole>("administrator", 'author')
     @Mutation(() => Tag)
-    async [updatePath](@Arg("id") id: string, @Arg("data") data: InputTag): Promise<TTag | undefined> {
+    async [updatePath](@Arg("id", () => Int) id: number, @Arg("data") data: InputTag): Promise<TTag | undefined> {
         const tag = await this.repository.updateTag(id, data);
         serverFireAction('update_tag', tag);
         resetAllPagesCache();
@@ -65,7 +65,7 @@ export class TagResolver {
 
     @Authorized<TAuthRole>("administrator", 'author')
     @Mutation(() => Boolean)
-    async [deletePath](@Arg("id") id: string): Promise<boolean> {
+    async [deletePath](@Arg("id", () => Int) id: number): Promise<boolean> {
         const tag = await this.repository.deleteTag(id);
         serverFireAction('delete_tag', { id });
         resetAllPagesCache();
@@ -82,7 +82,12 @@ export class TagResolver {
 
     @FieldResolver(() => GraphQLJSONObject, { nullable: true })
     async customMeta(@Root() entity: Tag, @Arg("fields", () => [String]) fields: string[]): Promise<any> {
-        return getCustomRepository(EntityMetaRepository).getEntityMetaValuesByKeys(entity.metaId, fields);
+        return entityMetaRepository.getEntityMetaValuesByKeys(EDBEntity.Tag, entity.id, fields);
+    }
+
+    @FieldResolver(() => Int, { nullable: true })
+    async [viewsKey](@Root() product: Tag): Promise<number | undefined> {
+        return this.repository.getEntityViews(product.id, EDBEntity.Tag);
     }
 }
 

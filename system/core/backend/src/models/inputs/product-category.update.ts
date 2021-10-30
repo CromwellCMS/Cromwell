@@ -1,5 +1,6 @@
-import { InputType, Field } from "type-graphql";
 import { TProductCategoryInput } from '@cromwell/core';
+import { Field, InputType, Int } from 'type-graphql';
+
 import { BasePageInput } from './base-page.input';
 
 @InputType({ description: "Update Product Category data" })
@@ -16,6 +17,6 @@ export class UpdateProductCategory extends BasePageInput implements TProductCate
     @Field(type => String, { nullable: true })
     descriptionDelta?: string;
 
-    @Field(() => String, { nullable: true })
-    parentId?: string;
+    @Field(() => Int, { nullable: true })
+    parentId?: number;
 }

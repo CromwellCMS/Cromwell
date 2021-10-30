@@ -49,7 +49,7 @@ const Post = (props) => {
 
     const unregisterBlock = useRef<(() => void) | null>(null);
 
-    const getPostData = async (postId: string): Promise<TPost | undefined> => {
+    const getPostData = async (postId: number): Promise<TPost | undefined> => {
         let post;
         try {
             post = await client?.getPostById(postId, gql`
@@ -129,7 +129,7 @@ const Post = (props) => {
             let post;
             setIsLoading(true);
             try {
-                post = await getPostData(postId);
+                post = await getPostData(parseInt(postId));
                 if (post?.delta) {
                     postContent = JSON.parse(post?.delta);
                 }
@@ -179,7 +179,7 @@ const Post = (props) => {
         meta: {
             keywords: postData.meta?.keywords,
         },
-        tagIds: postData.tags?.map(tag => tag.id),
+        tagIds: postData.tags?.map(tag => tag.id)?.filter(Boolean),
         authorId: postData?.author?.id ?? userInfo?.id,
         delta: JSON.stringify(await getEditorData(editorId)),
         content: await getEditorHtml(editorId),
@@ -260,7 +260,7 @@ const Post = (props) => {
 
     let pageFullUrl;
     if (postData) {
-        pageFullUrl = serviceLocator.getFrontendUrl() + resolvePageRoute('post', { slug: postData.slug ?? postData.id });
+        pageFullUrl = serviceLocator.getFrontendUrl() + resolvePageRoute('post', { slug: postData.slug ?? postData.id + '' });
     }
 
     return (

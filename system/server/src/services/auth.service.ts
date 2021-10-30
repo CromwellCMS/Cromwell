@@ -68,7 +68,7 @@ export class AuthService {
         return null;
     }
 
-    getUserById = (id: string) => getCustomRepository(UserRepository).getUserById(id);
+    getUserById = (id: number) => getCustomRepository(UserRepository).getUserById(id);
 
     async logIn(input: LoginDto): Promise<TLoginInfo> {
         const user = await this.validateUser(input.email, input.password);
@@ -388,7 +388,7 @@ export class AuthService {
                 const serviceSecret = authHeader.substring(8, authHeader.length);
                 if (serviceSecret === this.authSettings.serviceSecret) {
                     request.user = {
-                        id: 'service',
+                        id: 111,
                         email: 'service',
                         role: 'administrator',
                     }

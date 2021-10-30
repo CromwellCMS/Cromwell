@@ -465,6 +465,8 @@ export type TPageStats = {
     pageRoute?: string;
     pageName?: string;
     views?: number;
+    slug?: string | null;
+    entityType?: EDBEntity | string;
 }
 
 export type TSalePerDay = {

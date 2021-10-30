@@ -27,7 +27,7 @@ export class PostRepository extends BaseRepository<Post> {
         return this.getPaged(params)
     }
 
-    async getPostById(id: string): Promise<Post | undefined> {
+    async getPostById(id: number): Promise<Post | undefined> {
         logger.log('PostRepository::getPostById id: ' + id);
         return this.getById(id);
     }
@@ -74,7 +74,7 @@ export class PostRepository extends BaseRepository<Post> {
         post.publishDate = input.publishDate;
     }
 
-    async createPost(createPost: TPostInput, id?: string): Promise<Post> {
+    async createPost(createPost: TPostInput, id?: number): Promise<Post> {
         logger.log('PostRepository::createPost');
         let post = new Post();
         if (id) post.id = id;
@@ -86,7 +86,7 @@ export class PostRepository extends BaseRepository<Post> {
         return post;
     }
 
-    async updatePost(id: string, updatePost: TPostInput): Promise<Post> {
+    async updatePost(id: number, updatePost: TPostInput): Promise<Post> {
         logger.log('PostRepository::updatePost id: ' + id);
 
         let post = await this.findOne({
@@ -101,7 +101,7 @@ export class PostRepository extends BaseRepository<Post> {
         return post;
     }
 
-    async deletePost(id: string): Promise<boolean> {
+    async deletePost(id: number): Promise<boolean> {
         logger.log('PostRepository::deletePost; id: ' + id);
 
         const post = await this.getPostById(id);
@@ -126,7 +126,7 @@ export class PostRepository extends BaseRepository<Post> {
             qb.andWhere(query, { titleSearch });
         }
 
-        if (filterParams?.authorId && filterParams.authorId !== '') {
+        if (filterParams?.authorId) {
             const authorId = filterParams.authorId;
             const query = `${this.metadata.tablePath}.${this.quote('authorId')} = :authorId`;
             qb.andWhere(query, { authorId });
@@ -184,14 +184,14 @@ export class PostRepository extends BaseRepository<Post> {
         const deleteQb = this.createQueryBuilder(this.metadata.tablePath).delete();
         this.applyDeleteMany(deleteQb, {
             all: false,
-            ids: ids.map(id => id?.id + ''),
+            ids: ids.map(id => id?.id).filter(id => id !== undefined && id !== null) as number[],
         });
 
         await deleteQb.execute();
         return true;
     }
 
-    async getTagsOfPost(postId: string): Promise<Tag[] | undefined | null> {
+    async getTagsOfPost(postId: number): Promise<Tag[] | undefined | null> {
         return (await this.findOne(postId, {
             relations: ['tags']
         }))?.tags;

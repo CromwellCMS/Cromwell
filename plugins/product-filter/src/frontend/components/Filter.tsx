@@ -147,7 +147,7 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
         if (skip) return;
 
         if (!category?.slug && !category?.id || !this.props.router) return;
-        const url = resolvePageRoute('category', { slug: category.slug ?? category.id });
+        const url = resolvePageRoute('category', { slug: category.slug ?? category.id + '' });
         this.props.router?.push(url);
     }
 

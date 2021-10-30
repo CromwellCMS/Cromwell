@@ -1,11 +1,11 @@
 import { TProductReviewInput } from '@cromwell/core';
-import { Field, InputType } from 'type-graphql';
+import { Field, InputType, Int } from 'type-graphql';
 
 @InputType("ProductReviewInput")
 export class ProductReviewInput implements TProductReviewInput {
 
-    @Field(type => String)
-    productId: string;
+    @Field(type => Int)
+    productId: number;
 
     @Field(type => String, { nullable: true })
     title?: string;
@@ -20,7 +20,7 @@ export class ProductReviewInput implements TProductReviewInput {
     userName?: string;
 
     @Field(type => String, { nullable: true })
-    userId?: string;
+    userId?: number;
 
     @Field(type => Boolean, { nullable: true })
     approved?: boolean;

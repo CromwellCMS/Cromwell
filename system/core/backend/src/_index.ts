@@ -3,8 +3,9 @@ export * from './models/entities/base-page.entity';
 export * from './models/entities/product-category.entity';
 export * from './models/entities/post.entity';
 export * from './models/entities/user.entity';
+export * from './models/entities/attribute-value.entity';
 export * from './models/entities/attribute.entity';
-export * from './models/entities/attribute-instance.entity';
+export * from './models/entities/attribute-product.entity';
 export * from './models/entities/product-review.entity';
 export * from './models/entities/plugin.entity';
 export * from './models/entities/theme.entity';
@@ -13,7 +14,7 @@ export * from './models/entities/order.entity';
 export * from './models/entities/tag.entity';
 export * from './models/entities/page-stats.entity';
 export * from './models/entities/post-comment.entity';
-export * from './models/entities/entity-meta.entity';
+export * from './models/entities/meta/base-meta.entity';
 
 export * from './models/paged/product.paged';
 export * from './models/paged/meta.paged';
@@ -48,6 +49,9 @@ export * from './models/inputs/tag.input';
 export * from './models/inputs/delete-many.input';
 export * from './models/inputs/plugin.input';
 
+export * from './models/objects/attribute-product-variant.object';
+export * from './models/objects/attribute-instance.object';
+
 export * from './repositories/product-category.repository';
 export * from './repositories/product.repository';
 export * from './repositories/attribute.repository';
@@ -59,7 +63,7 @@ export * from './repositories/post.repository';
 export * from './repositories/order.repository';
 export * from './repositories/tag.repository';
 export * from './repositories/page-stats.repository';
-export * from './repositories/entity-meta.repository';
+export * from './helpers/entity-meta';
 
 export * from './helpers/paths';
 export * from './helpers/logger';

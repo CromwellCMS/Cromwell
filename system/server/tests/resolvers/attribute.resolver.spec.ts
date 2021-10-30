@@ -33,7 +33,7 @@ describe('Attribute resolver', () => {
         expect(data.length).toBeTruthy();
     });
 
-    const getAttributeById = async (attributeId: string) => {
+    const getAttributeById = async (attributeId: number | string) => {
         const path = GraphQLPaths.Attribute.getOneById;
         const res = await server.executeOperation({
             query: gql`

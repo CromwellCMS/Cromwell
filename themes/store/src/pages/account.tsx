@@ -61,7 +61,7 @@ const Account = () => {
         return data;
     }
 
-    const getOrders = async (userId: string) => {
+    const getOrders = async (userId: number) => {
         try {
             const orders = await getGraphQLClient().getOrdersOfUser(userId, { pageSize: 9999 });
             if (orders?.elements) {

@@ -1,5 +1,5 @@
 import { TBasePageEntity, TBasePageMeta } from '@cromwell/core';
-import { Field, ID, ObjectType } from 'type-graphql';
+import { Field, Int, ObjectType } from 'type-graphql';
 import { BaseEntity, Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @ObjectType()
@@ -15,24 +15,23 @@ export class BasePageMeta implements TBasePageMeta {
 @ObjectType()
 export class BasePageEntity extends BaseEntity implements TBasePageEntity {
 
-    @Field(() => ID)
-    @Index()
+    @Field(() => Int)
     @PrimaryGeneratedColumn()
-    id: string;
+    id: number;
 
     @Field(() => String, { nullable: true })
-    @Column({ type: "varchar", unique: true, nullable: true })
+    @Column({ type: "varchar", length: 255, unique: true, nullable: true })
     slug?: string;
 
     @Field(() => String, { nullable: true })
-    @Column({ type: "varchar", nullable: true })
+    @Column({ type: "varchar", length: 2000, nullable: true })
     pageTitle?: string;
 
     @Field(() => String, { nullable: true })
-    @Column({ type: "varchar", nullable: true })
+    @Column({ type: "varchar", length: 4000, nullable: true })
     pageDescription?: string;
 
-    @Column({ type: "varchar", nullable: true, length: 5000 })
+    @Column({ type: "text", nullable: true })
     _meta?: string | null;
 
     @Field(() => BasePageMeta, { nullable: true })
@@ -45,20 +44,16 @@ export class BasePageEntity extends BaseEntity implements TBasePageEntity {
     }
 
     @Field(() => Date)
-    @Index()
     @CreateDateColumn()
+    @Index()
     createDate: Date;
 
     @Field(() => Date)
-    @Index()
     @UpdateDateColumn()
+    @Index()
     updateDate: Date;
 
     @Field(() => Boolean, { nullable: true })
     @Column({ type: "boolean", default: true, nullable: true })
     isEnabled?: boolean;
-
-    @Field(() => String, { nullable: true })
-    @Column({ type: "varchar", nullable: true })
-    metaId?: string;
 }

@@ -8,11 +8,11 @@ const testData: TPagedList<TTag> = {
     pagedMeta: { totalElements: 2, pageNumber: 1, pageSize: 2, totalPages: 1 },
     elements: [
         {
-            id: '1',
+            id: 1,
             name: '_test1_',
         },
         {
-            id: '2',
+            id: 2,
             name: '_test2_',
         }
     ]

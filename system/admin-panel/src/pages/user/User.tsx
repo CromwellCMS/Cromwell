@@ -39,7 +39,7 @@ export default function UserPage() {
         setShowPassword(!showPassword);
     }
 
-    const getUser = async (id: string) => {
+    const getUser = async (id: number) => {
         let data: TUser | undefined;
         try {
             data = await client?.getUserById(id,
@@ -72,7 +72,7 @@ export default function UserPage() {
 
     const init = async () => {
         if (userId && !isNew) {
-            const data = await getUser(userId);
+            const data = await getUser(parseInt(userId));
             if (data?.id) {
                 setUserData(data);
             } else setNotFound(true);
@@ -131,7 +131,7 @@ export default function UserPage() {
         } else if (userData?.id) {
             try {
                 await client?.updateUser(userData.id, inputData);
-                const newData = await getUser(userId);
+                const newData = await getUser(parseInt(userId));
                 setUserData(newData);
                 toast.success('Saved!');
 

@@ -1,19 +1,30 @@
 import { TOrder } from '@cromwell/core';
-import { Field, ObjectType } from 'type-graphql';
-import { BaseEntity, Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Field, Int, ObjectType } from 'type-graphql';
+import {
+    BaseEntity,
+    Column,
+    CreateDateColumn,
+    Entity,
+    Index,
+    OneToMany,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn,
+} from 'typeorm';
+
+import { OrderMeta } from './meta/order-meta.entity';
 
 @Entity()
 @ObjectType()
 export class Order extends BaseEntity implements TOrder {
 
-    @Field(() => String, { nullable: true })
+    @Field(() => Int, { nullable: true })
     @Index()
     @PrimaryGeneratedColumn()
-    id: string;
+    id: number;
 
     @Field(() => String, { nullable: true })
     @Index()
-    @Column({ type: "varchar", nullable: true })
+    @Column({ type: "varchar", length: 255, nullable: true })
     status?: string;
 
     @Field(() => String, { nullable: true })
@@ -40,44 +51,44 @@ export class Order extends BaseEntity implements TOrder {
     @Column({ type: "float", nullable: true })
     totalQnt?: number;
 
-    @Field(() => String, { nullable: true })
+    @Field(() => Int, { nullable: true })
+    @Column({ type: "int", nullable: true })
     @Index()
-    @Column({ type: "varchar", nullable: true })
-    userId?: string;
+    userId?: number;
 
     @Field(() => String, { nullable: true })
     @Index()
-    @Column({ type: "varchar", nullable: true })
+    @Column({ type: "varchar", length: 255, nullable: true })
     customerName?: string;
 
     @Field(() => String, { nullable: true })
     @Index()
-    @Column({ type: "varchar", nullable: true })
+    @Column({ type: "varchar", length: 255, nullable: true })
     customerPhone?: string;
 
     @Field(() => String, { nullable: true })
     @Index()
-    @Column({ type: "varchar", nullable: true })
+    @Column({ type: "varchar", length: 255, nullable: true })
     customerEmail?: string;
 
     @Field(() => String, { nullable: true })
-    @Column({ type: "varchar", nullable: true })
+    @Column({ type: "varchar", length: 255, nullable: true })
     customerAddress?: string;
 
     @Field(() => String, { nullable: true })
-    @Column({ type: "varchar", nullable: true })
+    @Column({ type: "varchar", length: 255, nullable: true })
     shippingMethod?: string;
 
     @Field(() => String, { nullable: true })
-    @Column({ type: "varchar", nullable: true })
+    @Column({ type: "varchar", length: 255, nullable: true })
     paymentMethod?: string;
 
     @Field(() => String, { nullable: true })
-    @Column({ type: "varchar", nullable: true })
+    @Column({ type: "varchar", length: 3000, nullable: true })
     customerComment?: string;
 
     @Field(() => String, { nullable: true })
-    @Column({ type: "varchar", nullable: true })
+    @Column({ type: "varchar", length: 255, nullable: true })
     currency?: string;
 
     @Field(() => Date)
@@ -90,7 +101,6 @@ export class Order extends BaseEntity implements TOrder {
     @UpdateDateColumn()
     updateDate: Date;
 
-    @Field(() => String, { nullable: true })
-    @Column({ type: "varchar", nullable: true })
-    metaId?: string;
+    @OneToMany(() => OrderMeta, meta => meta.entity)
+    metaRecords?: OrderMeta[];
 }

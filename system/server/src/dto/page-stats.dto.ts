@@ -1,6 +1,5 @@
-
+import { EDBEntity, TPageStats } from '@cromwell/core';
 import { ApiProperty } from '@nestjs/swagger';
-import { TPageStats } from '@cromwell/core';
 
 export class PageStatsDto implements TPageStats {
     @ApiProperty()
@@ -11,6 +10,12 @@ export class PageStatsDto implements TPageStats {
 
     @ApiProperty()
     pageName?: string;
+
+    @ApiProperty()
+    slug?: string;
+
+    @ApiProperty()
+    entityType?: EDBEntity | string;
 }
 
 

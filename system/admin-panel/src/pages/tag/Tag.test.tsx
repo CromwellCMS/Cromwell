@@ -2,7 +2,7 @@ import React from 'react';
 import { TTag } from '@cromwell/core';
 
 const testData: TTag = {
-    id: '1',
+    id: 1,
     name: '_test1_',
 };
 

@@ -57,7 +57,7 @@ const ProductPage = () => {
         if (productId && productId !== 'new') {
             let prod: TProduct | undefined;
             try {
-                prod = await client?.getProductById(productId, gql`
+                prod = await client?.getProductById(parseInt(productId), gql`
                     fragment AdminPanelProductFragment on Product {
                         id
                         slug
@@ -164,7 +164,8 @@ const ProductPage = () => {
         }));
 
         const selectedItems = store.getState().selectedItems;
-        const categoryIds = Object.keys(selectedItems).filter(id => selectedItems[id]);
+        const categoryIds = Object.keys(selectedItems)
+            .filter(id => selectedItems[id]).map(parseInt).filter(Boolean);
         let mainCategoryId = store.getState().selectedItem ?? null;
         if (mainCategoryId && !categoryIds.includes(mainCategoryId)) mainCategoryId = null;
 
@@ -240,7 +241,7 @@ const ProductPage = () => {
 
     let pageFullUrl;
     if (product?.slug) {
-        pageFullUrl = serviceLocator.getFrontendUrl() + resolvePageRoute('product', { slug: product.slug ?? product.id });
+        pageFullUrl = serviceLocator.getFrontendUrl() + resolvePageRoute('product', { slug: product.slug ?? product.id + '' });
     }
 
     return (

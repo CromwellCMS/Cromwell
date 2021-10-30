@@ -5,13 +5,13 @@ import { FastifyRequest } from 'fastify';
 
 
 export type TAuthUserInfo = {
-    id: string;
+    id: number;
     email: string;
     role: TUserRole;
 }
 
 export type TTokenPayload = {
-    sub: string;
+    sub: number;
     username: string;
     role: TUserRole;
 }

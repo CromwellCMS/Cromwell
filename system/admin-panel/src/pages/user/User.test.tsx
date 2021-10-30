@@ -2,7 +2,7 @@ import React from 'react';
 import { TUser } from '@cromwell/core';
 
 const testData: TUser = {
-    id: '1',
+    id: 1,
     email: '_test1_',
     fullName: '123'
 };

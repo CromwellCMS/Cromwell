@@ -1,4 +1,6 @@
+import { AttributeRepository } from './attribute.repository';
 import {
+    EDBEntity,
     TDeleteManyInput,
     TFilteredProductList,
     TPagedList,
@@ -13,15 +15,14 @@ import { Brackets, DeleteQueryBuilder, EntityRepository, getCustomRepository, Se
 
 import { applyGetManyFromOne, checkEntitySlug, getPaged, handleBaseInput } from '../helpers/base-queries';
 import { getLogger } from '../helpers/logger';
-import { PageStats } from '../models/entities/page-stats.entity';
 import { ProductReview } from '../models/entities/product-review.entity';
 import { Product } from '../models/entities/product.entity';
 import { ProductFilterInput } from '../models/filters/product.filter';
 import { PagedParamsInput } from '../models/inputs/paged-params.input';
 import { BaseRepository } from './base.repository';
-import { PageStatsRepository } from './page-stats.repository';
 import { ProductCategoryRepository } from './product-category.repository';
 import { ProductReviewRepository } from './product-review.repository';
+import { AttributeInstance } from '../models/objects/attribute-instance.object';
 
 const logger = getLogger();
 const averageKey: keyof Product = 'averageRating';
@@ -45,13 +46,6 @@ export class ProductRepository extends BaseRepository<Product> {
             .groupBy(`${this.metadata.tablePath}.id`);
     }
 
-    applyGetProductViews(qb: SelectQueryBuilder<TProduct>) {
-        const statsTable = getCustomRepository(PageStatsRepository).metadata.tablePath;
-        qb.addSelect(`${statsTable}.views`, this.metadata.tablePath + '_' + 'views')
-            .leftJoin(PageStats, statsTable,
-                `${statsTable}.${this.quote('productSlug')} = ${this.metadata.tablePath}.slug`)
-    }
-
     async applyAndGetPagedProducts(qb: SelectQueryBuilder<TProduct>, params?: TPagedParams<TProduct>): Promise<TPagedList<TProduct>> {
         this.applyGetProductRating(qb);
 
@@ -60,7 +54,7 @@ export class ProductRepository extends BaseRepository<Product> {
             return getPaged(qb, undefined, params);
         }
         if (params?.orderBy === 'views') {
-            this.applyGetProductViews(qb);
+            this.applyGetEntityViews(qb, EDBEntity.Product);
             params.orderBy = this.metadata.tablePath + '_' + 'views' as any;
             return getPaged(qb, undefined, params);
         }
@@ -73,7 +67,7 @@ export class ProductRepository extends BaseRepository<Product> {
         return await this.applyAndGetPagedProducts(qb, params);
     }
 
-    async getProductById(id: string): Promise<Product | undefined> {
+    async getProductById(id: number): Promise<Product | undefined> {
         logger.log('ProductRepository::getProductById id: ' + id);
         const qb = this.createQueryBuilder(this.metadata.tablePath).select();
         this.applyGetProductRating(qb);
@@ -98,7 +92,41 @@ export class ProductRepository extends BaseRepository<Product> {
         product.mainCategoryId = input.mainCategoryId;
         product.description = input.description;
         product.descriptionDelta = input.descriptionDelta;
-        product.attributes = input.attributes;
+        product.stockAmount = input.stockAmount;
+        product.inStock = input.inStock;
+        
+        if (!product.id) await product.save();
+
+        if (input.attributes) {
+            // Remove all old attribute values
+            if (product.attributeValues) {
+                for (const value of product.attributeValues) {
+                    try {
+                        await value.remove();
+                    } catch (error) {
+                        logger.error(error);
+                    }
+                }
+            }
+            // Create new values and relations
+            for (const attributeInput of input.attributes) {
+                try {
+                    const attribute = await getCustomRepository(AttributeRepository).getAttributeByKey(attributeInput.key);
+                    if (attribute) {
+                        for (const valueInput of attributeInput.values) {
+                            valueInput.productVariant
+                            const value = attribute.values.find(val => val.value === valueInput.value);
+                            if (value) {
+                                await getCustomRepository(AttributeRepository)
+                                    .addAttributeValueToProduct(product, value, valueInput.productVariant);
+                            }
+                        }
+                    }
+                } catch (error) {
+                    logger.error(error);
+                }
+            }
+        }
 
         if (input.categoryIds) {
             product.categories = await getCustomRepository(ProductCategoryRepository)
@@ -120,7 +148,7 @@ export class ProductRepository extends BaseRepository<Product> {
         }
     }
 
-    async createProduct(createProduct: TProductInput, id?: string): Promise<Product> {
+    async createProduct(createProduct: TProductInput, id?: number): Promise<Product> {
         logger.log('ProductRepository::createProduct');
         let product = new Product();
         if (id) product.id = id;
@@ -135,11 +163,11 @@ export class ProductRepository extends BaseRepository<Product> {
         return product;
     }
 
-    async updateProduct(id: string, updateProduct: TProductInput): Promise<Product> {
+    async updateProduct(id: number, updateProduct: TProductInput): Promise<Product> {
         logger.log('ProductRepository::updateProduct id: ' + id);
         let product = await this.findOne({
             where: { id },
-            relations: ['categories']
+            relations: ['categories', 'attributeValues']
         });
         if (!product) throw new Error(`Product ${id} not found!`);
 
@@ -153,7 +181,7 @@ export class ProductRepository extends BaseRepository<Product> {
         return product;
     }
 
-    async deleteProduct(id: string): Promise<boolean> {
+    async deleteProduct(id: number): Promise<boolean> {
         logger.log('ProductRepository::deleteProduct; id: ' + id);
 
         const product = await this.getProductById(id);
@@ -166,7 +194,7 @@ export class ProductRepository extends BaseRepository<Product> {
         return true;
     }
 
-    async getProductsFromCategory(categoryId: string, params?: TPagedParams<TProduct>): Promise<TPagedList<TProduct>> {
+    async getProductsFromCategory(categoryId: number, params?: TPagedParams<TProduct>): Promise<TPagedList<TProduct>> {
         logger.log('ProductRepository::getProductsFromCategory id: ' + categoryId);
         const categoryTable = getCustomRepository(ProductCategoryRepository).metadata.tablePath;
         const qb = this.createQueryBuilder(this.metadata.tablePath).select();
@@ -174,7 +202,7 @@ export class ProductRepository extends BaseRepository<Product> {
         return this.applyAndGetPagedProducts(qb, params);
     }
 
-    async getReviewsOfProduct(productId: string, params?: TPagedParams<TProductReview>): Promise<TPagedList<TProductReview>> {
+    async getReviewsOfProduct(productId: number, params?: TPagedParams<TProductReview>): Promise<TPagedList<TProductReview>> {
         logger.log('ProductRepository::getReviewsOfProduct id: ' + productId);
         const reviewTable = getCustomRepository(ProductReviewRepository).metadata.tablePath;
 
@@ -183,7 +211,7 @@ export class ProductRepository extends BaseRepository<Product> {
         return getPaged(qb, reviewTable, params)
     }
 
-    async getProductRating(productId: string): Promise<TProductRating> {
+    async getProductRating(productId: number): Promise<TProductRating> {
         logger.log('ProductRepository::getProductRating id: ' + productId);
         const reviewTable = getCustomRepository(ProductReviewRepository).metadata.tablePath;
         const qb = getCustomRepository(ProductReviewRepository).createQueryBuilder(reviewTable).select();
@@ -199,7 +227,7 @@ export class ProductRepository extends BaseRepository<Product> {
         return raw;
     }
 
-    applyProductFilter(qb: SelectQueryBuilder<Product> | DeleteQueryBuilder<Product>, filterParams?: ProductFilterInput, categoryId?: string) {
+    applyProductFilter(qb: SelectQueryBuilder<Product> | DeleteQueryBuilder<Product>, filterParams?: ProductFilterInput, categoryId?: number) {
         if (categoryId) {
             // Cannot apply category filter in Delete query
             applyGetManyFromOne(qb as SelectQueryBuilder<Product>, this.metadata.tablePath, 'categories',
@@ -259,7 +287,7 @@ export class ProductRepository extends BaseRepository<Product> {
         }
     }
 
-    async getFilteredProducts(pagedParams?: PagedParamsInput<TProduct>, filterParams?: ProductFilterInput, categoryId?: string): Promise<TFilteredProductList> {
+    async getFilteredProducts(pagedParams?: PagedParamsInput<TProduct>, filterParams?: ProductFilterInput, categoryId?: number): Promise<TFilteredProductList> {
         logger.log('ProductRepository::getFilteredProducts categoryId:' + categoryId);
         const timestamp = Date.now();
 
@@ -313,5 +341,24 @@ export class ProductRepository extends BaseRepository<Product> {
         this.applyDeleteMany(qb, input);
         await qb.execute();
         return true;
+    }
+
+    async getProductAttributes(productId: number): Promise<AttributeInstance[] | undefined> {
+        const records = await getCustomRepository(AttributeRepository).getAttributeInstancesOfProduct(productId);
+        if (!records) return
+        const instances: Record<string, AttributeInstance> = {};
+        records.forEach(record => {
+            if (!instances[record.key]) {
+                instances[record.key] = {
+                    key: record.key,
+                    values: []
+                }
+            }
+            instances[record.key].values.push({
+                value: record.value,
+                productVariant: record.productVariant,
+            })
+        });
+        return Object.values(instances);
     }
 }

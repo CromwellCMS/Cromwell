@@ -31,7 +31,7 @@ const OrderPage = () => {
         setOrderLoading(true);
         setCartLoading(true);
         try {
-            orderData = await client.getOrderById(orderId);
+            orderData = await client.getOrderById(parseInt(orderId));
             if (orderData) {
                 setData(orderData);
                 updateCart(orderData.cart);

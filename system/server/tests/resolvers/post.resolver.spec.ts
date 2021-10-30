@@ -44,7 +44,7 @@ describe('Post resolver', () => {
         expect(data.pagedMeta.pageSize === 10).toBeTruthy();
     });
 
-    const getPostById = async (postId: string) => {
+    const getPostById = async (postId: number | string) => {
         const path = GraphQLPaths.Post.getOneById;
         const res = await server.executeOperation({
             query: gql`

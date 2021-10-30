@@ -25,7 +25,7 @@ const TagPage = () => {
     const history = useHistory();
     const editorId = 'tag-description-editor';
 
-    const getTagData = async (id: string) => {
+    const getTagData = async (id: number) => {
         let tagData: TTag;
         try {
             tagData = await client.getTagById(id,
@@ -67,7 +67,7 @@ const TagPage = () => {
         setTagLoading(true);
 
         if (tagId && tagId !== 'new') {
-            const tag = await getTagData(tagId);
+            const tag = await getTagData(parseInt(tagId));
 
             try {
                 if (tag?.descriptionDelta)
@@ -78,7 +78,7 @@ const TagPage = () => {
         }
 
         if (tagId === 'new') {
-            setData({ id: tagId } as any);
+            setData({} as any);
         }
 
         setTagLoading(false);
@@ -114,7 +114,7 @@ const TagPage = () => {
             customMeta: Object.assign({}, data.customMeta, getCustomMetaFor(EDBEntity.Tag)),
         }
 
-        if (data?.id === 'new') {
+        if (tagId === 'new') {
             try {
                 const newData = await client?.createTag(inputData);
                 toast.success('Created tag!');
@@ -159,7 +159,7 @@ const TagPage = () => {
 
     let pageFullUrl;
     if (data) {
-        pageFullUrl = serviceLocator.getFrontendUrl() + resolvePageRoute('tag', { slug: data.slug ?? data.id });
+        pageFullUrl = serviceLocator.getFrontendUrl() + resolvePageRoute('tag', { slug: data.slug ?? data.id + '' });
     }
 
     return (

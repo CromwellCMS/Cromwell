@@ -25,7 +25,7 @@ import styles from './OrderList.module.scss';
 import OrderListItem from './OrderListItem';
 
 export type ListItemProps = {
-    handleDeleteBtnClick: (id: string) => void;
+    handleDeleteBtnClick: (id: number) => void;
     toggleSelection: (data: TOrder) => void;
 }
 
@@ -43,7 +43,7 @@ type TPropsType = PropsType<TAppState, unknown,
 const OrderList = (props: TPropsType) => {
     const client = getGraphQLClient();
     const listId = "Admin_OrderList";
-    const [itemToDelete, setItemToDelete] = useState<string | null>(null);
+    const [itemToDelete, setItemToDelete] = useState<number | null>(null);
     const totalElements = useRef<number | null>(null);
     const [deleteSelectedOpen, setDeleteSelectedOpen] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -80,7 +80,7 @@ const OrderList = (props: TPropsType) => {
         return data;
     }
 
-    const handleDeleteBtnClick = (id: string) => {
+    const handleDeleteBtnClick = (id: number) => {
         setItemToDelete(id);
     }
 

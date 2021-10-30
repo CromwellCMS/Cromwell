@@ -35,7 +35,7 @@ export default function CategoryPage(props) {
     const urlParams = new URLSearchParams(props?.location?.search);
     const parentIdParam = urlParams.get('parentId');
 
-    const getProductCategory = async (id: string) => {
+    const getProductCategory = async (id: number) => {
         let categoryData: TProductCategory | undefined;
         try {
             categoryData = await client?.getProductCategoryById(id,
@@ -89,7 +89,7 @@ export default function CategoryPage(props) {
         let categoryData;
         if (categoryId && categoryId !== 'new') {
             try {
-                categoryData = await getProductCategory(categoryId);
+                categoryData = await getProductCategory(parseInt(categoryId));
             } catch (e) {
                 console.error(e);
             }
@@ -221,7 +221,7 @@ export default function CategoryPage(props) {
 
     let pageFullUrl;
     if (category) {
-        pageFullUrl = serviceLocator.getFrontendUrl() + resolvePageRoute('category', { slug: category.slug ?? category.id });
+        pageFullUrl = serviceLocator.getFrontendUrl() + resolvePageRoute('category', { slug: category.slug ?? category.id + '' });
     }
 
     return (

@@ -15,7 +15,7 @@ type TLocalStorage = {
 }
 
 export type TApiClient = {
-    getProductById: (id: string) => Promise<TProduct | undefined>;
+    getProductById: (id: number) => Promise<TProduct | undefined>;
     getAttributes: () => Promise<TAttribute[] | undefined>;
 };
 

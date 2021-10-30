@@ -49,7 +49,7 @@ describe('Order resolver', () => {
         expect(data.pagedMeta.pageSize).toBeTruthy();
     });
 
-    const getOrder = async (orderId: string): Promise<TOrder> => {
+    const getOrder = async (orderId: string | number): Promise<TOrder> => {
         const path = GraphQLPaths.Order.getOneById;
         const res = await server.executeOperation({
             query: gql`

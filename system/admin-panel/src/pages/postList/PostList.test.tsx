@@ -6,12 +6,12 @@ const postsData: TPagedList<TPost> = {
     pagedMeta: { totalElements: 2, pageNumber: 1, pageSize: 2, totalPages: 1 },
     elements: [
         {
-            id: '1',
+            id: 1,
             title: '_test1_',
             published: false,
         },
         {
-            id: '2',
+            id: 2,
             title: '_test2_',
             published: true,
         }
@@ -20,7 +20,7 @@ const postsData: TPagedList<TPost> = {
 const users: TPagedList<TUser> = {
     elements: [
         {
-            id: '1',
+            id: 1,
             fullName: 'name1',
             email: 'mail1',
         }

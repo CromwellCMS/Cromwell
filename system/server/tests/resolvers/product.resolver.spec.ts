@@ -48,7 +48,7 @@ describe('Product resolver', () => {
         expect(data.pagedMeta.pageSize === 10).toBeTruthy();
     });
 
-    const getProductById = async (productId: string) => {
+    const getProductById = async (productId: number) => {
         const path = GraphQLPaths.Product.getOneById;
         const res = await server.executeOperation({
             query: gql`
@@ -68,7 +68,7 @@ describe('Product resolver', () => {
     }
 
     it(`getProductById`, async () => {
-        const data = await getProductById('1');
+        const data = await getProductById(1);
         if (Array.isArray(data)) {
             console.error('data error', data)
             expect(!Array.isArray(data)).toBeTruthy();
@@ -110,7 +110,7 @@ describe('Product resolver', () => {
     });
 
     it(`updateProduct`, async () => {
-        const data1: TProduct = await getProductById('2');
+        const data1: TProduct = await getProductById(2);
         if (Array.isArray(data1)) {
             console.error('data error', data1)
             expect(!Array.isArray(data1)).toBeTruthy();
@@ -148,7 +148,7 @@ describe('Product resolver', () => {
             console.error('res error', success)
             expect(!Array.isArray(success)).toBeTruthy();
         }
-        const data2 = await getProductById('2');
+        const data2 = await getProductById(2);
         if (Array.isArray(data2)) {
             console.error('data error', data2)
             expect(!Array.isArray(data2)).toBeTruthy();
@@ -162,7 +162,7 @@ describe('Product resolver', () => {
 
 
     it(`createProduct`, async () => {
-        const data1: TProduct = await getProductById('3');
+        const data1: TProduct = await getProductById(3);
         if (Array.isArray(data1)) {
             console.error('data error', data1)
             expect(!Array.isArray(data1)).toBeTruthy();
@@ -214,7 +214,7 @@ describe('Product resolver', () => {
 
 
     it(`deleteProduct`, async () => {
-        const data1: TProduct = await getProductById('4');
+        const data1: TProduct = await getProductById(4);
         if (Array.isArray(data1)) {
             console.error('data error', data1)
             expect(!Array.isArray(data1)).toBeTruthy();
@@ -241,7 +241,7 @@ describe('Product resolver', () => {
         }
         expect(success === true).toBeTruthy();
 
-        const data2 = await getProductById('4');
+        const data2 = await getProductById(4);
 
         expect(!data2?.id).toBeTruthy();
         expect(!data2?.slug).toBeTruthy();

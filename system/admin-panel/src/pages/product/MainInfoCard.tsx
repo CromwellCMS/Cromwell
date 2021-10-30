@@ -92,7 +92,7 @@ const MainInfoCard = (props: {
     let pageFullUrl;
     if ((product as TProduct)?.slug) {
         pageFullUrl = serviceLocator.getFrontendUrl() + resolvePageRoute('product', {
-            slug: (product as TProduct).slug ?? (product as TProduct).id,
+            slug: (product as TProduct).slug ?? (product as TProduct).id + '',
         });
     }
 

@@ -26,7 +26,7 @@ import styles from './ReviewList.module.scss';
 import ReviewListItem from './ReviewListItem';
 
 export type ListItemProps = {
-    handleDeleteBtnClick: (id: string) => void;
+    handleDeleteBtnClick: (id: number) => void;
     handleOpenReview: (data: TProductReview) => void;
     toggleSelection: (data: TProductReview) => void;
     handleApproveReview: (data: TProductReview) => Promise<boolean>;
@@ -46,7 +46,7 @@ type TPropsType = PropsType<TAppState, unknown,
 const ReviewList = (props: TPropsType) => {
     const client = getGraphQLClient();
     const listId = "Admin_ReviewList";
-    const [itemToDelete, setItemToDelete] = useState<string | null>(null);
+    const [itemToDelete, setItemToDelete] = useState<number | null>(null);
     const totalElements = useRef<number | null>(null);
     const [deleteSelectedOpen, setDeleteSelectedOpen] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -86,7 +86,7 @@ const ReviewList = (props: TPropsType) => {
         return data;
     }
 
-    const handleDeleteBtnClick = (id: string) => {
+    const handleDeleteBtnClick = (id: number) => {
         setItemToDelete(id);
     }
 
@@ -219,7 +219,8 @@ const ReviewList = (props: TPropsType) => {
                         placeholder="Product id"
                         variant="standard"
                         onChange={(event) => {
-                            filterInput.current.productId = event.target.value;
+                            filterInput.current.productId = parseInt(event.target.value);
+                            if (isNaN(filterInput.current.productId)) filterInput.current.productId = undefined;
                             handleFilterInput();
                         }}
                     />

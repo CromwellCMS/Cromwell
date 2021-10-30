@@ -1,17 +1,17 @@
 import { TProductReviewFilter } from '@cromwell/core';
-import { Field, InputType } from 'type-graphql';
+import { Field, InputType, Int } from 'type-graphql';
 
 @InputType("ProductReviewFilter")
 export class ProductReviewFilter implements TProductReviewFilter {
 
-    @Field(type => String, { nullable: true })
-    productId?: string;
+    @Field(type => Int, { nullable: true })
+    productId?: number;
 
     @Field(type => String, { nullable: true })
     userName?: string;
 
-    @Field(type => String, { nullable: true })
-    userId?: string;
+    @Field(type => Int, { nullable: true })
+    userId?: number;
 
     @Field(type => Boolean, { nullable: true })
     approved?: boolean;

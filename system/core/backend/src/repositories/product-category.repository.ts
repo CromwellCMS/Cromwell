@@ -1,5 +1,7 @@
 import {
+    EDBEntity,
     getStoreItem,
+    TBasePageEntity,
     TDeleteManyInput,
     TPagedList,
     TPagedParams,
@@ -59,12 +61,12 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
         return getPaged(qb, this.metadata.tablePath, params);
     }
 
-    async getProductCategoriesById(ids: string[]): Promise<ProductCategory[]> {
+    async getProductCategoriesById(ids: number[]): Promise<ProductCategory[]> {
         logger.log('ProductCategoryRepository::getProductCategoriesById ids: ' + ids.join(', '));
         return this.findByIds(ids);
     }
 
-    async getProductCategoryById(id: string): Promise<ProductCategory> {
+    async getProductCategoryById(id: number): Promise<ProductCategory> {
         logger.log('ProductCategoryRepository::getProductCategoryById id: ' + id);
         const product = await this.findOne({
             where: { id }
@@ -101,7 +103,7 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
         }
     }
 
-    async createProductCategory(createProductCategory: CreateProductCategory, id?: string): Promise<ProductCategory> {
+    async createProductCategory(createProductCategory: CreateProductCategory, id?: number): Promise<ProductCategory> {
         logger.log('ProductCategoryRepository::createProductCategory');
         const productCategory = new ProductCategory();
         if (id) productCategory.id = id;
@@ -114,7 +116,7 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
         return productCategory;
     }
 
-    async updateProductCategory(id: string, updateProductCategory: UpdateProductCategory): Promise<ProductCategory> {
+    async updateProductCategory(id: number, updateProductCategory: UpdateProductCategory): Promise<ProductCategory> {
         logger.log('ProductCategoryRepository::updateProductCategory id: ' + id);
         const productCategory = await this.getProductCategoryById(id);
         if (!productCategory) throw new Error(`ProductCategory ${id} not found!`);
@@ -126,7 +128,7 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
         return productCategory;
     }
 
-    async deleteProductCategory(id: string): Promise<boolean> {
+    async deleteProductCategory(id: number): Promise<boolean> {
         logger.log('ProductCategoryRepository::deleteProductCategory id: ' + id);
         const productCategory = await this.getProductCategoryById(id);
         if (!productCategory) throw new Error('Product category not found');
@@ -169,7 +171,7 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
         return true;
     }
 
-    async getCategoriesOfProduct(productId: string, params?: TPagedParams<TProductCategory>): Promise<TProductCategory[]> {
+    async getCategoriesOfProduct(productId: number, params?: TPagedParams<TProductCategory>): Promise<TProductCategory[]> {
         logger.log('ProductCategoryRepository::getCategoriesOfProduct id: ' + productId);
         const qb = this.createQueryBuilder(this.metadata.tablePath);
         applyGetManyFromOne(qb, this.metadata.tablePath, 'products',
@@ -234,4 +236,11 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
         return await getPaged(qb, this.metadata.tablePath, pagedParams);
     }
 
+    applyGetEntityViews(qb: SelectQueryBuilder<TBasePageEntity>, entityType: EDBEntity) {
+        return getCustomRepository(ProductRepository).applyGetEntityViews.call(this, qb, entityType);
+    }
+
+    async getEntityViews(entityId: number, entityType: EDBEntity) {
+        return getCustomRepository(ProductRepository).getEntityViews.call(this, entityId, entityType);
+    }
 }

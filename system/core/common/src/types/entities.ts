@@ -4,7 +4,7 @@ export type TBasePageEntity = {
     /**
      * DB id
      */
-    id: string;
+    id: number;
     /**
      * Slug for page route
      */
@@ -34,11 +34,7 @@ export type TBasePageEntity = {
      */
     isEnabled?: boolean;
     /**
-     * Unique (uuid) entity meta id to match a custom meta records in EntityMeta table
-     */
-    metaId?: string;
-    /**
-     * Unique (uuid) entity meta id to match a custom meta records in EntityMeta table
+     * Entity meta data from "{Entity}Meta" table
      */
     customMeta?: Record<string, string>;
 }
@@ -87,12 +83,16 @@ export type TProductCategoryCore = {
      * Products in category
      */
     products?: TPagedList<TProduct>;
+    /**
+     * Qnt of page requests
+     */
+    views?: number;
 }
 
 export type TProductCategory = TProductCategoryCore & TBasePageEntity;
 
 export type TProductCategoryInput = TBasePageEntityInput & Omit<TProductCategoryCore, 'children' | 'parent' | 'products'> & {
-    parentId?: string;
+    parentId?: number;
 };
 
 export type TProductCategoryFilter = {
@@ -111,7 +111,7 @@ export type TProduct = TBasePageEntity & {
     /**
      * Main category of product
      */
-    mainCategoryId?: string;
+    mainCategoryId?: number;
     /**
      * Categories of the prooduct
      */
@@ -182,7 +182,7 @@ export type TProductRating = {
 }
 
 export type TProductInput = Omit<TProduct, TDBAuxiliaryColumns | 'categories' | 'rating' | 'reviews'> & {
-    categoryIds?: string[];
+    categoryIds?: number[];
     customMeta?: Record<string, string>;
 };
 
@@ -222,7 +222,7 @@ export type TPost = {
     /**
      * Id of user-author
      */
-    authorId?: string;
+    authorId?: number;
     /**
      * Href of main image
      */
@@ -259,18 +259,22 @@ export type TPost = {
      * Is post featured?
      */
     featured?: boolean | null;
+    /**
+     * Qnt of page requests
+     */
+    views?: number;
 
 } & TBasePageEntity;
 
 export type TPostInput = Omit<TPost, TDBAuxiliaryColumns | 'author' | 'tags'> & {
-    authorId: string;
-    tagIds?: string[] | null;
+    authorId: number;
+    tagIds?: number[] | null;
 };
 
 export type TPostFilter = {
-    authorId?: string;
+    authorId?: number;
     titleSearch?: string;
-    tagIds?: string[];
+    tagIds?: number[];
     published?: boolean;
     featured?: boolean | null;
 }
@@ -281,6 +285,7 @@ export type TTag = TBasePageEntity & {
     image?: string | null;
     description?: string | null;
     descriptionDelta?: string | null;
+    views?: number;
 }
 
 export type TTagInput = Omit<TTag, TDBAuxiliaryColumns>;
@@ -330,6 +335,7 @@ export type TUserFilter = {
  */
 export type TAttribute = TBasePageEntity & {
     key: string;
+    title?: string;
     values: TAttributeValue[];
     type: 'radio' | 'checkbox';
     icon?: string;
@@ -340,6 +346,7 @@ export type TAttributeInput = Omit<TAttribute, TDBAuxiliaryColumns>;
 
 export type TAttributeValue = {
     value: string;
+    title?: string;
     icon?: string;
 }
 
@@ -369,13 +376,13 @@ export type TAttributeProductVariant = {
  * ProductReview
  */
 export type TProductReviewCore = {
-    productId: string;
+    productId: number;
     title?: string;
     description?: string;
     rating?: number;
     userName?: string;
     userEmail?: string;
-    userId?: string;
+    userId?: number;
     approved?: boolean;
 }
 
@@ -384,9 +391,9 @@ export type TProductReview = TProductReviewCore & TBasePageEntity;
 export type TProductReviewInput = TProductReviewCore & TBasePageEntityInput;
 
 export type TProductReviewFilter = {
-    productId?: string;
+    productId?: number;
     userName?: string;
-    userId?: string;
+    userId?: number;
     approved?: boolean;
 }
 
@@ -395,7 +402,7 @@ export type TProductReviewFilter = {
  * Store order
  */
 export type TOrderCore = {
-    id?: string;
+    id?: number;
     createDate?: Date;
     updateDate?: Date;
     status?: string;
@@ -405,7 +412,7 @@ export type TOrderCore = {
     cartOldTotalPrice?: number;
     shippingPrice?: number;
     totalQnt?: number;
-    userId?: string;
+    userId?: number;
     customerName?: string;
     customerPhone?: string;
     customerEmail?: string;
@@ -415,7 +422,6 @@ export type TOrderCore = {
     paymentMethod?: string;
     fromUrl?: string;
     currency?: string;
-    metaId?: string;
     customMeta?: Record<string, string>;
 }
 
@@ -447,12 +453,12 @@ export type TPaymentSession = TOrderCore & {
  * Blog comment
  */
 export type TPostCommentCore = {
-    postId: string;
+    postId: number;
     title?: string;
     comment?: string;
     userName?: string;
     userEmail?: string;
-    userId?: string;
+    userId?: number;
     approved?: boolean;
 }
 
@@ -658,7 +664,7 @@ export type TCurrency = {
 }
 
 export type TDeleteManyInput = {
-    ids: string[];
+    ids: number[];
     all?: boolean;
 }
 
@@ -672,10 +678,3 @@ export type TCmsRedirectObject = {
 export type TCmsRedirectFunction = (pathname: string, search?: string | null) => TCmsRedirectObject | undefined | void;
 
 export type TCmsRedirect = TCmsRedirectObject | TCmsRedirectFunction;
-
-export type TEntityMeta = {
-    id: string;
-    entityMetaId: string;
-    key?: string | null;
-    value?: string | null;
-}

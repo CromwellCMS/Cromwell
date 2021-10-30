@@ -48,7 +48,7 @@ describe('Product category resolver', () => {
         expect(data.pagedMeta.pageSize === 10).toBeTruthy();
     });
 
-    const getProductCategoryById = async (id: string) => {
+    const getProductCategoryById = async (id: number) => {
         const path = GraphQLPaths.ProductCategory.getOneById;
         const res = await server.executeOperation({
             query: gql`
@@ -68,7 +68,7 @@ describe('Product category resolver', () => {
     }
 
     it(`getProductCategoryById`, async () => {
-        const data = await getProductCategoryById('1');
+        const data = await getProductCategoryById(1);
         if (Array.isArray(data)) {
             console.error('data error', data)
             expect(!Array.isArray(data)).toBeTruthy();
@@ -110,7 +110,7 @@ describe('Product category resolver', () => {
     });
 
     it(`updateProductCategory`, async () => {
-        const data1: TProductCategory = await getProductCategoryById('2');
+        const data1: TProductCategory = await getProductCategoryById(2);
         if (Array.isArray(data1)) {
             console.error('data error', data1)
             expect(!Array.isArray(data1)).toBeTruthy();
@@ -148,7 +148,7 @@ describe('Product category resolver', () => {
             console.error('res error', success)
             expect(!Array.isArray(success)).toBeTruthy();
         }
-        const data2 = await getProductCategoryById('2');
+        const data2 = await getProductCategoryById(2);
         if (Array.isArray(data2)) {
             console.error('data error', data2)
             expect(!Array.isArray(data2)).toBeTruthy();
@@ -162,7 +162,7 @@ describe('Product category resolver', () => {
 
 
     it(`createProductCategory`, async () => {
-        const data1: TProductCategory = await getProductCategoryById('3');
+        const data1: TProductCategory = await getProductCategoryById(2);
         if (Array.isArray(data1)) {
             console.error('data error', data1)
             expect(!Array.isArray(data1)).toBeTruthy();
@@ -214,7 +214,7 @@ describe('Product category resolver', () => {
 
 
     it(`deleteProductCategory`, async () => {
-        const data1: TProductCategory = await getProductCategoryById('4');
+        const data1: TProductCategory = await getProductCategoryById(4);
         if (Array.isArray(data1)) {
             console.error('data error', data1)
             expect(!Array.isArray(data1)).toBeTruthy();
@@ -241,7 +241,7 @@ describe('Product category resolver', () => {
         }
         expect(success === true).toBeTruthy();
 
-        const data2 = await getProductCategoryById('3');
+        const data2 = await getProductCategoryById(3);
 
         expect(!data2?.id).toBeTruthy();
         expect(!data2?.slug).toBeTruthy();

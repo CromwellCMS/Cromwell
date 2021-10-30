@@ -1,9 +1,10 @@
 import { TProduct, TProductCategory, TProductRating, TProductReview } from '@cromwell/core';
-import { Field, ObjectType } from 'type-graphql';
+import { Field, Int, ObjectType } from 'type-graphql';
 import { Column, Entity, Index, JoinTable, ManyToMany, OneToMany } from 'typeorm';
 
-import { AttributeInstance } from './attribute-instance.entity';
+import { AttributeToProduct } from './attribute-product.entity';
 import { BasePageEntity } from './base-page.entity';
+import { ProductMeta } from './meta/product-meta.entity';
 import { ProductCategory } from './product-category.entity';
 import { ProductReview } from './product-review.entity';
 
@@ -12,40 +13,51 @@ import { ProductReview } from './product-review.entity';
 export class Product extends BasePageEntity implements TProduct {
 
     @Field(type => String, { nullable: true })
-    @Index()
-    @Column({ type: "varchar", nullable: true })
+    @Column({ type: "varchar", length: 255, nullable: true })
+    @Index({ fulltext: true })
     name?: string;
 
     @ManyToMany(type => ProductCategory, category => category.products)
     @JoinTable()
     categories?: TProductCategory[];
 
-    @Field(type => String, { nullable: true })
+    @Field(type => Int, { nullable: true })
+    @Column({ type: "int", nullable: true })
     @Index()
-    @Column({ type: "varchar", nullable: true })
-    mainCategoryId?: string;
+    mainCategoryId?: number;
 
     @Field(type => Number, { nullable: true })
-    @Index()
     @Column({ type: "float", nullable: true })
+    @Index()
     price?: number;
 
     @Field(type => Number, { nullable: true })
     @Column({ type: "float", nullable: true })
+    @Index()
     oldPrice?: number;
 
     @Field(type => String, { nullable: true })
-    @Index()
-    @Column({ type: "varchar", nullable: true })
+    @Column({ type: "varchar", length: 255, nullable: true })
+    @Index({ fulltext: true })
     sku?: string;
 
     @Field(type => String, { nullable: true })
-    @Column({ type: "varchar", nullable: true, length: 300 })
+    @Column({ type: "varchar", length: 400, nullable: true })
     mainImage?: string;
 
     @Field(type => [String], { nullable: true })
     @Column({ type: "simple-array", nullable: true })
     images?: string[];
+
+    @Field(type => Int, { nullable: true })
+    @Column({ type: "int", nullable: true })
+    @Index()
+    stockAmount?: number;
+
+    @Field(type => Boolean, { nullable: true })
+    @Column({ type: "boolean", nullable: true })
+    @Index()
+    inStock?: boolean;
 
     @Field(type => String, { nullable: true })
     @Column({ type: "text", nullable: true })
@@ -60,22 +72,10 @@ export class Product extends BasePageEntity implements TProduct {
     })
     reviews?: TProductReview[];
 
-    @Field(type => [AttributeInstance], { nullable: true })
-    public get attributes(): AttributeInstance[] | undefined {
-        if (this.attributesJSON) return JSON.parse(this.attributesJSON);
-    }
+    @OneToMany(() => AttributeToProduct, attribute => attribute.product)
+    attributeValues?: AttributeToProduct[];
 
-    public set attributes(data: AttributeInstance[] | undefined) {
-        if (data) this.attributesJSON = JSON.stringify(data);
-        else this.attributesJSON = data;
-    }
-
-    @Index()
-    @Column({ type: 'text', nullable: true })
-    private attributesJSON?: string;
-
-    @Field(type => Number, { nullable: true })
-    views?: number
+    views?: number;
 
     /** 
      * ! Not real columns, workaround to make SELECT count reviews:
@@ -86,6 +86,9 @@ export class Product extends BasePageEntity implements TProduct {
 
     @Column({ type: "int", nullable: true, select: false, insert: false, readonly: true })
     reviewsCount?: number;
+
+    @OneToMany(() => ProductMeta, meta => meta.entity)
+    metaRecords?: ProductMeta[];
 }
 
 @ObjectType()
@@ -93,6 +96,6 @@ export class ProductRating implements TProductRating {
     @Field(type => Number, { nullable: true })
     average?: number;
 
-    @Field(type => Number, { nullable: true })
+    @Field(type => Int, { nullable: true })
     reviewsNumber?: number;
 }

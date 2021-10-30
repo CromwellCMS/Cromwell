@@ -8,12 +8,12 @@ const testData: TPagedList<TUser> = {
     pagedMeta: { totalElements: 2, pageNumber: 1, pageSize: 2, totalPages: 1 },
     elements: [
         {
-            id: '1',
+            id: 1,
             fullName: '_test1_',
             email: '_emailtest1_',
         },
         {
-            id: '2',
+            id: 2,
             fullName: '_test2_',
             email: '_emailtest2_',
         }

@@ -49,6 +49,7 @@ export type TCromwellPageCoreProps = {
     palette?: TPalette | null;
     defaultPages?: Record<TDefaultPageName, string>;
     pageConfigName?: string;
+    slug?: string | string[] | null;
     resolvedPageRoute?: string;
 }
 

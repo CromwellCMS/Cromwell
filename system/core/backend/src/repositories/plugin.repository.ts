@@ -20,7 +20,7 @@ export class PluginRepository extends BaseRepository<PluginEntity> {
         return this.getPaged(params);
     }
 
-    async getPluginById(id: string): Promise<PluginEntity | undefined> {
+    async getPluginById(id: number): Promise<PluginEntity | undefined> {
         logger.log('PluginRepository::getPluginById id: ' + id);
         return this.getById(id);
     }
@@ -54,7 +54,7 @@ export class PluginRepository extends BaseRepository<PluginEntity> {
         return plugin;
     }
 
-    async updatePlugin(id: string, updatePlugin: TPluginEntityInput): Promise<PluginEntity> {
+    async updatePlugin(id: number, updatePlugin: TPluginEntityInput): Promise<PluginEntity> {
         logger.log('PluginRepository::updatePlugin id: ' + id);
 
         let plugin = await this.findOne({
@@ -68,7 +68,7 @@ export class PluginRepository extends BaseRepository<PluginEntity> {
         return plugin;
     }
 
-    async deletePlugin(id: string): Promise<boolean> {
+    async deletePlugin(id: number): Promise<boolean> {
         logger.log('PluginRepository::deletePlugin; id: ' + id);
 
         const plugin = await this.getPluginById(id);

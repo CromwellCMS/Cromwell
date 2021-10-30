@@ -20,7 +20,7 @@ jest.mock('../../constants/PageInfos', () => {
 });
 
 const testData: TPost = {
-    id: '1',
+    id: 1,
     title: 'test1',
     published: true,
     slug: 'test_slug',

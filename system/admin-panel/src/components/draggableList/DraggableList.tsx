@@ -7,7 +7,7 @@ import styles from './DraggableList.modules.scss';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
-export class DraggableList<TData extends { id: string }, TCompProps = Record<string, any>> extends Component<{
+export class DraggableList<TData extends { id: string | number }, TCompProps = Record<string, any>> extends Component<{
     data: TData[];
     component: React.ComponentType<{
         data: TData;

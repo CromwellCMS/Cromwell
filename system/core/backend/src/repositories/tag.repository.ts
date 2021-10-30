@@ -20,12 +20,12 @@ export class TagRepository extends BaseRepository<Tag> {
         return this.getPaged(params)
     }
 
-    async getTagById(id: string): Promise<Tag | undefined> {
+    async getTagById(id: number): Promise<Tag | undefined> {
         logger.log('TagRepository::getTagById id: ' + id);
         return this.getById(id);
     }
 
-    async getTagsByIds(ids: string[]): Promise<Tag[]> {
+    async getTagsByIds(ids: number[]): Promise<Tag[]> {
         logger.log('ProductCategoryRepository::getTagsByIds ids: ' + ids.join(', '));
         return this.findByIds(ids);
     }
@@ -45,7 +45,7 @@ export class TagRepository extends BaseRepository<Tag> {
         tag.descriptionDelta = input.descriptionDelta;
     }
 
-    async createTag(inputData: TTagInput, id?: string): Promise<Tag> {
+    async createTag(inputData: TTagInput, id?: number): Promise<Tag> {
         logger.log('TagRepository::createTag');
         let tag = new Tag();
         if (id) tag.id = id;
@@ -57,7 +57,7 @@ export class TagRepository extends BaseRepository<Tag> {
         return tag;
     }
 
-    async updateTag(id: string, inputData: TTagInput): Promise<Tag> {
+    async updateTag(id: number, inputData: TTagInput): Promise<Tag> {
         logger.log('TagRepository::updateTag id: ' + id);
 
         let tag = await this.findOne({
@@ -72,7 +72,7 @@ export class TagRepository extends BaseRepository<Tag> {
         return tag;
     }
 
-    async deleteTag(id: string): Promise<boolean> {
+    async deleteTag(id: number): Promise<boolean> {
         logger.log('TagRepository::deleteTag; id: ' + id);
 
         const tag = await this.getTagById(id);

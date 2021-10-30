@@ -1,5 +1,5 @@
 import { TPostComment } from '@cromwell/core';
-import { Field, ObjectType } from 'type-graphql';
+import { Field, Int, ObjectType } from 'type-graphql';
 import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
 
 import { BasePageEntity } from './base-page.entity';
@@ -9,10 +9,10 @@ import { Post } from './post.entity';
 @ObjectType()
 export class PostComment extends BasePageEntity implements TPostComment {
 
-    @Field(type => String, { nullable: true })
+    @Field(type => Int, { nullable: true })
+    @Column({ type: "int", nullable: true })
     @Index()
-    @Column()
-    postId: string;
+    postId: number;
 
     @ManyToOne(type => Post, post => post.comments, {
         onDelete: "CASCADE"
@@ -21,7 +21,7 @@ export class PostComment extends BasePageEntity implements TPostComment {
     post: Post;
 
     @Field(type => String, { nullable: true })
-    @Column({ type: "varchar", nullable: true })
+    @Column({ type: "varchar", length: 400, nullable: true })
     title?: string;
 
     @Field(type => String, { nullable: true })
@@ -29,18 +29,18 @@ export class PostComment extends BasePageEntity implements TPostComment {
     comment?: string;
 
     @Field(type => String, { nullable: true })
+    @Column({ type: "varchar", length: 255, nullable: true })
     @Index()
-    @Column({ type: "varchar", nullable: true })
     userEmail?: string;
 
     @Field(type => String, { nullable: true })
-    @Column({ type: "varchar", nullable: true })
+    @Column({ type: "varchar", length: 255, nullable: true })
     userName?: string;
 
-    @Field(type => String, { nullable: true })
+    @Field(type => Int, { nullable: true })
+    @Column({ type: "int", nullable: true })
     @Index()
-    @Column({ type: "varchar", nullable: true })
-    userId?: string;
+    userId?: number;
 
     @Field(type => Boolean, { nullable: true })
     @Column({ type: "boolean", nullable: true })

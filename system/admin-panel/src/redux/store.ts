@@ -4,9 +4,9 @@ import { Draggable } from '../helpers/Draggable/Draggable';
 import { startUpdateChecker } from './helpers';
 
 export type TAppState = {
-    selectedItems: Record<string, boolean>;
+    selectedItems: Record<number, boolean>;
     allSelected: boolean;
-    selectedItem?: string;
+    selectedItem?: number;
     selectedBlock?: TCromwellBlock;
     draggable?: Draggable;
     activeTheme?: TThemeConfig;

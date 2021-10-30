@@ -2,7 +2,7 @@ import React from 'react';
 import { TProductCategory } from '@cromwell/core';
 
 const testData: TProductCategory = {
-    id: '1',
+    id: 1,
     name: '_test1_',
 };
 

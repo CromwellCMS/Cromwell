@@ -1,5 +1,5 @@
 import { TProductReview } from '@cromwell/core';
-import { Field, ObjectType } from 'type-graphql';
+import { Field, Int, ObjectType } from 'type-graphql';
 import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
 
 import { BasePageEntity } from './base-page.entity';
@@ -9,10 +9,10 @@ import { Product } from './product.entity';
 @ObjectType()
 export class ProductReview extends BasePageEntity implements TProductReview {
 
-    @Field(type => String, { nullable: true })
+    @Field(type => Int, { nullable: true })
+    @Column("int", { nullable: true })
     @Index()
-    @Column()
-    productId: string;
+    productId: number;
 
     @ManyToOne(type => Product, product => product.reviews, {
         onDelete: "CASCADE"
@@ -21,7 +21,8 @@ export class ProductReview extends BasePageEntity implements TProductReview {
     product: Product;
 
     @Field(type => String, { nullable: true })
-    @Column({ type: "varchar", nullable: true })
+    @Column({ type: "varchar", length: 255, nullable: true })
+    @Index()
     title?: string;
 
     @Field(type => String, { nullable: true })
@@ -34,21 +35,21 @@ export class ProductReview extends BasePageEntity implements TProductReview {
     rating?: number;
 
     @Field(type => String, { nullable: true })
+    @Column({ type: "varchar", length: 255, nullable: true })
     @Index()
-    @Column({ type: "varchar", nullable: true })
     userEmail?: string;
 
     @Field(type => String, { nullable: true })
-    @Column({ type: "varchar", nullable: true })
+    @Column({ type: "varchar", length: 255, nullable: true })
     userName?: string;
 
     @Field(type => String, { nullable: true })
+    @Column({ type: "varchar", length: 255, nullable: true })
     @Index()
-    @Column({ type: "varchar", nullable: true })
-    userId?: string;
+    userId?: number;
 
     @Field(type => Boolean, { nullable: true })
-    @Index()
     @Column({ type: "boolean", nullable: true })
+    @Index()
     approved?: boolean;
 }

@@ -3,7 +3,7 @@ import { TUser, TUserRole } from '@cromwell/core';
 
 export class UserDto implements TUser {
     @ApiProperty()
-    id: string;
+    id: number;
 
     @ApiProperty()
     fullName: string;
@@ -27,7 +27,7 @@ export class UserDto implements TUser {
     role?: TUserRole;
 
     parseUser(user: TUser) {
-        this.id = user.id + '';
+        this.id = user.id;
         this.email = user.email;
         this.avatar = user.avatar;
         this.fullName = user.fullName;
@@ -37,5 +37,4 @@ export class UserDto implements TUser {
         this.role = user.role;
         return this;
     }
-
 }

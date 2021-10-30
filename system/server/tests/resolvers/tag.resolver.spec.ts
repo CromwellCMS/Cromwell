@@ -49,7 +49,7 @@ describe('Tag resolver', () => {
         expect(data.pagedMeta.pageSize).toBeTruthy();
     });
 
-    const getTag = async (tagId: string): Promise<TTag> => {
+    const getTag = async (tagId: string | number): Promise<TTag> => {
         const path = GraphQLPaths.Tag.getOneById;
         const res = await server.executeOperation({
             query: gql`

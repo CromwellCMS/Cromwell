@@ -17,14 +17,14 @@ export class AdminCmsConfigDto extends CmsConfigDto {
     robotsContent?: string;
 
     @ApiProperty()
-    customFields?: TAdminCustomField[];
+    customFieldsDeclarations?: TAdminCustomField[];
 
     parseConfig(config: TCmsSettings) {
         super.parseConfig(config);
 
         this.smtpConnectionString = config.smtpConnectionString;
         this.sendFromEmail = config.sendFromEmail;
-        this.customFields = config.customFields;
+        this.customFieldsDeclarations = config.customFieldsDeclarations;
         return this;
     }
 

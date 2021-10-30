@@ -60,7 +60,7 @@ const PostSettings = (props: {
 
     let pageFullUrl;
     if (slug) {
-        pageFullUrl = serviceLocator.getFrontendUrl() + resolvePageRoute('post', { slug: slug ?? postData.id });
+        pageFullUrl = serviceLocator.getFrontendUrl() + resolvePageRoute('post', { slug: slug ?? postData.id + '' });
     }
 
     return (

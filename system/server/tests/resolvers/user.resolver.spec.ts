@@ -53,7 +53,7 @@ describe('User resolver', () => {
         expect(data.pagedMeta.pageSize).toBeTruthy();
     });
 
-    const getUser = async (id: string): Promise<TUser> => {
+    const getUser = async (id: string | number): Promise<TUser> => {
         const path = GraphQLPaths.User.getOneById;
         const res = await server.executeOperation({
             query: gql`

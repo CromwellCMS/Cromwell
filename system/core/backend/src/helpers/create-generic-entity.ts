@@ -35,7 +35,7 @@ export const createGenericEntity = <EntityType, EntityInputType = EntityType>(en
     @ArgsType()
     class UpdateArgs {
         @Field(() => String)
-        id: string;
+        id: number;
 
         @Field(() => InputEntityClass ?? String)
         data: EntityInputType;
@@ -75,7 +75,7 @@ export const createGenericEntity = <EntityType, EntityInputType = EntityType>(en
 
         @Authorized<TAuthRole>("administrator", "guest", "author")
         @Query(() => EntityClass)
-        async [getByIdPath](@Arg("id") id: string): Promise<EntityType | undefined> {
+        async [getByIdPath](@Arg("id") id: number): Promise<EntityType | undefined> {
             return this.repository.getById(id);
         }
 
@@ -93,7 +93,7 @@ export const createGenericEntity = <EntityType, EntityInputType = EntityType>(en
 
         @Authorized<TAuthRole>("administrator")
         @Mutation(() => Boolean)
-        async [deletePath](@Arg("id") id: string): Promise<boolean> {
+        async [deletePath](@Arg("id") id: number): Promise<boolean> {
             return this.repository.deleteEntity(id);
         }
 

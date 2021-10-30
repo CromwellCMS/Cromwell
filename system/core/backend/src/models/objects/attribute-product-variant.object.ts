@@ -1,4 +1,4 @@
-import { TAttributeInstance, TAttributeInstanceValue, TAttributeProductVariant } from '@cromwell/core';
+import { TAttributeProductVariant } from '@cromwell/core';
 import { Field, InputType, ObjectType } from 'type-graphql';
 
 @ObjectType("AttributeProductVariantInput")
@@ -27,24 +27,4 @@ export class AttributeProductVariant implements TAttributeProductVariant {
 
     @Field(() => String, { nullable: true })
     descriptionDelta?: string;
-}
-
-@ObjectType("AttributeInstanceValueInput")
-@InputType("AttributeInstanceValueType")
-export class AttributeInstanceValue implements TAttributeInstanceValue {
-    @Field(type => String, { nullable: false })
-    value: string;
-
-    @Field(type => AttributeProductVariant, { nullable: true })
-    productVariant?: AttributeProductVariant;
-}
-
-@ObjectType("AttributeInstanceInput")
-@InputType("AttributeInstanceType")
-export class AttributeInstance implements TAttributeInstance {
-    @Field(type => String, { nullable: false })
-    key: string;
-
-    @Field(type => [AttributeInstanceValue], { nullable: false })
-    values: AttributeInstanceValue[];
 }

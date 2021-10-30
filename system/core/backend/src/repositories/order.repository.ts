@@ -6,6 +6,7 @@ import { DateUtils } from 'typeorm/util/DateUtils';
 import { getPaged, handleCustomMetaInput } from '../helpers/base-queries';
 import { getLogger } from '../helpers/logger';
 import { validateEmail } from '../helpers/validation';
+import { BasePageEntity } from '../models/entities/base-page.entity';
 import { Order } from '../models/entities/order.entity';
 import { OrderFilterInput } from '../models/filters/order.filter';
 import { PagedParamsInput } from '../models/inputs/paged-params.input';
@@ -25,7 +26,7 @@ export class OrderRepository extends BaseRepository<Order> {
         return this.getPaged(params)
     }
 
-    async getOrderById(id: string): Promise<Order | undefined> {
+    async getOrderById(id: number): Promise<Order | undefined> {
         logger.log('OrderRepository::getOrderById id: ' + id);
         return this.getById(id);
     }
@@ -39,7 +40,7 @@ export class OrderRepository extends BaseRepository<Order> {
         if (input.customerEmail && !validateEmail(input.customerEmail))
             throw new Error('Provided e-mail is not valid');
 
-        await handleCustomMetaInput(order, input);
+        await handleCustomMetaInput(order as any, input);
 
         order.status = input.status;
         order.cart = Array.isArray(input.cart) ? JSON.stringify(input.cart) : input.cart;
@@ -62,7 +63,7 @@ export class OrderRepository extends BaseRepository<Order> {
         order.currency = input.currency;
     }
 
-    async createOrder(inputData: TOrderInput, id?: string): Promise<Order> {
+    async createOrder(inputData: TOrderInput, id?: number): Promise<Order> {
         logger.log('OrderRepository::createOrder');
         let order = new Order();
         if (id) order.id = id;
@@ -72,7 +73,7 @@ export class OrderRepository extends BaseRepository<Order> {
         return order;
     }
 
-    async updateOrder(id: string, inputData: TOrderInput): Promise<Order | undefined> {
+    async updateOrder(id: number, inputData: TOrderInput): Promise<Order | undefined> {
         logger.log('OrderRepository::updateOrder id: ' + id);
 
         let order = await this.findOne({
@@ -85,7 +86,7 @@ export class OrderRepository extends BaseRepository<Order> {
         return order;
     }
 
-    async deleteOrder(id: string): Promise<boolean> {
+    async deleteOrder(id: number): Promise<boolean> {
         logger.log('OrderRepository::deleteOrder; id: ' + id);
 
         const order = await this.getOrderById(id);
@@ -161,7 +162,7 @@ export class OrderRepository extends BaseRepository<Order> {
         return true;
     }
 
-    async getOrdersOfUser(userId: string, pagedParams?: PagedParamsInput<TOrder>): Promise<TPagedList<TOrder>> {
+    async getOrdersOfUser(userId: number, pagedParams?: PagedParamsInput<TOrder>): Promise<TPagedList<TOrder>> {
         const qb = this.createQueryBuilder(this.metadata.tablePath);
         qb.select();
         qb.where(`${this.metadata.tablePath}.${this.quote('userId')} = :userId`, {

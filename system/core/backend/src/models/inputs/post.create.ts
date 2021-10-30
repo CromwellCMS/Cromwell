@@ -1,5 +1,6 @@
-import { TPostInput } from "@cromwell/core";
-import { InputType, Field, ID } from "type-graphql";
+import { TPostInput } from '@cromwell/core';
+import { Field, InputType, Int } from 'type-graphql';
+
 import { BasePageInput } from './base-page.input';
 
 @InputType({ description: "New Post data" })
@@ -8,8 +9,8 @@ export class CreatePost extends BasePageInput implements TPostInput {
   @Field(() => String, { nullable: true })
   title: string;
 
-  @Field()
-  authorId: string;
+  @Field(type => Int)
+  authorId: number;
 
   @Field(() => String, { nullable: true })
   mainImage?: string;
@@ -17,8 +18,8 @@ export class CreatePost extends BasePageInput implements TPostInput {
   @Field(type => String, { nullable: true })
   readTime?: string | null;
 
-  @Field(type => [String], { nullable: true })
-  tagIds?: string[] | null;
+  @Field(type => [Number], { nullable: true })
+  tagIds?: number[] | null;
 
   @Field(() => String, { nullable: true })
   content: string;

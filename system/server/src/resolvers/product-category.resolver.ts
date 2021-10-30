@@ -1,8 +1,8 @@
-import { GraphQLPaths, TAuthRole, TPagedList, TProduct, TProductCategory } from '@cromwell/core';
+import { EDBEntity, GraphQLPaths, TAuthRole, TPagedList, TProduct, TProductCategory } from '@cromwell/core';
 import {
     CreateProductCategory,
     DeleteManyInput,
-    EntityMetaRepository,
+    entityMetaRepository,
     PagedParamsInput,
     PagedProduct,
     PagedProductCategory,
@@ -13,7 +13,7 @@ import {
     UpdateProductCategory,
 } from '@cromwell/core-backend';
 import { GraphQLJSONObject } from 'graphql-type-json';
-import { Arg, Authorized, FieldResolver, Mutation, Query, Resolver, Root } from 'type-graphql';
+import { Arg, Authorized, FieldResolver, Int, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
 import { resetAllPagesCache } from '../helpers/reset-page';
@@ -32,6 +32,7 @@ const getFilteredPath = GraphQLPaths.ProductCategory.getFiltered;
 const productsKey: keyof TProductCategory = 'products';
 const parentKey: keyof TProductCategory = 'parent';
 const childrenKey: keyof TProductCategory = 'children';
+const viewsKey: keyof TProductCategory = 'views';
 
 @Resolver(ProductCategory)
 export class ProductCategoryResolver {
@@ -50,7 +51,7 @@ export class ProductCategoryResolver {
     }
 
     @Query(() => ProductCategory)
-    async [getOneByIdPath](@Arg("id") id: string) {
+    async [getOneByIdPath](@Arg("id", () => Int) id: number) {
         return await this.repository.getProductCategoryById(id);
     }
 
@@ -65,7 +66,7 @@ export class ProductCategoryResolver {
 
     @Authorized<TAuthRole>("administrator")
     @Mutation(() => ProductCategory)
-    async [updatePath](@Arg("id") id: string, @Arg("data") data: UpdateProductCategory) {
+    async [updatePath](@Arg("id", () => Int) id: number, @Arg("data") data: UpdateProductCategory) {
         const category = await this.repository.updateProductCategory(id, data);
         serverFireAction('update_product_category', category);
         resetAllPagesCache();
@@ -74,7 +75,7 @@ export class ProductCategoryResolver {
 
     @Authorized<TAuthRole>("administrator")
     @Mutation(() => Boolean)
-    async [deletePath](@Arg("id") id: string) {
+    async [deletePath](@Arg("id", () => Int) id: number) {
         const category = await this.repository.deleteProductCategory(id);
         serverFireAction('delete_product_category', { id });
         resetAllPagesCache();
@@ -128,6 +129,11 @@ export class ProductCategoryResolver {
 
     @FieldResolver(() => GraphQLJSONObject, { nullable: true })
     async customMeta(@Root() entity: ProductCategory, @Arg("fields", () => [String]) fields: string[]): Promise<any> {
-        return getCustomRepository(EntityMetaRepository).getEntityMetaValuesByKeys(entity.metaId, fields);
+        return entityMetaRepository.getEntityMetaValuesByKeys(EDBEntity.ProductCategory, entity.id, fields);
+    }
+
+    @FieldResolver(() => Int, { nullable: true })
+    async [viewsKey](@Root() entity: ProductCategory): Promise<number | undefined> {
+        return this.repository.getEntityViews(entity.id, EDBEntity.ProductCategory);
     }
 }

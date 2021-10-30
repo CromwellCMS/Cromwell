@@ -177,7 +177,7 @@ export class MockService {
 
             this.shuffleArray(cats);
             const catsNum = Math.floor(Math.random() * cats.length)
-            const categoryIds: string[] = cats.slice(0, catsNum).map(c => c.id);
+            const categoryIds: number[] = cats.slice(0, catsNum).map(c => c.id);
 
             const condition = Math.random() > 0.3 ? 'New' : 'Used';
 
@@ -426,7 +426,7 @@ export class MockService {
                 promises = [];
             }
 
-            const tagIds: string[] = (await this.tagRepo.getAll()).map(tag => tag.id);
+            const tagIds: number[] = (await this.tagRepo.getAll()).map(tag => tag.id);
 
             promises.push(this.postRepo.createPost({
                 content: postContent,
@@ -461,12 +461,12 @@ export class MockService {
                 status: 'Pending',
                 cart: [{
                     product: {
-                        id: '1',
+                        id: 1,
                     },
                     amount: 2
                 }, {
                     product: {
-                        id: '2',
+                        id: 2,
                     },
                 }],
             },
@@ -481,12 +481,12 @@ export class MockService {
                 totalQnt: 2,
                 cart: [{
                     product: {
-                        id: '3',
+                        id: 3,
                     },
                     amount: 1
                 }, {
                     product: {
-                        id: '4',
+                        id: 4,
                     },
                 }]
             },
@@ -501,7 +501,7 @@ export class MockService {
                 totalQnt: 3,
                 cart: [{
                     product: {
-                        id: '5',
+                        id: 5,
                     },
                     amount: 3
                 }]
@@ -516,7 +516,7 @@ export class MockService {
                 shippingPrice: 5,
                 cart: [{
                     product: {
-                        id: '6',
+                        id: 6,
                     },
                 }]
             },

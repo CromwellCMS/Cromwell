@@ -281,7 +281,7 @@ export class CmsService {
             entities.forEach(ent => {
                 const updDate = ent.updateDate ?? ent.createDate;
                 addPage(
-                    resolvePageRoute(pageName, { slug: ent.slug ?? ent.id }),
+                    resolvePageRoute(pageName, { slug: ent.slug ?? ent.id + '' }),
                     updDate
                 );
             });
@@ -384,12 +384,13 @@ ${content}
             headHtml: input.headHtml,
             footerHtml: input.footerHtml,
             defaultShippingPrice: input.defaultShippingPrice,
+            customMeta: input.customMeta,
         }
 
         entity.adminSettings = {
             sendFromEmail: input.sendFromEmail,
             smtpConnectionString: input.smtpConnectionString,
-            customFields: input.customFields,
+            customFieldsDeclarations: input.customFieldsDeclarations,
         }
 
         await entity.save();
@@ -426,6 +427,8 @@ ${content}
             const newPage = new PageStats();
             newPage.pageRoute = input.pageRoute;
             newPage.pageName = input.pageName;
+            newPage.slug = input.slug;
+            newPage.entityType = input.entityType;
             newPage.views = 1;
             await newPage.save();
         }

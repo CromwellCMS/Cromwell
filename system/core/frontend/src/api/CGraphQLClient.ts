@@ -272,13 +272,13 @@ export class CGraphQLClient {
     public createGetById<TEntity>(entityName: TDBEntity, nativeFragment: DocumentNode, nativeFragmentName: string) {
         const path = GraphQLPaths[entityName].getOneById;
 
-        return (id: string, customFragment?: DocumentNode, customFragmentName?: string): Promise<TEntity | undefined> => {
+        return (id: number, customFragment?: DocumentNode, customFragmentName?: string): Promise<TEntity | undefined> => {
             const fragment = customFragment ?? nativeFragment;
             const fragmentName = customFragmentName ?? nativeFragmentName;
 
             return this.query({
                 query: gql`
-              query core${path}($id: String!) {
+              query core${path}($id: Int!) {
                   ${path}(id: $id) {
                       ...${fragmentName}
                   }
@@ -320,13 +320,13 @@ export class CGraphQLClient {
     public createUpdateEntity<TEntity, TInput>(entityName: TDBEntity, inputName: string, nativeFragment: DocumentNode, nativeFragmentName: string) {
         const path = GraphQLPaths[entityName].update;
 
-        return (id: string, data: TInput, customFragment?: DocumentNode, customFragmentName?: string): Promise<TEntity> => {
+        return (id: number, data: TInput, customFragment?: DocumentNode, customFragmentName?: string): Promise<TEntity> => {
             const fragment = customFragment ?? nativeFragment;
             const fragmentName = customFragmentName ?? nativeFragmentName;
 
             return this.mutate({
                 mutation: gql`
-                    mutation core${path}($id: String!, $data: ${inputName}!) {
+                    mutation core${path}($id: Int!, $data: ${inputName}!) {
                         ${path}(id: $id, data: $data) {
                             ...${fragmentName}
                         }
@@ -369,10 +369,10 @@ export class CGraphQLClient {
     /** @internal */
     public createDeleteEntity(entityName: TDBEntity) {
         const path = GraphQLPaths[entityName].delete;
-        return (id: string) => {
+        return (id: number) => {
             return this.mutate({
                 mutation: gql`
-                mutation core${path}($id: String!) {
+                mutation core${path}($id: Int!) {
                     ${path}(id: $id)
                 }
             `,
@@ -481,12 +481,12 @@ export class CGraphQLClient {
      * Get a record by id of a generic entity 
      * @auth admin
      */
-    public getEntityById = async <EntityType>(entityName: string, fragment: DocumentNode, fragmentName: string, entityId: string)
+    public getEntityById = async <EntityType>(entityName: string, fragment: DocumentNode, fragmentName: string, entityId: number)
         : Promise<EntityType | undefined> => {
         const path = GraphQLPaths.Generic.getOneById + entityName;
         return this.query({
             query: gql`
-                query coreGenericGetEntityById($entityId: String!) {
+                query coreGenericGetEntityById($entityId: Int!) {
                     ${path}(id: $entityId) {
                         ...${fragmentName}
                     }
@@ -504,11 +504,11 @@ export class CGraphQLClient {
      * @auth admin
      */
     public updateEntity = async <EntityType, EntityInputType>(entityName: string, entityInputName: string, fragment: DocumentNode,
-        fragmentName: string, entityId: string, data: EntityInputType): Promise<EntityType | undefined> => {
+        fragmentName: string, entityId: number, data: EntityInputType): Promise<EntityType | undefined> => {
         const path = GraphQLPaths.Generic.update + entityName;
         return this.mutate({
             mutation: gql`
-                mutation coreGenericUpdateEntity($entityId: String!, $data: ${entityInputName}!) {
+                mutation coreGenericUpdateEntity($entityId: Int!, $data: ${entityInputName}!) {
                     ${path}(id: $entityId, data: $data) {
                         ...${fragmentName}
                     }
@@ -602,11 +602,11 @@ export class CGraphQLClient {
     public deleteManyFilteredProducts = this.createDeleteManyFiltered<TProductFilter>('Product', 'ProductFilterInput');
 
 
-    public getProductsFromCategory = async (categoryId: string, pagedParams?: TPagedParams<TProduct>): Promise<TPagedList<TProduct>> => {
+    public getProductsFromCategory = async (categoryId: number, pagedParams?: TPagedParams<TProduct>): Promise<TPagedList<TProduct>> => {
         const path = GraphQLPaths.Product.getFromCategory;
         return this.query({
             query: gql`
-                query coreGetProductsFromCategory($categoryId: String!, $pagedParams: PagedParamsInput!) {
+                query coreGetProductsFromCategory($categoryId: Int!, $pagedParams: PagedParamsInput!) {
                     ${path}(categoryId: $categoryId, pagedParams: $pagedParams) {
                         pagedMeta {
                             ...PagedMetaFragment
@@ -628,7 +628,7 @@ export class CGraphQLClient {
 
     public getFilteredProducts = async (
         { categoryId, pagedParams, filterParams, customFragment, customFragmentName }: {
-            categoryId?: string
+            categoryId?: number
             pagedParams?: TPagedParams<TProduct>;
             filterParams?: TProductFilter;
             customFragment?: DocumentNode;
@@ -641,7 +641,7 @@ export class CGraphQLClient {
 
         return this.query({
             query: gql`
-                query getFilteredProducts($pagedParams: PagedParamsInput, $filterParams: ProductFilterInput, $categoryId: String) {
+                query getFilteredProducts($pagedParams: PagedParamsInput, $filterParams: ProductFilterInput, $categoryId: Int) {
                     ${path}(categoryId: $categoryId, pagedParams: $pagedParams, filterParams: $filterParams) {
                         pagedMeta {
                             ...PagedMetaFragment
@@ -899,8 +899,8 @@ export class CGraphQLClient {
 
         return this.query({
             query: gql`
-              query core${path}($id: String!) {
-                  ${path}(id: $id) {
+              query core${path}($email: String!) {
+                  ${path}(email: $email) {
                       ...${fragmentName}
                   }
               }
@@ -951,7 +951,7 @@ export class CGraphQLClient {
     public getFilteredOrders = this.createGetFiltered<TOrder, TOrderFilter>('Order', this.OrderFragment, 'OrderFragment', 'OrderFilterInput');
 
 
-    public getOrdersOfUser = async (userId: string, pagedParams: TPagedParams<TOrder>,
+    public getOrdersOfUser = async (userId: number, pagedParams: TPagedParams<TOrder>,
         customFragment?: DocumentNode, customFragmentName?: string): Promise<TPagedList<TOrder> | undefined> => {
         const path = GraphQLPaths.Order.getOrdersOfUser;
         const fragment = customFragment ?? this.OrderFragment;
