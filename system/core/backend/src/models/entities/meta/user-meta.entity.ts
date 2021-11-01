@@ -11,7 +11,9 @@ export class UserMeta extends BaseEntityMeta {
     @Column({ type: "int" })
     entityId: number;
 
-    @ManyToOne(() => User, entity => entity.metaRecords)
+    @ManyToOne(() => User, entity => entity.metaRecords, {
+        onDelete: "CASCADE"
+    })
     @JoinColumn({ name: "entityId" })
     entity?: User;
 }

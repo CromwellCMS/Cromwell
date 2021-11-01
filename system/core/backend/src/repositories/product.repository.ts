@@ -1,6 +1,7 @@
 import { AttributeRepository } from './attribute.repository';
 import {
     EDBEntity,
+    TAttributeValue,
     TDeleteManyInput,
     TFilteredProductList,
     TPagedList,
@@ -10,6 +11,7 @@ import {
     TProductInput,
     TProductRating,
     TProductReview,
+    TAttributeInstanceValue,
 } from '@cromwell/core';
 import { Brackets, DeleteQueryBuilder, EntityRepository, getCustomRepository, SelectQueryBuilder } from 'typeorm';
 
@@ -23,6 +25,9 @@ import { BaseRepository } from './base.repository';
 import { ProductCategoryRepository } from './product-category.repository';
 import { ProductReviewRepository } from './product-review.repository';
 import { AttributeInstance } from '../models/objects/attribute-instance.object';
+import { AttributeToProduct } from '../models/entities/attribute-product.entity';
+import { Attribute } from '../models/entities/attribute.entity';
+import { AttributeValue } from '../models/entities/attribute-value.entity';
 
 const logger = getLogger();
 const averageKey: keyof Product = 'averageRating';
@@ -94,38 +99,64 @@ export class ProductRepository extends BaseRepository<Product> {
         product.descriptionDelta = input.descriptionDelta;
         product.stockAmount = input.stockAmount;
         product.inStock = input.inStock;
-        
+
         if (!product.id) await product.save();
 
         if (input.attributes) {
-            // Remove all old attribute values
-            if (product.attributeValues) {
+            // Flatten attributes and values
+            const inputValues: (Partial<AttributeToProduct> & {
+                attribute: Attribute;
+                attributeValue: AttributeValue;
+            })[] = [];
+
+            for (const inputAttribute of input.attributes) {
+                if (!inputAttribute.key || inputAttribute.key === '') continue;
+                const attribute = await getCustomRepository(AttributeRepository).getAttributeByKey(inputAttribute.key);
+                if (!attribute) continue;
+
+                for (const inputValue of inputAttribute.values) {
+                    const attributeValue = attribute.values.find(value => value.value === inputValue.value);
+                    if (!attributeValue) continue;
+
+                    inputValues.push({
+                        key: inputAttribute.key,
+                        value: inputValue.value,
+                        productVariant: inputValue.productVariant,
+                        attribute,
+                        attributeValue,
+                    });
+                }
+            }
+
+            // Remove current records that aren't in inputValues
+            if (product.attributeValues?.length) {
                 for (const value of product.attributeValues) {
-                    try {
+                    if (!inputValues.find(inputVal => inputVal.value === value.value
+                        && inputVal.key === value.key)) {
                         await value.remove();
-                    } catch (error) {
-                        logger.error(error);
                     }
                 }
             }
-            // Create new values and relations
-            for (const attributeInput of input.attributes) {
-                try {
-                    const attribute = await getCustomRepository(AttributeRepository).getAttributeByKey(attributeInput.key);
-                    if (attribute) {
-                        for (const valueInput of attributeInput.values) {
-                            valueInput.productVariant
-                            const value = attribute.values.find(val => val.value === valueInput.value);
-                            if (value) {
-                                await getCustomRepository(AttributeRepository)
-                                    .addAttributeValueToProduct(product, value, valueInput.productVariant);
-                            }
-                        }
-                    }
-                } catch (error) {
-                    logger.error(error);
+
+            const updatedValues: AttributeToProduct[] = [];
+            // Create new or update current
+            for (const inputValue of inputValues) {
+                const currentValue = product.attributeValues?.find(
+                    value => value.key === inputValue.key && value.value === inputValue.value);
+
+                if (currentValue) {
+                    currentValue.productVariant = inputValue.productVariant;
+                    await currentValue.save();
+                    updatedValues.push(currentValue);
+                } else {
+                    const newValue = await getCustomRepository(AttributeRepository)
+                        .addAttributeValueToProduct(product, inputValue.attributeValue,
+                            inputValue.productVariant);
+
+                    updatedValues.push(newValue);
                 }
             }
+            product.attributeValues = updatedValues;
         }
 
         if (input.categoryIds) {
@@ -134,7 +165,8 @@ export class ProductRepository extends BaseRepository<Product> {
         }
 
         // Move mainImage into first item in the array if it is not
-        if (product.images && product.images.length > 0 && product.mainImage && product.images[0] !== product.mainImage) {
+        if (product.images && product.images.length > 0 && product.mainImage
+            && product.images[0] !== product.mainImage) {
             const images = [...product.images];
             const index = images.indexOf(product.mainImage);
             if (index > -1) {
@@ -227,7 +259,7 @@ export class ProductRepository extends BaseRepository<Product> {
         return raw;
     }
 
-    applyProductFilter(qb: SelectQueryBuilder<Product> | DeleteQueryBuilder<Product>, filterParams?: ProductFilterInput, categoryId?: number) {
+    applyProductFilter(qb: SelectQueryBuilder<Product>, filterParams?: ProductFilterInput, categoryId?: number) {
         if (categoryId) {
             // Cannot apply category filter in Delete query
             applyGetManyFromOne(qb as SelectQueryBuilder<Product>, this.metadata.tablePath, 'categories',
@@ -236,26 +268,35 @@ export class ProductRepository extends BaseRepository<Product> {
 
         if (filterParams) {
             // Attribute filter
-            // Improper filter via LIKE operator (won't work with attributes that have intersections in values)
-            if (filterParams.attributes) {
-                filterParams.attributes.forEach(attr => {
-                    if (attr.values.length > 0) {
-                        const brackets = new Brackets(subQb => {
-                            let isFirstVal = true;
-                            attr.values.forEach(val => {
-                                const likeStr = `%{"key":"${attr.key}","values":[%{"value":"${val}"%]}%`;
-                                const valKey = `${attr.key}_${val}`;
-                                const query = `${this.metadata.tablePath}.${this.quote('attributesJSON')} LIKE :${valKey}`;
-                                if (isFirstVal) {
-                                    isFirstVal = false;
-                                    subQb.where(query, { [valKey]: likeStr });
-                                } else {
-                                    subQb.orWhere(query, { [valKey]: likeStr });
-                                }
-                            })
+            if (filterParams.attributes?.length) {
+                const productAttributeTable = AttributeToProduct.getRepository().metadata.tablePath;
+
+                filterParams.attributes.forEach((attr, attrIndex) => {
+                    if (!attr.key || attr.key === '' || !attr.values?.length) return;
+
+                    const joinName = `${productAttributeTable}_${attrIndex}`;
+                    qb.leftJoin(AttributeToProduct, joinName,
+                        `${joinName}.${this.quote('productId')} = ${this.metadata.tablePath}.id `);
+                });
+
+                filterParams.attributes.forEach((attr, attrIndex) => {
+                    if (!attr.key || attr.key === '' || !attr.values?.length) return;
+                    const joinName = `${productAttributeTable}_${attrIndex}`;
+
+                    const brackets = new Brackets(subQb1 => {
+                        attr.values.forEach((val, valIndex) => {
+                            const brackets = new Brackets(subQb2 => {
+                                const keyProp = `key_${attrIndex}`;
+                                const valueProp = `value_${attrIndex}_${valIndex}`;
+                                subQb2.where(`${joinName}.${this.quote('key')} = :${keyProp}`,
+                                    { [keyProp]: attr.key });
+                                subQb2.andWhere(`${joinName}.${this.quote('value')} = :${valueProp}`,
+                                    { [valueProp]: val });
+                            });
+                            subQb1.orWhere(brackets);
                         });
-                        qb.andWhere(brackets);
-                    }
+                    })
+                    qb.andWhere(brackets);
                 });
             }
 
@@ -337,7 +378,7 @@ export class ProductRepository extends BaseRepository<Product> {
     async deleteManyFilteredProducts(input: TDeleteManyInput, filterParams?: ProductFilterInput): Promise<boolean | undefined> {
         const qb = this.createQueryBuilder(this.metadata.tablePath).delete();
 
-        this.applyProductFilter(qb, filterParams);
+        this.applyProductFilter(qb as any, filterParams);
         this.applyDeleteMany(qb, input);
         await qb.execute();
         return true;

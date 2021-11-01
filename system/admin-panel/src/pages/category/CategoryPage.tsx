@@ -73,7 +73,7 @@ export default function CategoryPage(props) {
         return categoryData;
     }
 
-    const getParentCategory = async (parentId) => {
+    const getParentCategory = async (parentId: number) => {
         try {
             const parent = await client.getProductCategoryById(parentId);
             if (parent) {
@@ -106,7 +106,7 @@ export default function CategoryPage(props) {
         }
 
         if (parentIdParam) {
-            getParentCategory(parentIdParam);
+            getParentCategory(parseInt(parentIdParam));
         }
 
         let postContent;

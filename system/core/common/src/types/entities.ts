@@ -678,3 +678,14 @@ export type TCmsRedirectObject = {
 export type TCmsRedirectFunction = (pathname: string, search?: string | null) => TCmsRedirectObject | undefined | void;
 
 export type TCmsRedirect = TCmsRedirectObject | TCmsRedirectFunction;
+
+export type TCustomEntity = TBasePageEntity & {
+    entityType: string;
+    name?: string;
+}
+
+export type TCustomEntityFilter = {
+    entityType?: string;
+    name?: string;
+    customMeta?: Record<string, string>;
+}

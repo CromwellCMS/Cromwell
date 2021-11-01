@@ -11,7 +11,9 @@ export class ProductMeta extends BaseEntityMeta {
     @Column({ type: "int" })
     entityId: number;
 
-    @ManyToOne(() => Product, entity => entity.metaRecords)
+    @ManyToOne(() => Product, entity => entity.metaRecords, {
+        onDelete: "CASCADE"
+    })
     @JoinColumn({ name: "entityId" })
     entity?: Product;
 }

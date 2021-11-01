@@ -99,7 +99,7 @@ const ProductList = (props: TPropsType) => {
         const products = await client?.getFilteredProducts({
             pagedParams: {
                 ...params,
-                orderBy: 'createDate',
+                orderBy: 'id',
                 order: 'DESC',
             },
             customFragment: gql`

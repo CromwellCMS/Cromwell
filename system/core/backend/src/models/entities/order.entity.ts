@@ -101,6 +101,8 @@ export class Order extends BaseEntity implements TOrder {
     @UpdateDateColumn()
     updateDate: Date;
 
-    @OneToMany(() => OrderMeta, meta => meta.entity)
+    @OneToMany(() => OrderMeta, meta => meta.entity, {
+        cascade: true,
+    })
     metaRecords?: OrderMeta[];
 }

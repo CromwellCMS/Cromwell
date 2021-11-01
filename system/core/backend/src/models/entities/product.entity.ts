@@ -68,11 +68,13 @@ export class Product extends BasePageEntity implements TProduct {
     descriptionDelta?: string;
 
     @OneToMany(type => ProductReview, review => review.product, {
-        onDelete: "CASCADE"
+        cascade: true,
     })
     reviews?: TProductReview[];
 
-    @OneToMany(() => AttributeToProduct, attribute => attribute.product)
+    @OneToMany(() => AttributeToProduct, attribute => attribute.product, {
+        cascade: true,
+    })
     attributeValues?: AttributeToProduct[];
 
     views?: number;
@@ -87,7 +89,9 @@ export class Product extends BasePageEntity implements TProduct {
     @Column({ type: "int", nullable: true, select: false, insert: false, readonly: true })
     reviewsCount?: number;
 
-    @OneToMany(() => ProductMeta, meta => meta.entity)
+    @OneToMany(() => ProductMeta, meta => meta.entity, {
+        cascade: true,
+    })
     metaRecords?: ProductMeta[];
 }
 

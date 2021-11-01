@@ -23,7 +23,7 @@ We have support for major meta-tags (although it may depend on Theme implementat
 - `<meta property="og:image" />`
 
 Title and description for single pages can be modified in Theme editor. There also you can add your custom HTML with additional meta tags for a page.
-For dynamic pages like: `product/[name]` you can edit content of tags along with other data. For example, `/admin/#/product/1` page has `Meta title` and `Meta description` fields.  
+For dynamic pages like: `product/[name]` you can edit content of tags along with other data. For example, `/admin/product/1` page has `Meta title` and `Meta description` fields.  
 `og:image` is usually taken from the main picture of a post, or first image of a product.
 
 

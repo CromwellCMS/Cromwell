@@ -26,7 +26,7 @@ export class TagRepository extends BaseRepository<Tag> {
     }
 
     async getTagsByIds(ids: number[]): Promise<Tag[]> {
-        logger.log('ProductCategoryRepository::getTagsByIds ids: ' + ids.join(', '));
+        logger.log('TagRepository::getTagsByIds ids: ' + ids.join(', '));
         return this.findByIds(ids);
     }
 

@@ -11,7 +11,9 @@ export class TagMeta extends BaseEntityMeta {
     @Column({ type: "int" })
     entityId: number;
 
-    @ManyToOne(() => Tag, entity => entity.metaRecords)
+    @ManyToOne(() => Tag, entity => entity.metaRecords, {
+        onDelete: "CASCADE"
+    })
     @JoinColumn({ name: "entityId" })
     entity?: Tag;
 }

@@ -11,7 +11,9 @@ export class PostMeta extends BaseEntityMeta {
     @Column({ type: "int" })
     entityId: number;
 
-    @ManyToOne(() => Post, entity => entity.metaRecords)
+    @ManyToOne(() => Post, entity => entity.metaRecords, {
+        onDelete: "CASCADE"
+    })
     @JoinColumn({ name: "entityId" })
     entity?: Post;
 }

@@ -4,7 +4,7 @@ import { createTheme } from '@mui/material/styles';
 import clsx from 'clsx';
 import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
-import { HashRouter, Route, RouteComponentProps, Switch } from 'react-router-dom';
+import { BrowserRouter, Route, RouteComponentProps, Switch } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 
 import { pageInfos } from '../../constants/PageInfos';
@@ -67,7 +67,7 @@ function Layout() {
   return (
     <ThemeProvider theme={theme}>
       <div className={clsx(styles.Layout)}>
-        <HashRouter>
+        <BrowserRouter basename={'admin'}>
           <div className={styles.sidebar}>
             <Sidebar />
           </div>
@@ -99,7 +99,7 @@ function Layout() {
               </Route>
             </Switch>
           </div>
-        </HashRouter>
+        </BrowserRouter>
         {document?.body && ReactDOM.createPortal(
           <div className={styles.toastContainer} ><ToastContainer /></div>, document.body)}
         <FileManager />

@@ -17,6 +17,8 @@ import { ProductCategory } from '../models/entities/product-category.entity';
 import { Product } from '../models/entities/product.entity';
 import { Tag } from '../models/entities/tag.entity';
 import { User } from '../models/entities/user.entity';
+import { CustomEntity } from '../models/entities/custom-entity.entity';
+import { CustomEntityMeta } from '../models/entities/meta/custom-entity-meta.entity';
 
 type TEntityMetaModel = BaseEntityMeta & TEntityMeta;
 
@@ -30,6 +32,7 @@ class EntityMetaRepository {
         if (entityType === EDBEntity.Product) return ProductMeta.getRepository();
         if (entityType === EDBEntity.Tag) return TagMeta.getRepository();
         if (entityType === EDBEntity.User) return UserMeta.getRepository();
+        if (entityType === EDBEntity.Custom) return CustomEntityMeta.getRepository();
     }
 
     getClass(entityType: EDBEntity): (new (...args: any[]) => TEntityMetaModel) | undefined {
@@ -40,6 +43,7 @@ class EntityMetaRepository {
         if (entityType === EDBEntity.Product) return ProductMeta;
         if (entityType === EDBEntity.Tag) return TagMeta;
         if (entityType === EDBEntity.User) return UserMeta;
+        if (entityType === EDBEntity.Custom) return CustomEntityMeta;
     }
 
     getEntityType(entityType: BasePageEntity): EDBEntity | undefined {
@@ -50,6 +54,7 @@ class EntityMetaRepository {
         if (entityType instanceof Product) return EDBEntity.Product;
         if (entityType instanceof Tag) return EDBEntity.Tag;
         if (entityType instanceof User) return EDBEntity.User;
+        if (entityType instanceof CustomEntity) return EDBEntity.Custom;
     }
 
     async getEntityMetaByKey(type: EDBEntity, id: number, key: string): Promise<TEntityMetaModel | undefined | null> {
@@ -84,15 +89,15 @@ class EntityMetaRepository {
         })));
     }
 
-    async createEntityMeta(type: EDBEntity, id: number, key?: string, value?: string): Promise<TEntityMeta | undefined> {
+    async createEntityMeta(type: EDBEntity, entityId: number, key?: string, value?: string): Promise<TEntityMeta | undefined> {
         if (!value || value === '') return;
         if (!key || key === '') return;
-        if (id === undefined || id === null) return;
+        if (entityId === undefined || entityId === null) return;
         const EntityClass = this.getClass(type);
         if (!EntityClass) return;
 
         const meta = new EntityClass();
-        meta.entityId = id;
+        meta.entityId = entityId;
         meta.key = key;
         meta.value = value;
         await meta.save();
@@ -106,14 +111,14 @@ class EntityMetaRepository {
      * @param value Meta value
      * @returns Meta DB record
      */
-    async setEntityMeta(type?: EDBEntity, id?: number, key?: string, value?: string): Promise<TEntityMeta | undefined> {
+    async setEntityMeta(type?: EDBEntity, entityId?: number, key?: string, value?: string): Promise<TEntityMeta | undefined> {
         if (!type) return;
         if (!key || key === '') return;
-        if (id === undefined || id === null) return;
+        if (entityId === undefined || entityId === null) return;
         const repo = this.getRepository(type);
         if (!repo) return;
 
-        const meta = await this.getEntityMetaByKey(type, id, key).catch();
+        const meta = await this.getEntityMetaByKey(type, entityId, key).catch();
         if (meta) {
             if (!value || value === '') {
                 await repo.delete(meta.id);
@@ -124,7 +129,7 @@ class EntityMetaRepository {
                 return meta;
             }
         } else {
-            return this.createEntityMeta(type, id, key, value);
+            return this.createEntityMeta(type, entityId, key, value);
         }
     }
 }

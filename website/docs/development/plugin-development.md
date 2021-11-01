@@ -532,7 +532,7 @@ Or start watcher:
 npx cromwell build -w
 ```
 
-Go to Admin panel and make sure your Plugin appeared at /admin/#/plugins page.  
+Go to Admin panel and make sure your Plugin appeared at `/admin/plugins` page.  
 The settings icon should open `PluginSettings` widget.
 
 ## Customize bundler

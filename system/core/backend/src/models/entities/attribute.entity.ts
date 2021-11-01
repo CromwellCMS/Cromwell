@@ -21,7 +21,7 @@ export class Attribute extends BasePageEntity implements TAttribute {
 
     @Field(type => [AttributeValue])
     @OneToMany(() => AttributeValue, value => value.attribute, {
-        onDelete: "CASCADE"
+        cascade: true,
     })
     values: AttributeValue[];
 
@@ -38,7 +38,7 @@ export class Attribute extends BasePageEntity implements TAttribute {
     required?: boolean;
 
     @OneToMany(() => AttributeMeta, meta => meta.entity, {
-        onDelete: "CASCADE"
+        cascade: true,
     })
     metaRecords?: AttributeMeta[];
 }

@@ -734,7 +734,7 @@ ${content}
                 type: 'warning',
                 message: 'Setup SMTP settings',
                 documentationLink: 'https://cromwellcms.com/docs/features/mail',
-                pageLink: '/admin/#//settings'
+                pageLink: '/admin/settings'
             })
         }
 

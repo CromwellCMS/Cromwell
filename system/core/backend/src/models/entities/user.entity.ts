@@ -17,7 +17,7 @@ export class User extends BasePageEntity implements TUser {
 
     @Field(() => String, { nullable: true })
     @Column({ type: "varchar", length: 255, nullable: true, unique: true })
-    @Index({ fulltext: true })
+    @Index('IDX_user.entity_email', { fulltext: true })
     email: string;
 
     @Field(() => String, { nullable: true })
@@ -59,6 +59,8 @@ export class User extends BasePageEntity implements TUser {
     @OneToMany(() => Post, post => post.author)
     posts: Post[];
 
-    @OneToMany(() => UserMeta, meta => meta.entity)
+    @OneToMany(() => UserMeta, meta => meta.entity, {
+        cascade: true,
+    })
     metaRecords?: UserMeta[];
 }

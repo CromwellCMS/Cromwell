@@ -18,7 +18,9 @@ export class AttributeToProduct extends BaseEntity {
     @Index()
     productId: number;
 
-    @ManyToOne(() => Product, product => product.attributeValues)
+    @ManyToOne(() => Product, product => product.attributeValues, {
+        onDelete: "CASCADE"
+    })
     @JoinColumn({ name: "productId" })
     product?: Product;
 
@@ -27,7 +29,9 @@ export class AttributeToProduct extends BaseEntity {
     @Index()
     attributeValueId: number;
 
-    @ManyToOne(() => AttributeValue)
+    @ManyToOne(() => AttributeValue, attribute => attribute.attributeToProduct, {
+        onDelete: "CASCADE"
+    })
     @JoinColumn({ name: "attributeValueId" })
     attributeValue?: AttributeValue;
 

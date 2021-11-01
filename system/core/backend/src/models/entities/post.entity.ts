@@ -70,6 +70,8 @@ export class Post extends BasePageEntity implements TPost {
     @Index()
     featured?: boolean | null;
 
-    @OneToMany(() => PostMeta, meta => meta.entity)
+    @OneToMany(() => PostMeta, meta => meta.entity, {
+        cascade: true,
+    })
     metaRecords?: PostMeta[];
 }

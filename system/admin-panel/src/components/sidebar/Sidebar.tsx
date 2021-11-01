@@ -36,7 +36,7 @@ import styles from './Sidebar.module.scss';
 import SidebarLink from './SidebarLink';
 
 export default function Sidebar() {
-    const currentInfo = pageInfos.find(i => '#' + i.route === window.location.hash);
+    const currentInfo = pageInfos.find(i => i.route === window.location.pathname);
     const currentLink = getLinkByInfo(currentInfo);
     const [expanded, setExpanded] = useState<string | false>(currentLink?.parentId ?? false);
     const [optionsOpen, setOptionsOpen] = useState<boolean>(false);
@@ -64,7 +64,7 @@ export default function Sidebar() {
             setTimeout(forceUpdate, 100);
         });
         history?.listen(() => {
-            const currentInfo = pageInfos.find(i => '#' + i.route === window.location.hash);
+            const currentInfo = pageInfos.find(i => i.route === window.location.pathname);
             const newcurrentLink = getLinkByInfo(currentInfo);
             if (newcurrentLink && newcurrentLink !== currentLink) {
                 setActiveId(newcurrentLink.id);

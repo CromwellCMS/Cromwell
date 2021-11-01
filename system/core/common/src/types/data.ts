@@ -153,6 +153,7 @@ export enum EDBEntity {
     Plugin = 'Plugin',
     Generic = 'Generic',
     CMS = 'CMS',
+    Custom = 'Custom',
 }
 
 export type GraphQLPathsType = { [K in TDBEntity]: TGraphQLNode };

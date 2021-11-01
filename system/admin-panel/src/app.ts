@@ -57,8 +57,8 @@ import { store } from './redux/store';
     // Redirect to /setup page if not installed
     if (settings && !settings.installed) {
         isInstalled = false;
-        if (!window.location.hash.includes(welcomePageInfo.route)) {
-            window.history.pushState({}, '', '/admin/#' + welcomePageInfo.route);
+        if (!window.location.pathname.includes(welcomePageInfo.route)) {
+            window.history.pushState({}, '', '/admin' + welcomePageInfo.route);
             window.location.reload();
             return;
         }
@@ -75,8 +75,8 @@ import { store } from './redux/store';
         }
         restClient?.onUnauthorized(onUnauthorized, onUnauthorizedCbId);
         if (!userInfo?.id) {
-            if (!window.location.hash.includes(loginPageInfo.route)) {
-                window.history.pushState({}, '', '/admin/#' + loginPageInfo.route);
+            if (!window.location.pathname.includes(loginPageInfo.route)) {
+                window.history.pushState({}, '', '/admin' + loginPageInfo.route);
                 window.location.reload();
                 return;
             }
@@ -106,16 +106,16 @@ import { store } from './redux/store';
 
 
     if (isInstalled) {
-        if (window.location.hash.includes(welcomePageInfo.route)) {
-            window.history.pushState({}, '', '/admin/#' + loginPageInfo.route);
+        if (window.location.pathname.includes(welcomePageInfo.route)) {
+            window.history.pushState({}, '', '/admin' + loginPageInfo.route);
             window.location.reload();
             return;
         }
 
         // Redirect to /login page if not authorized
         if (!userInfo) {
-            if (!window.location.hash.includes(loginPageInfo.route)) {
-                window.history.pushState({}, '', '/admin/#' + loginPageInfo.route);
+            if (!window.location.pathname.includes(loginPageInfo.route)) {
+                window.history.pushState({}, '', '/admin' + loginPageInfo.route);
                 window.location.reload();
                 return;
             }

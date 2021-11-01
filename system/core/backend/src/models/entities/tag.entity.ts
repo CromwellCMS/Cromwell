@@ -30,6 +30,8 @@ export class Tag extends BasePageEntity implements TTag {
     @Column({ type: "text", nullable: true })
     descriptionDelta?: string | null;
 
-    @OneToMany(() => TagMeta, meta => meta.entity)
+    @OneToMany(() => TagMeta, meta => meta.entity, {
+        cascade: true,
+    })
     metaRecords?: TagMeta[];
 }

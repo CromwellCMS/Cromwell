@@ -44,5 +44,4 @@ export class CmsEntity extends BaseEntity implements TCmsEntity {
     @Index()
     @UpdateDateColumn()
     updateDate: Date;
-
 }

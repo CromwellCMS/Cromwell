@@ -130,8 +130,8 @@ const CategoryItem = (props: TPropsType) => {
     if (props.allSelected && !props.selectedItems[category.id]) selected = true;
     if (!props.allSelected && props.selectedItems[category.id]) selected = true;
     const isPrimary = props.selectedItem === category.id;
+    
     return (
-
         <div className={`${styles.CategoryItem} ${displayType === 'list' ? styles.listItem : ''}`}>
             <Grid container className={styles.header}>
                 <Grid item xs={displayType === 'list' ? 4 : 8} className={styles.headerLeft}>
@@ -208,7 +208,7 @@ const CategoryItem = (props: TPropsType) => {
             </Grid>
             {hasChildren && displayType === 'tree' && (
                 <div className={styles.subList}>
-                    {isLoading ? category.children?.map(child => <Skeleton variant="text" height="30px" style={{ margin: '10px 0' }} key={child.id} />)
+                    {isLoading ? category.children?.map(child => <Skeleton variant="text" height="30px" style={{ margin: '10px 20px' }} key={child.id} />)
                         : (
                             <TransitionComponent in={expanded}>
                                 {childCategories?.map(childCat => {

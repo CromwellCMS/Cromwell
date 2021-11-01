@@ -15,7 +15,9 @@ export class AttributeValue extends BasePageEntity implements TAttributeValue {
     @Index()
     attributeId: number;
 
-    @ManyToOne(() => Attribute, attribute => attribute.values)
+    @ManyToOne(() => Attribute, attribute => attribute.values, {
+        onDelete: "CASCADE"
+    })
     @JoinColumn({ name: "attributeId" })
     attribute?: Attribute;
 
@@ -36,6 +38,8 @@ export class AttributeValue extends BasePageEntity implements TAttributeValue {
     @Column({ type: "varchar", length: 400, nullable: true })
     icon?: string;
 
-    @OneToMany(() => AttributeToProduct, attribute => attribute.attributeValue)
+    @OneToMany(() => AttributeToProduct, attribute => attribute.attributeValue, {
+        cascade: true,
+    })
     attributeToProduct?: AttributeToProduct[];
 }

@@ -48,7 +48,7 @@ const SidebarLink = (props: {
 }) => {
     const isExpanded = props.expanded === props.data.id;
 
-    if (props.data?.roles) {
+    if (props.data?.roles && props.userInfo?.role) {
         if (!props.data.roles.includes(props.userInfo.role)) {
             return null;
         }

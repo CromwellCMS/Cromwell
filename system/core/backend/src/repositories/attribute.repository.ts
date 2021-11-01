@@ -43,7 +43,7 @@ export class AttributeRepository extends BaseRepository<Attribute> {
         });
     }
 
-    async addAttributeValueToProduct(product: Product, value: AttributeValue, productVariant?: TAttributeProductVariant) {
+    async addAttributeValueToProduct(product: Product, value: AttributeValue, productVariant?: TAttributeProductVariant): Promise<AttributeToProduct> {
         const attributeToProduct = new AttributeToProduct();
         attributeToProduct.product = product;
         attributeToProduct.productId = product.id;
@@ -53,6 +53,7 @@ export class AttributeRepository extends BaseRepository<Attribute> {
         attributeToProduct.key = value.key;
         attributeToProduct.value = value.value;
         await attributeToProduct.save();
+        return attributeToProduct;
     }
 
     async handleAttributeInput(attribute: Attribute, input: TAttributeInput) {
@@ -67,13 +68,18 @@ export class AttributeRepository extends BaseRepository<Attribute> {
         if (input.values) {
             if (attribute.values) {
                 for (const value of attribute.values) {
-                    await value.remove();
+                    if (!input.values.find(val => value.value === val.value)) {
+                        await value.remove();
+                    }
                 }
             }
 
+            const updatedValues: AttributeValue[] = [];
             input.values = input.values.sort((a, b) => (a.value > b.value) ? 1 : -1);
             for (const valueInput of input.values) {
-                const value = new AttributeValue();
+                const value = attribute.values?.find(val => val.value === valueInput.value)
+                    ?? new AttributeValue();
+
                 value.attribute = attribute;
                 value.attributeId = attribute.id;
                 value.key = attribute.key;
@@ -81,7 +87,9 @@ export class AttributeRepository extends BaseRepository<Attribute> {
                 value.title = valueInput.title;
                 value.icon = valueInput.icon;
                 await value.save();
+                updatedValues.push(value);
             }
+            attribute.values = updatedValues;
         }
     }
 

@@ -37,6 +37,8 @@ export class ProductCategory extends BasePageEntity implements TProductCategory 
     @ManyToMany(type => Product, product => product.categories)
     products?: TPagedList<TProduct>;
 
-    @OneToMany(() => ProductCategoryMeta, meta => meta.entity)
+    @OneToMany(() => ProductCategoryMeta, meta => meta.entity, {
+        cascade: true,
+    })
     metaRecords?: ProductCategoryMeta[];
 }
