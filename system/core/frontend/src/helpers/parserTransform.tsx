@@ -1,5 +1,5 @@
 import { isServer } from '@cromwell/core';
-import { DomElement } from 'htmlparser2';
+import { Element } from 'domhandler';
 import { ReactElement } from 'react';
 import React from 'react';
 
@@ -56,7 +56,7 @@ export const getParserTransform = (contextName: string, options?: {
 }) => {
     makeParserContext(contextName);
 
-    return (node: DomElement): ReactElement | void | null => {
+    return (node: Element): ReactElement | void | null => {
         if (context[contextName]) {
             context[contextName].index++;
 
@@ -69,26 +69,27 @@ export const getParserTransform = (contextName: string, options?: {
             }
         }
         const index = context[contextName]?.index;
+        const childContent = (node.children?.[0] as any)?.data;
 
         if (node.type === 'script') {
             if (options?.executeScripts) {
                 if (node.attribs?.src && node.attribs.src !== '') {
                     return <ScriptTag key={index} src={node.attribs.src} />
                 }
-                if (node.children?.[0]?.data && node.children[0].data !== '')
-                    return <ScriptTag key={index} content={node.children[0].data} />
+                if (childContent && childContent !== '')
+                    return <ScriptTag key={index} content={childContent} />
 
             } else {
                 if (node.attribs?.src && node.attribs.src !== '')
                     return <script key={index + '_script'} src={node.attribs.src}></script>;
 
-                if (node.children?.[0]?.data && node.children[0].data !== '')
-                    return <script key={index + '_script'}>{node.children[0].data}</script>;
+                if (childContent && childContent !== '')
+                    return <script key={index + '_script'}>{childContent}</script>;
             }
         }
         if (node.type === 'style') {
-            if (node.children?.[0]?.data && node.children[0].data !== '')
-                return <style key={index} type="text/css" dangerouslySetInnerHTML={{ __html: node.children[0].data }} />
+            if (childContent && childContent !== '')
+                return <style key={index} type="text/css" dangerouslySetInnerHTML={{ __html: childContent }} />
         }
         if (node.type === 'tag' && node.name === 'link' && node.attribs?.href) {
             return <React.Fragment key={index}><link {...node.attribs} rel={node.attribs?.rel} href={node.attribs?.href} /></React.Fragment>
