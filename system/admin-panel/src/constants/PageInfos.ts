@@ -17,6 +17,7 @@ import { RouteComponentProps } from 'react-router-dom';
 
 import sidebarStyles from '../components/sidebar/Sidebar.module.scss';
 import { CategoryIcon, PluginIcon } from './icons';
+import { getCustomEntityPages, getCustomEntitySidebarLinks } from '../helpers/customEntities';
 
 const AttributesPage = lazy(() => import('../pages/attributes/AttributesPage'));
 const CategoryPage = lazy(() => import('../pages/category/CategoryPage'));
@@ -229,146 +230,154 @@ export const themeMarketPageInfo: PageInfo = {
 }
 
 // Export all pages for react-router
-export const pageInfos: PageInfo[] = [
-    homePageInfo,
-    themeEditPageInfo,
-    themeListPageInfo,
-    productListInfo,
-    productPageInfo,
-    pluginListPageInfo,
-    attributesInfo,
-    pluginPageInfo,
-    postListInfo,
-    postPageInfo,
-    categoryListPageInfo,
-    categoryPageInfo,
-    loginPageInfo,
-    orderListPageInfo,
-    welcomePageInfo,
-    orderPageInfo,
-    settingsPageInfo,
-    userListPageInfo,
-    userPageInfo,
-    tagPageInfo,
-    tagListPageInfo,
-    reviewListPageInfo,
-    pluginMarketPageInfo,
-    themeMarketPageInfo,
-].filter(i => Boolean(i.component));
+export const getPageInfos = (): PageInfo[] => {
+    const defaultPageInfos: PageInfo[] = [
+        homePageInfo,
+        themeEditPageInfo,
+        themeListPageInfo,
+        productListInfo,
+        productPageInfo,
+        pluginListPageInfo,
+        attributesInfo,
+        pluginPageInfo,
+        postListInfo,
+        postPageInfo,
+        categoryListPageInfo,
+        categoryPageInfo,
+        loginPageInfo,
+        orderListPageInfo,
+        welcomePageInfo,
+        orderPageInfo,
+        settingsPageInfo,
+        userListPageInfo,
+        userPageInfo,
+        tagPageInfo,
+        tagListPageInfo,
+        reviewListPageInfo,
+        pluginMarketPageInfo,
+        themeMarketPageInfo,
+    ];
+
+    return [...defaultPageInfos, ...getCustomEntityPages()].filter(i => Boolean(i.component));
+}
 
 // Export links for sidebar
-export const sideBarLinks: SidebarLinkType[] = [
-    {
-        id: '1_homePage',
-        title: homePageInfo.name,
-        route: homePageInfo.route,
-        icon: React.createElement(DashboardIcon),
-        roles: ['administrator', 'guest'],
-    },
-    {
-        id: '2_Store',
-        title: 'Store',
-        icon: React.createElement(LocalMallIcon),
-        roles: ['administrator', 'guest'],
-        sublinks: [
-            {
-                id: '3_productList',
-                title: 'Products',
-                route: productListInfo.route,
-                icon: React.createElement(StorageIcon),
-                roles: ['administrator', 'guest'],
-            },
-            {
-                id: '4_Attributes',
-                title: 'Attributes',
-                route: attributesInfo.route,
-                icon: React.createElement(FilterListIcon),
-                roles: ['administrator', 'guest'],
-            },
-            {
-                id: '5_Categories',
-                title: 'Categories',
-                route: categoryListPageInfo.route,
-                icon: React.createElement(CategoryIcon, {
-                    viewBox: "-50 -50 400 400"
-                }),
-                roles: ['administrator', 'guest'],
-            },
-            {
-                id: '11_Order_list',
-                title: 'Orders',
-                route: orderListPageInfo.route,
-                icon: React.createElement(ShoppingBasketIcon),
-                roles: ['administrator', 'guest'],
-            },
-            {
-                id: 'Review_list',
-                title: 'Reviews',
-                route: reviewListPageInfo.route,
-                icon: React.createElement(StarsIcon),
-                roles: ['administrator', 'guest'],
-            }
-        ]
-    },
-    {
-        id: '6_Blog',
-        title: 'Blog',
-        icon: React.createElement('div', {
-            className: sidebarStyles.customIcon,
-            style: { backgroundImage: 'url(/admin/static/icon_blogging.png)' }
-        }),
-        roles: ['administrator', 'guest', 'author'],
-        sublinks: [
-            {
-                id: '7_Posts',
-                title: 'Posts',
-                route: postListInfo.route,
-                icon: React.createElement(LibraryBooksIcon),
-                roles: ['administrator', 'guest', 'author'],
-            },
-            {
-                id: 'tags_page',
-                title: 'Tags',
-                route: tagListPageInfo.route,
-                icon: React.createElement(LocalOfferOutlinedIcon),
-                roles: ['administrator', 'guest', 'author'],
-            },
-        ]
-    },
-    {
-        id: '5_themeListPage',
-        title: 'Themes',
-        route: themeListPageInfo.route,
-        icon: React.createElement(FormatPaintIcon),
-        roles: ['administrator', 'guest'],
-    },
-    {
-        id: '6_pluginsPage',
-        title: 'Plugins',
-        route: pluginListPageInfo.route,
-        icon: React.createElement(PluginIcon, {
-            className: sidebarStyles.customIcon,
-            style: {
-                filter: 'invert(1)',
-            }
-        }),
-        roles: ['administrator', 'guest'],
-    },
-    {
-        id: 'users_page',
-        title: 'Users',
-        route: userListPageInfo.route,
-        icon: React.createElement(PeopleAltIcon),
-        roles: ['administrator', 'guest'],
-    },
-    {
-        id: 'settings_page',
-        title: 'Settings',
-        route: settingsPageInfo.route,
-        icon: React.createElement(SettingsIcon),
-        roles: ['administrator', 'guest'],
-    }
-]
+export const getSideBarLinks = () => {
+    const defaultSideBarLinks: SidebarLinkType[] = [
+        {
+            id: '1_homePage',
+            title: homePageInfo.name,
+            route: homePageInfo.route,
+            icon: React.createElement(DashboardIcon),
+            roles: ['administrator', 'guest'],
+        },
+        {
+            id: '2_Store',
+            title: 'Store',
+            icon: React.createElement(LocalMallIcon),
+            roles: ['administrator', 'guest'],
+            sublinks: [
+                {
+                    id: '3_productList',
+                    title: 'Products',
+                    route: productListInfo.route,
+                    icon: React.createElement(StorageIcon),
+                    roles: ['administrator', 'guest'],
+                },
+                {
+                    id: '4_Attributes',
+                    title: 'Attributes',
+                    route: attributesInfo.route,
+                    icon: React.createElement(FilterListIcon),
+                    roles: ['administrator', 'guest'],
+                },
+                {
+                    id: '5_Categories',
+                    title: 'Categories',
+                    route: categoryListPageInfo.route,
+                    icon: React.createElement(CategoryIcon, {
+                        viewBox: "-50 -50 400 400"
+                    }),
+                    roles: ['administrator', 'guest'],
+                },
+                {
+                    id: '11_Order_list',
+                    title: 'Orders',
+                    route: orderListPageInfo.route,
+                    icon: React.createElement(ShoppingBasketIcon),
+                    roles: ['administrator', 'guest'],
+                },
+                {
+                    id: 'Review_list',
+                    title: 'Reviews',
+                    route: reviewListPageInfo.route,
+                    icon: React.createElement(StarsIcon),
+                    roles: ['administrator', 'guest'],
+                }
+            ]
+        },
+        {
+            id: '6_Blog',
+            title: 'Blog',
+            icon: React.createElement('div', {
+                className: sidebarStyles.customIcon,
+                style: { backgroundImage: 'url(/admin/static/icon_blogging.png)' }
+            }),
+            roles: ['administrator', 'guest', 'author'],
+            sublinks: [
+                {
+                    id: '7_Posts',
+                    title: 'Posts',
+                    route: postListInfo.route,
+                    icon: React.createElement(LibraryBooksIcon),
+                    roles: ['administrator', 'guest', 'author'],
+                },
+                {
+                    id: 'tags_page',
+                    title: 'Tags',
+                    route: tagListPageInfo.route,
+                    icon: React.createElement(LocalOfferOutlinedIcon),
+                    roles: ['administrator', 'guest', 'author'],
+                },
+            ]
+        },
+        {
+            id: '5_themeListPage',
+            title: 'Themes',
+            route: themeListPageInfo.route,
+            icon: React.createElement(FormatPaintIcon),
+            roles: ['administrator', 'guest'],
+        },
+        {
+            id: '6_pluginsPage',
+            title: 'Plugins',
+            route: pluginListPageInfo.route,
+            icon: React.createElement(PluginIcon, {
+                className: sidebarStyles.customIcon,
+                style: {
+                    filter: 'invert(1)',
+                }
+            }),
+            roles: ['administrator', 'guest'],
+        },
+        {
+            id: 'users_page',
+            title: 'Users',
+            route: userListPageInfo.route,
+            icon: React.createElement(PeopleAltIcon),
+            roles: ['administrator', 'guest'],
+        },
+        {
+            id: 'settings_page',
+            title: 'Settings',
+            route: settingsPageInfo.route,
+            icon: React.createElement(SettingsIcon),
+            roles: ['administrator', 'guest'],
+        }
+    ]
+
+    return [...defaultSideBarLinks, ...getCustomEntitySidebarLinks()];
+}
 
 export const getLinkByInfo = (pageInfo: PageInfo) => {
     if (!pageInfo) return;
@@ -384,6 +393,6 @@ export const getLinkByInfo = (pageInfo: PageInfo) => {
             }
         }
     }
-    return getFromLinks(sideBarLinks);
+    return getFromLinks(getSideBarLinks());
 }
 

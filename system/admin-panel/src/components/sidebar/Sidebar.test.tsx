@@ -36,7 +36,7 @@ import { render, screen } from '@testing-library/react';
 import React from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 
-import { homePageInfo, sideBarLinks } from '../../constants/PageInfos';
+import { homePageInfo, getSideBarLinks } from '../../constants/PageInfos';
 import Sidebar from './Sidebar';
 import SidebarLink from './SidebarLink';
 
@@ -51,12 +51,12 @@ describe('Sidebar component', () => {
     });
 
     it("renders single link", () => {
-        const homeLink = sideBarLinks.find(l => l.route === homePageInfo.route);
+        const homeLink = getSideBarLinks().find(l => l.route === homePageInfo.route);
         expect(homeLink).toBeTruthy();
         if (!homeLink) return;
 
         render(<Router><SidebarLink
-            toggleSubmenu={() => () => { }}
+            toggleSubMenu={() => () => { }}
             expanded={false}
             forceUpdate={() => { }}
             activeId={null}

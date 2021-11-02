@@ -37,6 +37,10 @@ export type TBasePageEntity = {
      * Entity meta data from "{Entity}Meta" table
      */
     customMeta?: Record<string, string>;
+    /**
+     * Qnt of page requests
+     */
+    views?: number;
 }
 
 export type TBasePageMeta = {
@@ -49,6 +53,15 @@ export type TDBAuxiliaryColumns = 'id' | 'createDate' | 'updateDate';
 export type TBasePageEntityInput = Omit<TBasePageEntity, TDBAuxiliaryColumns> & {
     customMeta?: Record<string, string>;
 };
+
+export type TBaseFilter = {
+    properties?: {
+        key?: string;
+        value?: string;
+        exact?: boolean;
+        inMeta?: boolean;
+    }[];
+}
 
 
 /**
@@ -95,7 +108,7 @@ export type TProductCategoryInput = TBasePageEntityInput & Omit<TProductCategory
     parentId?: number;
 };
 
-export type TProductCategoryFilter = {
+export type TProductCategoryFilter = TBaseFilter & {
     nameSearch?: string;
 }
 
@@ -165,9 +178,9 @@ export type TProduct = TBasePageEntity & {
      */
     stockAmount?: number;
     /**
-     * Manually set is the item available in stock
+     * Manually set is the item availability in stock
      */
-    inStock?: boolean;
+    stockStatus?: string;
 }
 
 export type TProductRating = {
@@ -186,13 +199,13 @@ export type TProductInput = Omit<TProduct, TDBAuxiliaryColumns | 'categories' | 
     customMeta?: Record<string, string>;
 };
 
-export type TProductFilter = {
+export type TProductFilter = TBaseFilter & {
     minPrice?: number;
     maxPrice?: number;
     attributes?: TProductFilterAttribute[];
     nameSearch?: string;
 }
-export type TProductFilterAttribute = {
+export type TProductFilterAttribute = TBaseFilter & {
     key: string;
     values: string[];
 }
@@ -259,10 +272,6 @@ export type TPost = {
      * Is post featured?
      */
     featured?: boolean | null;
-    /**
-     * Qnt of page requests
-     */
-    views?: number;
 
 } & TBasePageEntity;
 
@@ -271,7 +280,7 @@ export type TPostInput = Omit<TPost, TDBAuxiliaryColumns | 'author' | 'tags'> & 
     tagIds?: number[] | null;
 };
 
-export type TPostFilter = {
+export type TPostFilter = TBaseFilter & {
     authorId?: number;
     titleSearch?: string;
     tagIds?: number[];
@@ -321,7 +330,7 @@ export type TCreateUser = Omit<TUser, TDBAuxiliaryColumns> & {
 
 export type TUpdateUser = Omit<TUser, TDBAuxiliaryColumns>;
 
-export type TUserFilter = {
+export type TUserFilter = TBaseFilter & {
     fullName?: string;
     email?: string;
     phone?: string;
@@ -369,6 +378,8 @@ export type TAttributeProductVariant = {
     images?: string[];
     description?: string;
     descriptionDelta?: string;
+    stockAmount?: number;
+    stockStatus?: string;
 }
 
 
@@ -390,7 +401,7 @@ export type TProductReview = TProductReviewCore & TBasePageEntity;
 
 export type TProductReviewInput = TProductReviewCore & TBasePageEntityInput;
 
-export type TProductReviewFilter = {
+export type TProductReviewFilter = TBaseFilter & {
     productId?: number;
     userName?: string;
     userId?: number;
@@ -429,7 +440,7 @@ export type TOrder = TOrderCore;
 
 export type TOrderInput = TOrderCore;
 
-export type TOrderFilter = {
+export type TOrderFilter = TBaseFilter & {
     status?: string;
     customerName?: string;
     customerPhone?: string;
@@ -684,8 +695,9 @@ export type TCustomEntity = TBasePageEntity & {
     name?: string;
 }
 
-export type TCustomEntityFilter = {
+export type TCustomEntityInput = Omit<TCustomEntity, TDBAuxiliaryColumns>;
+
+export type TCustomEntityFilter = TBaseFilter & {
     entityType?: string;
     name?: string;
-    customMeta?: Record<string, string>;
 }

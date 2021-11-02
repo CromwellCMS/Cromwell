@@ -10,6 +10,7 @@ import {
     TProductReview,
     TTag,
     TUser,
+    TCustomEntity
 } from '@cromwell/core';
 
 export type TBackendModule = {
@@ -69,6 +70,10 @@ export type ActionTypes = {
     create_user: Action<TUser>;
     update_user: Action<TUser>;
     delete_user: Action<{ id: number }>;
+
+    create_custom_entity: Action<TCustomEntity>;
+    update_custom_entity: Action<TCustomEntity>;
+    delete_custom_entity: Action<{ id: number }>;
 
     update_settings: Action<TCmsSettings>;
 

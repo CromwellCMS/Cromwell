@@ -99,6 +99,17 @@ export const GraphQLPaths: { [K in Exclude<TDBEntity, 'Theme' | 'Plugin' | 'Post
         delete: "deleteTag",
         deleteMany: "deleteManyTags",
     },
+    CustomEntity: {
+        getOneBySlug: "getCustomEntityBySlug",
+        getOneById: "getCustomEntityById",
+        getMany: "getCustomEntities",
+        create: "createCustomEntity",
+        update: "updateCustomEntity",
+        delete: "deleteCustomEntity",
+        deleteMany: "deleteManyCustomEntities",
+        deleteManyFiltered: "deleteManyFilteredCustomEntities",
+        getFiltered: "getFilteredCustomEntities",
+    },
 }
 
 export enum ECommonComponentNames {

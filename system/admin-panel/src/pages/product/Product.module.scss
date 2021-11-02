@@ -46,6 +46,7 @@
     min-height: 300px;
     padding-right: 10px;
     padding-top: 15px;
+    padding-bottom: 15px;
 }
 
 .mainTab {
@@ -55,14 +56,12 @@
 
 .textField {
     width: 100%;
-    margin: 10px 0;
 }
 
 .imageBlock {
     position: relative;
     border: 1px solid #bbb;
     border-radius: 5px;
-    margin: 10px 0;
     display: flex;
     padding: 10px;
 }
@@ -194,12 +193,12 @@ button.galleryAddImageBtn {
 
 .descriptionEditor {
     @include styledScrollBar;
-    margin: 20px 0;
     border: 1px solid #bbb;
     border-radius: 5px;
     max-height: 400px;
     overflow: auto;
     padding: 15px 40px;
+    min-height: 150px;
 }
 
 .CategoriesTab {

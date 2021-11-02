@@ -4,7 +4,9 @@ import { AttributeToProduct } from '../models/entities/attribute-product.entity'
 import { AttributeValue } from '../models/entities/attribute-value.entity';
 import { Attribute } from '../models/entities/attribute.entity';
 import { CmsEntity } from '../models/entities/cms.entity';
+import { CustomEntity } from '../models/entities/custom-entity.entity';
 import { AttributeMeta } from '../models/entities/meta/attribute-meta.entity';
+import { CustomEntityMeta } from '../models/entities/meta/custom-entity-meta.entity';
 import { OrderMeta } from '../models/entities/meta/order-meta.entity';
 import { PostMeta } from '../models/entities/meta/post-meta.entity';
 import { ProductCategoryMeta } from '../models/entities/meta/product-category-meta.entity';
@@ -31,7 +33,8 @@ export const ORMEntities = [
     CmsEntity, Tag, PageStats, PostComment,
     AttributeMeta, OrderMeta, PostMeta,
     ProductCategoryMeta, ProductMeta, TagMeta,
-    UserMeta, AttributeToProduct, AttributeValue
+    UserMeta, AttributeToProduct, AttributeValue,
+    CustomEntity, CustomEntityMeta,
 ]
 
 export const rendererMessages = {

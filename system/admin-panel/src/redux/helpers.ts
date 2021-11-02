@@ -52,7 +52,7 @@ export const getSelectedInput = (): TDeleteManyInput => {
     const selectedItems = store.getState().selectedItems;
     return {
         all: store.getState().allSelected,
-        ids: Object.keys(selectedItems).filter(id => selectedItems[id]) as any,
+        ids: Object.keys(selectedItems).filter(id => selectedItems[id]).map(Number).filter(Boolean),
     }
 }
 

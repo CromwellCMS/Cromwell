@@ -1,9 +1,9 @@
 import { GraphQLPaths, TAuthRole, TPagedList } from '@cromwell/core';
-import { Arg, Args, ArgsType, Authorized, Field, Mutation, ObjectType, Query, Resolver } from 'type-graphql';
+import { Arg, Args, ArgsType, Authorized, Field, Int, Mutation, ObjectType, Query, Resolver } from 'type-graphql';
 import { EntityRepository, getCustomRepository, ObjectType as TObjectType } from 'typeorm';
 
-import { PagedMeta } from '../models/paged/meta.paged';
 import { PagedParamsInput } from '../models/inputs/paged-params.input';
+import { PagedMeta } from '../models/paged/meta.paged';
 import { BaseRepository } from '../repositories/base.repository';
 
 export const createGenericEntity = <EntityType, EntityInputType = EntityType>(entityName: string,
@@ -75,7 +75,7 @@ export const createGenericEntity = <EntityType, EntityInputType = EntityType>(en
 
         @Authorized<TAuthRole>("administrator", "guest", "author")
         @Query(() => EntityClass)
-        async [getByIdPath](@Arg("id") id: number): Promise<EntityType | undefined> {
+        async [getByIdPath](@Arg("id", () => Int) id: number): Promise<EntityType | undefined> {
             return this.repository.getById(id);
         }
 
@@ -93,7 +93,7 @@ export const createGenericEntity = <EntityType, EntityInputType = EntityType>(en
 
         @Authorized<TAuthRole>("administrator")
         @Mutation(() => Boolean)
-        async [deletePath](@Arg("id") id: number): Promise<boolean> {
+        async [deletePath](@Arg("id", () => Int) id: number): Promise<boolean> {
             return this.repository.deleteEntity(id);
         }
 

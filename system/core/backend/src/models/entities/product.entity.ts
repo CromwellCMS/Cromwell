@@ -54,10 +54,10 @@ export class Product extends BasePageEntity implements TProduct {
     @Index()
     stockAmount?: number;
 
-    @Field(type => Boolean, { nullable: true })
-    @Column({ type: "boolean", nullable: true })
+    @Field(type => String, { nullable: true })
+    @Column({ type: "varchar", length: 255, nullable: true })
     @Index()
-    inStock?: boolean;
+    stockStatus?: string;
 
     @Field(type => String, { nullable: true })
     @Column({ type: "text", nullable: true })

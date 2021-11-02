@@ -7,7 +7,7 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter, Route, RouteComponentProps, Switch } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 
-import { pageInfos } from '../../constants/PageInfos';
+import { getPageInfos } from '../../constants/PageInfos';
 import { useForceUpdate } from '../../helpers/forceUpdate';
 import { LayoutPortal } from '../../helpers/LayoutPortal';
 import Page404 from '../../pages/404/404page';
@@ -74,10 +74,9 @@ function Layout() {
           <div className={styles.main}>
             <Toolbar className={styles.dummyToolbar} />
             <Switch>
-              {pageInfos.map(page => {
+              {getPageInfos().map(page => {
                 if (page.roles && !page.roles.includes(getStoreItem('userInfo')?.role))
                   return null;
-
                 return (
                   <Route exact={!page.baseRoute}
                     path={page.route}

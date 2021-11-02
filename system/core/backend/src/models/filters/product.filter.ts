@@ -1,8 +1,9 @@
 import { TFilteredProductList, TProductFilter, TProductFilterAttribute, TProductFilterMeta } from '@cromwell/core';
 import { Field, Float, InputType, ObjectType } from 'type-graphql';
 
-import { PagedMeta } from '../paged/meta.paged';
 import { Product } from '../entities/product.entity';
+import { PagedMeta } from '../paged/meta.paged';
+import { BaseFilterInput } from './base-filter.filter';
 
 @ObjectType('ProductFilterMeta')
 export class ProductFilterMeta implements TProductFilterMeta {
@@ -14,7 +15,7 @@ export class ProductFilterMeta implements TProductFilterMeta {
 }
 
 @ObjectType('FilteredProduct')
-export class FilteredProduct implements TFilteredProductList {
+export class FilteredProduct extends BaseFilterInput implements TFilteredProductList {
     @Field(() => PagedMeta, { nullable: true })
     pagedMeta?: PagedMeta;
 

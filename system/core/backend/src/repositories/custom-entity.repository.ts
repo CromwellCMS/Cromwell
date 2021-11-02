@@ -1,9 +1,11 @@
-import { TCustomEntity, TPagedList, TPagedParams } from '@cromwell/core';
-import { EntityRepository } from 'typeorm';
+import { TCustomEntity, TDeleteManyInput, TPagedList, TPagedParams, TCustomEntityInput } from '@cromwell/core';
+import { EntityRepository, SelectQueryBuilder } from 'typeorm';
 
-import { checkEntitySlug, handleBaseInput } from '../helpers/base-queries';
+import { checkEntitySlug, getPaged, handleBaseInput } from '../helpers/base-queries';
 import { getLogger } from '../helpers/logger';
 import { CustomEntity } from '../models/entities/custom-entity.entity';
+import { CustomEntityFilterInput } from '../models/filters/custom-entity.filter';
+import { PagedParamsInput } from '../models/inputs/paged-params.input';
 import { BaseRepository } from './base.repository';
 
 const logger = getLogger();
@@ -35,14 +37,14 @@ export class CustomEntityRepository extends BaseRepository<CustomEntity> {
         return this.getBySlug(slug);
     }
 
-    private async handleBaseCustomEntityInput(customEntity: CustomEntity, input: TCustomEntity) {
+    private async handleBaseCustomEntityInput(customEntity: CustomEntity, input: TCustomEntityInput) {
         await handleBaseInput(customEntity, input);
 
         customEntity.name = input.name;
         customEntity.entityType = input.entityType;
     }
 
-    async createCustomEntity(inputData: TCustomEntity, id?: number): Promise<CustomEntity> {
+    async createCustomEntity(inputData: TCustomEntityInput, id?: number): Promise<CustomEntity> {
         logger.log('CustomEntityRepository::createCustomEntity');
         let customEntity = new CustomEntity();
         if (id) customEntity.id = id;
@@ -54,7 +56,7 @@ export class CustomEntityRepository extends BaseRepository<CustomEntity> {
         return customEntity;
     }
 
-    async updateCustomEntity(id: number, inputData: TCustomEntity): Promise<CustomEntity> {
+    async updateCustomEntity(id: number, inputData: TCustomEntityInput): Promise<CustomEntity> {
         logger.log('CustomEntityRepository::updateCustomEntity id: ' + id);
 
         let customEntity = await this.findOne({
@@ -81,4 +83,43 @@ export class CustomEntityRepository extends BaseRepository<CustomEntity> {
         return true;
     }
 
+    applyCustomEntityFilter(qb: SelectQueryBuilder<CustomEntity>, filterParams?: CustomEntityFilterInput) {
+        if (!filterParams) return;
+
+        this.applyBaseFilter(qb, filterParams);
+        
+        const entityType = filterParams.entityType;
+        if (entityType && entityType !== '') {
+            const query = `${this.metadata.tablePath}.${this.quote('entityType')} = :entityType`;
+            qb.andWhere(query, { entityType });
+        }
+
+        const entityName = filterParams.name;
+        if (entityName && entityName !== '') {
+            const query = `${this.metadata.tablePath}.${this.quote('name')} = :entityName`;
+            qb.andWhere(query, { entityName });
+        }
+    }
+
+    async getFilteredCustomEntities(pagedParams?: PagedParamsInput<CustomEntity>,
+        filterParams?: CustomEntityFilterInput): Promise<TPagedList<TCustomEntity>> {
+
+        const qb = this.createQueryBuilder(this.metadata.tablePath);
+        qb.select();
+        this.applyCustomEntityFilter(qb, filterParams);
+        return await getPaged(qb, this.metadata.tablePath, pagedParams);
+    }
+
+    async deleteManyFilteredCustomEntities(input: TDeleteManyInput, filterParams?: CustomEntityFilterInput): Promise<boolean | undefined> {
+        const qbSelect = this.createQueryBuilder(this.metadata.tablePath).select([`${this.metadata.tablePath}.id`]);
+        this.applyCustomEntityFilter(qbSelect, filterParams);
+        this.applyDeleteMany(qbSelect, input);
+
+        const qbDelete = this.createQueryBuilder(this.metadata.tablePath).delete()
+            .where(`${this.metadata.tablePath}.id IN (${qbSelect.getQuery()})`)
+            .setParameters(qbSelect.getParameters());
+
+        await qbDelete.execute();
+        return true;
+    }
 }

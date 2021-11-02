@@ -26,7 +26,7 @@ import {
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 
-import { getLinkByInfo, loginPageInfo, pageInfos, sideBarLinks, userPageInfo } from '../../constants/PageInfos';
+import { getLinkByInfo, loginPageInfo, getPageInfos, getSideBarLinks, userPageInfo } from '../../constants/PageInfos';
 import { useForceUpdate } from '../../helpers/forceUpdate';
 import CmsInfo from '../cmsInfo/CmsInfo';
 import { getFileManager } from '../fileManager/helpers';
@@ -36,6 +36,7 @@ import styles from './Sidebar.module.scss';
 import SidebarLink from './SidebarLink';
 
 export default function Sidebar() {
+    const pageInfos = getPageInfos();
     const currentInfo = pageInfos.find(i => i.route === window.location.pathname);
     const currentLink = getLinkByInfo(currentInfo);
     const [expanded, setExpanded] = useState<string | false>(currentLink?.parentId ?? false);
@@ -49,7 +50,7 @@ export default function Sidebar() {
     const forceUpdate = useForceUpdate();
 
     const userInfo: TUser | undefined = getStoreItem('userInfo');
-    const toggleSubmenu = (panel: string) => (event: React.ChangeEvent<any>, isExpanded: boolean) => {
+    const toggleSubMenu = (panel: string) => (event: React.ChangeEvent<any>, isExpanded: boolean) => {
         setExpanded(isExpanded ? panel : false);
     };
     const handleCloseMenu = () => {
@@ -65,10 +66,10 @@ export default function Sidebar() {
         });
         history?.listen(() => {
             const currentInfo = pageInfos.find(i => i.route === window.location.pathname);
-            const newcurrentLink = getLinkByInfo(currentInfo);
-            if (newcurrentLink && newcurrentLink !== currentLink) {
-                setActiveId(newcurrentLink.id);
-                if (newcurrentLink.parentId) setExpanded(newcurrentLink.parentId)
+            const newCurrentLink = getLinkByInfo(currentInfo);
+            if (newCurrentLink && newCurrentLink !== currentLink) {
+                setActiveId(newCurrentLink.id);
+                if (newCurrentLink.parentId) setExpanded(newCurrentLink.parentId)
             }
             setTimeout(forceUpdate, 100);
         });
@@ -97,7 +98,7 @@ export default function Sidebar() {
         window.open('https://cromwellcms.com/docs/overview/intro', '_blank')
     }
 
-    // check for diabled sidebar
+    // check for disabled sidebar
     if (currentInfo?.disableSidebar) return <></>;
 
     const sidebarContent = (
@@ -117,9 +118,9 @@ export default function Sidebar() {
                         </IconButton>
                     </div>
                 </div>
-                {sideBarLinks.map(link => <SidebarLink data={link}
+                {getSideBarLinks().map(link => <SidebarLink data={link}
                     key={link.id}
-                    toggleSubmenu={toggleSubmenu}
+                    toggleSubMenu={toggleSubMenu}
                     expanded={expanded}
                     forceUpdate={forceUpdate}
                     activeId={activeId}

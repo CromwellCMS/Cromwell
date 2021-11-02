@@ -92,7 +92,7 @@ export class ProductResolver {
 
     @Authorized<TAuthRole>("administrator")
     @Mutation(() => Boolean)
-    async [deletePath](@Arg("id") id: number): Promise<boolean> {
+    async [deletePath](@Arg("id", () => Int) id: number): Promise<boolean> {
         const product = await this.repository.deleteProduct(id);
         serverFireAction('update_product', { id });
         resetAllPagesCache();

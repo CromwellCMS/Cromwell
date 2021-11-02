@@ -42,7 +42,7 @@ export class CreateProduct extends BasePageInput implements TProductInput {
     @Field(type => Int, { nullable: true })
     stockAmount?: number;
 
-    @Field(type => Boolean, { nullable: true })
-    inStock?: boolean;
+    @Field(type => String, { nullable: true })
+    stockStatus?: string;
 }
 

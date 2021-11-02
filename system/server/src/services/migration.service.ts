@@ -182,7 +182,7 @@ export class MigrationService {
         const posts = await getCustomRepository(PostRepository).find({
             relations: ['tags', 'comments']
         });
-        const postSheet: Partial<Record<keyof TPostInput, any>>[] = posts.map(ent => ({
+        const postSheet: Record<keyof TPostInput, any>[] = posts.map(ent => ({
             id: ent.id,
             slug: ent.slug,
             pageTitle: ent.pageTitle,
@@ -203,6 +203,8 @@ export class MigrationService {
             featured: ent.featured,
             publishDate: ent.publishDate,
             commentIds: ent.comments?.map(comment => comment.id)?.join(','),
+            customMeta: undefined,
+            views: undefined,
         }));
 
         this.fillSheet(workbook, 'Posts', postSheet);
@@ -211,7 +213,7 @@ export class MigrationService {
     // TAGS
     private async exportTags(workbook: any) {
         const tags = await getCustomRepository(TagRepository).find();
-        const tagsSheet: Partial<Record<keyof TTagInput, any>>[] = tags.map(ent => ({
+        const tagsSheet: Record<keyof TTagInput, any>[] = tags.map(ent => ({
             id: ent.id,
             slug: ent.slug,
             pageTitle: ent.pageTitle,
@@ -225,6 +227,8 @@ export class MigrationService {
             image: ent.image,
             description: ent.description,
             descriptionDelta: ent.descriptionDelta,
+            customMeta: undefined,
+            views: undefined,
         }));
 
         this.fillSheet(workbook, 'Tags', tagsSheet);
@@ -259,7 +263,7 @@ export class MigrationService {
         const products = await getCustomRepository(ProductRepository).find({
             relations: ['categories']
         });
-        const productsSheet: Partial<Record<keyof TProductInput, any>>[] = products.map(ent => ({
+        const productsSheet: Record<keyof TProductInput, any>[] = await Promise.all(products.map(async ent => ({
             id: ent.id,
             slug: ent.slug,
             pageTitle: ent.pageTitle,
@@ -275,11 +279,15 @@ export class MigrationService {
             sku: ent.sku,
             mainImage: ent.mainImage,
             images: ent.images,
+            stockStatus: ent.stockStatus,
+            stockAmount: ent.stockAmount,
             mainCategoryId: ent.mainCategoryId,
             description: ent.description,
             descriptionDelta: ent.descriptionDelta,
-            views: ent.views,
-        }));
+            attributes: await getCustomRepository(ProductRepository).getProductAttributes(ent.id),
+            customMeta: undefined,
+            views: undefined,
+        })));
 
         this.fillSheet(workbook, 'Products', productsSheet);
     }
@@ -288,7 +296,7 @@ export class MigrationService {
     private async exportCategories(workbook: any) {
         const categoryRepo = getCustomRepository(ProductCategoryRepository);
         const categories = await getCustomRepository(ProductCategoryRepository).find();
-        const categoriesSheet: Partial<Record<keyof TProductCategoryInput, any>>[] = await Promise.all(categories.map(async ent => ({
+        const categoriesSheet: Record<keyof TProductCategoryInput, any>[] = await Promise.all(categories.map(async ent => ({
             id: ent.id,
             slug: ent.slug,
             pageTitle: ent.pageTitle,
@@ -302,6 +310,8 @@ export class MigrationService {
             description: ent.description,
             descriptionDelta: ent.descriptionDelta,
             parentId: (await categoryRepo.getParentCategory(ent))?.id,
+            customMeta: undefined,
+            views: undefined,
         })));
 
         this.fillSheet(workbook, 'Categories', categoriesSheet);
@@ -310,9 +320,10 @@ export class MigrationService {
     // ATTRIBUTES
     private async exportAttributes(workbook: any) {
         const attributes = await getCustomRepository(AttributeRepository).find();
-        const attributesSheet: Partial<Record<keyof TAttributeInput, any>>[] = attributes.map(ent => ({
+        const attributesSheet: Record<keyof TAttributeInput, any>[] = attributes.map(ent => ({
             id: ent.id,
             slug: ent.slug,
+            title: ent.title,
             pageTitle: ent.pageTitle,
             pageDescription: ent.pageDescription,
             meta: ent.meta,
@@ -324,6 +335,8 @@ export class MigrationService {
             type: ent.type,
             icon: ent.icon,
             required: ent.required,
+            customMeta: undefined,
+            views: undefined,
         }));
 
         this.fillSheet(workbook, 'Attributes', attributesSheet);
@@ -332,7 +345,7 @@ export class MigrationService {
     // REVIEWS
     private async exportReviews(workbook: any) {
         const reviews = await getCustomRepository(ProductReviewRepository).find();
-        const reviewsSheet: Partial<Record<keyof TProductReviewInput, any>>[] = reviews.map(ent => ({
+        const reviewsSheet: Record<keyof TProductReviewInput, any>[] = reviews.map(ent => ({
             id: ent.id,
             slug: ent.slug,
             pageTitle: ent.pageTitle,
@@ -349,6 +362,8 @@ export class MigrationService {
             userEmail: ent.userEmail,
             userId: ent.userId,
             approved: ent.approved,
+            customMeta: undefined,
+            views: undefined,
         }));
 
         this.fillSheet(workbook, 'Reviews', reviewsSheet);
@@ -357,7 +372,7 @@ export class MigrationService {
     // ORDERS
     private async exportOrders(workbook: any) {
         const orders = await getCustomRepository(OrderRepository).find();
-        const ordersSheet: Partial<Record<keyof Omit<TOrderInput, 'fromUrl'>, any>>[] = orders.map(ent => ({
+        const ordersSheet: Record<keyof Omit<TOrderInput, 'fromUrl'>, any>[] = orders.map(ent => ({
             id: ent.id,
             createDate: ent.createDate,
             updateDate: ent.updateDate,
@@ -377,6 +392,8 @@ export class MigrationService {
             shippingMethod: ent.shippingMethod,
             paymentMethod: ent.paymentMethod,
             currency: ent.currency,
+            customMeta: undefined,
+            views: undefined,
         }));
 
         this.fillSheet(workbook, 'Orders', ordersSheet);
@@ -385,7 +402,7 @@ export class MigrationService {
     // USERS
     private async exportUsers(workbook: any) {
         const users = await getCustomRepository(UserRepository).find();
-        const usersSheet: Partial<Record<keyof TUpdateUser, any>>[] = users.map(ent => ({
+        const usersSheet: Record<keyof TUpdateUser, any>[] = users.map(ent => ({
             id: ent.id,
             slug: ent.slug,
             pageTitle: ent.pageTitle,
@@ -401,6 +418,8 @@ export class MigrationService {
             phone: ent.phone,
             address: ent.address,
             role: ent.role,
+            customMeta: undefined,
+            views: undefined,
         }));
 
         this.fillSheet(workbook, 'Users', usersSheet);
@@ -409,7 +428,7 @@ export class MigrationService {
     // PLUGINS
     private async exportPlugins(workbook: any) {
         const plugins = await PluginEntity.find();
-        const pluginsSheet: Partial<Record<keyof TPluginEntity, any>>[] = plugins.map(ent => ({
+        const pluginsSheet: Record<keyof TPluginEntity, any>[] = plugins.map(ent => ({
             id: ent.id,
             slug: ent.slug,
             pageTitle: ent.pageTitle,
@@ -427,6 +446,8 @@ export class MigrationService {
             defaultSettings: ent.defaultSettings,
             moduleInfo: ent.moduleInfo,
             isUpdating: ent.isUpdating,
+            customMeta: undefined,
+            views: undefined,
         }));
 
         this.fillSheet(workbook, 'Plugins', pluginsSheet);
@@ -435,7 +456,7 @@ export class MigrationService {
     // THEMES
     private async exportThemes(workbook: any) {
         const themes = await ThemeEntity.find();
-        const themesSheet: Partial<Record<keyof TThemeEntity, any>>[] = themes.map(ent => ({
+        const themesSheet: Record<keyof TThemeEntity, any>[] = themes.map(ent => ({
             id: ent.id,
             slug: ent.slug,
             pageTitle: ent.pageTitle,
@@ -453,6 +474,8 @@ export class MigrationService {
             defaultSettings: ent.defaultSettings,
             moduleInfo: ent.moduleInfo,
             isUpdating: ent.isUpdating,
+            customMeta: undefined,
+            views: undefined,
         }));
 
         this.fillSheet(workbook, 'Themes', themesSheet);
@@ -576,7 +599,7 @@ export class MigrationService {
             (input) => ({
                 ...input,
                 tagIds: typeof input.tagIds === 'string' || typeof input.tagIds === 'number' ?
-                    (input.tagIds + '').split(',').map(parseInt) : input.tagIds
+                    (input.tagIds + '').split(',').map(Number).filter(Boolean) : input.tagIds
             }),
             async (input) => input.id && getCustomRepository(PostRepository).updatePost(input.id, input),
             (input) => getCustomRepository(PostRepository).createPost(input, input.id),
@@ -614,7 +637,7 @@ export class MigrationService {
             (input) => ({
                 ...input,
                 categoryIds: typeof input.categoryIds === 'string' || typeof input.categoryIds === 'number' ?
-                    (input.categoryIds + '').split(',').map(parseInt) : input.categoryIds,
+                    (input.categoryIds + '').split(',').map(Number).filter(Boolean) : input.categoryIds,
                 attributes: typeof input.attributes === 'string' ?
                     JSON.parse(input.attributes as string) : input.attributes,
             }),

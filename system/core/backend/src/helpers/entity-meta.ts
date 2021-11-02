@@ -32,7 +32,7 @@ class EntityMetaRepository {
         if (entityType === EDBEntity.Product) return ProductMeta.getRepository();
         if (entityType === EDBEntity.Tag) return TagMeta.getRepository();
         if (entityType === EDBEntity.User) return UserMeta.getRepository();
-        if (entityType === EDBEntity.Custom) return CustomEntityMeta.getRepository();
+        if (entityType === EDBEntity.CustomEntity) return CustomEntityMeta.getRepository();
     }
 
     getClass(entityType: EDBEntity): (new (...args: any[]) => TEntityMetaModel) | undefined {
@@ -43,7 +43,7 @@ class EntityMetaRepository {
         if (entityType === EDBEntity.Product) return ProductMeta;
         if (entityType === EDBEntity.Tag) return TagMeta;
         if (entityType === EDBEntity.User) return UserMeta;
-        if (entityType === EDBEntity.Custom) return CustomEntityMeta;
+        if (entityType === EDBEntity.CustomEntity) return CustomEntityMeta;
     }
 
     getEntityType(entityType: BasePageEntity): EDBEntity | undefined {
@@ -54,7 +54,7 @@ class EntityMetaRepository {
         if (entityType instanceof Product) return EDBEntity.Product;
         if (entityType instanceof Tag) return EDBEntity.Tag;
         if (entityType instanceof User) return EDBEntity.User;
-        if (entityType instanceof CustomEntity) return EDBEntity.Custom;
+        if (entityType instanceof CustomEntity) return EDBEntity.CustomEntity;
     }
 
     async getEntityMetaByKey(type: EDBEntity, id: number, key: string): Promise<TEntityMetaModel | undefined | null> {

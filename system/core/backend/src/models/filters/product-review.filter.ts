@@ -1,8 +1,10 @@
 import { TProductReviewFilter } from '@cromwell/core';
 import { Field, InputType, Int } from 'type-graphql';
 
+import { BaseFilterInput } from './base-filter.filter';
+
 @InputType("ProductReviewFilter")
-export class ProductReviewFilter implements TProductReviewFilter {
+export class ProductReviewFilter extends BaseFilterInput implements TProductReviewFilter {
 
     @Field(type => Int, { nullable: true })
     productId?: number;

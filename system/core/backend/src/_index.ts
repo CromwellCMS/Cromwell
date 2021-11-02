@@ -15,6 +15,7 @@ export * from './models/entities/tag.entity';
 export * from './models/entities/page-stats.entity';
 export * from './models/entities/post-comment.entity';
 export * from './models/entities/meta/base-meta.entity';
+export * from './models/entities/custom-entity.entity';
 
 export * from './models/paged/product.paged';
 export * from './models/paged/meta.paged';
@@ -24,6 +25,7 @@ export * from './models/paged/product-category.paged';
 export * from './models/paged/user.paged';
 export * from './models/paged/order.paged';
 export * from './models/paged/tag.paged';
+export * from './models/paged/custom-entity.paged';
 
 export * from './models/filters/product.filter';
 export * from './models/filters/post.filter';
@@ -49,6 +51,7 @@ export * from './models/inputs/order.input';
 export * from './models/inputs/tag.input';
 export * from './models/inputs/delete-many.input';
 export * from './models/inputs/plugin.input';
+export * from './models/inputs/custom-entity.input';
 
 export * from './models/objects/attribute-product-variant.object';
 export * from './models/objects/attribute-instance.object';
@@ -64,7 +67,7 @@ export * from './repositories/post.repository';
 export * from './repositories/order.repository';
 export * from './repositories/tag.repository';
 export * from './repositories/page-stats.repository';
-export * from './helpers/entity-meta';
+export * from './repositories/custom-entity.repository';
 
 export * from './helpers/paths';
 export * from './helpers/logger';
@@ -86,3 +89,4 @@ export * from './helpers/generic-entities';
 export * from './helpers/theme-config';
 export * from './helpers/base-queries';
 export * from './helpers/plugin-settings';
+export * from './helpers/entity-meta';

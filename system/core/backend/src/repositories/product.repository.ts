@@ -98,7 +98,7 @@ export class ProductRepository extends BaseRepository<Product> {
         product.description = input.description;
         product.descriptionDelta = input.descriptionDelta;
         product.stockAmount = input.stockAmount;
-        product.inStock = input.inStock;
+        product.stockStatus = input.stockStatus;
 
         if (!product.id) await product.save();
 
@@ -376,11 +376,15 @@ export class ProductRepository extends BaseRepository<Product> {
     }
 
     async deleteManyFilteredProducts(input: TDeleteManyInput, filterParams?: ProductFilterInput): Promise<boolean | undefined> {
-        const qb = this.createQueryBuilder(this.metadata.tablePath).delete();
+        const qbSelect = this.createQueryBuilder(this.metadata.tablePath).select([`${this.metadata.tablePath}.id`]);
+        this.applyProductFilter(qbSelect, filterParams);
+        this.applyDeleteMany(qbSelect, input);
 
-        this.applyProductFilter(qb as any, filterParams);
-        this.applyDeleteMany(qb, input);
-        await qb.execute();
+        const qbDelete = this.createQueryBuilder(this.metadata.tablePath).delete()
+            .where(`${this.metadata.tablePath}.id IN (${qbSelect.getQuery()})`)
+            .setParameters(qbSelect.getParameters());
+
+        await qbDelete.execute();
         return true;
     }
 

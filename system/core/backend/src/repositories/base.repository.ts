@@ -1,9 +1,10 @@
 import { EDBEntity, getStoreItem, TBasePageEntity, TDeleteManyInput, TPagedList, TPagedParams } from '@cromwell/core';
 import { ConnectionOptions, DeleteQueryBuilder, getConnection, Repository, SelectQueryBuilder } from 'typeorm';
 
-import { getPaged, getSqlBoolStr, getSqlLike, wrapInQuotes } from '../helpers/base-queries';
+import { getPaged, getSqlBoolStr, getSqlLike, wrapInQuotes, applyBaseFilter } from '../helpers/base-queries';
 import { getLogger } from '../helpers/logger';
 import { PageStats } from '../models/entities/page-stats.entity';
+import { BaseFilterInput } from '../models/filters/base-filter.filter';
 
 const logger = getLogger();
 
@@ -101,6 +102,7 @@ export class BaseRepository<EntityType, EntityInputType = EntityType> extends Re
             }
         } else {
             if (input.ids?.length) {
+                input.ids = input.ids.filter(Boolean).filter(id => typeof id === 'number');
                 qb.andWhere(`${this.metadata.tablePath}.id IN (:...ids)`, { ids: input.ids ?? [] })
             } else {
                 throw new Error(`applyDeleteMany: You have to specify ids to delete for ${this.metadata.tablePath}`);
@@ -134,6 +136,11 @@ export class BaseRepository<EntityType, EntityInputType = EntityType> extends Re
 
         const entity = await qb.getRawOne();
         return entity?.[this.metadata.tablePath + '_' + 'views'];
+    }
+
+    applyBaseFilter(qb: SelectQueryBuilder<TBasePageEntity>, filter?: BaseFilterInput): SelectQueryBuilder<TBasePageEntity> {
+        if (!filter) return qb;
+        return applyBaseFilter(qb, filter, this.metadata.tablePath, this.dbType);
     }
 
 }

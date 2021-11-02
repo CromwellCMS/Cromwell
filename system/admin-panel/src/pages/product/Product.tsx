@@ -165,7 +165,7 @@ const ProductPage = () => {
 
         const selectedItems = store.getState().selectedItems;
         const categoryIds = Object.keys(selectedItems)
-            .filter(id => selectedItems[id]).map(parseInt).filter(Boolean);
+            .filter(id => selectedItems[id]).map(Number).filter(Boolean);
         let mainCategoryId = store.getState().selectedItem ?? null;
         if (mainCategoryId && !categoryIds.includes(mainCategoryId)) mainCategoryId = null;
 
@@ -179,6 +179,8 @@ const ProductPage = () => {
                 sku: product.sku,
                 mainImage: product.mainImage,
                 images: product.images,
+                stockStatus: product.stockStatus ?? 'In stock',
+                stockAmount: product.stockAmount,
                 description: product.description,
                 descriptionDelta: product.descriptionDelta,
                 slug: product.slug,

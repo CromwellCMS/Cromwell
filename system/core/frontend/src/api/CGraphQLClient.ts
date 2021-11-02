@@ -18,6 +18,9 @@ import {
     TAttribute,
     TAttributeInput,
     TCreateUser,
+    TCustomEntity,
+    TCustomEntityFilter,
+    TCustomEntityInput,
     TDBEntity,
     TDeleteManyInput,
     TFilteredProductList,
@@ -1053,6 +1056,38 @@ export class CGraphQLClient {
         }
     `;
     // </Theme>
+
+
+    // <CustomEntity>
+
+    public CustomEntityFragment = gql`
+        fragment CustomEntityFragment on CustomEntity {
+            id
+            slug
+            createDate
+            updateDate
+            pageTitle
+            pageDescription
+            meta {
+                keywords
+            }
+            isEnabled
+            entityType
+            name
+        }
+    `;
+
+    public getCustomEntities = this.createGetMany<TCustomEntity>('CustomEntity', this.CustomEntityFragment, 'CustomEntityFragment');
+    public getCustomEntityById = this.createGetById<TCustomEntity>('CustomEntity', this.CustomEntityFragment, 'CustomEntityFragment');
+    public getCustomEntitySlug = this.createGetBySlug<TCustomEntity>('CustomEntity', this.CustomEntityFragment, 'CustomEntityFragment');
+    public getFilteredCustomEntities = this.createGetFiltered<TCustomEntity, TCustomEntityFilter>('CustomEntity', this.CustomEntityFragment, 'CustomEntityFragment', 'CustomEntityFilterInput');
+    public updateCustomEntity = this.createUpdateEntity<TCustomEntity, TCustomEntityInput>('CustomEntity', 'CustomEntityInput', this.CustomEntityFragment, 'CustomEntityFragment')
+    public createCustomEntity = this.createCreateEntity<TCustomEntity, TCustomEntityInput>('CustomEntity', 'CustomEntityInput', this.CustomEntityFragment, 'CustomEntityFragment');
+    public deleteCustomEntity = this.createDeleteEntity('CustomEntity');
+    public deleteManyCustomEntities = this.createDeleteMany('CustomEntity');
+    public deleteManyFilteredCustomEntities = this.createDeleteManyFiltered<TCustomEntityFilter>('CustomEntity', 'CustomEntityFilterInput');
+
+    // </CustomEntity>
 
 }
 

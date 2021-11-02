@@ -1,8 +1,10 @@
 import { TPostFilter } from '@cromwell/core';
 import { Field, InputType, Int } from 'type-graphql';
 
+import { BaseFilterInput } from './base-filter.filter';
+
 @InputType("PostFilterInput")
-export class PostFilterInput implements TPostFilter {
+export class PostFilterInput extends BaseFilterInput implements TPostFilter {
 
     @Field(type => Int, { nullable: true })
     authorId?: number;

@@ -39,7 +39,7 @@ const MenuItem = withStyles({
 
 const SidebarLink = (props: {
     data: SidebarLinkType,
-    toggleSubmenu: (panel: string) => (event: React.ChangeEvent, isExpanded: boolean) => void,
+    toggleSubMenu: (panel: string) => (event: React.ChangeEvent, isExpanded: boolean) => void,
     expanded: string | false;
     forceUpdate: () => void;
     setActiveId: (id: string) => void;
@@ -79,7 +79,7 @@ const SidebarLink = (props: {
         <ExpansionPanel
             key={props.data.id}
             expanded={isExpanded}
-            onChange={props.toggleSubmenu(props.data.id)}
+            onChange={props.toggleSubMenu(props.data.id)}
             className={styles.SidebarLink}>
             <AccordionSummary
                 className={styles.ExpansionPanelSummary}
@@ -92,7 +92,7 @@ const SidebarLink = (props: {
                     {props.data.sublinks.map(sublink => (
                         <SidebarLink data={sublink}
                             key={sublink.id}
-                            expanded={props.expanded} toggleSubmenu={props.toggleSubmenu}
+                            expanded={props.expanded} toggleSubMenu={props.toggleSubMenu}
                             forceUpdate={props.forceUpdate}
                             activeId={props.activeId}
                             setActiveId={props.setActiveId}

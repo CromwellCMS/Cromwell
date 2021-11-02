@@ -3,6 +3,7 @@ import { ConnectionOptions, getCustomRepository, getManager, SelectQueryBuilder 
 
 import { BasePageEntity } from '../models/entities/base-page.entity';
 import { entityMetaRepository } from '../helpers/entity-meta';
+import { BaseFilterInput } from '../models/filters/base-filter.filter';
 
 const MAX_PAGE_SIZE = 300;
 
@@ -112,7 +113,7 @@ export const checkEntitySlug = async <T extends BasePageEntity>(entity: T, Entit
                 hasModified = true;
             }
             if (match.slug === entity.id + '') {
-                entity.slug = entity.id + '_' + getRandStr(4);
+                entity.slug = entity.id + '_' + getRandStr(6);
                 hasModified = true;
                 break;
             }
@@ -141,4 +142,19 @@ export const getSqlLike = (dbType: ConnectionOptions['type']) => {
 export const wrapInQuotes = (dbType: ConnectionOptions['type'], str: string) => {
     if (dbType === 'postgres') return `"${str}"`;
     return '`' + str + '`';
+}
+
+export const applyBaseFilter = <TEntity>(qb: SelectQueryBuilder<TEntity>, filter: BaseFilterInput,
+    tablePath: string, dbType: ConnectionOptions['type']): SelectQueryBuilder<TEntity> => {
+    if (filter?.properties?.length) {
+        filter.properties.forEach((prop, index) => {
+            if (!prop.key || prop.key === '' || prop.key.includes(' ') || prop.key.includes('.')) return;
+            const valueName = `key_${index}`;
+            if (!prop.inMeta) {
+                qb.andWhere(`${tablePath}.${prop.key} ${prop.exact ? '=' : getSqlLike(dbType)} :${valueName}`,
+                    { [valueName]: prop.value });
+            }
+        })
+    }
+    return qb;
 }
