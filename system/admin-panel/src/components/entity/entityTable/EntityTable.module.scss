@@ -1,3 +1,5 @@
+@import "../../../styles/common.module.scss";
+
 .EntityTable {
     display: flex;
     flex-direction: column;
@@ -20,13 +22,17 @@
 }
 
 
-.listHeader {
+.tableHeader {
     @include paper;
     display: flex;
     border-radius: 9px;
     align-items: center;
     justify-content: space-between;
     z-index: 1;
+}
+
+.tableColumnNames {
+    width: 100%;
 }
 
 .pageActions {

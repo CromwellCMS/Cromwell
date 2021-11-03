@@ -17,11 +17,17 @@ export type TCustomField = {
 
 const customFields: Record<EDBEntity | string, Record<string, TCustomField>> = {};
 const metaForceUpdates: Partial<Record<EDBEntity, (() => void)>> = {};
+const onFieldRegisterListeners: Record<string, ((field: TCustomField) => any)> = {};
 
 export const registerCustomField = (field: TCustomField) => {
     if (!customFields[field.entityType]) customFields[field.entityType] = {};
     customFields[field.entityType][field.key] = field;
     metaForceUpdates[field.entityType]?.();
+    Object.values(onFieldRegisterListeners).forEach(listener => listener(field));
+}
+
+export const addOnFiledRegisterEventListener = (id: string, listener: ((field: TCustomField) => any)) => {
+    onFieldRegisterListeners[id] = listener;
 }
 
 export const unregisterAllCustomFields = () => {
@@ -30,7 +36,7 @@ export const unregisterAllCustomFields = () => {
     });
 }
 
-export const renderCustomFieldsFor = (entityType: EDBEntity, entityData: TBasePageEntity) => {
+export const renderCustomFieldsFor = (entityType: EDBEntity | string, entityData: TBasePageEntity) => {
     const WrapperComp = () => {
         const forceUpdate = useForceUpdate();
         metaForceUpdates[entityType] = forceUpdate;
@@ -55,7 +61,7 @@ export const renderCustomFieldsFor = (entityType: EDBEntity, entityData: TBasePa
     return <WrapperComp />;
 }
 
-export const getCustomMetaFor = (entityType: EDBEntity): Record<string, string> => {
+export const getCustomMetaFor = (entityType: EDBEntity | string): Record<string, string> => {
     return Object.assign({}, ...Object.values(customFields[entityType] ?? {})
         .map(field => {
             return {
@@ -64,7 +70,7 @@ export const getCustomMetaFor = (entityType: EDBEntity): Record<string, string> 
         }));
 }
 
-export const getCustomMetaKeysFor = (entityType: EDBEntity): string[] => {
+export const getCustomMetaKeysFor = (entityType: EDBEntity | string): string[] => {
     return Object.values(customFields[entityType] ?? {}).map(field => field.key);
 }
 
@@ -90,7 +96,7 @@ export const registerTextMetaField = (settings: {
                 label={settings.label}
                 fullWidth
                 variant="standard"
-                style={{ margin: '15px 0' }}
+                style={{ marginBottom: '15px' }}
                 {...(settings.props ?? {})}
             />
         },
@@ -199,21 +205,21 @@ export const registerGalleryMetaField = (settings: {
 }
 
 export const registerCustomFieldOfType = (field: TAdminCustomField) => {
-    if (field.fieldType === 'text') {
+    if (field.fieldType === 'Simple text') {
         registerTextMetaField(field);
     }
-    if (field.fieldType === 'select') {
+    if (field.fieldType === 'Select') {
 
     }
-    if (field.fieldType === 'image') {
+    if (field.fieldType === 'Image') {
         registerImageMetaField(field);
 
     }
-    if (field.fieldType === 'gallery') {
+    if (field.fieldType === 'Gallery') {
         registerGalleryMetaField(field);
 
     }
-    if (field.fieldType === 'color') {
+    if (field.fieldType === 'Color') {
 
     }
 }

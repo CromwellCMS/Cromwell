@@ -1,26 +1,13 @@
-import { gql, DocumentNode } from '@apollo/client';
-import { getBlockInstance, TPagedParams, TBaseFilter, TBasePageEntity, TDeleteManyInput, TPagedList, EDBEntity } from '@cromwell/core';
-import { CList, getGraphQLClient, TCList } from '@cromwell/core-frontend';
-import {
-    AccountTreeOutlined as AccountTreeOutlinedIcon,
-    Add as AddIcon,
-    Delete as DeleteIcon,
-    List as ListIcon,
-    UnfoldLess as UnfoldLessIcon,
-    UnfoldMore as UnfoldMoreIcon,
-} from '@mui/icons-material';
-import { Button, Checkbox, IconButton, Skeleton, TextField, Tooltip } from '@mui/material';
-import React, { useEffect, useRef, useState } from 'react';
+import { gql } from '@apollo/client';
+import { getBlockInstance, TBasePageEntity, TPagedParams } from '@cromwell/core';
+import { CList, TCList } from '@cromwell/core-frontend';
+import { Button, Checkbox, Tooltip } from '@mui/material';
+import React from 'react';
 import { connect, PropsType } from 'react-redux-ts';
-import { useHistory, withRouter, RouteComponentProps } from 'react-router-dom';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { debounce } from 'throttle-debounce';
 
-import { LoadingStatus } from '../../loadBox/LoadingStatus';
-import ConfirmationModal from '../../modal/Confirmation';
-import Pagination from '../../pagination/Pagination';
-import { listPreloader } from '../../skeleton/SkeletonPreloader';
-import { toast } from '../../toast/toast';
-import { PageInfo } from '../../../constants/PageInfos';
+import { getCustomMetaKeysFor } from '../../../helpers/customFields';
 import {
     countSelectedItems,
     getSelectedInput,
@@ -30,9 +17,13 @@ import {
 } from '../../../redux/helpers';
 import { TAppState } from '../../../redux/store';
 import commonStyles from '../../../styles/common.module.scss';
-import styles from './EntityTable.module.scss'
+import ConfirmationModal from '../../modal/Confirmation';
+import Pagination from '../../pagination/Pagination';
+import { listPreloader } from '../../skeleton/SkeletonPreloader';
+import { toast } from '../../toast/toast';
+import { TBaseEntityFilter, TEntityPageProps } from '../types';
+import styles from './EntityTable.module.scss';
 import EntityTableItem from './EntityTableItem';
-import { TCustomEntityColumn } from '../../../helpers/customEntities';
 
 const mapStateToProps = (state: TAppState) => {
     return {
@@ -40,67 +31,19 @@ const mapStateToProps = (state: TAppState) => {
     }
 }
 
-export type TEntityTableProps<TEntityType extends TBasePageEntity, TFilterType extends TBaseFilter> = PropsType<TAppState, {
-    /**
-     * Category of entity to display. Supports default types
-     */
-    entityCategory: EDBEntity;
 
-    /**
-     * If entity is custom, provide custom type
-     */
-    entityType?: string;
-
-    /**
-     * Properties of entity to show in columns
-     */
-    columns: TCustomEntityColumn[];
-
-    /**
-     * Property of an element to use as a name in modals, such as: "Delete MyNewProductName?"
-     * Will use ID by default 
-     */
-    nameProperty?: keyof TEntityType;
-
-    /**
-     * Name of one item such as: Product, Post, etc. Used in modals
-     */
-    entityLabel?: string;
-
-    /**
-     * How to name this list / page? 
-     */
-    listLabel: string;
+export type TEntityTableProps<TEntityType extends TBasePageEntity, TFilterType extends TBaseEntityFilter>
+    = PropsType<TAppState, TEntityPageProps<TEntityType, TFilterType>,
+        ReturnType<typeof mapStateToProps>> & RouteComponentProps;
 
 
-    /**
-     * Page to open when user clicks "edit"
-     */
-    entityBaseRoute?: PageInfo;
-
-    /**
-     * API methods called on user actions
-     */
-    deleteOne: (id: number) => any;
-    deleteMany: (input: TDeleteManyInput) => any;
-    deleteManyFiltered: (input: TDeleteManyInput, filter: TFilterType) => any;
-
-    getManyFiltered: (options: {
-        pagedParams?: TPagedParams<TEntityType>;
-        filterParams?: TFilterType;
-        customFragment?: DocumentNode;
-        customFragmentName?: string;
-    }) => Promise<TPagedList<TEntityType>>;
-}, ReturnType<typeof mapStateToProps>> & RouteComponentProps;
-
-
-export type ListItemProps<TEntityType extends TBasePageEntity, TFilterType extends TBaseFilter> = {
+export type TListItemProps<TEntityType extends TBasePageEntity, TFilterType extends TBaseEntityFilter> = {
     handleDeleteBtnClick: (item: TEntityType) => void;
     toggleSelection?: (item: TEntityType) => void;
     tableProps: TEntityTableProps<TEntityType, TFilterType>;
 }
 
-class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBaseFilter>
+class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBaseEntityFilter>
     extends React.Component<TEntityTableProps<TEntityType, TFilterType>, {
         isLoading: boolean;
         itemToDelete: TEntityType | null;
@@ -161,12 +104,7 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
 
     private getManyFilteredItems = async (params: TPagedParams<TEntityType>) => {
         if (this.props.entityType) {
-            if (!this.filterInput.properties) this.filterInput.properties = [];
-            this.filterInput.properties.push({
-                key: 'entityType',
-                value: this.props.entityType,
-                exact: true,
-            })
+            this.filterInput.entityType = this.props.entityType;
         }
         const data = await this.props.getManyFiltered({
             pagedParams: params,
@@ -175,7 +113,8 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
                     id
                     slug
                     isEnabled
-                    ${this.props.columns.map(prop => prop.property).join('\n')}
+                    ${this.props.columns.filter(col => !col.meta).map(col => col.name).join('\n')}
+                    customMeta (fields: ${JSON.stringify(getCustomMetaKeysFor(this.props.entityType ?? this.props.entityCategory))})
                 }
             `,
             customFragmentName: `${this.props.entityCategory}ListFragment`,
@@ -216,26 +155,25 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
         return (
             <div className={styles.EntityTable}>
                 <div className={styles.header}>
-                    <p>{this.props.entityListLabel}</p>
+                    <p>{this.props.listLabel}</p>
                     <Button>Add new</Button>
                 </div>
                 <div className={styles.tableHeader}>
                     <div className={commonStyles.center}>
                         <Tooltip title="Select all">
                             <Checkbox
-                                style={{ marginRight: '10px' }}
                                 checked={this.props.allSelected ?? false}
                                 onChange={this.handleToggleSelectAll}
                             />
                         </Tooltip>
                     </div>
-                    <div className={styles.tableProperties}>
+                    <div className={styles.tableColumnNames}>
                         {this.props.columns.map(prop => (
-                            <p key={prop.property}>{prop.label}</p>
+                            <p key={prop.name}>{prop.label}</p>
                         ))}
                     </div>
                 </div>
-                <CList<TEntityType, ListItemProps<TEntityType, TFilterType>>
+                <CList<TEntityType, TListItemProps<TEntityType, TFilterType>>
                     className={styles.listWrapper}
                     id={this.listId}
                     ListItem={EntityTableItem}
@@ -258,14 +196,14 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
                     }}
                 />
                 <ConfirmationModal
-                    open={Boolean(this.state?.itemToDelete)}
+                    open={!!this.state?.itemToDelete}
                     onClose={() => this.setState({ itemToDelete: null })}
                     onConfirm={this.handleDeleteItem}
                     title={`Delete ${this.props.entityLabel ?? 'item'} ${this.state?.itemToDelete?.[
                         this.props.nameProperty ?? 'id'] ?? ''}?`}
                 />
                 <ConfirmationModal
-                    open={this.state?.deleteSelectedOpen}
+                    open={!!this.state?.deleteSelectedOpen}
                     onClose={() => this.setState({ deleteSelectedOpen: false })}
                     onConfirm={this.handleDeleteSelected}
                     title={`Delete ${countSelectedItems(this.totalElements)} item(s)?`}

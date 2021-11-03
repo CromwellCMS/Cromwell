@@ -1,12 +1,14 @@
-import { EDBEntity, getStoreItem } from '@cromwell/core';
+import { EDBEntity, getStoreItem, TCustomEntity, TCustomEntityFilter } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
 import React from 'react';
 
+import EntityEdit from '../components/entity/entityEdit/EntityEdit';
 import EntityTable from '../components/entity/entityTable/EntityTable';
-import { PageInfo, SidebarLinkType } from '../constants/PageInfos';
+import { TEntityPageProps } from '../components/entity/types';
+import { TPageInfo, TSidebarLinkType } from '../constants/PageInfos';
 
 export type TAdminCustomEntity = {
-    key: string;
+    entityType: string;
     columns: TCustomEntityColumn[];
     listLabel: string;
     entityLabel?: string;
@@ -16,7 +18,7 @@ export type TAdminCustomEntity = {
 
 export type TCustomEntityColumn = {
     label: string;
-    property: string;
+    name: string;
     meta?: boolean;
     type?: 'text' | 'image' | 'currency';
     width?: number;
@@ -27,61 +29,86 @@ export type TCustomEntityColumn = {
 const customEntities: Record<string, TAdminCustomEntity> = {};
 
 export const registerCustomEntity = (options: TAdminCustomEntity) => {
-    customEntities[options.key] = options;
+    customEntities[options.entityType] = options;
     getStoreItem('forceUpdatePage')?.();
 }
 
-export const getCustomEntityPages = (): PageInfo[] => {
-    const pages: PageInfo[] = [];
+export const getCustomEntities = (): TAdminCustomEntity[] => {
+    return Object.values(customEntities);
+}
+
+// PagesInfo for react-router
+export const getCustomEntityPages = (): TPageInfo[] => {
+    const pages: TPageInfo[] = [];
 
     Object.values(customEntities).forEach((entity) => {
+
+        const entityListRoute = '/' + entity.entityType + '-list';
+        const entityBaseRoute = '/' + entity.entityType
+
+        const client = getGraphQLClient();
+        const entityPageProps: TEntityPageProps<TCustomEntity, TCustomEntityFilter> = {
+            entityCategory: EDBEntity.CustomEntity,
+            entityBaseRoute,
+            entityListRoute,
+            entityType: entity.entityType,
+            columns: entity.columns,
+            listLabel: entity.listLabel,
+            entityLabel: entity.entityLabel,
+            renderFields: () => <></>,
+            getInput: () => ({ entityType: entity.entityType }),
+            getById: client.getCustomEntityById,
+            deleteOne: client.deleteCustomEntity,
+            deleteMany: client.deleteManyCustomEntities,
+            deleteManyFiltered: client.deleteManyFilteredCustomEntities,
+            getManyFiltered: client.getFilteredCustomEntities,
+            update: client.updateCustomEntity,
+            create: client.createCustomEntity,
+        }
+
         const ListComp = () => {
-            const client = getGraphQLClient();
             return (
                 <EntityTable
-                    entityCategory={EDBEntity.CustomEntity}
-                    entityType={entity.key}
-                    columns={entity.columns}
-                    listLabel={entity.listLabel}
-                    entityLabel={entity.entityLabel}
-                    deleteOne={client.deleteCustomEntity}
-                    deleteMany={client.deleteManyCustomEntities}
-                    deleteManyFiltered={client.deleteManyFilteredCustomEntities}
-                    getManyFiltered={client.getFilteredCustomEntities}
+                    {...entityPageProps}
                 />
             )
         }
         pages.push({
-            name: entity.key,
-            route: '/' + entity.key + '-list',
+            name: entity.entityType,
+            route: entityListRoute,
             component: ListComp,
             roles: ['administrator', 'guest', 'author'],
-        })
+        });
+
+        const EntityComp = () => {
+            return (
+                <EntityEdit
+                    {...entityPageProps}
+                />
+            )
+        }
+        pages.push({
+            name: entity.entityType,
+            route: entityBaseRoute + '/:id',
+            component: EntityComp,
+            roles: ['administrator', 'guest', 'author'],
+        });
     });
     return pages;
 }
 
-export const getCustomEntitySidebarLinks = (): SidebarLinkType[] => {
-    const links: SidebarLinkType[] = [];
+// Links for sidebar
+export const getCustomEntitySidebarLinks = (): TSidebarLinkType[] => {
+    const links: TSidebarLinkType[] = [];
 
     Object.values(customEntities).forEach((entity) => {
         links.push({
-            id: entity.key,
+            id: entity.entityType,
             title: entity.listLabel,
-            route: '/' + entity.key + '-list',
+            route: '/' + entity.entityType + '-list',
             icon: entity.icon,
             roles: ['administrator', 'guest', 'author'],
         })
     });
     return links;
 }
-
-// registerCustomEntity({
-//     key: 'custom-1',
-//     listLabel: 'Custom Tests',
-//     entityLabel: 'Test',
-//     columns: [{
-//         property: 'id',
-//         label: 'id',
-//     }],
-// })

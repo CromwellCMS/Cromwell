@@ -1,5 +1,4 @@
-import { TBasePageEntity, TBaseFilter } from '@cromwell/core';
-import { getCStore } from '@cromwell/core-frontend';
+import { TBasePageEntity } from '@cromwell/core';
 import { DeleteForever as DeleteForeverIcon, Edit as EditIcon } from '@mui/icons-material';
 import { Checkbox, IconButton } from '@mui/material';
 import React from 'react';
@@ -8,9 +7,9 @@ import { Link } from 'react-router-dom';
 
 import { TAppState } from '../../../redux/store';
 import commonStyles from '../../../styles/common.module.scss';
-import { ListItemProps } from './EntityTable';
+import { TBaseEntityFilter } from '../types';
+import { TListItemProps } from './EntityTable';
 import styles from './EntityTableItem.module.scss';
-
 
 const mapStateToProps = (state: TAppState) => {
     return {
@@ -19,23 +18,20 @@ const mapStateToProps = (state: TAppState) => {
     }
 }
 
-type TEntityTableItemProps<TEntityType extends TBasePageEntity, TFilterType extends TBaseFilter>
+type TEntityTableItemProps<TEntityType extends TBasePageEntity, TFilterType extends TBaseEntityFilter>
     = PropsType<PropsType, {
         data?: TEntityType;
-        listItemProps: ListItemProps<TEntityType, TFilterType>;
+        listItemProps: TListItemProps<TEntityType, TFilterType>;
     }, ReturnType<typeof mapStateToProps>>;
 
 
-const EntityTableItem = <TEntityType extends TBasePageEntity, TFilterType extends TBaseFilter>(props: TEntityTableItemProps<TEntityType, TFilterType>) => {
+const EntityTableItem = <TEntityType extends TBasePageEntity, TFilterType extends TBaseEntityFilter>(props: TEntityTableItemProps<TEntityType, TFilterType>) => {
     const { data } = props;
-    const cstore = getCStore();
-
     let selected = false;
     if (props.allSelected && !props.selectedItems[data.id]) selected = true;
     if (!props.allSelected && props.selectedItems[data.id]) selected = true;
 
     const tableColumns = props.listItemProps.tableProps.columns;
-
 
     return (
         <div className={styles.listItem}>
@@ -47,14 +43,14 @@ const EntityTableItem = <TEntityType extends TBasePageEntity, TFilterType extend
             <div className={styles.columns}>
                 {tableColumns.map(prop => (
                     <div className={styles.column}
-                        key={prop.property}
+                        key={prop.name}
                         style={{
                             width: prop.width ? prop.width + 'px' : 100 / tableColumns.length + '%',
                             minWidth: prop.minWidth,
                             maxWidth: prop.maxWidth,
                         }}
                     >
-                        <p>{data?.[prop.property] ?? ''}</p>
+                        <p>{data?.[prop.name] ?? ''}</p>
                     </div>
                 ))}
             </div>
@@ -78,8 +74,7 @@ const EntityTableItem = <TEntityType extends TBasePageEntity, TFilterType extend
                 )}
             </div>
         </div>
-    )
-
+    );
 }
 
 export default connect(mapStateToProps)(EntityTableItem);

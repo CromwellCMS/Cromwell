@@ -1,0 +1,61 @@
+@import "../../../styles/common.module.scss";
+
+.EntityEdit {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.notFoundPage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.notFoundText {
+    font-size: 25px;
+    font-weight: 500;
+}
+
+.header {
+    @include paper;
+    padding: 0 10px 0 0;
+    width: 100%;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+
+.headerLeft {
+    display: flex;
+    align-items: center;
+}
+
+.openPageBtn {
+    margin-right: 10px;
+}
+
+.headerActions {
+    display: flex;
+}
+
+.content {
+    @include paper;
+    padding: 20px;
+    margin-bottom: 15px;
+}
+
+:global(.modeDark) {
+
+    .header {
+        background-color: #333;
+
+        * {
+            color: #eee;
+        }
+    }
+}

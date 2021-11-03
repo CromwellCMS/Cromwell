@@ -20,6 +20,15 @@
     background-color: #f4f4f4;
 }
 
+.columns {
+    width: 100%;
+}
+
+.listItemActions {
+    display: flex;
+    justify-content: flex-end;
+}
+
 :global(.modeDark) {
     .listItem {
         background-color: #333;

@@ -5,7 +5,7 @@ import { withStyles } from '@mui/styles';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import { SidebarLinkType } from '../../constants/PageInfos';
+import { TSidebarLinkType } from '../../constants/PageInfos';
 import styles from './Sidebar.module.scss';
 
 const ExpansionPanel = withStyles({
@@ -38,7 +38,7 @@ const MenuItem = withStyles({
 
 
 const SidebarLink = (props: {
-    data: SidebarLinkType,
+    data: TSidebarLinkType,
     toggleSubMenu: (panel: string) => (event: React.ChangeEvent, isExpanded: boolean) => void,
     expanded: string | false;
     forceUpdate: () => void;

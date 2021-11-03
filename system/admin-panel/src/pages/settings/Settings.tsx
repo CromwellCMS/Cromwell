@@ -59,6 +59,9 @@ import {
     renderCustomFieldsFor,
     unregisterAllCustomFields,
 } from '../../helpers/customFields';
+import {
+    getCustomEntities
+} from '../../helpers/customEntities';
 import { NumberFormatCustom } from '../../helpers/NumberFormatCustom';
 import commonStyles from '../../styles/common.module.scss';
 import styles from './Settings.module.scss';
@@ -108,7 +111,7 @@ class SettingsPage extends React.Component<any, {
     ];
 
     private defaultEntitiesWithCustomFields: {
-        entity: EDBEntity;
+        entity: EDBEntity | string;
         label: string;
     }[] = [
             {
@@ -345,7 +348,13 @@ class SettingsPage extends React.Component<any, {
         )
     }
 
-    private getCustomFieldsEntities = () => this.defaultEntitiesWithCustomFields;
+    private getCustomFieldsEntities = () => [
+        ...this.defaultEntitiesWithCustomFields,
+        ...getCustomEntities().map(custom => ({
+            entity: custom.entityType,
+            label: custom.entityLabel,
+        })),
+    ];
 
     private customFieldSettings = (props: {
         data: TAdminCustomField & { id: string };
@@ -384,7 +393,7 @@ class SettingsPage extends React.Component<any, {
                         size="small"
                         className={styles.customFieldItemField}
                     >
-                        {(['text', 'select', 'image', 'gallery', 'color'] as TAdminCustomField['fieldType'][])
+                        {(['Simple text', 'Text editor', 'Select', 'Image', 'Gallery', 'Color'] as TAdminCustomField['fieldType'][])
                             .map(option => (
                                 <MenuItem value={option} key={option}>{option}</MenuItem>
                             ))}
@@ -394,13 +403,13 @@ class SettingsPage extends React.Component<any, {
         );
     }
 
-    private addCustomField = (entityType: EDBEntity) => {
+    private addCustomField = (entityType: EDBEntity | string) => {
         const customFieldsDeclarations = this.state?.settings?.customFieldsDeclarations ?? [];
         const orderMax = customFieldsDeclarations.reduce((prev, curr) => curr.order > prev ? curr.order : prev, 0);
         customFieldsDeclarations.push({
             entityType,
             key: '',
-            fieldType: 'text',
+            fieldType: 'Simple text',
             order: orderMax + 1,
             id: getRandStr(8)
         })

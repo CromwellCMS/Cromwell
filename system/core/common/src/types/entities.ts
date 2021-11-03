@@ -653,7 +653,7 @@ export type TServiceVersions = {
 
 export type TAdminCustomField = {
     entityType: EDBEntity | string;
-    fieldType: 'text' | 'select' | 'image' | 'gallery' | 'color';
+    fieldType: 'Simple text' | 'Text editor' | 'Select' | 'Image' | 'Gallery' | 'Color';
     key: string;
     id: string;
     options?: string[];
