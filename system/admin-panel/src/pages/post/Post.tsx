@@ -25,7 +25,7 @@ import styles from './Post.module.scss';
 import PostSettings from './PostSettings';
 
 
-const ArrowBackIcon = <svg width="1em" height="1em" focusable="false" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"></path></svg>
+const ArrowBackIcon = <svg style={{ fontSize: '18px' }} width="1em" height="1em" focusable="false" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"></path></svg>
 const textPreloader = [];
 for (let i = 0; i < 30; i++) {
     textPreloader.push(<Skeleton variant="text" height="10px" style={{ margin: '3px 0' }} key={i} />)
@@ -215,6 +215,12 @@ const Post = (props) => {
         }
     }
 
+    const refetchMeta = async () => {
+        if (!postId) return;
+        const data = await getPostData(parseInt(postId));
+        return data?.customMeta;
+    };
+
     const handlePublish = async () => {
         setIsSaving(true);
         const input = await getInput();
@@ -295,10 +301,11 @@ const Post = (props) => {
                             anchorEl={actionsRef.current}
                             isSaving={isSaving}
                             handleUnpublish={handleUnpublish}
+                            refetchMeta={refetchMeta}
                         />
                     )}
                     {pageFullUrl && postData?.published && (
-                        <Tooltip title="Open post page in new tab">
+                        <Tooltip title="Open post in the new tab">
                             <IconButton
                                 style={{ marginRight: '10px' }}
                                 className={styles.openPageBtn}

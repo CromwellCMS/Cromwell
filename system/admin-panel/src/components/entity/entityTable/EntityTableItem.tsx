@@ -41,7 +41,7 @@ const EntityTableItem = <TEntityType extends TBasePageEntity, TFilterType extend
                     onChange={() => props.listItemProps.toggleSelection(data)} />
             </div>
             <div className={styles.columns}>
-                {tableColumns.map(prop => (
+                {!!tableColumns?.length && tableColumns.map(prop => (
                     <div className={styles.column}
                         key={prop.name}
                         style={{

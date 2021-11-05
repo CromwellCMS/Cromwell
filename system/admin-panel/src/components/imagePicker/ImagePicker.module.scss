@@ -7,6 +7,10 @@
     .removeBtn {
         margin-left: auto;
     }
+
+    &:global(.standard) {
+        border-bottom: 1px solid #999;
+    }
 }
 
 .valueWrapper {

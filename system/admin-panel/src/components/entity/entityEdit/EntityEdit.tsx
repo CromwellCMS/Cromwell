@@ -4,10 +4,9 @@ import { ArrowBack as ArrowBackIcon, OpenInNew as OpenInNewIcon } from '@mui/ico
 import { Button, Grid, IconButton, Skeleton, Tooltip } from '@mui/material';
 import React from 'react';
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
-import { debounce } from 'throttle-debounce';
 
 import { tagPageInfo } from '../../../constants/PageInfos';
-import { getCustomMetaFor, getCustomMetaKeysFor, renderCustomFieldsFor, addOnFiledRegisterEventListener } from '../../../helpers/customFields';
+import { getCustomMetaFor, getCustomMetaKeysFor, RenderCustomFields } from '../../../helpers/customFields';
 import commonStyles from '../../../styles/common.module.scss';
 import { toast } from '../../toast/toast';
 import { TBaseEntityFilter, TEntityPageProps } from '../types';
@@ -29,7 +28,6 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
     }
 
     private init = async () => {
-        addOnFiledRegisterEventListener('EntityEdit', this.onFieldRegistered);
         this.setState({ isLoading: true });
         const entityId = this.props.match.params?.id;
         let entityData: TEntityType;
@@ -48,24 +46,12 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
         this.setState({ isLoading: false });
     }
 
-    private onFieldRegistered = debounce(300, async () => {
-        // If some field registered after this page has fetched entity data, we need to
-        // re-request data for this field to get its custom meta
-        if (!this) return;
+    private refetchMeta = async () => {
         const entityId = this.props.match.params?.id;
-
+        if (!entityId) return;
         const data = await this.getEntity(parseInt(entityId));
-        this.setState(prevState => {
-            return {
-                entityData: {
-                    ...(prevState.entityData ?? {} as any),
-                    // Just patch the values that are undefined, but leave the rest
-                    // for user input to be untouched
-                    customMeta: Object.assign({}, data.customMeta, prevState.entityData?.customMeta),
-                }
-            }
-        })
-    })
+        return data?.customMeta;
+    };
 
     private getEntity = async (entityId: number) => {
         let data: TEntityType;
@@ -102,7 +88,7 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
         }
 
         inputData.customMeta = Object.assign({}, inputData.customMeta,
-            getCustomMetaFor(this.props.entityType ?? this.props.entityCategory));
+            await getCustomMetaFor(this.props.entityType ?? this.props.entityCategory));
 
         if (entityId === 'new') {
             try {
@@ -168,7 +154,7 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
                     <div className={styles.headerActions}>
                         {pageFullUrl && (
                             <Tooltip
-                                title={`Open ${(this.props.entityType ?? this.props.entityCategory).toLocaleLowerCase()} page in new tab`}
+                                title={`Open ${(this.props.entityType ?? this.props.entityCategory).toLocaleLowerCase()} in the new tab`}
                             >
                                 <IconButton
                                     className={styles.openPageBtn}
@@ -197,9 +183,15 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
                     )}
                     {!this.state?.isLoading && (
                         <Grid container spacing={3}>
+                            {this.state?.entityData && this.props.renderFields?.(this.state.entityData)}
                             <Grid item xs={12} >
-                                {this.state?.entityData && renderCustomFieldsFor(this.props.entityType
-                                    ?? this.props.entityCategory, this.state?.entityData)}
+                                {this.state?.entityData && (
+                                    <RenderCustomFields
+                                        entityType={this.props.entityType ?? this.props.entityCategory}
+                                        entityData={this.state?.entityData}
+                                        refetchMeta={this.refetchMeta}
+                                    />
+                                )}
                             </Grid>
                         </Grid>
                     )}

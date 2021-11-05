@@ -390,7 +390,8 @@ ${content}
         entity.adminSettings = {
             sendFromEmail: input.sendFromEmail,
             smtpConnectionString: input.smtpConnectionString,
-            customFieldsDeclarations: input.customFieldsDeclarations,
+            customFields: input.customFields,
+            customEntities: input.customEntities,
         }
 
         await entity.save();

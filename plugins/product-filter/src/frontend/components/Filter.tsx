@@ -306,7 +306,7 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
                         }
                         const isExpanded = !collapsedItems[attr.key];
                         return (
-                            <Card className="productFilter_card">
+                            <Card key={attr.key} className="productFilter_card">
                                 <div className="productFilter_headerWrapper">
                                     <CardHeader
                                         className="productFilter_cardHeader"

@@ -1,36 +1,25 @@
-import { EDBEntity, getStoreItem, TCustomEntity, TCustomEntityFilter } from '@cromwell/core';
+import { EDBEntity, getStoreItem, TAdminCustomEntity, TCustomEntity, TCustomEntityFilter } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
 import React from 'react';
 
 import EntityEdit from '../components/entity/entityEdit/EntityEdit';
 import EntityTable from '../components/entity/entityTable/EntityTable';
 import { TEntityPageProps } from '../components/entity/types';
-import { TPageInfo, TSidebarLinkType } from '../constants/PageInfos';
-
-export type TAdminCustomEntity = {
-    entityType: string;
-    columns: TCustomEntityColumn[];
-    listLabel: string;
-    entityLabel?: string;
-    route?: string;
-    icon?: string
-}
-
-export type TCustomEntityColumn = {
-    label: string;
-    name: string;
-    meta?: boolean;
-    type?: 'text' | 'image' | 'currency';
-    width?: number;
-    minWidth?: number;
-    maxWidth?: number;
-}
+import sidebarStyles from '../components/sidebar/Sidebar.module.scss';
+import { TPageInfo, TSidebarLink } from '../constants/PageInfos';
+import { store } from '../redux/store';
 
 const customEntities: Record<string, TAdminCustomEntity> = {};
 
 export const registerCustomEntity = (options: TAdminCustomEntity) => {
+    const hasBeenRegistered = !!customEntities[options.entityType];
     customEntities[options.entityType] = options;
-    getStoreItem('forceUpdatePage')?.();
+    if (!hasBeenRegistered) getStoreItem('forceUpdatePage')?.();
+}
+
+export const unregisterCustomEntity = (entityType: string) => {
+    delete customEntities[entityType];
+    store.getState().forceUpdateSidebar?.();
 }
 
 export const getCustomEntities = (): TAdminCustomEntity[] => {
@@ -43,8 +32,14 @@ export const getCustomEntityPages = (): TPageInfo[] => {
 
     Object.values(customEntities).forEach((entity) => {
 
-        const entityListRoute = '/' + entity.entityType + '-list';
-        const entityBaseRoute = '/' + entity.entityType
+        if (entity.entityBaseRoute && !entity.entityBaseRoute.startsWith('/'))
+            entity.entityBaseRoute = '/' + entity.entityBaseRoute;
+
+        if (entity.entityListRoute && !entity.entityListRoute.startsWith('/'))
+            entity.entityListRoute = '/' + entity.entityListRoute;
+
+        const entityBaseRoute = entity.entityBaseRoute ?? '/' + entity.entityType;
+        const entityListRoute = entity.entityListRoute ?? entityBaseRoute + '-list';
 
         const client = getGraphQLClient();
         const entityPageProps: TEntityPageProps<TCustomEntity, TCustomEntityFilter> = {
@@ -98,15 +93,18 @@ export const getCustomEntityPages = (): TPageInfo[] => {
 }
 
 // Links for sidebar
-export const getCustomEntitySidebarLinks = (): TSidebarLinkType[] => {
-    const links: TSidebarLinkType[] = [];
+export const getCustomEntitySidebarLinks = (): TSidebarLink[] => {
+    const links: TSidebarLink[] = [];
 
     Object.values(customEntities).forEach((entity) => {
         links.push({
             id: entity.entityType,
             title: entity.listLabel,
             route: '/' + entity.entityType + '-list',
-            icon: entity.icon,
+            icon: entity.icon && React.createElement('div', {
+                className: sidebarStyles.customIcon,
+                style: { backgroundImage: `url(${entity.icon})` }
+            }),
             roles: ['administrator', 'guest', 'author'],
         })
     });

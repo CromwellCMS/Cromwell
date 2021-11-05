@@ -113,7 +113,7 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
                     id
                     slug
                     isEnabled
-                    ${this.props.columns.filter(col => !col.meta).map(col => col.name).join('\n')}
+                    ${this.props.columns ? this.props.columns.filter(col => !col.meta).map(col => col.name).join('\n') : ''}
                     customMeta (fields: ${JSON.stringify(getCustomMetaKeysFor(this.props.entityType ?? this.props.entityCategory))})
                 }
             `,
@@ -168,7 +168,7 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
                         </Tooltip>
                     </div>
                     <div className={styles.tableColumnNames}>
-                        {this.props.columns.map(prop => (
+                        {this.props.columns?.map(prop => (
                             <p key={prop.name}>{prop.label}</p>
                         ))}
                     </div>

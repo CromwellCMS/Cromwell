@@ -143,7 +143,7 @@ const OrderPage = () => {
                     <Link to={orderListPageInfo.route}>
                         <IconButton
                         >
-                            <ArrowBackIcon />
+                            <ArrowBackIcon style={{ fontSize: '18px' }} />
                         </IconButton>
                     </Link>
                     <p className={commonStyles.pageTitle}>order</p>

@@ -35,7 +35,7 @@
     align-items: center;
 }
 
-.openPageBtn {
+button.openPageBtn {
     margin-right: 10px;
 }
 
@@ -47,6 +47,15 @@
     @include paper;
     padding: 20px;
     margin-bottom: 15px;
+}
+
+.descriptionEditor {
+    @include styledScrollBar;
+    border: 1px solid #bbb;
+    border-radius: 5px;
+    max-height: 400px;
+    overflow: auto;
+    padding: 15px 40px;
 }
 
 :global(.modeDark) {

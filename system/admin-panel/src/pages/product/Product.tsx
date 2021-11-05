@@ -8,7 +8,7 @@ import { Link, useHistory, useParams } from 'react-router-dom';
 
 import { toast } from '../../components/toast/toast';
 import { productListInfo, productPageInfo } from '../../constants/PageInfos';
-import { getCustomMetaFor, getCustomMetaKeysFor, renderCustomFieldsFor } from '../../helpers/customFields';
+import { getCustomMetaFor, getCustomMetaKeysFor, RenderCustomFields } from '../../helpers/customFields';
 import { useForceUpdate } from '../../helpers/forceUpdate';
 import { resetSelected } from '../../redux/helpers';
 import { store } from '../../redux/store';
@@ -54,8 +54,8 @@ const ProductPage = () => {
     }, []);
 
     const getProduct = async () => {
+        let prod: TProduct | undefined;
         if (productId && productId !== 'new') {
-            let prod: TProduct | undefined;
             try {
                 prod = await client?.getProductById(parseInt(productId), gql`
                     fragment AdminPanelProductFragment on Product {
@@ -123,6 +123,7 @@ const ProductPage = () => {
             setProdData({} as any);
             forceUpdate();
         }
+        return prod;
     }
 
     const getAttributes = async () => {
@@ -141,6 +142,11 @@ const ProductPage = () => {
         })();
     }, []);
 
+    const refetchMeta = async () => {
+        if (!productId) return;
+        const data = await getProduct();
+        return data?.customMeta;
+    };
 
     const handleSave = async () => {
         await infoCardRef?.current?.save();
@@ -190,7 +196,7 @@ const ProductPage = () => {
                 meta: product.meta && {
                     keywords: product.meta.keywords
                 },
-                customMeta: Object.assign({}, product.customMeta, getCustomMetaFor(EDBEntity.Product)),
+                customMeta: Object.assign({}, product.customMeta, await getCustomMetaFor(EDBEntity.Product)),
                 isEnabled: product.isEnabled,
             }
 
@@ -255,7 +261,7 @@ const ProductPage = () => {
                     <Link to={productListInfo.route}>
                         <IconButton
                         >
-                            <ArrowBackIcon />
+                            <ArrowBackIcon style={{ fontSize: '18px' }} />
                         </IconButton>
                     </Link>
                     <p className={commonStyles.pageTitle}>product</p>
@@ -274,7 +280,7 @@ const ProductPage = () => {
                 </div>
                 <div className={styles.headerActions}>
                     {pageFullUrl && (
-                        <Tooltip title="Open product page in new tab">
+                        <Tooltip title="Open product in the new tab">
                             <IconButton
                                 className={styles.openPageBtn}
                                 aria-label="open"
@@ -284,7 +290,9 @@ const ProductPage = () => {
                             </IconButton>
                         </Tooltip>
                     )}
-                    <Button variant="contained" color="primary"
+                    <Button variant="contained"
+                        color="primary"
+                        size="small"
                         className={styles.saveBtn}
                         onClick={handleSave}>
                         Save
@@ -305,7 +313,12 @@ const ProductPage = () => {
                                 setProdData={setProdData}
                                 infoCardRef={infoCardRef}
                             />
-                            {renderCustomFieldsFor(EDBEntity.Product, product)}
+                            <div style={{ marginBottom: '15px' }}></div>
+                            <RenderCustomFields
+                                entityType={EDBEntity.Product}
+                                entityData={product}
+                                refetchMeta={refetchMeta}
+                            />
                         </div>
                     </TabPanel>
                     <TabPanel value={activeTabNum} index={1}>
@@ -321,9 +334,7 @@ const ProductPage = () => {
                         <CategoriesTab />
                     </TabPanel>
                 </>
-            )
-            }
-
+            )}
         </div >
     )
 }

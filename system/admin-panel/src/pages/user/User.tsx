@@ -21,7 +21,7 @@ import { ImagePicker } from '../../components/imagePicker/ImagePicker';
 import { toast } from '../../components/toast/toast';
 import { userPageInfo } from '../../constants/PageInfos';
 import { userRoles } from '../../constants/roles';
-import { getCustomMetaFor, getCustomMetaKeysFor, renderCustomFieldsFor } from '../../helpers/customFields';
+import { getCustomMetaFor, getCustomMetaKeysFor, RenderCustomFields } from '../../helpers/customFields';
 import commonStyles from '../../styles/common.module.scss';
 import styles from './User.module.scss';
 
@@ -86,6 +86,13 @@ export default function UserPage() {
         init();
     }, []);
 
+    const refetchMeta = async () => {
+        if (!userId) return;
+        const data = await getUser(parseInt(userId));
+        return data?.customMeta;
+    };
+
+
     const handleInputChange = (prop: keyof TUser, val: any) => {
         if (userData) {
             setUserData((prevData) => {
@@ -96,7 +103,7 @@ export default function UserPage() {
         }
     }
 
-    const getInput = (): TUpdateUser => ({
+    const getInput = async (): Promise<TUpdateUser> => ({
         slug: userData.slug,
         pageTitle: userData.pageTitle,
         pageDescription: userData.pageDescription,
@@ -107,11 +114,11 @@ export default function UserPage() {
         phone: userData.phone,
         address: userData.address,
         role: userData.role,
-        customMeta: Object.assign({}, userData.customMeta, getCustomMetaFor(EDBEntity.User)),
+        customMeta: Object.assign({}, userData.customMeta, await getCustomMetaFor(EDBEntity.User)),
     });
 
     const handleSave = async () => {
-        const inputData = getInput();
+        const inputData = await getInput();
 
         if (isNew) {
             try {
@@ -145,7 +152,6 @@ export default function UserPage() {
                 console.error(e)
             }
         }
-
     }
 
     if (notFound) {
@@ -281,7 +287,13 @@ export default function UserPage() {
                         />
                     </Grid>
                     <Grid item xs={12} sm={12}>
-                        {userData && renderCustomFieldsFor(EDBEntity.User, userData)}
+                        {userData && (
+                            <RenderCustomFields
+                                entityType={EDBEntity.User}
+                                entityData={userData}
+                                refetchMeta={refetchMeta}
+                            />
+                        )}
                     </Grid>
                 </Grid>
             </div>

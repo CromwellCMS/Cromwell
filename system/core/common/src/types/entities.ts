@@ -615,7 +615,13 @@ export type TCmsAdminSettings = {
     /**
      * Custom fields data
      */
-    customFieldsDeclarations?: TAdminCustomField[];
+    customFields?: TAdminCustomField[];
+
+    /**
+     * Custom fields data
+     */
+    customEntities?: TAdminCustomEntity[];
+
 }
 
 /**
@@ -659,6 +665,27 @@ export type TAdminCustomField = {
     options?: string[];
     label?: string;
     order?: number;
+}
+
+export type TAdminCustomEntity = {
+    entityType: string;
+    columns?: TCustomEntityColumn[];
+    listLabel: string;
+    entityLabel?: string;
+    route?: string;
+    icon?: string;
+    entityBaseRoute?: string;
+    entityListRoute?: string;
+}
+
+export type TCustomEntityColumn = {
+    label: string;
+    name: string;
+    meta?: boolean;
+    type?: 'text' | 'image' | 'currency';
+    width?: number;
+    minWidth?: number;
+    maxWidth?: number;
 }
 
 export type TCmsEntity = TCmsEntityCore & TBasePageEntity;

@@ -96,3 +96,9 @@ button.expandBtn {
     justify-content: center;
     align-items: flex-end;
 }
+
+.ellipsis {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

@@ -2,13 +2,14 @@ import { getStoreItem, onStoreChange, setStoreItem } from '@cromwell/core';
 import { ThemeProvider, Toolbar } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
 import clsx from 'clsx';
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter, Route, RouteComponentProps, Switch } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 
-import { getPageInfos } from '../../constants/PageInfos';
+import { getPageInfos } from '../../helpers/navigation';
 import { useForceUpdate } from '../../helpers/forceUpdate';
+import { store } from '../../redux/store';
 import { LayoutPortal } from '../../helpers/LayoutPortal';
 import Page404 from '../../pages/404/404page';
 import PageErrorBoundary from '../errorBoundaries/PageErrorBoundary';
@@ -29,7 +30,14 @@ function Layout() {
       userRole = user.role;
       forceUpdate();
     }
-  })
+  });
+
+  useEffect(() => {
+    store.setStateProp({
+      prop: 'forceUpdateApp',
+      payload: forceUpdate,
+    });
+  }, []);
 
   const darkMode = getStoreItem('theme')?.mode === 'dark';
 

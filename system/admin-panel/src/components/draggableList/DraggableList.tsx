@@ -40,7 +40,6 @@ export class DraggableList<TData extends { id: string | number }, TCompProps = R
 
     render() {
         const ItemComponent = this.props.component;
-
         return (
             <div className={styles.DraggableList}>
                 <ResponsiveGridLayout

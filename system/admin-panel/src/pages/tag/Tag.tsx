@@ -10,7 +10,7 @@ import ColorPicker from '../../components/colorPicker/ColorPicker';
 import { ImagePicker } from '../../components/imagePicker/ImagePicker';
 import { toast } from '../../components/toast/toast';
 import { tagListPageInfo, tagPageInfo } from '../../constants/PageInfos';
-import { getCustomMetaFor, getCustomMetaKeysFor, renderCustomFieldsFor } from '../../helpers/customFields';
+import { getCustomMetaFor, getCustomMetaKeysFor, RenderCustomFields } from '../../helpers/customFields';
 import { getEditorData, getEditorHtml, initTextEditor } from '../../helpers/editor/editor';
 import commonStyles from '../../styles/common.module.scss';
 import styles from './Tag.module.scss';
@@ -111,7 +111,7 @@ const TagPage = () => {
             isEnabled: data.isEnabled,
             description: await getEditorHtml(editorId),
             descriptionDelta: JSON.stringify(await getEditorData(editorId)),
-            customMeta: Object.assign({}, data.customMeta, getCustomMetaFor(EDBEntity.Tag)),
+            customMeta: Object.assign({}, data.customMeta, await getCustomMetaFor(EDBEntity.Tag)),
         }
 
         if (tagId === 'new') {
@@ -147,6 +147,12 @@ const TagPage = () => {
         }
     }
 
+    const refetchMeta = async () => {
+        if (!tagId) return;
+        const data = await getTagData(parseInt(tagId));
+        return data?.customMeta;
+    };
+
     if (notFound) {
         return (
             <div className={styles.TagPage}>
@@ -168,14 +174,14 @@ const TagPage = () => {
                 <div className={styles.headerLeft}>
                     <Link to={tagListPageInfo.route}>
                         <IconButton>
-                            <ArrowBackIcon />
+                            <ArrowBackIcon style={{ fontSize: '18px' }} />
                         </IconButton>
                     </Link>
                     <p className={commonStyles.pageTitle}>tag</p>
                 </div>
                 <div className={styles.headerActions}>
                     {pageFullUrl && (
-                        <Tooltip title="Open tag page in new tab">
+                        <Tooltip title="Open tag in the new tab">
                             <IconButton
                                 style={{ marginRight: '10px' }}
                                 className={styles.openPageBtn}
@@ -288,7 +294,13 @@ const TagPage = () => {
                             />
                         </Grid>
                         <Grid item xs={12} >
-                            {data && renderCustomFieldsFor(EDBEntity.Tag, data)}
+                            {data && (
+                                <RenderCustomFields
+                                    entityType={EDBEntity.Tag}
+                                    entityData={data}
+                                    refetchMeta={refetchMeta}
+                                />
+                            )}
                         </Grid>
                     </Grid>
                 )}

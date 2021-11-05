@@ -18,6 +18,7 @@ import { toast } from './components/toast/toast';
 import { loginPageInfo, welcomePageInfo } from './constants/PageInfos';
 import { loadPlugins } from './helpers/loadPlugins';
 import { registerCustomFieldOfType } from './helpers/customFields';
+import { registerCustomEntity } from './helpers/customEntities';
 import { store } from './redux/store';
 
 (async () => {
@@ -142,7 +143,8 @@ import { store } from './redux/store';
                     if (settings) {
                         setStoreItem('cmsSettings', settings);
 
-                        settings?.customFieldsDeclarations?.forEach(registerCustomFieldOfType);
+                        settings?.customFields?.forEach(registerCustomFieldOfType);
+                        settings?.customEntities?.forEach(registerCustomEntity);
                     }
                 } catch (error) {
                     console.error(error);

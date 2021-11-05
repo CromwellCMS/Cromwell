@@ -13,7 +13,8 @@
 
 .header {
     @include paper;
-    padding: 0 20px 0 0;
+    padding: 0 10px 0 0;
+    min-height: 40px;
     width: 100%;
     display: flex;
     justify-content: space-between;

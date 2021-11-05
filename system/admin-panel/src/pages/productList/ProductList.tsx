@@ -111,6 +111,8 @@ const ProductList = (props: TPropsType) => {
                     price
                     oldPrice
                     mainImage
+                    sku
+                    stockStatus
                 }
             `,
             customFragmentName: 'ProductListFragment',

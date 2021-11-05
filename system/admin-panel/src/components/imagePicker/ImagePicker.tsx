@@ -9,8 +9,8 @@ export type ImagePickerProps = {
     toolTip?: string;
     placeholder?: string;
     label?: string;
-    width?: string;
-    height?: string;
+    width?: string | number;
+    height?: string | number;
     onChange?: (value: string | undefined) => void;
     value?: string | null;
     className?: string;
@@ -22,6 +22,7 @@ export type ImagePickerProps = {
         root?: string;
     };
     style?: React.CSSProperties;
+    variant?: 'standard'
 }
 
 export const ImagePicker = (props: ImagePickerProps) => {
@@ -42,21 +43,37 @@ export const ImagePicker = (props: ImagePickerProps) => {
             setInternalValue(val);
     }
 
+    const getDimension = (dimension: string | number) => dimension && (typeof dimension === 'number' ? dimension + 'px' : dimension);
+
     const element = (
-        <div className={`${styles.wrapper} ${props.className ?? ''} ${props.classes?.root ?? ''}`}
+        <div className={`${styles.wrapper} ${props.className ?? ''} ${props.classes?.root ?? ''} ${props.variant ?? ''}`}
             style={{ paddingTop: props.label ? '18px' : '', ...(props.style ?? {}) }}>
             <Tooltip title={props.toolTip ?? ''}>
-                <MenuItem style={{ padding: '0' }} className={styles.imageWrapper}>
+                <MenuItem
+                    style={{
+                        padding: '0',
+                        width: getDimension(props.width),
+                        minWidth: getDimension(props.width),
+                        height: getDimension(props.height),
+                    }}
+                    className={styles.imageWrapper}>
                     <div className={`${styles.image} ${props.classes?.image}`}
                         onClick={pickImage}
                         style={{
                             backgroundImage: `url(${value})`,
                             backgroundSize: props.backgroundSize ?? 'cover',
-                            width: value && props.width,
-                            minWidth: value && props.width,
-                            height: value && props.height,
+                            width: getDimension(props.width),
+                            minWidth: getDimension(props.width),
+                            height: getDimension(props.height),
                         }}>
-                        {!value && <AddPhotoAlternateOutlinedIcon />}
+                        {!value && <AddPhotoAlternateOutlinedIcon
+                            style={{
+                                width: '65%',
+                                height: '65%',
+                                maxWidth: '30px',
+                                maxHeight: '30px',
+                            }}
+                        />}
                     </div>
                 </MenuItem>
             </Tooltip>

@@ -11,6 +11,8 @@ export type TAppState = {
     draggable?: Draggable;
     activeTheme?: TThemeConfig;
     status?: TCmsStatus;
+    forceUpdateSidebar?: () => void;
+    forceUpdateApp?: () => void;
 }
 
 export const store = createStore<TAppState>(undefined, {

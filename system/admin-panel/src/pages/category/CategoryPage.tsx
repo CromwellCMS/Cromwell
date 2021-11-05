@@ -17,7 +17,7 @@ import Autocomplete from '../../components/autocomplete/Autocomplete';
 import { ImagePicker } from '../../components/imagePicker/ImagePicker';
 import { toast } from '../../components/toast/toast';
 import { categoryListPageInfo, categoryPageInfo } from '../../constants/PageInfos';
-import { getCustomMetaFor, getCustomMetaKeysFor, renderCustomFieldsFor } from '../../helpers/customFields';
+import { getCustomMetaFor, getCustomMetaKeysFor, RenderCustomFields } from '../../helpers/customFields';
 import { getEditorData, getEditorHtml, initTextEditor } from '../../helpers/editor/editor';
 import commonStyles from '../../styles/common.module.scss';
 import styles from './CategoryPage.module.scss';
@@ -170,8 +170,14 @@ export default function CategoryPage(props) {
         description: await getEditorHtml(editorId),
         descriptionDelta: JSON.stringify(await getEditorData(editorId)),
         parentId: category.parent?.id,
-        customMeta: Object.assign({}, category.customMeta, getCustomMetaFor(EDBEntity.ProductCategory)),
+        customMeta: Object.assign({}, category.customMeta, await getCustomMetaFor(EDBEntity.ProductCategory)),
     });
+
+    const refetchMeta = async () => {
+        if (!categoryId) return;
+        const data = await getProductCategory(parseInt(categoryId));
+        return data?.customMeta;
+    };
 
     const handleSave = async () => {
         setIsSaving(true);
@@ -231,14 +237,14 @@ export default function CategoryPage(props) {
                     <Link to={categoryListPageInfo.route}>
                         <IconButton
                         >
-                            <ArrowBackIcon />
+                            <ArrowBackIcon style={{ fontSize: '18px' }} />
                         </IconButton>
                     </Link>
                     <p className={commonStyles.pageTitle}>category</p>
                 </div>
                 <div className={styles.headerActions}>
                     {pageFullUrl && (
-                        <Tooltip title="Open category page in new tab">
+                        <Tooltip title="Open category in the new tab">
                             <IconButton
                                 style={{ marginRight: '10px' }}
                                 className={styles.openPageBtn}
@@ -330,7 +336,13 @@ export default function CategoryPage(props) {
                         />
                     )}
                 />
-                {category && renderCustomFieldsFor(EDBEntity.ProductCategory, category)}
+                {category && (
+                    <RenderCustomFields
+                        entityType={EDBEntity.ProductCategory}
+                        entityData={category}
+                        refetchMeta={refetchMeta}
+                    />
+                )}
             </div>
         </div>
     );

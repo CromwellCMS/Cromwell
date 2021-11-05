@@ -152,6 +152,21 @@ div.customEntity {
     margin-right: 20px;
 }
 
+.entityToEdit {
+    @include paper;
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    width: 400px;
+    max-width: 90vw;
+    max-height: 90vh;
+    overflow: auto;
+}
+
+div.entityToEditField {
+    margin-bottom: 15px;
+}
+
 @media screen and (max-width: $mobileBreakpoint) {
     // mobile
     // .SettingsPage .list {

@@ -9,6 +9,7 @@
     border: 1px solid transparent;
     border-bottom: 1px solid #ddd;
 }
+
 .itemMain {
     display: flex;
 }
@@ -24,6 +25,7 @@
     flex-direction: column;
     justify-content: center;
     margin-left: 10px;
+    min-width: 20px;
 }
 
 .itemSubInfo {
@@ -34,6 +36,7 @@
     margin-bottom: 4px;
     font-weight: 500;
 }
+
 .itemAuthor {
     font-size: 12px;
 }
@@ -42,6 +45,7 @@
     margin-bottom: 4px;
     font-weight: 500;
 }
+
 .itemCreate {
     font-size: 12px;
 }
@@ -76,6 +80,12 @@
 
 .listItem:hover {
     background-color: #f4f4f4;
+}
+
+.ellipsis {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 :global(.modeDark) {

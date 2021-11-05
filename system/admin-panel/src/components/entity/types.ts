@@ -3,14 +3,12 @@ import {
     EDBEntity,
     TBaseFilter,
     TBasePageEntity,
+    TCustomEntityColumn,
     TDefaultPageName,
     TDeleteManyInput,
     TPagedList,
     TPagedParams,
 } from '@cromwell/core';
-
-import { TCustomEntityColumn } from '../../helpers/customEntities';
-
 
 export type TBaseEntityFilter = TBaseFilter & {
     entityType?: string;
@@ -30,7 +28,7 @@ export type TEntityPageProps<TEntityType extends TBasePageEntity, TFilterType ex
     /**
      * Properties of entity to show in columns
      */
-    columns: TCustomEntityColumn[];
+    columns?: TCustomEntityColumn[];
 
     /**
      * Property of an element to use as a name in modals, such as: "Delete MyNewProductName?"
@@ -52,12 +50,12 @@ export type TEntityPageProps<TEntityType extends TBasePageEntity, TFilterType ex
     /**
      * Page to open when user clicks "edit" in list view page
      */
-    entityBaseRoute: string;
+    entityBaseRoute?: string;
 
     /**
      * Page to open when user clicks "back to list" in entity view page
      */
-    entityListRoute: string;
+    entityListRoute?: string;
 
     /**
      * Default page name if the page is one default CMS pages, or it will be taken from
@@ -66,12 +64,12 @@ export type TEntityPageProps<TEntityType extends TBasePageEntity, TFilterType ex
     defaultPageName?: TDefaultPageName;
 
     /**
-     * 
+     * Get JSX input fields for entity properties
      */
-    renderFields: (data: TEntityType) => JSX.Element;
+    renderFields?: (data: TEntityType) => JSX.Element;
 
     /**
-     * Get user input on "save" button click
+     * Get user input data on "save" button click
      */
     getInput: () => Omit<TEntityType, 'id'>;
 

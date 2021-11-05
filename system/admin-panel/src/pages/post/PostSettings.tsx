@@ -9,7 +9,7 @@ import { Autocomplete, Button, Checkbox, FormControlLabel, IconButton, Popover, 
 import React, { useState } from 'react';
 
 import { ImagePicker } from '../../components/imagePicker/ImagePicker';
-import { getCustomMetaFor, renderCustomFieldsFor } from '../../helpers/customFields';
+import { getCustomMetaFor, RenderCustomFields } from '../../helpers/customFields';
 import styles from './PostSettings.module.scss';
 
 
@@ -21,8 +21,9 @@ const PostSettings = (props: {
     onClose: (newData: Partial<TPost>) => void;
     isSaving?: boolean;
     handleUnpublish: () => void;
+    refetchMeta: () => Promise<Record<string, string> | undefined>;
 }) => {
-    const { postData } = props;
+    const { postData, refetchMeta } = props;
     const [title, setTitle] = useState<string | undefined>(postData?.title ?? null);
     const [mainImage, setMainImage] = useState<string | undefined>(postData?.mainImage ?? null);
     const [pageDescription, setPageDescription] = useState<string | undefined>(postData?.pageDescription ?? null);
@@ -40,7 +41,7 @@ const PostSettings = (props: {
         setPageKeywords(newValue);
     }
 
-    const handleClose = () => {
+    const handleClose = async () => {
         const newData = Object.assign({}, postData);
         newData.title = title;
         newData.mainImage = mainImage;
@@ -54,7 +55,7 @@ const PostSettings = (props: {
             if (!newData.meta) newData.meta = {};
             newData.meta.keywords = pageKeywords;
         }
-        newData.customMeta = Object.assign({}, postData.customMeta, getCustomMetaFor(EDBEntity.Post));
+        newData.customMeta = Object.assign({}, postData.customMeta, await getCustomMetaFor(EDBEntity.Post));
         props.onClose(newData);
     }
 
@@ -195,7 +196,13 @@ const PostSettings = (props: {
                         >Unpublish</Button>
                     </Tooltip>
                 )}
-                {postData && renderCustomFieldsFor(EDBEntity.Post, postData)}
+                {postData && (
+                    <RenderCustomFields
+                        entityType={EDBEntity.Post}
+                        entityData={postData}
+                        refetchMeta={refetchMeta}
+                    />
+                )}
             </div>
         </Popover>
     )

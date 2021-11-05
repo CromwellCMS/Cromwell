@@ -1,0 +1,299 @@
+import { EDBEntity, getRandStr, TAdminCustomEntity, TAdminCustomField } from '@cromwell/core';
+import { Add as AddIcon, Delete as DeleteIcon, Settings as SettingsIcon } from '@mui/icons-material';
+import { Button, FormControl, Grid, IconButton, InputLabel, MenuItem, Select, TextField, Tooltip } from '@mui/material';
+import React, { useState } from 'react';
+
+import { DraggableList } from '../../../components/draggableList/DraggableList';
+import { ImagePicker } from '../../../components/imagePicker/ImagePicker';
+import Modal from '../../../components/modal/Modal';
+import { unregisterCustomEntity } from '../../../helpers/customEntities';
+import { unregisterCustomField } from '../../../helpers/customFields';
+import { TAdminCmsSettings, TTabProps } from '../Settings';
+import styles from '../Settings.module.scss';
+
+type AdminEntityView = {
+    entityType: EDBEntity | string;
+    label: string;
+    custom?: boolean;
+}
+
+export default function CustomData(props: TTabProps) {
+    const { settings, changeSettings } = props;
+
+    const [entityToEdit, setEntityToEdit] = useState<TAdminCustomEntity | null>(null)
+    const [canShowInvalid, setCanShowInvalid] = useState(false);
+
+    const defaultEntitiesWithCustomFields: AdminEntityView[] = [
+        {
+            entityType: EDBEntity.Product,
+            label: 'Product',
+        },
+        {
+            entityType: EDBEntity.ProductCategory,
+            label: 'Category',
+        },
+        {
+            entityType: EDBEntity.Post,
+            label: 'Post',
+        },
+        {
+            entityType: EDBEntity.Tag,
+            label: 'Tag',
+        },
+        {
+            entityType: EDBEntity.User,
+            label: 'User',
+        },
+        {
+            entityType: EDBEntity.CMS,
+            label: 'CMS Settings',
+        },
+    ]
+
+    const getFieldsEntities = (): AdminEntityView[] => [
+        ...defaultEntitiesWithCustomFields,
+        ...(settings.customEntities ?? []).map(custom => ({
+            entityType: custom.entityType,
+            label: custom.entityLabel ?? custom?.listLabel,
+            custom: true,
+        })),
+    ];
+
+    const addCustomField = (entityType: EDBEntity | string) => {
+        const customFields = settings?.customFields ?? [];
+        const orderMax = customFields.reduce((prev, curr) => curr.order > prev ? curr.order : prev, 0);
+        customFields.push({
+            entityType,
+            key: '',
+            fieldType: 'Simple text',
+            order: orderMax + 1,
+            id: getRandStr(8)
+        })
+        changeSettings('customFields', customFields)
+    }
+
+    const handleAddEntity = () => {
+        setEntityToEdit({} as any);
+    }
+
+    const handleCloseAddEntity = () => {
+        setEntityToEdit(null);
+        setCanShowInvalid(false);
+    }
+
+    const changeEntityToEdit = (key: keyof TAdminCustomEntity, value: any) => {
+        setEntityToEdit(prev => {
+            return {
+                ...prev,
+                [key]: value,
+            }
+        })
+    }
+
+    const checkProp = (prop) => prop && prop !== '';
+
+    const saveCustomEntity = () => {
+        setCanShowInvalid(true);
+        if (!checkProp(entityToEdit?.entityType) || !checkProp(entityToEdit?.listLabel)) return;
+
+        if (settings.customEntities?.find(ent => ent.entityType === entityToEdit.entityType)) {
+            changeSettings('customEntities', [...settings.customEntities].map(ent => {
+                if (ent.entityType === entityToEdit.entityType) {
+                    return { ...entityToEdit };
+                }
+                return ent;
+            }));
+        } else {
+            changeSettings('customEntities', [...(settings.customEntities ?? []), { ...entityToEdit }]);
+        }
+        setEntityToEdit(null);
+        setCanShowInvalid(false);
+    }
+
+    const deleteCustomEntity = (entityType: string) => {
+        if (settings.customEntities) {
+            changeSettings('customEntities', [...settings.customEntities].filter(ent => {
+                if (ent.entityType === entityType) {
+                    return false
+                }
+                return true;
+            }));
+        }
+        unregisterCustomEntity(entityType);
+    }
+
+    return (
+        <Grid container spacing={3}>
+            {getFieldsEntities().map(entity => {
+                const fields = settings?.customFields?.
+                    filter(field => field.entityType === entity.entityType)?.
+                    sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+                return (
+                    <Grid item xs={12} key={entity.entityType} className={styles.customEntity}>
+                        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+                            <h3 >{entity.label}</h3>
+                            {entity.custom && (
+                                <div style={{ marginLeft: '10px' }}>
+                                    <IconButton onClick={() => setEntityToEdit(
+                                        settings.customEntities?.find(ent => ent.entityType === entity.entityType) ?? null
+                                    )}>
+                                        <SettingsIcon />
+                                    </IconButton>
+                                    <Tooltip title="Delete entity">
+                                        <IconButton onClick={() => deleteCustomEntity(entity.entityType)}>
+                                            <DeleteIcon />
+                                        </IconButton>
+                                    </Tooltip>
+                                </div>
+                            )}
+                        </div>
+                        {!!fields?.length && (
+                            <DraggableList<TCustomFieldSettingsData>
+                                data={fields.map(field => ({
+                                    field: field,
+                                    id: field.id,
+                                    settings,
+                                    changeSettings,
+                                }))}
+                                onChange={changedFields => {
+                                    changedFields.forEach((field, index) => field.field.order = index);
+                                }}
+                                component={CustomFieldSettings}
+                            />
+                        )}
+                        <Tooltip title="Add custom field">
+                            <IconButton onClick={() => addCustomField(entity.entityType)}>
+                                <AddIcon />
+                            </IconButton>
+                        </Tooltip>
+                    </Grid>
+                )
+            })}
+            <Grid item xs={12}>
+                <Button
+                    onClick={handleAddEntity}
+                    variant="outlined">Add entity</Button>
+            </Grid>
+            <Modal
+                open={!!entityToEdit}
+                onClose={handleCloseAddEntity}
+                className={styles.entityToEdit}
+            >
+                <TextField
+                    label="Key"
+                    value={entityToEdit?.entityType ?? ''}
+                    onChange={e => changeEntityToEdit('entityType', e.target.value)}
+                    variant="standard"
+                    fullWidth
+                    className={styles.entityToEditField}
+                    error={canShowInvalid && !checkProp(entityToEdit?.entityType)}
+                />
+                <TextField
+                    label="List label"
+                    value={entityToEdit?.listLabel ?? ''}
+                    onChange={e => changeEntityToEdit('listLabel', e.target.value)}
+                    variant="standard"
+                    fullWidth
+                    className={styles.entityToEditField}
+                    error={canShowInvalid && !checkProp(entityToEdit?.listLabel)}
+                />
+                <TextField
+                    label="Entity label"
+                    value={entityToEdit?.entityLabel ?? ''}
+                    onChange={e => changeEntityToEdit('entityLabel', e.target.value)}
+                    variant="standard"
+                    fullWidth
+                    className={styles.entityToEditField}
+                />
+                <ImagePicker
+                    label="Icon"
+                    value={entityToEdit?.icon}
+                    className={styles.entityToEditField}
+                    onChange={value => changeEntityToEdit('icon', value)}
+                    width={30}
+                    height={30}
+                    variant="standard"
+                />
+                <div style={{ display: 'flex' }}>
+                    <Button variant="outlined"
+                        style={{ marginRight: '15px' }}
+                        onClick={() => { setEntityToEdit(null); setCanShowInvalid(false); }}
+                    >Cancel</Button>
+                    <Button variant="contained"
+                        onClick={saveCustomEntity}
+                    >Apply</Button>
+                </div>
+            </Modal>
+        </Grid>
+    )
+}
+
+type TCustomFieldSettingsData = {
+    id: string;
+    field: TAdminCustomField;
+    settings: TAdminCmsSettings | null;
+    changeSettings: (key: keyof TAdminCmsSettings, value: any) => void;
+}
+
+const CustomFieldSettings = (props: {
+    data: TCustomFieldSettingsData;
+}) => {
+    const data = props.data;
+    const { settings, changeSettings } = data;
+    const fieldData = data.field;
+
+    const changeFieldValue = (key: keyof TAdminCustomField, value: any) => {
+        const customFields = (settings?.customFields ?? []).map(field => {
+            if (field.id === props.data.id) {
+                (field as any)[key] = value;
+            }
+            return field;
+        })
+        changeSettings('customFields', customFields)
+    }
+
+    const deleteField = () => {
+        changeSettings('customFields', (settings?.customFields ?? [])
+            .filter(field => field.id !== fieldData.id));
+
+        unregisterCustomField(fieldData.entityType, fieldData.key);
+    }
+
+    return (
+        <div className={styles.customFieldItem}>
+            <TextField
+                label="Key"
+                value={fieldData.key}
+                onChange={e => changeFieldValue('key', e.target.value)}
+                size="small"
+                className={styles.customFieldItemField}
+            />
+            <TextField
+                label="Label"
+                value={fieldData.label}
+                onChange={e => changeFieldValue('label', e.target.value)}
+                size="small"
+                className={styles.customFieldItemField}
+            />
+            <FormControl>
+                <InputLabel>Type</InputLabel>
+                <Select
+                    value={fieldData.fieldType}
+                    onChange={e => changeFieldValue('fieldType', e.target.value)}
+                    size="small"
+                    className={styles.customFieldItemField}
+                >
+                    {(['Simple text', 'Text editor', 'Select', 'Image', 'Gallery', 'Color'] as TAdminCustomField['fieldType'][])
+                        .map(option => (
+                            <MenuItem value={option} key={option}>{option}</MenuItem>
+                        ))}
+                </Select>
+            </FormControl>
+            <Tooltip title="Delete field">
+                <IconButton onClick={deleteField}>
+                    <DeleteIcon />
+                </IconButton>
+            </Tooltip>
+        </div>
+    );
+}

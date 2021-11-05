@@ -1,17 +1,6 @@
 import { getStoreItem, onStoreChange, TUser } from '@cromwell/core';
 import { getRestApiClient } from '@cromwell/core-frontend';
 import {
-    AppBar,
-    IconButton,
-    MenuItem,
-    Popover,
-    Slide,
-    SwipeableDrawer,
-    Toolbar,
-    Tooltip,
-    useScrollTrigger,
-} from '@mui/material';
-import {
     AccountCircle as AccountCircleIcon,
     AccountCircleOutlined as AccountCircleOutlinedIcon,
     Close as CloseIcon,
@@ -23,11 +12,24 @@ import {
     MoreVertOutlined as MoreVertOutlinedIcon,
     PermMediaOutlined as PermMediaOutlinedIcon,
 } from '@mui/icons-material';
+import {
+    AppBar,
+    IconButton,
+    MenuItem,
+    Popover,
+    Slide,
+    SwipeableDrawer,
+    Toolbar,
+    Tooltip,
+    useScrollTrigger,
+} from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 
-import { getLinkByInfo, loginPageInfo, getPageInfos, getSideBarLinks, userPageInfo } from '../../constants/PageInfos';
+import { loginPageInfo, userPageInfo } from '../../constants/PageInfos';
 import { useForceUpdate } from '../../helpers/forceUpdate';
+import { getLinkByInfo, getPageInfos, getSideBarLinks } from '../../helpers/navigation';
+import { store } from '../../redux/store';
 import CmsInfo from '../cmsInfo/CmsInfo';
 import { getFileManager } from '../fileManager/helpers';
 import NotificationCenter from '../notificationCenter/NotificationCenter';
@@ -72,6 +74,11 @@ export default function Sidebar() {
                 if (newCurrentLink.parentId) setExpanded(newCurrentLink.parentId)
             }
             setTimeout(forceUpdate, 100);
+        });
+
+        store.setStateProp({
+            prop: 'forceUpdateSidebar',
+            payload: forceUpdate,
         });
     }, []);
 
