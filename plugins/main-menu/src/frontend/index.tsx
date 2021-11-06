@@ -108,7 +108,6 @@ const MainMenu = (props: TFrontendPluginProps<TMainMenuSettings>) => {
                                     vertical: 'top',
                                     horizontal: 'left',
                                 }}
-
                                 onClose={handlePopoverClose}
                             >
                                 {menuSubitems}

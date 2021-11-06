@@ -1,9 +1,9 @@
 import { TPagedList, TPagedParams, TTag, TTagInput } from '@cromwell/core';
 import { EntityRepository } from 'typeorm';
 
-import { Tag } from '../models/entities/tag.entity';
+import { checkEntitySlug, handleBaseInput, handleCustomMetaInput } from '../helpers/base-queries';
 import { getLogger } from '../helpers/logger';
-import { checkEntitySlug, handleBaseInput } from '../helpers/base-queries';
+import { Tag } from '../models/entities/tag.entity';
 import { BaseRepository } from './base.repository';
 
 const logger = getLogger();
@@ -43,6 +43,9 @@ export class TagRepository extends BaseRepository<Tag> {
         tag.image = input.image;
         tag.description = input.description;
         tag.descriptionDelta = input.descriptionDelta;
+
+        await tag.save();
+        await handleCustomMetaInput(tag, input);
     }
 
     async createTag(inputData: TTagInput, id?: number): Promise<Tag> {
@@ -53,7 +56,6 @@ export class TagRepository extends BaseRepository<Tag> {
         await this.handleBaseTagInput(tag, inputData);
         tag = await this.save(tag);
         await checkEntitySlug(tag, Tag);
-
         return tag;
     }
 

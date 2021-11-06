@@ -7,6 +7,7 @@ import { connect, PropsType } from 'react-redux-ts';
 import { useHistory } from 'react-router-dom';
 import { debounce } from 'throttle-debounce';
 
+import SortBy, { TSortOption } from '../../components/entity/sort/Sort';
 import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
 import ConfirmationModal from '../../components/modal/Confirmation';
 import Pagination from '../../components/pagination/Pagination';
@@ -14,6 +15,7 @@ import { listPreloader } from '../../components/skeleton/SkeletonPreloader';
 import { toast } from '../../components/toast/toast';
 import { userPageInfo } from '../../constants/PageInfos';
 import { userRoles } from '../../constants/roles';
+import { useForceUpdate } from '../../helpers/forceUpdate';
 import {
     countSelectedItems,
     getSelectedInput,
@@ -50,6 +52,36 @@ const UserList = (props: TPropsType) => {
     const [deleteSelectedOpen, setDeleteSelectedOpen] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const totalElements = useRef<number | null>(null);
+    const orderByRef = useRef<keyof TUser | null>(null);
+    const orderRef = useRef<'ASC' | 'DESC' | null>(null);
+    const forceUpdate = useForceUpdate();
+
+    const availableSorts: TSortOption<TUser>[] = [
+        {
+            key: 'id',
+            label: 'ID'
+        },
+        {
+            key: 'fullName',
+            label: 'Name'
+        },
+        {
+            key: 'role',
+            label: 'Role'
+        },
+        {
+            key: 'email',
+            label: 'Email'
+        },
+        {
+            key: 'phone',
+            label: 'Phone'
+        },
+        {
+            key: 'createDate',
+            label: 'Created'
+        },
+    ];
 
     useEffect(() => {
         resetSelected();
@@ -70,6 +102,10 @@ const UserList = (props: TPropsType) => {
     }
 
     const handleGetUsers = async (params?: TPagedParams<TUser>) => {
+        if (!params) params = {};
+        params.orderBy = orderByRef.current ?? 'id';
+        params.order = orderRef.current ?? 'DESC';
+
         const data = await client?.getFilteredUsers({
             pagedParams: params,
             filterParams: filterInput.current,
@@ -134,6 +170,12 @@ const UserList = (props: TPropsType) => {
         history.push(`${userPageInfo.baseRoute}/new`);
     }
 
+    const handleChangeOrder = (key: keyof TUser, order: 'ASC' | 'DESC') => {
+        orderByRef.current = key;
+        orderRef.current = order;
+        resetList();
+        forceUpdate();
+    }
 
     return (
         <div className={styles.UserList}>
@@ -185,6 +227,10 @@ const UserList = (props: TPropsType) => {
                     />
                 </div>
                 <div className={styles.pageActions} >
+                    <SortBy<TUser>
+                        options={availableSorts}
+                        onChange={handleChangeOrder}
+                    />
                     <Tooltip title="Delete selected">
                         <IconButton
                             onClick={handleDeleteSelectedBtnClick}

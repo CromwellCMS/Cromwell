@@ -8,12 +8,14 @@ import { connect, PropsType } from 'react-redux-ts';
 import { useHistory } from 'react-router-dom';
 import { debounce } from 'throttle-debounce';
 
+import SortBy, { TSortOption } from '../../components/entity/sort/Sort';
 import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
 import ConfirmationModal from '../../components/modal/Confirmation';
 import Pagination from '../../components/pagination/Pagination';
 import { listPreloader } from '../../components/skeleton/SkeletonPreloader';
 import { toast } from '../../components/toast/toast';
 import { postPageInfo } from '../../constants/PageInfos';
+import { useForceUpdate } from '../../helpers/forceUpdate';
 import {
     countSelectedItems,
     getSelectedInput,
@@ -52,6 +54,36 @@ const PostList = (props: TPropsType) => {
     const [deleteSelectedOpen, setDeleteSelectedOpen] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const totalElements = useRef<number | null>(null);
+    const orderByRef = useRef<keyof TPost | null>(null);
+    const orderRef = useRef<'ASC' | 'DESC' | null>(null);
+    const forceUpdate = useForceUpdate();
+
+    const availableSorts: TSortOption<TPost>[] = [
+        {
+            key: 'id',
+            label: 'ID'
+        },
+        {
+            key: 'title',
+            label: 'Title'
+        },
+        {
+            key: 'authorId',
+            label: 'Author',
+        },
+        {
+            key: 'published',
+            label: 'Published',
+        },
+        {
+            key: 'publishDate',
+            label: 'Publish date',
+        },
+        {
+            key: 'createDate',
+            label: 'Created'
+        },
+    ]
 
     useEffect(() => {
         resetSelected();
@@ -96,8 +128,8 @@ const PostList = (props: TPropsType) => {
 
     const handleGetPosts = async (params: TPagedParams<TPost>) => {
         if (!params) params = {};
-        params.orderBy = 'createDate';
-        params.order = 'DESC';
+        params.orderBy = orderByRef.current ?? 'id';
+        params.order = orderRef.current ?? 'DESC';
         const data = await client?.getFilteredPosts({
             customFragment: gql`
                 fragment PostListFragment on Post {
@@ -221,6 +253,13 @@ const PostList = (props: TPropsType) => {
         resetList();
     }
 
+    const handleChangeOrder = (key: keyof TPost, order: 'ASC' | 'DESC') => {
+        orderByRef.current = key;
+        orderRef.current = order;
+        resetList();
+        forceUpdate();
+    }
+
     return (
         <div className={styles.PostList}>
             <div className={styles.listHeader}>
@@ -285,6 +324,10 @@ const PostList = (props: TPropsType) => {
                     </Select>
                 </div>
                 <div className={styles.pageActions} >
+                    <SortBy<TPost>
+                        options={availableSorts}
+                        onChange={handleChangeOrder}
+                    />
                     <Tooltip title="Delete selected">
                         <IconButton
                             onClick={handleDeleteSelectedBtnClick}

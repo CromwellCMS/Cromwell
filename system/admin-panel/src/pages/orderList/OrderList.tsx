@@ -6,12 +6,14 @@ import React, { useEffect, useRef, useState } from 'react';
 import { connect, PropsType } from 'react-redux-ts';
 import { debounce } from 'throttle-debounce';
 
+import SortBy, { TSortOption } from '../../components/entity/sort/Sort';
 import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
 import ConfirmationModal from '../../components/modal/Confirmation';
 import Pagination from '../../components/pagination/Pagination';
 import { listPreloader } from '../../components/skeleton/SkeletonPreloader';
 import { toast } from '../../components/toast/toast';
 import { orderStatuses } from '../../constants/order';
+import { useForceUpdate } from '../../helpers/forceUpdate';
 import {
     countSelectedItems,
     getSelectedInput,
@@ -48,6 +50,32 @@ const OrderList = (props: TPropsType) => {
     const [deleteSelectedOpen, setDeleteSelectedOpen] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const filterInput = useRef<TOrderFilter>({});
+    const orderByRef = useRef<keyof TOrder | null>(null);
+    const orderRef = useRef<'ASC' | 'DESC' | null>(null);
+    const forceUpdate = useForceUpdate();
+
+    const availableSorts: TSortOption<TOrder>[] = [
+        {
+            key: 'id',
+            label: 'ID'
+        },
+        {
+            key: 'createDate',
+            label: 'Created'
+        },
+        {
+            key: 'orderTotalPrice',
+            label: 'Total price'
+        },
+        {
+            key: 'status',
+            label: 'Status',
+        },
+        {
+            key: 'customerName',
+            label: 'Name',
+        },
+    ]
 
     useEffect(() => {
         resetSelected();
@@ -69,8 +97,8 @@ const OrderList = (props: TPropsType) => {
 
     const handleGetOrders = async (params?: TPagedParams<TOrder>) => {
         if (!params) params = {};
-        params.orderBy = 'createDate';
-        params.order = 'DESC';
+        params.orderBy = orderByRef.current ?? 'id';
+        params.order = orderRef.current ?? 'DESC';
         const data = await client?.getFilteredOrders({
             pagedParams: params,
             filterParams: filterInput.current,
@@ -131,6 +159,12 @@ const OrderList = (props: TPropsType) => {
         resetList();
     });
 
+    const handleChangeOrder = (key: keyof TOrder, order: 'ASC' | 'DESC') => {
+        orderByRef.current = key;
+        orderRef.current = order;
+        resetList();
+        forceUpdate();
+    }
 
     return (
         <div className={styles.OrderList}>
@@ -160,6 +194,7 @@ const OrderList = (props: TPropsType) => {
                     />
                     <TextField
                         className={styles.filterItem}
+                        style={{ width: '70px' }}
                         placeholder="Order id"
                         variant="standard"
                         onChange={(event) => {
@@ -169,7 +204,8 @@ const OrderList = (props: TPropsType) => {
                     />
                     <TextField
                         className={styles.filterItem}
-                        placeholder="Customer name"
+                        placeholder="Name"
+                        style={{ width: '100px' }}
                         variant="standard"
                         onChange={(event) => {
                             filterInput.current.customerName = event.target.value;
@@ -178,7 +214,8 @@ const OrderList = (props: TPropsType) => {
                     />
                     <TextField
                         className={styles.filterItem}
-                        placeholder="Customer phone"
+                        placeholder="Phone"
+                        style={{ width: '100px' }}
                         variant="standard"
                         onChange={(event) => {
                             filterInput.current.customerPhone = event.target.value;
@@ -187,7 +224,7 @@ const OrderList = (props: TPropsType) => {
                     />
                     <TextField
                         className={styles.filterItem}
-                        placeholder="Customer email"
+                        placeholder="Email"
                         variant="standard"
                         onChange={(event) => {
                             filterInput.current.customerEmail = event.target.value;
@@ -196,6 +233,10 @@ const OrderList = (props: TPropsType) => {
                     />
                 </div>
                 <div className={styles.pageActions} >
+                    <SortBy<TOrder>
+                        options={availableSorts}
+                        onChange={handleChangeOrder}
+                    />
                     <Tooltip title="Delete selected">
                         <IconButton
                             onClick={handleDeleteSelectedBtnClick}

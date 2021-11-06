@@ -40,8 +40,6 @@ export class OrderRepository extends BaseRepository<Order> {
         if (input.customerEmail && !validateEmail(input.customerEmail))
             throw new Error('Provided e-mail is not valid');
 
-        await handleCustomMetaInput(order as any, input);
-
         order.status = input.status;
         order.cart = Array.isArray(input.cart) ? JSON.stringify(input.cart) : input.cart;
         order.orderTotalPrice = input.orderTotalPrice;
@@ -61,6 +59,9 @@ export class OrderRepository extends BaseRepository<Order> {
         order.shippingMethod = input.shippingMethod;
         order.paymentMethod = input.paymentMethod;
         order.currency = input.currency;
+
+        await order.save();
+        await handleCustomMetaInput(order as any, input);
     }
 
     async createOrder(inputData: TOrderInput, id?: number): Promise<Order> {

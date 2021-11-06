@@ -657,9 +657,11 @@ export type TServiceVersions = {
     admin?: number;
 };
 
+export type TCustomFieldType = 'Simple text' | 'Text editor' | 'Select' | 'Image' | 'Gallery' | 'Color' | 'Date' | 'Time' | 'Datetime' | 'Currency';
+
 export type TAdminCustomField = {
     entityType: EDBEntity | string;
-    fieldType: 'Simple text' | 'Text editor' | 'Select' | 'Image' | 'Gallery' | 'Color';
+    fieldType: TCustomFieldType
     key: string;
     id: string;
     options?: string[];
@@ -679,13 +681,14 @@ export type TAdminCustomEntity = {
 }
 
 export type TCustomEntityColumn = {
-    label: string;
     name: string;
+    label: string;
     meta?: boolean;
-    type?: 'text' | 'image' | 'currency';
+    type?: TCustomFieldType;
     width?: number;
     minWidth?: number;
     maxWidth?: number;
+    order?: number;
 }
 
 export type TCmsEntity = TCmsEntityCore & TBasePageEntity;

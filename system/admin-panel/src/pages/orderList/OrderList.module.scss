@@ -14,6 +14,7 @@
 .listHeader {
     @include paper;
     display: flex;
+    min-height: 50px;
     border-radius: 9px;
     align-items: center;
     justify-content: space-between;
@@ -28,6 +29,8 @@
 }
 
 .pageActions {
+    display: flex;
+    align-items: center;
     margin-right: 10px;
 }
 
@@ -61,6 +64,7 @@
 }
 
 :global(.modeDark) {
+
     .pagination,
     .listHeader {
         background-color: #333;

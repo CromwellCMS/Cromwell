@@ -3,6 +3,7 @@ import { CList, TCList } from '@cromwell/core-frontend';
 import { Close as CloseIcon } from '@mui/icons-material';
 import { Fade, IconButton, InputAdornment, ListItem, Popper, Skeleton, TextField as MuiTextField } from '@mui/material';
 import { withStyles } from '@mui/styles';
+import clsx from 'clsx';
 import React from 'react';
 import { debounce } from 'throttle-debounce';
 
@@ -194,7 +195,7 @@ class Autocomplete<TItemDataType> extends React.Component<{
                                                     <ItemComponent data={props.data} />
                                                 ) : (
                                                     <ListItem button>
-                                                        <p className={styles.itemText}>{this.props.getOptionLabel(props.data)}</p>
+                                                        <p className={clsx(styles.itemText)}>{this.props.getOptionLabel(props.data)}</p>
                                                     </ListItem>
                                                 )}
                                             </div>

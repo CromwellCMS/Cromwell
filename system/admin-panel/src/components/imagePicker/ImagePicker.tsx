@@ -1,5 +1,5 @@
-import { IconButton, MenuItem, Tooltip } from '@mui/material';
 import { AddPhotoAlternateOutlined as AddPhotoAlternateOutlinedIcon, HighlightOffOutlined } from '@mui/icons-material';
+import { IconButton, MenuItem, TextField, Tooltip } from '@mui/material';
 import React, { useState } from 'react';
 
 import { getFileManager } from '../../components/fileManager/helpers';
@@ -37,6 +37,7 @@ export const ImagePicker = (props: ImagePickerProps) => {
     }
 
     const setImage = (val: string | undefined) => {
+        if (val === '') val = null;
         props.onChange?.(val);
 
         if (props.value === undefined)
@@ -48,7 +49,7 @@ export const ImagePicker = (props: ImagePickerProps) => {
     const element = (
         <div className={`${styles.wrapper} ${props.className ?? ''} ${props.classes?.root ?? ''} ${props.variant ?? ''}`}
             style={{ paddingTop: props.label ? '18px' : '', ...(props.style ?? {}) }}>
-            <Tooltip title={props.toolTip ?? ''}>
+            <Tooltip title={props.toolTip ?? 'Pick an image'}>
                 <MenuItem
                     style={{
                         padding: '0',
@@ -77,18 +78,17 @@ export const ImagePicker = (props: ImagePickerProps) => {
                     </div>
                 </MenuItem>
             </Tooltip>
-            {props.label && value && (
-                <p className={styles.floatingLabel}>{props.label}</p>
-            )}
             {!props.hideSrc && (
                 <Tooltip title={props.toolTip ?? ''}>
-                    <div className={styles.valueWrapper}>
-                        <p
-                            onClick={pickImage}
-                            className={styles.placeholder}
-                            style={{ color: !value ? 'rgba(0, 0, 0, 0.54)' : '#000', marginLeft: '10px' }}
-                        >{value ?? props.placeholder ?? props.label ?? ''}</p>
-                    </div>
+                    <TextField
+                        value={value ?? ''}
+                        onChange={e => {
+                            setImage(e.target.value);
+                        }}
+                        label={props.label}
+                        fullWidth
+                        variant={props.variant ?? "standard"}
+                    />
                 </Tooltip>
             )}
             {value && props.showRemove && (

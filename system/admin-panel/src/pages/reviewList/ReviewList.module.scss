@@ -25,6 +25,7 @@
 .listHeader {
     @include paper;
     display: flex;
+    min-height: 50px;
     border-radius: 9px;
     align-items: center;
     justify-content: space-between;
@@ -39,6 +40,8 @@
 }
 
 .pageActions {
+    display: flex;
+    align-items: center;
     margin-right: 10px;
 }
 
@@ -107,6 +110,7 @@ div.filterItem {
 }
 
 :global(.modeDark) {
+
     .itemToView,
     .listHeader {
         background-color: #333;
@@ -122,6 +126,7 @@ div.filterItem {
 
         :global(.MuiRating-iconEmpty) {
             color: #666;
+
             * {
                 color: #666;
             }

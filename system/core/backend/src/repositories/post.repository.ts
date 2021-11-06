@@ -1,14 +1,14 @@
 import { TDeleteManyInput, TPagedList, TPagedParams, TPost, TPostInput } from '@cromwell/core';
 import readingTime from 'reading-time';
 import sanitizeHtml from 'sanitize-html';
-import { EntityRepository, getCustomRepository, SelectQueryBuilder, Brackets } from 'typeorm';
+import { Brackets, EntityRepository, getCustomRepository, SelectQueryBuilder } from 'typeorm';
 
-import { PostFilterInput } from '../models/filters/post.filter';
+import { checkEntitySlug, getPaged, handleBaseInput, handleCustomMetaInput } from '../helpers/base-queries';
+import { getLogger } from '../helpers/logger';
 import { Post } from '../models/entities/post.entity';
 import { Tag } from '../models/entities/tag.entity';
-import { getLogger } from '../helpers/logger';
+import { PostFilterInput } from '../models/filters/post.filter';
 import { PagedParamsInput } from '../models/inputs/paged-params.input';
-import { checkEntitySlug, getPaged, handleBaseInput } from '../helpers/base-queries';
 import { BaseRepository } from './base.repository';
 import { TagRepository } from './tag.repository';
 import { UserRepository } from './user.repository';
@@ -72,6 +72,9 @@ export class PostRepository extends BaseRepository<Post> {
         post.featured = input.featured;
         post.authorId = input.authorId;
         post.publishDate = input.publishDate;
+
+        await post.save();
+        await handleCustomMetaInput(post, input);
     }
 
     async createPost(createPost: TPostInput, id?: number): Promise<Post> {

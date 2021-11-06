@@ -11,7 +11,7 @@ class State {
     isCompareOpen: boolean = false;
     isWatchedOpen: boolean = false;
     isQuickViewOpen: boolean = false;
-    quickViewProductId: string | undefined;
+    quickViewProductId: number | undefined;
 }
 
 export const appState = new State();

@@ -1,8 +1,7 @@
 import { EDBEntity, getRandStr, TAdminCustomEntity, TAdminCustomField } from '@cromwell/core';
-import { Add as AddIcon, Delete as DeleteIcon, Settings as SettingsIcon } from '@mui/icons-material';
-import { Button, FormControl, Grid, IconButton, InputLabel, MenuItem, Select, TextField, Tooltip } from '@mui/material';
-import React, { useState } from 'react';
-
+import { Add as AddIcon, Delete as DeleteIcon, Settings as SettingsIcon, FormatListBulleted as FormatListBulletedIcon } from '@mui/icons-material';
+import { Button, FormControl, Grid, IconButton, InputLabel, MenuItem, Select, TextField, Tooltip, Popover } from '@mui/material';
+import React, { useState, useRef } from 'react';
 import { DraggableList } from '../../../components/draggableList/DraggableList';
 import { ImagePicker } from '../../../components/imagePicker/ImagePicker';
 import Modal from '../../../components/modal/Modal';
@@ -73,7 +72,27 @@ export default function CustomData(props: TTabProps) {
     }
 
     const handleAddEntity = () => {
-        setEntityToEdit({} as any);
+        setEntityToEdit({
+            entityType: '',
+            listLabel: '',
+            columns: [
+                {
+                    name: 'id',
+                    label: 'ID',
+                    type: 'Simple text',
+                },
+                {
+                    name: 'slug',
+                    label: 'Slug',
+                    type: 'Simple text',
+                },
+                {
+                    name: 'createDate',
+                    label: 'Created',
+                    type: 'Datetime',
+                }
+            ],
+        });
     }
 
     const handleCloseAddEntity = () => {
@@ -241,6 +260,8 @@ const CustomFieldSettings = (props: {
     const data = props.data;
     const { settings, changeSettings } = data;
     const fieldData = data.field;
+    const [selectOptionsOpen, setSelectOptionsOpen] = useState(false);
+    const selectOptionsButtonRef = useRef();
 
     const changeFieldValue = (key: keyof TAdminCustomField, value: any) => {
         const customFields = (settings?.customFields ?? []).map(field => {
@@ -259,6 +280,49 @@ const CustomFieldSettings = (props: {
         unregisterCustomField(fieldData.entityType, fieldData.key);
     }
 
+    const toggleSelectOptions = () => {
+        setSelectOptionsOpen(!selectOptionsOpen);
+    }
+
+    const addSelectOption = () => {
+        changeSettings('customFields', (settings?.customFields ?? [])
+            .map(field => {
+                if (field.id === fieldData.id) {
+                    return {
+                        ...fieldData,
+                        options: [...(fieldData.options ?? []), ''],
+                    }
+                }
+                return field;
+            }));
+    }
+
+    const deleteSelectOption = (option: string) => {
+        changeSettings('customFields', (settings?.customFields ?? [])
+            .map(field => {
+                if (field.id === fieldData.id) {
+                    return {
+                        ...fieldData,
+                        options: (fieldData.options ?? []).filter(opt => opt !== option),
+                    }
+                }
+                return field;
+            }));
+    }
+
+    const changeSelectOption = (index: number, value: string) => {
+        changeSettings('customFields', (settings?.customFields ?? [])
+            .map(field => {
+                if (field.id === fieldData.id) {
+                    return {
+                        ...fieldData,
+                        options: (fieldData.options ?? []).map((opt, idx) => idx === index ? value : opt),
+                    }
+                }
+                return field;
+            }));
+    }
+
     return (
         <div className={styles.customFieldItem}>
             <TextField
@@ -275,13 +339,16 @@ const CustomFieldSettings = (props: {
                 size="small"
                 className={styles.customFieldItemField}
             />
-            <FormControl>
+            <FormControl
+                className={styles.customFieldItemField}
+            >
                 <InputLabel>Type</InputLabel>
                 <Select
                     value={fieldData.fieldType}
                     onChange={e => changeFieldValue('fieldType', e.target.value)}
                     size="small"
-                    className={styles.customFieldItemField}
+                    variant="outlined"
+                    label="Type"
                 >
                     {(['Simple text', 'Text editor', 'Select', 'Image', 'Gallery', 'Color'] as TAdminCustomField['fieldType'][])
                         .map(option => (
@@ -289,11 +356,54 @@ const CustomFieldSettings = (props: {
                         ))}
                 </Select>
             </FormControl>
+            {fieldData?.fieldType === 'Select' && (
+                <Tooltip title="Select options">
+                    <IconButton ref={selectOptionsButtonRef} onClick={toggleSelectOptions}>
+                        <FormatListBulletedIcon />
+                    </IconButton>
+                </Tooltip>
+            )}
             <Tooltip title="Delete field">
                 <IconButton onClick={deleteField}>
                     <DeleteIcon />
                 </IconButton>
             </Tooltip>
+            {fieldData?.fieldType === 'Select' && (
+                <Popover
+                    open={selectOptionsOpen}
+                    anchorEl={selectOptionsButtonRef.current}
+                    onClose={toggleSelectOptions}
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'left',
+                    }}
+                    transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'left',
+                    }}
+                >
+                    <div className={styles.selectOptions}>
+                        {fieldData?.options?.map((option, idx) => (
+                            <div key={idx}
+                                style={{ display: 'flex', alignItems: 'center' }}
+                            >
+                                <TextField
+                                    value={option}
+                                    onChange={e => changeSelectOption(idx, e.target.value)}
+                                    size="small"
+                                    variant="standard"
+                                />
+                                <IconButton onClick={() => deleteSelectOption(option)}>
+                                    <DeleteIcon />
+                                </IconButton>
+                            </div>
+                        ))}
+                        <IconButton onClick={addSelectOption}>
+                            <AddIcon />
+                        </IconButton>
+                    </div>
+                </Popover>
+            )}
         </div>
     );
 }

@@ -1,7 +1,7 @@
 import { TAttribute, TAttributeInput, TAttributeProductVariant } from '@cromwell/core';
 import { EntityRepository } from 'typeorm';
 
-import { checkEntitySlug, handleBaseInput } from '../helpers/base-queries';
+import { checkEntitySlug, handleBaseInput, handleCustomMetaInput } from '../helpers/base-queries';
 import { getLogger } from '../helpers/logger';
 import { Attribute } from '../models/entities/attribute.entity';
 import { AttributeToProduct } from '../models/entities/attribute-product.entity';
@@ -91,6 +91,9 @@ export class AttributeRepository extends BaseRepository<Attribute> {
             }
             attribute.values = updatedValues;
         }
+
+        await attribute.save();
+        await handleCustomMetaInput(attribute, input);
     }
 
     async createAttribute(createAttribute: TAttributeInput, id?: number): Promise<TAttribute> {

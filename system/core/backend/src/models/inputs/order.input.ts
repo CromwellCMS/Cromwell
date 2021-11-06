@@ -9,7 +9,7 @@ export class OrderInput extends BasePageInput implements TOrderInput {
     @Field(() => String, { nullable: true })
     status?: string;
 
-    @Field(() => String, { nullable: true })
+    @Field(() => Int, { nullable: true })
     userId?: number;
 
     @Field(() => String, { nullable: true })

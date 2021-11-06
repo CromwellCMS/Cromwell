@@ -1,8 +1,7 @@
 @import "../../styles/common.module.scss";
 
 .CategoryItem {
-    // @include paper;
-    // margin: 5px 0;
+   position: relative;
 }
 
 .none {
@@ -72,10 +71,6 @@
 .headerLeft {
     display: flex;
     align-items: center;
-}
-
-button.expandBtn {
-    // margin-right: 10px;
 }
 
 .itemActions {

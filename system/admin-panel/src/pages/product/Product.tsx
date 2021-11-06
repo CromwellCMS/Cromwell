@@ -35,6 +35,7 @@ const ProductPage = () => {
     const infoCardRef = React.useRef<TInfoCardRef | null>(null);
     const productRef = React.useRef<TProduct | null>(null);
     const [notFound, setNotFound] = useState(false);
+    const [canValidate, setCanValidate] = useState(false);
     const forceUpdate = useForceUpdate();
     const history = useHistory();
 
@@ -148,9 +149,14 @@ const ProductPage = () => {
         return data?.customMeta;
     };
 
+    const checkValid = (value) => value && value !== '';
+
     const handleSave = async () => {
         await infoCardRef?.current?.save();
         const product = productRef.current;
+        setCanValidate(true);
+
+        if (!checkValid(product?.name) || !checkValid(product?.price)) return;
 
         const productAttributes = product.attributes?.map(attr => ({
             key: attr.key,
@@ -228,8 +234,8 @@ const ProductPage = () => {
                     console.error(e);
                 }
             }
-
         }
+        setCanValidate(false);
     }
 
     const handleTabChange = (event: React.ChangeEvent<unknown>, newValue: number) => {
@@ -312,6 +318,7 @@ const ProductPage = () => {
                                 product={product}
                                 setProdData={setProdData}
                                 infoCardRef={infoCardRef}
+                                canValidate={canValidate}
                             />
                             <div style={{ marginBottom: '15px' }}></div>
                             <RenderCustomFields

@@ -1,7 +1,11 @@
 import { gql } from '@apollo/client';
 import { EDBEntity, getStoreItem, setStoreItem, TCreateUser, TUpdateUser, TUser, TUserRole } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
-import { Visibility as VisibilityIcon, VisibilityOff as VisibilityOffIcon } from '@mui/icons-material';
+import {
+    ArrowBack as ArrowBackIcon,
+    Visibility as VisibilityIcon,
+    VisibilityOff as VisibilityOffIcon,
+} from '@mui/icons-material';
 import {
     Button,
     FormControl,
@@ -15,11 +19,11 @@ import {
     TextField,
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import { Link, useHistory, useParams } from 'react-router-dom';
 
 import { ImagePicker } from '../../components/imagePicker/ImagePicker';
 import { toast } from '../../components/toast/toast';
-import { userPageInfo } from '../../constants/PageInfos';
+import { userListPageInfo, userPageInfo } from '../../constants/PageInfos';
 import { userRoles } from '../../constants/roles';
 import { getCustomMetaFor, getCustomMetaKeysFor, RenderCustomFields } from '../../helpers/customFields';
 import commonStyles from '../../styles/common.module.scss';
@@ -167,7 +171,14 @@ export default function UserPage() {
     return (
         <div className={styles.UserPage}>
             <div className={styles.header}>
-                <p className={commonStyles.pageTitle}>account</p>
+                <div className={styles.headerLeft}>
+                    <Link to={userListPageInfo.route}>
+                        <IconButton>
+                            <ArrowBackIcon style={{ fontSize: '18px' }} />
+                        </IconButton>
+                    </Link>
+                    <p className={commonStyles.pageTitle}>account</p>
+                </div>
                 <div className={styles.headerActions}>
                     <Button variant="contained" color="primary"
                         className={styles.saveBtn}

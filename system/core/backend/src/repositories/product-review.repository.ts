@@ -2,11 +2,11 @@ import { TDeleteManyInput, TPagedList, TPagedParams, TProductReview, TProductRev
 import sanitizeHtml from 'sanitize-html';
 import { Brackets, DeleteQueryBuilder, EntityRepository, getCustomRepository, SelectQueryBuilder } from 'typeorm';
 
-import { ProductReviewFilter } from '../models/filters/product-review.filter';
-import { ProductReview } from '../models/entities/product-review.entity';
+import { checkEntitySlug, getPaged, handleBaseInput, handleCustomMetaInput } from '../helpers/base-queries';
 import { getLogger } from '../helpers/logger';
+import { ProductReview } from '../models/entities/product-review.entity';
+import { ProductReviewFilter } from '../models/filters/product-review.filter';
 import { PagedParamsInput } from '../models/inputs/paged-params.input';
-import { checkEntitySlug, getPaged, handleBaseInput } from '../helpers/base-queries';
 import { BaseRepository } from './base.repository';
 import { ProductRepository } from './product.repository';
 
@@ -49,6 +49,9 @@ export class ProductReviewRepository extends BaseRepository<ProductReview> {
         }) : input.userName;
         productReview.approved = input.approved;
         productReview.userId = input.userId;
+
+        await productReview.save();
+        await handleCustomMetaInput(productReview, input);
     }
 
     async createProductReview(createProductReview: TProductReviewInput, id?: number): Promise<TProductReview> {
@@ -57,7 +60,6 @@ export class ProductReviewRepository extends BaseRepository<ProductReview> {
         if (id) productReview.id = id;
 
         await this.handleProductReviewInput(productReview, createProductReview);
-
         productReview = await this.save(productReview);
         await checkEntitySlug(productReview, ProductReview);
 

@@ -22,12 +22,14 @@ import { connect, PropsType } from 'react-redux-ts';
 import { useHistory } from 'react-router-dom';
 
 import ProductFilter from '../../../../../plugins/product-filter/src/frontend/components/Filter';
+import SortBy, { TSortOption } from '../../components/entity/sort/Sort';
 import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
 import ConfirmationModal from '../../components/modal/Confirmation';
 import Pagination from '../../components/pagination/Pagination';
 import { listPreloader } from '../../components/skeleton/SkeletonPreloader';
 import { toast } from '../../components/toast/toast';
 import { productPageInfo } from '../../constants/PageInfos';
+import { useForceUpdate } from '../../helpers/forceUpdate';
 import {
     countSelectedItems,
     getSelectedInput,
@@ -69,6 +71,37 @@ const ProductList = (props: TPropsType) => {
     const headerRef = useRef<HTMLDivElement | null>(null);
     const filterInstRef = useRef</*IFrontendFilter*/ any | null>(null);
     const productsRef = useRef<TFilteredProductList | null>(null);
+    const forceUpdate = useForceUpdate();
+    const orderByRef = useRef<keyof TProduct | null>(null);
+    const orderRef = useRef<'ASC' | 'DESC' | null>(null);
+
+    const availableSorts: TSortOption<TProduct>[] = [
+        {
+            key: 'id',
+            label: 'ID'
+        },
+        {
+            key: 'name',
+            label: 'Name'
+        },
+        {
+            key: 'price',
+            label: 'Price'
+        },
+        {
+            key: 'sku',
+            label: 'SKU',
+        },
+        {
+            key: 'stockStatus',
+            label: 'Stock status',
+        },
+        {
+            key: 'createDate',
+            label: 'Created'
+        },
+    ]
+
 
     useEffect(() => {
         resetSelected();
@@ -99,8 +132,8 @@ const ProductList = (props: TPropsType) => {
         const products = await client?.getFilteredProducts({
             pagedParams: {
                 ...params,
-                orderBy: 'id',
-                order: 'DESC',
+                orderBy: orderByRef.current ?? 'id',
+                order: orderRef.current ?? 'DESC',
             },
             customFragment: gql`
                 fragment ProductListFragment on Product {
@@ -205,6 +238,14 @@ const ProductList = (props: TPropsType) => {
         setShowFilter(prev => !prev)
     }
 
+    const handleChangeOrder = (key: keyof TProduct, order: 'ASC' | 'DESC') => {
+        orderByRef.current = key;
+        orderRef.current = order;
+        resetList();
+        forceUpdate();
+    }
+
+
     return (
         <div className={styles.ProductList}>
             <div className={styles.listHeader} ref={headerRef}>
@@ -228,6 +269,10 @@ const ProductList = (props: TPropsType) => {
                     </Tooltip>
                 </div>
                 <div className={styles.pageActions} >
+                    <SortBy<TProduct>
+                        options={availableSorts}
+                        onChange={handleChangeOrder}
+                    />
                     <Tooltip title="Delete selected">
                         <IconButton
                             onClick={handleDeleteSelectedBtnClick}

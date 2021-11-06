@@ -2,7 +2,7 @@
 
 .EntityEdit {
     padding: 20px;
-    max-width: 1200px;
+    max-width: 900px;
     margin: 0 auto;
     width: 100%;
 }
@@ -24,6 +24,7 @@
     padding: 0 10px 0 0;
     width: 100%;
     margin-bottom: 15px;
+    min-height: 46px;
     display: flex;
     justify-content: space-between;
     align-items: center;

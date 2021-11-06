@@ -29,6 +29,7 @@
     @include paper;
     @extend .container;
     display: flex;
+    min-height: 50px;
     border-radius: 9px;
     align-items: center;
     justify-content: space-between;
@@ -44,6 +45,8 @@
 }
 
 .pageActions {
+    display: flex;
+    align-items: center;
     margin-right: 10px;
 }
 
@@ -70,6 +73,7 @@
 }
 
 :global(.modeDark) {
+
     .listHeader,
     .listItem {
         background-color: #333;
@@ -125,6 +129,7 @@
     margin-bottom: 4px;
     font-weight: 600;
 }
+
 .itemAuthor {
     font-size: 12px;
 }
@@ -133,6 +138,7 @@
     margin-bottom: 4px;
     font-weight: 500;
 }
+
 .itemCreate {
     font-size: 12px;
 }

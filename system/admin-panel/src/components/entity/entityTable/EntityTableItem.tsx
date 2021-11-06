@@ -31,7 +31,7 @@ const EntityTableItem = <TEntityType extends TBasePageEntity, TFilterType extend
     if (props.allSelected && !props.selectedItems[data.id]) selected = true;
     if (!props.allSelected && props.selectedItems[data.id]) selected = true;
 
-    const tableColumns = props.listItemProps.tableProps.columns;
+    const tableColumns = props.listItemProps.getColumns();
 
     return (
         <div className={styles.listItem}>
@@ -41,18 +41,42 @@ const EntityTableItem = <TEntityType extends TBasePageEntity, TFilterType extend
                     onChange={() => props.listItemProps.toggleSelection(data)} />
             </div>
             <div className={styles.columns}>
-                {!!tableColumns?.length && tableColumns.map(prop => (
-                    <div className={styles.column}
-                        key={prop.name}
-                        style={{
-                            width: prop.width ? prop.width + 'px' : 100 / tableColumns.length + '%',
-                            minWidth: prop.minWidth,
-                            maxWidth: prop.maxWidth,
-                        }}
-                    >
-                        <p>{data?.[prop.name] ?? ''}</p>
-                    </div>
-                ))}
+                {!!tableColumns?.length && tableColumns.map(col => {
+                    if (col.hidden) return null;
+                    const value = !col.meta ? data?.[col.name] : data?.customMeta?.[col.name];
+                    return (
+                        <div className={styles.column}
+                            key={col.name}
+                            style={props.listItemProps.getColumnStyles(col, tableColumns)}
+                        >
+                            {col.type === 'Select' || col.type === 'Simple text' && (
+                                <p className={styles.ellipsis}
+                                >{value ?? ''}</p>
+                            )}
+                            {col.type === 'Color' && (
+                                <div style={{
+                                    width: '30px',
+                                    height: '30px',
+                                    backgroundColor: value,
+                                }}></div>
+                            )}
+                            {col.type === 'Image' && (
+                                <div className={styles.imageItem}
+                                    style={{ backgroundImage: `url(${value})` }}
+                                ></div>
+                            )}
+                            {col.type === 'Datetime' && (
+                                <p>{toLocaleDateTimeString(value)}</p>
+                            )}
+                            {col.type === 'Date' && (
+                                <p>{toLocaleDateString(value)}</p>
+                            )}
+                            {col.type === 'Time' && (
+                                <p>{toLocaleTimeString(value)}</p>
+                            )}
+                        </div>
+                    )
+                })}
             </div>
             <div className={styles.listItemActions}>
                 {props.listItemProps.tableProps?.entityBaseRoute && props.data?.id && (
@@ -78,3 +102,21 @@ const EntityTableItem = <TEntityType extends TBasePageEntity, TFilterType extend
 }
 
 export default connect(mapStateToProps)(EntityTableItem);
+
+const toLocaleDateTimeString = (date: Date | string | undefined) => {
+    if (!date) return '';
+    if (typeof date === 'string') date = new Date(date);
+    return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+}
+
+const toLocaleDateString = (date: Date | string | undefined) => {
+    if (!date) return '';
+    if (typeof date === 'string') date = new Date(date);
+    return date.toLocaleDateString();
+}
+
+const toLocaleTimeString = (date: Date | string | undefined) => {
+    if (!date) return '';
+    if (typeof date === 'string') date = new Date(date);
+    return date.toLocaleTimeString();
+}

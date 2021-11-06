@@ -1,5 +1,5 @@
 import { resolvePageRoute, serviceLocator, TAttributeProductVariant, TProduct } from '@cromwell/core';
-import { Autocomplete, TextField, Grid, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
+import { Autocomplete, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Tooltip } from '@mui/material';
 import React, { useEffect, useRef } from 'react';
 
 import { GalleryPicker } from '../../components/galleryPicker/GalleryPicker';
@@ -16,6 +16,7 @@ const MainInfoCard = (props: {
     isProductVariant?: boolean;
     productVariantVal?: string;
     infoCardRef?: React.MutableRefObject<TInfoCardRef>;
+    canValidate?: boolean;
 }) => {
     const productPrevRef = React.useRef<TAttributeProductVariant | TProduct | null>(props.product);
     const productRef = React.useRef<TAttributeProductVariant | TProduct | null>(props.product);
@@ -96,14 +97,16 @@ const MainInfoCard = (props: {
         });
     }
 
+    const checkValid = (value) => value && value !== '';
+
     return (
         <Grid container spacing={3}>
             <Grid item xs={12} sm={12}>
                 <TextField label="Name" variant="standard"
-                    style={{ fontSize: '22px' }}
                     value={product.name ?? ''}
                     className={styles.textField}
                     onChange={(e) => { handleChange('name', e.target.value) }}
+                    error={props.canValidate && !checkValid(product?.name)}
                 />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -136,6 +139,7 @@ const MainInfoCard = (props: {
                     InputProps={{
                         inputComponent: NumberFormatCustom as any,
                     }}
+                    error={props.canValidate && !checkValid(product?.price)}
                 />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -215,11 +219,13 @@ const MainInfoCard = (props: {
                             })
                         }}
                         renderInput={(params) => (
-                            <TextField
-                                {...params}
-                                variant="standard"
-                                label="Meta keywords"
-                            />
+                            <Tooltip title="Press ENTER to add">
+                                <TextField
+                                    {...params}
+                                    variant="standard"
+                                    label="Meta keywords"
+                                />
+                            </Tooltip>
                         )}
                     />
                 )}

@@ -1,7 +1,7 @@
 import { TCustomEntity, TDeleteManyInput, TPagedList, TPagedParams, TCustomEntityInput } from '@cromwell/core';
 import { EntityRepository, SelectQueryBuilder } from 'typeorm';
 
-import { checkEntitySlug, getPaged, handleBaseInput } from '../helpers/base-queries';
+import { checkEntitySlug, getPaged, handleBaseInput, handleCustomMetaInput } from '../helpers/base-queries';
 import { getLogger } from '../helpers/logger';
 import { CustomEntity } from '../models/entities/custom-entity.entity';
 import { CustomEntityFilterInput } from '../models/filters/custom-entity.filter';
@@ -42,6 +42,9 @@ export class CustomEntityRepository extends BaseRepository<CustomEntity> {
 
         customEntity.name = input.name;
         customEntity.entityType = input.entityType;
+
+        await customEntity.save();
+        await handleCustomMetaInput(customEntity, input);
     }
 
     async createCustomEntity(inputData: TCustomEntityInput, id?: number): Promise<CustomEntity> {
@@ -87,7 +90,7 @@ export class CustomEntityRepository extends BaseRepository<CustomEntity> {
         if (!filterParams) return;
 
         this.applyBaseFilter(qb, filterParams);
-        
+
         const entityType = filterParams.entityType;
         if (entityType && entityType !== '') {
             const query = `${this.metadata.tablePath}.${this.quote('entityType')} = :entityType`;

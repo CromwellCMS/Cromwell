@@ -134,7 +134,7 @@ const CategoryItem = (props: TPropsType) => {
     return (
         <div className={`${styles.CategoryItem} ${displayType === 'list' ? styles.listItem : ''}`}>
             <Grid container className={styles.header}>
-                <Grid item xs={displayType === 'list' ? 6 : 8} className={styles.headerLeft}>
+                <Grid item xs={displayType === 'list' ? 6 : 9} className={styles.headerLeft}>
                     {displayType === 'tree' && (
                         <>
                             {hasChildren ? (
@@ -146,7 +146,7 @@ const CategoryItem = (props: TPropsType) => {
                                         style={{ transform: expanded ? 'rotate(180deg)' : '' }}
                                     />
                                 </IconButton>
-                            ) : <div style={{ height: '48px', width: '48px' }}></div>}
+                            ) : <div style={{ height: '48px', width: '40px' }}></div>}
                         </>
                     )}
                     <div className={commonStyles.center}>

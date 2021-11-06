@@ -27,6 +27,7 @@ import {
     getSqlBoolStr,
     getSqlLike,
     handleBaseInput,
+    handleCustomMetaInput,
     wrapInQuotes,
 } from '../helpers/base-queries';
 import { getLogger } from '../helpers/logger';
@@ -101,6 +102,8 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
         if (!newParent) {
             productCategory.parent = null;
         }
+        await productCategory.save();
+        await handleCustomMetaInput(productCategory, input);
     }
 
     async createProductCategory(createProductCategory: CreateProductCategory, id?: number): Promise<ProductCategory> {
@@ -109,7 +112,6 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
         if (id) productCategory.id = id;
 
         await this.handleProductCategoryInput(productCategory, createProductCategory);
-
         await this.save(productCategory);
         await checkEntitySlug(productCategory, ProductCategory);
 

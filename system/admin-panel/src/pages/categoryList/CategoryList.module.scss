@@ -13,10 +13,11 @@
     min-height: 300px;
 }
 
-.header {
+.listHeader {
     @include paper;
     display: flex;
     justify-content: space-between;
+    min-height: 50px;
     margin-bottom: 15px;
     padding: 0 10px;
 }
@@ -40,15 +41,9 @@
     overflow: auto;
 }
 
-:global(.modeDark) {
-    .treeList,
-    .header {
-        background-color: #333;
-
-        * {
-            color: #eee;
-        }
-    }
+.pageActions {
+    display: flex;
+    align-items: center;
 }
 
 .actionBtn {
@@ -65,4 +60,16 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
+}
+
+:global(.modeDark) {
+
+    .treeList,
+    .header {
+        background-color: #333;
+
+        * {
+            color: #eee;
+        }
+    }
 }

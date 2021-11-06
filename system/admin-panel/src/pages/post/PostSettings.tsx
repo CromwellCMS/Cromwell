@@ -178,12 +178,14 @@ const PostSettings = (props: {
                     getOptionLabel={(option) => option}
                     onChange={handleChangeKeywords}
                     renderInput={(params) => (
-                        <TextField
-                            {...params}
-                            className={styles.settingItem}
-                            variant="standard"
-                            label="Meta keywords"
-                        />
+                        <Tooltip title="Press ENTER to add">
+                            <TextField
+                                {...params}
+                                className={styles.settingItem}
+                                variant="standard"
+                                label="Meta keywords"
+                            />
+                        </Tooltip>
                     )}
                 />
                 {postData?.published && (

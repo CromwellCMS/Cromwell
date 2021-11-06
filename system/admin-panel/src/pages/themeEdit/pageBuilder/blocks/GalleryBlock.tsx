@@ -67,7 +67,6 @@ export function GalleryBlockSidebar(props: TBlockMenuProps) {
                 images={data?.gallery?.images}
                 onChange={(val) => handleChange('images', val)}
                 className={styles.settingsInput}
-                hideSrc
                 editLink
             />
             <TextField

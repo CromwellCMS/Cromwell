@@ -2,12 +2,12 @@ import { TCreateUser, TDeleteManyInput, TPagedList, TPagedParams, TUpdateUser, T
 import bcrypt from 'bcrypt';
 import { DeleteQueryBuilder, EntityRepository, SelectQueryBuilder } from 'typeorm';
 
-import { UserFilterInput } from '../models/filters/user.filter';
-import { User } from '../models/entities/user.entity';
+import { checkEntitySlug, getPaged, handleBaseInput, handleCustomMetaInput } from '../helpers/base-queries';
 import { getLogger } from '../helpers/logger';
 import { validateEmail } from '../helpers/validation';
+import { User } from '../models/entities/user.entity';
+import { UserFilterInput } from '../models/filters/user.filter';
 import { PagedParamsInput } from '../models/inputs/paged-params.input';
-import { checkEntitySlug, getPaged, handleBaseInput } from '../helpers/base-queries';
 import { BaseRepository } from './base.repository';
 
 const logger = getLogger();
@@ -57,6 +57,9 @@ export class UserRepository extends BaseRepository<User> {
         user.phone = userInput.phone;
         user.address = userInput.address;
         user.role = userInput.role;
+
+        await user.save();
+        await handleCustomMetaInput(user, userInput);
     }
 
     async createUser(createUser: TCreateUser, id?: number): Promise<User> {

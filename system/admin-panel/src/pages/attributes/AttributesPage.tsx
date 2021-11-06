@@ -1,7 +1,7 @@
 import { TAttribute } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
 import { AddCircleOutline as AddCircleOutlineIcon } from '@mui/icons-material';
-import { Button, Grid, Skeleton } from '@mui/material';
+import { Grid, IconButton, Skeleton, Tooltip } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 
 import { useForceUpdate } from '../../helpers/forceUpdate';
@@ -50,13 +50,15 @@ export default function AttributesPage() {
                 <div>
                     <p className={commonStyles.pageTitle}>attributes</p>
                 </div>
-                <Button
-                    onClick={handleAddAttribute}
-                    variant="contained"
-                    color="primary"
-                    size="small"
-                    startIcon={<AddCircleOutlineIcon />}
-                >Create attribute</Button>
+                <Tooltip title="Create attribute">
+                    <IconButton
+                        className={styles.actionBtn}
+                        aria-label="Create attribute"
+                        onClick={handleAddAttribute}
+                    >
+                        <AddCircleOutlineIcon />
+                    </IconButton>
+                </Tooltip>
             </div>
             <Grid
                 spacing={3}

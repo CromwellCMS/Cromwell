@@ -50,7 +50,8 @@ const OrderListItem = (props: TPropsType) => {
                                 onChange={() => props.listItemProps.toggleSelection(data)} />
                         </div>
                         <div className={styles.itemMainInfo}>
-                            <p className={clsx(styles.itemTitle, styles.ellipsis)}>{props.data?.customerName}</p>
+                            <p className={clsx(styles.itemTitle, styles.ellipsis)}>#{props.data?.id}</p>
+                            <p className={clsx(styles.customerName, styles.ellipsis)}>{props.data?.customerName}</p>
                         </div>
                     </Grid>
                     <Grid item xs={2} className={styles.itemSubInfo}>

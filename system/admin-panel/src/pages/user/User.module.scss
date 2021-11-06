@@ -25,11 +25,16 @@
 .header {
     @extend .container;
     @include paper;
-    padding: 10px 20px;
+    padding: 5px 10px 5px 0;
     margin-bottom: 15px;
     width: 100%;
     display: flex;
     justify-content: space-between;
+    align-items: center;
+}
+
+.headerLeft {
+    display: flex;
     align-items: center;
 }
 
@@ -41,13 +46,7 @@
     flex-direction: column;
 }
 
-.field {
-    // margin-bottom: 15px;
-}
-
 .imageField {
-    @extend .field;
-    border-bottom: 1px solid #999;
     padding-bottom: 4px;
 }
 
@@ -56,6 +55,7 @@
 }
 
 :global(.modeDark) {
+
     .header,
     .fields {
         background-color: #333;

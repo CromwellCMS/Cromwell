@@ -8,6 +8,19 @@
     transition: 0.3s;
     border: 1px solid transparent;
     border-bottom: 1px solid #ddd;
+    position: relative;
+}
+
+.listItem:hover {
+    .listItemActions {
+        display: flex;
+    }
+}
+
+.listItem:focus {
+    .listItemActions {
+        display: flex;
+    }
 }
 
 .imageColumn {
@@ -21,12 +34,38 @@
 }
 
 .columns {
+    display: flex;
+    width: calc(100% - 63px);
+}
+
+.column {
+    display: flex;
+    align-items: center;
+    padding-right: 15px;
+}
+
+.imageItem {
+    max-width: 80px;
     width: 100%;
+    height: 50px;
+    background-position: center;
+    background-size: cover;
 }
 
 .listItemActions {
-    display: flex;
+    display: none;
     justify-content: flex-end;
+    position: absolute;
+    right: 0;
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: 5px;
+    border-radius: 30px;
+}
+
+.ellipsis {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 :global(.modeDark) {

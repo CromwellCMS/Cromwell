@@ -6,7 +6,7 @@ import { Autocomplete as MuiAutocomplete, Button, Grid, IconButton, Skeleton, Te
 import React, { useEffect, useState } from 'react';
 import { Link, useHistory, useParams } from 'react-router-dom';
 
-import ColorPicker from '../../components/colorPicker/ColorPicker';
+import { ColorPicker } from '../../components/colorPicker/ColorPicker';
 import { ImagePicker } from '../../components/imagePicker/ImagePicker';
 import { toast } from '../../components/toast/toast';
 import { tagListPageInfo, tagPageInfo } from '../../constants/PageInfos';
@@ -23,6 +23,7 @@ const TagPage = () => {
     const [isSaving, setIsSaving] = useState(false);
     const [tagLoading, setTagLoading] = useState<boolean>(false);
     const history = useHistory();
+    const [canValidate, setCanValidate] = useState(false);
     const editorId = 'tag-description-editor';
 
     const getTagData = async (id: number) => {
@@ -94,8 +95,12 @@ const TagPage = () => {
         init();
     }, []);
 
+    const checkValid = (value) => value && value !== '';
+
     const handleSave = async () => {
-        if (!data) return;
+        setCanValidate(true);
+        if (!checkValid(data?.name)) return;
+
         setIsSaving(true);
 
         const inputData: TTagInput = {
@@ -135,6 +140,7 @@ const TagPage = () => {
             }
         }
         setIsSaving(false);
+        setCanValidate(false);
     }
 
     const handleInputChange = (prop: keyof TTag, val: any) => {
@@ -214,6 +220,7 @@ const TagPage = () => {
                                 variant="standard"
                                 className={styles.textField}
                                 onChange={(e) => { handleInputChange('name', e.target.value) }}
+                                error={canValidate && !checkValid(data?.name)}
                             />
                         </Grid>
                         <Grid item xs={12} sm={6}>
@@ -285,11 +292,13 @@ const TagPage = () => {
                                     })
                                 }}
                                 renderInput={(params) => (
-                                    <TextField
-                                        {...params}
-                                        variant="standard"
-                                        label="Meta keywords"
-                                    />
+                                    <Tooltip title="Press ENTER to add">
+                                        <TextField
+                                            {...params}
+                                            variant="standard"
+                                            label="Meta keywords"
+                                        />
+                                    </Tooltip>
                                 )}
                             />
                         </Grid>

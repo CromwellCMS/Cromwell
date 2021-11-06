@@ -1,5 +1,5 @@
 export * from './components/fileManager/helpers';
-export { default as ColorPicker } from './components/colorPicker/ColorPicker';
+export { ColorPicker } from './components/colorPicker/ColorPicker';
 export { DraggableList } from './components/draggableList/DraggableList';
 export { GalleryPicker } from './components/galleryPicker/GalleryPicker';
 export { ImagePicker } from './components/imagePicker/ImagePicker';

@@ -1,5 +1,5 @@
 import { TPageConfig } from '@cromwell/core';
-import { Autocomplete, TextField } from '@mui/material';
+import { Autocomplete, TextField, Tooltip } from '@mui/material';
 import React from 'react';
 
 import styles from './PageSettings.module.scss';
@@ -55,11 +55,13 @@ export const PageSettings = (props: {
                     handlePageSettingsChange('keywords', newVal);
                 }}
                 renderInput={(params) => (
-                    <TextField
-                        {...params}
-                        variant="outlined"
-                        label="Meta keywords"
-                    />
+                    <Tooltip title="Press ENTER to add">
+                        <TextField
+                            {...params}
+                            variant="outlined"
+                            label="Meta keywords"
+                        />
+                    </Tooltip>
                 )}
             />
             <TextField label="Head HTML" variant="outlined"

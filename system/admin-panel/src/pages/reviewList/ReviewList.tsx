@@ -6,12 +6,14 @@ import React, { useEffect, useRef, useState } from 'react';
 import { connect, PropsType } from 'react-redux-ts';
 import { debounce } from 'throttle-debounce';
 
+import SortBy, { TSortOption } from '../../components/entity/sort/Sort';
 import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
 import ConfirmationModal from '../../components/modal/Confirmation';
 import Modal from '../../components/modal/Modal';
 import Pagination from '../../components/pagination/Pagination';
 import { listPreloader } from '../../components/skeleton/SkeletonPreloader';
 import { toast } from '../../components/toast/toast';
+import { useForceUpdate } from '../../helpers/forceUpdate';
 import {
     countSelectedItems,
     getSelectedInput,
@@ -54,6 +56,36 @@ const ReviewList = (props: TPropsType) => {
     const [itemToView, setItemToView] = useState<TProductReview | null>(null);
     const [productToView, setProductToView] = useState<TProduct | null>(null);
     const approvedToast = useRef<number | string | null>(null);
+    const orderByRef = useRef<keyof TProductReview | null>(null);
+    const orderRef = useRef<'ASC' | 'DESC' | null>(null);
+    const forceUpdate = useForceUpdate();
+
+    const availableSorts: TSortOption<TProductReview>[] = [
+        {
+            key: 'id',
+            label: 'ID'
+        },
+        {
+            key: 'productId',
+            label: 'Product ID'
+        },
+        {
+            key: 'approved',
+            label: 'Approved'
+        },
+        {
+            key: 'rating',
+            label: 'Rating'
+        },
+        {
+            key: 'userName',
+            label: 'User name'
+        },
+        {
+            key: 'createDate',
+            label: 'Created'
+        },
+    ];
 
     useEffect(() => {
         resetSelected();
@@ -75,8 +107,8 @@ const ReviewList = (props: TPropsType) => {
 
     const handleGetReview = async (params?: TPagedParams<TProductReview>) => {
         if (!params) params = {};
-        params.orderBy = 'createDate';
-        params.order = 'DESC';
+        params.orderBy = orderByRef.current ?? 'id';
+        params.order = orderRef.current ?? 'DESC';
         const data = await client?.getFilteredProductReviews({
             pagedParams: params,
             filterParams: filterInput.current,
@@ -183,6 +215,13 @@ const ReviewList = (props: TPropsType) => {
         }
     }
 
+    const handleChangeOrder = (key: keyof TProductReview, order: 'ASC' | 'DESC') => {
+        orderByRef.current = key;
+        orderRef.current = order;
+        resetList();
+        forceUpdate();
+    }
+
     return (
         <div className={styles.ProductReviewList}>
             <div className={styles.listHeader}>
@@ -226,6 +265,10 @@ const ReviewList = (props: TPropsType) => {
                     />
                 </div>
                 <div className={styles.pageActions} >
+                    <SortBy<TProductReview>
+                        options={availableSorts}
+                        onChange={handleChangeOrder}
+                    />
                     <Tooltip title="Delete selected">
                         <IconButton
                             onClick={handleDeleteSelectedBtnClick}

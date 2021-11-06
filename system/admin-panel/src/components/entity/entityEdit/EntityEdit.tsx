@@ -1,11 +1,10 @@
 import { gql } from '@apollo/client';
-import { resolvePageRoute, serviceLocator, TBasePageEntity } from '@cromwell/core';
+import { getStoreItem, resolvePageRoute, serviceLocator, TBasePageEntity } from '@cromwell/core';
 import { ArrowBack as ArrowBackIcon, OpenInNew as OpenInNewIcon } from '@mui/icons-material';
-import { Button, Grid, IconButton, Skeleton, Tooltip } from '@mui/material';
+import { Button, Grid, IconButton, Skeleton, Tooltip, TextField, Autocomplete as MuiAutocomplete, } from '@mui/material';
 import React from 'react';
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 
-import { tagPageInfo } from '../../../constants/PageInfos';
 import { getCustomMetaFor, getCustomMetaKeysFor, RenderCustomFields } from '../../../helpers/customFields';
 import commonStyles from '../../../styles/common.module.scss';
 import { toast } from '../../toast/toast';
@@ -33,14 +32,15 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
         let entityData: TEntityType;
 
         if (entityId === 'new') {
-            this.setState({ entityData: {} as any });
+            entityData = {} as any;
         } else if (entityId) {
             entityData = await this.getEntity(parseInt(entityId));
-            this.setState({ entityData });
         }
 
         if (!entityData) {
             this.setState({ notFound: true });
+        } else {
+            this.setState({ entityData });
         }
 
         this.setState({ isLoading: false });
@@ -69,6 +69,7 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
                             keywords
                         }
                         isEnabled
+                        entityType
                         customMeta (fields: ${JSON.stringify(getCustomMetaKeysFor(this.props.entityType ?? this.props.entityCategory))})
                     }`, `${this.props.entityCategory}AdminPanelFragment`
             );
@@ -78,12 +79,30 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
         return data;
     }
 
+    private handleInputChange = (key: keyof TEntityType, val: any) => {
+        this.setState(prev => {
+            return {
+                entityData: {
+                    ...(prev?.entityData ?? {} as any),
+                    [key]: val,
+                }
+            }
+        });
+    }
+
     private handleSave = async () => {
-        if (!this.state?.entityData) return;
+        const entityData = this.state?.entityData
+        if (!entityData) return;
         this.setState({ isSaving: true });
         const entityId = this.props.match.params?.id;
 
         const inputData: Omit<TEntityType, 'id'> = {
+            slug: entityData.slug,
+            pageTitle: entityData.pageTitle,
+            pageDescription: entityData.pageDescription,
+            meta: entityData.meta && {
+                keywords: entityData.meta.keywords,
+            },
             ...this.props.getInput(),
         }
 
@@ -96,7 +115,7 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
                 toast.success(`Created ${(this.props.entityType
                     ?? this.props.entityCategory).toLocaleLowerCase()}`);
 
-                this.props.history.push(`${tagPageInfo.baseRoute}/${newData.id}`);
+                this.props.history.push(`${this.props.entityBaseRoute}/${newData.id}`);
 
                 const updatedData = await this.getEntity(newData.id);
                 this.setState({ entityData: updatedData });
@@ -133,11 +152,15 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
 
         let pageFullUrl;
         if (this.state?.entityData) {
-            pageFullUrl = serviceLocator.getFrontendUrl() + resolvePageRoute(
-                this.props.defaultPageName ?? this.props.entityType ?? this.props.entityCategory,
-                { slug: this.state.entityData.slug ?? this.state.entityData.id + '' }
-            );
+            const pageName = this.props.defaultPageName ?? this.props.entityType ?? this.props.entityCategory;
+            if (getStoreItem('defaultPages')?.[pageName]) {
+                pageFullUrl = serviceLocator.getFrontendUrl() + resolvePageRoute(pageName,
+                    { slug: this.state.entityData.slug ?? this.state.entityData.id + '' }
+                );
+            }
         }
+
+        const entityData = this.state?.entityData;
 
         return (
             <div className={styles.EntityEdit}>
@@ -192,6 +215,59 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
                                         refetchMeta={this.refetchMeta}
                                     />
                                 )}
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField label="Slug"
+                                    value={entityData?.slug ?? ''}
+                                    fullWidth
+                                    variant="standard"
+                                    className={styles.defaultField}
+                                    onChange={(e) => { this.handleInputChange('slug', e.target.value) }}
+                                    helperText={pageFullUrl}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField label="Meta title"
+                                    value={entityData?.pageTitle ?? ''}
+                                    fullWidth
+                                    variant="standard"
+                                    className={styles.defaultField}
+                                    onChange={(e) => { this.handleInputChange('pageTitle', e.target.value) }}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField label="Meta description"
+                                    value={entityData?.pageDescription ?? ''}
+                                    fullWidth
+                                    variant="standard"
+                                    className={styles.defaultField}
+                                    onChange={(e) => { this.handleInputChange('pageDescription', e.target.value) }}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <MuiAutocomplete
+                                    multiple
+                                    freeSolo
+                                    options={[]}
+                                    className={styles.defaultField}
+                                    value={entityData?.meta?.keywords ?? []}
+                                    getOptionLabel={(option) => option as any}
+                                    onChange={(e, newVal) => {
+                                        this.handleInputChange('meta', {
+                                            ...(entityData.meta ?? {}),
+                                            keywords: newVal
+                                        })
+                                    }}
+                                    renderInput={(params) => (
+                                        <Tooltip title="Press ENTER to add">
+                                            <TextField
+                                                {...params}
+                                                variant="standard"
+                                                label="Meta keywords"
+                                            />
+                                        </Tooltip>
+                                    )}
+                                />
                             </Grid>
                         </Grid>
                     )}

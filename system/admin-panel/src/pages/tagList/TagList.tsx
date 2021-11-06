@@ -1,17 +1,19 @@
 import { getBlockInstance, TPagedParams, TTag } from '@cromwell/core';
 import { CList, getGraphQLClient, TCList } from '@cromwell/core-frontend';
-import { Checkbox, IconButton, Tooltip } from '@mui/material';
 import { AddCircle as AddCircleIcon, Delete as DeleteIcon } from '@mui/icons-material';
+import { Checkbox, IconButton, Tooltip } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import { connect, PropsType } from 'react-redux-ts';
 import { useHistory } from 'react-router-dom';
 
+import SortBy, { TSortOption } from '../../components/entity/sort/Sort';
 import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
 import ConfirmationModal from '../../components/modal/Confirmation';
 import Pagination from '../../components/pagination/Pagination';
 import { listPreloader } from '../../components/skeleton/SkeletonPreloader';
 import { toast } from '../../components/toast/toast';
 import { tagPageInfo } from '../../constants/PageInfos';
+import { useForceUpdate } from '../../helpers/forceUpdate';
 import {
     countSelectedItems,
     getSelectedInput,
@@ -48,6 +50,28 @@ const TagList = (props: TPropsType) => {
     const totalElements = useRef<number | null>(null);
     const [deleteSelectedOpen, setDeleteSelectedOpen] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const orderByRef = useRef<keyof TTag | null>(null);
+    const orderRef = useRef<'ASC' | 'DESC' | null>(null);
+    const forceUpdate = useForceUpdate();
+
+    const availableSorts: TSortOption<TTag>[] = [
+        {
+            key: 'id',
+            label: 'ID'
+        },
+        {
+            key: 'name',
+            label: 'Name'
+        },
+        {
+            key: 'color',
+            label: 'Color'
+        },
+        {
+            key: 'createDate',
+            label: 'Created'
+        },
+    ];
 
     useEffect(() => {
         resetSelected();
@@ -61,7 +85,17 @@ const TagList = (props: TPropsType) => {
         list?.updateData();
     }
 
+    const resetList = () => {
+        totalElements.current = null;
+        const list = getBlockInstance<TCList>(listId)?.getContentInstance();
+        list?.clearState();
+        list?.init();
+    }
+
     const handleGetTags = async (params?: TPagedParams<TTag>) => {
+        if (!params) params = {};
+        params.orderBy = orderByRef.current ?? 'id';
+        params.order = orderRef.current ?? 'DESC';
         const data = await client?.getTags(params);
 
         if (data.pagedMeta?.totalElements) totalElements.current = data.pagedMeta?.totalElements;
@@ -119,6 +153,13 @@ const TagList = (props: TPropsType) => {
         history.push(`${tagPageInfo.baseRoute}/new`);
     }
 
+    const handleChangeOrder = (key: keyof TTag, order: 'ASC' | 'DESC') => {
+        orderByRef.current = key;
+        orderRef.current = order;
+        resetList();
+        forceUpdate();
+    }
+
     return (
         <div className={styles.TagList}>
             <div className={styles.listHeader}>
@@ -134,6 +175,10 @@ const TagList = (props: TPropsType) => {
                     </div>
                 </div>
                 <div className={styles.pageActions} >
+                    <SortBy<TTag>
+                        options={availableSorts}
+                        onChange={handleChangeOrder}
+                    />
                     <Tooltip title="Delete selected">
                         <IconButton
                             onClick={handleDeleteSelectedBtnClick}

@@ -26,26 +26,34 @@ export const getCustomEntities = (): TAdminCustomEntity[] => {
     return Object.values(customEntities);
 }
 
+const getEntityRoutes = (entity: TAdminCustomEntity) => {
+    if (entity.entityBaseRoute && !entity.entityBaseRoute.startsWith('/'))
+        entity.entityBaseRoute = '/' + entity.entityBaseRoute;
+
+    if (entity.entityListRoute && !entity.entityListRoute.startsWith('/'))
+        entity.entityListRoute = '/' + entity.entityListRoute;
+
+    const entityBaseRoute = (entity.entityBaseRoute ?? '/' + entity.entityType).toLowerCase();
+    const entityListRoute = (entity.entityListRoute ?? entityBaseRoute + '-list').toLowerCase();
+
+    return {
+        entityBaseRoute,
+        entityListRoute,
+    }
+}
+
 // PagesInfo for react-router
 export const getCustomEntityPages = (): TPageInfo[] => {
     const pages: TPageInfo[] = [];
 
     Object.values(customEntities).forEach((entity) => {
-
-        if (entity.entityBaseRoute && !entity.entityBaseRoute.startsWith('/'))
-            entity.entityBaseRoute = '/' + entity.entityBaseRoute;
-
-        if (entity.entityListRoute && !entity.entityListRoute.startsWith('/'))
-            entity.entityListRoute = '/' + entity.entityListRoute;
-
-        const entityBaseRoute = entity.entityBaseRoute ?? '/' + entity.entityType;
-        const entityListRoute = entity.entityListRoute ?? entityBaseRoute + '-list';
-
+        const entityRoutes = getEntityRoutes(entity);
         const client = getGraphQLClient();
+
         const entityPageProps: TEntityPageProps<TCustomEntity, TCustomEntityFilter> = {
             entityCategory: EDBEntity.CustomEntity,
-            entityBaseRoute,
-            entityListRoute,
+            entityBaseRoute: entityRoutes.entityBaseRoute,
+            entityListRoute: entityRoutes.entityListRoute,
             entityType: entity.entityType,
             columns: entity.columns,
             listLabel: entity.listLabel,
@@ -70,7 +78,7 @@ export const getCustomEntityPages = (): TPageInfo[] => {
         }
         pages.push({
             name: entity.entityType,
-            route: entityListRoute,
+            route: entityRoutes.entityListRoute,
             component: ListComp,
             roles: ['administrator', 'guest', 'author'],
         });
@@ -84,7 +92,7 @@ export const getCustomEntityPages = (): TPageInfo[] => {
         }
         pages.push({
             name: entity.entityType,
-            route: entityBaseRoute + '/:id',
+            route: entityRoutes.entityBaseRoute + '/:id',
             component: EntityComp,
             roles: ['administrator', 'guest', 'author'],
         });
@@ -97,10 +105,11 @@ export const getCustomEntitySidebarLinks = (): TSidebarLink[] => {
     const links: TSidebarLink[] = [];
 
     Object.values(customEntities).forEach((entity) => {
+        const entityRoutes = getEntityRoutes(entity);
         links.push({
             id: entity.entityType,
             title: entity.listLabel,
-            route: '/' + entity.entityType + '-list',
+            route: entityRoutes.entityListRoute,
             icon: entity.icon && React.createElement('div', {
                 className: sidebarStyles.customIcon,
                 style: { backgroundImage: `url(${entity.icon})` }

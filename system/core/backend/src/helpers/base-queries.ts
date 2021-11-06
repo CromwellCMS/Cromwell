@@ -17,8 +17,8 @@ export const applyGetPaged = <T>(qb: SelectQueryBuilder<T>, sortByTableName?: st
     }
     if (p.pageSize > MAX_PAGE_SIZE) p.pageSize = MAX_PAGE_SIZE;
 
-    if (p.orderBy) {
-        if (!p.order) p.order = 'DESC';
+    if (p.orderBy && isSimpleString(String(p.orderBy))) {
+        if (p.order !== 'DESC' && p.order !== 'ASC') p.order = 'DESC';
         if (sortByTableName) qb.orderBy(`${sortByTableName}.${p.orderBy}` + '', p.order);
         else qb.orderBy(p.orderBy + '', p.order);
     }
@@ -71,13 +71,13 @@ export const handleBaseInput = async (entity: BasePageEntity, input: TBasePageEn
             keywords: input.meta?.keywords,
         }
     }
-
-    await handleCustomMetaInput(entity, input);
 }
 
 export const handleCustomMetaInput = async <
     T extends { customMeta?: Record<string, string>; }
 >(entity: BasePageEntity, input: T) => {
+    if (!entity.id) await entity.save();
+
     if (input.customMeta && typeof input.customMeta === 'object'
         && Object.keys(input.customMeta).length) {
 
@@ -126,6 +126,7 @@ export const checkEntitySlug = async <T extends BasePageEntity>(entity: T, Entit
     return entity;
 }
 
+export const isSimpleString = (str: string) => /^[a-zA-Z0-9]+$/.test(str);
 
 export const getSqlBoolStr = (dbType: ConnectionOptions['type'], b: boolean) => {
     if (dbType === 'postgres') {
@@ -148,7 +149,7 @@ export const applyBaseFilter = <TEntity>(qb: SelectQueryBuilder<TEntity>, filter
     tablePath: string, dbType: ConnectionOptions['type']): SelectQueryBuilder<TEntity> => {
     if (filter?.properties?.length) {
         filter.properties.forEach((prop, index) => {
-            if (!prop.key || prop.key === '' || prop.key.includes(' ') || prop.key.includes('.')) return;
+            if (!prop.key || !isSimpleString(prop.key)) return;
             const valueName = `key_${index}`;
             if (!prop.inMeta) {
                 qb.andWhere(`${tablePath}.${prop.key} ${prop.exact ? '=' : getSqlLike(dbType)} :${valueName}`,

@@ -31,6 +31,7 @@ export default function CategoryPage(props) {
     const [category, setCategoryData] = useState<TProductCategory | undefined | null>(null);
     const editorId = 'category-description-editor';
     const [parentCategory, setParentCategory] = useState<TProductCategory | null>(null);
+    const [canValidate, setCanValidate] = useState(false);
 
     const urlParams = new URLSearchParams(props?.location?.search);
     const parentIdParam = urlParams.get('parentId');
@@ -179,9 +180,14 @@ export default function CategoryPage(props) {
         return data?.customMeta;
     };
 
+    const checkValid = (value) => value && value !== '';
+
     const handleSave = async () => {
-        setIsSaving(true);
         const inputData: TProductCategoryInput = await getInput();
+        setCanValidate(true);
+        if (!checkValid(inputData.name)) return;
+
+        setIsSaving(true);
 
         if (categoryId === 'new') {
             try {
@@ -213,6 +219,7 @@ export default function CategoryPage(props) {
             }
         }
         setIsSaving(false);
+        setCanValidate(false);
     }
 
     if (notFound) {
@@ -270,6 +277,7 @@ export default function CategoryPage(props) {
                     fullWidth
                     className={styles.textField}
                     onChange={(e) => { handleInputChange('name', e.target.value) }}
+                    error={canValidate && !checkValid(category?.name)}
                 />
                 <Autocomplete<TProductCategory>
                     loader={handleSearchRequest}
@@ -286,6 +294,7 @@ export default function CategoryPage(props) {
                     onChange={(val) => {
                         handleInputChange('mainImage', val)
                     }}
+                    label="Category image"
                     value={category?.mainImage}
                     className={styles.imageBox}
                     showRemove
@@ -329,11 +338,13 @@ export default function CategoryPage(props) {
                         })
                     }}
                     renderInput={(params) => (
-                        <TextField
-                            {...params}
-                            variant="standard"
-                            label="Meta keywords"
-                        />
+                        <Tooltip title="Press ENTER to add">
+                            <TextField
+                                {...params}
+                                variant="standard"
+                                label="Meta keywords"
+                            />
+                        </Tooltip>
                     )}
                 />
                 {category && (

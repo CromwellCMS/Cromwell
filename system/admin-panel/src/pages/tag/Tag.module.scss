@@ -2,14 +2,14 @@
 
 .TagPage {
     padding: 20px;
-    max-width: 1200px;
+    max-width: 900px;
     margin: 0 auto;
     width: 100%;
 }
 
 .header {
     @include paper;
-    padding: 0 20px 0 0;
+    padding: 5px 10px 5px 0;
     width: 100%;
     margin-bottom: 15px;
     display: flex;
@@ -34,7 +34,6 @@
 
 .imageField {
     @extend .textField;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.42);
 }
 
 .descriptionEditor {

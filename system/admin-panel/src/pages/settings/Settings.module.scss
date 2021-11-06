@@ -36,7 +36,6 @@
 
 .imageField {
     @extend .field;
-    border-bottom: 1px solid #999;
 }
 
 .subheader {
@@ -165,6 +164,16 @@ div.customEntity {
 
 div.entityToEditField {
     margin-bottom: 15px;
+}
+
+.selectOptions {
+    @include paper;
+    @include styledScrollBar;
+    padding: 15px;
+    width: 200px;
+    max-height: 400px;
+    overflow: auto;
+    margin-bottom: 10px;
 }
 
 @media screen and (max-width: $mobileBreakpoint) {

@@ -31,12 +31,21 @@ async function main(): Promise<void> {
 
     const server = http.createServer((req, res) => {
 
+        const getErrorCallback = (message: string) => (err) => {
+            logger.error(message, err);
+            res.writeHead(500, { 'Content-Type': 'text/plain' });
+            res.end(JSON.stringify({
+                message,
+                code: 500,
+            }, null, 2));
+        }
+
         const proxyApiServer = () => {
             const serverPort = getServerPort();
             if (serverPort) {
                 proxy.web(req, res, {
                     target: `http://localhost:${serverPort}`
-                });
+                }, getErrorCallback('INTERNAL SERVER ERROR. Proxy: Server is down'));
             } else {
                 res.writeHead(500, { 'Content-Type': 'text/plain' });
                 res.end(JSON.stringify({
@@ -50,13 +59,13 @@ async function main(): Promise<void> {
             if (req.url.startsWith('/admin/') || req.url === '/admin' || req.url.startsWith('/admin?')) {
                 proxy.web(req, res, {
                     target: serviceLocator.getAdminUrl()
-                });
+                }, getErrorCallback('INTERNAL SERVER ERROR. Proxy: Admin service is down'));
             } else if (req.url.startsWith('/api/') || req.url === '/api') {
                 proxyApiServer();
             } else {
                 proxy.web(req, res, {
                     target: serviceLocator.getFrontendUrl(),
-                });
+                }, getErrorCallback('INTERNAL SERVER ERROR. Proxy: Renderer service is down'));
             }
         } else {
             proxyApiServer();

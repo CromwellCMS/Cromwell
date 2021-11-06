@@ -1,7 +1,5 @@
-import { AttributeRepository } from './attribute.repository';
 import {
     EDBEntity,
-    TAttributeValue,
     TDeleteManyInput,
     TFilteredProductList,
     TPagedList,
@@ -11,23 +9,29 @@ import {
     TProductInput,
     TProductRating,
     TProductReview,
-    TAttributeInstanceValue,
 } from '@cromwell/core';
-import { Brackets, DeleteQueryBuilder, EntityRepository, getCustomRepository, SelectQueryBuilder } from 'typeorm';
+import { Brackets, EntityRepository, getCustomRepository, SelectQueryBuilder } from 'typeorm';
 
-import { applyGetManyFromOne, checkEntitySlug, getPaged, handleBaseInput } from '../helpers/base-queries';
+import {
+    applyGetManyFromOne,
+    checkEntitySlug,
+    getPaged,
+    handleBaseInput,
+    handleCustomMetaInput,
+} from '../helpers/base-queries';
 import { getLogger } from '../helpers/logger';
+import { AttributeToProduct } from '../models/entities/attribute-product.entity';
+import { AttributeValue } from '../models/entities/attribute-value.entity';
+import { Attribute } from '../models/entities/attribute.entity';
 import { ProductReview } from '../models/entities/product-review.entity';
 import { Product } from '../models/entities/product.entity';
 import { ProductFilterInput } from '../models/filters/product.filter';
 import { PagedParamsInput } from '../models/inputs/paged-params.input';
+import { AttributeInstance } from '../models/objects/attribute-instance.object';
+import { AttributeRepository } from './attribute.repository';
 import { BaseRepository } from './base.repository';
 import { ProductCategoryRepository } from './product-category.repository';
 import { ProductReviewRepository } from './product-review.repository';
-import { AttributeInstance } from '../models/objects/attribute-instance.object';
-import { AttributeToProduct } from '../models/entities/attribute-product.entity';
-import { Attribute } from '../models/entities/attribute.entity';
-import { AttributeValue } from '../models/entities/attribute-value.entity';
 
 const logger = getLogger();
 const averageKey: keyof Product = 'averageRating';
@@ -178,6 +182,9 @@ export class ProductRepository extends BaseRepository<Product> {
         if (!product.mainImage && product.images && product.images.length > 0) {
             product.mainImage = product.images[0];
         }
+
+        await product.save();
+        await handleCustomMetaInput(product, input);
     }
 
     async createProduct(createProduct: TProductInput, id?: number): Promise<Product> {
@@ -186,12 +193,8 @@ export class ProductRepository extends BaseRepository<Product> {
         if (id) product.id = id;
 
         await this.handleProductInput(product, createProduct);
-
         product = await this.save(product);
         await checkEntitySlug(product, Product);
-
-        // this.buildProductPage(product);
-
         return product;
     }
 
