@@ -1,12 +1,13 @@
 import { gql } from '@apollo/client';
 import { getStoreItem, resolvePageRoute, serviceLocator, TBasePageEntity } from '@cromwell/core';
 import { ArrowBack as ArrowBackIcon, OpenInNew as OpenInNewIcon } from '@mui/icons-material';
-import { Button, Grid, IconButton, Skeleton, Tooltip, TextField, Autocomplete as MuiAutocomplete, } from '@mui/material';
+import { Autocomplete as MuiAutocomplete, Button, Grid, IconButton, Skeleton, TextField, Tooltip } from '@mui/material';
 import React from 'react';
 import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 
 import { getCustomMetaFor, getCustomMetaKeysFor, RenderCustomFields } from '../../../helpers/customFields';
 import commonStyles from '../../../styles/common.module.scss';
+import { handleOnSaveError } from '../../../helpers/handleErrors';
 import { toast } from '../../toast/toast';
 import { TBaseEntityFilter, TEntityPageProps } from '../types';
 import styles from './EntityEdit.module.scss';
@@ -27,6 +28,10 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
     }
 
     private init = async () => {
+        if (!this.props.match) {
+            console.error('this.props.match in not defined, you must provide "react-router" props for entity to be displayed');
+            return;
+        }
         this.setState({ isLoading: true });
         const entityId = this.props.match.params?.id;
         let entityData: TEntityType;
@@ -47,7 +52,7 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
     }
 
     private refetchMeta = async () => {
-        const entityId = this.props.match.params?.id;
+        const entityId = this.props.match?.params?.id;
         if (!entityId) return;
         const data = await this.getEntity(parseInt(entityId));
         return data?.customMeta;
@@ -55,6 +60,10 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
 
     private getEntity = async (entityId: number) => {
         let data: TEntityType;
+        if (!this.props.getById) {
+            console.error('this.props.getById in not defined, you must provide "getById" prop for entity to be displayed');
+            return;
+        }
         try {
             data = await this.props.getById(entityId,
                 gql`
@@ -91,10 +100,27 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
     }
 
     private handleSave = async () => {
+        if (!this.props.getInput) {
+            console.error('this.props.getInput in not defined, you must provide "getInput" prop for entity to be saved');
+            return;
+        }
+        if (!this.props.getInput) {
+            console.error('this.props.create in not defined, you must provide "create" prop for entity to be saved');
+            return;
+        }
+        if (!this.props.getInput) {
+            console.error('this.props.update in not defined, you must provide "update" prop for entity to be saved');
+            return;
+        }
+        if (!this.props.history) {
+            console.error('this.props.history in not defined, you must provide "react-router" props for entity to be saved');
+            return;
+        }
+
         const entityData = this.state?.entityData
         if (!entityData) return;
         this.setState({ isSaving: true });
-        const entityId = this.props.match.params?.id;
+        const entityId = this.props.match?.params?.id;
 
         const inputData: Omit<TEntityType, 'id'> = {
             slug: entityData.slug,
@@ -122,6 +148,7 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
             } catch (e) {
                 toast.error(`Failed to create ${(this.props.entityType
                     ?? this.props.entityCategory).toLocaleLowerCase()}`);
+                handleOnSaveError(e);
                 console.error(e);
             }
         } else {
@@ -132,6 +159,7 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
                 toast.success('Saved!');
             } catch (e) {
                 toast.error('Failed to save');
+                handleOnSaveError(e);
                 console.error(e);
             }
         }

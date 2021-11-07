@@ -29,7 +29,9 @@ import {
     handleBaseInput,
     handleCustomMetaInput,
     wrapInQuotes,
+    applyBaseFilter,
 } from '../helpers/base-queries';
+import { entityMetaRepository } from '../helpers/entity-meta';
 import { getLogger } from '../helpers/logger';
 import { ProductCategory } from '../models/entities/product-category.entity';
 import { ProductCategoryFilterInput } from '../models/filters/product-category.filter';
@@ -37,6 +39,7 @@ import { PagedParamsInput } from '../models/inputs/paged-params.input';
 import { CreateProductCategory } from '../models/inputs/product-category.create';
 import { UpdateProductCategory } from '../models/inputs/product-category.update';
 import { ProductRepository } from './product.repository';
+import { BaseFilterInput } from '../models/filters/base-filter.filter';
 
 const logger = getLogger();
 
@@ -213,7 +216,16 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
         }
     }
 
-    applyCategoryFilter(qb: SelectQueryBuilder<ProductCategory> | DeleteQueryBuilder<ProductCategory>, filterParams?: ProductCategoryFilterInput) {
+    applyBaseFilter(qb: SelectQueryBuilder<TBasePageEntity>, filter?: BaseFilterInput): SelectQueryBuilder<TBasePageEntity> {
+        if (!filter) return qb;
+        const entityType = entityMetaRepository.getEntityType(ProductCategory);
+        if (!entityType) return qb;
+        return applyBaseFilter({ qb, filter, entityType, dbType: this.dbType });
+    }
+
+    applyCategoryFilter(qb: SelectQueryBuilder<ProductCategory>, filterParams?: ProductCategoryFilterInput) {
+        this.applyBaseFilter(qb, filterParams);
+
         // Search by category name or id
         if (filterParams?.nameSearch && filterParams.nameSearch !== '') {
             const likeStr = `%${filterParams.nameSearch}%`;

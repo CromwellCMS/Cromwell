@@ -2,6 +2,8 @@ import { TBasePageEntity, TBasePageMeta } from '@cromwell/core';
 import { Field, Int, ObjectType } from 'type-graphql';
 import { BaseEntity, Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
+import { CustomDateScalar } from '../objects/custom-date.scalar';
+
 @ObjectType()
 export class BasePageMeta implements TBasePageMeta {
     @Field(() => [String], { nullable: true })
@@ -43,12 +45,12 @@ export class BasePageEntity extends BaseEntity implements TBasePageEntity {
         if (data) this._meta = JSON.stringify(data);
     }
 
-    @Field(() => Date)
+    @Field(() => CustomDateScalar, { nullable: true })
     @CreateDateColumn()
     @Index()
     createDate: Date;
 
-    @Field(() => Date)
+    @Field(() => CustomDateScalar, { nullable: true })
     @UpdateDateColumn()
     @Index()
     updateDate: Date;

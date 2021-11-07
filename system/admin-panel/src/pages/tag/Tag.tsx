@@ -12,6 +12,7 @@ import { toast } from '../../components/toast/toast';
 import { tagListPageInfo, tagPageInfo } from '../../constants/PageInfos';
 import { getCustomMetaFor, getCustomMetaKeysFor, RenderCustomFields } from '../../helpers/customFields';
 import { getEditorData, getEditorHtml, initTextEditor } from '../../helpers/editor/editor';
+import { handleOnSaveError } from '../../helpers/handleErrors';
 import commonStyles from '../../styles/common.module.scss';
 import styles from './Tag.module.scss';
 
@@ -127,6 +128,7 @@ const TagPage = () => {
                 await getTagData(newData.id);
             } catch (e) {
                 toast.error('Failed to create tag');
+                handleOnSaveError(e);
                 console.error(e);
             }
         } else {
@@ -136,6 +138,7 @@ const TagPage = () => {
                 toast.success('Saved!');
             } catch (e) {
                 toast.error('Failed to save');
+                handleOnSaveError(e);
                 console.error(e)
             }
         }
@@ -254,7 +257,7 @@ const TagPage = () => {
                         </Grid>
                         <Grid item xs={12}>
                             <div className={styles.descriptionEditor}>
-                                <div style={{ height: '350px' }} id={editorId}></div>
+                                <div style={{ minHeight: '300px' }} id={editorId}></div>
                             </div>
                         </Grid>
                         <Grid item xs={12}>

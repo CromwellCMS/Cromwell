@@ -263,6 +263,8 @@ export class ProductRepository extends BaseRepository<Product> {
     }
 
     applyProductFilter(qb: SelectQueryBuilder<Product>, filterParams?: ProductFilterInput, categoryId?: number) {
+        this.applyBaseFilter(qb, filterParams);
+
         if (categoryId) {
             // Cannot apply category filter in Delete query
             applyGetManyFromOne(qb as SelectQueryBuilder<Product>, this.metadata.tablePath, 'categories',
@@ -391,9 +393,13 @@ export class ProductRepository extends BaseRepository<Product> {
         return true;
     }
 
-    async getProductAttributes(productId: number): Promise<AttributeInstance[] | undefined> {
-        const records = await getCustomRepository(AttributeRepository).getAttributeInstancesOfProduct(productId);
-        if (!records) return
+    async getProductAttributes(productId: number, records?: AttributeToProduct[]): Promise<AttributeInstance[] | undefined> {
+        if (!records) {
+            records = await getCustomRepository(AttributeRepository)
+                .getAttributeInstancesOfProduct(productId);
+        }
+        if (!records) return;
+
         const instances: Record<string, AttributeInstance> = {};
         records.forEach(record => {
             if (!instances[record.key]) {

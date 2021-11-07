@@ -10,6 +10,13 @@ import {
     TPagedParams,
 } from '@cromwell/core';
 
+export interface IEntityListPage<TFilterType extends TBaseEntityFilter> {
+    resetList: () => void;
+    updateList: () => void;
+    getColumns: () => TCustomEntityColumn[];
+    getFilterInput: () => TFilterType;
+}
+
 export type TBaseEntityFilter = TBaseFilter & {
     entityType?: string;
 }
@@ -71,22 +78,31 @@ export type TEntityPageProps<TEntityType extends TBasePageEntity, TFilterType ex
     /**
      * Get user input data on "save" button click
      */
-    getInput: () => Omit<TEntityType, 'id'>;
+    getInput?: () => Omit<TEntityType, 'id'>;
 
     /**
      * API methods called on user actions
      */
-    getById: (id: number, customFragment?: DocumentNode, customFragmentName?: string) => Promise<TEntityType>;
-    update: (id: number, input: Omit<TEntityType, 'id'>) => Promise<TEntityType>;
-    create: (input: Omit<TEntityType, 'id'>) => Promise<TEntityType>;
-    deleteOne: (id: number) => any;
-    deleteMany: (input: TDeleteManyInput) => any;
-    deleteManyFiltered: (input: TDeleteManyInput, filter: TFilterType) => any;
+    getById?: (id: number, customFragment?: DocumentNode, customFragmentName?: string) => Promise<TEntityType>;
+    update?: (id: number, input: Omit<TEntityType, 'id'>) => Promise<TEntityType>;
+    create?: (input: Omit<TEntityType, 'id'>) => Promise<TEntityType>;
+    deleteOne?: (id: number) => any;
+    deleteMany?: (input: TDeleteManyInput) => any;
+    deleteManyFiltered?: (input: TDeleteManyInput, filter: TFilterType) => any;
 
-    getManyFiltered: (options: {
+    getManyFiltered?: (options: {
         pagedParams?: TPagedParams<TEntityType>;
         filterParams?: TFilterType;
         customFragment?: DocumentNode;
         customFragmentName?: string;
-    }) => Promise<TPagedList<TEntityType>>;
+    }) => Promise<TPagedList<TEntityType> | undefined>;
+
+    customElements?: {
+        listLeftActions?: JSX.Element;
+        listRightActions?: JSX.Element;
+    }
+
+    getPageListInstance?: (inst: IEntityListPage<TFilterType>) => any;
+    onClearAllFilters?: () => void;
+    isFilterActive?: () => boolean;
 }

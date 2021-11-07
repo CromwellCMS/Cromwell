@@ -12,7 +12,9 @@ import { Link, useParams } from 'react-router-dom';
 import { toast } from '../../components/toast/toast';
 import { orderStatuses } from '../../constants/order';
 import { orderListPageInfo, productPageInfo } from '../../constants/PageInfos';
+import { handleOnSaveError } from '../../helpers/handleErrors';
 import { NumberFormatCustom } from '../../helpers/NumberFormatCustom';
+import { toLocaleDateTimeString } from '../../helpers/time';
 import commonStyles from '../../styles/common.module.scss';
 import styles from './Order.module.scss';
 
@@ -107,6 +109,7 @@ const OrderPage = () => {
                 toast.success('Saved!');
             } catch (e) {
                 toast.error('Failed to save');
+                handleOnSaveError(e);
                 console.error(e)
             }
         }
@@ -246,13 +249,13 @@ const OrderPage = () => {
                                 }}
                             />
                             <TextField label="Created"
-                                value={toLocaleDateString(data?.createDate)}
+                                value={toLocaleDateTimeString(data?.createDate)}
                                 fullWidth
                                 variant="standard"
                                 className={styles.textField}
                             />
                             <TextField label="Last updated"
-                                value={toLocaleDateString(data?.updateDate)}
+                                value={toLocaleDateTimeString(data?.updateDate)}
                                 fullWidth
                                 variant="standard"
                                 className={styles.textField}
@@ -346,9 +349,3 @@ const OrderPage = () => {
 
 
 export default OrderPage;
-
-const toLocaleDateString = (date: Date | string | undefined) => {
-    if (!date) return '';
-    if (typeof date === 'string') date = new Date(date);
-    return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
-}

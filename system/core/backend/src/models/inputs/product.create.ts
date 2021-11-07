@@ -1,4 +1,4 @@
-import { TProductInput } from '@cromwell/core';
+import { TProductInput, TStockStatus } from '@cromwell/core';
 import { Field, InputType, Int } from 'type-graphql';
 
 import { AttributeInstance } from '../objects/attribute-instance.object';
@@ -43,6 +43,6 @@ export class CreateProduct extends BasePageInput implements TProductInput {
     stockAmount?: number;
 
     @Field(type => String, { nullable: true })
-    stockStatus?: string;
+    stockStatus?: TStockStatus;
 }
 

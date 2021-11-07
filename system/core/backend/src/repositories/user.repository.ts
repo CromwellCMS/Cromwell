@@ -75,11 +75,12 @@ export class UserRepository extends BaseRepository<User> {
             user.id = id;
         }
 
-        await this.handleUserInput(user, createUser);
-
         if (createUser.password) {
             user.password = await this.hashPassword(createUser.password);
         }
+
+        await this.handleUserInput(user, createUser);
+
         if (!user.role) user.role = 'customer';
 
         user = await this.save(user);

@@ -83,7 +83,7 @@ describe('Sidebar component', () => {
             expanded={false}
             forceUpdate={() => { }}
             activeId={null}
-            setActiveId={() => { }}
+            // setActiveId={() => { }}
             data={homeLink}
             userInfo={{ role: 'administrator' } as any}
         /></Router>);

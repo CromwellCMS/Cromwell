@@ -4,9 +4,10 @@
 .Sidebar {
     width: 100%;
     height: 100%;
-    background: #222;
+    // background: #222;
     // background: linear-gradient(144deg, rgba(27, 0, 75, 1) 0%, rgba(52, 0, 46, 1) 100%);
     // background: linear-gradient(144deg, #1b004b 0%, #46003e 100%);
+    background: linear-gradient(339deg, #160c28, #361132);
 }
 
 .sidebarContent {
@@ -197,7 +198,7 @@ header.appBar {
     @extend .paper;
     border-radius: 0;
 
-    > div {
+    >div {
         padding: 0;
     }
 }
@@ -217,6 +218,7 @@ header.appBar {
 }
 
 @media screen and (max-width: $mobileBreakpoint) {
+
     // mobile
     .sidebarMobileHeader {
         margin: 0;
@@ -232,6 +234,7 @@ header.appBar {
 }
 
 @media screen and (min-width: $mobileBreakpoint) {
+
     // desktop
     .mobileContent {
         display: none;
@@ -244,6 +247,10 @@ header.appBar {
 }
 
 :global(.modeDark) {
+    .Sidebar {
+        background: #222;
+    }
+
     header.appBar {
         background-color: #333;
         box-shadow: 0 1px 11px 0 rgb(0 0 0 / 24%), 0 0 11px 5px rgb(0 0 0 / 27%);

@@ -14,6 +14,7 @@ export type IFrontendFilter = {
     updateFilterMeta: (filteredList: TFilteredProductList | undefined) => void;
     handleMobileOpen: () => any;
     handleMobileClose: () => any;
+    setFilter: (filterParams: TProductFilter) => void;
 }
 
 export type TInstanceSettings = {

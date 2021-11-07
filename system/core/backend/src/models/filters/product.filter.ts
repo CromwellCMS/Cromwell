@@ -15,7 +15,7 @@ export class ProductFilterMeta implements TProductFilterMeta {
 }
 
 @ObjectType('FilteredProduct')
-export class FilteredProduct extends BaseFilterInput implements TFilteredProductList {
+export class FilteredProduct implements TFilteredProductList {
     @Field(() => PagedMeta, { nullable: true })
     pagedMeta?: PagedMeta;
 
@@ -38,7 +38,7 @@ export class ProductFilterAttributes implements TProductFilterAttribute {
 }
 
 @InputType("ProductFilterInput")
-export class ProductFilterInput implements TProductFilter {
+export class ProductFilterInput extends BaseFilterInput implements TProductFilter {
 
     @Field(type => Float, { nullable: true })
     minPrice?: number;

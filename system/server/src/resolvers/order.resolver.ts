@@ -127,6 +127,6 @@ export class OrderResolver {
 
     @FieldResolver(() => GraphQLJSONObject, { nullable: true })
     async customMeta(@Root() entity: Order, @Arg("fields", () => [String]) fields: string[]): Promise<any> {
-        return entityMetaRepository.getEntityMetaValuesByKeys(EDBEntity.Order, entity.id, fields);
+        return entityMetaRepository.getEntityMetaByKeys(EDBEntity.Order, entity.id, fields);
     }
 }

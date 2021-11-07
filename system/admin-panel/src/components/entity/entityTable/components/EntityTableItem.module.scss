@@ -1,4 +1,4 @@
-@import "../../../styles/common.module.scss";
+@import "../../../../styles/common.module.scss";
 
 .listItem {
     @include paper;
@@ -58,7 +58,6 @@
     position: absolute;
     right: 0;
     background-color: rgba(255, 255, 255, 0.7);
-    padding: 5px;
     border-radius: 30px;
 }
 
@@ -76,5 +75,9 @@
         * {
             color: #eee;
         }
+    }
+
+    .listItemActions {
+        background-color: rgba(0, 0, 0, 0.4);
     }
 }

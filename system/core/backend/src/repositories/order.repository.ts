@@ -1,4 +1,4 @@
-import { TDeleteManyInput, TOrder, TOrderInput, TPagedList, TPagedParams } from '@cromwell/core';
+import { TBasePageEntity, TDeleteManyInput, TOrder, TOrderInput, TPagedList, TPagedParams } from '@cromwell/core';
 import sanitizeHtml from 'sanitize-html';
 import { DeleteQueryBuilder, EntityRepository, SelectQueryBuilder } from 'typeorm';
 import { DateUtils } from 'typeorm/util/DateUtils';
@@ -99,7 +99,9 @@ export class OrderRepository extends BaseRepository<Order> {
         return true;
     }
 
-    applyOrderFilter(qb: SelectQueryBuilder<TOrder> | DeleteQueryBuilder<TOrder>, filterParams?: OrderFilterInput) {
+    applyOrderFilter(qb: SelectQueryBuilder<TOrder>, filterParams?: OrderFilterInput) {
+        this.applyBaseFilter(qb as SelectQueryBuilder<TBasePageEntity>, filterParams);
+
         // Search by status
         if (filterParams?.status && filterParams.status !== '') {
             const query = `${this.metadata.tablePath}.status = :statusSearch`;
@@ -156,10 +158,15 @@ export class OrderRepository extends BaseRepository<Order> {
 
 
     async deleteManyFilteredOrders(input: TDeleteManyInput, filterParams?: OrderFilterInput): Promise<boolean | undefined> {
-        const qb = this.createQueryBuilder(this.metadata.tablePath).delete();
-        this.applyOrderFilter(qb, filterParams);
-        this.applyDeleteMany(qb, input);
-        await qb.execute();
+        const qbSelect = this.createQueryBuilder(this.metadata.tablePath).select([`${this.metadata.tablePath}.id`]);
+        this.applyOrderFilter(qbSelect, filterParams);
+        this.applyDeleteMany(qbSelect, input);
+
+        const qbDelete = this.createQueryBuilder(this.metadata.tablePath).delete()
+            .where(`${this.metadata.tablePath}.id IN (${qbSelect.getQuery()})`)
+            .setParameters(qbSelect.getParameters());
+
+        await qbDelete.execute();
         return true;
     }
 

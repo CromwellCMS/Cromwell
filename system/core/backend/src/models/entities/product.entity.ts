@@ -1,4 +1,4 @@
-import { TProduct, TProductCategory, TProductRating, TProductReview } from '@cromwell/core';
+import { TProduct, TProductCategory, TProductRating, TProductReview, TStockStatus } from '@cromwell/core';
 import { Field, Int, ObjectType } from 'type-graphql';
 import { Column, Entity, Index, JoinTable, ManyToMany, OneToMany } from 'typeorm';
 
@@ -57,7 +57,7 @@ export class Product extends BasePageEntity implements TProduct {
     @Field(type => String, { nullable: true })
     @Column({ type: "varchar", length: 255, nullable: true })
     @Index()
-    stockStatus?: string;
+    stockStatus?: TStockStatus;
 
     @Field(type => String, { nullable: true })
     @Column({ type: "text", nullable: true })

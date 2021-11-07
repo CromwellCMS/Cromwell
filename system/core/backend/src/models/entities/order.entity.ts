@@ -12,6 +12,7 @@ import {
 } from 'typeorm';
 
 import { OrderMeta } from './meta/order-meta.entity';
+import { CustomDateScalar } from '../objects/custom-date.scalar';
 
 @Entity()
 @ObjectType()
@@ -91,12 +92,12 @@ export class Order extends BaseEntity implements TOrder {
     @Column({ type: "varchar", length: 255, nullable: true })
     currency?: string;
 
-    @Field(() => Date)
+    @Field(() => CustomDateScalar, { nullable: true })
     @Index()
     @CreateDateColumn()
     createDate: Date;
 
-    @Field(() => Date)
+    @Field(() => CustomDateScalar, { nullable: true })
     @Index()
     @UpdateDateColumn()
     updateDate: Date;

@@ -129,7 +129,7 @@ export class ProductCategoryResolver {
 
     @FieldResolver(() => GraphQLJSONObject, { nullable: true })
     async customMeta(@Root() entity: ProductCategory, @Arg("fields", () => [String]) fields: string[]): Promise<any> {
-        return entityMetaRepository.getEntityMetaValuesByKeys(EDBEntity.ProductCategory, entity.id, fields);
+        return entityMetaRepository.getEntityMetaByKeys(EDBEntity.ProductCategory, entity.id, fields);
     }
 
     @FieldResolver(() => Int, { nullable: true })

@@ -1,11 +1,28 @@
-import { EDBEntity, getRandStr, TAdminCustomEntity, TAdminCustomField } from '@cromwell/core';
-import { Add as AddIcon, Delete as DeleteIcon, Settings as SettingsIcon, FormatListBulleted as FormatListBulletedIcon } from '@mui/icons-material';
-import { Button, FormControl, Grid, IconButton, InputLabel, MenuItem, Select, TextField, Tooltip, Popover } from '@mui/material';
-import React, { useState, useRef } from 'react';
+import { EDBEntity, getRandStr, TAdminCustomEntity, TAdminCustomField, TCustomEntityColumn } from '@cromwell/core';
+import {
+    Add as AddIcon,
+    Delete as DeleteIcon,
+    FormatListBulleted as FormatListBulletedIcon,
+    Settings as SettingsIcon,
+} from '@mui/icons-material';
+import {
+    Button,
+    FormControl,
+    Grid,
+    IconButton,
+    InputLabel,
+    MenuItem,
+    Popover,
+    Select,
+    TextField,
+    Tooltip,
+} from '@mui/material';
+import React, { useRef, useState } from 'react';
+
 import { DraggableList } from '../../../components/draggableList/DraggableList';
 import { ImagePicker } from '../../../components/imagePicker/ImagePicker';
 import Modal from '../../../components/modal/Modal';
-import { unregisterCustomEntity } from '../../../helpers/customEntities';
+import { baseEntityColumns, unregisterCustomEntity } from '../../../helpers/customEntities';
 import { unregisterCustomField } from '../../../helpers/customFields';
 import { TAdminCmsSettings, TTabProps } from '../Settings';
 import styles from '../Settings.module.scss';
@@ -58,15 +75,20 @@ export default function CustomData(props: TTabProps) {
         })),
     ];
 
-    const addCustomField = (entityType: EDBEntity | string) => {
+    const addCustomField = (entity: AdminEntityView) => {
         const customFields = settings?.customFields ?? [];
         const orderMax = customFields.reduce((prev, curr) => curr.order > prev ? curr.order : prev, 0);
         customFields.push({
-            entityType,
+            entityType: entity.entityType,
             key: '',
             fieldType: 'Simple text',
             order: orderMax + 1,
-            id: getRandStr(8)
+            id: getRandStr(8),
+            column: {
+                meta: true,
+                visible: entity.custom,
+                order: orderMax + 1,
+            } as TCustomEntityColumn,
         })
         changeSettings('customFields', customFields)
     }
@@ -76,21 +98,7 @@ export default function CustomData(props: TTabProps) {
             entityType: '',
             listLabel: '',
             columns: [
-                {
-                    name: 'id',
-                    label: 'ID',
-                    type: 'Simple text',
-                },
-                {
-                    name: 'slug',
-                    label: 'Slug',
-                    type: 'Simple text',
-                },
-                {
-                    name: 'createDate',
-                    label: 'Created',
-                    type: 'Datetime',
-                }
+                ...baseEntityColumns.map(col => ({ ...col, visible: true })),
             ],
         });
     }
@@ -181,7 +189,7 @@ export default function CustomData(props: TTabProps) {
                             />
                         )}
                         <Tooltip title="Add custom field">
-                            <IconButton onClick={() => addCustomField(entity.entityType)}>
+                            <IconButton onClick={() => addCustomField(entity)}>
                                 <AddIcon />
                             </IconButton>
                         </Tooltip>
@@ -328,7 +336,7 @@ const CustomFieldSettings = (props: {
             <TextField
                 label="Key"
                 value={fieldData.key}
-                onChange={e => changeFieldValue('key', e.target.value)}
+                onChange={e => changeFieldValue('key', e.target.value.replace(/\W/g, '_'))}
                 size="small"
                 className={styles.customFieldItemField}
             />

@@ -151,6 +151,18 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
         this.props.router?.push(url);
     }
 
+    public setFilter = (filterParams: TProductFilter) => {
+        if (filterParams.minPrice !== undefined) this.priceRange[0] = filterParams.minPrice;
+        if (filterParams.maxPrice !== undefined) this.priceRange[1] = filterParams.maxPrice;
+        if (filterParams.nameSearch) this.search = filterParams.nameSearch;
+        this.checkedAttrs = Object.assign({}, ...(filterParams.attributes?.map(attr => {
+            return {
+                [attr.key]: attr.values
+            }
+        }) ?? []));
+        this.forceUpdate();
+    }
+
     private getFilterItem = (props: {
         title: string;
         key: string;

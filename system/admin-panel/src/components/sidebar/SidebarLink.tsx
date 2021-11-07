@@ -42,7 +42,6 @@ const SidebarLink = (props: {
     toggleSubMenu: (panel: string) => (event: React.ChangeEvent, isExpanded: boolean) => void,
     expanded: string | false;
     forceUpdate: () => void;
-    setActiveId: (id: string) => void;
     activeId: string;
     userInfo: TUser | undefined;
 }) => {
@@ -70,7 +69,7 @@ const SidebarLink = (props: {
         head = <Link to={props.data.route}
             onClick={e => {
                 e.stopPropagation();
-                props.setActiveId(props.data.id);
+                // props.setActiveId(props.data.id);
             }}
         >{head}</Link>
     }
@@ -95,7 +94,6 @@ const SidebarLink = (props: {
                             expanded={props.expanded} toggleSubMenu={props.toggleSubMenu}
                             forceUpdate={props.forceUpdate}
                             activeId={props.activeId}
-                            setActiveId={props.setActiveId}
                             userInfo={props.userInfo}
                         />
                     ))}

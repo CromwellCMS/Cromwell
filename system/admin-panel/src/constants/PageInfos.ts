@@ -54,48 +54,48 @@ export const homePageInfo: TPageInfo = {
 };
 export const themeListPageInfo: TPageInfo = {
     name: 'ThemeList',
-    route: '/theme-list',
+    route: '/themes',
     component: ThemeListPage,
     roles: ['administrator', 'guest'],
 };
 export const themeEditPageInfo: TPageInfo = {
     name: 'ThemeEdit',
-    route: '/theme-edit',
-    baseRoute: '/theme-edit',
+    route: '/theme-editor',
+    baseRoute: '/theme-editor',
     component: ThemeEditPage,
     roles: ['administrator', 'guest'],
 };
 export const productListInfo: TPageInfo = {
     name: 'ProductList',
-    route: '/product-list',
+    route: '/products',
     component: ProductListPage,
     roles: ['administrator', 'guest'],
 };
 export const productPageInfo: TPageInfo = {
     name: 'ProductList',
-    route: '/product/:id',
-    baseRoute: '/product',
+    route: '/products/:id',
+    baseRoute: '/products',
     component: ProductPage,
     roles: ['administrator', 'guest'],
 };
 
 export const categoryListPageInfo: TPageInfo = {
     name: 'CategoryList',
-    route: '/category-list',
+    route: '/categories',
     component: CategoryListPage,
     roles: ['administrator', 'guest'],
 };
 export const categoryPageInfo: TPageInfo = {
     name: 'Category',
-    route: '/category/:id',
+    route: '/categories/:id',
     component: CategoryPage,
-    baseRoute: '/category',
+    baseRoute: '/categories',
     roles: ['administrator', 'guest'],
 };
 
 export const attributesInfo: TPageInfo = {
     name: 'Attributes',
-    route: '/product-attributes',
+    route: '/attributes',
     component: AttributesPage,
     roles: ['administrator', 'guest'],
 };
@@ -115,15 +115,15 @@ export const pluginPageInfo: TPageInfo = {
 
 export const postListInfo: TPageInfo = {
     name: 'Posts',
-    route: '/post-list',
+    route: '/posts',
     component: PostListPage,
     roles: ['administrator', 'guest', 'author'],
 };
 export const postPageInfo: TPageInfo = {
     name: 'Post',
-    route: '/post/:id',
+    route: '/posts/:id',
     component: PostPage,
-    baseRoute: '/post',
+    baseRoute: '/posts',
     roles: ['administrator', 'guest', 'author'],
 };
 
@@ -137,16 +137,15 @@ export const loginPageInfo: TPageInfo = {
 
 export const orderListPageInfo: TPageInfo = {
     name: 'Order List',
-    route: '/order-list',
+    route: '/orders',
     component: OrderListPage,
-    baseRoute: '/order-list',
     roles: ['administrator', 'guest'],
 };
 
 export const orderPageInfo: TPageInfo = {
     name: 'Order',
-    route: '/order/:id',
-    baseRoute: '/order',
+    route: '/orders/:id',
+    baseRoute: '/orders',
     component: OrderPage,
     roles: ['administrator', 'guest'],
 };
@@ -167,34 +166,34 @@ export const settingsPageInfo: TPageInfo = {
 
 export const userListPageInfo: TPageInfo = {
     name: 'User List',
-    route: '/user-list',
+    route: '/users',
     component: UserListPage,
     roles: ['administrator', 'guest'],
 };
 export const userPageInfo: TPageInfo = {
     name: 'User',
-    route: '/user/:id',
-    baseRoute: '/user',
+    route: '/users/:id',
+    baseRoute: '/users',
     component: UserPage,
     roles: ['administrator', 'guest', 'author'],
 };
 
 export const tagPageInfo: TPageInfo = {
     name: 'Tag',
-    route: '/tag/:id',
-    baseRoute: '/tag',
+    route: '/tags/:id',
+    baseRoute: '/tags',
     component: TagPage,
     roles: ['administrator', 'guest', 'author'],
 }
 export const tagListPageInfo: TPageInfo = {
     name: 'Tag List',
-    route: '/tag-list',
+    route: '/tags',
     component: TagListPage,
     roles: ['administrator', 'guest', 'author'],
 }
 export const reviewListPageInfo: TPageInfo = {
     name: 'Reviews',
-    route: '/review-list',
+    route: '/reviews',
     component: ReviewListPage,
     roles: ['administrator', 'guest'],
 }

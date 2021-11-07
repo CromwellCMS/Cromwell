@@ -42,6 +42,7 @@ export class TagResolver {
 
     @Query(() => Tag)
     async [getOneByIdPath](@Arg("id", () => Int) id: number): Promise<TTag | undefined> {
+        entityMetaRepository.getAllEntityMetaKeys(EDBEntity.CustomEntity);
         return this.repository.getTagById(id);
     }
 
@@ -82,7 +83,7 @@ export class TagResolver {
 
     @FieldResolver(() => GraphQLJSONObject, { nullable: true })
     async customMeta(@Root() entity: Tag, @Arg("fields", () => [String]) fields: string[]): Promise<any> {
-        return entityMetaRepository.getEntityMetaValuesByKeys(EDBEntity.Tag, entity.id, fields);
+        return entityMetaRepository.getEntityMetaByKeys(EDBEntity.Tag, entity.id, fields);
     }
 
     @FieldResolver(() => Int, { nullable: true })
@@ -90,4 +91,3 @@ export class TagResolver {
         return this.repository.getEntityViews(product.id, EDBEntity.Tag);
     }
 }
-

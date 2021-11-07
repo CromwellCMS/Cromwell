@@ -171,7 +171,7 @@ const MainInfoCard = (props: {
             </Grid>
             <Grid item xs={12} sm={12}>
                 <div className={styles.descriptionEditor}>
-                    <div id={editorId}></div>
+                    <div style={{ minHeight: '300px' }} id={editorId}></div>
                 </div>
             </Grid>
             <Grid item xs={12} sm={12}>

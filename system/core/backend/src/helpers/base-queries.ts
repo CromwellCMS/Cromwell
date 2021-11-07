@@ -1,8 +1,8 @@
-import { getRandStr, getStoreItem, TBasePageEntityInput, TPagedList, TPagedParams } from '@cromwell/core';
-import { ConnectionOptions, getCustomRepository, getManager, SelectQueryBuilder } from 'typeorm';
+import { EDBEntity, getRandStr, getStoreItem, TBasePageEntityInput, TPagedList, TPagedParams } from '@cromwell/core';
+import { ConnectionOptions, getManager, SelectQueryBuilder } from 'typeorm';
 
-import { BasePageEntity } from '../models/entities/base-page.entity';
 import { entityMetaRepository } from '../helpers/entity-meta';
+import { BasePageEntity } from '../models/entities/base-page.entity';
 import { BaseFilterInput } from '../models/filters/base-filter.filter';
 
 const MAX_PAGE_SIZE = 300;
@@ -19,7 +19,7 @@ export const applyGetPaged = <T>(qb: SelectQueryBuilder<T>, sortByTableName?: st
 
     if (p.orderBy && isSimpleString(String(p.orderBy))) {
         if (p.order !== 'DESC' && p.order !== 'ASC') p.order = 'DESC';
-        if (sortByTableName) qb.orderBy(`${sortByTableName}.${p.orderBy}` + '', p.order);
+        if (sortByTableName) qb.orderBy(`${sortByTableName}.${p.orderBy}`, p.order);
         else qb.orderBy(p.orderBy + '', p.order);
     }
 
@@ -108,14 +108,15 @@ export const checkEntitySlug = async <T extends BasePageEntity>(entity: T, Entit
             }
         });
         for (const match of matches) {
-            if (match.id !== entity.id) {
-                entity.slug = entity.id + '';
-                hasModified = true;
-            }
-            if (match.slug === entity.id + '') {
-                entity.slug = entity.id + '_' + getRandStr(6);
-                hasModified = true;
-                break;
+            if (hasModified) {
+                if (match.id !== entity.id) {
+                    entity.slug = entity.id + '_' + getRandStr(6);
+                    break;
+                }
+            } else {
+                if (match.id !== entity.id) {
+                    throw new Error('Slug is not unique');
+                }
             }
         }
     }
@@ -126,7 +127,7 @@ export const checkEntitySlug = async <T extends BasePageEntity>(entity: T, Entit
     return entity;
 }
 
-export const isSimpleString = (str: string) => /^[a-zA-Z0-9]+$/.test(str);
+export const isSimpleString = (str: string | undefined) => str && /^[a-zA-Z0-9_]+$/.test(str);
 
 export const getSqlBoolStr = (dbType: ConnectionOptions['type'], b: boolean) => {
     if (dbType === 'postgres') {
@@ -145,17 +146,80 @@ export const wrapInQuotes = (dbType: ConnectionOptions['type'], str: string) => 
     return '`' + str + '`';
 }
 
-export const applyBaseFilter = <TEntity>(qb: SelectQueryBuilder<TEntity>, filter: BaseFilterInput,
-    tablePath: string, dbType: ConnectionOptions['type']): SelectQueryBuilder<TEntity> => {
-    if (filter?.properties?.length) {
-        filter.properties.forEach((prop, index) => {
+export const applyBaseFilter = <TEntity>({ qb, filter, entityType, dbType }: {
+    qb: SelectQueryBuilder<TEntity>;
+    filter: BaseFilterInput;
+    entityType: EDBEntity;
+    dbType: ConnectionOptions['type'];
+}): SelectQueryBuilder<TEntity> => {
+
+    const EntityMetaClass = entityMetaRepository.getMetaClass(entityType);
+    const EntityClass = entityMetaRepository.getEntityClass(entityType);
+    if (!EntityMetaClass || !EntityClass) return qb;
+
+    const metaTablePath = EntityMetaClass.getRepository().metadata.tablePath;
+    const entityTablePath = EntityClass.getRepository().metadata.tablePath;
+
+    const hasToJoinMeta = filter?.filters?.find(prop => prop.inMeta)
+        || filter?.sorts?.find(sort => sort.inMeta);
+
+    if (filter?.filters?.length) {
+        const searchJoinName = `${metaTablePath}_search`;
+        if (filter?.filters?.find(prop => prop.inMeta)) {
+            if (EntityMetaClass && EntityClass) {
+                qb.leftJoin(EntityMetaClass, searchJoinName,
+                    `${searchJoinName}.${wrapInQuotes(dbType, 'entityId')} = ${entityTablePath}.id`);
+            }
+        }
+
+        filter.filters.forEach((prop, index) => {
             if (!prop.key || !isSimpleString(prop.key)) return;
-            const valueName = `key_${index}`;
+            const valueName = `value_filter_${index}`;
+            const keyName = `key_filter_${index}`;
             if (!prop.inMeta) {
-                qb.andWhere(`${tablePath}.${prop.key} ${prop.exact ? '=' : getSqlLike(dbType)} :${valueName}`,
-                    { [valueName]: prop.value });
+                qb.andWhere(`${entityTablePath}.${wrapInQuotes(dbType, prop.key)} ${prop.exact ? '=' : getSqlLike(dbType)} :${valueName}`,
+                    { [valueName]: prop.exact ? prop.value : `%${prop.value}%` });
+            } else {
+                qb.andWhere(`${searchJoinName}.${wrapInQuotes(dbType, 'key')} = :${keyName}`,
+                    { [keyName]: prop.key });
+
+                qb.andWhere(`${searchJoinName}.${wrapInQuotes(dbType, 'value')} ${prop.exact ? '=' : getSqlLike(dbType)} :${valueName}`,
+                    { [valueName]: prop.exact ? prop.value : `%${prop.value}%` });
             }
         })
+    }
+    if (filter?.sorts?.length) {
+        filter.sorts.forEach((sort, index) => {
+            const sortKey = sort?.key;
+            const keyParamName = `key_sort_${index}`;
+            if (!sortKey || !isSimpleString(sortKey)) return;
+            if (sort.sort !== 'DESC' && sort.sort !== 'ASC') sort.sort = 'DESC';
+
+            if (!sort.inMeta) {
+                const args: [string, "ASC" | "DESC"] = [`${entityTablePath}.${sortKey}`, sort.sort];
+                if (index === 0) {
+                    qb.orderBy(...args);
+                } else {
+                    qb.addOrderBy(...args);
+                }
+            } else {
+                const sortJoinName = `${metaTablePath}_sort_${index}`;
+                qb.leftJoinAndSelect(EntityMetaClass, sortJoinName,
+                    `${sortJoinName}.entityId = ${entityTablePath}.id AND ` +
+                    `${sortJoinName}.key = :${keyParamName}`)
+                    .setParameter(keyParamName, sortKey);
+                const args: [string, "ASC" | "DESC"] = [`${sortJoinName}.value`, sort.sort];
+                if (index === 0) {
+                    qb.orderBy(...args);
+                } else {
+                    qb.addOrderBy(...args);
+                }
+            }
+        });
+    }
+
+    if (hasToJoinMeta) {
+        qb.groupBy(`${entityTablePath}.id`);
     }
     return qb;
 }

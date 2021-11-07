@@ -1,14 +1,16 @@
 import { TBasePageEntity } from '@cromwell/core';
 import { DeleteForever as DeleteForeverIcon, Edit as EditIcon } from '@mui/icons-material';
-import { Checkbox, IconButton } from '@mui/material';
+import { Checkbox, IconButton, Tooltip } from '@mui/material';
 import React from 'react';
 import { connect, PropsType } from 'react-redux-ts';
 import { Link } from 'react-router-dom';
+import { getCStore } from '@cromwell/core-frontend';
 
-import { TAppState } from '../../../redux/store';
-import commonStyles from '../../../styles/common.module.scss';
-import { TBaseEntityFilter } from '../types';
-import { TListItemProps } from './EntityTable';
+import { toLocaleDateString, toLocaleDateTimeString, toLocaleTimeString } from '../../../../helpers/time';
+import { TAppState } from '../../../../redux/store';
+import commonStyles from '../../../../styles/common.module.scss';
+import { TBaseEntityFilter } from '../../types';
+import { TListItemProps } from '../EntityTable';
 import styles from './EntityTableItem.module.scss';
 
 const mapStateToProps = (state: TAppState) => {
@@ -27,10 +29,10 @@ type TEntityTableItemProps<TEntityType extends TBasePageEntity, TFilterType exte
 
 const EntityTableItem = <TEntityType extends TBasePageEntity, TFilterType extends TBaseEntityFilter>(props: TEntityTableItemProps<TEntityType, TFilterType>) => {
     const { data } = props;
+    const cstore = getCStore();
     let selected = false;
     if (props.allSelected && !props.selectedItems[data.id]) selected = true;
     if (!props.allSelected && props.selectedItems[data.id]) selected = true;
-
     const tableColumns = props.listItemProps.getColumns();
 
     return (
@@ -42,7 +44,7 @@ const EntityTableItem = <TEntityType extends TBasePageEntity, TFilterType extend
             </div>
             <div className={styles.columns}>
                 {!!tableColumns?.length && tableColumns.map(col => {
-                    if (col.hidden) return null;
+                    if (!col.visible) return null;
                     const value = !col.meta ? data?.[col.name] : data?.customMeta?.[col.name];
                     return (
                         <div className={styles.column}
@@ -50,29 +52,46 @@ const EntityTableItem = <TEntityType extends TBasePageEntity, TFilterType extend
                             style={props.listItemProps.getColumnStyles(col, tableColumns)}
                         >
                             {col.type === 'Select' || col.type === 'Simple text' && (
-                                <p className={styles.ellipsis}
-                                >{value ?? ''}</p>
+                                <Tooltip title={value ?? ''} enterDelay={1500}>
+                                    <p className={styles.ellipsis}
+                                    >{value ?? ''}</p>
+                                </Tooltip>
                             )}
                             {col.type === 'Color' && (
-                                <div style={{
-                                    width: '30px',
-                                    height: '30px',
-                                    backgroundColor: value,
-                                }}></div>
+                                <Tooltip title={value ?? ''} enterDelay={1500}>
+                                    <div style={{
+                                        width: '30px',
+                                        height: '30px',
+                                        backgroundColor: value,
+                                    }}></div>
+                                </Tooltip>
                             )}
                             {col.type === 'Image' && (
-                                <div className={styles.imageItem}
-                                    style={{ backgroundImage: `url(${value})` }}
-                                ></div>
+                                <Tooltip title={value ?? ''} enterDelay={1500}>
+                                    <div className={styles.imageItem}
+                                        style={{ backgroundImage: value && `url(${value})` }}
+                                    ></div>
+                                </Tooltip>
                             )}
                             {col.type === 'Datetime' && (
-                                <p>{toLocaleDateTimeString(value)}</p>
+                                <Tooltip title={toLocaleDateTimeString(value)} enterDelay={1500}>
+                                    <p className={styles.ellipsis}>{toLocaleDateTimeString(value)}</p>
+                                </Tooltip>
                             )}
                             {col.type === 'Date' && (
-                                <p>{toLocaleDateString(value)}</p>
+                                <Tooltip title={toLocaleDateString(value)} enterDelay={1500}>
+                                    <p className={styles.ellipsis}>{toLocaleDateString(value)}</p>
+                                </Tooltip>
                             )}
                             {col.type === 'Time' && (
-                                <p>{toLocaleTimeString(value)}</p>
+                                <Tooltip title={toLocaleTimeString(value)} enterDelay={1500}>
+                                    <p className={styles.ellipsis}>{toLocaleTimeString(value)}</p>
+                                </Tooltip>
+                            )}
+                            {col.type === 'Currency' && (
+                                <Tooltip title={cstore.getPriceWithCurrency(value) ?? ''} enterDelay={1500}>
+                                    <p className={styles.ellipsis}>{cstore.getPriceWithCurrency(value)}</p>
+                                </Tooltip>
                             )}
                         </div>
                     )
@@ -102,21 +121,3 @@ const EntityTableItem = <TEntityType extends TBasePageEntity, TFilterType extend
 }
 
 export default connect(mapStateToProps)(EntityTableItem);
-
-const toLocaleDateTimeString = (date: Date | string | undefined) => {
-    if (!date) return '';
-    if (typeof date === 'string') date = new Date(date);
-    return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
-}
-
-const toLocaleDateString = (date: Date | string | undefined) => {
-    if (!date) return '';
-    if (typeof date === 'string') date = new Date(date);
-    return date.toLocaleDateString();
-}
-
-const toLocaleTimeString = (date: Date | string | undefined) => {
-    if (!date) return '';
-    if (typeof date === 'string') date = new Date(date);
-    return date.toLocaleTimeString();
-}

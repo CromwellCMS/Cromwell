@@ -39,17 +39,17 @@ import SidebarLink from './SidebarLink';
 
 export default function Sidebar() {
     const pageInfos = getPageInfos();
-    const currentInfo = pageInfos.find(i => i.route === window.location.pathname);
+    const currentInfo = pageInfos.find(i => i.route === window.location.pathname.replace('/admin', ''));
     const currentLink = getLinkByInfo(currentInfo);
     const [expanded, setExpanded] = useState<string | false>(currentLink?.parentId ?? false);
     const [optionsOpen, setOptionsOpen] = useState<boolean>(false);
-    const [activeId, setActiveId] = useState<string | null>(currentLink?.id ?? null);
     const [mobileOpen, setMobileOpen] = useState(false);
     const [cmsInfoOpen, setCmsInfoOpen] = useState(false);
     const [systemMonitorOpen, setSystemMonitorOpen] = useState(false);
     const popperAnchorEl = useRef<HTMLDivElement | null>(null);
     const history = useHistory?.();
     const forceUpdate = useForceUpdate();
+    (window as any).SidebarforceUpdate = forceUpdate;
 
     const userInfo: TUser | undefined = getStoreItem('userInfo');
     const toggleSubMenu = (panel: string) => (event: React.ChangeEvent<any>, isExpanded: boolean) => {
@@ -67,10 +67,10 @@ export default function Sidebar() {
             setTimeout(forceUpdate, 100);
         });
         history?.listen(() => {
-            const currentInfo = pageInfos.find(i => i.route === window.location.pathname);
+            const currentInfo = pageInfos.find(i => i.route === window.location.pathname.replace('/admin', ''));
             const newCurrentLink = getLinkByInfo(currentInfo);
             if (newCurrentLink && newCurrentLink !== currentLink) {
-                setActiveId(newCurrentLink.id);
+                // setActiveId(newCurrentLink.id);
                 if (newCurrentLink.parentId) setExpanded(newCurrentLink.parentId)
             }
             setTimeout(forceUpdate, 100);
@@ -130,8 +130,7 @@ export default function Sidebar() {
                     toggleSubMenu={toggleSubMenu}
                     expanded={expanded}
                     forceUpdate={forceUpdate}
-                    activeId={activeId}
-                    setActiveId={setActiveId}
+                    activeId={currentLink?.id}
                     userInfo={userInfo}
                 />)}
             </div>

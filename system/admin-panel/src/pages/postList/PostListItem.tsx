@@ -1,11 +1,12 @@
 import { TPost } from '@cromwell/core';
-import { Checkbox, Grid, IconButton } from '@mui/material';
 import { DeleteForever as DeleteForeverIcon, Edit as EditIcon } from '@mui/icons-material';
+import { Checkbox, Grid, IconButton } from '@mui/material';
 import React from 'react';
 import { connect, PropsType } from 'react-redux-ts';
 import { Link } from 'react-router-dom';
 
 import { postPageInfo } from '../../constants/PageInfos';
+import { toLocaleDateString } from '../../helpers/time';
 import { TAppState } from '../../redux/store';
 import commonStyles from '../../styles/common.module.scss';
 import { ListItemProps } from './PostList';
@@ -83,12 +84,6 @@ const PostListItem = (props: TPropsType) => {
             }
         </Grid >
     )
-}
-
-const toLocaleDateString = (date: Date | string | undefined) => {
-    if (!date) return '';
-    if (typeof date === 'string') date = new Date(date);
-    return date.toLocaleDateString();
 }
 
 export default connect(mapStateToProps)(PostListItem);

@@ -1,4 +1,5 @@
 import {
+    getRandStr,
     TAttributeInput,
     TCreateUser,
     TOrderInput,
@@ -24,6 +25,7 @@ import cryptoRandomString from 'crypto-random-string';
 import nameGenerator from 'project-name-generator';
 import { Service } from 'typedi';
 import { getCustomRepository } from 'typeorm';
+
 import { resetAllPagesCache } from '../helpers/reset-page';
 
 @Injectable()
@@ -187,6 +189,8 @@ export class MockService {
                 price: price,
                 oldPrice: oldPrice,
                 mainImage: mainImage,
+                stockStatus: 'In stock',
+                sku: `${getRandStr(4)}-${getRandStr(4)}`,
                 images: (() => {
                     const imgs: string[] = [mainImage];
                     for (let i = 0; i < imagesNum; i++) {
@@ -568,4 +572,3 @@ export class MockService {
         return true;
     }
 }
-

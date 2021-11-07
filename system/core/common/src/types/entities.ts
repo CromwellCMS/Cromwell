@@ -55,10 +55,17 @@ export type TBasePageEntityInput = Omit<TBasePageEntity, TDBAuxiliaryColumns> & 
 };
 
 export type TBaseFilter = {
-    properties?: {
+    filters?: {
         key?: string;
         value?: string;
+        from?: string;
+        to?: string;
         exact?: boolean;
+        inMeta?: boolean;
+    }[];
+    sorts?: {
+        key?: string;
+        sort?: 'ASC' | 'DESC';
         inMeta?: boolean;
     }[];
 }
@@ -180,8 +187,10 @@ export type TProduct = TBasePageEntity & {
     /**
      * Manually set is the item availability in stock
      */
-    stockStatus?: string;
+    stockStatus?: TStockStatus;
 }
+
+export type TStockStatus = 'In stock' | 'Out of stock' | 'On backorder';
 
 export type TProductRating = {
     /**
@@ -667,6 +676,7 @@ export type TAdminCustomField = {
     options?: string[];
     label?: string;
     order?: number;
+    column?: TCustomEntityColumn;
 }
 
 export type TAdminCustomEntity = {
@@ -685,10 +695,16 @@ export type TCustomEntityColumn = {
     label: string;
     meta?: boolean;
     type?: TCustomFieldType;
-    width?: number;
-    minWidth?: number;
-    maxWidth?: number;
+    width?: string;
+    minWidth?: string;
+    maxWidth?: string;
     order?: number;
+    visible?: boolean;
+    exactSearch?: boolean;
+    searchOptions?: {
+        key: string;
+        label: string;
+    }[];
 }
 
 export type TCmsEntity = TCmsEntityCore & TBasePageEntity;

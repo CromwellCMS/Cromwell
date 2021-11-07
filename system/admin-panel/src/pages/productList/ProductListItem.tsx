@@ -9,7 +9,6 @@ import { Link } from 'react-router-dom';
 import { productPageInfo } from '../../constants/PageInfos';
 import { TAppState } from '../../redux/store';
 import commonStyles from '../../styles/common.module.scss';
-import { ListItemProps } from './ProductList';
 import styles from './ProductList.module.scss';
 
 export type TProductItemProps = {
@@ -17,6 +16,13 @@ export type TProductItemProps = {
     listItemProps: ListItemProps;
     embedded?: boolean;
 }
+
+
+export type ListItemProps = {
+    handleDeleteProductBtnClick: (product: TProduct) => void;
+    toggleSelection: (data: TProduct) => void;
+}
+
 
 const mapStateToProps = (state: TAppState) => {
     return {

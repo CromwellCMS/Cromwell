@@ -61,7 +61,8 @@ button.openPageBtn {
 
 :global(.modeDark) {
 
-    .header {
+    .header,
+    .content {
         background-color: #333;
 
         * {

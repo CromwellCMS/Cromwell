@@ -1,5 +1,5 @@
 import { EDBEntity } from '@cromwell/core';
-import { Brackets, Repository } from 'typeorm';
+import { Brackets, Repository, BaseEntity } from 'typeorm';
 
 import { Attribute } from '../models/entities/attribute.entity';
 import { BasePageEntity } from '../models/entities/base-page.entity';
@@ -24,18 +24,7 @@ type TEntityMetaModel = BaseEntityMeta & TEntityMeta;
 
 class EntityMetaRepository {
 
-    getRepository(entityType: EDBEntity): Repository<TEntityMetaModel> | undefined {
-        if (entityType === EDBEntity.Attribute) return AttributeMeta.getRepository();
-        if (entityType === EDBEntity.Order) return OrderMeta.getRepository();
-        if (entityType === EDBEntity.Post) return PostMeta.getRepository();
-        if (entityType === EDBEntity.ProductCategory) return ProductCategoryMeta.getRepository();
-        if (entityType === EDBEntity.Product) return ProductMeta.getRepository();
-        if (entityType === EDBEntity.Tag) return TagMeta.getRepository();
-        if (entityType === EDBEntity.User) return UserMeta.getRepository();
-        if (entityType === EDBEntity.CustomEntity) return CustomEntityMeta.getRepository();
-    }
-
-    getClass(entityType: EDBEntity): (new (...args: any[]) => TEntityMetaModel) | undefined {
+    getMetaClass(entityType: EDBEntity): (new (...args: any[]) => TEntityMetaModel) & typeof BaseEntity | undefined {
         if (entityType === EDBEntity.Attribute) return AttributeMeta;
         if (entityType === EDBEntity.Order) return OrderMeta;
         if (entityType === EDBEntity.Post) return PostMeta;
@@ -46,28 +35,39 @@ class EntityMetaRepository {
         if (entityType === EDBEntity.CustomEntity) return CustomEntityMeta;
     }
 
-    getEntityType(entityType: BasePageEntity): EDBEntity | undefined {
-        if (entityType instanceof Attribute) return EDBEntity.Attribute;
-        if (entityType instanceof Order) return EDBEntity.Order;
-        if (entityType instanceof Post) return EDBEntity.Post;
-        if (entityType instanceof ProductCategory) return EDBEntity.ProductCategory;
-        if (entityType instanceof Product) return EDBEntity.Product;
-        if (entityType instanceof Tag) return EDBEntity.Tag;
-        if (entityType instanceof User) return EDBEntity.User;
-        if (entityType instanceof CustomEntity) return EDBEntity.CustomEntity;
+    getEntityClass(entityType: EDBEntity): (new (...args: any[]) => TEntityMetaModel) & typeof BaseEntity | undefined {
+        if (entityType === EDBEntity.Attribute) return Attribute;
+        if (entityType === EDBEntity.Order) return Order;
+        if (entityType === EDBEntity.Post) return Post;
+        if (entityType === EDBEntity.ProductCategory) return ProductCategory;
+        if (entityType === EDBEntity.Product) return Product;
+        if (entityType === EDBEntity.Tag) return Tag;
+        if (entityType === EDBEntity.User) return User;
+        if (entityType === EDBEntity.CustomEntity) return CustomEntity;
+    }
+
+    getEntityType(entityClass: any): EDBEntity | undefined {
+        if (entityClass instanceof Attribute || entityClass === Attribute) return EDBEntity.Attribute;
+        if (entityClass instanceof Order || entityClass === Order) return EDBEntity.Order;
+        if (entityClass instanceof Post || entityClass === Post) return EDBEntity.Post;
+        if (entityClass instanceof ProductCategory || entityClass === ProductCategory) return EDBEntity.ProductCategory;
+        if (entityClass instanceof Product || entityClass === Product) return EDBEntity.Product;
+        if (entityClass instanceof Tag || entityClass === Tag) return EDBEntity.Tag;
+        if (entityClass instanceof User || entityClass === User) return EDBEntity.User;
+        if (entityClass instanceof CustomEntity || entityClass === CustomEntity) return EDBEntity.CustomEntity;
     }
 
     async getEntityMetaByKey(type: EDBEntity, id: number, key: string): Promise<TEntityMetaModel | undefined | null> {
-        return this.getRepository(type)?.findOne({ entityId: id, key });
+        return this.getMetaClass(type)?.getRepository()?.findOne({ entityId: id, key });
     }
 
     async getEntityMetaValueByKey(type: EDBEntity, id: number, key: string): Promise<string | undefined | null> {
         return (await this.getEntityMetaByKey(type, id, key))?.value;
     }
 
-    async getEntityMetaValuesByKeys(type: EDBEntity, id: number, keys?: string[]): Promise<Record<string, string> | undefined> {
+    async getEntityMetaByKeys(type: EDBEntity, id: number, keys?: string[]): Promise<Record<string, string> | undefined> {
         if (!keys?.length || !id) return;
-        const repo = this.getRepository(type);
+        const repo = this.getMetaClass(type)?.getRepository();
         if (!repo) return;
 
         const qb = repo.createQueryBuilder().select();
@@ -93,10 +93,10 @@ class EntityMetaRepository {
         if (!value || value === '') return;
         if (!key || key === '') return;
         if (entityId === undefined || entityId === null) return;
-        const EntityClass = this.getClass(type);
-        if (!EntityClass) return;
+        const EntityMetaClass = this.getMetaClass(type);
+        if (!EntityMetaClass) return;
 
-        const meta = new EntityClass();
+        const meta = new EntityMetaClass();
         meta.entityId = entityId;
         meta.key = key;
         meta.value = value;
@@ -115,7 +115,7 @@ class EntityMetaRepository {
         if (!type) return;
         if (!key || key === '') return;
         if (entityId === undefined || entityId === null) return;
-        const repo = this.getRepository(type);
+        const repo = this.getMetaClass(type)?.getRepository();
         if (!repo) return;
 
         const meta = await this.getEntityMetaByKey(type, entityId, key).catch();
@@ -132,6 +132,18 @@ class EntityMetaRepository {
             return this.createEntityMeta(type, entityId, key, value);
         }
     }
+
+    async getAllEntityMetaKeys(type: EDBEntity): Promise<string[] | undefined> {
+        const MetaClass = this.getMetaClass(type);
+        if (!MetaClass) return;
+        const repo = MetaClass.getRepository();
+        const rawRes = await repo.createQueryBuilder(repo.metadata.tablePath)
+            .select('key')
+            .distinct(true)
+            .getRawMany();
+        return rawRes.map(raw => raw.key);
+    }
+
 }
 
 export const entityMetaRepository = new EntityMetaRepository();

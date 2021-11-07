@@ -117,6 +117,7 @@ export class PostRepository extends BaseRepository<Post> {
     }
 
     applyPostFilter(qb: SelectQueryBuilder<TPost>, filterParams?: PostFilterInput) {
+        this.applyBaseFilter(qb, filterParams);
 
         if (filterParams?.tagIds && filterParams.tagIds.length > 0) {
             qb.leftJoin(`${this.metadata.tablePath}.tags`, getCustomRepository(TagRepository).metadata.tablePath)

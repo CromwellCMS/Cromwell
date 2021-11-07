@@ -3,6 +3,7 @@ import { ConnectionOptions, DeleteQueryBuilder, getConnection, Repository, Selec
 
 import { getPaged, getSqlBoolStr, getSqlLike, wrapInQuotes, applyBaseFilter } from '../helpers/base-queries';
 import { getLogger } from '../helpers/logger';
+import { entityMetaRepository } from '../helpers/entity-meta';
 import { PageStats } from '../models/entities/page-stats.entity';
 import { BaseFilterInput } from '../models/filters/base-filter.filter';
 
@@ -140,7 +141,9 @@ export class BaseRepository<EntityType, EntityInputType = EntityType> extends Re
 
     applyBaseFilter(qb: SelectQueryBuilder<TBasePageEntity>, filter?: BaseFilterInput): SelectQueryBuilder<TBasePageEntity> {
         if (!filter) return qb;
-        return applyBaseFilter(qb, filter, this.metadata.tablePath, this.dbType);
+        const entityType = entityMetaRepository.getEntityType(this.EntityClass);
+        if (!entityType) return qb;
+        return applyBaseFilter({ qb, filter, entityType, dbType: this.dbType });
     }
 
 }

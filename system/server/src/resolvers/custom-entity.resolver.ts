@@ -105,7 +105,7 @@ export class CustomEntityResolver {
 
     @FieldResolver(() => GraphQLJSONObject, { nullable: true })
     async customMeta(@Root() entity: CustomEntity, @Arg("fields", () => [String]) fields: string[]): Promise<any> {
-        return entityMetaRepository.getEntityMetaValuesByKeys(EDBEntity.CustomEntity, entity.id, fields);
+        return entityMetaRepository.getEntityMetaByKeys(EDBEntity.CustomEntity, entity.id, fields);
     }
 
     @FieldResolver(() => Int, { nullable: true })

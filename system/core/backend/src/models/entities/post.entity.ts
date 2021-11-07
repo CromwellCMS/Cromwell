@@ -2,11 +2,13 @@ import { TPost, TPostComment } from '@cromwell/core';
 import { Field, Int, ObjectType } from 'type-graphql';
 import { Column, Entity, Index, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany } from 'typeorm';
 
+import { CustomDateScalar } from '../objects/custom-date.scalar';
 import { BasePageEntity } from './base-page.entity';
 import { PostMeta } from './meta/post-meta.entity';
 import { PostComment } from './post-comment.entity';
 import { Tag } from './tag.entity';
 import { User } from './user.entity';
+
 
 @Entity()
 @ObjectType()
@@ -56,7 +58,7 @@ export class Post extends BasePageEntity implements TPost {
     @Index()
     published?: boolean | null;
 
-    @Field(type => Date, { nullable: true })
+    @Field(type => CustomDateScalar, { nullable: true })
     @Column({ type: Date, nullable: true })
     publishDate?: Date | null;
 

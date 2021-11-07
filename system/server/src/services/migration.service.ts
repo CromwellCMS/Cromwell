@@ -1,4 +1,5 @@
 import {
+    EDBEntity,
     TAttributeInput,
     TBasePageEntityInput,
     TCreateUser,
@@ -25,6 +26,7 @@ import {
     OrderRepository,
     PluginEntity,
     Post,
+    entityMetaRepository,
     PostComment,
     PostRepository,
     Product,
@@ -168,7 +170,13 @@ export class MigrationService {
             for (let C = range.s.c; C <= range.e.c; ++C) {
                 const colName = header[C];
                 let cellData = rowData[colName];
-                if (cellData !== undefined && cellData !== null) cellData = String(cellData);
+                if (cellData !== undefined && cellData !== null) {
+                    if (typeof cellData === 'object') {
+                        cellData = JSON.stringify(cellData);
+                    } else {
+                        cellData = String(cellData)
+                    }
+                }
                 else cellData = '';
 
                 sheet.cell(R + 1, C + 1).value(cellData);
@@ -182,7 +190,9 @@ export class MigrationService {
         const posts = await getCustomRepository(PostRepository).find({
             relations: ['tags', 'comments']
         });
-        const postSheet: Record<keyof TPostInput, any>[] = posts.map(ent => ({
+        const metaKeys = await entityMetaRepository.getAllEntityMetaKeys(EDBEntity.Post) ?? [];
+
+        const postSheet: Record<keyof TPostInput, any>[] = await Promise.all(posts.map(async ent => ({
             id: ent.id,
             slug: ent.slug,
             pageTitle: ent.pageTitle,
@@ -203,9 +213,9 @@ export class MigrationService {
             featured: ent.featured,
             publishDate: ent.publishDate,
             commentIds: ent.comments?.map(comment => comment.id)?.join(','),
-            customMeta: undefined,
+            customMeta: await entityMetaRepository.getEntityMetaByKeys(EDBEntity.Post, ent.id, metaKeys),
             views: undefined,
-        }));
+        })));
 
         this.fillSheet(workbook, 'Posts', postSheet);
     }
@@ -213,7 +223,9 @@ export class MigrationService {
     // TAGS
     private async exportTags(workbook: any) {
         const tags = await getCustomRepository(TagRepository).find();
-        const tagsSheet: Record<keyof TTagInput, any>[] = tags.map(ent => ({
+        const metaKeys = await entityMetaRepository.getAllEntityMetaKeys(EDBEntity.Tag) ?? [];
+
+        const tagsSheet: Record<keyof TTagInput, any>[] = await Promise.all(tags.map(async ent => ({
             id: ent.id,
             slug: ent.slug,
             pageTitle: ent.pageTitle,
@@ -227,9 +239,9 @@ export class MigrationService {
             image: ent.image,
             description: ent.description,
             descriptionDelta: ent.descriptionDelta,
-            customMeta: undefined,
+            customMeta: await entityMetaRepository.getEntityMetaByKeys(EDBEntity.Tag, ent.id, metaKeys),
             views: undefined,
-        }));
+        })));
 
         this.fillSheet(workbook, 'Tags', tagsSheet);
     }
@@ -237,6 +249,7 @@ export class MigrationService {
     // COMMENTS
     private async exportComments(workbook: any) {
         const comments = await PostComment.find();
+
         const commentsSheet: Record<string, any>[] = comments.map(ent => ({
             id: ent.id,
             slug: ent.slug,
@@ -261,8 +274,10 @@ export class MigrationService {
     // PRODUCTS
     private async exportProducts(workbook: any) {
         const products = await getCustomRepository(ProductRepository).find({
-            relations: ['categories']
+            relations: ['categories', 'attributeValues']
         });
+        const metaKeys = await entityMetaRepository.getAllEntityMetaKeys(EDBEntity.Product) ?? [];
+
         const productsSheet: Record<keyof TProductInput, any>[] = await Promise.all(products.map(async ent => ({
             id: ent.id,
             slug: ent.slug,
@@ -284,8 +299,8 @@ export class MigrationService {
             mainCategoryId: ent.mainCategoryId,
             description: ent.description,
             descriptionDelta: ent.descriptionDelta,
-            attributes: await getCustomRepository(ProductRepository).getProductAttributes(ent.id),
-            customMeta: undefined,
+            attributes: await getCustomRepository(ProductRepository).getProductAttributes(ent.id, ent.attributeValues),
+            customMeta: await entityMetaRepository.getEntityMetaByKeys(EDBEntity.Product, ent.id, metaKeys),
             views: undefined,
         })));
 
@@ -296,6 +311,8 @@ export class MigrationService {
     private async exportCategories(workbook: any) {
         const categoryRepo = getCustomRepository(ProductCategoryRepository);
         const categories = await getCustomRepository(ProductCategoryRepository).find();
+        const metaKeys = await entityMetaRepository.getAllEntityMetaKeys(EDBEntity.ProductCategory) ?? [];
+
         const categoriesSheet: Record<keyof TProductCategoryInput, any>[] = await Promise.all(categories.map(async ent => ({
             id: ent.id,
             slug: ent.slug,
@@ -310,7 +327,7 @@ export class MigrationService {
             description: ent.description,
             descriptionDelta: ent.descriptionDelta,
             parentId: (await categoryRepo.getParentCategory(ent))?.id,
-            customMeta: undefined,
+            customMeta: await entityMetaRepository.getEntityMetaByKeys(EDBEntity.ProductCategory, ent.id, metaKeys),
             views: undefined,
         })));
 
@@ -319,8 +336,12 @@ export class MigrationService {
 
     // ATTRIBUTES
     private async exportAttributes(workbook: any) {
-        const attributes = await getCustomRepository(AttributeRepository).find();
-        const attributesSheet: Record<keyof TAttributeInput, any>[] = attributes.map(ent => ({
+        const attributes = await getCustomRepository(AttributeRepository).find({
+            relations: ['values']
+        });
+        const metaKeys = await entityMetaRepository.getAllEntityMetaKeys(EDBEntity.Attribute) ?? [];
+
+        const attributesSheet: Record<keyof TAttributeInput, any>[] = await Promise.all(attributes.map(async ent => ({
             id: ent.id,
             slug: ent.slug,
             title: ent.title,
@@ -335,9 +356,9 @@ export class MigrationService {
             type: ent.type,
             icon: ent.icon,
             required: ent.required,
-            customMeta: undefined,
+            customMeta: await entityMetaRepository.getEntityMetaByKeys(EDBEntity.Attribute, ent.id, metaKeys),
             views: undefined,
-        }));
+        })));
 
         this.fillSheet(workbook, 'Attributes', attributesSheet);
     }
@@ -345,7 +366,9 @@ export class MigrationService {
     // REVIEWS
     private async exportReviews(workbook: any) {
         const reviews = await getCustomRepository(ProductReviewRepository).find();
-        const reviewsSheet: Record<keyof TProductReviewInput, any>[] = reviews.map(ent => ({
+        const metaKeys = await entityMetaRepository.getAllEntityMetaKeys(EDBEntity.ProductReview) ?? [];
+
+        const reviewsSheet: Record<keyof TProductReviewInput, any>[] = await Promise.all(reviews.map(async ent => ({
             id: ent.id,
             slug: ent.slug,
             pageTitle: ent.pageTitle,
@@ -362,9 +385,9 @@ export class MigrationService {
             userEmail: ent.userEmail,
             userId: ent.userId,
             approved: ent.approved,
-            customMeta: undefined,
+            customMeta: await entityMetaRepository.getEntityMetaByKeys(EDBEntity.ProductReview, ent.id, metaKeys),
             views: undefined,
-        }));
+        })));
 
         this.fillSheet(workbook, 'Reviews', reviewsSheet);
     }
@@ -372,29 +395,32 @@ export class MigrationService {
     // ORDERS
     private async exportOrders(workbook: any) {
         const orders = await getCustomRepository(OrderRepository).find();
-        const ordersSheet: Record<keyof Omit<TOrderInput, 'fromUrl'>, any>[] = orders.map(ent => ({
-            id: ent.id,
-            createDate: ent.createDate,
-            updateDate: ent.updateDate,
-            status: ent.status,
-            cart: ent.cart,
-            orderTotalPrice: ent.orderTotalPrice,
-            cartTotalPrice: ent.cartTotalPrice,
-            cartOldTotalPrice: ent.cartOldTotalPrice,
-            shippingPrice: ent.shippingPrice,
-            totalQnt: ent.totalQnt,
-            userId: ent.userId,
-            customerName: ent.customerName,
-            customerPhone: ent.customerPhone,
-            customerEmail: ent.customerEmail,
-            customerAddress: ent.customerAddress,
-            customerComment: ent.customerComment,
-            shippingMethod: ent.shippingMethod,
-            paymentMethod: ent.paymentMethod,
-            currency: ent.currency,
-            customMeta: undefined,
-            views: undefined,
-        }));
+        const metaKeys = await entityMetaRepository.getAllEntityMetaKeys(EDBEntity.Order) ?? [];
+
+        const ordersSheet: Record<keyof Omit<TOrderInput, 'fromUrl'>, any>[] = await Promise.all(
+            orders.map(async ent => ({
+                id: ent.id,
+                createDate: ent.createDate,
+                updateDate: ent.updateDate,
+                status: ent.status,
+                cart: ent.cart,
+                orderTotalPrice: ent.orderTotalPrice,
+                cartTotalPrice: ent.cartTotalPrice,
+                cartOldTotalPrice: ent.cartOldTotalPrice,
+                shippingPrice: ent.shippingPrice,
+                totalQnt: ent.totalQnt,
+                userId: ent.userId,
+                customerName: ent.customerName,
+                customerPhone: ent.customerPhone,
+                customerEmail: ent.customerEmail,
+                customerAddress: ent.customerAddress,
+                customerComment: ent.customerComment,
+                shippingMethod: ent.shippingMethod,
+                paymentMethod: ent.paymentMethod,
+                currency: ent.currency,
+                customMeta: await entityMetaRepository.getEntityMetaByKeys(EDBEntity.Order, ent.id, metaKeys),
+                views: undefined,
+            })));
 
         this.fillSheet(workbook, 'Orders', ordersSheet);
     }
@@ -402,7 +428,9 @@ export class MigrationService {
     // USERS
     private async exportUsers(workbook: any) {
         const users = await getCustomRepository(UserRepository).find();
-        const usersSheet: Record<keyof TUpdateUser, any>[] = users.map(ent => ({
+        const metaKeys = await entityMetaRepository.getAllEntityMetaKeys(EDBEntity.User) ?? [];
+
+        const usersSheet: Record<keyof TUpdateUser, any>[] = await Promise.all(users.map(async ent => ({
             id: ent.id,
             slug: ent.slug,
             pageTitle: ent.pageTitle,
@@ -418,9 +446,9 @@ export class MigrationService {
             phone: ent.phone,
             address: ent.address,
             role: ent.role,
-            customMeta: undefined,
+            customMeta: await entityMetaRepository.getEntityMetaByKeys(EDBEntity.User, ent.id, metaKeys),
             views: undefined,
-        }));
+        })));
 
         this.fillSheet(workbook, 'Users', usersSheet);
     }

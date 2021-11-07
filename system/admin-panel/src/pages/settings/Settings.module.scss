@@ -145,6 +145,8 @@ div.customEntity {
 
 .customFieldItem {
     display: flex;
+    justify-content: space-between;
+    width: 100%;
 }
 
 .customFieldItemField {
@@ -191,7 +193,9 @@ div.entityToEditField {
 :global(.modeDark) {
 
     .header,
-    .category {
+    .category,
+    .selectOptions,
+    .entityToEdit {
         background-color: #333;
 
         * {

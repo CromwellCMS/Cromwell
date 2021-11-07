@@ -26,6 +26,7 @@ import { toast } from '../../components/toast/toast';
 import { userListPageInfo, userPageInfo } from '../../constants/PageInfos';
 import { userRoles } from '../../constants/roles';
 import { getCustomMetaFor, getCustomMetaKeysFor, RenderCustomFields } from '../../helpers/customFields';
+import { handleOnSaveError } from '../../helpers/handleErrors';
 import commonStyles from '../../styles/common.module.scss';
 import styles from './User.module.scss';
 
@@ -38,6 +39,7 @@ export default function UserPage() {
     const [userData, setUserData] = useState<TUser | undefined | null>(null);
     const [showPassword, setShowPassword] = useState(false);
     const isNew = userId === 'new';
+    const [canValidate, setCanValidate] = useState(false);
 
     const handleClickShowPassword = () => {
         setShowPassword(!showPassword);
@@ -121,10 +123,17 @@ export default function UserPage() {
         customMeta: Object.assign({}, userData.customMeta, await getCustomMetaFor(EDBEntity.User)),
     });
 
+    const checkValid = (value) => value && value !== '';
+
     const handleSave = async () => {
+        setCanValidate(true);
         const inputData = await getInput();
 
+        if (!checkValid(inputData.email) || !checkValid(inputData.fullName)
+            || !checkValid(inputData.role)) return;
+
         if (isNew) {
+            if (!checkValid(passwordInput)) return;
             try {
                 const createInput: TCreateUser = {
                     ...inputData,
@@ -136,7 +145,8 @@ export default function UserPage() {
                 setUserData(newData);
             } catch (e) {
                 toast.error('Failed to create user');
-                console.error(e)
+                handleOnSaveError(e);
+                console.error(e);
             }
 
         } else if (userData?.id) {
@@ -153,9 +163,11 @@ export default function UserPage() {
 
             } catch (e) {
                 toast.error('Failed to save');
-                console.error(e)
+                handleOnSaveError(e);
+                console.error(e);
             }
         }
+        setCanValidate(false);
     }
 
     if (notFound) {
@@ -197,6 +209,7 @@ export default function UserPage() {
                             variant="standard"
                             className={styles.field}
                             onChange={(e) => { handleInputChange('fullName', e.target.value) }}
+                            error={canValidate && !checkValid(userData?.fullName)}
                         />
                     </Grid>
                     <Grid item xs={12} sm={6}>
@@ -221,6 +234,7 @@ export default function UserPage() {
                             variant="standard"
                             className={styles.field}
                             onChange={(e) => { handleInputChange('email', e.target.value) }}
+                            error={canValidate && !checkValid(userData?.email)}
                         />
                     </Grid>
                     {isNew && (
@@ -233,6 +247,7 @@ export default function UserPage() {
                                 variant="standard"
                                 className={styles.field}
                                 onChange={(e) => { setPasswordInput(e.target.value) }}
+                                error={canValidate && !checkValid(passwordInput)}
                                 InputProps={{
                                     endAdornment: (
                                         <InputAdornment position="end">
@@ -255,10 +270,11 @@ export default function UserPage() {
                             <Select
                                 fullWidth
                                 variant="standard"
-                                value={(userData?.role ?? 'customer') as TUserRole}
+                                value={(userData?.role ?? null) as TUserRole}
                                 onChange={(event: SelectChangeEvent<unknown>) => {
                                     handleInputChange('role', event.target.value)
                                 }}
+                                error={canValidate && !checkValid(userData?.role)}
                             >
                                 {userRoles.map(role => (
                                     <MenuItem value={role} key={role}>{role}</MenuItem>

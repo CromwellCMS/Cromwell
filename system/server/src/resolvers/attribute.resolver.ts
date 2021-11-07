@@ -56,7 +56,7 @@ export class AttributeResolver {
 
     @FieldResolver(() => GraphQLJSONObject, { nullable: true })
     async customMeta(@Root() entity: Attribute, @Arg("fields", () => [String]) fields: string[]): Promise<any> {
-        return entityMetaRepository.getEntityMetaValuesByKeys(EDBEntity.Attribute, entity.id, fields);
+        return entityMetaRepository.getEntityMetaByKeys(EDBEntity.Attribute, entity.id, fields);
     }
 
 }

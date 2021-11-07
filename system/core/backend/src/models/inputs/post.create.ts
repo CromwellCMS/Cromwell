@@ -1,6 +1,7 @@
 import { TPostInput } from '@cromwell/core';
 import { Field, InputType, Int } from 'type-graphql';
 
+import { CustomDateScalar } from '../objects/custom-date.scalar';
 import { BasePageInput } from './base-page.input';
 
 @InputType({ description: "New Post data" })
@@ -36,6 +37,6 @@ export class CreatePost extends BasePageInput implements TPostInput {
   @Field(() => Boolean, { nullable: true })
   featured?: boolean;
 
-  @Field(type => Date, { nullable: true })
+  @Field(type => CustomDateScalar, { nullable: true })
   publishDate?: Date | null;
 }

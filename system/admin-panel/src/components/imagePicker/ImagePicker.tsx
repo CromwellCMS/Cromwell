@@ -48,7 +48,7 @@ export const ImagePicker = (props: ImagePickerProps) => {
 
     const element = (
         <div className={`${styles.wrapper} ${props.className ?? ''} ${props.classes?.root ?? ''} ${props.variant ?? ''}`}
-            style={{ paddingTop: props.label ? '18px' : '', ...(props.style ?? {}) }}>
+            style={{ ...(props.style ?? {}) }}>
             <Tooltip title={props.toolTip ?? 'Pick an image'}>
                 <MenuItem
                     style={{

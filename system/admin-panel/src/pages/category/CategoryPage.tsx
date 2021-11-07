@@ -7,7 +7,7 @@ import {
     TProductCategory,
     TProductCategoryInput,
 } from '@cromwell/core';
-import { getGraphQLClient } from '@cromwell/core-frontend';
+import { getGraphQLClient, getGraphQLErrorInfo } from '@cromwell/core-frontend';
 import { ArrowBack as ArrowBackIcon, OpenInNew as OpenInNewIcon } from '@mui/icons-material';
 import { Autocomplete as MuiAutocomplete, Button, IconButton, TextField, Tooltip } from '@mui/material';
 import React, { useEffect, useState } from 'react';
@@ -19,6 +19,8 @@ import { toast } from '../../components/toast/toast';
 import { categoryListPageInfo, categoryPageInfo } from '../../constants/PageInfos';
 import { getCustomMetaFor, getCustomMetaKeysFor, RenderCustomFields } from '../../helpers/customFields';
 import { getEditorData, getEditorHtml, initTextEditor } from '../../helpers/editor/editor';
+import { handleOnSaveError } from '../../helpers/handleErrors';
+
 import commonStyles from '../../styles/common.module.scss';
 import styles from './CategoryPage.module.scss';
 
@@ -202,6 +204,7 @@ export default function CategoryPage(props) {
 
             } catch (e) {
                 toast.error('Failed to create category');
+                handleOnSaveError(e);
                 console.error(e)
             }
 
@@ -215,7 +218,8 @@ export default function CategoryPage(props) {
                 toast.success('Saved!');
             } catch (e) {
                 toast.error('Failed to save');
-                console.error(e)
+                handleOnSaveError(e);
+                console.error(getGraphQLErrorInfo(e))
             }
         }
         setIsSaving(false);
@@ -300,7 +304,7 @@ export default function CategoryPage(props) {
                     showRemove
                 />
                 <div className={styles.descriptionEditor}>
-                    <div id={editorId}></div>
+                    <div style={{ minHeight: '300px' }} id={editorId}></div>
                 </div>
                 <TextField label="Page URL"
                     value={category?.slug || ''}

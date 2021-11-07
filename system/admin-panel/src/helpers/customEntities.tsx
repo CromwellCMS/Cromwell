@@ -1,4 +1,4 @@
-import { EDBEntity, getStoreItem, TAdminCustomEntity, TCustomEntity, TCustomEntityFilter } from '@cromwell/core';
+import { EDBEntity, getStoreItem, TAdminCustomEntity, TCustomEntity, TCustomEntityFilter, TCustomEntityColumn } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
 import React from 'react';
 
@@ -34,7 +34,7 @@ const getEntityRoutes = (entity: TAdminCustomEntity) => {
         entity.entityListRoute = '/' + entity.entityListRoute;
 
     const entityBaseRoute = (entity.entityBaseRoute ?? '/' + entity.entityType).toLowerCase();
-    const entityListRoute = (entity.entityListRoute ?? entityBaseRoute + '-list').toLowerCase();
+    const entityListRoute = (entity.entityListRoute ?? entityBaseRoute).toLowerCase();
 
     return {
         entityBaseRoute,
@@ -119,3 +119,27 @@ export const getCustomEntitySidebarLinks = (): TSidebarLink[] => {
     });
     return links;
 }
+
+export const baseEntityColumns: TCustomEntityColumn[] = [
+    {
+        name: 'id',
+        label: 'ID',
+        type: 'Simple text',
+        exactSearch: true,
+    },
+    {
+        name: 'slug',
+        label: 'Slug',
+        type: 'Simple text',
+    },
+    {
+        name: 'createDate',
+        label: 'Created',
+        type: 'Datetime',
+    },
+    {
+        name: 'updateDate',
+        label: 'Updated',
+        type: 'Datetime',
+    }
+];
