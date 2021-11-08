@@ -216,14 +216,15 @@ const devGenerate = async (themeName: string, options) => {
          import '${depsBundlePath}';
          ` : ''}
 
-         import ${pageInfo.compName} from '${pageRelativePath}';
+         import * as ${pageInfo.compName} from '${pageRelativePath}';
  
          ${!disableSSR && pageRelativePath ? `
-         const pageServerModule = require('${pageRelativePath}');
- 
-         export const getStaticProps = createGetStaticProps('${pageInfo.name}', pageServerModule ? pageServerModule.getStaticProps : null);
+         export const getStaticProps = createGetStaticProps('${pageInfo.name}', ${pageInfo.compName}.getStaticProps);
          
-         export const getStaticPaths = createGetStaticPaths('${pageInfo.name}', pageServerModule ? pageServerModule.getStaticPaths : null);
+         export const getStaticPaths = () => {
+             const func = createGetStaticPaths('${pageInfo.name}', ${pageInfo.compName}.getStaticPaths);
+             if (func) return func();
+         };
          `: ''}
 
          ${(pageInfo.name === genericPageName && !hasGenericPage) ? `
@@ -237,7 +238,7 @@ const devGenerate = async (themeName: string, options) => {
         };
          ` : ''}
  
-         export default getPage('${pageInfo.name}', ${pageInfo.compName});
+         export default getPage('${pageInfo.name}', ${pageInfo.compName}.default);
          `;
 
         if (!pageInfo.path && pageInfo.fileContent) {

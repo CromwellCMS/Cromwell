@@ -17,6 +17,7 @@ import {
     setStoreItem,
     TAttribute,
     TAttributeInput,
+    TBaseFilter,
     TCreateUser,
     TCustomEntity,
     TCustomEntityFilter,
@@ -1009,10 +1010,12 @@ export class CGraphQLClient {
     public getTags = this.createGetMany<TTag>('Tag', this.TagFragment, 'TagFragment');
     public getTagById = this.createGetById<TTag>('Tag', this.TagFragment, 'TagFragment');
     public getTagBySlug = this.createGetBySlug<TTag>('Tag', this.TagFragment, 'TagFragment');
+    public getFilteredTags = this.createGetFiltered<TTag, TBaseFilter>('Tag', this.TagFragment, 'TagFragment', 'BaseFilterInput');
     public updateTag = this.createUpdateEntity<TTag, TTagInput>('Tag', 'InputTag', this.TagFragment, 'TagFragment')
     public createTag = this.createCreateEntity<TTag, TTagInput>('Tag', 'InputTag', this.TagFragment, 'TagFragment');
     public deleteTag = this.createDeleteEntity('Tag');
     public deleteManyTags = this.createDeleteMany('Tag');
+    public deleteManyFilteredTags = this.createDeleteManyFiltered<TBaseFilter>('Tag', 'BaseFilterInput');
 
 
     // <Plugin>

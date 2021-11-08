@@ -1,286 +1,86 @@
-import { getBlockInstance, TPagedParams, TUser, TUserFilter, TUserRole } from '@cromwell/core';
-import { CList, getGraphQLClient, TCList } from '@cromwell/core-frontend';
-import { AddCircle as AddCircleIcon, Delete as DeleteIcon } from '@mui/icons-material';
-import { Autocomplete, Checkbox, IconButton, TextField, Tooltip } from '@mui/material';
-import React, { useEffect, useRef, useState } from 'react';
-import { connect, PropsType } from 'react-redux-ts';
-import { useHistory } from 'react-router-dom';
-import { debounce } from 'throttle-debounce';
+import { EDBEntity, TUser, TUserFilter } from '@cromwell/core';
+import { getGraphQLClient } from '@cromwell/core-frontend';
+import React from 'react';
 
-import SortBy, { TSortOption } from '../../components/entity/sort/Sort';
-import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
-import ConfirmationModal from '../../components/modal/Confirmation';
-import Pagination from '../../components/pagination/Pagination';
-import { listPreloader } from '../../components/skeleton/SkeletonPreloader';
-import { toast } from '../../components/toast/toast';
-import { userPageInfo } from '../../constants/PageInfos';
+import EntityTable from '../../components/entity/entityTable/EntityTable';
+import { TEntityPageProps } from '../../components/entity/types';
+import { userListPageInfo, userPageInfo } from '../../constants/PageInfos';
 import { userRoles } from '../../constants/roles';
-import { useForceUpdate } from '../../helpers/forceUpdate';
-import {
-    countSelectedItems,
-    getSelectedInput,
-    resetSelected,
-    toggleItemSelection,
-    toggleSelectAll,
-} from '../../redux/helpers';
-import { TAppState } from '../../redux/store';
-import commonStyles from '../../styles/common.module.scss';
-import styles from './UserList.module.scss';
-import UserListItem from './UserListItem';
-
-export type ListItemProps = {
-    handleDeleteBtnClick: (user: TUser) => void;
-    toggleSelection: (data: TUser) => void;
-}
-
-const mapStateToProps = (state: TAppState) => {
-    return {
-        allSelected: state.allSelected,
-    }
-}
-
-type TPropsType = PropsType<TAppState, unknown,
-    ReturnType<typeof mapStateToProps>>;
+import { baseEntityColumns } from '../../helpers/customEntities';
 
 
-const UserList = (props: TPropsType) => {
+const EntityTableComp = EntityTable as React.ComponentType<TEntityPageProps<TUser, TUserFilter>>;
+
+export default function UserTable() {
     const client = getGraphQLClient();
-    const filterInput = useRef<TUserFilter>({});
-    const listId = "Admin_UserList";
-    const history = useHistory();
-    const [itemToDelete, setItemToDelete] = useState<TUser | null>(null);
-    const [deleteSelectedOpen, setDeleteSelectedOpen] = useState<boolean>(false);
-    const [isLoading, setIsLoading] = useState<boolean>(false);
-    const totalElements = useRef<number | null>(null);
-    const orderByRef = useRef<keyof TUser | null>(null);
-    const orderRef = useRef<'ASC' | 'DESC' | null>(null);
-    const forceUpdate = useForceUpdate();
-
-    const availableSorts: TSortOption<TUser>[] = [
-        {
-            key: 'id',
-            label: 'ID'
-        },
-        {
-            key: 'fullName',
-            label: 'Name'
-        },
-        {
-            key: 'role',
-            label: 'Role'
-        },
-        {
-            key: 'email',
-            label: 'Email'
-        },
-        {
-            key: 'phone',
-            label: 'Phone'
-        },
-        {
-            key: 'createDate',
-            label: 'Created'
-        },
-    ];
-
-    useEffect(() => {
-        resetSelected();
-        return () => {
-            resetSelected();
-        }
-    }, []);
-
-    const resetList = () => {
-        const list = getBlockInstance<TCList>(listId)?.getContentInstance();
-        list.clearState();
-        list.init();
-    }
-
-    const updateList = () => {
-        const list = getBlockInstance<TCList>(listId)?.getContentInstance();
-        list?.updateData();
-    }
-
-    const handleGetUsers = async (params?: TPagedParams<TUser>) => {
-        if (!params) params = {};
-        params.orderBy = orderByRef.current ?? 'id';
-        params.order = orderRef.current ?? 'DESC';
-
-        const data = await client?.getFilteredUsers({
-            pagedParams: params,
-            filterParams: filterInput.current,
-        });
-
-        if (data.pagedMeta?.totalElements) totalElements.current = data.pagedMeta?.totalElements;
-        return data;
-    }
-
-    const handleDeleteBtnClick = (user: TUser) => {
-        setItemToDelete(user);
-    }
-
-    const handleToggleItemSelection = (data: TUser) => {
-        toggleItemSelection(data.id);
-    }
-
-    const handleToggleSelectAll = () => {
-        toggleSelectAll()
-    }
-
-    const handleDeleteSelectedBtnClick = () => {
-        if (countSelectedItems(totalElements.current) > 0)
-            setDeleteSelectedOpen(true);
-    }
-
-    const handleDeleteSelected = async () => {
-        setIsLoading(true);
-        try {
-            await client?.deleteManyFilteredUsers(getSelectedInput(), filterInput.current);
-            toast.success('Users deleted');
-        } catch (e) {
-            console.error(e);
-            toast.error('Failed to delete users');
-        }
-        setDeleteSelectedOpen(false);
-        setIsLoading(false);
-        updateList();
-        resetSelected();
-    }
-
-
-    const handleDelete = async () => {
-        if (itemToDelete) {
-            try {
-                await client?.deleteUser(itemToDelete.id)
-                toast.success('User deleted');
-            } catch (e) {
-                console.error(e);
-                toast.error('Failed to delete user');
-            }
-        }
-        setItemToDelete(null);
-        updateList();
-    }
-
-    const handleFilterInput = debounce(400, () => {
-        resetList();
-    });
-
-    const handleCreateUser = () => {
-        history.push(`${userPageInfo.baseRoute}/new`);
-    }
-
-    const handleChangeOrder = (key: keyof TUser, order: 'ASC' | 'DESC') => {
-        orderByRef.current = key;
-        orderRef.current = order;
-        resetList();
-        forceUpdate();
-    }
 
     return (
-        <div className={styles.UserList}>
-            <div className={styles.listHeader}>
-                <div className={styles.filter}>
-                    <div className={commonStyles.center}>
-                        <Tooltip title="Select all">
-                            <Checkbox
-                                style={{ marginRight: '10px' }}
-                                checked={props.allSelected ?? false}
-                                onChange={handleToggleSelectAll}
-                            />
-                        </Tooltip>
-                    </div>
-                    <TextField
-                        className={styles.filterItem}
-                        placeholder="Name"
-                        variant="standard"
-                        onChange={(event) => {
-                            filterInput.current.fullName = event.target.value;
-                            handleFilterInput();
-                        }}
-                    />
-                    <TextField
-                        className={styles.filterItem}
-                        placeholder="Email"
-                        variant="standard"
-                        onChange={(event) => {
-                            filterInput.current.email = event.target.value;
-                            handleFilterInput();
-                        }}
-                    />
-                    <Autocomplete
-                        size="small"
-                        className={styles.filterItem}
-                        options={userRoles}
-                        getOptionLabel={(option) => option}
-                        style={{ width: 150 }}
-                        onChange={(event, newValue: TUserRole | null) => {
-                            filterInput.current.role = newValue;
-                            resetList();
-                        }}
-                        renderInput={(params) =>
-                            <TextField {...params}
-                                variant="standard"
-                                placeholder="Role"
-                                size="medium"
-                            />}
-                    />
-                </div>
-                <div className={styles.pageActions} >
-                    <SortBy<TUser>
-                        options={availableSorts}
-                        onChange={handleChangeOrder}
-                    />
-                    <Tooltip title="Delete selected">
-                        <IconButton
-                            onClick={handleDeleteSelectedBtnClick}
-                            aria-label="Delete selected"
-                        >
-                            <DeleteIcon />
-                        </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Create new user">
-                        <IconButton
-                            onClick={handleCreateUser}
-                            aria-label="create user"
-                        >
-                            <AddCircleIcon />
-                        </IconButton>
-                    </Tooltip>
-                </div>
-            </div>
-            <CList<TUser, ListItemProps>
-                className={styles.listWrapper}
-                id={listId}
-                ListItem={UserListItem}
-                useAutoLoading
-                usePagination
-                listItemProps={{ handleDeleteBtnClick, toggleSelection: handleToggleItemSelection }}
-                useQueryPagination
-                loader={handleGetUsers}
-                cssClasses={{ scrollBox: styles.list }}
-                elements={{
-                    pagination: Pagination,
-                    preloader: listPreloader
-                }}
-            />
-            <ConfirmationModal
-                open={Boolean(itemToDelete)}
-                onClose={() => setItemToDelete(null)}
-                onConfirm={handleDelete}
-                title={`Delete user ${itemToDelete?.fullName ?? ''}?`}
-                disabled={isLoading}
-            />
-            <ConfirmationModal
-                open={deleteSelectedOpen}
-                onClose={() => setDeleteSelectedOpen(false)}
-                onConfirm={handleDeleteSelected}
-                title={`Delete ${countSelectedItems(totalElements.current)} user(s)?`}
-                disabled={isLoading}
-            />
-            <LoadingStatus isActive={isLoading} />
-        </div>
+        <EntityTableComp
+            entityCategory={EDBEntity.User}
+            entityListRoute={userListPageInfo.route}
+            entityBaseRoute={userPageInfo.baseRoute}
+            listLabel="Users"
+            getManyFiltered={client.getFilteredUsers}
+            deleteOne={client.deleteUser}
+            deleteMany={client.deleteManyUsers}
+            deleteManyFiltered={client.deleteManyFilteredUsers}
+            columns={[
+                {
+                    name: 'avatar',
+                    label: 'Avatar',
+                    type: 'Image',
+                    visible: true,
+                    getValueView: (value) => (
+                        <div style={{
+                            height: '40px',
+                            width: '40px',
+                            borderRadius: '100%',
+                            backgroundPosition: 'center',
+                            backgroundSize: 'cover',
+                            backgroundImage: `url(${value})`,
+                        }}></div>
+                    )
+                },
+                {
+                    name: 'fullName',
+                    label: 'Name',
+                    type: 'Simple text',
+                    visible: true,
+                },
+                {
+                    name: 'email',
+                    label: 'Email',
+                    type: 'Simple text',
+                    visible: true,
+                },
+                {
+                    name: 'role',
+                    label: 'Role',
+                    type: 'Simple text',
+                    exactSearch: true,
+                    searchOptions: userRoles.map(role => ({
+                        value: role,
+                        label: role,
+                    })),
+                    visible: true,
+                },
+                ...baseEntityColumns.map(col => {
+                    if (col.name === 'createDate') return { ...col, visible: true }
+                    return { ...col, visible: false }
+                }),
+                {
+                    name: 'phone',
+                    label: 'Phone',
+                    type: 'Simple text',
+                    visible: false,
+                },
+                {
+                    name: 'address',
+                    label: 'Address',
+                    type: 'Simple text',
+                    visible: false,
+                },
+            ]}
+        />
     )
 }
-
-export default connect(mapStateToProps)(UserList);

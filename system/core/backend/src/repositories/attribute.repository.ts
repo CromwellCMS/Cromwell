@@ -14,6 +14,10 @@ const logger = getLogger();
 @EntityRepository(Attribute)
 export class AttributeRepository extends BaseRepository<Attribute> {
 
+    constructor() {
+        super(Attribute);
+    }
+
     async getAttributes(): Promise<Attribute[]> {
         logger.log('AttributeRepository::getAttributes');
         return this.find({ relations: ['values'] });

@@ -16,6 +16,11 @@ const logger = getLogger();
 export class ProductReviewRepository extends BaseRepository<ProductReview> {
 
     private productRepo = getCustomRepository(ProductRepository);
+
+    constructor() {
+        super(ProductReview);
+    }
+
     async getProductReviews(params: TPagedParams<TProductReview>): Promise<TPagedList<TProductReview>> {
         return getPaged(this.createQueryBuilder(this.metadata.tablePath), this.metadata.tablePath, params);
     }
@@ -92,7 +97,9 @@ export class ProductReviewRepository extends BaseRepository<ProductReview> {
         return true;
     }
 
-    applyProductReviewFilter(qb: SelectQueryBuilder<TProductReview> | DeleteQueryBuilder<TProductReview>, filterParams?: ProductReviewFilter) {
+    applyProductReviewFilter(qb: SelectQueryBuilder<TProductReview>, filterParams?: ProductReviewFilter) {
+        this.applyBaseFilter(qb, filterParams);
+
         // Search by approved
         if (filterParams?.approved !== undefined && filterParams?.approved !== null) {
 
@@ -138,12 +145,15 @@ export class ProductReviewRepository extends BaseRepository<ProductReview> {
 
 
     async deleteManyFilteredProductReviews(input: TDeleteManyInput, filterParams?: ProductReviewFilter): Promise<boolean | undefined> {
-        const qb = this.createQueryBuilder()
-            .delete().from<ProductReview>(this.metadata.tablePath);
+        const qbSelect = this.createQueryBuilder(this.metadata.tablePath).select([`${this.metadata.tablePath}.id`]);
+        this.applyProductReviewFilter(qbSelect, filterParams);
+        this.applyDeleteMany(qbSelect, input);
 
-        this.applyProductReviewFilter(qb, filterParams);
-        this.applyDeleteMany(qb, input);
-        await qb.execute();
+        const qbDelete = this.createQueryBuilder(this.metadata.tablePath).delete()
+            .where(`${this.metadata.tablePath}.id IN (${qbSelect.getQuery()})`)
+            .setParameters(qbSelect.getParameters());
+
+        await qbDelete.execute();
         return true;
     }
 

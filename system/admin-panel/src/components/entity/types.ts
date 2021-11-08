@@ -13,6 +13,7 @@ import {
 export interface IEntityListPage<TFilterType extends TBaseEntityFilter> {
     resetList: () => void;
     updateList: () => void;
+    forceUpdate: () => void;
     getColumns: () => TCustomEntityColumn[];
     getFilterInput: () => TFilterType;
 }
@@ -100,6 +101,7 @@ export type TEntityPageProps<TEntityType extends TBasePageEntity, TFilterType ex
     customElements?: {
         listLeftActions?: JSX.Element;
         listRightActions?: JSX.Element;
+        getListItemActions?: (entity: TEntityType, itemInstance: React.Component<any>) => JSX.Element;
     }
 
     getPageListInstance?: (inst: IEntityListPage<TFilterType>) => any;

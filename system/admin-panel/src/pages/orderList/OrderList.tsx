@@ -10,7 +10,7 @@ import { orderListPageInfo, orderPageInfo } from '../../constants/PageInfos';
 type TOrderItem = TOrder & { id: number };
 const EntityTableComp = EntityTable as React.ComponentType<TEntityPageProps<TOrderItem, TOrderFilter>>;
 
-export default function ProductTable() {
+export default function OrderTable() {
     const client = getGraphQLClient();
 
     return (
@@ -39,7 +39,7 @@ export default function ProductTable() {
                     visible: true,
                     exactSearch: true,
                     searchOptions: orderStatuses.map(status => ({
-                        key: status,
+                        value: status,
                         label: status,
                     })),
                 },

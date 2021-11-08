@@ -2,6 +2,7 @@
 
 .listItem {
     @include paper;
+    box-shadow: none;
     display: flex;
     align-items: center;
     margin-bottom: 3px;
@@ -30,7 +31,8 @@
 }
 
 .listItem:hover {
-    background-color: #f4f4f4;
+    // background-color: #f4f4f4;
+    background-color: #d8d8d8;
 }
 
 .columns {
@@ -75,6 +77,10 @@
         * {
             color: #eee;
         }
+    }
+
+    .listItem:hover {
+        background-color: #555;
     }
 
     .listItemActions {

@@ -122,7 +122,9 @@ export class UserRepository extends BaseRepository<User> {
 
     }
 
-    applyUserFilter(qb: SelectQueryBuilder<TUser> | DeleteQueryBuilder<TUser>, filterParams?: UserFilterInput) {
+    applyUserFilter(qb: SelectQueryBuilder<TUser>, filterParams?: UserFilterInput) {
+        this.applyBaseFilter(qb, filterParams);
+
         // Search by role
         if (filterParams?.role) {
             const query = `${this.metadata.tablePath}.role = :role`;
@@ -166,14 +168,15 @@ export class UserRepository extends BaseRepository<User> {
     }
 
     async deleteManyFilteredUsers(input: TDeleteManyInput, filterParams?: UserFilterInput): Promise<boolean | undefined> {
-        const qb = this.createQueryBuilder()
-            .delete().from<User>(this.metadata.tablePath);
+        const qbSelect = this.createQueryBuilder(this.metadata.tablePath).select([`${this.metadata.tablePath}.id`]);
+        this.applyUserFilter(qbSelect, filterParams);
+        this.applyDeleteMany(qbSelect, input);
 
-        this.applyUserFilter(qb, filterParams);
-        this.applyDeleteMany(qb, input);
-        await qb.execute();
+        const qbDelete = this.createQueryBuilder(this.metadata.tablePath).delete()
+            .where(`${this.metadata.tablePath}.id IN (${qbSelect.getQuery()})`)
+            .setParameters(qbSelect.getParameters());
+
+        await qbDelete.execute();
         return true;
     }
-
-
 }

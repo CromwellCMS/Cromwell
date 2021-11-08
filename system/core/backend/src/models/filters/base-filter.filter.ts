@@ -1,5 +1,6 @@
 import { TBaseFilter } from '@cromwell/core';
 import { Field, InputType } from 'type-graphql';
+import { PrimitiveValueScalar } from '../objects/primitive-value.scalar';
 
 @InputType()
 export class BaseFilterInput implements TBaseFilter {
@@ -15,8 +16,8 @@ export class PropertySearch {
     @Field(() => String, { nullable: true })
     key?: string;
 
-    @Field(() => String, { nullable: true })
-    value?: string;
+    @Field(() => PrimitiveValueScalar, { nullable: true })
+    value?: string | number | boolean | null;
 
     @Field(() => Boolean, { nullable: true })
     exact?: boolean;

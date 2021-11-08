@@ -66,11 +66,11 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
     }> implements IEntityListPage<TFilterType> {
 
     private totalElements: number | null;
-    private filterInput: TFilterType | undefined = {} as any;
+    // private filterInput: TFilterType | undefined = {} as any;
     private listId: string;
     private configureColumnsButtonRef = React.createRef<HTMLButtonElement>();
     private configuredColumnsKey = 'crw_entity_table_columns';
-    private currentSearch: string | undefined | null;
+    private currentSearch: string | undefined | null | number | boolean;
 
     public sortedColumns: Record<string, TSavedConfiguredColumn> = {};
 
@@ -92,8 +92,16 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
         const tableFilter = parsedUrl.query?.tableFilter;
         if (typeof tableFilter === 'string' && tableFilter !== '') {
             try {
-                this.filterInput = JSON.parse(atob(tableFilter));
-                this.filters = this.filterInput?.filters;
+                const filterInput: TFilterType | undefined = JSON.parse(atob(tableFilter));
+                this.filters = filterInput?.filters;
+                this.sortBy = {
+                    column: {
+                        name: filterInput?.sorts?.[0]?.key,
+                        meta: filterInput?.sorts?.[0]?.inMeta,
+                        label: '',
+                    },
+                    sort: filterInput?.sorts?.[0].sort,
+                }
             } catch (error) {
                 console.error('Failed to parse base64 filter string in URL', error);
             }
@@ -123,8 +131,6 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
         list?.updateData();
     }
 
-    public getFilterInput = () => this.filterInput;
-
     private handleDeleteBtnClick = (itemToDelete: TEntityType) => {
         this.setState({ itemToDelete });
     }
@@ -152,59 +158,83 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
         this.props.history.push(`${this.props.entityBaseRoute}/new`)
     }
 
-    private getManyFilteredItems = async (params: TPagedParams<TEntityType>) => {
-        if (!this.props.getManyFiltered) {
-            console.error('this.props.getManyFiltered in not defined, you must provide getManyFiltered for list to be displayed');
-            return;
-        }
+    public getFilterInput = (tableColumns?: TCustomEntityColumn[]): TFilterType => {
+        let filterInput: TFilterType = {} as any;
 
-        if (!this.filterInput) this.filterInput = {} as any;
+        if (!tableColumns) tableColumns = this.getColumns();
+        if (!this.filters) this.filters = [];
 
-        const tableColumns = this.getColumns();
         if (this.props.entityType) {
-            this.filterInput.entityType = this.props.entityType;
+            filterInput.entityType = this.props.entityType;
         }
-
-        const entityProperties = [...new Set([
-            'id',
-            ...['slug', 'isEnabled', this.props.entityType && 'entityType', 'createDate', 'updateDate']
-                .filter(prop => tableColumns.find(col => col.name === prop)?.visible),
-            ...tableColumns.filter(col => !col.meta && col.visible).map(col => col.name),
-        ])].filter(Boolean);
-        const metaProperties = [...new Set([
-            ...tableColumns.filter(col => col.meta && col.visible).map(col => col.name)
-        ])].filter(Boolean);
 
         if (this.sortBy?.column) {
-            this.filterInput.sorts = [{
+            filterInput.sorts = [{
                 key: this.sortBy.column.name,
                 inMeta: this.sortBy.column.meta,
                 sort: this.sortBy.sort,
             }];
-        } else if (!this.filterInput.sorts) {
-            this.filterInput.sorts = [{
+        } else if (!filterInput.sorts) {
+            filterInput.sorts = [{
                 key: 'id',
                 sort: 'DESC',
             }];
         }
 
         if (this.filters) {
-            this.filterInput.filters = this.filters.filter(filter => filter.key
-                && filter.value && filter.value !== '');
+            filterInput.filters = this.filters.filter(filter => {
+                if (!filter.key) return false;
+                const col = tableColumns.find(col => col.name === filter.key);
+                if (col.applyFilter) return false;
+                return true;
+            });
         } else {
-            this.filterInput.filters = [];
+            filterInput.filters = [];
         }
+
+        for (const col of tableColumns) {
+            if (col.applyFilter) {
+                const value = this.filters.find(filter => filter.key === col.name);
+                filterInput = col.applyFilter(value?.value, filterInput);
+            }
+        }
+
+        return filterInput;
+    }
+
+    private getManyFilteredItems = async (params: TPagedParams<TEntityType>) => {
+        if (!this.props.getManyFiltered) {
+            console.error('this.props.getManyFiltered in not defined, you must provide getManyFiltered for list to be displayed');
+            return;
+        }
+        const tableColumns = this.getColumns();
+        const filterInput = this.getFilterInput(tableColumns);
+
+        const entityProperties = [...new Set([
+            'id',
+            ...['slug', 'isEnabled', this.props.entityType && 'entityType', 'createDate', 'updateDate']
+                .filter(prop => tableColumns.find(col => col.name === prop)?.visible),
+            ...tableColumns.filter(col => !col.meta && col.visible && !col.customGraphQlFragment).map(col => col.name),
+        ])].filter(Boolean);
+
+        const metaProperties = [...new Set([
+            ...tableColumns.filter(col => col.meta && col.visible && !col.customGraphQlFragment).map(col => col.name)
+        ])].filter(Boolean);
+
+        const customFragments = tableColumns.filter(col => col.visible && col.customGraphQlFragment)
+            .map(col => col.customGraphQlFragment);
 
         const data = (await this.props.getManyFiltered({
             pagedParams: params,
             customFragment: gql`
                 fragment ${this.props.entityCategory}ListFragment on ${this.props.entityCategory} {
+                    ${customFragments.join('\n')}
                     ${entityProperties.join('\n')}
-                    customMeta(fields: ${JSON.stringify(metaProperties)})
+                    ${metaProperties?.length ? `customMeta(fields: ${JSON.stringify(metaProperties)})` : ''}
                 }
             `,
             customFragmentName: `${this.props.entityCategory}ListFragment`,
-            filterParams: this.filterInput,
+            filterParams: filterInput,
         }).catch(err => console.error(err))) || undefined;
 
         if (data?.pagedMeta?.totalElements) {
@@ -212,7 +242,7 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
         }
 
         const parsedUrl = queryString.parseUrl(window.location.href, { parseFragmentIdentifier: true });
-        parsedUrl.query.tableFilter = btoa(JSON.stringify(this.filterInput));
+        parsedUrl.query.tableFilter = btoa(JSON.stringify(filterInput));
         window.history.replaceState({}, '', queryString.stringifyUrl(parsedUrl));
 
         return data;
@@ -229,11 +259,12 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
     private handleDeleteSelected = async () => {
         const input = getSelectedInput();
         if (!(input.all || input.ids?.length)) return;
+        const filterInput = this.getFilterInput();
 
         this.setState({ isLoading: true });
         this.totalElements = 0;
         try {
-            await this.props.deleteManyFiltered(input, this.filterInput);
+            await this.props.deleteManyFiltered(input, filterInput);
             toast.success(`${this.props.entityLabel ?? 'Items'} deleted`);
         } catch (e) {
             console.error(e);
@@ -319,6 +350,14 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
         return configuredColumns ?? {};
     }
 
+    private resetConfiguredColumns = () => {
+        const configuredColumns = this.loadConfiguredColumns();
+        delete configuredColumns[this.props.entityType ?? this.props.entityCategory];
+        window.localStorage.setItem(this.configuredColumnsKey, JSON.stringify(configuredColumns));
+        this.sortedColumns = {};
+        this.toggleConfigureColumns();
+    }
+
     private toggleOrderBy = (column: TCustomEntityColumn) => {
         const sameColumn = this.sortBy?.column.name === column.name;
         this.sortBy = {
@@ -341,15 +380,16 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
         this.currentSearch = undefined;
 
         if (value === '') value = null;
+        if (value === undefined) value = null;
         let hasChanged = false;
 
         const prevSearch = this.filters.find(filter => filter.key === this.state.columnSearch.name);
-        if (!value && prevSearch?.value && prevSearch.value !== '') {
+        if (value === null && prevSearch?.value && prevSearch.value !== '') {
             this.filters = this.filters.filter(filter => filter.key !== this.state.columnSearch.name);
             hasChanged = true;
         }
 
-        if (value) {
+        if (value !== null) {
             if (prevSearch && prevSearch.value !== value) {
                 this.filters = this.filters.map(filter => {
                     if (filter.key === this.state.columnSearch.name) {
@@ -393,9 +433,33 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
         this.props.onClearAllFilters?.();
         this.sortBy = undefined;
         this.filters = [];
-        this.filterInput = undefined;
         this.forceUpdate();
         this.resetList();
+    }
+
+    private getAutocompleteValueFromSearch = (value: string | undefined | null | number | boolean, column?: TCustomEntityColumn): {
+        value: string;
+        label: string;
+    } | {
+        value: string;
+        label: string;
+    }[] | null => {
+        if (!column.searchOptions) return null;
+        if (column?.multipleOptions && value && typeof value === 'string') {
+            try {
+                const searches = JSON.parse(value);
+                if (Array.isArray(searches)) {
+                    return searches.map(search =>
+                        column.searchOptions.find(opt =>
+                            opt.value === search)
+                    );
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
+        return column.searchOptions.find(opt =>
+            opt.value === value);
     }
 
     render() {
@@ -409,10 +473,11 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                         {this.props.customElements?.listRightActions}
-                        {!!(this.filters?.length || this.filterInput?.filters?.length
-                            || this.sortBy?.column || this.props.isFilterActive?.()) && (
+                        {!!(this.filters?.length || this.sortBy?.column
+                            || this.props.isFilterActive?.()) && (
                                 <Tooltip title="Clear filters">
-                                    <IconButton onClick={this.clearAllFilters}>
+                                    <IconButton className={styles.iconButton}
+                                        onClick={this.clearAllFilters}>
                                         <ClearAllIcon />
                                     </IconButton>
                                 </Tooltip>
@@ -441,7 +506,18 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
                         {tableColumns.map(col => {
                             if (!col.visible) return null;
                             const columnFilter = this.filters?.find(filter => filter.key === col.name);
-                            const searchQuery = columnFilter?.value && columnFilter.value !== '' ? columnFilter.value : null;
+                            let searchQuery = columnFilter?.value !== null && columnFilter?.value !== undefined &&
+                                columnFilter.value !== '' ? columnFilter.value : null;
+
+                            if (col.searchOptions) {
+                                const autocompleteVal = this.getAutocompleteValueFromSearch(searchQuery, col);
+                                if (Array.isArray(autocompleteVal)) {
+                                    searchQuery = autocompleteVal.map(val => val.label).join(', ');
+                                } else if (autocompleteVal) {
+                                    searchQuery = autocompleteVal.label;
+                                }
+                            }
+
                             return (
                                 <div key={col.name}
                                     id={`column_${col.name}`}
@@ -453,20 +529,23 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
                                             <p onClick={() => this.openColumnSearch(col)}
                                                 className={clsx(styles.ellipsis, styles.columnNameText)}>{col.label}</p>
                                         </Tooltip>
-                                        <Tooltip title="Toggle sort" placement="top" enterDelay={500}>
-                                            <div onClick={() => this.toggleOrderBy(col)}
-                                                className={styles.orderButton}>
-                                                <ArrowDropDownIcon
-                                                    style={{
-                                                        transform: this.sortBy?.column?.name === col.name
-                                                            && this.sortBy?.sort === 'ASC' ? 'rotate(180deg)' : undefined,
-                                                        transition: '0.3s',
-                                                        color: this.sortBy?.column?.name !== col.name ? '#aaa' : undefined,
-                                                        fontSize: this.sortBy?.column?.name === col.name ? '26px' : undefined,
-                                                    }}
-                                                />
-                                            </div>
-                                        </Tooltip>
+                                        {!col.disableSort && (
+                                            <Tooltip title="Toggle sort" placement="top" enterDelay={500}>
+                                                <div onClick={() => this.toggleOrderBy(col)}
+                                                    className={styles.orderButton}>
+                                                    <ArrowDropDownIcon
+                                                        style={{
+                                                            transform: this.sortBy?.column?.name === col.name
+                                                                && this.sortBy?.sort === 'ASC' ? 'rotate(180deg)' : undefined,
+                                                            transition: '0.3s',
+                                                            color: this.sortBy?.column?.name !== col.name ? '#aaa' : '#9747d3',
+                                                            fill: this.sortBy?.column?.name !== col.name ? '#aaa' : '#9747d3',
+                                                            fontSize: this.sortBy?.column?.name === col.name ? '26px' : undefined,
+                                                        }}
+                                                    />
+                                                </div>
+                                            </Tooltip>
+                                        )}
                                     </div>
                                     {searchQuery && (
                                         <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -512,6 +591,10 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
                             elevation={0}
                         >
                             <div className={styles.columnsConfigure}>
+                                <Button size="small" variant="outlined"
+                                    onClick={this.resetConfiguredColumns}
+                                    style={{ margin: '10px 0 0 10px' }}
+                                >Reset</Button>
                                 <DraggableList<TColumnConfigureItemData>
                                     data={tableColumns.map(col => ({
                                         id: col.name,
@@ -542,13 +625,17 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
                                 style={{ padding: '10px 15px' }}>
                                 {this.state?.columnSearch?.searchOptions ? (
                                     <Autocomplete
+                                        multiple={this.state.columnSearch.multipleOptions}
                                         options={this.state.columnSearch.searchOptions}
-                                        getOptionLabel={(option) => option?.label ?? ''}
-                                        defaultValue={this.state.columnSearch.searchOptions.find(opt =>
-                                            opt.key === this.currentSearch)}
+                                        getOptionLabel={(option: any) => option?.label ?? ''}
+                                        defaultValue={this.getAutocompleteValueFromSearch(this.currentSearch,
+                                            this.state.columnSearch)}
                                         className={styles.filterItem}
-                                        onChange={(event, newVal) =>
-                                            this.currentSearch = typeof newVal === 'object' ? newVal?.key : newVal}
+                                        onChange={(event, newVal) => {
+                                            if (Array.isArray(newVal)) newVal = JSON.stringify(newVal.map(val => typeof val === 'object' ? val?.value : val));
+                                            this.currentSearch = typeof newVal === 'object' ? newVal?.value : newVal
+                                        }}
+                                        classes={{ popper: styles.autocompletePopper }}
                                         renderInput={(params) => <TextField
                                             {...params}
                                             variant="standard"

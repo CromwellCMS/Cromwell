@@ -155,35 +155,39 @@ export const applyBaseFilter = <TEntity>({ qb, filter, entityType, dbType }: {
 
     const EntityMetaClass = entityMetaRepository.getMetaClass(entityType);
     const EntityClass = entityMetaRepository.getEntityClass(entityType);
-    if (!EntityMetaClass || !EntityClass) return qb;
+    if (!EntityClass) return qb;
 
-    const metaTablePath = EntityMetaClass.getRepository().metadata.tablePath;
+    const metaTablePath = EntityMetaClass?.getRepository()?.metadata?.tablePath;
     const entityTablePath = EntityClass.getRepository().metadata.tablePath;
 
     const hasToJoinMeta = filter?.filters?.find(prop => prop.inMeta)
         || filter?.sorts?.find(sort => sort.inMeta);
 
     if (filter?.filters?.length) {
-        const searchJoinName = `${metaTablePath}_search`;
-        if (filter?.filters?.find(prop => prop.inMeta)) {
+        const searchMetaJoinName = `${metaTablePath}_search`;
+
+        if (EntityMetaClass && filter?.filters?.find(prop => prop.inMeta)) {
             if (EntityMetaClass && EntityClass) {
-                qb.leftJoin(EntityMetaClass, searchJoinName,
-                    `${searchJoinName}.${wrapInQuotes(dbType, 'entityId')} = ${entityTablePath}.id`);
+                qb.leftJoin(EntityMetaClass, searchMetaJoinName,
+                    `${searchMetaJoinName}.${wrapInQuotes(dbType, 'entityId')} = ${entityTablePath}.id`);
             }
         }
 
         filter.filters.forEach((prop, index) => {
             if (!prop.key || !isSimpleString(prop.key)) return;
+            if (!prop.exact && prop.value === undefined) return;
             const valueName = `value_filter_${index}`;
             const keyName = `key_filter_${index}`;
+
             if (!prop.inMeta) {
                 qb.andWhere(`${entityTablePath}.${wrapInQuotes(dbType, prop.key)} ${prop.exact ? '=' : getSqlLike(dbType)} :${valueName}`,
                     { [valueName]: prop.exact ? prop.value : `%${prop.value}%` });
-            } else {
-                qb.andWhere(`${searchJoinName}.${wrapInQuotes(dbType, 'key')} = :${keyName}`,
+
+            } else if (EntityMetaClass) {
+                qb.andWhere(`${searchMetaJoinName}.${wrapInQuotes(dbType, 'key')} = :${keyName}`,
                     { [keyName]: prop.key });
 
-                qb.andWhere(`${searchJoinName}.${wrapInQuotes(dbType, 'value')} ${prop.exact ? '=' : getSqlLike(dbType)} :${valueName}`,
+                qb.andWhere(`${searchMetaJoinName}.${wrapInQuotes(dbType, 'value')} ${prop.exact ? '=' : getSqlLike(dbType)} :${valueName}`,
                     { [valueName]: prop.exact ? prop.value : `%${prop.value}%` });
             }
         })
@@ -202,7 +206,7 @@ export const applyBaseFilter = <TEntity>({ qb, filter, entityType, dbType }: {
                 } else {
                     qb.addOrderBy(...args);
                 }
-            } else {
+            } else if (EntityMetaClass) {
                 const sortJoinName = `${metaTablePath}_sort_${index}`;
                 qb.leftJoinAndSelect(EntityMetaClass, sortJoinName,
                     `${sortJoinName}.entityId = ${entityTablePath}.id AND ` +

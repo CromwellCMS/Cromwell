@@ -214,7 +214,7 @@ export default function UserPage() {
                     </Grid>
                     <Grid item xs={12} sm={6}>
                         <ImagePicker
-                            placeholder="Avatar"
+                            label="Avatar"
                             onChange={(val) => { handleInputChange('avatar', val) }}
                             value={userData?.avatar ?? null}
                             className={styles.imageField}
@@ -222,7 +222,6 @@ export default function UserPage() {
                             backgroundSize='cover'
                             width="50px"
                             height="50px"
-                            toolTip="Change avatar"
                             showRemove
                         />
                     </Grid>

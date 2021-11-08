@@ -132,15 +132,15 @@ export default function ProductTable() {
                         exactSearch: true,
                         searchOptions: [
                             {
-                                key: 'In stock',
+                                value: 'In stock',
                                 label: 'In stock',
                             },
                             {
-                                key: 'Out of stock',
+                                value: 'Out of stock',
                                 label: 'Out of stock',
                             },
                             {
-                                key: 'On backorder',
+                                value: 'On backorder',
                                 label: 'On backorder',
                             },
                         ]
@@ -153,8 +153,9 @@ export default function ProductTable() {
                 customElements={{
                     listLeftActions: (
                         <div>
-                            <Tooltip title="Attributes filter">
+                            <Tooltip title="Attribute filter">
                                 <IconButton
+                                className={styles.attributeFilterButton}
                                     onClick={handleToggleFilter}
                                     aria-label="show filter"
                                 >

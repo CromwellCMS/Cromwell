@@ -191,6 +191,7 @@ li.optionsItem {
     background-color: #fff;
     height: 100vh;
     background: #222;
+    background: linear-gradient(339deg, #160c28, #361132);
 }
 
 header.appBar {
@@ -247,7 +248,7 @@ header.appBar {
 }
 
 :global(.modeDark) {
-    .Sidebar {
+    .Sidebar, .drawer {
         background: #222;
     }
 

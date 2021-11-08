@@ -57,7 +57,7 @@ export type TBasePageEntityInput = Omit<TBasePageEntity, TDBAuxiliaryColumns> & 
 export type TBaseFilter = {
     filters?: {
         key?: string;
-        value?: string;
+        value?: string | number | boolean | null;
         from?: string;
         to?: string;
         exact?: boolean;
@@ -666,7 +666,8 @@ export type TServiceVersions = {
     admin?: number;
 };
 
-export type TCustomFieldType = 'Simple text' | 'Text editor' | 'Select' | 'Image' | 'Gallery' | 'Color' | 'Date' | 'Time' | 'Datetime' | 'Currency';
+export type TCustomFieldType = 'Simple text' | 'Text editor' | 'Select' | 'Image' | 'Gallery' |
+    'Color' | 'Date' | 'Time' | 'Datetime' | 'Currency' | 'Rating';
 
 export type TAdminCustomField = {
     entityType: EDBEntity | string;
@@ -701,10 +702,15 @@ export type TCustomEntityColumn = {
     order?: number;
     visible?: boolean;
     exactSearch?: boolean;
+    multipleOptions?: boolean;
     searchOptions?: {
-        key: string;
+        value: any;
         label: string;
     }[];
+    customGraphQlFragment?: string;
+    disableSort?: boolean;
+    getValueView?: (value: any) => React.ReactNode;
+    applyFilter?: <TFilter extends TBaseFilter>(value: any, filter: TFilter) => TFilter;
 }
 
 export type TCmsEntity = TCmsEntityCore & TBasePageEntity;

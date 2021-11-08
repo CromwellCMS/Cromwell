@@ -1,97 +1,27 @@
-import { gql } from '@apollo/client';
-import { getBlockInstance, TPagedParams, TPost, TPostFilter, TTag, TUser } from '@cromwell/core';
-import { CList, getGraphQLClient, TCList } from '@cromwell/core-frontend';
-import { AddCircle as AddCircleIcon, Delete as DeleteIcon } from '@mui/icons-material';
-import { Autocomplete, Checkbox, IconButton, MenuItem, Select, TextField, Tooltip } from '@mui/material';
-import React, { useEffect, useRef, useState } from 'react';
-import { connect, PropsType } from 'react-redux-ts';
-import { useHistory } from 'react-router-dom';
-import { debounce } from 'throttle-debounce';
+import { EDBEntity, TPost, TPostFilter, TTag, TUser } from '@cromwell/core';
+import { getGraphQLClient } from '@cromwell/core-frontend';
+import { Tooltip } from '@mui/material';
+import React, { useEffect, useState } from 'react';
 
-import SortBy, { TSortOption } from '../../components/entity/sort/Sort';
-import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
-import ConfirmationModal from '../../components/modal/Confirmation';
-import Pagination from '../../components/pagination/Pagination';
-import { listPreloader } from '../../components/skeleton/SkeletonPreloader';
-import { toast } from '../../components/toast/toast';
-import { postPageInfo } from '../../constants/PageInfos';
-import { useForceUpdate } from '../../helpers/forceUpdate';
-import {
-    countSelectedItems,
-    getSelectedInput,
-    resetSelected,
-    toggleItemSelection,
-    toggleSelectAll,
-} from '../../redux/helpers';
-import { TAppState } from '../../redux/store';
-import commonStyles from '../../styles/common.module.scss';
-import styles from './PostList.module.scss';
-import PostListItem from './PostListItem';
+import EntityTable from '../../components/entity/entityTable/EntityTable';
+import { TEntityPageProps } from '../../components/entity/types';
+import LoadBox from '../../components/loadBox/LoadBox';
+import { postListInfo, postPageInfo } from '../../constants/PageInfos';
+import { baseEntityColumns } from '../../helpers/customEntities';
 
-export type ListItemProps = {
-    handleDeletePostBtnClick: (post: TPost) => void;
-    toggleSelection: (data: TPost) => void;
-}
 
-const mapStateToProps = (state: TAppState) => {
-    return {
-        allSelected: state.allSelected,
-    }
-}
+const EntityTableComp = EntityTable as React.ComponentType<TEntityPageProps<TPost, TPostFilter>>;
 
-type TPropsType = PropsType<TAppState, Record<string, unknown>,
-    ReturnType<typeof mapStateToProps>>;
-
-const PostList = (props: TPropsType) => {
+export default function PostTable() {
     const client = getGraphQLClient();
-    const filterInput = useRef<TPostFilter>({});
-    const titleSearchId = "post-filter-search";
-    const listId = "Admin_PostList";
     const [users, setUsers] = useState<TUser[] | null>(null);
     const [tags, setTags] = useState<TTag[] | null>(null);
-    const [postToDelete, setPostToDelete] = useState<TPost | null>(null);
-    const history = useHistory();
-    const [deleteSelectedOpen, setDeleteSelectedOpen] = useState<boolean>(false);
-    const [isLoading, setIsLoading] = useState<boolean>(false);
-    const totalElements = useRef<number | null>(null);
-    const orderByRef = useRef<keyof TPost | null>(null);
-    const orderRef = useRef<'ASC' | 'DESC' | null>(null);
-    const forceUpdate = useForceUpdate();
 
-    const availableSorts: TSortOption<TPost>[] = [
-        {
-            key: 'id',
-            label: 'ID'
-        },
-        {
-            key: 'title',
-            label: 'Title'
-        },
-        {
-            key: 'authorId',
-            label: 'Author',
-        },
-        {
-            key: 'published',
-            label: 'Published',
-        },
-        {
-            key: 'publishDate',
-            label: 'Publish date',
-        },
-        {
-            key: 'createDate',
-            label: 'Created'
-        },
-    ]
-
-    useEffect(() => {
-        resetSelected();
-
-        return () => {
-            resetSelected();
-        }
-    }, [])
+    const ellipsisStyle: React.CSSProperties = {
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+    }
 
     const getUsers = async () => {
         const administrators = await client.getFilteredUsers({
@@ -101,7 +31,11 @@ const PostList = (props: TPropsType) => {
             filterParams: {
                 role: 'administrator'
             }
+        }).catch(err => {
+            console.error(err);
+            return undefined;
         });
+
         const authors = await client.getFilteredUsers({
             pagedParams: {
                 pageSize: 9999
@@ -109,278 +43,134 @@ const PostList = (props: TPropsType) => {
             filterParams: {
                 role: 'author'
             }
+        }).catch(err => {
+            console.error(err);
+            return undefined;
         });
         setUsers([...(administrators?.elements ?? []), ...(authors?.elements ?? [])]);
     }
 
     const getPostTags = async () => {
-        const data = (await client?.getTags({ pageSize: 99999 }))?.elements;
-        if (data && Array.isArray(data)) {
-            setTags(data.sort((a, b) => a.name < b.name ? -1 : 1));
-        }
+        const data = (await client?.getTags({ pageSize: 99999 })
+            .catch(err => { console.error(err); return undefined }))?.elements as TTag[];
+        setTags(data?.sort((a, b) => a.name < b.name ? -1 : 1) ?? []);
     }
 
     useEffect(() => {
         getUsers();
         getPostTags();
-    }, [])
+    }, []);
 
-
-    const handleGetPosts = async (params: TPagedParams<TPost>) => {
-        if (!params) params = {};
-        params.orderBy = orderByRef.current ?? 'id';
-        params.order = orderRef.current ?? 'DESC';
-        const data = await client?.getFilteredPosts({
-            customFragment: gql`
-                fragment PostListFragment on Post {
-                    id
-                    slug
-                    pageTitle
-                    createDate
-                    updateDate
-                    title
-                    author {
-                        id
-                        fullName
-                        avatar
-                    }
-                    mainImage
-                    publishDate
-                    published
-                    featured
-                }
-            `,
-            customFragmentName: 'PostListFragment',
-            pagedParams: params,
-            filterParams: filterInput.current,
-        });
-        if (data?.pagedMeta?.totalElements) {
-            totalElements.current = data.pagedMeta?.totalElements;
-        }
-        return data;
-    }
-
-    const resetList = () => {
-        const list = getBlockInstance<TCList>(listId)?.getContentInstance();
-        list.clearState();
-        list.init();
-    }
-
-    const updateList = () => {
-        const list = getBlockInstance<TCList>(listId)?.getContentInstance();
-        list?.updateData();
-    }
-
-    const handleFilterInput = debounce(400, () => {
-        filterInput.current.titleSearch = (document.getElementById(titleSearchId) as HTMLInputElement)?.value ?? undefined;
-        resetList();
-    });
-
-    const handleAuthorSearch = (event, newValue: TUser | null) => {
-        filterInput.current.authorId = newValue?.id;
-        handleFilterInput();
-    }
-
-    const handleDeletePostBtnClick = (post: TPost) => {
-        setPostToDelete(post);
-    }
-
-    const handleDeletePost = async () => {
-        setIsLoading(true);
-        if (postToDelete) {
-            try {
-                await client?.deletePost(postToDelete.id)
-                toast.success('Post deleted');
-            } catch (e) {
-                console.error(e);
-                toast.error('Failed to delete post');
-            }
-        }
-        setIsLoading(false);
-        setPostToDelete(null);
-        updateList();
-    }
-
-    const handleCreatePost = () => {
-        history.push(`${postPageInfo.baseRoute}/new`);
-    }
-
-    const handleChangeTags = (event, newValue: TTag[]) => {
-        filterInput.current.tagIds = newValue.map(tag => tag.id);
-        handleFilterInput();
-    }
-
-    const handleToggleItemSelection = (data: TPost) => {
-        toggleItemSelection(data.id);
-    }
-
-    const handleToggleSelectAll = () => {
-        toggleSelectAll()
-    }
-
-    const handleDeleteSelectedBtnClick = () => {
-        if (countSelectedItems(totalElements.current) > 0)
-            setDeleteSelectedOpen(true);
-    }
-
-    const handleDeleteSelected = async () => {
-        setIsLoading(true);
-        try {
-            await client?.deleteManyFilteredPosts(getSelectedInput(), filterInput.current);
-            toast.success('Posts deleted');
-        } catch (e) {
-            console.error(e);
-            toast.error('Failed to delete posts');
-        }
-        setDeleteSelectedOpen(false);
-        setIsLoading(false);
-        updateList();
-        resetSelected();
-    }
-
-    const handleChangePublished = (event: any) => {
-        switch (event.target.value) {
-            case 'all':
-                filterInput.current.published = undefined;
-                break;
-            case 'published':
-                filterInput.current.published = true;
-                break;
-            case 'draft':
-                filterInput.current.published = false;
-                break;
-        }
-        resetList();
-    }
-
-    const handleChangeOrder = (key: keyof TPost, order: 'ASC' | 'DESC') => {
-        orderByRef.current = key;
-        orderRef.current = order;
-        resetList();
-        forceUpdate();
-    }
+    if (!users || !tags) return <LoadBox />
 
     return (
-        <div className={styles.PostList}>
-            <div className={styles.listHeader}>
-                <div className={styles.filter}>
-                    <div className={commonStyles.center}>
-                        <Tooltip title="Select all">
-                            <Checkbox
-                                style={{ marginRight: '10px' }}
-                                checked={props.allSelected ?? false}
-                                onChange={handleToggleSelectAll}
-                            />
-                        </Tooltip>
-                    </div>
-                    <TextField
-                        className={styles.filterItem}
-                        id={titleSearchId}
-                        placeholder="Search by title"
-                        variant="standard"
-                        onChange={handleFilterInput}
-                    />
-                    <Autocomplete
-                        size="small"
-                        className={`${styles.filterItem} ${styles.authorSearch}`}
-                        disabled={!users || users.length === 0}
-                        options={users ?? []}
-                        getOptionLabel={(option) => option.fullName}
-                        style={{ width: 200 }}
-                        onChange={handleAuthorSearch}
-                        renderInput={(params) =>
-                            <TextField {...params}
-                                placeholder="Author"
-                                variant="standard"
-                                // variant="outlined"
-                                size="medium"
-                            />}
-                    />
-                    <Autocomplete
-                        multiple
-                        className={styles.filterItem}
-                        options={tags ?? []}
-                        defaultValue={tags ?? []}
-                        getOptionLabel={(option) => option.name}
-                        style={{ width: 200 }}
-                        onChange={handleChangeTags}
-                        renderInput={(params) => (
-                            <TextField
-                                {...params}
-                                variant="standard"
-                                placeholder="Tags"
-                            />
-                        )}
-                    />
-                    <Select
-                        className={styles.filterItem}
-                        defaultValue="all"
-                        variant="standard"
-                        onChange={handleChangePublished}
-                    >
-                        <MenuItem value={'all'}>All</MenuItem>
-                        <MenuItem value={'published'}>Published</MenuItem>
-                        <MenuItem value={'draft'}>Draft</MenuItem>
-                    </Select>
-                </div>
-                <div className={styles.pageActions} >
-                    <SortBy<TPost>
-                        options={availableSorts}
-                        onChange={handleChangeOrder}
-                    />
-                    <Tooltip title="Delete selected">
-                        <IconButton
-                            onClick={handleDeleteSelectedBtnClick}
-                            aria-label="Delete selected"
-                        >
-                            <DeleteIcon />
-                        </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Create new post">
-                        <IconButton
-                            onClick={handleCreatePost}
-                            aria-label="add"
-                        >
-                            <AddCircleIcon />
-                        </IconButton>
-                    </Tooltip>
-                </div>
-            </div>
-            <CList<TPost, ListItemProps>
-                className={styles.listWrapper}
-                id={listId}
-                ListItem={PostListItem}
-                useAutoLoading
-                usePagination
-                useQueryPagination
-                listItemProps={{ handleDeletePostBtnClick, toggleSelection: handleToggleItemSelection }}
-                loader={handleGetPosts}
-                cssClasses={{
-                    scrollBox: styles.list,
-                    contentWrapper: styles.listContent
-
-                }}
-                elements={{
-                    pagination: Pagination,
-                    preloader: listPreloader
-                }}
-            />
-            <ConfirmationModal
-                open={Boolean(postToDelete)}
-                onClose={() => setPostToDelete(null)}
-                onConfirm={handleDeletePost}
-                title="Delete post?"
-            />
-            <ConfirmationModal
-                open={deleteSelectedOpen}
-                onClose={() => setDeleteSelectedOpen(false)}
-                onConfirm={handleDeleteSelected}
-                title={`Delete ${countSelectedItems(totalElements.current)} item(s)?`}
-                disabled={isLoading}
-            />
-            <LoadingStatus isActive={isLoading} />
-        </div>
+        <EntityTableComp
+            entityCategory={EDBEntity.Post}
+            entityListRoute={postListInfo.route}
+            entityBaseRoute={postPageInfo.baseRoute}
+            listLabel="Posts"
+            getManyFiltered={client.getFilteredPosts}
+            deleteOne={client.deletePost}
+            deleteMany={client.deleteManyPosts}
+            deleteManyFiltered={client.deleteManyFilteredPosts}
+            columns={[
+                {
+                    name: 'mainImage',
+                    label: 'Image',
+                    type: 'Image',
+                    visible: true,
+                },
+                {
+                    name: 'title',
+                    label: 'Title',
+                    type: 'Simple text',
+                    visible: true,
+                    minWidth: '25%',
+                    width: '25%',
+                },
+                {
+                    name: 'author',
+                    label: 'Author',
+                    type: 'Simple text',
+                    visible: true,
+                    customGraphQlFragment: 'author {\n id\n fullName\n }\n',
+                    getValueView: (value: TUser) => <p style={ellipsisStyle}>{value?.fullName}</p>,
+                    searchOptions: users?.map(user => ({
+                        value: user.id,
+                        label: user.fullName,
+                    })) ?? [],
+                    applyFilter: (value: number, filter: any) => {
+                        (filter as TPostFilter).authorId = value;
+                        return filter;
+                    }
+                },
+                {
+                    name: 'published',
+                    label: 'Status',
+                    type: 'Simple text',
+                    visible: true,
+                    exactSearch: true,
+                    searchOptions: [
+                        {
+                            label: 'Published',
+                            value: true,
+                        },
+                        {
+                            label: 'Draft',
+                            value: false,
+                        },
+                    ],
+                    getValueView: (value: boolean) => (
+                        <p style={ellipsisStyle}>{value ? 'Published' : 'Draft'}</p>
+                    )
+                },
+                {
+                    name: 'publishDate',
+                    label: 'Published at',
+                    type: 'Datetime',
+                    visible: true,
+                },
+                {
+                    name: 'tags',
+                    label: 'Tags',
+                    type: 'Simple text',
+                    visible: true,
+                    disableSort: true,
+                    customGraphQlFragment: 'tags {\n id\n name\n }\n',
+                    getValueView: (tags: TTag[]) => {
+                        const text = tags?.map(tag => tag.name)?.join(', ') ?? '';
+                        return (
+                            <Tooltip title={text}>
+                                <p style={ellipsisStyle}>{text}</p>
+                            </Tooltip>
+                        )
+                    },
+                    multipleOptions: true,
+                    searchOptions: tags?.map(tag => ({
+                        value: tag.id,
+                        label: tag.name,
+                    })) ?? [],
+                    applyFilter: (value: string | number, filter: any) => {
+                        let ids = [];
+                        if (typeof value === 'string') {
+                            try {
+                                ids = JSON.parse(value);
+                            } catch (error) {
+                                console.error(error);
+                            }
+                        }
+                        if (typeof value === 'number') {
+                            ids.push(value);
+                        }
+                        (filter as TPostFilter).tagIds = ids;
+                        return filter;
+                    }
+                },
+                ...baseEntityColumns.map(col => {
+                    if (col.name === 'createDate') return { ...col, visible: true }
+                    return { ...col, visible: false }
+                }),
+            ]}
+        />
     )
 }
-
-export default connect(mapStateToProps)(PostList);

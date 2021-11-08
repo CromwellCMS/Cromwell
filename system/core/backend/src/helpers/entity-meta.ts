@@ -14,6 +14,7 @@ import { UserMeta } from '../models/entities/meta/user-meta.entity';
 import { Order } from '../models/entities/order.entity';
 import { Post } from '../models/entities/post.entity';
 import { ProductCategory } from '../models/entities/product-category.entity';
+import { ProductReview } from '../models/entities/product-review.entity';
 import { Product } from '../models/entities/product.entity';
 import { Tag } from '../models/entities/tag.entity';
 import { User } from '../models/entities/user.entity';
@@ -41,9 +42,11 @@ class EntityMetaRepository {
         if (entityType === EDBEntity.Post) return Post;
         if (entityType === EDBEntity.ProductCategory) return ProductCategory;
         if (entityType === EDBEntity.Product) return Product;
+        if (entityType === EDBEntity.ProductReview) return ProductReview;
         if (entityType === EDBEntity.Tag) return Tag;
         if (entityType === EDBEntity.User) return User;
         if (entityType === EDBEntity.CustomEntity) return CustomEntity;
+        
     }
 
     getEntityType(entityClass: any): EDBEntity | undefined {
@@ -52,6 +55,7 @@ class EntityMetaRepository {
         if (entityClass instanceof Post || entityClass === Post) return EDBEntity.Post;
         if (entityClass instanceof ProductCategory || entityClass === ProductCategory) return EDBEntity.ProductCategory;
         if (entityClass instanceof Product || entityClass === Product) return EDBEntity.Product;
+        if (entityClass instanceof ProductReview || entityClass === ProductReview) return EDBEntity.ProductReview;
         if (entityClass instanceof Tag || entityClass === Tag) return EDBEntity.Tag;
         if (entityClass instanceof User || entityClass === User) return EDBEntity.User;
         if (entityClass instanceof CustomEntity || entityClass === CustomEntity) return EDBEntity.CustomEntity;

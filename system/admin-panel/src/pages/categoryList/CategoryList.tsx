@@ -3,18 +3,18 @@ import { getBlockInstance, TPagedParams, TProductCategory, TProductCategoryFilte
 import { CList, getGraphQLClient, TCList } from '@cromwell/core-frontend';
 import {
     AccountTreeOutlined as AccountTreeOutlinedIcon,
-    AddCircle as AddCircleIcon,
-    Delete as DeleteIcon,
     List as ListIcon,
     UnfoldLess as UnfoldLessIcon,
     UnfoldMore as UnfoldMoreIcon,
 } from '@mui/icons-material';
-import { Checkbox, IconButton, Skeleton, TextField, Tooltip } from '@mui/material';
+import { Button, Checkbox, IconButton, Skeleton, TextField, Tooltip } from '@mui/material';
+import clsx from 'clsx';
 import React, { useEffect, useRef, useState } from 'react';
 import { connect, PropsType } from 'react-redux-ts';
 import { useHistory } from 'react-router-dom';
 import { debounce } from 'throttle-debounce';
 
+import DeleteSelectedButton from '../../components/entity/entityTable/components/DeleteSelectedButton';
 import SortBy, { TSortOption } from '../../components/entity/sort/Sort';
 import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
 import ConfirmationModal from '../../components/modal/Confirmation';
@@ -240,6 +240,22 @@ const CategoryList = (props: TPropsType) => {
 
     return (
         <div className={styles.CategoryList} >
+            {!props.embeddedView && (
+                <div className={styles.pageHeader}>
+                    <h1 className={clsx(styles.pageTitle, commonStyles.pageTitle)}>Categories</h1>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <DeleteSelectedButton
+                            style={{ marginRight: '10px' }}
+                            onClick={handleDeleteSelectedBtnClick}
+                            totalElements={totalElements.current}
+                        />
+                        <Button variant="contained"
+                            size="small"
+                            onClick={handleCreate}
+                        >Add new</Button>
+                    </div>
+                </div>
+            )}
             <div className={styles.listHeader}>
                 <div className={styles.filter}>
                     <div className={commonStyles.center}>
@@ -302,27 +318,6 @@ const CategoryList = (props: TPropsType) => {
                             options={availableSorts}
                             onChange={handleChangeOrder}
                         />
-                    )}
-                    {!props.embeddedView && (
-                        <>
-                            <Tooltip title="Delete selected">
-                                <IconButton
-                                    onClick={handleDeleteSelectedBtnClick}
-                                    aria-label="Delete selected"
-                                >
-                                    <DeleteIcon />
-                                </IconButton>
-                            </Tooltip>
-                            <Tooltip title="Create category">
-                                <IconButton
-                                    className={styles.actionBtn}
-                                    aria-label="Create category"
-                                    onClick={handleCreate}
-                                >
-                                    <AddCircleIcon />
-                                </IconButton>
-                            </Tooltip>
-                        </>
                     )}
                 </div>
             </div>

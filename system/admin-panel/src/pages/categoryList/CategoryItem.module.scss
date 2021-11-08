@@ -1,7 +1,13 @@
 @import "../../styles/common.module.scss";
 
 .CategoryItem {
-   position: relative;
+    position: relative;
+
+    &:hover {
+        .itemActions {
+            display: flex;
+        }
+    }
 }
 
 .none {
@@ -75,6 +81,7 @@
 
 .itemActions {
     display: flex;
+    display: none;
     flex-wrap: wrap;
     justify-content: flex-end;
 

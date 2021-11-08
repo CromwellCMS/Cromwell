@@ -34,6 +34,7 @@ export * from './models/filters/order.filter';
 export * from './models/filters/user.filter';
 export * from './models/filters/product-review.filter';
 export * from './models/filters/custom-entity.filter';
+export * from './models/filters/base-filter.filter';
 
 export * from './models/inputs/user.create';
 export * from './models/inputs/post.create';

@@ -1,5 +1,5 @@
 import { TCustomEntityColumn } from '@cromwell/core';
-import { Checkbox, Tooltip } from '@mui/material';
+import { Checkbox } from '@mui/material';
 import React, { useState } from 'react';
 
 import commonStyles from '../../../../styles/common.module.scss';
@@ -32,12 +32,10 @@ export const ColumnConfigureItem = (props: {
         }}>
             <p className={styles.ellipsis} style={{ minWidth: '20px' }}>{props.data.column.label}</p>
             <div className={commonStyles.center}>
-                <Tooltip title={visible ? 'Visible' : 'Hidden'}>
-                    <Checkbox
-                        checked={visible}
-                        onChange={toggleVisibility}
-                    />
-                </Tooltip>
+                <Checkbox
+                    checked={visible}
+                    onChange={toggleVisibility}
+                />
             </div>
         </div>
     )

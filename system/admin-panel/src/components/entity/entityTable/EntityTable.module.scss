@@ -42,6 +42,7 @@
 .tableColumnNames {
     width: 100%;
     display: flex;
+    align-items: center;
     min-width: 20px;
 }
 
@@ -129,6 +130,32 @@
 
         * {
             color: #eee;
+        }
+    }
+
+    div.autocompletePopper {
+        background-color: #333;
+
+        * {
+            background-color: #333;
+            color: #eee;
+        }
+    }
+
+    .iconButton {
+        color: #eee;
+
+        &[disabled] {
+            color: #777;
+
+            * {
+                color: #777;
+            }
+        }
+
+        * {
+            color: #eee;
+
         }
     }
 

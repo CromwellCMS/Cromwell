@@ -1,5 +1,6 @@
 import { CContainer, CGallery, CImage, CText, getBlockHtmlId, getCStore } from '@cromwell/core-frontend';
 import { Rating } from '@mui/material';
+import { TImageSettings } from '@cromwell/core';
 import { useRouter } from 'next/router';
 import React, { useEffect, useRef } from 'react';
 
@@ -33,6 +34,12 @@ export default function ProductDetails(props: {
 
     const hasImages = !!product?.images?.length;
 
+    const images: TImageSettings[] = (hasImages && product?.images?.map(i => {
+        return {
+            src: i
+        }
+    })) || [{ src: '/themes/@cromwell/theme-store/no-photos.png' }];
+
     const onTitleClick = () => {
         const productLink = `/product/${product?.slug ?? product?.id}`;
         if (props.compact)
@@ -59,11 +66,7 @@ export default function ProductDetails(props: {
                             isConstant
                             editorHidden
                             gallery={{
-                                images: hasImages ? product.images?.map(i => {
-                                    return {
-                                        src: i
-                                    }
-                                }) : [{ src: '/themes/@cromwell/theme-store/no-photos.png' }],
+                                images: images,
                                 loop: false,
                                 navigation: hasImages,
                                 zoom: hasImages,

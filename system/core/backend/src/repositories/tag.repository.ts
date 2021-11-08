@@ -1,9 +1,11 @@
-import { TPagedList, TPagedParams, TTag, TTagInput } from '@cromwell/core';
-import { EntityRepository } from 'typeorm';
+import { TDeleteManyInput, TPagedList, TPagedParams, TTag, TTagInput } from '@cromwell/core';
+import { EntityRepository, SelectQueryBuilder } from 'typeorm';
 
-import { checkEntitySlug, handleBaseInput, handleCustomMetaInput } from '../helpers/base-queries';
+import { checkEntitySlug, getPaged, handleBaseInput, handleCustomMetaInput } from '../helpers/base-queries';
 import { getLogger } from '../helpers/logger';
 import { Tag } from '../models/entities/tag.entity';
+import { BaseFilterInput } from '../models/filters/base-filter.filter';
+import { PagedParamsInput } from '../models/inputs/paged-params.input';
 import { BaseRepository } from './base.repository';
 
 const logger = getLogger();
@@ -86,4 +88,28 @@ export class TagRepository extends BaseRepository<Tag> {
         return true;
     }
 
+    applyTagFilter(qb: SelectQueryBuilder<Tag>, filterParams?: BaseFilterInput) {
+        this.applyBaseFilter(qb, filterParams)
+        return qb;
+    }
+
+    async getFilteredTags(pagedParams?: PagedParamsInput<Tag>, filterParams?: BaseFilterInput): Promise<TPagedList<Tag>> {
+        const qb = this.createQueryBuilder(this.metadata.tablePath);
+        qb.select();
+        this.applyTagFilter(qb, filterParams);
+        return await getPaged<Tag>(qb, this.metadata.tablePath, pagedParams);
+    }
+
+    async deleteManyFilteredTags(input: TDeleteManyInput, filterParams?: BaseFilterInput): Promise<boolean | undefined> {
+        const qbSelect = this.createQueryBuilder(this.metadata.tablePath).select([`${this.metadata.tablePath}.id`]);
+        this.applyTagFilter(qbSelect, filterParams);
+        this.applyDeleteMany(qbSelect, input);
+
+        const qbDelete = this.createQueryBuilder(this.metadata.tablePath).delete()
+            .where(`${this.metadata.tablePath}.id IN (${qbSelect.getQuery()})`)
+            .setParameters(qbSelect.getParameters());
+
+        await qbDelete.execute();
+        return true;
+    }
 }

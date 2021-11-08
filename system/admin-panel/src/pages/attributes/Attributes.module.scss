@@ -20,13 +20,16 @@
 }
 
 .header {
-    @include paper;
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
     padding: 5px 15px;
     z-index: 1;
+}
+
+.pageTitle {
+    font-size: 20px;
 }
 
 @media screen and (max-width: 1069px) {
@@ -41,10 +44,15 @@
 
 :global(.modeDark) {
 
-    .listItem,
-    .header {
+    .listItem {
         background-color: #333;
 
+        * {
+            color: #eee;
+        }
+    }
+
+    .header {
         * {
             color: #eee;
         }

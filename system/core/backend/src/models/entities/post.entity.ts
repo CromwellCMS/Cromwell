@@ -19,7 +19,7 @@ export class Post extends BasePageEntity implements TPost {
     @Index({ fulltext: true })
     title?: string | null;
 
-    @ManyToOne(() => User, user => user.posts)
+    @ManyToOne(() => User, user => user.posts, { onDelete: 'SET NULL' })
     @JoinColumn({ name: "authorId" })
     author?: User;
 

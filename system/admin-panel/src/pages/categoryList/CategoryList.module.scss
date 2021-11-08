@@ -1,7 +1,7 @@
 @import "../../styles/common.module.scss";
 
 .CategoryList {
-    padding: 10px;
+    padding: 20px 20px 0 20px;
     height: 100%;
     z-index: 5;
     position: relative;
@@ -62,12 +62,28 @@
     align-items: center;
 }
 
+.pageHeader {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.pageTitle {
+    font-size: 20px;
+}
+
 :global(.modeDark) {
 
     .treeList,
     .listHeader {
         background-color: #333;
 
+        * {
+            color: #eee;
+        }
+    }
+
+    .pageHeader {
         * {
             color: #eee;
         }

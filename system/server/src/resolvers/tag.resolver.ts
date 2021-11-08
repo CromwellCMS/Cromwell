@@ -1,5 +1,6 @@
 import { EDBEntity, GraphQLPaths, TAuthRole, TPagedList, TTag } from '@cromwell/core';
 import {
+    BaseFilterInput,
     DeleteManyInput,
     entityMetaRepository,
     InputTag,
@@ -18,10 +19,12 @@ import { serverFireAction } from '../helpers/server-fire-action';
 const getOneBySlugPath = GraphQLPaths.Tag.getOneBySlug;
 const getOneByIdPath = GraphQLPaths.Tag.getOneById;
 const getManyPath = GraphQLPaths.Tag.getMany;
+const getFilteredPath = GraphQLPaths.Tag.getFiltered;
 const createPath = GraphQLPaths.Tag.create;
 const updatePath = GraphQLPaths.Tag.update;
 const deletePath = GraphQLPaths.Tag.delete;
 const deleteManyPath = GraphQLPaths.Tag.deleteMany;
+const deleteManyFilteredPath = GraphQLPaths.Tag.deleteManyFiltered;
 const viewsKey: keyof TTag = 'views';
 
 @Resolver(Tag)
@@ -79,6 +82,25 @@ export class TagResolver {
         const res = await this.repository.deleteMany(data);
         resetAllPagesCache();
         return res;
+    }
+
+    @Authorized<TAuthRole>("administrator")
+    @Mutation(() => Boolean)
+    async [deleteManyFilteredPath](
+        @Arg("input") input: DeleteManyInput,
+        @Arg("filterParams", () => BaseFilterInput, { nullable: true }) filterParams?: BaseFilterInput,
+    ): Promise<boolean | undefined> {
+        const res = await this.repository.deleteManyFilteredTags(input, filterParams);
+        resetAllPagesCache();
+        return res;
+    }
+
+    @Query(() => PagedTag)
+    async [getFilteredPath](
+        @Arg("pagedParams", { nullable: true }) pagedParams?: PagedParamsInput<TTag>,
+        @Arg("filterParams", () => BaseFilterInput, { nullable: true }) filterParams?: BaseFilterInput,
+    ): Promise<TPagedList<TTag> | undefined> {
+        return this.repository.getFilteredTags(pagedParams, filterParams);
     }
 
     @FieldResolver(() => GraphQLJSONObject, { nullable: true })

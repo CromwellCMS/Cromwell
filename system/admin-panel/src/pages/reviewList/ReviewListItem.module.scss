@@ -83,7 +83,6 @@
 .status {
     font-size: 14px;
     font-weight: 500;
-    margin-bottom: 5px;
     display: flex;
     align-items: center;
 
@@ -107,6 +106,49 @@
 .listItem:hover {
     background-color: #f4f4f4;
 }
+
+
+.itemToView {
+    @include paper;
+    background-color: #fff;
+    padding: 20px;
+    min-height: 250px;
+    min-width: 400px;
+    overflow: auto;
+    max-width: 100vw;
+    max-height: 95vh;
+
+    .itemToViewHeader {
+        display: flex;
+        align-items: center;
+    }
+
+    .userName {
+        font-weight: 600;
+        margin-right: 15px;
+    }
+
+    .title {
+        font-size: 20px;
+        font-weight: 500;
+        margin: 10px 0;
+        max-width: 600px;
+    }
+
+    .description {
+        font-size: 16px;
+        max-width: 600px;
+    }
+
+    .approveBtn {
+        margin-top: 15px;
+    }
+
+    .productToView {
+        margin-top: 30px;
+    }
+}
+
 
 :global(.modeDark) {
     .listItem {

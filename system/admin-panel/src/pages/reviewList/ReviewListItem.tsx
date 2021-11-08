@@ -14,13 +14,19 @@ import { useForceUpdate } from '../../helpers/forceUpdate';
 import { toLocaleDateTimeString } from '../../helpers/time';
 import { TAppState } from '../../redux/store';
 import commonStyles from '../../styles/common.module.scss';
-import { ListItemProps } from './ReviewList';
 import styles from './ReviewListItem.module.scss';
 
 type TListItemProps = {
     data?: TProductReview;
     listItemProps: ListItemProps;
     embedded?: boolean;
+}
+
+export type ListItemProps = {
+    handleDeleteBtnClick: (id: number) => void;
+    handleOpenReview: (data: TProductReview) => void;
+    toggleSelection: (data: TProductReview) => void;
+    handleApproveReview: (data: TProductReview) => Promise<boolean>;
 }
 
 const mapStateToProps = (state: TAppState) => {

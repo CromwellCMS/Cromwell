@@ -56,7 +56,9 @@ export class User extends BasePageEntity implements TUser {
     @Column({ type: Date, nullable: true })
     resetPasswordDate?: Date | null;
 
-    @OneToMany(() => Post, post => post.author)
+    @OneToMany(() => Post, post => post.author, {
+        cascade: ['update']
+    })
     posts: Post[];
 
     @OneToMany(() => UserMeta, meta => meta.entity, {

@@ -98,6 +98,8 @@ export const GraphQLPaths: { [K in Exclude<TDBEntity, 'Theme' | 'Plugin' | 'Post
         update: "updateTag",
         delete: "deleteTag",
         deleteMany: "deleteManyTags",
+        deleteManyFiltered: "deleteManyFilteredTags",
+        getFiltered: "getFilteredTags",
     },
     CustomEntity: {
         getOneBySlug: "getCustomEntityBySlug",

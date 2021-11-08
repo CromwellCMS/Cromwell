@@ -156,10 +156,19 @@ div.filterDrawer {
     }
 }
 
+
 :global(.modeDark) {
     .listItem {
         background-color: #333;
         border-bottom: 1px solid #333;
+
+        * {
+            color: #eee;
+        }
+    }
+
+    .attributeFilterButton {
+        color: #eee;
 
         * {
             color: #eee;
