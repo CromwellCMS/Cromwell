@@ -1,3 +1,5 @@
-export const createGetStaticPaths = (pageName: string, getStaticPaths: any) => {
-    return getStaticPaths;
+import { TPageExports } from '../types';
+
+export const createGetStaticPaths = (pageName: string, pageExports: TPageExports) => {
+    return pageExports?.getStaticPaths;
 }

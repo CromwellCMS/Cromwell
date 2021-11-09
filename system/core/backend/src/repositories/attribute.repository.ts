@@ -47,7 +47,9 @@ export class AttributeRepository extends BaseRepository<Attribute> {
         });
     }
 
-    async addAttributeValueToProduct(product: Product, value: AttributeValue, productVariant?: TAttributeProductVariant): Promise<AttributeToProduct> {
+    async addAttributeValueToProduct(product: Product, value: AttributeValue,
+        productVariant?: TAttributeProductVariant): Promise<AttributeToProduct | undefined> {
+        if (!value.key) return;
         const attributeToProduct = new AttributeToProduct();
         attributeToProduct.product = product;
         attributeToProduct.productId = product.id;
@@ -60,14 +62,15 @@ export class AttributeRepository extends BaseRepository<Attribute> {
         return attributeToProduct;
     }
 
-    async handleAttributeInput(attribute: Attribute, input: TAttributeInput) {
+    async handleAttributeInput(attribute: Attribute, input: TAttributeInput, action: 'update' | 'create') {
         await handleBaseInput(attribute, input);
         attribute.key = input.key;
         attribute.type = input.type;
         attribute.icon = input.icon;
         attribute.required = input.required;
         if (input.isEnabled === undefined) attribute.isEnabled = true;
-        await attribute.save();
+
+        if (action === 'create') await attribute.save();
 
         if (input.values) {
             if (attribute.values) {
@@ -81,6 +84,7 @@ export class AttributeRepository extends BaseRepository<Attribute> {
             const updatedValues: AttributeValue[] = [];
             input.values = input.values.sort((a, b) => (a.value > b.value) ? 1 : -1);
             for (const valueInput of input.values) {
+                if (!attribute.key) return;
                 const value = attribute.values?.find(val => val.value === valueInput.value)
                     ?? new AttributeValue();
 
@@ -96,36 +100,28 @@ export class AttributeRepository extends BaseRepository<Attribute> {
             attribute.values = updatedValues;
         }
 
-        await attribute.save();
         await handleCustomMetaInput(attribute, input);
+        await checkEntitySlug(attribute, Attribute);
     }
 
-    async createAttribute(createAttribute: TAttributeInput, id?: number): Promise<TAttribute> {
+    async createAttribute(createAttribute: TAttributeInput, id?: number | null): Promise<TAttribute> {
         logger.log('AttributeRepository::createAttribute');
-        let attribute = new Attribute();
+        const attribute = new Attribute();
         if (id) attribute.id = id;
 
-        await this.handleAttributeInput(attribute, createAttribute);
-
-        attribute = await this.save(attribute);
-        await checkEntitySlug(attribute, Attribute);
-
+        await this.handleAttributeInput(attribute, createAttribute, 'create');
+        await this.save(attribute);
         return attribute;
     }
 
     async updateAttribute(id: number, updateAttribute: TAttributeInput): Promise<Attribute> {
         logger.log('AttributeRepository::updateAttribute; id: ' + id);
-        let attribute = await this.findOne({
-            where: { id },
-            relations: ['values']
-        });
+
+        const attribute = await this.getById(id, ['values']);
         if (!attribute) throw new Error(`Attribute ${id} not found!`);
 
-        await this.handleAttributeInput(attribute, updateAttribute);
-
-        attribute = await this.save(attribute);
-        await checkEntitySlug(attribute, Attribute);
-
+        await this.handleAttributeInput(attribute, updateAttribute, 'update');
+        await this.save(attribute);
         return attribute;
     }
 

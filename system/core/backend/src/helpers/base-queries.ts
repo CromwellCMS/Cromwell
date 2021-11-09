@@ -9,7 +9,7 @@ const MAX_PAGE_SIZE = 300;
 
 export const applyGetPaged = <T>(qb: SelectQueryBuilder<T>, sortByTableName?: string, params?: TPagedParams<T>): SelectQueryBuilder<T> => {
     const cmsSettings = getStoreItem('cmsSettings');
-    const p = params ? params : {};
+    const p = params ?? {};
     if (!p.pageNumber) p.pageNumber = 1;
     if (!p.pageSize) {
         const def = cmsSettings?.defaultPageSize
@@ -74,7 +74,7 @@ export const handleBaseInput = async (entity: BasePageEntity, input: TBasePageEn
 }
 
 export const handleCustomMetaInput = async <
-    T extends { customMeta?: Record<string, string>; }
+    T extends { customMeta?: Record<string, string | null> | null; }
 >(entity: BasePageEntity, input: T) => {
     if (!entity.id) await entity.save();
 
@@ -120,9 +120,6 @@ export const checkEntitySlug = async <T extends BasePageEntity>(entity: T, Entit
             }
         }
     }
-
-    if (hasModified)
-        await entity.save();
 
     return entity;
 }

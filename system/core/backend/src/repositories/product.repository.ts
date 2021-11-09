@@ -90,7 +90,7 @@ export class ProductRepository extends BaseRepository<Product> {
         return qb.where(`${this.metadata.tablePath}.slug = :slug`, { slug }).getOne();
     }
 
-    async handleProductInput(product: Product, input: TProductInput) {
+    async handleProductInput(product: Product, input: TProductInput, action: 'update' | 'create') {
         await handleBaseInput(product, input);
         product.name = input.name;
         product.price = input.price;
@@ -104,7 +104,22 @@ export class ProductRepository extends BaseRepository<Product> {
         product.stockAmount = input.stockAmount;
         product.stockStatus = input.stockStatus;
 
-        if (!product.id) await product.save();
+        // Move mainImage into first item in the array if it is not
+        if (product.images && product.images.length > 0 && product.mainImage
+            && product.images[0] !== product.mainImage) {
+            const images = [...product.images];
+            const index = images.indexOf(product.mainImage);
+            if (index > -1) {
+                images.splice(index, 1);
+                product.images = [product.mainImage, ...images];
+            }
+        }
+        // Set mainImage from array if it hasn't been set
+        if (!product.mainImage && product.images && product.images.length > 0) {
+            product.mainImage = product.images[0];
+        }
+
+        if (action === 'create') await product.save();
 
         if (input.attributes) {
             // Flatten attributes and values
@@ -119,6 +134,7 @@ export class ProductRepository extends BaseRepository<Product> {
                 if (!attribute) continue;
 
                 for (const inputValue of inputAttribute.values) {
+                    if (!attribute.values) continue;
                     const attributeValue = attribute.values.find(value => value.value === inputValue.value);
                     if (!attributeValue) continue;
 
@@ -157,7 +173,7 @@ export class ProductRepository extends BaseRepository<Product> {
                         .addAttributeValueToProduct(product, inputValue.attributeValue,
                             inputValue.productVariant);
 
-                    updatedValues.push(newValue);
+                    if (newValue) updatedValues.push(newValue);
                 }
             }
             product.attributeValues = updatedValues;
@@ -168,64 +184,41 @@ export class ProductRepository extends BaseRepository<Product> {
                 .getProductCategoriesById(input.categoryIds);
         }
 
-        // Move mainImage into first item in the array if it is not
-        if (product.images && product.images.length > 0 && product.mainImage
-            && product.images[0] !== product.mainImage) {
-            const images = [...product.images];
-            const index = images.indexOf(product.mainImage);
-            if (index > -1) {
-                images.splice(index, 1);
-                product.images = [product.mainImage, ...images];
-            }
-        }
-        // Set mainImage from array if it hasn't been set
-        if (!product.mainImage && product.images && product.images.length > 0) {
-            product.mainImage = product.images[0];
-        }
-
-        await product.save();
         await handleCustomMetaInput(product, input);
+        await checkEntitySlug(product, Product);
     }
 
-    async createProduct(createProduct: TProductInput, id?: number): Promise<Product> {
+    async createProduct(createProduct: TProductInput, id?: number | null): Promise<Product> {
         logger.log('ProductRepository::createProduct');
-        let product = new Product();
+        const product = new Product();
         if (id) product.id = id;
 
-        await this.handleProductInput(product, createProduct);
-        product = await this.save(product);
-        await checkEntitySlug(product, Product);
+        await this.handleProductInput(product, createProduct, 'create');
+        await this.save(product);
         return product;
     }
 
     async updateProduct(id: number, updateProduct: TProductInput): Promise<Product> {
         logger.log('ProductRepository::updateProduct id: ' + id);
-        let product = await this.findOne({
+        const product = await this.findOne({
             where: { id },
             relations: ['categories', 'attributeValues']
         });
         if (!product) throw new Error(`Product ${id} not found!`);
 
-        await this.handleProductInput(product, updateProduct);
-
-        product = await this.save(product);
-        await checkEntitySlug(product, Product);
-
-        // this.buildProductPage(product);
-
+        await this.handleProductInput(product, updateProduct, 'update');
+        await this.save(product);
         return product;
     }
 
     async deleteProduct(id: number): Promise<boolean> {
         logger.log('ProductRepository::deleteProduct; id: ' + id);
-
         const product = await this.getProductById(id);
         if (!product) {
             logger.error('ProductRepository::deleteProduct failed to find product by id');
             return false;
         }
-        const res = await this.delete(id);
-        // this.buildProductPage(product);
+        await this.delete(id);
         return true;
     }
 
@@ -393,7 +386,7 @@ export class ProductRepository extends BaseRepository<Product> {
         return true;
     }
 
-    async getProductAttributes(productId: number, records?: AttributeToProduct[]): Promise<AttributeInstance[] | undefined> {
+    async getProductAttributes(productId: number, records?: AttributeToProduct[] | null): Promise<AttributeInstance[] | undefined> {
         if (!records) {
             records = await getCustomRepository(AttributeRepository)
                 .getAttributeInstancesOfProduct(productId);

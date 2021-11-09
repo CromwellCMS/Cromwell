@@ -46,7 +46,7 @@ class EntityMetaRepository {
         if (entityType === EDBEntity.Tag) return Tag;
         if (entityType === EDBEntity.User) return User;
         if (entityType === EDBEntity.CustomEntity) return CustomEntity;
-        
+
     }
 
     getEntityType(entityClass: any): EDBEntity | undefined {
@@ -93,7 +93,7 @@ class EntityMetaRepository {
         })));
     }
 
-    async createEntityMeta(type: EDBEntity, entityId: number, key?: string, value?: string): Promise<TEntityMeta | undefined> {
+    async createEntityMeta(type: EDBEntity, entityId: number, key?: string, value?: string | null): Promise<TEntityMeta | undefined> {
         if (!value || value === '') return;
         if (!key || key === '') return;
         if (entityId === undefined || entityId === null) return;
@@ -115,7 +115,7 @@ class EntityMetaRepository {
      * @param value Meta value
      * @returns Meta DB record
      */
-    async setEntityMeta(type?: EDBEntity, entityId?: number, key?: string, value?: string): Promise<TEntityMeta | undefined> {
+    async setEntityMeta(type?: EDBEntity, entityId?: number, key?: string, value?: string | null): Promise<TEntityMeta | undefined> {
         if (!type) return;
         if (!key || key === '') return;
         if (entityId === undefined || entityId === null) return;

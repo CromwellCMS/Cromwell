@@ -56,7 +56,7 @@ export class BaseRepository<EntityType, EntityInputType = EntityType> extends Re
         return entity;
     }
 
-    async createEntity(input: EntityInputType, id?: number): Promise<EntityType> {
+    async createEntity(input: EntityInputType, id?: number | null): Promise<EntityType> {
         logger.log('BaseRepository::createEntity');
         let entity = new this.EntityClass();
         if (id) entity.id = id;

@@ -21,12 +21,12 @@ export class Post extends BasePageEntity implements TPost {
 
     @ManyToOne(() => User, user => user.posts, { onDelete: 'SET NULL' })
     @JoinColumn({ name: "authorId" })
-    author?: User;
+    author?: User | null;
 
     @Field(type => Int, { nullable: true })
     @Column("int", { nullable: true })
     @Index()
-    authorId: number;
+    authorId?: number | null;
 
     @Field(type => String, { nullable: true })
     @Column({ type: "text", nullable: true })

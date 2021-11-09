@@ -214,12 +214,12 @@ export class MockService {
                     },
                     {
                         key: 'Size',
-                        values: this.shuffleArray(sizeVals).slice(0, Math.floor(Math.random() * 4) + 3).map(s => ({
+                        values: sizeVals ? this.shuffleArray(sizeVals).slice(0, Math.floor(Math.random() * 4) + 3).map(s => ({
                             value: s.value,
                             productVariant: {
                                 price: price + Math.round(price * 0.2 * Math.random())
                             }
-                        })).sort((a, b) => parseInt(a.value) - parseInt(b.value))
+                        })).sort((a, b) => parseInt(a.value) - parseInt(b.value)) : [],
                     },
                     {
                         key: 'Condition',

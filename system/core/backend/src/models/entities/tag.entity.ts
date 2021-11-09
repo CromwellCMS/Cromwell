@@ -12,7 +12,7 @@ export class Tag extends BasePageEntity implements TTag {
     @Field(type => String)
     @Column({ type: "varchar", length: 255, nullable: true })
     @Index({ fulltext: true })
-    name: string;
+    name?: string | null;
 
     @Field(type => String, { nullable: true })
     @Column({ type: "varchar", length: 255, nullable: true })

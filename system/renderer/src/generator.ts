@@ -219,12 +219,9 @@ const devGenerate = async (themeName: string, options) => {
          import * as ${pageInfo.compName} from '${pageRelativePath}';
  
          ${!disableSSR && pageRelativePath ? `
-         export const getStaticProps = createGetStaticProps('${pageInfo.name}', ${pageInfo.compName}.getStaticProps);
+         export const getStaticProps = createGetStaticProps('${pageInfo.name}', ${pageInfo.compName});
          
-         export const getStaticPaths = () => {
-             const func = createGetStaticPaths('${pageInfo.name}', ${pageInfo.compName}.getStaticPaths);
-             if (func) return func();
-         };
+         export const getStaticPaths = createGetStaticPaths('${pageInfo.name}', ${pageInfo.compName});
          `: ''}
 
          ${(pageInfo.name === genericPageName && !hasGenericPage) ? `
@@ -238,7 +235,7 @@ const devGenerate = async (themeName: string, options) => {
         };
          ` : ''}
  
-         export default getPage('${pageInfo.name}', ${pageInfo.compName}.default);
+         export default getPage('${pageInfo.name}', ${pageInfo.compName});
          `;
 
         if (!pageInfo.path && pageInfo.fileContent) {

@@ -1,21 +1,21 @@
 import {
+    EDBEntity,
     getStoreItem,
     isServer,
     setStoreItem,
     TCromwellPage,
     TCromwellPageCoreProps,
     TDefaultPageName,
-    EDBEntity,
     TPageStats,
 } from '@cromwell/core';
 import {
+    BlockStoreProvider,
     CContainer,
     cleanParseContext,
     getModuleImporter,
     getParserTransform,
     getRestApiClient,
     pageRootContainerId,
-    BlockStoreProvider,
 } from '@cromwell/core-frontend';
 import { NextRouter, withRouter } from 'next/router';
 import React, { useRef } from 'react';
@@ -25,12 +25,14 @@ import { isValidElementType } from 'react-is';
 import { CrwDocumentContext, patchDocument } from '../helpers/document';
 import { useForceUpdate } from '../helpers/helpers';
 import { usePatchForRedirects } from '../helpers/redirects';
+import { TPageExports } from '../types';
 
 type PageProps = Partial<TCromwellPageCoreProps> & {
     router: NextRouter;
 }
 
-export const getPage = (pageName: TDefaultPageName | string, PageComponent: TCromwellPage): TCromwellPage => {
+export const getPage = (pageName: TDefaultPageName | string, pageExports: TPageExports): TCromwellPage => {
+    const PageComponent = pageExports?.default;
     if (!PageComponent) throw new Error('getPage !PageComponent');
     if (!isValidElementType(PageComponent)) throw new Error('getPage PageComponent !isValidElementType');
 

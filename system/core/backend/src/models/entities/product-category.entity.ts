@@ -14,31 +14,31 @@ export class ProductCategory extends BasePageEntity implements TProductCategory 
     @Field(() => String)
     @Column({ type: "varchar", length: 255, nullable: true })
     @Index({ fulltext: true })
-    name: string;
+    name?: string | null;
 
     @Field(() => String, { nullable: true })
     @Column({ type: "varchar", nullable: true, length: 400 })
-    mainImage?: string;
+    mainImage?: string | null;
 
     @Field(() => String, { nullable: true })
     @Column({ type: "text", nullable: true })
-    description?: string;
+    description?: string | null;
 
     @Field(type => String, { nullable: true })
     @Column({ type: "text", nullable: true })
-    descriptionDelta?: string;
+    descriptionDelta?: string | null;
 
     @TreeChildren()
-    children?: ProductCategory[];
+    children?: ProductCategory[] | null;
 
     @TreeParent()
     parent?: ProductCategory | null;
 
     @ManyToMany(type => Product, product => product.categories)
-    products?: TPagedList<TProduct>;
+    products?: TPagedList<TProduct> | null;
 
     @OneToMany(() => ProductCategoryMeta, meta => meta.entity, {
         cascade: true,
     })
-    metaRecords?: ProductCategoryMeta[];
+    metaRecords?: ProductCategoryMeta[] | null;
 }

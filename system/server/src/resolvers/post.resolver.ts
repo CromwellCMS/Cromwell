@@ -156,7 +156,8 @@ export class PostResolver {
     @FieldResolver(() => User, { nullable: true })
     async [authorKey](@Root() post: Post): Promise<TUser | undefined> {
         try {
-            return await this.userRepository.getUserById(post.authorId);
+            if (post.authorId)
+                return await this.userRepository.getUserById(post.authorId);
         } catch (e) {
             logger.error(e);
         }

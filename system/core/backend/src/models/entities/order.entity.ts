@@ -26,84 +26,84 @@ export class Order extends BaseEntity implements TOrder {
     @Field(() => String, { nullable: true })
     @Index()
     @Column({ type: "varchar", length: 255, nullable: true })
-    status?: string;
+    status?: string | null;
 
     @Field(() => String, { nullable: true })
     @Column({ type: "text", nullable: true })
-    cart?: string;
+    cart?: string | null;
 
     @Field(() => Number, { nullable: true })
     @Column({ type: "float", nullable: true })
-    orderTotalPrice?: number;
+    orderTotalPrice?: number | null;
 
     @Field(() => Number, { nullable: true })
     @Column({ type: "float", nullable: true })
-    cartTotalPrice?: number;
+    cartTotalPrice?: number | null;
 
     @Field(() => Number, { nullable: true })
     @Column({ type: "float", nullable: true })
-    cartOldTotalPrice?: number;
+    cartOldTotalPrice?: number | null;
 
     @Field(() => Number, { nullable: true })
     @Column({ type: "float", nullable: true })
-    shippingPrice?: number;
+    shippingPrice?: number | null;
 
     @Field(() => Number, { nullable: true })
     @Column({ type: "float", nullable: true })
-    totalQnt?: number;
+    totalQnt?: number | null;
 
     @Field(() => Int, { nullable: true })
     @Column({ type: "int", nullable: true })
     @Index()
-    userId?: number;
+    userId?: number | null;
 
     @Field(() => String, { nullable: true })
     @Index()
     @Column({ type: "varchar", length: 255, nullable: true })
-    customerName?: string;
+    customerName?: string | null;
 
     @Field(() => String, { nullable: true })
     @Index()
     @Column({ type: "varchar", length: 255, nullable: true })
-    customerPhone?: string;
+    customerPhone?: string | null;
 
     @Field(() => String, { nullable: true })
     @Index()
     @Column({ type: "varchar", length: 255, nullable: true })
-    customerEmail?: string;
+    customerEmail?: string | null;
 
     @Field(() => String, { nullable: true })
     @Column({ type: "varchar", length: 255, nullable: true })
-    customerAddress?: string;
+    customerAddress?: string | null;
 
     @Field(() => String, { nullable: true })
     @Column({ type: "varchar", length: 255, nullable: true })
-    shippingMethod?: string;
+    shippingMethod?: string | null;
 
     @Field(() => String, { nullable: true })
     @Column({ type: "varchar", length: 255, nullable: true })
-    paymentMethod?: string;
+    paymentMethod?: string | null;
 
     @Field(() => String, { nullable: true })
     @Column({ type: "varchar", length: 3000, nullable: true })
-    customerComment?: string;
+    customerComment?: string | null;
 
     @Field(() => String, { nullable: true })
     @Column({ type: "varchar", length: 255, nullable: true })
-    currency?: string;
+    currency?: string | null;
 
     @Field(() => CustomDateScalar, { nullable: true })
     @Index()
     @CreateDateColumn()
-    createDate: Date;
+    createDate?: Date | null;
 
     @Field(() => CustomDateScalar, { nullable: true })
     @Index()
     @UpdateDateColumn()
-    updateDate: Date;
+    updateDate?: Date | null;
 
     @OneToMany(() => OrderMeta, meta => meta.entity, {
         cascade: true,
     })
-    metaRecords?: OrderMeta[];
+    metaRecords?: OrderMeta[] | null;
 }

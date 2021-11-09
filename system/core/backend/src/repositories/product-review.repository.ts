@@ -1,6 +1,6 @@
 import { TDeleteManyInput, TPagedList, TPagedParams, TProductReview, TProductReviewInput } from '@cromwell/core';
 import sanitizeHtml from 'sanitize-html';
-import { Brackets, DeleteQueryBuilder, EntityRepository, getCustomRepository, SelectQueryBuilder } from 'typeorm';
+import { Brackets, EntityRepository, getCustomRepository, SelectQueryBuilder } from 'typeorm';
 
 import { checkEntitySlug, getPaged, handleBaseInput, handleCustomMetaInput } from '../helpers/base-queries';
 import { getLogger } from '../helpers/logger';
@@ -34,10 +34,10 @@ export class ProductReviewRepository extends BaseRepository<ProductReview> {
         return productReview;
     }
 
-    async handleProductReviewInput(productReview: ProductReview, input: TProductReviewInput) {
+    async handleProductReviewInput(productReview: ProductReview, input: TProductReviewInput, action: 'update' | 'create') {
         await handleBaseInput(productReview, input);
 
-        const product = await this.productRepo.getProductById(input.productId);
+        const product = input.productId && await this.productRepo.getProductById(input.productId);
         if (!product) throw new Error(`ProductReviewRepository:handleProductReviewInput productId ${input.productId} not found!`);
         productReview.product = product;
 
@@ -55,34 +55,29 @@ export class ProductReviewRepository extends BaseRepository<ProductReview> {
         productReview.approved = input.approved;
         productReview.userId = input.userId;
 
-        await productReview.save();
+        if (action === 'create') await productReview.save();
+        await checkEntitySlug(productReview, ProductReview);
         await handleCustomMetaInput(productReview, input);
     }
 
-    async createProductReview(createProductReview: TProductReviewInput, id?: number): Promise<TProductReview> {
+    async createProductReview(createProductReview: TProductReviewInput, id?: number | null): Promise<TProductReview> {
         logger.log('ProductReviewRepository::createProductReview');
-        let productReview = new ProductReview();
+        const productReview = new ProductReview();
         if (id) productReview.id = id;
 
-        await this.handleProductReviewInput(productReview, createProductReview);
-        productReview = await this.save(productReview);
-        await checkEntitySlug(productReview, ProductReview);
+        await this.handleProductReviewInput(productReview, createProductReview, 'create');
+        await this.save(productReview);
 
         return productReview;
     }
 
     async updateProductReview(id: number, updateProductReview: TProductReviewInput): Promise<ProductReview> {
         logger.log('ProductReviewRepository::updateProductReview; id: ' + id);
-        let productReview = await this.findOne({
-            where: { id }
-        });
+        const productReview = await this.getById(id)
         if (!productReview) throw new Error(`ProductReview ${id} not found!`);
 
-        await this.handleProductReviewInput(productReview, updateProductReview);
-
-        productReview = await this.save(productReview);
-        await checkEntitySlug(productReview, ProductReview);
-
+        await this.handleProductReviewInput(productReview, updateProductReview, 'update');
+        await this.save(productReview);
         return productReview;
     }
 

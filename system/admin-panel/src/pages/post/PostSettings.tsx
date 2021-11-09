@@ -198,6 +198,7 @@ const PostSettings = (props: {
                         >Unpublish</Button>
                     </Tooltip>
                 )}
+                <div style={{ marginBottom: '15px' }}></div>
                 {postData && (
                     <RenderCustomFields
                         entityType={EDBEntity.Post}

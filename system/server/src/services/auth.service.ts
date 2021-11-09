@@ -142,7 +142,7 @@ export class AuthService {
     async resetUserPassword(input: ResetPasswordDto) {
         const userRepo = getCustomRepository(UserRepository);
         const user = await userRepo.getUserByEmail(input.email);
-        if (!user?.id || !user.resetPasswordCode || !user.resetPasswordDate)
+        if (!user?.id || !user.resetPasswordCode || !user.resetPasswordDate || !user.email)
             throw new HttpException('Failed', HttpStatus.BAD_REQUEST);
 
         const resetUserCode = async () => {

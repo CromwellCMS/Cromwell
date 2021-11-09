@@ -6,25 +6,25 @@ export class UserDto implements TUser {
     id: number;
 
     @ApiProperty()
-    fullName: string;
+    fullName?: string | null;
 
     @ApiProperty()
-    email: string;
+    email?: string | null;
 
     @ApiProperty()
-    avatar?: string;
+    avatar?: string | null;
 
     @ApiProperty()
-    bio?: string;
+    bio?: string | null;
 
     @ApiProperty()
-    phone?: string;
+    phone?: string | null;
 
     @ApiProperty()
-    address?: string;
+    address?: string | null;
 
     @ApiProperty()
-    role?: TUserRole;
+    role?: TUserRole | null;
 
     parseUser(user: TUser) {
         this.id = user.id;

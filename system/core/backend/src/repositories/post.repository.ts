@@ -37,9 +37,9 @@ export class PostRepository extends BaseRepository<Post> {
         return this.getBySlug(slug);
     }
 
-    private async handleBasePostInput(post: Post, input: TPostInput) {
-        const author = await getCustomRepository(UserRepository).getUserById(input.authorId);
-        if (!author) throw new Error(`Author for the new post was not found`);
+    private async handleBasePostInput(post: Post, input: TPostInput, action: 'update' | 'create') {
+        const author = input.authorId && await getCustomRepository(UserRepository)
+            .getUserById(input.authorId).catch();
 
         await handleBaseInput(post, input);
 
@@ -71,36 +71,31 @@ export class PostRepository extends BaseRepository<Post> {
         post.published = input.published;
         post.featured = input.featured;
         post.authorId = input.authorId;
+        if (author) post.author = author;
         post.publishDate = input.publishDate;
 
-        await post.save();
+        if (action === 'create') await post.save();
+        await checkEntitySlug(post, Post);
         await handleCustomMetaInput(post, input);
     }
 
-    async createPost(createPost: TPostInput, id?: number): Promise<Post> {
+    async createPost(createPost: TPostInput, id?: number | null): Promise<Post> {
         logger.log('PostRepository::createPost');
-        let post = new Post();
+        const post = new Post();
         if (id) post.id = id;
 
-        await this.handleBasePostInput(post, createPost);
-        post = await this.save(post);
-        await checkEntitySlug(post, Post);
-
+        await this.handleBasePostInput(post, createPost, 'create');
+        await this.save(post);
         return post;
     }
 
     async updatePost(id: number, updatePost: TPostInput): Promise<Post> {
         logger.log('PostRepository::updatePost id: ' + id);
-
-        let post = await this.findOne({
-            where: { id }
-        });
+        const post = await this.getById(id);
         if (!post) throw new Error(`Post ${id} not found!`);
 
-        await this.handleBasePostInput(post, updatePost);
-        post = await this.save(post);
-        await checkEntitySlug(post, Post);
-
+        await this.handleBasePostInput(post, updatePost, 'update');
+        await this.save(post);
         return post;
     }
 

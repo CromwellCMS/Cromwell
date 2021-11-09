@@ -1,6 +1,6 @@
 import { TCreateUser, TDeleteManyInput, TPagedList, TPagedParams, TUpdateUser, TUser } from '@cromwell/core';
 import bcrypt from 'bcrypt';
-import { DeleteQueryBuilder, EntityRepository, SelectQueryBuilder } from 'typeorm';
+import { EntityRepository, SelectQueryBuilder } from 'typeorm';
 
 import { checkEntitySlug, getPaged, handleBaseInput, handleCustomMetaInput } from '../helpers/base-queries';
 import { getLogger } from '../helpers/logger';
@@ -45,7 +45,7 @@ export class UserRepository extends BaseRepository<User> {
         return this.getBySlug(slug);
     }
 
-    async handleUserInput(user: User, userInput: TUpdateUser) {
+    async handleUserInput(user: User, userInput: TUpdateUser, action: 'update' | 'create') {
         if (userInput.email && !validateEmail(userInput.email))
             throw new Error('Provided e-mail is not valid');
 
@@ -58,14 +58,15 @@ export class UserRepository extends BaseRepository<User> {
         user.address = userInput.address;
         user.role = userInput.role;
 
-        await user.save();
+        if (action === 'create') await user.save();
+        await checkEntitySlug(user, User);
         await handleCustomMetaInput(user, userInput);
     }
 
-    async createUser(createUser: TCreateUser, id?: number): Promise<User> {
+    async createUser(createUser: TCreateUser, id?: number | null): Promise<User> {
         logger.log('UserRepository::createUser');
         if (!createUser.password || !createUser.email) throw new Error('No credentials provided')
-        let user = new User();
+        const user = new User();
         if (id) {
             let oldUser;
             try {
@@ -78,14 +79,10 @@ export class UserRepository extends BaseRepository<User> {
         if (createUser.password) {
             user.password = await this.hashPassword(createUser.password);
         }
-
-        await this.handleUserInput(user, createUser);
-
         if (!user.role) user.role = 'customer';
 
-        user = await this.save(user);
-        await checkEntitySlug(user, User);
-
+        await this.handleUserInput(user, createUser, 'create');
+        await this.save(user);
         return user;
     }
 
@@ -95,17 +92,11 @@ export class UserRepository extends BaseRepository<User> {
 
     async updateUser(id: number, updateUser: TUpdateUser): Promise<User> {
         logger.log('UserRepository::updateUser id: ' + id);
-
-        let user = await this.findOne({
-            where: { id }
-        });
+        const user = await this.getById(id);
         if (!user) throw new Error(`User ${id} not found!`);
 
-        await this.handleUserInput(user, updateUser);
-
-        user = await this.save(user);
-        await checkEntitySlug(user, User);
-
+        await this.handleUserInput(user, updateUser, 'update');
+        await this.save(user);
         return user;
     }
 

@@ -464,7 +464,7 @@ export class ThemeService {
     public async getPluginsAtPage(pageRoute: string, pageConfig?: TPageConfig) {
         const out: Record<string, {
             pluginName: string;
-            version?: string;
+            version?: string | null;
             // { [pluginBlockId]: instanceSettings }
             pluginInstances?: Record<string, any>;
             globalSettings: any;

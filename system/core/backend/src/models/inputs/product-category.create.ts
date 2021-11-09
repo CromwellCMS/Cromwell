@@ -6,17 +6,17 @@ import { BasePageInput } from './base-page.input';
 @InputType({ description: "New Product Category data" })
 export class CreateProductCategory extends BasePageInput implements TProductCategoryInput {
     @Field(() => String)
-    name: string;
+    name?: string | null;
 
     @Field(() => String, { nullable: true })
-    mainImage?: string;
+    mainImage?: string | null;
 
     @Field(() => String, { nullable: true })
-    description?: string;
-    
+    description?: string | null;
+
     @Field(type => String, { nullable: true })
-    descriptionDelta?: string;
+    descriptionDelta?: string | null;
 
     @Field(() => Int, { nullable: true })
-    parentId?: number;
+    parentId?: number | null;
 }

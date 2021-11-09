@@ -37,40 +37,34 @@ export class CustomEntityRepository extends BaseRepository<CustomEntity> {
         return this.getBySlug(slug);
     }
 
-    private async handleBaseCustomEntityInput(customEntity: CustomEntity, input: TCustomEntityInput) {
+    private async handleBaseCustomEntityInput(customEntity: CustomEntity, input: TCustomEntityInput, action: 'update' | 'create') {
         await handleBaseInput(customEntity, input);
 
         customEntity.name = input.name;
         customEntity.entityType = input.entityType;
 
-        await customEntity.save();
+        if (action === 'create') await customEntity.save();
+        await checkEntitySlug(customEntity, CustomEntity);
         await handleCustomMetaInput(customEntity, input);
     }
 
-    async createCustomEntity(inputData: TCustomEntityInput, id?: number): Promise<CustomEntity> {
+    async createCustomEntity(inputData: TCustomEntityInput, id?: number | null): Promise<CustomEntity> {
         logger.log('CustomEntityRepository::createCustomEntity');
-        let customEntity = new CustomEntity();
+        const customEntity = new CustomEntity();
         if (id) customEntity.id = id;
 
-        await this.handleBaseCustomEntityInput(customEntity, inputData);
-        customEntity = await this.save(customEntity);
-        await checkEntitySlug(customEntity, CustomEntity);
-
+        await this.handleBaseCustomEntityInput(customEntity, inputData, 'create');
+        await this.save(customEntity);
         return customEntity;
     }
 
     async updateCustomEntity(id: number, inputData: TCustomEntityInput): Promise<CustomEntity> {
         logger.log('CustomEntityRepository::updateCustomEntity id: ' + id);
-
-        let customEntity = await this.findOne({
-            where: { id }
-        });
+        const customEntity = await this.getById(id);
         if (!customEntity) throw new Error(`CustomEntity ${id} not found!`);
 
-        await this.handleBaseCustomEntityInput(customEntity, inputData);
-        customEntity = await this.save(customEntity);
-        await checkEntitySlug(customEntity, CustomEntity);
-
+        await this.handleBaseCustomEntityInput(customEntity, inputData, 'update');
+        await this.save(customEntity);
         return customEntity;
     }
 
@@ -82,7 +76,7 @@ export class CustomEntityRepository extends BaseRepository<CustomEntity> {
             logger.error('CustomEntityRepository::deleteCustomEntity failed to find CustomEntity by id');
             return false;
         }
-        const res = await this.delete(id);
+        await this.delete(id);
         return true;
     }
 

@@ -37,7 +37,7 @@ export class TagRepository extends BaseRepository<Tag> {
         return this.getBySlug(slug);
     }
 
-    private async handleBaseTagInput(tag: Tag, input: TTagInput) {
+    private async handleBaseTagInput(tag: Tag, input: TTagInput, action: 'update' | 'create') {
         await handleBaseInput(tag, input);
 
         tag.name = input.name;
@@ -46,33 +46,28 @@ export class TagRepository extends BaseRepository<Tag> {
         tag.description = input.description;
         tag.descriptionDelta = input.descriptionDelta;
 
-        await tag.save();
+        if (action === 'create') await tag.save();
+        await checkEntitySlug(tag, Tag);
         await handleCustomMetaInput(tag, input);
     }
 
-    async createTag(inputData: TTagInput, id?: number): Promise<Tag> {
+    async createTag(inputData: TTagInput, id?: number | null): Promise<Tag> {
         logger.log('TagRepository::createTag');
-        let tag = new Tag();
+        const tag = new Tag();
         if (id) tag.id = id;
 
-        await this.handleBaseTagInput(tag, inputData);
-        tag = await this.save(tag);
-        await checkEntitySlug(tag, Tag);
+        await this.handleBaseTagInput(tag, inputData, 'create');
+        await this.save(tag);
         return tag;
     }
 
     async updateTag(id: number, inputData: TTagInput): Promise<Tag> {
         logger.log('TagRepository::updateTag id: ' + id);
-
-        let tag = await this.findOne({
-            where: { id }
-        });
+        const tag = await this.getById(id);
         if (!tag) throw new Error(`Tag ${id} not found!`);
 
-        await this.handleBaseTagInput(tag, inputData);
-        tag = await this.save(tag);
-        await checkEntitySlug(tag, Tag);
-
+        await this.handleBaseTagInput(tag, inputData, 'update');
+        await this.save(tag);
         return tag;
     }
 

@@ -49,8 +49,11 @@ export class OrderRepository extends BaseRepository<Order> {
         order.totalQnt = input.totalQnt;
         order.userId = input.userId;
         order.customerName = input.customerName;
-        order.customerPhone = input.customerPhone?.replace?.(/\W/g, '');
-        if (input.customerPhone?.startsWith('+')) order.customerPhone = '+' + order.customerPhone;
+        order.customerPhone = input.customerPhone;
+        if (order.customerPhone) {
+            if (typeof order.customerPhone === 'number') order.customerPhone = order.customerPhone + '';
+            order.customerPhone = order.customerPhone.replace(/\W/g, '');
+        }
         order.customerEmail = input.customerEmail;
         order.customerAddress = input.customerAddress;
         order.customerComment = input.customerComment ? sanitizeHtml(input.customerComment, {
@@ -64,7 +67,7 @@ export class OrderRepository extends BaseRepository<Order> {
         await handleCustomMetaInput(order as any, input);
     }
 
-    async createOrder(inputData: TOrderInput, id?: number): Promise<Order> {
+    async createOrder(inputData: TOrderInput, id?: number | null): Promise<Order> {
         logger.log('OrderRepository::createOrder');
         let order = new Order();
         if (id) order.id = id;

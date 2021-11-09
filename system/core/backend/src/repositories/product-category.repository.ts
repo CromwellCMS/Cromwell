@@ -88,7 +88,7 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
         return product;
     }
 
-    async handleProductCategoryInput(productCategory: ProductCategory, input: TProductCategoryInput) {
+    async handleProductCategoryInput(productCategory: ProductCategory, input: TProductCategoryInput, action: 'update' | 'create') {
         await handleBaseInput(productCategory, input);
 
         productCategory.name = input.name;
@@ -96,28 +96,28 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
         productCategory.description = input.description;
         productCategory.descriptionDelta = input.descriptionDelta;
 
-        const newParent: ProductCategory | undefined | null = input.parentId ? await this.getProductCategoryById(input.parentId) : undefined;
+        const newParent: ProductCategory | undefined | null | void | 0 = input.parentId &&
+            await this.getProductCategoryById(input.parentId).catch();
 
-        if (newParent?.id) {
+        if (newParent && newParent?.id) {
             productCategory.parent = newParent;
         }
 
         if (!newParent) {
             productCategory.parent = null;
         }
-        await productCategory.save();
+        if (action === 'create') await productCategory.save();
+        await checkEntitySlug(productCategory, ProductCategory);
         await handleCustomMetaInput(productCategory, input);
     }
 
-    async createProductCategory(createProductCategory: CreateProductCategory, id?: number): Promise<ProductCategory> {
+    async createProductCategory(createProductCategory: CreateProductCategory, id?: number | null): Promise<ProductCategory> {
         logger.log('ProductCategoryRepository::createProductCategory');
         const productCategory = new ProductCategory();
         if (id) productCategory.id = id;
 
-        await this.handleProductCategoryInput(productCategory, createProductCategory);
+        await this.handleProductCategoryInput(productCategory, createProductCategory, 'create');
         await this.save(productCategory);
-        await checkEntitySlug(productCategory, ProductCategory);
-
         return productCategory;
     }
 
@@ -126,10 +126,8 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
         const productCategory = await this.getProductCategoryById(id);
         if (!productCategory) throw new Error(`ProductCategory ${id} not found!`);
 
-        await this.handleProductCategoryInput(productCategory, updateProductCategory);
-
+        await this.handleProductCategoryInput(productCategory, updateProductCategory, 'create');
         await this.save(productCategory);
-        await checkEntitySlug(productCategory, ProductCategory);
         return productCategory;
     }
 
@@ -205,7 +203,7 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
 
         const [rootCategories, total] = await Promise.all([
             qb.getMany(),
-            qb.getCount(),
+            this.createQueryBuilder(this.metadata.tablePath).select().getCount(),
         ]);
 
         return {

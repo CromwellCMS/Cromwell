@@ -8,15 +8,15 @@ export type TBasePageEntity = {
     /**
      * Slug for page route
      */
-    slug?: string;
+    slug?: string | null;
     /**
      * Page meta title (SEO)
      */
-    pageTitle?: string;
+    pageTitle?: string | null;
     /**
      * Page meta description (SEO)
      */
-    pageDescription?: string;
+    pageDescription?: string | null;
     /**
      * Other meta (SEO) data
      */
@@ -24,23 +24,23 @@ export type TBasePageEntity = {
     /**
      * DB createDate
      */
-    createDate?: Date;
+    createDate?: Date | null;
     /**
      * DB updateDate
      */
-    updateDate?: Date;
+    updateDate?: Date | null;
     /**
      * Is displaying at frontend
      */
-    isEnabled?: boolean;
+    isEnabled?: boolean | null;
     /**
      * Entity meta data from "{Entity}Meta" table
      */
-    customMeta?: Record<string, string>;
+    customMeta?: Record<string, string | null> | null;
     /**
      * Qnt of page requests
      */
-    views?: number;
+    views?: number | null;
 }
 
 export type TBasePageMeta = {
@@ -50,9 +50,7 @@ export type TBasePageMeta = {
 
 export type TDBAuxiliaryColumns = 'id' | 'createDate' | 'updateDate';
 
-export type TBasePageEntityInput = Omit<TBasePageEntity, TDBAuxiliaryColumns> & {
-    customMeta?: Record<string, string>;
-};
+export type TBasePageEntityInput = Omit<TBasePageEntity, TDBAuxiliaryColumns>;
 
 export type TBaseFilter = {
     filters?: {
@@ -78,23 +76,23 @@ export type TProductCategoryCore = {
     /**
      * Name of the category (h1)
      */
-    name: string;
+    name?: string | null;
     /**
      * Href of main image
      */
-    mainImage?: string;
+    mainImage?: string | null;
     /**
      * Description (HTML allowed)
      */
-    description?: string;
+    description?: string | null;
     /**
      * Description in JSON format
      */
-    descriptionDelta?: string;
+    descriptionDelta?: string | null;
     /**
      * DB children
      */
-    children?: TProductCategory[];
+    children?: TProductCategory[] | null;
     /**
      * DB parent
      */
@@ -102,17 +100,17 @@ export type TProductCategoryCore = {
     /**
      * Products in category
      */
-    products?: TPagedList<TProduct>;
+    products?: TPagedList<TProduct> | null;
     /**
      * Qnt of page requests
      */
-    views?: number;
+    views?: number | null;
 }
 
 export type TProductCategory = TProductCategoryCore & TBasePageEntity;
 
 export type TProductCategoryInput = TBasePageEntityInput & Omit<TProductCategoryCore, 'children' | 'parent' | 'products'> & {
-    parentId?: number;
+    parentId?: number | null;
 };
 
 export type TProductCategoryFilter = TBaseFilter & {
@@ -127,67 +125,67 @@ export type TProduct = TBasePageEntity & {
     /**
      * Name of the product (h1)
      */
-    name?: string;
+    name?: string | null;
     /**
      * Main category of product
      */
-    mainCategoryId?: number;
+    mainCategoryId?: number | null;
     /**
      * Categories of the prooduct
      */
-    categories?: TProductCategory[];
+    categories?: TProductCategory[] | null;
     /**
      * Price. Will be discount price if oldPrice is specified
      */
-    price?: number;
+    price?: number | null;
     /**
      * Price before sale, optional
      */
-    oldPrice?: number;
+    oldPrice?: number | null;
     /**
      * SKU
      */
-    sku?: string;
+    sku?: string | null;
     /**
      * Href of main image
      */
-    mainImage?: string;
+    mainImage?: string | null;
     /**
      * Hrefs of iamges
      */
-    images?: string[];
+    images?: string[] | null;
     /**
      * Description (HTML allowed)
      */
-    description?: string;
+    description?: string | null;
     /**
      * Description in JSON format
      */
-    descriptionDelta?: string;
+    descriptionDelta?: string | null;
     /**
      * Rating data
      */
-    rating?: TProductRating;
+    rating?: TProductRating | null;
     /**
      * Customer reviews 
      */
-    reviews?: TProductReview[];
+    reviews?: TProductReview[] | null;
     /**
      * Custom attributes
      */
-    attributes?: TAttributeInstance[];
+    attributes?: TAttributeInstance[] | null;
     /**
      * Qnt of page requests
      */
-    views?: number;
+    views?: number | null;
     /**
      * Total amount of items in stock
      */
-    stockAmount?: number;
+    stockAmount?: number | null;
     /**
      * Manually set is the item availability in stock
      */
-    stockStatus?: TStockStatus;
+    stockStatus?: TStockStatus | null;
 }
 
 export type TStockStatus = 'In stock' | 'Out of stock' | 'On backorder';
@@ -196,16 +194,15 @@ export type TProductRating = {
     /**
      * Rating 1-5
      */
-    average?: number;
+    average?: number | null;
     /**
      * Number of customer reviews
      */
-    reviewsNumber?: number;
+    reviewsNumber?: number | null;
 }
 
 export type TProductInput = Omit<TProduct, TDBAuxiliaryColumns | 'categories' | 'rating' | 'reviews'> & {
-    categoryIds?: number[];
-    customMeta?: Record<string, string>;
+    categoryIds?: number[] | null;
 };
 
 export type TProductFilter = TBaseFilter & {
@@ -240,11 +237,11 @@ export type TPost = {
     /**
      * User-author
      */
-    author?: TUser;
+    author?: TUser | null;
     /**
      * Id of user-author
      */
-    authorId?: number;
+    authorId?: number | null;
     /**
      * Href of main image
      */
@@ -285,7 +282,7 @@ export type TPost = {
 } & TBasePageEntity;
 
 export type TPostInput = Omit<TPost, TDBAuxiliaryColumns | 'author' | 'tags'> & {
-    authorId: number;
+    authorId?: number | null;
     tagIds?: number[] | null;
 };
 
@@ -298,12 +295,12 @@ export type TPostFilter = TBaseFilter & {
 }
 
 export type TTag = TBasePageEntity & {
-    name: string;
+    name?: string | null;
     color?: string | null;
     image?: string | null;
     description?: string | null;
     descriptionDelta?: string | null;
-    views?: number;
+    views?: number | null;
 }
 
 export type TTagInput = Omit<TTag, TDBAuxiliaryColumns>;
@@ -316,19 +313,19 @@ export type TUser = TBasePageEntity & {
     /**
      * Name
      */
-    fullName: string;
+    fullName?: string | null;
     /**
      * E-mail
      */
-    email: string;
+    email?: string | null;
     /**
      * Avatar image
      */
-    avatar?: string;
-    bio?: string;
-    phone?: string;
-    address?: string;
-    role?: TUserRole;
+    avatar?: string | null;
+    bio?: string | null;
+    phone?: string | null;
+    address?: string | null;
+    role?: TUserRole | null;
 }
 export type TUserRole = 'administrator' | 'author' | 'customer' | 'guest';
 export type TAuthRole = TUserRole | 'self' | 'all';
@@ -352,12 +349,12 @@ export type TUserFilter = TBaseFilter & {
  * Attribute
  */
 export type TAttribute = TBasePageEntity & {
-    key: string;
-    title?: string;
-    values: TAttributeValue[];
-    type: 'radio' | 'checkbox';
-    icon?: string;
-    required?: boolean;
+    key?: string | null;
+    title?: string | null;
+    values?: TAttributeValue[] | null;
+    type?: 'radio' | 'checkbox' | null;
+    icon?: string | null;
+    required?: boolean | null;
 }
 
 export type TAttributeInput = Omit<TAttribute, TDBAuxiliaryColumns>;
@@ -396,14 +393,14 @@ export type TAttributeProductVariant = {
  * ProductReview
  */
 export type TProductReviewCore = {
-    productId: number;
-    title?: string;
-    description?: string;
-    rating?: number;
-    userName?: string;
-    userEmail?: string;
-    userId?: number;
-    approved?: boolean;
+    productId?: number | null;
+    title?: string | null;
+    description?: string | null;
+    rating?: number | null;
+    userName?: string | null;
+    userEmail?: string | null;
+    userId?: number | null;
+    approved?: boolean | null;
 }
 
 export type TProductReview = TProductReviewCore & TBasePageEntity;
@@ -422,27 +419,27 @@ export type TProductReviewFilter = TBaseFilter & {
  * Store order
  */
 export type TOrderCore = {
-    id?: number;
-    createDate?: Date;
-    updateDate?: Date;
-    status?: string;
-    cart?: string | TStoreListItem[];
-    orderTotalPrice?: number;
-    cartTotalPrice?: number;
-    cartOldTotalPrice?: number;
-    shippingPrice?: number;
-    totalQnt?: number;
-    userId?: number;
-    customerName?: string;
-    customerPhone?: string;
-    customerEmail?: string;
-    customerAddress?: string;
-    customerComment?: string;
-    shippingMethod?: string;
-    paymentMethod?: string;
-    fromUrl?: string;
-    currency?: string;
-    customMeta?: Record<string, string>;
+    id?: number | null;
+    createDate?: Date | null;
+    updateDate?: Date | null;
+    status?: string | null;
+    cart?: string | TStoreListItem[] | null;
+    orderTotalPrice?: number | null;
+    cartTotalPrice?: number | null;
+    cartOldTotalPrice?: number | null;
+    shippingPrice?: number | null;
+    totalQnt?: number | null;
+    userId?: number | null;
+    customerName?: string | null;
+    customerPhone?: string | null;
+    customerEmail?: string | null;
+    customerAddress?: string | null;
+    customerComment?: string | null;
+    shippingMethod?: string | null;
+    paymentMethod?: string | null;
+    fromUrl?: string | null;
+    currency?: string | null;
+    customMeta?: Record<string, string | null> | null;
 }
 
 export type TOrder = TOrderCore;
@@ -487,44 +484,31 @@ export type TPostComment = TPostCommentCore & TBasePageEntity;
 export type TPostCommentInput = TPostCommentCore & TBasePageEntityInput;
 
 
-/**
- * Theme entity
- */
-export type TThemeEntityCore = {
-    name: string;
-    version?: string;
-    isInstalled: boolean;
-    hasAdminBundle?: boolean;
-    title?: string;
-    settings?: string;
-    defaultSettings?: string;
-    moduleInfo?: string;
-    isUpdating?: boolean;
+export type TCmsModuleEntity = {
+    name?: string | null;
+    version?: string | null;
+    title?: string | null;
+    isInstalled?: boolean | null;
+    hasAdminBundle?: boolean | null;
+    settings?: string | null;
+    defaultSettings?: string | null;
+    moduleInfo?: string | null;
+    isUpdating?: boolean | null;
 }
 
-export type TThemeEntity = TThemeEntityCore & TBasePageEntity;
+export type TThemeEntity = TCmsModuleEntity & TBasePageEntity;
 
-export type TThemeEntityInput = TThemeEntityCore & TBasePageEntityInput;
+export type TThemeEntityInput = TCmsModuleEntity & TBasePageEntityInput;
 
 
 /**
  * Plugin entity
  */
-export type TPluginEntityCore = {
-    name: string;
-    version?: string;
-    title?: string;
-    isInstalled: boolean;
-    hasAdminBundle?: boolean;
-    settings?: string;
-    defaultSettings?: string;
-    moduleInfo?: string;
-    isUpdating?: boolean;
-}
 
-export type TPluginEntity = TPluginEntityCore & TBasePageEntity;
 
-export type TPluginEntityInput = TPluginEntityCore & TBasePageEntityInput;
+export type TPluginEntity = TCmsModuleEntity & TBasePageEntity;
+
+export type TPluginEntityInput = TCmsModuleEntity & TBasePageEntityInput;
 
 
 /**

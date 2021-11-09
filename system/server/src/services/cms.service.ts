@@ -282,7 +282,7 @@ export class CmsService {
                 const updDate = ent.updateDate ?? ent.createDate;
                 addPage(
                     resolvePageRoute(pageName, { slug: ent.slug ?? ent.id + '' }),
-                    updDate
+                    updDate ?? new Date(Date.now())
                 );
             });
 

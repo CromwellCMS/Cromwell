@@ -13,34 +13,34 @@ export class User extends BasePageEntity implements TUser {
     @Field(() => String, { nullable: true })
     @Column({ type: "varchar", length: 255, nullable: true })
     @Index({ fulltext: true })
-    fullName: string;
+    fullName?: string | null;
 
     @Field(() => String, { nullable: true })
     @Column({ type: "varchar", length: 255, nullable: true, unique: true })
     @Index('IDX_user.entity_email', { fulltext: true })
-    email: string;
+    email?: string | null;
 
     @Field(() => String, { nullable: true })
     @Column({ type: "varchar", nullable: true })
-    avatar?: string;
+    avatar?: string | null;
 
     @Field(() => String, { nullable: true })
     @Column({ type: "text", nullable: true })
-    bio?: string;
+    bio?: string | null;
 
     @Field(() => String, { nullable: true })
     @Column({ type: "varchar", length: 50, nullable: true })
     @Index()
-    role?: TUserRole;
+    role?: TUserRole | null;
 
     @Field(() => String, { nullable: true })
     @Column({ type: "varchar", nullable: true, length: 1000 })
-    address?: string;
+    address?: string | null;
 
     @Field(() => String, { nullable: true })
     @Index({ fulltext: true })
     @Column({ type: "varchar", length: 255, nullable: true })
-    phone?: string;
+    phone?: string | null;
 
     @Column({ type: "varchar", length: 255, nullable: false })
     password: string;
@@ -59,10 +59,10 @@ export class User extends BasePageEntity implements TUser {
     @OneToMany(() => Post, post => post.author, {
         cascade: ['update']
     })
-    posts: Post[];
+    posts?: Post[] | null;
 
     @OneToMany(() => UserMeta, meta => meta.entity, {
         cascade: true,
     })
-    metaRecords?: UserMeta[];
+    metaRecords?: UserMeta[] | null;
 }

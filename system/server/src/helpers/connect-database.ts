@@ -148,7 +148,7 @@ const checkData = async (init: boolean) => {
     const pluginPackages = await cmsService.readPlugins();
     const promises1 = dbPlugins.map(async ent => {
         const pckg = pluginPackages.find(p => p.name === ent.name);
-        if (pckg?.version && pckg.version !== ent.version) {
+        if (pckg?.version && pckg.version !== ent.version && ent.name) {
             try {
                 await pluginService.activatePlugin(ent.name);
             } catch (error) {
@@ -160,7 +160,7 @@ const checkData = async (init: boolean) => {
     const themePackages = await cmsService.readThemes();
     const promises2 = dbThemes.map(async ent => {
         const pckg = themePackages.find(p => p.name === ent.name);
-        if (pckg?.version && pckg.version !== ent.version) {
+        if (pckg?.version && pckg.version !== ent.version && ent.name) {
             try {
                 await themeService.activateTheme(ent.name);
             } catch (error) {

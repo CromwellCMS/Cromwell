@@ -23,15 +23,15 @@ export class BasePageEntity extends BaseEntity implements TBasePageEntity {
 
     @Field(() => String, { nullable: true })
     @Column({ type: "varchar", length: 255, unique: true, nullable: true })
-    slug?: string;
+    slug?: string | null;
 
     @Field(() => String, { nullable: true })
     @Column({ type: "varchar", length: 2000, nullable: true })
-    pageTitle?: string;
+    pageTitle?: string | null;
 
     @Field(() => String, { nullable: true })
     @Column({ type: "varchar", length: 4000, nullable: true })
-    pageDescription?: string;
+    pageDescription?: string | null;
 
     @Column({ type: "text", nullable: true })
     _meta?: string | null;
@@ -48,14 +48,14 @@ export class BasePageEntity extends BaseEntity implements TBasePageEntity {
     @Field(() => CustomDateScalar, { nullable: true })
     @CreateDateColumn()
     @Index()
-    createDate: Date;
+    createDate?: Date | null;
 
     @Field(() => CustomDateScalar, { nullable: true })
     @UpdateDateColumn()
     @Index()
-    updateDate: Date;
+    updateDate?: Date | null;
 
     @Field(() => Boolean, { nullable: true })
     @Column({ type: "boolean", default: true, nullable: true })
-    isEnabled?: boolean;
+    isEnabled?: boolean | null;
 }

@@ -15,84 +15,84 @@ export class Product extends BasePageEntity implements TProduct {
     @Field(type => String, { nullable: true })
     @Column({ type: "varchar", length: 255, nullable: true })
     @Index({ fulltext: true })
-    name?: string;
+    name?: string | null;
 
     @ManyToMany(type => ProductCategory, category => category.products)
     @JoinTable()
-    categories?: TProductCategory[];
+    categories?: TProductCategory[] | null;
 
     @Field(type => Int, { nullable: true })
     @Column({ type: "int", nullable: true })
     @Index()
-    mainCategoryId?: number;
+    mainCategoryId?: number | null;
 
     @Field(type => Number, { nullable: true })
     @Column({ type: "float", nullable: true })
     @Index()
-    price?: number;
+    price?: number | null;
 
     @Field(type => Number, { nullable: true })
     @Column({ type: "float", nullable: true })
     @Index()
-    oldPrice?: number;
+    oldPrice?: number | null;
 
     @Field(type => String, { nullable: true })
     @Column({ type: "varchar", length: 255, nullable: true })
     @Index({ fulltext: true })
-    sku?: string;
+    sku?: string | null;
 
     @Field(type => String, { nullable: true })
     @Column({ type: "varchar", length: 400, nullable: true })
-    mainImage?: string;
+    mainImage?: string | null;
 
     @Field(type => [String], { nullable: true })
     @Column({ type: "simple-array", nullable: true })
-    images?: string[];
+    images?: string[] | null;
 
     @Field(type => Int, { nullable: true })
     @Column({ type: "int", nullable: true })
     @Index()
-    stockAmount?: number;
+    stockAmount?: number | null;
 
     @Field(type => String, { nullable: true })
     @Column({ type: "varchar", length: 255, nullable: true })
     @Index()
-    stockStatus?: TStockStatus;
+    stockStatus?: TStockStatus | null;
 
     @Field(type => String, { nullable: true })
     @Column({ type: "text", nullable: true })
-    description?: string;
+    description?: string | null;
 
     @Field(type => String, { nullable: true })
     @Column({ type: "text", nullable: true })
-    descriptionDelta?: string;
+    descriptionDelta?: string | null;
 
     @OneToMany(type => ProductReview, review => review.product, {
         cascade: true,
     })
-    reviews?: TProductReview[];
+    reviews?: TProductReview[] | null;
 
     @OneToMany(() => AttributeToProduct, attribute => attribute.product, {
         cascade: true,
     })
-    attributeValues?: AttributeToProduct[];
+    attributeValues?: AttributeToProduct[] | null;
 
-    views?: number;
+    views?: number | null;
 
     /** 
      * ! Not real columns, workaround to make SELECT count reviews:
      * https://github.com/CromwellCMS/Cromwell/blob/9eb541b1be060f792abbf4f7133071099a8633f2/system/core/backend/src/repositories/ProductRepository.ts#L39-L45
      */
     @Column({ type: "decimal", nullable: true, select: false, insert: false, readonly: true })
-    averageRating?: number;
+    averageRating?: number | null;
 
     @Column({ type: "int", nullable: true, select: false, insert: false, readonly: true })
-    reviewsCount?: number;
+    reviewsCount?: number | null;
 
     @OneToMany(() => ProductMeta, meta => meta.entity, {
         cascade: true,
     })
-    metaRecords?: ProductMeta[];
+    metaRecords?: ProductMeta[] | null;
 }
 
 @ObjectType()
