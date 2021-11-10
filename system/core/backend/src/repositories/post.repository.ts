@@ -39,7 +39,7 @@ export class PostRepository extends BaseRepository<Post> {
 
     private async handleBasePostInput(post: Post, input: TPostInput, action: 'update' | 'create') {
         const author = input.authorId && await getCustomRepository(UserRepository)
-            .getUserById(input.authorId).catch();
+            .getUserById(input.authorId).catch(() => null);
 
         await handleBaseInput(post, input);
 

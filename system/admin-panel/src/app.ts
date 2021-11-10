@@ -67,7 +67,7 @@ import { store } from './redux/store';
 
     const onUnauthorizedCbId = 'admin-logout';
     const onUnauthorized = async () => {
-        let userInfo;
+        let userInfo: TUser;
         restClient?.removeOnUnauthorized(onUnauthorizedCbId);
         try {
             userInfo = await restClient?.getUserInfo({ disableLog: true });
@@ -75,7 +75,7 @@ import { store } from './redux/store';
             console.error(e);
         }
         restClient?.onUnauthorized(onUnauthorized, onUnauthorizedCbId);
-        if (!userInfo?.id) {
+        if (!userInfo?.id || !userInfo.role) {
             if (!window.location.pathname.includes(loginPageInfo.route)) {
                 window.history.pushState({}, '', '/admin' + loginPageInfo.route);
                 window.location.reload();
@@ -112,7 +112,7 @@ import { store } from './redux/store';
         }
 
         // Redirect to /login page if not authorized
-        if (!userInfo) {
+        if (!userInfo?.id || !userInfo.role) {
             if (!window.location.pathname.includes(loginPageInfo.route)) {
                 window.history.pushState({}, '', '/admin' + loginPageInfo.route);
                 window.location.reload();

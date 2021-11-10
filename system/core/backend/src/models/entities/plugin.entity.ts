@@ -7,8 +7,8 @@ import { BasePageEntity } from './base-page.entity';
 @ObjectType('Plugin')
 export class PluginEntity extends BasePageEntity implements TPluginEntity {
 
-    @Field()
-    @Column()
+    @Field(type => String)
+    @Column({ type: "varchar", length: 255 })
     name?: string | null;
 
     @Field(type => String, { nullable: true })
@@ -19,8 +19,8 @@ export class PluginEntity extends BasePageEntity implements TPluginEntity {
     @Column({ type: "varchar", length: 255, nullable: true })
     title?: string | null;
 
-    @Field()
-    @Column()
+    @Field(type => Boolean, { nullable: true })
+    @Column({ type: "boolean" })
     isInstalled?: boolean | null;
 
     @Field(type => Boolean, { nullable: true })

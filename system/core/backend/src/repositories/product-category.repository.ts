@@ -97,7 +97,8 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
         productCategory.descriptionDelta = input.descriptionDelta;
 
         const newParent: ProductCategory | undefined | null | void | 0 = input.parentId &&
-            await this.getProductCategoryById(input.parentId).catch();
+            await this.getProductCategoryById(input.parentId)
+                .catch(() => null);
 
         if (newParent && newParent?.id) {
             productCategory.parent = newParent;

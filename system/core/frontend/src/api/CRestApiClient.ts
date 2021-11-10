@@ -23,6 +23,7 @@ import {
     TThemeConfig,
     TUser,
 } from '@cromwell/core';
+import queryString from 'query-string';
 
 import { fetch } from '../helpers/isomorphicFetch';
 
@@ -570,12 +571,13 @@ export class CRestApiClient {
      * Import database from Excel (.xlsx) file/files
      * @auth admin
      */
-    public importDB = async (files: File[], options?: TRequestOptions): Promise<boolean | null | undefined> => {
+    public importDB = async (files: File[], removeSurplus?: boolean, options?: TRequestOptions): Promise<boolean | null | undefined> => {
         const formData = new FormData();
         for (const file of files) {
             formData.append(file.name, file);
         }
-        const url = `${this.getBaseUrl()}/v1/cms/import-db`;
+
+        const url = `${this.getBaseUrl()}/v1/cms/import-db?${queryString.stringify({ removeSurplus })}`;
         const response = await fetch(url, {
             method: 'POST',
             credentials: 'include',

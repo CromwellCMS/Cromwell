@@ -212,6 +212,7 @@ export class AuthController {
             throw new UnauthorizedException('user.id is not set for the request');
 
         const user = await this.authService.getUserById(request.user?.id);
+        
         if (user) {
             return new UserDto().parseUser(user);
         }

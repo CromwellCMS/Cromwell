@@ -2,6 +2,7 @@ import {
     EDBEntity,
     TAttributeInput,
     TBasePageEntity,
+    TCustomEntityInput,
     TDBEntity,
     TOrderInput,
     TPluginEntity,
@@ -19,6 +20,8 @@ import {
     AttributeRepository,
     BasePageEntity,
     CmsEntity,
+    CustomEntity,
+    CustomEntityRepository,
     entityMetaRepository,
     GenericPlugin,
     GenericTheme,
@@ -49,8 +52,27 @@ import { getCustomRepository } from 'typeorm';
 
 import { CmsService } from './cms.service';
 
+enum ESheetNames {
+    Attribute = 'Attributes',
+    CMS = 'CMS settings',
+    CustomEntity = 'Custom entities',
+    Order = 'Orders',
+    Plugin = 'Plugins',
+    Post = 'Posts',
+    PostComment = 'Post comments',
+    Product = 'Products',
+    ProductCategory = 'Product categories',
+    ProductReview = 'Product reviews',
+    Tag = 'Post tags',
+    Theme = 'Themes',
+    User = 'Users',
+}
 type TBaseEntityRecord = Omit<TBasePageEntity, 'id'> & { id?: number | null };
 type TEntityRecord<TEntity> = Record<keyof (TEntity & { id }), string | null | undefined>;
+type TImportOptions = {
+    workbook: any;
+    removeSurplus?: boolean | null;
+}
 
 @Injectable()
 @Service()
@@ -109,6 +131,9 @@ export class MigrationService {
         if (entityTypes.includes('CMS') || exportAll) {
             await this.exportCmsSettings(workbook);
         }
+        if (entityTypes.includes('CustomEntity') || exportAll) {
+            await this.exportCustomEntities(workbook);
+        }
 
         try {
             workbook.deleteSheet("Sheet1");
@@ -117,10 +142,11 @@ export class MigrationService {
         return await workbook.outputAsync();
     }
 
-    public async importDB(req: any) {
+    public async importDB(req: any, removeSurplus?: string | null | boolean) {
         if (!req.isMultipart()) {
             return
         }
+        removeSurplus = this.parseBoolean(removeSurplus);
         const files: any[] = [];
 
         const parts = req.files();
@@ -133,35 +159,48 @@ export class MigrationService {
             const uint8Array = new Uint8Array(file);
             const workbook = await this.xlsxPopulate.fromDataAsync(uint8Array);
 
-            await this.importUsers(workbook);
-            await this.importTags(workbook);
-            await this.importPosts(workbook);
+            await this.importUsers({ workbook, removeSurplus });
+            await this.importTags({ workbook, removeSurplus });
+            await this.importPosts({ workbook, removeSurplus });
 
-            await this.importCategories(workbook);
-            await this.importAttributes(workbook);
-            await this.importProducts(workbook);
-            await this.importReviews(workbook);
+            await this.importCategories({ workbook, removeSurplus });
+            await this.importAttributes({ workbook, removeSurplus });
+            await this.importProducts({ workbook, removeSurplus });
+            await this.importReviews({ workbook, removeSurplus });
 
-            await this.importOrders(workbook);
-            await this.importPlugins(workbook);
-            await this.importThemes(workbook);
-            await this.importCmsSettings(workbook);
+            await this.importOrders({ workbook, removeSurplus });
+            await this.importPlugins({ workbook, removeSurplus });
+            await this.importThemes({ workbook, removeSurplus });
+            await this.importCmsSettings({ workbook, removeSurplus });
+            await this.importCustomEntities({ workbook, removeSurplus });
         }
     }
 
     private stringifyValue = (value: any) => {
         if (value === undefined || value === null || value === '' ||
-            typeof value === 'undefined' || isNaN(value)) return '';
+            typeof value === 'undefined') return '';
         if (typeof value === 'object') {
-            return JSON.stringify(value);
+            if (value instanceof Date) {
+                if (isNaN(value.getTime())) return null;
+                try {
+                    return value.toISOString();
+                } catch (error) {
+                    getLogger().error(error);
+                    return null;
+                }
+            }
+
+            try {
+                return JSON.stringify(value);
+            } catch (error) {
+                getLogger().error(error);
+            }
         }
         return String(value);
     }
 
-    private fillSheet(workbook: any, sheetName: string, data: Record<string, string | null | undefined | number>[]) {
+    private fillSheet(workbook: any, sheetName: ESheetNames, data: Record<string, string | null | undefined | number>[]) {
         if (!data?.[0] || !workbook || !sheetName) return;
-
-
 
         const header: string[] = Object.keys(data[0]);
         if (!header.length) return;
@@ -223,7 +262,7 @@ export class MigrationService {
             views: undefined,
         })));
 
-        this.fillSheet(workbook, 'Posts', postSheet);
+        this.fillSheet(workbook, ESheetNames.Post, postSheet);
     }
 
     // TAGS
@@ -249,7 +288,7 @@ export class MigrationService {
             views: undefined,
         })));
 
-        this.fillSheet(workbook, 'Tags', tagsSheet);
+        this.fillSheet(workbook, ESheetNames.Tag, tagsSheet);
     }
 
     // COMMENTS
@@ -274,7 +313,7 @@ export class MigrationService {
             approved: ent.approved,
         }));
 
-        this.fillSheet(workbook, 'Comments', commentsSheet);
+        this.fillSheet(workbook, ESheetNames.PostComment, commentsSheet);
     }
 
     // PRODUCTS
@@ -310,7 +349,7 @@ export class MigrationService {
             views: undefined,
         })));
 
-        this.fillSheet(workbook, 'Products', productsSheet);
+        this.fillSheet(workbook, ESheetNames.Product, productsSheet);
     }
 
     // CATEGORIES
@@ -337,7 +376,7 @@ export class MigrationService {
             views: undefined,
         })));
 
-        this.fillSheet(workbook, 'Categories', categoriesSheet);
+        this.fillSheet(workbook, ESheetNames.ProductCategory, categoriesSheet);
     }
 
     // ATTRIBUTES
@@ -366,7 +405,7 @@ export class MigrationService {
             views: undefined,
         })));
 
-        this.fillSheet(workbook, 'Attributes', attributesSheet);
+        this.fillSheet(workbook, ESheetNames.Attribute, attributesSheet);
     }
 
     // REVIEWS
@@ -395,7 +434,7 @@ export class MigrationService {
             views: undefined,
         })));
 
-        this.fillSheet(workbook, 'Reviews', reviewsSheet);
+        this.fillSheet(workbook, ESheetNames.ProductReview, reviewsSheet);
     }
 
     // ORDERS
@@ -428,7 +467,7 @@ export class MigrationService {
                 views: undefined,
             })));
 
-        this.fillSheet(workbook, 'Orders', ordersSheet);
+        this.fillSheet(workbook, ESheetNames.Order, ordersSheet);
     }
 
     // USERS
@@ -456,7 +495,7 @@ export class MigrationService {
             views: undefined,
         })));
 
-        this.fillSheet(workbook, 'Users', usersSheet);
+        this.fillSheet(workbook, ESheetNames.User, usersSheet);
     }
 
     // PLUGINS
@@ -484,7 +523,7 @@ export class MigrationService {
             views: undefined,
         }));
 
-        this.fillSheet(workbook, 'Plugins', pluginsSheet);
+        this.fillSheet(workbook, ESheetNames.Plugin, pluginsSheet);
     }
 
     // THEMES
@@ -512,22 +551,47 @@ export class MigrationService {
             views: undefined,
         }));
 
-        this.fillSheet(workbook, 'Themes', themesSheet);
+        this.fillSheet(workbook, ESheetNames.Theme, themesSheet);
+    }
+
+    // CUSTOM ENTITIES
+    private async exportCustomEntities(workbook: any) {
+        const customEntities = await getCustomRepository(CustomEntityRepository).find();
+        const metaKeys = await entityMetaRepository.getAllEntityMetaKeys(EDBEntity.CustomEntity) ?? [];
+
+        const customEntitiesSheet: Record<keyof TCustomEntityInput, any>[] =
+            await Promise.all(customEntities.map(async ent => ({
+                id: ent.id,
+                slug: ent.slug,
+                pageTitle: ent.pageTitle,
+                pageDescription: ent.pageDescription,
+                meta: ent.meta,
+                createDate: ent.createDate,
+                updateDate: ent.updateDate,
+                isEnabled: ent.isEnabled,
+                name: ent.name,
+                entityType: ent.entityType,
+                customMeta: JSON.stringify(await entityMetaRepository.getEntityMetaByKeys(EDBEntity.CustomEntity, ent.id, metaKeys)),
+                views: undefined,
+            })));
+
+        this.fillSheet(workbook, ESheetNames.CustomEntity, customEntitiesSheet);
     }
 
     // CMS
     private async exportCmsSettings(workbook: any) {
-        const cms = await CmsEntity.find();
-        const cmsSheet: Record<string, string | number>[] = cms.map(ent => ({
-            id: ent.id,
-            createDate: JSON.stringify(ent.createDate),
-            updateDate: JSON.stringify(ent.updateDate),
-            publicSettings: JSON.stringify(ent.publicSettings),
-            adminSettings: JSON.stringify(ent.adminSettings),
-            internalSettings: JSON.stringify(ent.internalSettings),
-        }));
+        const ent = await getCmsEntity();
 
-        this.fillSheet(workbook, 'CMS settings', cmsSheet);
+        const cmsSheet: Record<string, string | number> = {
+            id: ent.id,
+            createDate: this.stringifyValue(ent.createDate) ?? '',
+            updateDate: this.stringifyValue(ent.updateDate) ?? '',
+            publicSettings: this.stringifyValue(ent.publicSettings) ?? '',
+            adminSettings: this.stringifyValue(ent.adminSettings) ?? '',
+            internalSettings: this.stringifyValue(ent.internalSettings) ?? '',
+        }
+
+        this.fillSheet(workbook, ESheetNames.CMS, [cmsSheet]);
     }
 
     private streamToString(stream) {
@@ -539,7 +603,7 @@ export class MigrationService {
         })
     }
 
-    private readSheet<TEntity>(workbook: any, sheetName: string): (TEntityRecord<TEntity>)[] | undefined {
+    private readSheet<TEntity>(workbook: any, sheetName: ESheetNames): (TEntityRecord<TEntity>)[] | undefined {
         const sheet = workbook.sheet(sheetName);
         if (!sheet) return;
 
@@ -561,44 +625,54 @@ export class MigrationService {
         return entities;
     }
 
-    private async importBase<TEntity extends TBaseEntityRecord>(
-        workbook: any,
-        sheetName: string,
-        EntityClass: typeof BasePageEntity,
-        transformInput: (input: TEntityRecord<TEntity>) => Required<TEntity>,
-        update: (input: TEntity & TBaseEntityRecord) => Promise<any>,
-        create: (input: TEntity & TBaseEntityRecord) => Promise<any>,
-    ) {
+    private async importBase<TEntity extends TBaseEntityRecord>({ workbook, sheetName,
+        EntityClass, transformInput, update, create, sequentially, modifyInputs, removeSurplus
+    }: {
+        sheetName: ESheetNames;
+        EntityClass: typeof BasePageEntity;
+        transformInput: (input: TEntityRecord<TEntity>) => Required<TEntity> | undefined | null | boolean;
+        update: (input: TEntity & TBaseEntityRecord) => Promise<any>;
+        create: (input: TEntity & TBaseEntityRecord) => Promise<any>;
+        sequentially?: boolean;
+        modifyInputs?: (inputs: TEntity[] & TBaseEntityRecord) => (TEntity & TBaseEntityRecord)[];
+    } & TImportOptions) {
         const sheet = this.readSheet<TEntity>(workbook, sheetName);
         if (!sheet) return;
-        const inputs = sheet.map(input => {
+
+        let inputs = sheet.map(input => {
             try {
-                return transformInput(input)
+                return transformInput(input);
             } catch (error) {
                 getLogger().error(error);
             }
             return null;
         }).filter(Boolean) as TEntity[];
-        if (!inputs) return;
+        if (!inputs?.length) return;
 
-        let entities: { id: number }[] = await EntityClass.find({ select: ['id'] });
+        if (modifyInputs) {
+            inputs = modifyInputs(inputs);
+        }
 
-        // Remove from DB that aren't in the sheet
-        entities = (await Promise.all(entities.map(async entity => {
-            if (!inputs.find(input => input.id + '' === entity.id + '')) {
-                try {
-                    await EntityClass.delete(entity.id);
-                } catch (error) {
-                    getLogger().error(error);
+        let dbEntityIds: { id: number }[] = await EntityClass.find({ select: ['id'] });
+
+        if (removeSurplus) {
+            // Remove from DB that aren't in the sheet
+            dbEntityIds = (await Promise.all(dbEntityIds.map(async entity => {
+                if (!inputs.find(input => input.id + '' === entity.id + '')) {
+                    try {
+                        await EntityClass.delete(entity.id);
+                    } catch (error) {
+                        getLogger().error(error);
+                    }
+                    return null;
                 }
-                return null;
-            }
-            return entity;
-        }))).filter(Boolean) as { id: number }[];
+                return entity;
+            }))).filter(Boolean) as { id: number }[];
+        }
 
-        await Promise.all(inputs.map(async input => {
-            const entity = entities.find(ent => ent.id + '' === input.id + '');
-            if (input.id && entity) {
+        const importEntity = async (input: TEntity) => {
+            const dbEntity = input.id && dbEntityIds.find(ent => ent.id + '' === input.id + '');
+            if (dbEntity && dbEntity.id) {
                 // Update  
                 try {
                     await update(input);
@@ -613,7 +687,16 @@ export class MigrationService {
                     getLogger().error(error);
                 }
             }
-        }));
+        }
+
+        if (sequentially) {
+            for (const input of inputs) {
+                await importEntity(input);
+            }
+        } else {
+            await Promise.all(inputs.map(importEntity));
+        }
+
     }
 
     private parseJson(json: any) {
@@ -640,14 +723,16 @@ export class MigrationService {
     private parseDate = (input: string | number | null | undefined): Date | null => {
         if (!input) return null;
         try {
-            return new Date(input);
+            const date = new Date(input);
+            if (isNaN(date.getTime())) return null;
+            return date;
         } catch (error) {
             getLogger().error(error);
         }
         return null;
     }
 
-    private parseBoolean(input: string | null | undefined): boolean | null {
+    private parseBoolean(input: string | null | undefined | boolean): boolean | null {
         if (typeof input === 'boolean') return input;
         if (!input) return null;
         if (input === 'true') return true;
@@ -679,11 +764,12 @@ export class MigrationService {
         }
     }
 
-    private async importTags(workbook: any) {
-        await this.importBase<TTagInput>(workbook,
-            'Tags',
-            Tag,
-            (input) => ({
+    private async importTags(options: TImportOptions) {
+        await this.importBase<TTagInput>({
+            ...options,
+            sheetName: ESheetNames.Tag,
+            EntityClass: Tag,
+            transformInput: (input) => ({
                 ...this.parseBaseInput(input),
                 name: input.name || null,
                 color: input.color || null,
@@ -692,16 +778,17 @@ export class MigrationService {
                 descriptionDelta: input.descriptionDelta || null,
                 views: null,
             }),
-            async (input) => input.id && getCustomRepository(TagRepository).updateTag(input.id, input),
-            (input) => getCustomRepository(TagRepository).createTag(input, input.id),
-        )
+            update: async (input) => input.id && getCustomRepository(TagRepository).updateTag(input.id, input),
+            create: (input) => getCustomRepository(TagRepository).createTag(input, input.id),
+        })
     }
 
-    private async importPosts(workbook: any) {
-        await this.importBase<TPostInput>(workbook,
-            'Posts',
-            Post,
-            (input) => ({
+    private async importPosts(options: TImportOptions) {
+        await this.importBase<TPostInput>({
+            ...options,
+            sheetName: ESheetNames.Post,
+            EntityClass: Post,
+            transformInput: (input) => ({
                 ...this.parseBaseInput(input),
                 title: input.title || null,
                 authorId: this.parseNumber(input.authorId),
@@ -715,16 +802,17 @@ export class MigrationService {
                 featured: this.parseBoolean(input.featured),
                 tagIds: this.parseIds(input.tagIds),
             }),
-            async (input) => input.id && getCustomRepository(PostRepository).updatePost(input.id, input),
-            (input) => getCustomRepository(PostRepository).createPost(input, input.id),
-        )
+            update: async (input) => input.id && getCustomRepository(PostRepository).updatePost(input.id, input),
+            create: (input) => getCustomRepository(PostRepository).createPost(input, input.id),
+        })
     }
 
-    private async importCategories(workbook: any) {
-        await this.importBase<TProductCategoryInput>(workbook,
-            'Categories',
-            ProductCategory,
-            (input) => ({
+    private async importCategories(options: TImportOptions) {
+        await this.importBase<TProductCategoryInput>({
+            ...options,
+            sheetName: ESheetNames.ProductCategory,
+            EntityClass: ProductCategory,
+            transformInput: (input) => ({
                 ...this.parseBaseInput(input),
                 parentId: this.parseNumber(input.parentId),
                 name: input.name || null,
@@ -733,16 +821,60 @@ export class MigrationService {
                 descriptionDelta: input.descriptionDelta || null,
                 views: null,
             }),
-            async (input) => input.id && getCustomRepository(ProductCategoryRepository).updateProductCategory(input.id, input),
-            (input) => getCustomRepository(ProductCategoryRepository).createProductCategory(input, input.id),
-        )
+            update: async (input) => input.id && getCustomRepository(ProductCategoryRepository).updateProductCategory(input.id, input),
+            create: (input) => getCustomRepository(ProductCategoryRepository).createProductCategory(input, input.id),
+            sequentially: true,
+            modifyInputs: (inputs: (TProductCategoryInput & { id?: number | null })[]) => {
+                // Sort inputs the way a parent always go before a child
+                const modified: TProductCategoryInput[] = [];
+
+                const collectParentsChain = (input: TProductCategoryInput, parents: TProductCategoryInput[]): TProductCategoryInput[] => {
+                    if (!input?.parentId || input.parentId + '' == '') {
+                        input.parentId = null;
+                        return parents;
+                    }
+                    const parent = inputs.find(elem => elem.id === input.parentId);
+                    if (!parent) {
+                        input.parentId = null;
+                    }
+                    if (parent) {
+                        collectParentsChain(parent, parents);
+                        parents.push(parent);
+                    }
+                    return parents;
+                }
+
+                for (const input of inputs) {
+                    if (!input.parentId || input.parentId + '' == '') {
+                        modified.push(input);
+                        continue;
+                    }
+                    const parents = collectParentsChain(input, []);
+
+                    if (!parents?.length) {
+                        modified.push(input);
+                        continue;
+                    }
+
+                    for (const parent of parents) {
+                        if (!modified.includes(parent)) {
+                            modified.push(parent);
+                        }
+                    }
+                    modified.push(input);
+                }
+
+                return modified;
+            }
+        });
     }
 
-    private async importAttributes(workbook: any) {
-        await this.importBase<TAttributeInput>(workbook,
-            'Attributes',
-            Attribute,
-            (input) => ({
+    private async importAttributes(options: TImportOptions) {
+        await this.importBase<TAttributeInput>({
+            ...options,
+            sheetName: ESheetNames.Attribute,
+            EntityClass: Attribute,
+            transformInput: (input) => ({
                 ...this.parseBaseInput(input),
                 key: input.key || null,
                 title: input.title || null,
@@ -751,16 +883,17 @@ export class MigrationService {
                 required: this.parseBoolean(input.required),
                 values: this.parseJson(input.values),
             }),
-            async (input) => input.id && getCustomRepository(AttributeRepository).updateAttribute(input.id, input),
-            (input) => getCustomRepository(AttributeRepository).createAttribute(input, input.id),
-        )
+            update: async (input) => input.id && getCustomRepository(AttributeRepository).updateAttribute(input.id, input),
+            create: (input) => getCustomRepository(AttributeRepository).createAttribute(input, input.id),
+        })
     }
 
-    private async importProducts(workbook: any) {
-        await this.importBase<TProductInput>(workbook,
-            'Products',
-            Product,
-            (input) => ({
+    private async importProducts(options: TImportOptions) {
+        await this.importBase<TProductInput>({
+            ...options,
+            sheetName: ESheetNames.Product,
+            EntityClass: Product,
+            transformInput: (input) => ({
                 ...this.parseBaseInput(input),
                 categoryIds: this.parseIds(input.categoryIds),
                 attributes: this.parseJson(input.attributes),
@@ -778,16 +911,17 @@ export class MigrationService {
                 views: null,
 
             }),
-            async (input) => input.id && getCustomRepository(ProductRepository).updateProduct(input.id, input),
-            (input) => getCustomRepository(ProductRepository).createProduct(input, input.id),
-        )
+            update: async (input) => input.id && getCustomRepository(ProductRepository).updateProduct(input.id, input),
+            create: (input) => getCustomRepository(ProductRepository).createProduct(input, input.id),
+        })
     }
 
-    private async importReviews(workbook: any) {
-        await this.importBase<TProductReviewInput>(workbook,
-            'Reviews',
-            ProductReview,
-            (input) => ({
+    private async importReviews(options: TImportOptions) {
+        await this.importBase<TProductReviewInput>({
+            ...options,
+            sheetName: ESheetNames.ProductReview,
+            EntityClass: ProductReview,
+            transformInput: (input) => ({
                 ...this.parseBaseInput(input),
                 productId: this.parseNumber(input.productId),
                 title: input.title || null,
@@ -798,16 +932,17 @@ export class MigrationService {
                 userId: this.parseNumber(input.userId),
                 approved: this.parseBoolean(input.userId),
             }),
-            async (input) => input.id && getCustomRepository(ProductReviewRepository).updateProductReview(input.id, input),
-            (input) => getCustomRepository(ProductReviewRepository).createProductReview(input, input.id),
-        )
+            update: async (input) => input.id && getCustomRepository(ProductReviewRepository).updateProductReview(input.id, input),
+            create: (input) => getCustomRepository(ProductReviewRepository).createProductReview(input, input.id),
+        })
     }
 
-    private async importOrders(workbook: any) {
-        await this.importBase<TOrderInput>(workbook,
-            'Orders',
-            Order as any,
-            (input) => ({
+    private async importOrders(options: TImportOptions) {
+        await this.importBase<TOrderInput>({
+            ...options,
+            sheetName: ESheetNames.Order,
+            EntityClass: Order as any,
+            transformInput: (input) => ({
                 ...this.parseBaseInput(input),
                 status: input.status || null,
                 cart: input.cart || null,
@@ -827,16 +962,17 @@ export class MigrationService {
                 fromUrl: input.fromUrl || null,
                 currency: input.currency || null,
             }),
-            async (input) => input.id && getCustomRepository(OrderRepository).updateOrder(input.id, input),
-            (input) => getCustomRepository(OrderRepository).createOrder(input, input.id),
-        )
+            update: async (input) => input.id && getCustomRepository(OrderRepository).updateOrder(input.id, input),
+            create: (input) => getCustomRepository(OrderRepository).createOrder(input, input.id),
+        })
     }
 
-    private async importUsers(workbook: any) {
-        await this.importBase<TUpdateUser>(workbook,
-            'Users',
-            User,
-            (input) => ({
+    private async importUsers(options: TImportOptions) {
+        await this.importBase<TUpdateUser>({
+            ...options,
+            sheetName: ESheetNames.User,
+            EntityClass: User,
+            transformInput: (input) => ({
                 ...this.parseBaseInput(input),
                 fullName: input.fullName || null,
                 email: input.email || null,
@@ -846,19 +982,20 @@ export class MigrationService {
                 address: input.address || null,
                 role: input.role as any || null,
             }),
-            async (input) => input.id && getCustomRepository(UserRepository).updateUser(input.id, input),
-            (input) => getCustomRepository(UserRepository).createUser({
+            update: async (input) => input.id && getCustomRepository(UserRepository).updateUser(input.id, input),
+            create: (input) => getCustomRepository(UserRepository).createUser({
                 ...input,
                 password: cryptoRandomString({ length: 14, type: 'url-safe' }),
             }, input.id),
-        )
+        })
     }
 
-    private async importPlugins(workbook: any) {
-        await this.importBase<Omit<TPluginEntity, 'id'>>(workbook,
-            'Plugins',
-            PluginEntity,
-            (input) => ({
+    private async importPlugins(options: TImportOptions) {
+        await this.importBase<Omit<TPluginEntity, 'id'>>({
+            ...options,
+            sheetName: ESheetNames.Plugin,
+            EntityClass: PluginEntity,
+            transformInput: (input) => ({
                 ...this.parseBaseInput(input),
                 name: input.name ?? null,
                 version: input.version ?? null,
@@ -870,16 +1007,17 @@ export class MigrationService {
                 moduleInfo: input.moduleInfo ?? null,
                 isUpdating: null,
             }),
-            async (input) => input.id && getCustomRepository(GenericPlugin.repository).updateEntity(input.id, input),
-            (input) => getCustomRepository(GenericPlugin.repository).createEntity(input, input.id),
-        )
+            update: async (input) => input.id && getCustomRepository(GenericPlugin.repository).updateEntity(input.id, input),
+            create: (input) => getCustomRepository(GenericPlugin.repository).createEntity(input, input.id),
+        })
     }
 
-    private async importThemes(workbook: any) {
-        await this.importBase<Omit<TThemeEntity, 'id'>>(workbook,
-            'Themes',
-            ThemeEntity,
-            (input) => ({
+    private async importThemes(options: TImportOptions) {
+        await this.importBase<Omit<TThemeEntity, 'id'>>({
+            ...options,
+            sheetName: ESheetNames.Theme,
+            EntityClass: ThemeEntity,
+            transformInput: (input) => ({
                 ...this.parseBaseInput(input),
                 name: input.name ?? null,
                 version: input.version ?? null,
@@ -891,13 +1029,30 @@ export class MigrationService {
                 moduleInfo: input.moduleInfo ?? null,
                 isUpdating: null,
             }),
-            async (input) => input.id && getCustomRepository(GenericTheme.repository).updateEntity(input.id, input),
-            (input) => getCustomRepository(GenericTheme.repository).createEntity(input, input.id),
-        )
+            update: async (input) => input.id && getCustomRepository(GenericTheme.repository).updateEntity(input.id, input),
+            create: (input) => getCustomRepository(GenericTheme.repository).createEntity(input, input.id),
+        });
     }
 
-    private async importCmsSettings(workbook: any) {
-        const inputs = this.readSheet<Record<keyof CmsEntity, string | null | undefined | boolean>>(workbook, 'CMS settings');
+    private async importCustomEntities(options: TImportOptions) {
+        await this.importBase<TCustomEntityInput>({
+            ...options,
+            sheetName: ESheetNames.CustomEntity,
+            EntityClass: CustomEntity,
+            transformInput: (input) => !!input.entityType && ({
+                ...this.parseBaseInput(input),
+                entityType: input.entityType,
+                name: input.name || null,
+            }),
+            update: async (input) => input.id && getCustomRepository(CustomEntityRepository).updateCustomEntity(input.id, input),
+            create: (input) => getCustomRepository(CustomEntityRepository).createCustomEntity(input, input.id),
+        });
+    }
+
+
+    private async importCmsSettings(options: TImportOptions) {
+        const inputs = this.readSheet<Record<keyof CmsEntity, string | null | undefined | boolean>>(options.workbook,
+            ESheetNames.CMS);
         if (!inputs?.[0]) return;
         try {
             const entity = await getCmsEntity();

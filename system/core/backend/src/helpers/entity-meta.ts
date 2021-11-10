@@ -122,7 +122,7 @@ class EntityMetaRepository {
         const repo = this.getMetaClass(type)?.getRepository();
         if (!repo) return;
 
-        const meta = await this.getEntityMetaByKey(type, entityId, key).catch();
+        const meta = await this.getEntityMetaByKey(type, entityId, key).catch(() => null);
         if (meta) {
             if (!value || value === '') {
                 await repo.delete(meta.id);

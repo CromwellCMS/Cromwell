@@ -9,6 +9,7 @@ import styles from '../Settings.module.scss';
 
 export default function Migration() {
     const [isExporting, setIsExporting] = useState(false);
+    const [removeSurplus, setRemoveSurplus] = useState(false);
     const [exportOptions, setExportOptions] = useState<{
         key: TDBEntity; title: string; checked: boolean;
     }[]>([
@@ -20,6 +21,7 @@ export default function Migration() {
         { key: 'Tag', title: 'Tags', checked: true, },
         { key: 'Order', title: 'Orders', checked: true, },
         { key: 'User', title: 'Users', checked: true, },
+        { key: 'CustomEntity', title: 'Custom entities', checked: true, },
         { key: 'Plugin', title: 'Plugins', checked: false, },
         { key: 'Theme', title: 'Themes', checked: false, },
         { key: 'CMS', title: 'CMS settings', checked: false, },
@@ -49,11 +51,10 @@ export default function Migration() {
             // Get the selected file from the input element
             const files = e.target?.files;
             if (!files) return;
-
             setIsExporting(true);
 
             try {
-                await getRestApiClient()?.importDB(files);
+                await getRestApiClient()?.importDB(files, removeSurplus);
                 toast.success?.('Successfully imported');
             } catch (e) {
                 console.error(e);
@@ -81,6 +82,7 @@ export default function Migration() {
     return (
         <Grid container spacing={3}>
             <Grid item xs={12} >
+                <p style={{ fontSize: '18px', fontWeight: 500, margin: '0 0 10px 0' }}>Export</p>
                 <p>Pick tables to export:</p>
                 <div className={styles.exportOptions}>
                     {exportOptions.map(option => (
@@ -106,7 +108,23 @@ export default function Migration() {
                     className={styles.exportBtn}
                     onClick={exportDB}
                 >Export to Excel</Button>
-                <p style={{ marginTop: '20px' }}>Import from Excel file(s):</p>
+                <p style={{
+                    fontSize: '18px',
+                    fontWeight: 500,
+                    margin: '20px 0 10px 0',
+                    borderTop: '1px solid #aaa',
+                    paddingTop: '15px',
+                }}>Import</p>
+                <FormControlLabel
+                    control={
+                        <Checkbox
+                            checked={removeSurplus}
+                            onChange={() => setRemoveSurplus(!removeSurplus)}
+                        />
+                    }
+                    label={"Remove items from database that are not in the file"}
+                />
+                <p style={{ marginTop: '20px' }}>Pick one or many Excel file(s):</p>
                 <Button
                     disabled={isExporting}
                     color="primary"
@@ -117,6 +135,6 @@ export default function Migration() {
                 >Import from Excel</Button>
             </Grid>
             <LoadingStatus isActive={isExporting} />
-        </Grid>
+        </Grid >
     )
 }

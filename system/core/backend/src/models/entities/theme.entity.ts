@@ -7,8 +7,8 @@ import { BasePageEntity } from './base-page.entity';
 @ObjectType('Theme')
 export class ThemeEntity extends BasePageEntity implements TThemeEntity {
 
-    @Field()
-    @Column()
+    @Field(type => String)
+    @Column({ type: "varchar", length: 255 })
     name?: string | null;
 
     @Field(type => String, { nullable: true })
@@ -19,8 +19,8 @@ export class ThemeEntity extends BasePageEntity implements TThemeEntity {
     @Column({ type: "varchar", nullable: true })
     title?: string | null;
 
-    @Field()
-    @Column()
+    @Field(type => Boolean, { nullable: true })
+    @Column({ type: "boolean" })
     isInstalled?: boolean | null;
 
     @Field(type => Boolean, { nullable: true })

@@ -66,6 +66,8 @@ export class UserRepository extends BaseRepository<User> {
     async createUser(createUser: TCreateUser, id?: number | null): Promise<User> {
         logger.log('UserRepository::createUser');
         if (!createUser.password || !createUser.email) throw new Error('No credentials provided')
+        if (createUser.password.length > 50) throw new Error('Password length is too long');
+
         const user = new User();
         if (id) {
             let oldUser;

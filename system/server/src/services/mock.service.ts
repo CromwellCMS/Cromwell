@@ -392,7 +392,7 @@ export class MockService {
             {
                 fullName: 'Dwight',
                 email: 'Dwight@example.com',
-                password: cryptoRandomString({ length: 12 }),
+                password: cryptoRandomString({ length: 14 }),
                 role: 'administrator',
             },
         ]

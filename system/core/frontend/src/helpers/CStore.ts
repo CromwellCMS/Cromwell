@@ -211,7 +211,7 @@ export class CStore {
         if (attributes) {
             const missingAttributes: TAttribute[] = [];
             for (const attr of attributes) {
-                if (attr.required) {
+                if (attr.key && attr.required) {
                     if (!product.pickedAttributes || !product.pickedAttributes[attr.key] ||
                         !product.pickedAttributes[attr.key].length)
                         missingAttributes.push(attr);

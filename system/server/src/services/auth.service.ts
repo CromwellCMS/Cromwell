@@ -109,11 +109,16 @@ export class AuthService {
     }
 
     async signUpUser(data: TCreateUser, initiator?: TAuthUserInfo) {
-        const userRepo = getCustomRepository(UserRepository);
         if (data?.role && data.role !== 'customer') {
             if (!initiator?.id || initiator.role !== 'administrator')
                 throw new UnauthorizedException('Denied. You have no permissions to create this type of user');
         }
+        return this.createUser(data);
+    }
+
+    async createUser(data: TCreateUser) {
+        if (!data.password) throw new HttpException('You must provide a password for the user', HttpStatus.BAD_REQUEST);
+        const userRepo = getCustomRepository(UserRepository);
         return userRepo.createUser(data);
     }
 

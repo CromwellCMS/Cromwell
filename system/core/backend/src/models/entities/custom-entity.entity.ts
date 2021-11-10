@@ -17,7 +17,7 @@ export class CustomEntity extends BasePageEntity implements TCustomEntity {
     @Field(type => String, { nullable: true })
     @Column({ type: "varchar", length: 255, nullable: true })
     @Index()
-    name?: string;
+    name?: string | null;
 
     @OneToMany(() => CustomEntityMeta, meta => meta.entity, {
         cascade: true,

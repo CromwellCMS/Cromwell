@@ -728,7 +728,7 @@ export type TCmsRedirect = TCmsRedirectObject | TCmsRedirectFunction;
 
 export type TCustomEntity = TBasePageEntity & {
     entityType: string;
-    name?: string;
+    name?: string | null;
 }
 
 export type TCustomEntityInput = Omit<TCustomEntity, TDBAuxiliaryColumns>;
