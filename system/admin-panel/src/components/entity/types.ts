@@ -72,6 +72,11 @@ export type TEntityPageProps<TEntityType extends TBasePageEntity, TFilterType ex
     defaultPageName?: TDefaultPageName;
 
     /**
+     * Hide "Add new" button
+     */
+    hideAddNew?: boolean;
+
+    /**
      * Get JSX input fields for entity properties
      */
     renderFields?: (data: TEntityType) => JSX.Element;
@@ -104,7 +109,18 @@ export type TEntityPageProps<TEntityType extends TBasePageEntity, TFilterType ex
         getListItemActions?: (entity: TEntityType, itemInstance: React.Component<any>) => JSX.Element;
     }
 
+    /**
+     * Get React class component instance
+     */
     getPageListInstance?: (inst: IEntityListPage<TFilterType>) => any;
+
+    /**
+     * When user presses "clear filters" button
+     */
     onClearAllFilters?: () => void;
+
+    /**
+     * Are any additional filters applied? Used to highlight "clear filters" button
+     */
     isFilterActive?: () => boolean;
 }

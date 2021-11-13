@@ -1,23 +1,15 @@
 import { EDBEntity, getRandStr, TAdminCustomField, TBasePageEntity, TImageSettings } from '@cromwell/core';
-import {
-    FormControl,
-    InputLabel,
-    MenuItem,
-    Select,
-    SelectChangeEvent,
-    SelectProps,
-    TextField,
-    TextFieldProps,
-} from '@mui/material';
+import { SelectChangeEvent, SelectProps, TextField, TextFieldProps } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import { debounce } from 'throttle-debounce';
 
+import { ColorPicker } from '../components/colorPicker/ColorPicker';
+import entityEditStyles from '../components/entity/entityEdit/EntityEdit.module.scss';
 import { GalleryPicker, GalleryPickerProps } from '../components/galleryPicker/GalleryPicker';
 import { ImagePicker, ImagePickerProps } from '../components/imagePicker/ImagePicker';
+import { Select } from '../components/select/Select';
+import { getEditorData, getEditorHtml, initTextEditor } from './editor/editor';
 import { useForceUpdate } from './forceUpdate';
-import { initTextEditor, getEditorData, getEditorHtml } from './editor/editor';
-import entityEditStyles from '../components/entity/entityEdit/EntityEdit.module.scss';
-import { ColorPicker } from '../components/colorPicker/ColorPicker';
 
 export type TRegisteredCustomField = TAdminCustomField & {
     component: (props: { initialValue: string | undefined; entity: TBasePageEntity }) => JSX.Element;
@@ -232,26 +224,19 @@ export const registerSelectCustomField = (settings: {
             customFieldValue = value;
 
             return (
-                <FormControl
+                <Select
                     style={{ margin: '15px 0' }}
+                    label={settings.label}
+                    value={value}
+                    onChange={(event: SelectChangeEvent<string>) => {
+                        setValue(event.target.value);
+                    }}
+                    size="small"
+                    variant="standard"
                     fullWidth
-                >
-                    <InputLabel>{settings.label}</InputLabel>
-                    <Select
-                        value={value}
-                        onChange={(event: SelectChangeEvent<string>) => {
-                            setValue(event.target.value);
-                        }}
-                        size="small"
-                        // variant="standard"
-                        fullWidth
-                        {...(settings.props ?? {})}
-                    >
-                        {settings.options?.map(option => (
-                            <MenuItem value={option} key={option}>{option}</MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
+                    options={settings.options?.map(opt => ({ label: opt, value: opt }))}
+                    {...(settings.props ?? {})}
+                />
             )
         },
         saveData: () => (!customFieldValue || customFieldValue === '') ? null : customFieldValue,
@@ -347,6 +332,7 @@ export const registerColorCustomField = (settings: {
             return (
                 <ColorPicker
                     value={value}
+                    label={settings.label}
                     onChange={(value) => {
                         setValue(value);
                     }}

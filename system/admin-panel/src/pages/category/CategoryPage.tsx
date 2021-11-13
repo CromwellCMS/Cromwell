@@ -11,16 +11,15 @@ import { getGraphQLClient, getGraphQLErrorInfo } from '@cromwell/core-frontend';
 import { ArrowBack as ArrowBackIcon, OpenInNew as OpenInNewIcon } from '@mui/icons-material';
 import { Autocomplete as MuiAutocomplete, Button, IconButton, TextField, Tooltip } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { Link, useHistory, useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 
 import Autocomplete from '../../components/autocomplete/Autocomplete';
 import { ImagePicker } from '../../components/imagePicker/ImagePicker';
 import { toast } from '../../components/toast/toast';
-import { categoryListPageInfo, categoryPageInfo } from '../../constants/PageInfos';
+import { categoryPageInfo } from '../../constants/PageInfos';
 import { getCustomMetaFor, getCustomMetaKeysFor, RenderCustomFields } from '../../helpers/customFields';
 import { getEditorData, getEditorHtml, initTextEditor } from '../../helpers/editor/editor';
 import { handleOnSaveError } from '../../helpers/handleErrors';
-
 import commonStyles from '../../styles/common.module.scss';
 import styles from './CategoryPage.module.scss';
 
@@ -66,7 +65,7 @@ export default function CategoryPage(props) {
                             id
                             slug
                         }
-                        customMeta (fields: ${JSON.stringify(getCustomMetaKeysFor(EDBEntity.ProductCategory))})
+                        customMeta (keys: ${JSON.stringify(getCustomMetaKeysFor(EDBEntity.ProductCategory))})
                     }`,
                 'AdminPanelProductCategoryFragment'
             );
@@ -195,7 +194,7 @@ export default function CategoryPage(props) {
             try {
                 const newData = await client?.createProductCategory(inputData);
                 toast.success('Created category!');
-                history.push(`${categoryPageInfo.baseRoute}/${newData.id}`)
+                history.replace(`${categoryPageInfo.baseRoute}/${newData.id}`)
 
                 const categoryData = await getProductCategory(newData.id);
                 if (categoryData?.id) {
@@ -245,12 +244,11 @@ export default function CategoryPage(props) {
         <div className={styles.CategoryPage}>
             <div className={styles.header}>
                 <div className={styles.headerLeft}>
-                    <Link to={categoryListPageInfo.route}>
-                        <IconButton
-                        >
-                            <ArrowBackIcon style={{ fontSize: '18px' }} />
-                        </IconButton>
-                    </Link>
+                    <IconButton
+                        onClick={() => window.history.back()}
+                    >
+                        <ArrowBackIcon style={{ fontSize: '18px' }} />
+                    </IconButton>
                     <p className={commonStyles.pageTitle}>category</p>
                 </div>
                 <div className={styles.headerActions}>

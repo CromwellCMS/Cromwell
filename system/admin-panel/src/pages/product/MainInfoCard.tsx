@@ -1,8 +1,9 @@
-import { resolvePageRoute, serviceLocator, TAttributeProductVariant, TProduct } from '@cromwell/core';
-import { Autocomplete, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Tooltip } from '@mui/material';
+import { resolvePageRoute, serviceLocator, TAttributeProductVariant, TProduct, TStockStatus } from '@cromwell/core';
+import { Autocomplete, Grid, TextField, Tooltip } from '@mui/material';
 import React, { useEffect, useRef } from 'react';
 
 import { GalleryPicker } from '../../components/galleryPicker/GalleryPicker';
+import { Select } from '../../components/select/Select';
 import { getEditorData, getEditorHtml, initTextEditor } from '../../helpers/editor/editor';
 import { useForceUpdate } from '../../helpers/forceUpdate';
 import { NumberFormatCustom } from '../../helpers/NumberFormatCustom';
@@ -117,19 +118,14 @@ const MainInfoCard = (props: {
                 />
             </Grid>
             <Grid item xs={12} sm={6}>
-                <FormControl fullWidth>
-                    <InputLabel>Stock status</InputLabel>
-                    <Select
-                        fullWidth
-                        variant="standard"
-                        value={product.stockStatus ?? 'In stock'}
-                        onChange={(e) => { handleChange('stockStatus', e.target.value) }}
-                    >
-                        <MenuItem value={'In stock'}>In stock</MenuItem>
-                        <MenuItem value={'Out of stock'}>Out of stock</MenuItem>
-                        <MenuItem value={'On backorder'}>On backorder</MenuItem>
-                    </Select>
-                </FormControl>
+                <Select
+                    fullWidth
+                    label="Stock status"
+                    variant="standard"
+                    value={product.stockStatus ?? 'In stock'}
+                    onChange={(e) => { handleChange('stockStatus', e.target.value) }}
+                    options={['In stock', 'Out of stock', 'On backorder'] as TStockStatus[]}
+                />
             </Grid>
             <Grid item xs={12} sm={6}>
                 <TextField label="Price" variant="standard"
@@ -139,7 +135,6 @@ const MainInfoCard = (props: {
                     InputProps={{
                         inputComponent: NumberFormatCustom as any,
                     }}
-                    error={props.canValidate && !checkValid(product?.price)}
                 />
             </Grid>
             <Grid item xs={12} sm={6}>

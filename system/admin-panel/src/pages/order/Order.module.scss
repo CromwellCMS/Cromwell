@@ -11,6 +11,18 @@
     min-height: 300px;
 }
 
+.notFoundPage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.notFoundText {
+    font-size: 25px;
+    font-weight: 500;
+}
+
 .header {
     @include paper;
     padding: 0 10px 0 0;

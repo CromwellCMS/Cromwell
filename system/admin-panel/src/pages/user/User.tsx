@@ -6,24 +6,14 @@ import {
     Visibility as VisibilityIcon,
     VisibilityOff as VisibilityOffIcon,
 } from '@mui/icons-material';
-import {
-    Button,
-    FormControl,
-    Grid,
-    IconButton,
-    InputAdornment,
-    InputLabel,
-    MenuItem,
-    Select,
-    SelectChangeEvent,
-    TextField,
-} from '@mui/material';
+import { Button, Grid, IconButton, InputAdornment, SelectChangeEvent, TextField } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { Link, useHistory, useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 
 import { ImagePicker } from '../../components/imagePicker/ImagePicker';
+import { Select } from '../../components/select/Select';
 import { toast } from '../../components/toast/toast';
-import { userListPageInfo, userPageInfo } from '../../constants/PageInfos';
+import { userPageInfo } from '../../constants/PageInfos';
 import { userRoles } from '../../constants/roles';
 import { getCustomMetaFor, getCustomMetaKeysFor, RenderCustomFields } from '../../helpers/customFields';
 import { handleOnSaveError } from '../../helpers/handleErrors';
@@ -68,7 +58,7 @@ export default function UserPage() {
                     phone
                     address
                     role
-                    customMeta (fields: ${JSON.stringify(getCustomMetaKeysFor(EDBEntity.User))})
+                    customMeta (keys: ${JSON.stringify(getCustomMetaKeysFor(EDBEntity.User))})
                 }`, 'AdminPanelUserFragment');
         } catch (e) { console.error(e) }
 
@@ -141,7 +131,7 @@ export default function UserPage() {
                 }
                 const newData = await client?.createUser(createInput);
                 toast.success('Created user');
-                history.push(`${userPageInfo.baseRoute}/${newData.id}`);
+                history.replace(`${userPageInfo.baseRoute}/${newData.id}`);
                 setUserData(newData);
             } catch (e) {
                 toast.error('Failed to create user');
@@ -184,11 +174,11 @@ export default function UserPage() {
         <div className={styles.UserPage}>
             <div className={styles.header}>
                 <div className={styles.headerLeft}>
-                    <Link to={userListPageInfo.route}>
-                        <IconButton>
-                            <ArrowBackIcon style={{ fontSize: '18px' }} />
-                        </IconButton>
-                    </Link>
+                    <IconButton
+                        onClick={() => window.history.back()}
+                    >
+                        <ArrowBackIcon style={{ fontSize: '18px' }} />
+                    </IconButton>
                     <p className={commonStyles.pageTitle}>account</p>
                 </div>
                 <div className={styles.headerActions}>
@@ -263,23 +253,18 @@ export default function UserPage() {
                             />
                         </Grid>
                     )}
-                    <Grid item xs={12} sm={6}>
-                        <FormControl className={styles.field} fullWidth>
-                            <InputLabel>Role</InputLabel>
-                            <Select
-                                fullWidth
-                                variant="standard"
-                                value={(userData?.role ?? null) as TUserRole}
-                                onChange={(event: SelectChangeEvent<unknown>) => {
-                                    handleInputChange('role', event.target.value)
-                                }}
-                                error={canValidate && !checkValid(userData?.role)}
-                            >
-                                {userRoles.map(role => (
-                                    <MenuItem value={role} key={role}>{role}</MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
+                    <Grid item xs={12} sm={6} display="flex" alignItems="flex-end">
+                        <Select
+                            fullWidth
+                            variant="standard"
+                            label="Role"
+                            value={(userData?.role ?? '') as TUserRole}
+                            onChange={(event: SelectChangeEvent<unknown>) => {
+                                handleInputChange('role', event.target.value)
+                            }}
+                            error={canValidate && !checkValid(userData?.role)}
+                            options={userRoles.map(role => ({ label: role, value: role }))}
+                        />
                     </Grid>
                     <Grid item xs={12} sm={6}>
                         <TextField

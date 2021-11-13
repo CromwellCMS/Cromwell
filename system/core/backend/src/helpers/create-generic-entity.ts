@@ -34,7 +34,7 @@ export const createGenericEntity = <EntityType, EntityInputType = EntityType>(en
 
     @ArgsType()
     class UpdateArgs {
-        @Field(() => String)
+        @Field(() => Int)
         id: number;
 
         @Field(() => InputEntityClass ?? String)

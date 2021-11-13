@@ -346,8 +346,12 @@ export class ProductRepository extends BaseRepository<Product> {
             const qb = getQb(false);
 
             let [maxPrice, minPrice] = await Promise.all([
-                qb.select(`MAX(${this.metadata.tablePath}.price)`, "maxPrice").getRawOne().then(res => res?.maxPrice),
-                qb.select(`MIN(${this.metadata.tablePath}.price)`, "minPrice").getRawOne().then(res => res?.minPrice)
+                qb.select(`MAX(${this.metadata.tablePath}.price)`, "maxPrice")
+                    .groupBy(`${this.metadata.tablePath}.id`)
+                    .getRawOne().then(res => res?.maxPrice),
+                qb.select(`MIN(${this.metadata.tablePath}.price)`, "minPrice")
+                    .groupBy(`${this.metadata.tablePath}.id`)
+                    .getRawOne().then(res => res?.minPrice)
             ]);
             if (maxPrice && typeof maxPrice === 'string') maxPrice = parseInt(maxPrice);
             if (minPrice && typeof minPrice === 'string') minPrice = parseInt(minPrice);

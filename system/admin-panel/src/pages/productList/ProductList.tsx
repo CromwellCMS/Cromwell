@@ -64,6 +64,8 @@ export default function ProductTable() {
                 entityListRoute={productListInfo.route}
                 entityBaseRoute={productPageInfo.baseRoute}
                 listLabel="Products"
+                entityLabel="Product"
+                nameProperty="name"
                 getManyFiltered={async (options) => {
                     if (!options.filterParams) options.filterParams = {};
                     options.filterParams.minPrice = attributesFilterInput.current?.minPrice;
@@ -104,7 +106,6 @@ export default function ProductTable() {
                         type: 'Simple text',
                         visible: true,
                         minWidth: '25%',
-                        width: '25%',
                     },
                     {
                         name: 'sku',

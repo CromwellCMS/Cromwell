@@ -1,4 +1,4 @@
-import { EDBEntity, getStoreItem, TBasePageEntity, TDeleteManyInput, TPagedList, TPagedParams } from '@cromwell/core';
+import { EDBEntity, getRandStr, getStoreItem, TBasePageEntity, TDeleteManyInput, TPagedList, TPagedParams } from '@cromwell/core';
 import { ConnectionOptions, DeleteQueryBuilder, getConnection, Repository, SelectQueryBuilder } from 'typeorm';
 
 import { getPaged, getSqlBoolStr, getSqlLike, wrapInQuotes, applyBaseFilter } from '../helpers/base-queries';
@@ -121,10 +121,12 @@ export class BaseRepository<EntityType, EntityInputType = EntityType> extends Re
 
     applyGetEntityViews(qb: SelectQueryBuilder<TBasePageEntity>, entityType: EDBEntity) {
         const statsTable = PageStats.getRepository().metadata.tablePath;
+        const entityTypeKey = 'entityType' + getRandStr(4);
         qb.addSelect(`${statsTable}.views`, this.metadata.tablePath + '_' + 'views')
             .leftJoin(PageStats, statsTable,
                 `${statsTable}.${this.quote('slug')} = ${this.metadata.tablePath}.slug ` +
-                `AND ${statsTable}.${this.quote('entityType')} = "${entityType}"`);
+                `AND ${statsTable}.${this.quote('entityType')} = :${entityTypeKey}`)
+            .setParameter(entityTypeKey, entityType);
         return qb;
     }
 

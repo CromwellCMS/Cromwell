@@ -69,8 +69,10 @@ class EntityMetaRepository {
         return (await this.getEntityMetaByKey(type, id, key))?.value;
     }
 
-    async getEntityMetaByKeys(type: EDBEntity, id: number, keys?: string[]): Promise<Record<string, string> | undefined> {
+    async getEntityMetaByKeys(type: EDBEntity, id: number, keys?: string[]): Promise<Record<string, string> | undefined | null> {
         if (!keys?.length || !id) return;
+        keys = keys.filter(Boolean);
+        if (!keys.length) return;
         const repo = this.getMetaClass(type)?.getRepository();
         if (!repo) return;
 
@@ -85,12 +87,14 @@ class EntityMetaRepository {
         })
         const metaRecords = await qb.getMany();
 
-        return Object.assign({}, ...(metaRecords.map(record => {
+        const meta = Object.assign({}, ...(metaRecords.map(record => {
             if (!record.key || !record.value) return {};
             return {
                 [record.key]: record.value
             }
         })));
+        if (!Object.keys(meta)?.length) return null;
+        return meta;
     }
 
     async createEntityMeta(type: EDBEntity, entityId: number, key?: string, value?: string | null): Promise<TEntityMeta | undefined> {
@@ -141,10 +145,10 @@ class EntityMetaRepository {
         const MetaClass = this.getMetaClass(type);
         if (!MetaClass) return;
         const repo = MetaClass.getRepository();
-        const rawRes = await repo.createQueryBuilder(repo.metadata.tablePath)
-            .select('key')
-            .distinct(true)
-            .getRawMany();
+        const qb = repo.createQueryBuilder(repo.metadata.tablePath)
+            .select(`${repo.metadata.tablePath}.key`, 'key')
+            .distinct(true);
+        const rawRes = await qb.getRawMany();
         return rawRes.map(raw => raw.key);
     }
 

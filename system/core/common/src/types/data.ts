@@ -163,6 +163,7 @@ export type TGraphQLNode = {
     getOneById: string;
     getOneBySlug: string;
     getMany: string;
+    getFiltered: string;
     create: string;
     update: string;
     delete: string;

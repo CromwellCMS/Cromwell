@@ -363,7 +363,6 @@ export class MockService {
     }
 
     public async mockUsers() {
-
         const users: TCreateUser[] = [
             {
                 fullName: 'Creed',

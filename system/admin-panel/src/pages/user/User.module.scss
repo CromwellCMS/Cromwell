@@ -2,7 +2,10 @@
 
 .UserPage {
     position: relative;
-    margin: 10px;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    width: 100%;
 }
 
 .container {
@@ -39,7 +42,6 @@
 }
 
 .fields {
-    @extend .container;
     @include paper;
     padding: 20px;
     display: flex;

@@ -4,12 +4,12 @@ import { getGraphQLClient } from '@cromwell/core-frontend';
 import { ArrowBack as ArrowBackIcon, OpenInNew as OpenInNewIcon } from '@mui/icons-material';
 import { Autocomplete as MuiAutocomplete, Button, Grid, IconButton, Skeleton, TextField, Tooltip } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { Link, useHistory, useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 
 import { ColorPicker } from '../../components/colorPicker/ColorPicker';
 import { ImagePicker } from '../../components/imagePicker/ImagePicker';
 import { toast } from '../../components/toast/toast';
-import { tagListPageInfo, tagPageInfo } from '../../constants/PageInfos';
+import { tagPageInfo } from '../../constants/PageInfos';
 import { getCustomMetaFor, getCustomMetaKeysFor, RenderCustomFields } from '../../helpers/customFields';
 import { getEditorData, getEditorHtml, initTextEditor } from '../../helpers/editor/editor';
 import { handleOnSaveError } from '../../helpers/handleErrors';
@@ -48,7 +48,7 @@ const TagPage = () => {
                         image
                         description
                         descriptionDelta
-                        customMeta (fields: ${JSON.stringify(getCustomMetaKeysFor(EDBEntity.Tag))})
+                        customMeta (keys: ${JSON.stringify(getCustomMetaKeysFor(EDBEntity.Tag))})
                     }`, 'AdminPanelTagFragment');
             if (tagData) {
                 setData(tagData);
@@ -124,7 +124,7 @@ const TagPage = () => {
             try {
                 const newData = await client?.createTag(inputData);
                 toast.success('Created tag!');
-                history.push(`${tagPageInfo.baseRoute}/${newData.id}`)
+                history.replace(`${tagPageInfo.baseRoute}/${newData.id}`)
                 await getTagData(newData.id);
             } catch (e) {
                 toast.error('Failed to create tag');
@@ -181,11 +181,11 @@ const TagPage = () => {
         <div className={styles.TagPage}>
             <div className={styles.header}>
                 <div className={styles.headerLeft}>
-                    <Link to={tagListPageInfo.route}>
-                        <IconButton>
-                            <ArrowBackIcon style={{ fontSize: '18px' }} />
-                        </IconButton>
-                    </Link>
+                    <IconButton
+                        onClick={() => window.history.back()}
+                    >
+                        <ArrowBackIcon style={{ fontSize: '18px' }} />
+                    </IconButton>
                     <p className={commonStyles.pageTitle}>tag</p>
                 </div>
                 <div className={styles.headerActions}>

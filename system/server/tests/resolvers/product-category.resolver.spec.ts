@@ -52,7 +52,7 @@ describe('Product category resolver', () => {
         const path = GraphQLPaths.ProductCategory.getOneById;
         const res = await server.executeOperation({
             query: gql`
-            query testGetProductCategoryById($id: String!) {
+            query testGetProductCategoryById($id: Int!) {
                 ${path}(id: $id) {
                     ...ProductCategoryFragment
                 }
@@ -131,7 +131,7 @@ describe('Product category resolver', () => {
 
         const res = await server.executeOperation({
             query: gql`
-              mutation testUpdateProductCategory($id: String!, $data: UpdateProductCategory!) {
+              mutation testUpdateProductCategory($id: Int!, $data: UpdateProductCategory!) {
                   ${path}(id: $id, data: $data) {
                       ...ProductCategoryFragment
                   }
@@ -139,7 +139,7 @@ describe('Product category resolver', () => {
               ${crwClient?.ProductCategoryFragment}
           `,
             variables: {
-                id: '2',
+                id: 2,
                 data: updateProduct,
             }
         });
@@ -226,12 +226,12 @@ describe('Product category resolver', () => {
 
         const res = await server.executeOperation({
             query: gql`
-                mutation testDeleteProductCategory($id: String!) {
+                mutation testDeleteProductCategory($id: Int!) {
                     ${path}(id: $id)
                 }
           `,
             variables: {
-                id: '3',
+                id: 3,
             }
         });
         const success = crwClient?.returnData(res, path);

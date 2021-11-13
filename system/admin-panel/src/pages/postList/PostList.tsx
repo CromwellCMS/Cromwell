@@ -69,6 +69,8 @@ export default function PostTable() {
             entityListRoute={postListInfo.route}
             entityBaseRoute={postPageInfo.baseRoute}
             listLabel="Posts"
+            entityLabel="Post"
+            nameProperty="title"
             getManyFiltered={client.getFilteredPosts}
             deleteOne={client.deletePost}
             deleteMany={client.deleteManyPosts}

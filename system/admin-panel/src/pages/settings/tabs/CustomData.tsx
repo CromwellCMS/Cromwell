@@ -5,23 +5,13 @@ import {
     FormatListBulleted as FormatListBulletedIcon,
     Settings as SettingsIcon,
 } from '@mui/icons-material';
-import {
-    Button,
-    FormControl,
-    Grid,
-    IconButton,
-    InputLabel,
-    MenuItem,
-    Popover,
-    Select,
-    TextField,
-    Tooltip,
-} from '@mui/material';
+import { Button, Grid, IconButton, Popover, TextField, Tooltip } from '@mui/material';
 import React, { useRef, useState } from 'react';
 
 import { DraggableList } from '../../../components/draggableList/DraggableList';
 import { ImagePicker } from '../../../components/imagePicker/ImagePicker';
 import Modal from '../../../components/modal/Modal';
+import { Select } from '../../../components/select/Select';
 import { baseEntityColumns, unregisterCustomEntity } from '../../../helpers/customEntities';
 import { unregisterCustomField } from '../../../helpers/customFields';
 import { TAdminCmsSettings, TTabProps } from '../Settings';
@@ -347,23 +337,15 @@ const CustomFieldSettings = (props: {
                 size="small"
                 className={styles.customFieldItemField}
             />
-            <FormControl
+            <Select
                 className={styles.customFieldItemField}
-            >
-                <InputLabel>Type</InputLabel>
-                <Select
-                    value={fieldData.fieldType}
-                    onChange={e => changeFieldValue('fieldType', e.target.value)}
-                    size="small"
-                    variant="outlined"
-                    label="Type"
-                >
-                    {(['Simple text', 'Text editor', 'Select', 'Image', 'Gallery', 'Color'] as TAdminCustomField['fieldType'][])
-                        .map(option => (
-                            <MenuItem value={option} key={option}>{option}</MenuItem>
-                        ))}
-                </Select>
-            </FormControl>
+                value={fieldData.fieldType}
+                onChange={e => changeFieldValue('fieldType', e.target.value)}
+                size="small"
+                variant="outlined"
+                label="Type"
+                options={['Simple text', 'Text editor', 'Select', 'Image', 'Gallery', 'Color'] as TAdminCustomField['fieldType'][]}
+            />
             {fieldData?.fieldType === 'Select' && (
                 <Tooltip title="Select options">
                     <IconButton ref={selectOptionsButtonRef} onClick={toggleSelectOptions}>

@@ -19,6 +19,8 @@ export default function OrderTable() {
             entityListRoute={orderListPageInfo.route}
             entityBaseRoute={orderPageInfo.baseRoute}
             listLabel="Orders"
+            entityLabel="Order"
+            hideAddNew
             getManyFiltered={client.getFilteredOrders as any}
             deleteOne={client.deleteOrder}
             deleteMany={client.deleteManyOrders}

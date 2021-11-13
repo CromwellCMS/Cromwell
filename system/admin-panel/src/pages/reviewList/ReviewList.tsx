@@ -76,6 +76,7 @@ export default function ProductReviewTable() {
                 entityCategory={EDBEntity.ProductReview}
                 entityListRoute={reviewListPageInfo.route}
                 listLabel="Product reviews"
+                entityLabel="Review"
                 getManyFiltered={client.getFilteredProductReviews}
                 deleteOne={client.deleteProductReview}
                 deleteMany={client.deleteManyProductReviews}

@@ -18,6 +18,8 @@ export default function TagTable() {
             entityListRoute={tagListPageInfo.route}
             entityBaseRoute={tagPageInfo.baseRoute}
             listLabel="Tags"
+            entityLabel="Tag"
+            nameProperty="name"
             getManyFiltered={client.getFilteredTags}
             deleteOne={client.deleteTag}
             deleteMany={client.deleteManyTags}

@@ -4,10 +4,10 @@ import { getGraphQLClient } from '@cromwell/core-frontend';
 import { ArrowBack as ArrowBackIcon, OpenInNew as OpenInNewIcon } from '@mui/icons-material';
 import { Button, IconButton, Skeleton, Tab, Tabs, Tooltip } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { Link, useHistory, useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 
 import { toast } from '../../components/toast/toast';
-import { productListInfo, productPageInfo } from '../../constants/PageInfos';
+import { productPageInfo } from '../../constants/PageInfos';
 import { getCustomMetaFor, getCustomMetaKeysFor, RenderCustomFields } from '../../helpers/customFields';
 import { useForceUpdate } from '../../helpers/forceUpdate';
 import { handleOnSaveError } from '../../helpers/handleErrors';
@@ -84,7 +84,7 @@ const ProductPage = () => {
                         categories(pagedParams: {pageSize: 9999}) {
                             id
                         }
-                        customMeta (fields: ${JSON.stringify(getCustomMetaKeysFor(EDBEntity.Product))})
+                        customMeta (keys: ${JSON.stringify(getCustomMetaKeysFor(EDBEntity.Product))})
                         attributes {
                             key
                             values {
@@ -157,7 +157,7 @@ const ProductPage = () => {
         const product = productRef.current;
         setCanValidate(true);
 
-        if (!checkValid(product?.name) || !checkValid(product?.price)) return;
+        if (!checkValid(product?.name)) return;
 
         const productAttributes = product.attributes?.map(attr => ({
             key: attr.key,
@@ -213,7 +213,7 @@ const ProductPage = () => {
                     const prod = await client?.createProduct(input);
                     if (prod?.id) {
                         toast.success('Created product');
-                        history.push(`${productPageInfo.baseRoute}/${prod.slug}`)
+                        history.replace(`${productPageInfo.baseRoute}/${prod.slug}`)
                         if (prod) setProdData(prod);
                         forceUpdate();
                     } else {
@@ -267,12 +267,11 @@ const ProductPage = () => {
             <div className={styles.header}>
                 {/* <p>Product id: {id}</p> */}
                 <div className={styles.headerLeft}>
-                    <Link to={productListInfo.route}>
-                        <IconButton
-                        >
-                            <ArrowBackIcon style={{ fontSize: '18px' }} />
-                        </IconButton>
-                    </Link>
+                    <IconButton
+                        onClick={() => window.history.back()}
+                    >
+                        <ArrowBackIcon style={{ fontSize: '18px' }} />
+                    </IconButton>
                     <p className={commonStyles.pageTitle}>product</p>
                 </div>
                 <div >

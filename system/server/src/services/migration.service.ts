@@ -176,18 +176,21 @@ export class MigrationService {
         }
     }
 
-    private stringifyValue = (value: any) => {
+    private stringifyValue = (value: any): string => {
         if (value === undefined || value === null || value === '' ||
             typeof value === 'undefined') return '';
         if (typeof value === 'object') {
             if (value instanceof Date) {
-                if (isNaN(value.getTime())) return null;
+                if (isNaN(value.getTime())) return '';
                 try {
                     return value.toISOString();
                 } catch (error) {
                     getLogger().error(error);
-                    return null;
+                    return '';
                 }
+            }
+            if (Array.isArray(value)) {
+                if (!value.length) return '';
             }
 
             try {
@@ -258,7 +261,7 @@ export class MigrationService {
             featured: ent.featured,
             publishDate: ent.publishDate,
             commentIds: ent.comments?.map(comment => comment.id)?.join(','),
-            customMeta: JSON.stringify(await entityMetaRepository.getEntityMetaByKeys(EDBEntity.Post, ent.id, metaKeys)),
+            customMeta: await entityMetaRepository.getEntityMetaByKeys(EDBEntity.Post, ent.id, metaKeys),
             views: undefined,
         })));
 
@@ -284,7 +287,7 @@ export class MigrationService {
             image: ent.image,
             description: ent.description,
             descriptionDelta: ent.descriptionDelta,
-            customMeta: JSON.stringify(await entityMetaRepository.getEntityMetaByKeys(EDBEntity.Tag, ent.id, metaKeys)),
+            customMeta: await entityMetaRepository.getEntityMetaByKeys(EDBEntity.Tag, ent.id, metaKeys),
             views: undefined,
         })));
 
@@ -338,14 +341,14 @@ export class MigrationService {
             oldPrice: ent.oldPrice,
             sku: ent.sku,
             mainImage: ent.mainImage,
-            images: ent.images && JSON.stringify(ent.images),
+            images: ent.images,
             stockStatus: ent.stockStatus,
             stockAmount: ent.stockAmount,
             mainCategoryId: ent.mainCategoryId,
             description: ent.description,
             descriptionDelta: ent.descriptionDelta,
-            attributes: JSON.stringify(await getCustomRepository(ProductRepository).getProductAttributes(ent.id, ent.attributeValues)),
-            customMeta: JSON.stringify(await entityMetaRepository.getEntityMetaByKeys(EDBEntity.Product, ent.id, metaKeys)),
+            attributes: this.stringifyValue(await getCustomRepository(ProductRepository).getProductAttributes(ent.id, ent.attributeValues)),
+            customMeta: this.stringifyValue(await entityMetaRepository.getEntityMetaByKeys(EDBEntity.Product, ent.id, metaKeys)),
             views: undefined,
         })));
 
@@ -372,7 +375,7 @@ export class MigrationService {
             description: ent.description,
             descriptionDelta: ent.descriptionDelta,
             parentId: (await categoryRepo.getParentCategory(ent))?.id,
-            customMeta: JSON.stringify(await entityMetaRepository.getEntityMetaByKeys(EDBEntity.ProductCategory, ent.id, metaKeys)),
+            customMeta: this.stringifyValue(await entityMetaRepository.getEntityMetaByKeys(EDBEntity.ProductCategory, ent.id, metaKeys)),
             views: undefined,
         })));
 
@@ -397,11 +400,11 @@ export class MigrationService {
             updateDate: ent.updateDate,
             isEnabled: ent.isEnabled,
             key: ent.key,
-            values: JSON.stringify(ent.values),
+            values: this.stringifyValue(ent.values),
             type: ent.type,
             icon: ent.icon,
             required: ent.required,
-            customMeta: JSON.stringify(await entityMetaRepository.getEntityMetaByKeys(EDBEntity.Attribute, ent.id, metaKeys)),
+            customMeta: this.stringifyValue(await entityMetaRepository.getEntityMetaByKeys(EDBEntity.Attribute, ent.id, metaKeys)),
             views: undefined,
         })));
 
@@ -430,7 +433,7 @@ export class MigrationService {
             userEmail: ent.userEmail,
             userId: ent.userId,
             approved: ent.approved,
-            customMeta: JSON.stringify(await entityMetaRepository.getEntityMetaByKeys(EDBEntity.ProductReview, ent.id, metaKeys)),
+            customMeta: await entityMetaRepository.getEntityMetaByKeys(EDBEntity.ProductReview, ent.id, metaKeys),
             views: undefined,
         })));
 
@@ -463,7 +466,7 @@ export class MigrationService {
                 shippingMethod: ent.shippingMethod,
                 paymentMethod: ent.paymentMethod,
                 currency: ent.currency,
-                customMeta: JSON.stringify(await entityMetaRepository.getEntityMetaByKeys(EDBEntity.Order, ent.id, metaKeys)),
+                customMeta: await entityMetaRepository.getEntityMetaByKeys(EDBEntity.Order, ent.id, metaKeys),
                 views: undefined,
             })));
 
@@ -491,7 +494,7 @@ export class MigrationService {
             phone: ent.phone,
             address: ent.address,
             role: ent.role,
-            customMeta: JSON.stringify(await entityMetaRepository.getEntityMetaByKeys(EDBEntity.User, ent.id, metaKeys)),
+            customMeta: await entityMetaRepository.getEntityMetaByKeys(EDBEntity.User, ent.id, metaKeys),
             views: undefined,
         })));
 
@@ -571,7 +574,7 @@ export class MigrationService {
                 isEnabled: ent.isEnabled,
                 name: ent.name,
                 entityType: ent.entityType,
-                customMeta: JSON.stringify(await entityMetaRepository.getEntityMetaByKeys(EDBEntity.CustomEntity, ent.id, metaKeys)),
+                customMeta: await entityMetaRepository.getEntityMetaByKeys(EDBEntity.CustomEntity, ent.id, metaKeys),
                 views: undefined,
             })));
 
@@ -930,7 +933,7 @@ export class MigrationService {
                 userName: input.userName || null,
                 userEmail: input.userEmail || null,
                 userId: this.parseNumber(input.userId),
-                approved: this.parseBoolean(input.userId),
+                approved: this.parseBoolean(input.approved),
             }),
             update: async (input) => input.id && getCustomRepository(ProductReviewRepository).updateProductReview(input.id, input),
             create: (input) => getCustomRepository(ProductReviewRepository).createProductReview(input, input.id),

@@ -8,7 +8,7 @@ describe('auth-guards', () => {
         expect(graphQlAuthChecker({
             context: {
                 user: {
-                    id: '1',
+                    id: 1,
                     role: 'administrator',
                     email: 'test',
                 } as TAuthUserInfo
@@ -18,7 +18,7 @@ describe('auth-guards', () => {
         expect(graphQlAuthChecker({
             context: {
                 user: {
-                    id: '1',
+                    id: 1,
                     role: 'administrator',
                     email: 'test',
                 } as TAuthUserInfo
@@ -28,7 +28,7 @@ describe('auth-guards', () => {
         expect(graphQlAuthChecker({
             context: {
                 user: {
-                    id: '1',
+                    id: 1,
                     role: 'author',
                     email: 'test',
                 } as TAuthUserInfo
@@ -38,7 +38,7 @@ describe('auth-guards', () => {
         expect(graphQlAuthChecker({
             context: {
                 user: {
-                    id: '1',
+                    id: 1,
                     role: 'customer',
                     email: 'test',
                 } as TAuthUserInfo

@@ -3,11 +3,11 @@ import { getStoreItem, resolvePageRoute, serviceLocator, TBasePageEntity } from 
 import { ArrowBack as ArrowBackIcon, OpenInNew as OpenInNewIcon } from '@mui/icons-material';
 import { Autocomplete as MuiAutocomplete, Button, Grid, IconButton, Skeleton, TextField, Tooltip } from '@mui/material';
 import React from 'react';
-import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
 
 import { getCustomMetaFor, getCustomMetaKeysFor, RenderCustomFields } from '../../../helpers/customFields';
-import commonStyles from '../../../styles/common.module.scss';
 import { handleOnSaveError } from '../../../helpers/handleErrors';
+import commonStyles from '../../../styles/common.module.scss';
 import { toast } from '../../toast/toast';
 import { TBaseEntityFilter, TEntityPageProps } from '../types';
 import styles from './EntityEdit.module.scss';
@@ -79,7 +79,7 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
                         }
                         isEnabled
                         entityType
-                        customMeta (fields: ${JSON.stringify(getCustomMetaKeysFor(this.props.entityType ?? this.props.entityCategory))})
+                        customMeta (keys: ${JSON.stringify(getCustomMetaKeysFor(this.props.entityType ?? this.props.entityCategory))})
                     }`, `${this.props.entityCategory}AdminPanelFragment`
             );
         } catch (e) {
@@ -141,7 +141,7 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
                 toast.success(`Created ${(this.props.entityType
                     ?? this.props.entityCategory).toLocaleLowerCase()}`);
 
-                this.props.history.push(`${this.props.entityBaseRoute}/${newData.id}`);
+                this.props.history.replace(`${this.props.entityBaseRoute}/${newData.id}`);
 
                 const updatedData = await this.getEntity(newData.id);
                 this.setState({ entityData: updatedData });
@@ -194,11 +194,11 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
             <div className={styles.EntityEdit}>
                 <div className={styles.header}>
                     <div className={styles.headerLeft}>
-                        <Link to={this.props.entityListRoute}>
-                            <IconButton>
-                                <ArrowBackIcon style={{ fontSize: '18px' }} />
-                            </IconButton>
-                        </Link>
+                        <IconButton
+                            onClick={() => window.history.back()}
+                        >
+                            <ArrowBackIcon style={{ fontSize: '18px' }} />
+                        </IconButton>
                         <p className={commonStyles.pageTitle}>{(this.props.entityLabel ?? this.props.entityType
                             ?? this.props.entityCategory).toLocaleLowerCase()}</p>
                     </div>

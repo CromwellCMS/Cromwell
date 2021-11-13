@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import React from 'react';
 import loadable from '@loadable/component';
 import { TPagedList, TUser } from '@cromwell/core';
@@ -23,6 +23,7 @@ const testData: TPagedList<TUser> = {
 jest.mock('../../constants/PageInfos', () => {
     return {
         userPageInfo: {},
+        userListPageInfo: {},
     }
 });
 
@@ -36,7 +37,7 @@ jest.mock('@cromwell/core-frontend', () => {
                 return () => (
                     <div>
                         {items.elements.map(it => {
-                            return <ListItem key={it.id} data={it} />
+                            return <ListItem key={it.id} data={it} listItemProps={props.listItemProps} />
                         })}
                     </div>
                 )
@@ -45,12 +46,17 @@ jest.mock('@cromwell/core-frontend', () => {
         },
         getGraphQLClient: () => {
             return {
-                getFilteredUsers: jest.fn().mockImplementation(() => testData)
+                getFilteredUsers: jest.fn().mockImplementation(async () => testData)
             }
         },
         getRestApiClient: () => {
             return {
                 getCmsStatus: () => null,
+            }
+        },
+        getCStore: () => {
+            return {
+                getPriceWithCurrency: jest.fn().mockImplementation((val) => val + ''),
             }
         },
     }

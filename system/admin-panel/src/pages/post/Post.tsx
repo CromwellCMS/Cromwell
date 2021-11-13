@@ -84,7 +84,7 @@ const Post = (props) => {
                     content
                     delta
                     published 
-                    customMeta (fields: ${JSON.stringify(getCustomMetaKeysFor(EDBEntity.Post))})
+                    customMeta (keys: ${JSON.stringify(getCustomMetaKeysFor(EDBEntity.Post))})
                 }`, 'AdminPanelPostFragment'
             );
             if (post) setPostData(post);
@@ -197,7 +197,7 @@ const Post = (props) => {
                 toast.success('Created post!');
 
                 hasChanges.current = false;
-                history.push(`${postPageInfo.baseRoute}/${newPost.id}`)
+                history.replace(`${postPageInfo.baseRoute}/${newPost.id}`)
                 await getPostData(newPost.id);
             } catch (e) {
                 toast.error('Failed to create post');

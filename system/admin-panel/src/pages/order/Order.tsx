@@ -11,7 +11,7 @@ import { Link, useParams } from 'react-router-dom';
 
 import { toast } from '../../components/toast/toast';
 import { orderStatuses } from '../../constants/order';
-import { orderListPageInfo, productPageInfo } from '../../constants/PageInfos';
+import { productPageInfo } from '../../constants/PageInfos';
 import { handleOnSaveError } from '../../helpers/handleErrors';
 import { NumberFormatCustom } from '../../helpers/NumberFormatCustom';
 import { toLocaleDateTimeString } from '../../helpers/time';
@@ -129,7 +129,7 @@ const OrderPage = () => {
         return (
             <div className={styles.OrderPage}>
                 <div className={styles.notFoundPage}>
-                    <p className={styles.notFoundText}>Post not found</p>
+                    <p className={styles.notFoundText}>Order not found</p>
                 </div>
             </div>
         )
@@ -143,12 +143,11 @@ const OrderPage = () => {
         <div className={styles.OrderPage}>
             <div className={styles.header}>
                 <div className={styles.headerLeft}>
-                    <Link to={orderListPageInfo.route}>
-                        <IconButton
-                        >
-                            <ArrowBackIcon style={{ fontSize: '18px' }} />
-                        </IconButton>
-                    </Link>
+                    <IconButton
+                        onClick={() => window.history.back()}
+                    >
+                        <ArrowBackIcon style={{ fontSize: '18px' }} />
+                    </IconButton>
                     <p className={commonStyles.pageTitle}>order</p>
                 </div>
                 <div className={styles.headerActions}>

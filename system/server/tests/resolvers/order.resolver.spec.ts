@@ -49,11 +49,11 @@ describe('Order resolver', () => {
         expect(data.pagedMeta.pageSize).toBeTruthy();
     });
 
-    const getOrder = async (orderId: string | number): Promise<TOrder> => {
+    const getOrder = async (orderId: number): Promise<TOrder> => {
         const path = GraphQLPaths.Order.getOneById;
         const res = await server.executeOperation({
             query: gql`
-            query testGetOrderById($id: String!) {
+            query testGetOrderById($id: Int!) {
                 ${path}(id: $id) {
                     ...OrderFragment
                 }
@@ -69,7 +69,7 @@ describe('Order resolver', () => {
     }
 
     it(`getOrder`, async () => {
-        const data = await getOrder('1');
+        const data = await getOrder(1);
         if (Array.isArray(data)) {
             console.error('data error', data)
             expect(!Array.isArray(data)).toBeTruthy();
@@ -80,7 +80,7 @@ describe('Order resolver', () => {
     });
 
     it(`updateOrder`, async () => {
-        const data1 = await getOrder('1');
+        const data1 = await getOrder(1);
         if (Array.isArray(data1)) {
             console.error('data error', data1)
             expect(!Array.isArray(data1)).toBeTruthy();
@@ -97,7 +97,7 @@ describe('Order resolver', () => {
 
         const res = await server.executeOperation({
             query: gql`
-              mutation testUpdateOrder($id: String!, $data: OrderInput!) {
+              mutation testUpdateOrder($id: Int!, $data: OrderInput!) {
                   ${path}(id: $id, data: $data) {
                       ...OrderFragment
                   }
@@ -105,7 +105,7 @@ describe('Order resolver', () => {
               ${crwClient?.OrderFragment}
           `,
             variables: {
-                id: '1',
+                id: 1,
                 data: inputData,
             }
         });
@@ -114,7 +114,7 @@ describe('Order resolver', () => {
             console.error('res error', success)
             expect(!Array.isArray(success)).toBeTruthy();
         }
-        const data2 = await getOrder('1');
+        const data2 = await getOrder(1);
         if (Array.isArray(data2)) {
             console.error('data error', data2)
             expect(!Array.isArray(data2)).toBeTruthy();
@@ -127,7 +127,7 @@ describe('Order resolver', () => {
 
 
     it(`createOrder`, async () => {
-        const data1: TOrder = await getOrder('3');
+        const data1: TOrder = await getOrder(3);
         if (Array.isArray(data1)) {
             console.error('data error', data1)
             expect(!Array.isArray(data1)).toBeTruthy();
@@ -178,7 +178,7 @@ describe('Order resolver', () => {
 
 
     it(`deleteOrder`, async () => {
-        const data1 = await getOrder('4');
+        const data1 = await getOrder(4);
         if (Array.isArray(data1)) {
             console.error('data error', data1)
             expect(!Array.isArray(data1)).toBeTruthy();
@@ -189,12 +189,12 @@ describe('Order resolver', () => {
 
         const res = await server.executeOperation({
             query: gql`
-                mutation testDeleteOrder($id: String!) {
+                mutation testDeleteOrder($id: Int!) {
                     ${path}(id: $id)
                 }
           `,
             variables: {
-                id: '4',
+                id: 4,
             }
         });
         const success = crwClient?.returnData(res, path);
@@ -204,7 +204,7 @@ describe('Order resolver', () => {
         }
         expect(success === true).toBeTruthy();
 
-        const data2 = await getOrder('4');
+        const data2 = await getOrder(4);
 
         expect(!data2?.id).toBeTruthy();
     });

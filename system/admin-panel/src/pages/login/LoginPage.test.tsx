@@ -5,6 +5,7 @@ import React from 'react';
 const testData: TUser = {
     fullName: '__test1__',
     email: '__test2__',
+    role: 'administrator',
     id: 1
 }
 jest.mock('@cromwell/core-frontend', () => {
@@ -50,5 +51,4 @@ describe('Login page', () => {
             expect(userInfo.fullName).toEqual(testData.fullName);
         });
     });
-
-})
+});

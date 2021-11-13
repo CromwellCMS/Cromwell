@@ -20,6 +20,8 @@ export default function UserTable() {
             entityListRoute={userListPageInfo.route}
             entityBaseRoute={userPageInfo.baseRoute}
             listLabel="Users"
+            entityLabel="User"
+            nameProperty="fullName"
             getManyFiltered={client.getFilteredUsers}
             deleteOne={client.deleteUser}
             deleteMany={client.deleteManyUsers}

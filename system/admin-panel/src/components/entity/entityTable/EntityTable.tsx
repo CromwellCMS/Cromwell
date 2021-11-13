@@ -1,14 +1,14 @@
 import { gql } from '@apollo/client';
-import { getBlockInstance, TBasePageEntity, TCustomEntityColumn, TPagedParams, TBaseFilter } from '@cromwell/core';
+import { getBlockInstance, TBaseFilter, TBasePageEntity, TCustomEntityColumn, TPagedParams } from '@cromwell/core';
 import { CList, TCList } from '@cromwell/core-frontend';
-import { ArrowDropDown as ArrowDropDownIcon, Settings as SettingsIcon } from '@mui/icons-material';
-import CloseIcon from '@mui/icons-material/Close';
-import { Button, Checkbox, IconButton, Popover, TextField, Tooltip, Autocomplete } from '@mui/material';
+import { ArrowDropDown as ArrowDropDownIcon, Close as CloseIcon, Settings as SettingsIcon } from '@mui/icons-material';
+import ClearAllIcon from '@mui/icons-material/ClearAll';
+import { Autocomplete, Button, Checkbox, IconButton, Popover, TextField, Tooltip } from '@mui/material';
 import clsx from 'clsx';
+import queryString from 'query-string';
 import React from 'react';
 import { connect, PropsType } from 'react-redux-ts';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import queryString from 'query-string';
 
 import { getCustomFieldsFor } from '../../../helpers/customFields';
 import {
@@ -21,7 +21,7 @@ import {
 import { TAppState } from '../../../redux/store';
 import commonStyles from '../../../styles/common.module.scss';
 import { DraggableList } from '../../draggableList/DraggableList';
-import ConfirmationModal from '../../modal/Confirmation';
+import { askConfirmation } from '../../modal/Confirmation';
 import Pagination from '../../pagination/Pagination';
 import { listPreloader } from '../../skeleton/SkeletonPreloader';
 import { toast } from '../../toast/toast';
@@ -30,7 +30,6 @@ import { ColumnConfigureItem, TColumnConfigureItemData } from './components/Colu
 import DeleteSelectedButton from './components/DeleteSelectedButton';
 import EntityTableItem from './components/EntityTableItem';
 import styles from './EntityTable.module.scss';
-import ClearAllIcon from '@mui/icons-material/ClearAll';
 
 const mapStateToProps = (state: TAppState) => {
     return {
@@ -59,7 +58,6 @@ export type TSavedConfiguredColumn = {
 class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBaseEntityFilter>
     extends React.Component<TEntityTableProps<TEntityType, TFilterType>, {
         isLoading: boolean;
-        itemToDelete: TEntityType | null;
         deleteSelectedOpen: boolean;
         configureColumnsOpen: boolean;
         columnSearch?: TCustomEntityColumn | null;
@@ -89,7 +87,7 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
         this.sortedColumns = configuredColumns[this.props.entityType ?? this.props.entityCategory] ?? {};
 
         const parsedUrl = queryString.parseUrl(window.location.href, { parseFragmentIdentifier: true });
-        const tableFilter = parsedUrl.query?.tableFilter;
+        const tableFilter = parsedUrl.query?.filter;
         if (typeof tableFilter === 'string' && tableFilter !== '') {
             try {
                 const filterInput: TFilterType | undefined = JSON.parse(atob(tableFilter));
@@ -131,27 +129,55 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
         list?.updateData();
     }
 
-    private handleDeleteBtnClick = (itemToDelete: TEntityType) => {
-        this.setState({ itemToDelete });
-    }
+    private handleDeleteItem = async (itemToDelete: TEntityType) => {
+        const confirm = await askConfirmation({
+            title: `Delete ${(this.props.entityLabel ?? 'item').toLocaleLowerCase()} ${itemToDelete?.[
+                this.props.nameProperty ?? 'id'] ?? ''}?`
+        });
+        if (!confirm) return;
+        if (!itemToDelete?.id) return;
 
-    private handleDeleteItem = async () => {
-        if (this.state?.itemToDelete?.id) {
-            try {
-                await this.props.deleteOne(this.state?.itemToDelete.id)
-                toast.success(`${this.props.entityLabel ?? 'Item'} deleted`);
-            } catch (e) {
-                console.error(e);
-                toast.error(`Failed to delete ${this.props.entityLabel?.toLowerCase() ?? 'item'}`);
-            }
-            this.setState({ itemToDelete: null });
-            this.updateList();
+        try {
+            await this.props.deleteOne(itemToDelete.id)
+            toast.success(`${this.props.entityLabel ?? 'Item'} deleted`);
+        } catch (e) {
+            console.error(e);
+            toast.error(`Failed to delete ${this.props.entityLabel?.toLowerCase() ?? 'item'}`);
         }
+        this.updateList();
     }
 
-    private handleDeleteSelectedClick = () => {
-        if (countSelectedItems(this.totalElements) > 0)
-            this.setState({ deleteSelectedOpen: true });
+    private handleToggleItemSelection = (data: TEntityType) => {
+        toggleItemSelection(data.id);
+    }
+
+    private handleToggleSelectAll = () => {
+        toggleSelectAll()
+    }
+
+    private handleDeleteSelected = async () => {
+        if (countSelectedItems(this.totalElements) <= 0) return;
+        const confirm = await askConfirmation({
+            title: `Delete ${countSelectedItems(this.totalElements)} item(s)?`
+        });
+        if (!confirm) return;
+
+        const input = getSelectedInput();
+        if (!(input.all || input.ids?.length)) return;
+        const filterInput = this.getFilterInput();
+
+        this.setState({ isLoading: true });
+        this.totalElements = 0;
+        try {
+            await this.props.deleteManyFiltered(input, filterInput);
+            toast.success(`${this.props.entityLabel ?? 'Items'} deleted`);
+        } catch (e) {
+            console.error(e);
+            toast.error(`Failed to delete ${this.props.entityLabel ?? 'items'}`);
+        }
+        resetSelected();
+        this.updateList();
+        this.setState({ isLoading: false, deleteSelectedOpen: false });
     }
 
     private handleCreate = () => {
@@ -230,7 +256,8 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
                 fragment ${this.props.entityCategory}ListFragment on ${this.props.entityCategory} {
                     ${customFragments.join('\n')}
                     ${entityProperties.join('\n')}
-                    ${metaProperties?.length ? `customMeta(fields: ${JSON.stringify(metaProperties)})` : ''}
+
+                    ${metaProperties?.length ? `customMeta(keys: ${JSON.stringify(metaProperties)})` : ''}
                 }
             `,
             customFragmentName: `${this.props.entityCategory}ListFragment`,
@@ -242,37 +269,10 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
         }
 
         const parsedUrl = queryString.parseUrl(window.location.href, { parseFragmentIdentifier: true });
-        parsedUrl.query.tableFilter = btoa(JSON.stringify(filterInput));
+        parsedUrl.query.filter = btoa(JSON.stringify(filterInput));
         window.history.replaceState({}, '', queryString.stringifyUrl(parsedUrl));
 
         return data;
-    }
-
-    private handleToggleItemSelection = (data: TEntityType) => {
-        toggleItemSelection(data.id);
-    }
-
-    private handleToggleSelectAll = () => {
-        toggleSelectAll()
-    }
-
-    private handleDeleteSelected = async () => {
-        const input = getSelectedInput();
-        if (!(input.all || input.ids?.length)) return;
-        const filterInput = this.getFilterInput();
-
-        this.setState({ isLoading: true });
-        this.totalElements = 0;
-        try {
-            await this.props.deleteManyFiltered(input, filterInput);
-            toast.success(`${this.props.entityLabel ?? 'Items'} deleted`);
-        } catch (e) {
-            console.error(e);
-            toast.error(`Failed to delete ${this.props.entityLabel ?? 'items'}`);
-        }
-        resetSelected();
-        this.updateList();
-        this.setState({ isLoading: false, deleteSelectedOpen: false });
     }
 
     public getColumns = (): TCustomEntityColumn[] => {
@@ -296,7 +296,8 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
             .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
     }
 
-    public getColumnStyles = (column: TCustomEntityColumn, allColumns: TCustomEntityColumn[]): React.CSSProperties => {
+    public getColumnStyles = (column: TCustomEntityColumn, allColumns?: TCustomEntityColumn[]): React.CSSProperties => {
+        if (!allColumns?.length) return {};
         const normalWidth = 100 / allColumns.filter(col => col.visible).length + '%';
         const css: React.CSSProperties = {
             width: normalWidth,
@@ -484,13 +485,15 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
                             )}
                         <DeleteSelectedButton
                             style={{ marginRight: '10px' }}
-                            onClick={this.handleDeleteSelectedClick}
+                            onClick={this.handleDeleteSelected}
                             totalElements={this.totalElements}
                         />
-                        <Button variant="contained"
-                            size="small"
-                            onClick={this.handleCreate}
-                        >Add new</Button>
+                        {this.props.entityBaseRoute && !this.props.hideAddNew && (
+                            <Button variant="contained"
+                                size="small"
+                                onClick={this.handleCreate}
+                            >Add new</Button>
+                        )}
                     </div>
                 </div>
                 <div className={styles.tableHeader}>
@@ -663,7 +666,7 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
                     useAutoLoading
                     usePagination
                     listItemProps={{
-                        handleDeleteBtnClick: this.handleDeleteBtnClick,
+                        handleDeleteBtnClick: this.handleDeleteItem,
                         toggleSelection: this.handleToggleItemSelection,
                         tableProps: this.props,
                         getColumns: this.getColumns,
@@ -679,20 +682,6 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
                         pagination: Pagination,
                         preloader: listPreloader
                     }}
-                />
-                <ConfirmationModal
-                    open={!!this.state?.itemToDelete}
-                    onClose={() => this.setState({ itemToDelete: null })}
-                    onConfirm={this.handleDeleteItem}
-                    title={`Delete ${this.props.entityLabel ?? 'item'} ${this.state?.itemToDelete?.[
-                        this.props.nameProperty ?? 'id'] ?? ''}?`}
-                />
-                <ConfirmationModal
-                    open={!!this.state?.deleteSelectedOpen}
-                    onClose={() => this.setState({ deleteSelectedOpen: false })}
-                    onConfirm={this.handleDeleteSelected}
-                    title={`Delete ${countSelectedItems(this.totalElements)} item(s)?`}
-                    disabled={this.state?.isLoading}
                 />
             </div >
         )

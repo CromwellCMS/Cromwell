@@ -36,7 +36,8 @@ jest.mock('@cromwell/core-frontend', () => {
             return <div>...images mock</div>
         },
         getCStore: () => ({
-            getActiveCurrencySymbol: () => ''
+            getActiveCurrencySymbol: () => '',
+            getPriceWithCurrency: jest.fn().mockImplementation((val) => val + ''),
         }),
         getRestApiClient: () => {
             return {

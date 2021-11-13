@@ -20,6 +20,7 @@ const productsData: TPagedList<TProduct> = {
 jest.mock('../../constants/PageInfos', () => {
     return {
         productPageInfo: {},
+        productListInfo: {},
     }
 });
 
@@ -36,7 +37,7 @@ jest.mock('@cromwell/core-frontend', () => {
                 return () => (
                     <div>
                         {items.elements.map(it => {
-                            return <ListItem key={it.id} data={it} />
+                            return <ListItem key={it.id} data={it} listItemProps={props.listItemProps} />
                         })}
                     </div>
                 )
@@ -46,7 +47,7 @@ jest.mock('@cromwell/core-frontend', () => {
         CPlugin: () => <></>,
         getGraphQLClient: () => {
             return {
-                getFilteredProducts: jest.fn().mockImplementation(() => productsData),
+                getFilteredProducts: jest.fn().mockImplementation(async () => productsData),
                 getAttributes: jest.fn().mockImplementation(async () => []),
             }
         },

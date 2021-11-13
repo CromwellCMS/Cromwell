@@ -44,7 +44,7 @@ describe('Generic resolver', () => {
         const path = GraphQLPaths.Generic.getOneById + entityName;
         const res = await server.executeOperation({
             query: gql`
-                query testGenericGetEntityById($id: String!) {
+                query testGenericGetEntityById($id: Int!) {
                     ${path}(id: $id) {
                         ...${fragmentName}
                     }
@@ -62,7 +62,7 @@ describe('Generic resolver', () => {
     const getDefaultId = async (): Promise<number | undefined> => {
         return (await getCustomRepository(GenericPlugin.repository).find())[0]?.id;
     }
-    const getDefaultSlug = async (): Promise<string | undefined> => {
+    const getDefaultSlug = async (): Promise<string | undefined | null> => {
         return (await getCustomRepository(GenericPlugin.repository).find())[0]?.slug;
     }
 
@@ -141,7 +141,7 @@ describe('Generic resolver', () => {
 
         const res = await server.executeOperation({
             query: gql`
-              mutation testUpdateGeneric($id: String!, $data: PluginInput!) {
+              mutation testUpdateGeneric($id: Int!, $data: PluginInput!) {
                   ${path}(id: $id, data: $data) {
                       ...${fragmentName}
                   }
@@ -241,7 +241,7 @@ describe('Generic resolver', () => {
 
         const res = await server.executeOperation({
             query: gql`
-                mutation testDeleteGeneric($id: String!) {
+                mutation testDeleteGeneric($id: Int!) {
                     ${path}(id: $id)
                 }
           `,

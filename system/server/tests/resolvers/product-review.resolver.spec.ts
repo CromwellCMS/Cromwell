@@ -50,11 +50,11 @@ describe('Product-review resolver', () => {
         expect(data.pagedMeta.pageSize === 10).toBeTruthy();
     });
 
-    const getProductReview = async (productReviewId: string | number) => {
+    const getProductReview = async (productReviewId: number) => {
         const path = GraphQLPaths.ProductReview.getOneById;
         const res = await server.executeOperation({
             query: gql`
-            query testGetProductById($id: String!) {
+            query testGetProductById($id: Int!) {
                 ${path}(id: $id) {
                     ...ProductReviewFragment
                 }
@@ -70,7 +70,7 @@ describe('Product-review resolver', () => {
     }
 
     it(`getProductReview`, async () => {
-        const data = await getProductReview('1');
+        const data = await getProductReview(1);
         if (Array.isArray(data)) {
             console.error('data error', data)
             expect(!Array.isArray(data)).toBeTruthy();
@@ -81,7 +81,7 @@ describe('Product-review resolver', () => {
     });
 
     it(`updateProductReview`, async () => {
-        const data1: TProductReview = await getProductReview('1');
+        const data1: TProductReview = await getProductReview(1);
         if (Array.isArray(data1)) {
             console.error('data error', data1)
             expect(!Array.isArray(data1)).toBeTruthy();
@@ -98,7 +98,7 @@ describe('Product-review resolver', () => {
 
         const res = await server.executeOperation({
             query: gql`
-              mutation testUpdateProduct($id: String!, $data: ProductReviewInput!) {
+              mutation testUpdateProduct($id: Int!, $data: ProductReviewInput!) {
                   ${path}(id: $id, data: $data) {
                       ...ProductReviewFragment
                   }
@@ -106,7 +106,7 @@ describe('Product-review resolver', () => {
               ${crwClient?.ProductReviewFragment}
           `,
             variables: {
-                id: '1',
+                id: 1,
                 data: updateProduct,
             }
         });
@@ -115,7 +115,7 @@ describe('Product-review resolver', () => {
             console.error('res error', success)
             expect(!Array.isArray(success)).toBeTruthy();
         }
-        const data2 = await getProductReview('1');
+        const data2 = await getProductReview(1);
         if (Array.isArray(data2)) {
             console.error('data error', data2)
             expect(!Array.isArray(data2)).toBeTruthy();
@@ -129,7 +129,7 @@ describe('Product-review resolver', () => {
 
 
     it(`createProductReview`, async () => {
-        const data1: TProductReview = await getProductReview('3');
+        const data1: TProductReview = await getProductReview(3);
         if (Array.isArray(data1)) {
             console.error('data error', data1)
             expect(!Array.isArray(data1)).toBeTruthy();
@@ -181,7 +181,7 @@ describe('Product-review resolver', () => {
 
 
     it(`deleteProduct`, async () => {
-        const data1: TProductReview = await getProductReview('4');
+        const data1: TProductReview = await getProductReview(4);
         if (Array.isArray(data1)) {
             console.error('data error', data1)
             expect(!Array.isArray(data1)).toBeTruthy();
@@ -192,12 +192,12 @@ describe('Product-review resolver', () => {
 
         const res = await server.executeOperation({
             query: gql`
-                mutation testDeleteProduct($id: String!) {
+                mutation testDeleteProduct($id: Int!) {
                     ${path}(id: $id)
                 }
           `,
             variables: {
-                id: '4',
+                id: 4,
             }
         });
         const success = crwClient?.returnData(res, path);
@@ -207,7 +207,7 @@ describe('Product-review resolver', () => {
         }
         expect(success === true).toBeTruthy();
 
-        const data2 = await getProductReview('4');
+        const data2 = await getProductReview(4);
 
         expect(!data2?.id).toBeTruthy();
     });

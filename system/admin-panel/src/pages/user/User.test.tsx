@@ -10,6 +10,7 @@ const testData: TUser = {
 jest.mock('../../constants/PageInfos', () => {
     return {
         userPageInfo: {},
+        userListPageInfo: {},
     }
 });
 

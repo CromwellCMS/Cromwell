@@ -52,7 +52,7 @@ describe('Product resolver', () => {
         const path = GraphQLPaths.Product.getOneById;
         const res = await server.executeOperation({
             query: gql`
-            query testGetProductById($productId: String!) {
+            query testGetProductById($productId: Int!) {
                 ${path}(id: $productId) {
                     ...ProductFragment
                 }
@@ -131,7 +131,7 @@ describe('Product resolver', () => {
 
         const res = await server.executeOperation({
             query: gql`
-              mutation testUpdateProduct($id: String!, $data: UpdateProduct!) {
+              mutation testUpdateProduct($id: Int!, $data: UpdateProduct!) {
                   ${path}(id: $id, data: $data) {
                       ...ProductFragment
                   }
@@ -139,7 +139,7 @@ describe('Product resolver', () => {
               ${crwClient?.ProductFragment}
           `,
             variables: {
-                id: '2',
+                id: 2,
                 data: updateProduct,
             }
         });
@@ -226,12 +226,12 @@ describe('Product resolver', () => {
 
         const res = await server.executeOperation({
             query: gql`
-                mutation testDeleteProduct($id: String!) {
+                mutation testDeleteProduct($id: Int!) {
                     ${path}(id: $id)
                 }
           `,
             variables: {
-                id: '4',
+                id: 4,
             }
         });
         const success = crwClient?.returnData(res, path);

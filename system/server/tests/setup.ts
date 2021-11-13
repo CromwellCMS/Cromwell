@@ -10,7 +10,6 @@ import { MockService } from '../src/services/mock.service';
 export default async function () {
     const testDir = join(getServerTempDir());
     if (fs.pathExistsSync(testDir)) fs.removeSync(testDir);
-
     await connectDatabase({ synchronize: true, migrationsRun: false }, true);
 
     const mockService = Container.get(MockService);
