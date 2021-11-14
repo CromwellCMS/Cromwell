@@ -163,7 +163,7 @@ export const ProductCard = (props?: {
                 <Link href={productLink}>
                     <a aria-label={`Product ${data?.name}`}>
                         <Image
-                            alt={data?.name}
+                            alt={data?.name ?? undefined}
                             loader={imageLoader}
                             unoptimized
                             objectFit="contain"

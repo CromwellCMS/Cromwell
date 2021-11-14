@@ -302,11 +302,12 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
                 })}
                 {attributes && (
                     attributes.map(attr => {
+                        if (!attr.key || !attr.values) return null;
                         const checked: string[] | undefined = this.checkedAttrs[attr.key];
                         const numberOfChecked = () => checked ? checked.length : 0;
                         const handleToggleAll = () => {
-                            if (attr.values.length !== 0) {
-                                if (numberOfChecked() === attr.values.length) {
+                            if (attr.key && attr.values && attr.values?.length !== 0) {
+                                if (numberOfChecked() === attr.values?.length) {
                                     this.handleSetAttribute(attr.key, [])
                                 } else {
                                     this.handleSetAttribute(attr.key, attr.values.map(v => v.value))
@@ -339,7 +340,7 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
                                         onClick={() => this.setState(prev => ({
                                             collapsedItems: {
                                                 ...prev.collapsedItems,
-                                                [attr.key]: !prev.collapsedItems[attr.key]
+                                                [attr.key!]: !prev.collapsedItems[attr.key!]
                                             }
                                         }))}
                                         className={clsx('productFilter_expand', {
@@ -367,7 +368,7 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
                                                         } else {
                                                             newChecked.splice(currentIndex, 1);
                                                         }
-                                                        this.handleSetAttribute(attr.key, newChecked);
+                                                        this.handleSetAttribute(attr.key!, newChecked);
                                                     }}>
                                                     <ListItemIcon>
                                                         <Checkbox

@@ -33,7 +33,7 @@ const ProductShowcase = (props: TFrontendPluginProps<ProductShowcaseProps>): JSX
             const p = props.data;
             if (p) return (
                 <div key={p.id}>
-                    <img src={p?.mainImage} width="300px" />
+                    <img src={p?.mainImage ?? undefined} width="300px" />
                     <Link href={`/product/${p.slug}`}><a>{p.name}</a></Link>
                     <p>{p.price}</p>
                 </div>
