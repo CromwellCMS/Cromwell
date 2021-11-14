@@ -1,6 +1,6 @@
 {
   "name": "@cromwell/admin-panel",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "keywords": [],
   "license": "MIT",
   "repository": "https://github.com/CromwellCMS/Cromwell",
@@ -46,7 +46,7 @@
     "@cromwell/core-backend": "2.0.1",
     "@cromwell/core-frontend": "2.0.1",
     "@cromwell/editorjs-image": "^2.7.2",
-    "@cromwell/plugin-product-filter": "1.0.21",
+    "@cromwell/plugin-product-filter": "1.0.22",
     "@cromwell/utils": "2.0.1",
     "@date-io/date-fns": "2.11.0",
     "@editorjs/code": "2.7.0",
