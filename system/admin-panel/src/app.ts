@@ -17,6 +17,8 @@ import Layout from './components/layout/Layout';
 import { toast } from './components/toast/toast';
 import { loginPageInfo, welcomePageInfo } from './constants/PageInfos';
 import { loadPlugins } from './helpers/loadPlugins';
+import { registerCustomFieldOfType } from './helpers/customFields';
+import { registerCustomEntity } from './helpers/customEntities';
 import { store } from './redux/store';
 
 (async () => {
@@ -56,8 +58,8 @@ import { store } from './redux/store';
     // Redirect to /setup page if not installed
     if (settings && !settings.installed) {
         isInstalled = false;
-        if (!window.location.hash.includes(welcomePageInfo.route)) {
-            window.history.pushState({}, '', '/admin/#' + welcomePageInfo.route);
+        if (!window.location.pathname.includes(welcomePageInfo.route)) {
+            window.history.pushState({}, '', '/admin' + welcomePageInfo.route);
             window.location.reload();
             return;
         }
@@ -65,7 +67,7 @@ import { store } from './redux/store';
 
     const onUnauthorizedCbId = 'admin-logout';
     const onUnauthorized = async () => {
-        let userInfo;
+        let userInfo: TUser;
         restClient?.removeOnUnauthorized(onUnauthorizedCbId);
         try {
             userInfo = await restClient?.getUserInfo({ disableLog: true });
@@ -73,9 +75,9 @@ import { store } from './redux/store';
             console.error(e);
         }
         restClient?.onUnauthorized(onUnauthorized, onUnauthorizedCbId);
-        if (!userInfo?.id) {
-            if (!window.location.hash.includes(loginPageInfo.route)) {
-                window.history.pushState({}, '', '/admin/#' + loginPageInfo.route);
+        if (!userInfo?.id || !userInfo.role) {
+            if (!window.location.pathname.includes(loginPageInfo.route)) {
+                window.history.pushState({}, '', '/admin' + loginPageInfo.route);
                 window.location.reload();
                 return;
             }
@@ -96,25 +98,23 @@ import { store } from './redux/store';
 
     restClient?.onError(onRestApiError, 'app');
 
-
-    const onGraphQlError = (info) => {
-        if (info?.message)
-            toast.error(info.message);
-    }
-    graphClient?.onError(onGraphQlError, 'app');
-
+    // const onGraphQlError = (info) => {
+    //     if (info?.message)
+    //         toast.error(info.message);
+    // }
+    // graphClient?.onError(onGraphQlError, 'app');
 
     if (isInstalled) {
-        if (window.location.hash.includes(welcomePageInfo.route)) {
-            window.history.pushState({}, '', '/admin/#' + loginPageInfo.route);
+        if (window.location.pathname.includes(welcomePageInfo.route)) {
+            window.history.pushState({}, '', '/admin' + loginPageInfo.route);
             window.location.reload();
             return;
         }
 
         // Redirect to /login page if not authorized
-        if (!userInfo) {
-            if (!window.location.hash.includes(loginPageInfo.route)) {
-                window.history.pushState({}, '', '/admin/#' + loginPageInfo.route);
+        if (!userInfo?.id || !userInfo.role) {
+            if (!window.location.pathname.includes(loginPageInfo.route)) {
+                window.history.pushState({}, '', '/admin' + loginPageInfo.route);
                 window.location.reload();
                 return;
             }
@@ -139,7 +139,10 @@ import { store } from './redux/store';
                 try {
                     const settings = await restClient.getAdminCmsSettings();
                     if (settings) {
-                        setStoreItem('cmsSettings', settings)
+                        setStoreItem('cmsSettings', settings);
+
+                        settings?.customFields?.forEach(registerCustomFieldOfType);
+                        settings?.customEntities?.forEach(registerCustomEntity);
                     }
                 } catch (error) {
                     console.error(error);

@@ -1,15 +1,17 @@
-import { GraphQLPaths, TAuthRole, TOrder, TPagedList } from '@cromwell/core';
+import { EDBEntity, GraphQLPaths, TAuthRole, TOrder, TPagedList } from '@cromwell/core';
 import {
     DeleteManyInput,
-    OrderInput,
-    TGraphQLContext,
+    entityMetaRepository,
     Order,
     OrderFilterInput,
+    OrderInput,
     OrderRepository,
     PagedOrder,
     PagedParamsInput,
+    TGraphQLContext,
 } from '@cromwell/core-backend';
-import { Arg, Ctx, Authorized, Mutation, Query, Resolver } from 'type-graphql';
+import { GraphQLJSONObject } from 'graphql-type-json';
+import { Arg, Authorized, Ctx, FieldResolver, Int, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
 import { serverFireAction } from '../helpers/server-fire-action';
@@ -42,7 +44,7 @@ export class OrderResolver {
     @Query(() => PagedOrder)
     async [getOrdersOfUser](
         @Ctx() ctx: TGraphQLContext,
-        @Arg("userId") userId: string,
+        @Arg("userId", () => Int) userId: number,
         @Arg("pagedParams", { nullable: true }) pagedParams?: PagedParamsInput<TOrder>
     ): Promise<TPagedList<TOrder> | undefined> {
         if (!ctx?.user?.role) throw new Error('Access denied.');
@@ -65,7 +67,7 @@ export class OrderResolver {
     @Query(() => Order)
     async [getOneByIdPath](
         @Ctx() ctx: TGraphQLContext,
-        @Arg("id") id: string
+        @Arg("id", () => Int) id: number
     ): Promise<Order | undefined> {
         if (!ctx?.user?.role) throw new Error('Access denied.');
 
@@ -85,7 +87,7 @@ export class OrderResolver {
 
     @Authorized<TAuthRole>("administrator")
     @Mutation(() => Order)
-    async [updatePath](@Arg("id") id: string, @Arg("data") data: OrderInput): Promise<Order | undefined> {
+    async [updatePath](@Arg("id", () => Int) id: number, @Arg("data") data: OrderInput): Promise<Order | undefined> {
         const order = await this.repository.updateOrder(id, data);
         serverFireAction('create_order', order);
         return order;
@@ -93,7 +95,7 @@ export class OrderResolver {
 
     @Authorized<TAuthRole>("administrator")
     @Mutation(() => Boolean)
-    async [deletePath](@Arg("id") id: string): Promise<boolean> {
+    async [deletePath](@Arg("id", () => Int) id: number): Promise<boolean> {
         const order = await this.repository.deleteOrder(id);
         serverFireAction('delete_order', { id });
         return order;
@@ -121,5 +123,10 @@ export class OrderResolver {
         @Arg("filterParams", { nullable: true }) filterParams?: OrderFilterInput,
     ): Promise<TPagedList<TOrder> | undefined> {
         return this.repository.getFilteredOrders(pagedParams, filterParams);
+    }
+
+    @FieldResolver(() => GraphQLJSONObject, { nullable: true })
+    async customMeta(@Root() entity: Order, @Arg("keys", () => [String]) fields: string[]): Promise<any> {
+        return entityMetaRepository.getEntityMetaByKeys(EDBEntity.Order, entity.id, fields);
     }
 }

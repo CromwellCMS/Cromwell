@@ -56,6 +56,12 @@ div.popover {
     padding: 10px 15px;
 }
 
+.label {
+    font-size: 16px;
+    color: #888;
+    margin-bottom: 10px;
+}
+
 :global(.modeDark) {
     .GalleryPicker {
         button.galleryActionBtn {

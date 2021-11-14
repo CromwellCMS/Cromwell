@@ -23,8 +23,30 @@ jest.mock('../../constants/PageInfos', () => {
         ],
         homePageInfo,
         userPageInfo: {},
-        pageInfos: [],
+    }
+});
+
+jest.mock('../../helpers/navigation', () => {
+    return {
         getLinkByInfo: () => undefined,
+        getPageInfos: () => [],
+        getSideBarLinks: () => [
+            {
+                id: 'homePage',
+                title: homePageInfo.name,
+                route: homePageInfo.route,
+            },
+            {
+                id: '1',
+                title: '_test1_',
+                route: '_test1_',
+            },
+            {
+                id: '2',
+                title: '_test2_',
+                route: '_test2_',
+            }
+        ],
     }
 });
 
@@ -36,7 +58,8 @@ import { render, screen } from '@testing-library/react';
 import React from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 
-import { homePageInfo, sideBarLinks } from '../../constants/PageInfos';
+import { homePageInfo } from '../../constants/PageInfos';
+import { getSideBarLinks } from '../../helpers/navigation';
 import Sidebar from './Sidebar';
 import SidebarLink from './SidebarLink';
 
@@ -51,16 +74,16 @@ describe('Sidebar component', () => {
     });
 
     it("renders single link", () => {
-        const homeLink = sideBarLinks.find(l => l.route === homePageInfo.route);
+        const homeLink = getSideBarLinks().find(l => l.route === homePageInfo.route);
         expect(homeLink).toBeTruthy();
         if (!homeLink) return;
 
         render(<Router><SidebarLink
-            toggleSubmenu={() => () => { }}
+            toggleSubMenu={() => () => { }}
             expanded={false}
             forceUpdate={() => { }}
             activeId={null}
-            setActiveId={() => { }}
+            // setActiveId={() => { }}
             data={homeLink}
             userInfo={{ role: 'administrator' } as any}
         /></Router>);

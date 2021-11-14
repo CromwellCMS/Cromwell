@@ -1,5 +1,8 @@
-.container {
+.DraggableList {
     position: relative;
+}
+
+.item {
     display: flex;
-    flex-direction: column;
+    align-items: center;
 }

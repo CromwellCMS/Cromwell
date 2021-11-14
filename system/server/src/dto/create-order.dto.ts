@@ -6,7 +6,7 @@ export class CreateOrderDto implements TPaymentSession {
     status?: string;
 
     @ApiProperty()
-    userId?: string;
+    userId?: number;
 
     @ApiProperty()
     cart?: string;

@@ -1,8 +1,10 @@
 import { TOrderFilter } from '@cromwell/core';
 import { Field, InputType } from 'type-graphql';
 
+import { BaseFilterInput } from './base-filter.filter';
+
 @InputType("OrderFilterInput")
-export class OrderFilterInput implements TOrderFilter {
+export class OrderFilterInput extends BaseFilterInput implements TOrderFilter {
 
     @Field(type => String, { nullable: true })
     status?: string;
@@ -15,7 +17,7 @@ export class OrderFilterInput implements TOrderFilter {
 
     @Field(type => String, { nullable: true })
     customerEmail?: string;
-    
+
     @Field(type => String, { nullable: true })
     orderId?: string;
 

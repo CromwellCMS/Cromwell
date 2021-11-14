@@ -1,7 +1,14 @@
-import { TStaticPageContext, TDefaultPageName } from '@cromwell/core';
+import { TStaticPageContext, TDefaultPageName, TStaticPagePluginContext } from '@cromwell/core';
 import { getModuleImporter } from '@cromwell/core-frontend';
 
 import { fsRequire, getPluginCjsPath } from '../helpers/checkCMSConfig';
+
+export type TPluginsSettings = Record<string, {
+    pluginName: string;
+    version?: string;
+    globalSettings?: any;
+    pluginInstances?: any;
+}>;
 
 const cachedPlugins: Record<string, {
     pluginName: string;
@@ -15,24 +22,18 @@ const cachedPlugins: Record<string, {
  * @param context - StaticPageContext of Page
  */
 export const pluginsDataFetcher = async (pageName: TDefaultPageName | string, context: TStaticPageContext,
-    pluginsData?: {
-        pluginName: string;
-        version?: string;
-        globalSettings?: any;
-    }[]) => {
+    pluginsData?: TPluginsSettings) => {
     const plugins: Record<string, {
         data?: any;
     }> = {};
 
     if (!pluginsData) return plugins;
 
-    const uniquePlugins = [...new Set(pluginsData.map(plugin => plugin.pluginName))]
-        .map(name => pluginsData.find(plugin => plugin.pluginName === name)) as typeof pluginsData;
-
-    const promises = uniquePlugins.map(async data => {
-        const { pluginName, globalSettings, version } = data;
-        const pluginContext = Object.assign({}, context);
+    const promises = Object.values(pluginsData).map(async data => {
+        const { pluginName, globalSettings, version, pluginInstances } = data;
+        const pluginContext: TStaticPagePluginContext = Object.assign({}, context);
         pluginContext.pluginSettings = globalSettings;
+        pluginContext.pluginInstances = pluginInstances;
 
         if (!plugins[pluginName]) plugins[pluginName] = {};
 

@@ -1,14 +1,14 @@
 import { TDeleteManyInput, TPagedList, TPagedParams, TPost, TPostInput } from '@cromwell/core';
 import readingTime from 'reading-time';
 import sanitizeHtml from 'sanitize-html';
-import { EntityRepository, getCustomRepository, SelectQueryBuilder, Brackets } from 'typeorm';
+import { Brackets, EntityRepository, getCustomRepository, SelectQueryBuilder } from 'typeorm';
 
-import { PostFilterInput } from '../models/filters/post.filter';
+import { checkEntitySlug, getPaged, handleBaseInput, handleCustomMetaInput } from '../helpers/base-queries';
+import { getLogger } from '../helpers/logger';
 import { Post } from '../models/entities/post.entity';
 import { Tag } from '../models/entities/tag.entity';
-import { getLogger } from '../helpers/logger';
+import { PostFilterInput } from '../models/filters/post.filter';
 import { PagedParamsInput } from '../models/inputs/paged-params.input';
-import { checkEntitySlug, getPaged, handleBaseInput } from '../helpers/base-queries';
 import { BaseRepository } from './base.repository';
 import { TagRepository } from './tag.repository';
 import { UserRepository } from './user.repository';
@@ -27,7 +27,7 @@ export class PostRepository extends BaseRepository<Post> {
         return this.getPaged(params)
     }
 
-    async getPostById(id: string): Promise<Post | undefined> {
+    async getPostById(id: number): Promise<Post | undefined> {
         logger.log('PostRepository::getPostById id: ' + id);
         return this.getById(id);
     }
@@ -37,11 +37,11 @@ export class PostRepository extends BaseRepository<Post> {
         return this.getBySlug(slug);
     }
 
-    private async handleBasePostInput(post: Post, input: TPostInput) {
-        const author = await getCustomRepository(UserRepository).getUserById(input.authorId);
-        if (!author) throw new Error(`Author for the new post was not found`);
+    private async handleBasePostInput(post: Post, input: TPostInput, action: 'update' | 'create') {
+        const author = input.authorId && await getCustomRepository(UserRepository)
+            .getUserById(input.authorId).catch(() => null);
 
-        handleBaseInput(post, input);
+        await handleBaseInput(post, input);
 
         if (input.tagIds) {
             const tags = await getCustomRepository(TagRepository).getTagsByIds(input.tagIds);
@@ -71,37 +71,35 @@ export class PostRepository extends BaseRepository<Post> {
         post.published = input.published;
         post.featured = input.featured;
         post.authorId = input.authorId;
+        if (author) post.author = author;
         post.publishDate = input.publishDate;
+
+        if (action === 'create') await post.save();
+        await checkEntitySlug(post, Post);
+        await handleCustomMetaInput(post, input);
     }
 
-    async createPost(createPost: TPostInput, id?: string): Promise<Post> {
+    async createPost(createPost: TPostInput, id?: number | null): Promise<Post> {
         logger.log('PostRepository::createPost');
-        let post = new Post();
+        const post = new Post();
         if (id) post.id = id;
 
-        await this.handleBasePostInput(post, createPost);
-        post = await this.save(post);
-        await checkEntitySlug(post, Post);
-
+        await this.handleBasePostInput(post, createPost, 'create');
+        await this.save(post);
         return post;
     }
 
-    async updatePost(id: string, updatePost: TPostInput): Promise<Post> {
+    async updatePost(id: number, updatePost: TPostInput): Promise<Post> {
         logger.log('PostRepository::updatePost id: ' + id);
-
-        let post = await this.findOne({
-            where: { id }
-        });
+        const post = await this.getById(id);
         if (!post) throw new Error(`Post ${id} not found!`);
 
-        await this.handleBasePostInput(post, updatePost);
-        post = await this.save(post);
-        await checkEntitySlug(post, Post);
-
+        await this.handleBasePostInput(post, updatePost, 'update');
+        await this.save(post);
         return post;
     }
 
-    async deletePost(id: string): Promise<boolean> {
+    async deletePost(id: number): Promise<boolean> {
         logger.log('PostRepository::deletePost; id: ' + id);
 
         const post = await this.getPostById(id);
@@ -114,6 +112,7 @@ export class PostRepository extends BaseRepository<Post> {
     }
 
     applyPostFilter(qb: SelectQueryBuilder<TPost>, filterParams?: PostFilterInput) {
+        this.applyBaseFilter(qb, filterParams);
 
         if (filterParams?.tagIds && filterParams.tagIds.length > 0) {
             qb.leftJoin(`${this.metadata.tablePath}.tags`, getCustomRepository(TagRepository).metadata.tablePath)
@@ -126,7 +125,7 @@ export class PostRepository extends BaseRepository<Post> {
             qb.andWhere(query, { titleSearch });
         }
 
-        if (filterParams?.authorId && filterParams.authorId !== '') {
+        if (filterParams?.authorId) {
             const authorId = filterParams.authorId;
             const query = `${this.metadata.tablePath}.${this.quote('authorId')} = :authorId`;
             qb.andWhere(query, { authorId });
@@ -174,24 +173,19 @@ export class PostRepository extends BaseRepository<Post> {
     }
 
     async deleteManyFilteredPosts(input: TDeleteManyInput, filterParams?: PostFilterInput): Promise<boolean | undefined> {
-        // Select first, because JOIN with DELETE is not supported by Typeorm (such a shame), 
-        // we need it for post filter with tags (see above). 
-        const qb = this.createQueryBuilder(this.metadata.tablePath).select(['id']);
-        this.applyPostFilter(qb, filterParams);
-        this.applyDeleteMany(qb, input);
-        const ids: { id: string | number }[] = await qb.execute();
+        const qbSelect = this.createQueryBuilder(this.metadata.tablePath).select([`${this.metadata.tablePath}.id`]);
+        this.applyPostFilter(qbSelect, filterParams);
+        this.applyDeleteMany(qbSelect, input);
 
-        const deleteQb = this.createQueryBuilder(this.metadata.tablePath).delete();
-        this.applyDeleteMany(deleteQb, {
-            all: false,
-            ids: ids.map(id => id?.id + ''),
-        });
+        const qbDelete = this.createQueryBuilder(this.metadata.tablePath).delete()
+            .where(`${this.metadata.tablePath}.id IN (${qbSelect.getQuery()})`)
+            .setParameters(qbSelect.getParameters());
 
-        await deleteQb.execute();
+        await qbDelete.execute();
         return true;
     }
 
-    async getTagsOfPost(postId: string): Promise<Tag[] | undefined | null> {
+    async getTagsOfPost(postId: number): Promise<Tag[] | undefined | null> {
         return (await this.findOne(postId, {
             relations: ['tags']
         }))?.tags;

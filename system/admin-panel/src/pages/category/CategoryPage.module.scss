@@ -3,11 +3,12 @@
 .CategoryPage {
     position: relative;
     margin: 10px;
-    max-width: 1200px;
+    max-width: 900px;
     margin: 0 auto;
     width: 100%;
     padding: 20px;
 }
+
 .notFoundPage {
     display: flex;
     justify-content: center;
@@ -22,7 +23,7 @@
 
 .header {
     @include paper;
-    padding: 0 20px 0 0;
+    padding: 0 10px 0 0;
     width: 100%;
     margin-bottom: 20px;
     display: flex;
@@ -43,6 +44,7 @@
 }
 
 :global(.modeDark) {
+
     .header,
     .fields {
         background-color: #333;
@@ -74,7 +76,6 @@
 
 .imageBox {
     @extend .item;
-    border-bottom: 1px solid #999;
 }
 
 .mainImage {

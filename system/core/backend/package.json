@@ -1,6 +1,6 @@
 {
   "name": "@cromwell/core-backend",
-  "version": "1.0.27",
+  "version": "2.0.1",
   "description": "",
   "license": "MIT",
   "repository": "https://github.com/CromwellCMS/Cromwell",
@@ -21,7 +21,7 @@
     "watch": "npx rollup -cw"
   },
   "dependencies": {
-    "@cromwell/core": "1.1.22",
+    "@cromwell/core": "2.0.1",
     "@nestjs/common": "8.0.6",
     "@nestjs/core": "8.0.6",
     "@nestjs/graphql": "8.0.2",
@@ -37,6 +37,7 @@
     "fastify": "3.22.0",
     "fs-extra": "10.0.0",
     "graphql": "15.5.1",
+    "graphql-type-json": "0.3.2",
     "handlebars": "4.7.7",
     "node-fetch": "2.6.1",
     "nodemailer": "6.6.3",
@@ -48,6 +49,7 @@
     "tslib": "2.3.1",
     "type-graphql": "1.1.1",
     "typeorm": "0.2.37",
+    "uuid": "8.3.2",
     "winston": "3.3.3"
   },
   "devDependencies": {

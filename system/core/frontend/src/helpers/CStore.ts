@@ -2,12 +2,12 @@ import { getStoreItem, isServer, setStoreItem, TAttribute, TProduct, TStoreListI
 
 import { getGraphQLClient } from '../api/CGraphQLClient';
 
-const cartKey = 'CromwellShop_CartList';
-const wishlistKey = 'CromwellShop_WishList';
-const compareKey = 'CromwellShop_CompareList';
-const watchedKey = 'CromwellShop_Watched';
+const cartKey = 'crw_shop_cart_list';
+const wishlistKey = 'crw_shop_wish_list';
+const compareKey = 'crw_shop_compare_list';
+const watchedKey = 'crw_shop_watched_items';
 
-const currencyKey = 'CromwellShop_Currency';
+const currencyKey = 'crw_shop_currency';
 
 type TLocalStorage = {
     getItem: (key: string) => any;
@@ -15,7 +15,7 @@ type TLocalStorage = {
 }
 
 export type TApiClient = {
-    getProductById: (id: string) => Promise<TProduct | undefined>;
+    getProductById: (id: number) => Promise<TProduct | undefined>;
     getAttributes: () => Promise<TAttribute[] | undefined>;
 };
 
@@ -211,7 +211,7 @@ export class CStore {
         if (attributes) {
             const missingAttributes: TAttribute[] = [];
             for (const attr of attributes) {
-                if (attr.required) {
+                if (attr.key && attr.required) {
                     if (!product.pickedAttributes || !product.pickedAttributes[attr.key] ||
                         !product.pickedAttributes[attr.key].length)
                         missingAttributes.push(attr);
@@ -528,6 +528,7 @@ export class CStore {
     /** Returns merged price with sign of active (picked by user or default) currency */
     public getPriceWithCurrency = (price: any): string => {
         let priceStr = this.getPrice(price);
+        if (!priceStr || priceStr === '') return '';
 
         const cmsSettings = getStoreItem('cmsSettings');
         const currency = this.getActiveCurrencyTag();

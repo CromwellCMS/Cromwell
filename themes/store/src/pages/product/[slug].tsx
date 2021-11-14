@@ -92,7 +92,7 @@ const Product: TCromwellPage<ProductProps> = (props) => {
                                     return client.getFilteredProductReviews({
                                         pagedParams: params,
                                         filterParams: {
-                                            productId: product.id + '',
+                                            productId: product.id,
                                             approved: true,
                                         }
                                     });

@@ -11,15 +11,22 @@ import React from 'react';
 import { connect, PropsType } from 'react-redux-ts';
 
 import { useForceUpdate } from '../../helpers/forceUpdate';
+import { toLocaleDateTimeString } from '../../helpers/time';
 import { TAppState } from '../../redux/store';
 import commonStyles from '../../styles/common.module.scss';
-import { ListItemProps } from './ReviewList';
 import styles from './ReviewListItem.module.scss';
 
 type TListItemProps = {
     data?: TProductReview;
     listItemProps: ListItemProps;
     embedded?: boolean;
+}
+
+export type ListItemProps = {
+    handleDeleteBtnClick: (id: number) => void;
+    handleOpenReview: (data: TProductReview) => void;
+    toggleSelection: (data: TProductReview) => void;
+    handleApproveReview: (data: TProductReview) => Promise<boolean>;
 }
 
 const mapStateToProps = (state: TAppState) => {
@@ -68,7 +75,7 @@ const ReviewListItem = (props: TPropsType) => {
                     <Grid item xs={props.embedded ? 4 : 3} className={styles.itemSubInfo}>
                         <p className={styles.status}>{props.data?.approved ? <DoneIcon /> : <HourglassEmptyIcon />} {props.data?.approved ? 'Approved' : 'Pending'}</p>
                         {!props.embedded && (
-                            <p className={styles.createDate}>{toLocaleDateString(props.data?.createDate)}</p>
+                            <p className={styles.createDate}>{toLocaleDateTimeString(props.data?.createDate)}</p>
                         )}
                     </Grid>
                     <Grid item xs={props.embedded ? 5 : 4} className={styles.itemSubInfo}>
@@ -120,9 +127,3 @@ const ReviewListItem = (props: TPropsType) => {
 }
 
 export default connect(mapStateToProps)(ReviewListItem);
-
-const toLocaleDateString = (date: Date | string | undefined) => {
-    if (!date) return '';
-    if (typeof date === 'string') date = new Date(date);
-    return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
-}

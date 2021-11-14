@@ -3,7 +3,7 @@ import { getRestApiClient } from '@cromwell/core-frontend';
 
 import { store } from './store';
 
-export const toggleItemSelection = (itemId: string) => {
+export const toggleItemSelection = (itemId: number) => {
     store.setStateProp({
         prop: 'selectedItems',
         payload: {
@@ -52,7 +52,7 @@ export const getSelectedInput = (): TDeleteManyInput => {
     const selectedItems = store.getState().selectedItems;
     return {
         all: store.getState().allSelected,
-        ids: Object.keys(selectedItems).filter(id => selectedItems[id])
+        ids: Object.keys(selectedItems).filter(id => selectedItems[id]).map(Number).filter(Boolean),
     }
 }
 

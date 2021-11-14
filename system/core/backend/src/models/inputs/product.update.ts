@@ -1,18 +1,19 @@
-import { InputType, Field, ID } from "type-graphql";
-import { TProductInput } from '@cromwell/core';
+import { TProductInput, TStockStatus } from '@cromwell/core';
+import { Field, InputType, Int } from 'type-graphql';
+
+import { AttributeInstance } from '../objects/attribute-instance.object';
 import { BasePageInput } from './base-page.input';
-import { AttributeInstance } from '../entities/attribute-instance.entity';
 
 @InputType({ description: "Update Product data" })
 export class UpdateProduct extends BasePageInput implements TProductInput {
     @Field(() => String, { nullable: true })
     name: string;
 
-    @Field(() => [String], { nullable: true })
-    categoryIds: string[];
+    @Field(() => [Int], { nullable: true })
+    categoryIds: number[];
 
-    @Field(() => String, { nullable: true })
-    mainCategoryId: string;
+    @Field(() => Int, { nullable: true })
+    mainCategoryId: number;
 
     @Field(() => Number, { nullable: true })
     price: number;
@@ -37,4 +38,10 @@ export class UpdateProduct extends BasePageInput implements TProductInput {
 
     @Field(() => [AttributeInstance], { nullable: true })
     attributes?: AttributeInstance[];
+
+    @Field(type => Int, { nullable: true })
+    stockAmount?: number;
+
+    @Field(type => String, { nullable: true })
+    stockStatus?: TStockStatus;
 }

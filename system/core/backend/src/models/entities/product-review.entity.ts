@@ -1,5 +1,5 @@
 import { TProductReview } from '@cromwell/core';
-import { Field, ObjectType } from 'type-graphql';
+import { Field, Int, ObjectType } from 'type-graphql';
 import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
 
 import { BasePageEntity } from './base-page.entity';
@@ -9,46 +9,47 @@ import { Product } from './product.entity';
 @ObjectType()
 export class ProductReview extends BasePageEntity implements TProductReview {
 
-    @Field(type => String, { nullable: true })
+    @Field(type => Int, { nullable: true })
+    @Column("int", { nullable: true })
     @Index()
-    @Column()
-    productId: string;
+    productId?: number | null;
 
     @ManyToOne(type => Product, product => product.reviews, {
         onDelete: "CASCADE"
     })
     @JoinColumn({ name: "productId" })
-    product: Product;
+    product?: Product | null;
 
     @Field(type => String, { nullable: true })
-    @Column({ type: "varchar", nullable: true })
-    title?: string;
+    @Column({ type: "varchar", length: 255, nullable: true })
+    @Index()
+    title?: string | null;
 
     @Field(type => String, { nullable: true })
     @Column({ type: "text", nullable: true })
-    description?: string;
+    description?: string | null;
 
     @Field(type => Number, { nullable: true })
     @Index()
     @Column({ type: "float", nullable: true })
-    rating?: number;
+    rating?: number | null;
 
     @Field(type => String, { nullable: true })
+    @Column({ type: "varchar", length: 255, nullable: true })
     @Index()
-    @Column({ type: "varchar", nullable: true })
-    userEmail?: string;
+    userEmail?: string | null;
 
     @Field(type => String, { nullable: true })
-    @Column({ type: "varchar", nullable: true })
-    userName?: string;
+    @Column({ type: "varchar", length: 255, nullable: true })
+    userName?: string | null;
 
     @Field(type => String, { nullable: true })
+    @Column({ type: "varchar", length: 255, nullable: true })
     @Index()
-    @Column({ type: "varchar", nullable: true })
-    userId?: string;
+    userId?: number | null;
 
     @Field(type => Boolean, { nullable: true })
-    @Index()
     @Column({ type: "boolean", nullable: true })
-    approved?: boolean;
+    @Index()
+    approved?: boolean | null;
 }

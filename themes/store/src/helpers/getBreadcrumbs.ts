@@ -8,7 +8,7 @@ export const getBreadcrumbs = async (product?: TProduct | null):
     const categories = product.categories;
     const client = getGraphQLClient();
 
-    let targetCategoryId: string | undefined = product?.mainCategoryId;
+    let targetCategoryId: number | undefined | null = product?.mainCategoryId;
 
     if (!targetCategoryId) {
         const getNestedLevel = (category: TProductCategory, level = 0) => {

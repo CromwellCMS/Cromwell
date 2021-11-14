@@ -13,7 +13,7 @@ const testDataAll: TPackageCromwellConfig[] = [
 ];
 const testDataDB: TPluginEntity[] = [
     {
-        id: '_test1_',
+        id: 1,
         name: '_test1_',
         title: '_test1_title',
         isInstalled: true,

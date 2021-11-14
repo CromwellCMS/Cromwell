@@ -61,7 +61,7 @@ const Account = () => {
         return data;
     }
 
-    const getOrders = async (userId: string) => {
+    const getOrders = async (userId: number) => {
         try {
             const orders = await getGraphQLClient().getOrdersOfUser(userId, { pageSize: 9999 });
             if (orders?.elements) {
@@ -130,7 +130,7 @@ const Account = () => {
     }
 
     const loggedContent = (
-        <CContainer className={styles.fields} id="checkout-1">
+        <CContainer className={styles.fields} id="account-1">
             <Grid container item spacing={3} className={styles.contactInfo}>
                 <Grid item xs={12} sm={12}>
                     <h2 className={styles.subheader}>Contact information</h2>
@@ -178,6 +178,7 @@ const Account = () => {
                 <Grid item xs={12} sm={12}>
                     <Button variant="contained" color="primary"
                         className={styles.saveBtn}
+                        style={{ marginBottom: '15px' }}
                         size="small"
                         onClick={handleSave}
                     >Update</Button>
@@ -214,15 +215,15 @@ const Account = () => {
 
     return (
         <Layout>
-            <CContainer className={clsx(commonStyles.content, styles.AccountPage)} id="checkout-2">
+            <CContainer className={clsx(commonStyles.content, styles.AccountPage)} id="account-2">
                 {loading && (
                     <LoadBox />
                 )}
                 {(!loading && userData) && loggedContent}
                 {(!loading && !userData) && (
-                    <CContainer style={{ padding: '20px 15px' }} id="checkout-3">
-                        <CText className={styles.subheader} id="checkout-4" element="h2">Log in</CText>
-                        <CContainer className={styles.signInBlock} id="checkout-5">
+                    <CContainer style={{ padding: '20px 15px' }} id="account-3">
+                        <CText className={styles.subheader} id="account-4" element="h2">Log in</CText>
+                        <CContainer className={styles.signInBlock} id="account-5">
                             <Button variant="outlined"
                                 color="primary"
                                 size="small"

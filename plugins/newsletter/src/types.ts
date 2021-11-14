@@ -3,6 +3,6 @@ export type TSettings = {
 }
 
 export interface NewsletterForm {
-    id: string;
+    id: number;
     email: string;
 }

@@ -129,7 +129,7 @@ export const ProductActions = (props: {
                         elements={{
                             attributeValue: (attrProps) => {
                                 let isValid = true;
-                                if (attrProps.attribute?.required) {
+                                if (attrProps.attribute?.required && attrProps.attribute.key) {
                                     if (!pickedAttributes || !pickedAttributes[attrProps.attribute.key]
                                         || !pickedAttributes[attrProps.attribute.key].length)
                                         isValid = false;
@@ -155,7 +155,7 @@ export const ProductActions = (props: {
                             },
                             attributeTitle: (props) => {
                                 let isValid = true;
-                                if (props.attribute?.required) {
+                                if (props.attribute?.required && props.attribute.key) {
                                     if (!pickedAttributes || !pickedAttributes[props.attribute.key]
                                         || !pickedAttributes[props.attribute.key].length)
                                         isValid = false;

@@ -1,6 +1,6 @@
 import 'date-fns';
 
-import { resolvePageRoute, serviceLocator, TPost, TTag } from '@cromwell/core';
+import { EDBEntity, resolvePageRoute, serviceLocator, TPost, TTag } from '@cromwell/core';
 import { Close as CloseIcon } from '@mui/icons-material';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import DatePicker from '@mui/lab/DatePicker';
@@ -8,20 +8,22 @@ import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import { Autocomplete, Button, Checkbox, FormControlLabel, IconButton, Popover, TextField, Tooltip } from '@mui/material';
 import React, { useState } from 'react';
 
-import ImagePicker from '../../components/imagePicker/ImagePicker';
+import { ImagePicker } from '../../components/imagePicker/ImagePicker';
+import { getCustomMetaFor, RenderCustomFields } from '../../helpers/customFields';
 import styles from './PostSettings.module.scss';
 
 
 const PostSettings = (props: {
-    postData?: Partial<TPost>;
+    postData?: TPost;
     isSettingsOpen: boolean;
     anchorEl: Element;
     allTags?: TTag[] | null;
     onClose: (newData: Partial<TPost>) => void;
     isSaving?: boolean;
     handleUnpublish: () => void;
+    refetchMeta: () => Promise<Record<string, string> | undefined>;
 }) => {
-    const { postData } = props;
+    const { postData, refetchMeta } = props;
     const [title, setTitle] = useState<string | undefined>(postData?.title ?? null);
     const [mainImage, setMainImage] = useState<string | undefined>(postData?.mainImage ?? null);
     const [pageDescription, setPageDescription] = useState<string | undefined>(postData?.pageDescription ?? null);
@@ -39,7 +41,7 @@ const PostSettings = (props: {
         setPageKeywords(newValue);
     }
 
-    const handleClose = () => {
+    const handleClose = async () => {
         const newData = Object.assign({}, postData);
         newData.title = title;
         newData.mainImage = mainImage;
@@ -53,12 +55,13 @@ const PostSettings = (props: {
             if (!newData.meta) newData.meta = {};
             newData.meta.keywords = pageKeywords;
         }
+        newData.customMeta = Object.assign({}, postData.customMeta, await getCustomMetaFor(EDBEntity.Post));
         props.onClose(newData);
     }
 
     let pageFullUrl;
     if (slug) {
-        pageFullUrl = serviceLocator.getFrontendUrl() + resolvePageRoute('post', { slug: slug ?? postData.id });
+        pageFullUrl = serviceLocator.getFrontendUrl() + resolvePageRoute('post', { slug: slug ?? postData.id + '' });
     }
 
     return (
@@ -175,12 +178,14 @@ const PostSettings = (props: {
                     getOptionLabel={(option) => option}
                     onChange={handleChangeKeywords}
                     renderInput={(params) => (
-                        <TextField
-                            {...params}
-                            className={styles.settingItem}
-                            variant="standard"
-                            label="Meta keywords"
-                        />
+                        <Tooltip title="Press ENTER to add">
+                            <TextField
+                                {...params}
+                                className={styles.settingItem}
+                                variant="standard"
+                                label="Meta keywords"
+                            />
+                        </Tooltip>
                     )}
                 />
                 {postData?.published && (
@@ -192,6 +197,14 @@ const PostSettings = (props: {
                             onClick={props.handleUnpublish}
                         >Unpublish</Button>
                     </Tooltip>
+                )}
+                <div style={{ marginBottom: '15px' }}></div>
+                {postData && (
+                    <RenderCustomFields
+                        entityType={EDBEntity.Post}
+                        entityData={postData}
+                        refetchMeta={refetchMeta}
+                    />
                 )}
             </div>
         </Popover>

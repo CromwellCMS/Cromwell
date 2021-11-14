@@ -8,7 +8,7 @@ import styles from './ReviewForm.module.scss';
 
 
 const ReviewForm = (props: {
-    productId: string;
+    productId: number;
 }) => {
     const userInfo = getStoreItem('userInfo');
     const [name, setName] = useState(userInfo?.fullName ?? '');

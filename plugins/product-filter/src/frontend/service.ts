@@ -43,14 +43,14 @@ export const setListProps = (productListId?: string,
     list.setProps(listProps);
 }
 
-export const getFiltered = async (client: TCGraphQLClient | undefined, categoryId: string, pagedParams: TPagedParams<TProduct>,
+export const getFiltered = async (client: TCGraphQLClient | undefined, categoryId: number, pagedParams: TPagedParams<TProduct>,
     filterParams: TProductFilter, cb?: (data: TFilteredProductList | undefined) => void): Promise<TFilteredProductList | undefined> => {
 
     const getProducts = async () => {
         try {
             return await client?.query({
                 query: gql`
-                query getFilteredProducts($categoryId: String!, $pagedParams: PagedParamsInput!, $filterParams: ProductFilterInput!) {
+                query getFilteredProducts($categoryId: Int!, $pagedParams: PagedParamsInput!, $filterParams: ProductFilterInput!) {
                     getFilteredProducts(categoryId: $categoryId, pagedParams: $pagedParams, filterParams: $filterParams) {
                         pagedMeta {
                             ...PagedMetaFragment

@@ -294,7 +294,7 @@ registerWidget({
 Frontend bundle follows the principles of Next.js pages. You have to export a React component and optionally you can use `getStaticProps`.  
 
 ```tsx
-import { TGetStaticProps, TFrontendPluginProps } from '@cromwell/core';
+import { TGetPluginStaticProps, TFrontendPluginProps } from '@cromwell/core';
 
 type DataType = {
   message: string;
@@ -322,8 +322,10 @@ export default function YouPluginName(props: TFrontendPluginProps<DataType, MyLo
   )
 }
 
-export const getStaticProps: TGetStaticProps<MyGlobalSettings> = async (context): Promise<DataType> => {
+export const getStaticProps: TGetPluginStaticProps<MyGlobalSettings> = async (context): Promise<DataType> => {
+  // Filter out private data at the backend
   const { secretKey, ...restSettings } = context.pluginSettings;
+  // And pass the rest to the frontend
   return {
     message: 'Hello world',
     globalSettings: restSettings,
@@ -331,9 +333,46 @@ export const getStaticProps: TGetStaticProps<MyGlobalSettings> = async (context)
 }
 ```
 
-`getStaticProps` here works as in Next.js pages. Cromwell CMS root wrapper will collect props for all Plugins on the requested page and pass them to components. This means your plugin can be statically pre-rendered with all the data at the Next.js server.  
+`getStaticProps` here works the same way as in Next.js pages. Cromwell CMS will collect props for all Plugins on the requested page and pass them to components. This means your plugin can be statically pre-rendered with all the data at the Next.js server.  
 
 Plugin's settings will be passed to `getStaticProps` in the context. Since this function is executed only at the backend, you can safely extract your private settings and pass others to the frontend as data.
+
+Note that a user can possibly drop your Plugin several times at one page. But `getStaticProps` will be called only once at the page! Therefore `props.data` passed to the React components will be the same for all instances.  
+If you have custom instance settings and you want to fetch different data for a specific Plugin instances in `getStaticProps`, you can access `context.pluginInstances`. This object contains settings for each Plugin instance (if these settings were passed) labelled by block id. Block id is a unique id of every Block on the page like CPlugin. You can access block id at the frontend via `props.blockId`. So your solution in this case will be like that:
+
+```tsx
+import { TGetPluginStaticProps, TFrontendPluginProps } from '@cromwell/core';
+
+type DataType = {
+  myData: {
+    blockId: string;
+    instanceData: string;
+  }[];
+}
+
+export default function YouPluginName(props: TFrontendPluginProps<DataType>) {
+  return (
+    <>
+      <p>Data of this plugin instance:</p>
+      <div>{props.myData?.find(data => data.blockId === props.blockId)?.instanceData}</div>
+    </>
+  )
+}
+
+export const getStaticProps: TGetPluginStaticProps = async (context): Promise<DataType> => {
+  if (context.pluginInstances) {
+    return {
+      myData: await Promise.all(Object.keys(context.pluginInstances).map(async blockId => {
+        const data = await fetchMyCustomDataByInstanceSettings(context.pluginInstances[blockId])
+        return {
+          blockId,
+          instanceData: data,
+        }
+      }))
+    }
+  }
+}
+```
 
 
 ## Backend
@@ -493,7 +532,7 @@ Or start watcher:
 npx cromwell build -w
 ```
 
-Go to Admin panel and make sure your Plugin appeared at /admin/#/plugins page.  
+Go to Admin panel and make sure your Plugin appeared at `/admin/plugins` page.  
 The settings icon should open `PluginSettings` widget.
 
 ## Customize bundler

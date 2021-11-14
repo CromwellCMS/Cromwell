@@ -5,7 +5,7 @@ import { withStyles } from '@mui/styles';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import { SidebarLinkType } from '../../constants/PageInfos';
+import { TSidebarLink } from '../../constants/PageInfos';
 import styles from './Sidebar.module.scss';
 
 const ExpansionPanel = withStyles({
@@ -38,17 +38,16 @@ const MenuItem = withStyles({
 
 
 const SidebarLink = (props: {
-    data: SidebarLinkType,
-    toggleSubmenu: (panel: string) => (event: React.ChangeEvent, isExpanded: boolean) => void,
+    data: TSidebarLink,
+    toggleSubMenu: (panel: string) => (event: React.ChangeEvent, isExpanded: boolean) => void,
     expanded: string | false;
     forceUpdate: () => void;
-    setActiveId: (id: string) => void;
     activeId: string;
     userInfo: TUser | undefined;
 }) => {
     const isExpanded = props.expanded === props.data.id;
 
-    if (props.data?.roles) {
+    if (props.data?.roles && props.userInfo?.role) {
         if (!props.data.roles.includes(props.userInfo.role)) {
             return null;
         }
@@ -60,7 +59,7 @@ const SidebarLink = (props: {
                 <div className={styles.sidebarlinkIcon}>{props.data.icon}</div>
                 <p>{props.data.title}</p>
             </div>
-            {props.data.sublinks && (
+            {props.data.subLinks && (
                 <ExpandMoreIcon style={{ transform: isExpanded ? 'rotate(180deg)' : '' }}
                     className={styles.ExpandMoreIcon} htmlColor='#999' />
             )}
@@ -70,32 +69,31 @@ const SidebarLink = (props: {
         head = <Link to={props.data.route}
             onClick={e => {
                 e.stopPropagation();
-                props.setActiveId(props.data.id);
+                // props.setActiveId(props.data.id);
             }}
         >{head}</Link>
     }
 
-    if (props.data.sublinks) return (
+    if (props.data.subLinks) return (
         <ExpansionPanel
             key={props.data.id}
             expanded={isExpanded}
-            onChange={props.toggleSubmenu(props.data.id)}
+            onChange={props.toggleSubMenu(props.data.id)}
             className={styles.SidebarLink}>
             <AccordionSummary
                 className={styles.ExpansionPanelSummary}
-                aria-controls={`sublinks-${props.data.title}-content`}
+                aria-controls={`subLinks-${props.data.title}-content`}
 
             >{head}
             </AccordionSummary>
             <ExpansionPanelDetails>
-                <div className={styles.sublinksContainer}>
-                    {props.data.sublinks.map(sublink => (
-                        <SidebarLink data={sublink}
-                            key={sublink.id}
-                            expanded={props.expanded} toggleSubmenu={props.toggleSubmenu}
+                <div className={styles.subLinksContainer}>
+                    {props.data.subLinks.map(subLink => (
+                        <SidebarLink data={subLink}
+                            key={subLink.id}
+                            expanded={props.expanded} toggleSubMenu={props.toggleSubMenu}
                             forceUpdate={props.forceUpdate}
                             activeId={props.activeId}
-                            setActiveId={props.setActiveId}
                             userInfo={props.userInfo}
                         />
                     ))}

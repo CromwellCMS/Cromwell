@@ -1,7 +1,8 @@
 import { TCromwellBlockData } from '@cromwell/core';
-import { TextField, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
+import { FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 import React from 'react';
-import ColorPicker from '../../../../components/colorPicker/ColorPicker';
+
+import { ColorPicker } from '../../../../components/colorPicker/ColorPicker';
 
 export function StyleField(props: {
     dataType: 'px' | 'string' | 'color' | 'select';

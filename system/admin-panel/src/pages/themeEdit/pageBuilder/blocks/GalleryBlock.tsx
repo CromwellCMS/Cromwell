@@ -1,19 +1,10 @@
 import { TCromwellBlockData } from '@cromwell/core';
-import {
-    Checkbox,
-    FormControl,
-    FormControlLabel,
-    InputLabel,
-    MenuItem,
-    Select,
-    TextField,
-    Tooltip,
-    SelectChangeEvent
-} from '@mui/material';
 import { PhotoLibrary as PhotoLibraryIcon, Public as PublicIcon } from '@mui/icons-material';
+import { Checkbox, FormControlLabel, SelectChangeEvent, TextField, Tooltip } from '@mui/material';
 import React from 'react';
 
-import GalleryPicker from '../../../../components/galleryPicker/GalleryPicker';
+import { GalleryPicker } from '../../../../components/galleryPicker/GalleryPicker';
+import { Select } from '../../../../components/select/Select';
 import { useForceUpdate } from '../../../../helpers/forceUpdate';
 import { StylesEditor } from '../components/StylesEditor';
 import styles from './BaseBlock.module.scss';
@@ -67,7 +58,6 @@ export function GalleryBlockSidebar(props: TBlockMenuProps) {
                 images={data?.gallery?.images}
                 onChange={(val) => handleChange('images', val)}
                 className={styles.settingsInput}
-                hideSrc
                 editLink
             />
             <TextField
@@ -190,20 +180,15 @@ export function GalleryBlockSidebar(props: TBlockMenuProps) {
                 type="number"
                 variant="standard"
                 label="Space between slides, px" />
-            <FormControl
+            <Select
+                label="Image fit"
+                className={styles.settingsInput}
                 fullWidth
-                className={styles.settingsInput} >
-                <InputLabel >Image fit</InputLabel>
-                <Select
-                    fullWidth
-                    onChange={handleSelectTextInput('backgroundSize')}
-                    variant="standard"
-                    value={data?.gallery?.backgroundSize ?? 'cover'}
-                >
-                    <MenuItem value={'contain'}>Contain</MenuItem>
-                    <MenuItem value={'cover'}>Cover</MenuItem>
-                </Select>
-            </FormControl>
+                onChange={handleSelectTextInput('backgroundSize')}
+                variant="standard"
+                value={data?.gallery?.backgroundSize ?? 'cover'}
+                options={[{ value: 'contain', label: 'Contain' }, { value: 'cover', label: 'Cover' }]}
+            />
             {/* <FormControl
                 fullWidth
                 className={styles.settingsInput} >

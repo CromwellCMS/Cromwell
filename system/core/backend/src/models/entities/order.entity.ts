@@ -1,92 +1,109 @@
 import { TOrder } from '@cromwell/core';
-import { Field, ObjectType } from 'type-graphql';
-import { BaseEntity, Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Field, Int, ObjectType } from 'type-graphql';
+import {
+    BaseEntity,
+    Column,
+    CreateDateColumn,
+    Entity,
+    Index,
+    OneToMany,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn,
+} from 'typeorm';
+
+import { OrderMeta } from './meta/order-meta.entity';
+import { CustomDateScalar } from '../objects/custom-date.scalar';
 
 @Entity()
 @ObjectType()
 export class Order extends BaseEntity implements TOrder {
 
-    @Field(() => String, { nullable: true })
+    @Field(() => Int, { nullable: true })
     @Index()
     @PrimaryGeneratedColumn()
-    id: string;
+    id: number;
 
     @Field(() => String, { nullable: true })
     @Index()
-    @Column({ type: "varchar", nullable: true })
-    status?: string;
+    @Column({ type: "varchar", length: 255, nullable: true })
+    status?: string | null;
 
     @Field(() => String, { nullable: true })
     @Column({ type: "text", nullable: true })
-    cart?: string;
+    cart?: string | null;
 
     @Field(() => Number, { nullable: true })
     @Column({ type: "float", nullable: true })
-    orderTotalPrice?: number;
+    orderTotalPrice?: number | null;
 
     @Field(() => Number, { nullable: true })
     @Column({ type: "float", nullable: true })
-    cartTotalPrice?: number;
+    cartTotalPrice?: number | null;
 
     @Field(() => Number, { nullable: true })
     @Column({ type: "float", nullable: true })
-    cartOldTotalPrice?: number;
+    cartOldTotalPrice?: number | null;
 
     @Field(() => Number, { nullable: true })
     @Column({ type: "float", nullable: true })
-    shippingPrice?: number;
+    shippingPrice?: number | null;
 
     @Field(() => Number, { nullable: true })
     @Column({ type: "float", nullable: true })
-    totalQnt?: number;
+    totalQnt?: number | null;
+
+    @Field(() => Int, { nullable: true })
+    @Column({ type: "int", nullable: true })
+    @Index()
+    userId?: number | null;
 
     @Field(() => String, { nullable: true })
     @Index()
-    @Column({ type: "varchar", nullable: true })
-    userId?: string;
+    @Column({ type: "varchar", length: 255, nullable: true })
+    customerName?: string | null;
 
     @Field(() => String, { nullable: true })
     @Index()
-    @Column({ type: "varchar", nullable: true })
-    customerName?: string;
+    @Column({ type: "varchar", length: 255, nullable: true })
+    customerPhone?: string | null;
 
     @Field(() => String, { nullable: true })
     @Index()
-    @Column({ type: "varchar", nullable: true })
-    customerPhone?: string;
+    @Column({ type: "varchar", length: 255, nullable: true })
+    customerEmail?: string | null;
 
     @Field(() => String, { nullable: true })
-    @Index()
-    @Column({ type: "varchar", nullable: true })
-    customerEmail?: string;
+    @Column({ type: "varchar", length: 255, nullable: true })
+    customerAddress?: string | null;
 
     @Field(() => String, { nullable: true })
-    @Column({ type: "varchar", nullable: true })
-    customerAddress?: string;
+    @Column({ type: "varchar", length: 255, nullable: true })
+    shippingMethod?: string | null;
 
     @Field(() => String, { nullable: true })
-    @Column({ type: "varchar", nullable: true })
-    shippingMethod?: string;
+    @Column({ type: "varchar", length: 255, nullable: true })
+    paymentMethod?: string | null;
 
     @Field(() => String, { nullable: true })
-    @Column({ type: "varchar", nullable: true })
-    paymentMethod?: string;
+    @Column({ type: "varchar", length: 3000, nullable: true })
+    customerComment?: string | null;
 
     @Field(() => String, { nullable: true })
-    @Column({ type: "varchar", nullable: true })
-    customerComment?: string;
+    @Column({ type: "varchar", length: 255, nullable: true })
+    currency?: string | null;
 
-    @Field(() => String, { nullable: true })
-    @Column({ type: "varchar", nullable: true })
-    currency?: string;
-
-    @Field(() => Date)
+    @Field(() => CustomDateScalar, { nullable: true })
     @Index()
     @CreateDateColumn()
-    createDate: Date;
+    createDate?: Date | null;
 
-    @Field(() => Date)
+    @Field(() => CustomDateScalar, { nullable: true })
     @Index()
     @UpdateDateColumn()
-    updateDate: Date;
+    updateDate?: Date | null;
+
+    @OneToMany(() => OrderMeta, meta => meta.entity, {
+        cascade: true,
+    })
+    metaRecords?: OrderMeta[] | null;
 }

@@ -49,11 +49,11 @@ describe('Tag resolver', () => {
         expect(data.pagedMeta.pageSize).toBeTruthy();
     });
 
-    const getTag = async (tagId: string): Promise<TTag> => {
+    const getTag = async (tagId: number): Promise<TTag> => {
         const path = GraphQLPaths.Tag.getOneById;
         const res = await server.executeOperation({
             query: gql`
-            query testGetTagById($id: String!) {
+            query testGetTagById($id: Int!) {
                 ${path}(id: $id) {
                     ...TagFragment
                 }
@@ -69,7 +69,7 @@ describe('Tag resolver', () => {
     }
 
     it(`getTag`, async () => {
-        const data = await getTag('1');
+        const data = await getTag(1);
         if (Array.isArray(data)) {
             console.error('data error', data)
             expect(!Array.isArray(data)).toBeTruthy();
@@ -80,7 +80,7 @@ describe('Tag resolver', () => {
     });
 
     it(`updateTag`, async () => {
-        const data1 = await getTag('1');
+        const data1 = await getTag(1);
         if (Array.isArray(data1)) {
             console.error('data error', data1)
             expect(!Array.isArray(data1)).toBeTruthy();
@@ -96,7 +96,7 @@ describe('Tag resolver', () => {
 
         const res = await server.executeOperation({
             query: gql`
-              mutation testUpdateTag($id: String!, $data: InputTag!) {
+              mutation testUpdateTag($id: Int!, $data: InputTag!) {
                   ${path}(id: $id, data: $data) {
                       ...TagFragment
                   }
@@ -104,7 +104,7 @@ describe('Tag resolver', () => {
               ${crwClient?.TagFragment}
           `,
             variables: {
-                id: '1',
+                id: 1,
                 data: inputData,
             }
         });
@@ -113,7 +113,7 @@ describe('Tag resolver', () => {
             console.error('res error', success)
             expect(!Array.isArray(success)).toBeTruthy();
         }
-        const data2 = await getTag('1');
+        const data2 = await getTag(1);
         if (Array.isArray(data2)) {
             console.error('data error', data2)
             expect(!Array.isArray(data2)).toBeTruthy();
@@ -126,7 +126,7 @@ describe('Tag resolver', () => {
 
 
     it(`createTag`, async () => {
-        const data1: TTag = await getTag('3');
+        const data1: TTag = await getTag(3);
         if (Array.isArray(data1)) {
             console.error('data error', data1)
             expect(!Array.isArray(data1)).toBeTruthy();
@@ -176,7 +176,7 @@ describe('Tag resolver', () => {
 
 
     it(`deleteTag`, async () => {
-        const data1 = await getTag('4');
+        const data1 = await getTag(4);
         if (Array.isArray(data1)) {
             console.error('data error', data1)
             expect(!Array.isArray(data1)).toBeTruthy();
@@ -187,12 +187,12 @@ describe('Tag resolver', () => {
 
         const res = await server.executeOperation({
             query: gql`
-                mutation testDeleteTag($id: String!) {
+                mutation testDeleteTag($id: Int!) {
                     ${path}(id: $id)
                 }
           `,
             variables: {
-                id: '4',
+                id: 4,
             }
         });
         const success = crwClient?.returnData(res, path);
@@ -202,7 +202,7 @@ describe('Tag resolver', () => {
         }
         expect(success === true).toBeTruthy();
 
-        const data2 = await getTag('4');
+        const data2 = await getTag(4);
 
         expect(!data2?.id).toBeTruthy();
     });

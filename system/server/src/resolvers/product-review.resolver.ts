@@ -8,7 +8,7 @@ import {
     ProductReviewInput,
     ProductReviewRepository,
 } from '@cromwell/core-backend';
-import { Arg, Authorized, Mutation, Query, Resolver } from 'type-graphql';
+import { Arg, Authorized, Int, Mutation, Query, Resolver } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
 import { resetAllPagesCache } from '../helpers/reset-page';
@@ -34,7 +34,7 @@ export class ProductReviewResolver {
     }
 
     @Query(() => ProductReview)
-    async [getOneByIdPath](@Arg("id") id: string): Promise<ProductReview> {
+    async [getOneByIdPath](@Arg("id", () => Int) id: number): Promise<ProductReview> {
         return await this.repository.getProductReview(id);
     }
 
@@ -48,7 +48,7 @@ export class ProductReviewResolver {
 
     @Authorized<TAuthRole>("administrator")
     @Mutation(() => ProductReview)
-    async [updatePath](@Arg("id") id: string, @Arg("data") data: ProductReviewInput): Promise<ProductReview> {
+    async [updatePath](@Arg("id", () => Int) id: number, @Arg("data") data: ProductReviewInput): Promise<ProductReview> {
         const review = await this.repository.updateProductReview(id, data);
         serverFireAction('update_product_review', review);
         resetAllPagesCache();
@@ -57,7 +57,7 @@ export class ProductReviewResolver {
 
     @Authorized<TAuthRole>("administrator")
     @Mutation(() => Boolean)
-    async [deletePath](@Arg("id") id: string): Promise<boolean> {
+    async [deletePath](@Arg("id", () => Int) id: number): Promise<boolean> {
         const review = await this.repository.deleteProductReview(id);
         serverFireAction('delete_product_review', { id });
         resetAllPagesCache();

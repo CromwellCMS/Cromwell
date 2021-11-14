@@ -6,12 +6,12 @@ const postsData: TPagedList<TPost> = {
     pagedMeta: { totalElements: 2, pageNumber: 1, pageSize: 2, totalPages: 1 },
     elements: [
         {
-            id: '1',
+            id: 1,
             title: '_test1_',
             published: false,
         },
         {
-            id: '2',
+            id: 2,
             title: '_test2_',
             published: true,
         }
@@ -20,7 +20,7 @@ const postsData: TPagedList<TPost> = {
 const users: TPagedList<TUser> = {
     elements: [
         {
-            id: '1',
+            id: 1,
             fullName: 'name1',
             email: 'mail1',
         }
@@ -36,7 +36,7 @@ jest.mock('@cromwell/core-frontend', () => {
                 return () => (
                     <div>
                         {items.elements.map(it => {
-                            return <ListItem key={it.id} data={it} />
+                            return <ListItem key={it.id} data={it} listItemProps={props.listItemProps} />
                         })}
                     </div>
                 )
@@ -45,14 +45,19 @@ jest.mock('@cromwell/core-frontend', () => {
         },
         getGraphQLClient: () => {
             return {
-                getFilteredPosts: jest.fn().mockImplementation(() => postsData),
-                getFilteredUsers: jest.fn().mockImplementation(() => users),
-                getTags: jest.fn().mockImplementation(() => []),
+                getFilteredPosts: jest.fn().mockImplementation(async () => postsData),
+                getFilteredUsers: jest.fn().mockImplementation(async () => users),
+                getTags: jest.fn().mockImplementation(async () => []),
             }
         },
         getRestApiClient: () => {
             return {
                 getCmsStatus: () => null,
+            }
+        },
+        getCStore: () => {
+            return {
+                getPriceWithCurrency: jest.fn().mockImplementation((val) => val + ''),
             }
         },
     }
@@ -61,6 +66,7 @@ jest.mock('@cromwell/core-frontend', () => {
 jest.mock('../../constants/PageInfos', () => {
     return {
         postPageInfo: {},
+        postListInfo: {},
     }
 });
 

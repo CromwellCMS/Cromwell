@@ -1,17 +1,17 @@
-import { Field, ObjectType } from "type-graphql";
-import { TPagedMeta } from "@cromwell/core";
+import { TPagedMeta } from '@cromwell/core';
+import { Field, Int, ObjectType } from 'type-graphql';
 
 @ObjectType()
 export class PagedMeta implements TPagedMeta {
-    @Field(() => Number, { nullable: true })
+    @Field(() => Int, { nullable: true })
     pageNumber?: number;
 
-    @Field(() => Number, { nullable: true })
+    @Field(() => Int, { nullable: true })
     pageSize?: number;
 
-    @Field(() => Number, { nullable: true })
+    @Field(() => Int, { nullable: true })
     totalPages?: number;
 
-    @Field(() => Number, { nullable: true })
+    @Field(() => Int, { nullable: true })
     totalElements?: number;
 }

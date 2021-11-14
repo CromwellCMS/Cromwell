@@ -1,12 +1,12 @@
 import { TDeleteManyInput, TPagedList, TPagedParams, TProductReview, TProductReviewInput } from '@cromwell/core';
 import sanitizeHtml from 'sanitize-html';
-import { Brackets, DeleteQueryBuilder, EntityRepository, getCustomRepository, SelectQueryBuilder } from 'typeorm';
+import { Brackets, EntityRepository, getCustomRepository, SelectQueryBuilder } from 'typeorm';
 
-import { ProductReviewFilter } from '../models/filters/product-review.filter';
-import { ProductReview } from '../models/entities/product-review.entity';
+import { checkEntitySlug, getPaged, handleBaseInput, handleCustomMetaInput } from '../helpers/base-queries';
 import { getLogger } from '../helpers/logger';
+import { ProductReview } from '../models/entities/product-review.entity';
+import { ProductReviewFilter } from '../models/filters/product-review.filter';
 import { PagedParamsInput } from '../models/inputs/paged-params.input';
-import { checkEntitySlug, getPaged, handleBaseInput } from '../helpers/base-queries';
 import { BaseRepository } from './base.repository';
 import { ProductRepository } from './product.repository';
 
@@ -16,11 +16,16 @@ const logger = getLogger();
 export class ProductReviewRepository extends BaseRepository<ProductReview> {
 
     private productRepo = getCustomRepository(ProductRepository);
+
+    constructor() {
+        super(ProductReview);
+    }
+
     async getProductReviews(params: TPagedParams<TProductReview>): Promise<TPagedList<TProductReview>> {
         return getPaged(this.createQueryBuilder(this.metadata.tablePath), this.metadata.tablePath, params);
     }
 
-    async getProductReview(id: string): Promise<ProductReview> {
+    async getProductReview(id: number): Promise<ProductReview> {
         logger.log('ProductReviewRepository::getProductReview id: ' + id);
         const productReview = await this.findOne({
             where: { id }
@@ -29,10 +34,10 @@ export class ProductReviewRepository extends BaseRepository<ProductReview> {
         return productReview;
     }
 
-    async handleProductReviewInput(productReview: ProductReview, input: TProductReviewInput) {
-        handleBaseInput(productReview, input);
+    async handleProductReviewInput(productReview: ProductReview, input: TProductReviewInput, action: 'update' | 'create') {
+        await handleBaseInput(productReview, input);
 
-        const product = await this.productRepo.getProductById(input.productId);
+        const product = input.productId && await this.productRepo.getProductById(input.productId);
         if (!product) throw new Error(`ProductReviewRepository:handleProductReviewInput productId ${input.productId} not found!`);
         productReview.product = product;
 
@@ -49,37 +54,34 @@ export class ProductReviewRepository extends BaseRepository<ProductReview> {
         }) : input.userName;
         productReview.approved = input.approved;
         productReview.userId = input.userId;
+
+        if (action === 'create') await productReview.save();
+        await checkEntitySlug(productReview, ProductReview);
+        await handleCustomMetaInput(productReview, input);
     }
 
-    async createProductReview(createProductReview: TProductReviewInput, id?: string): Promise<TProductReview> {
+    async createProductReview(createProductReview: TProductReviewInput, id?: number | null): Promise<TProductReview> {
         logger.log('ProductReviewRepository::createProductReview');
-        let productReview = new ProductReview();
+        const productReview = new ProductReview();
         if (id) productReview.id = id;
 
-        await this.handleProductReviewInput(productReview, createProductReview);
-
-        productReview = await this.save(productReview);
-        await checkEntitySlug(productReview, ProductReview);
+        await this.handleProductReviewInput(productReview, createProductReview, 'create');
+        await this.save(productReview);
 
         return productReview;
     }
 
-    async updateProductReview(id: string, updateProductReview: TProductReviewInput): Promise<ProductReview> {
+    async updateProductReview(id: number, updateProductReview: TProductReviewInput): Promise<ProductReview> {
         logger.log('ProductReviewRepository::updateProductReview; id: ' + id);
-        let productReview = await this.findOne({
-            where: { id }
-        });
+        const productReview = await this.getById(id)
         if (!productReview) throw new Error(`ProductReview ${id} not found!`);
 
-        await this.handleProductReviewInput(productReview, updateProductReview);
-
-        productReview = await this.save(productReview);
-        await checkEntitySlug(productReview, ProductReview);
-
+        await this.handleProductReviewInput(productReview, updateProductReview, 'update');
+        await this.save(productReview);
         return productReview;
     }
 
-    async deleteProductReview(id: string): Promise<boolean> {
+    async deleteProductReview(id: number): Promise<boolean> {
         logger.log('ProductReviewRepository::deleteProductReview; id: ' + id);
 
         const productReview = await this.getProductReview(id);
@@ -90,7 +92,9 @@ export class ProductReviewRepository extends BaseRepository<ProductReview> {
         return true;
     }
 
-    applyProductReviewFilter(qb: SelectQueryBuilder<TProductReview> | DeleteQueryBuilder<TProductReview>, filterParams?: ProductReviewFilter) {
+    applyProductReviewFilter(qb: SelectQueryBuilder<TProductReview>, filterParams?: ProductReviewFilter) {
+        this.applyBaseFilter(qb, filterParams);
+
         // Search by approved
         if (filterParams?.approved !== undefined && filterParams?.approved !== null) {
 
@@ -108,13 +112,13 @@ export class ProductReviewRepository extends BaseRepository<ProductReview> {
         }
 
         // Search by productId
-        if (filterParams?.productId && filterParams.productId !== '') {
+        if (filterParams?.productId !== undefined && filterParams?.productId !== null) {
             const query = `${this.metadata.tablePath}.${this.quote('productId')} = :productId`;
             qb.andWhere(query, { productId: filterParams.productId });
         }
 
         // Search by userId
-        if (filterParams?.userId && filterParams.userId !== '') {
+        if (filterParams?.userId) {
             const query = `${this.metadata.tablePath}.${this.quote('userId')} = :userId`;
             qb.andWhere(query, { userId: filterParams.userId });
         }
@@ -136,12 +140,15 @@ export class ProductReviewRepository extends BaseRepository<ProductReview> {
 
 
     async deleteManyFilteredProductReviews(input: TDeleteManyInput, filterParams?: ProductReviewFilter): Promise<boolean | undefined> {
-        const qb = this.createQueryBuilder()
-            .delete().from<ProductReview>(this.metadata.tablePath);
+        const qbSelect = this.createQueryBuilder(this.metadata.tablePath).select([`${this.metadata.tablePath}.id`]);
+        this.applyProductReviewFilter(qbSelect, filterParams);
+        this.applyDeleteMany(qbSelect, input);
 
-        this.applyProductReviewFilter(qb, filterParams);
-        this.applyDeleteMany(qb, input);
-        await qb.execute();
+        const qbDelete = this.createQueryBuilder(this.metadata.tablePath).delete()
+            .where(`${this.metadata.tablePath}.id IN (${qbSelect.getQuery()})`)
+            .setParameters(qbSelect.getParameters());
+
+        await qbDelete.execute();
         return true;
     }
 

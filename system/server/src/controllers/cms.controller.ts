@@ -552,13 +552,14 @@ export class CmsController {
     @Roles('administrator')
     @ApiOperation({
         description: 'Import DB from Excel files',
+        parameters: [{ name: 'removeSurplus', in: 'query' }]
     })
     @ApiResponse({
         status: 200,
     })
-    async importDB(@Req() req: any) {
+    async importDB(@Req() req: any, @Query('removeSurplus') removeSurplus?: string | null) {
         try {
-            await this.migrationService.importDB(req);
+            await this.migrationService.importDB(req, removeSurplus);
         } catch (error) {
             logger.error(error);
             throw new HttpException(String(error), HttpStatus.INTERNAL_SERVER_ERROR);

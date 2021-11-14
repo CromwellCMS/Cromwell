@@ -1,15 +1,18 @@
-import { resolvePageRoute, serviceLocator, TTag, TTagInput } from '@cromwell/core';
+import { gql } from '@apollo/client';
+import { EDBEntity, resolvePageRoute, serviceLocator, TTag, TTagInput } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
 import { ArrowBack as ArrowBackIcon, OpenInNew as OpenInNewIcon } from '@mui/icons-material';
 import { Autocomplete as MuiAutocomplete, Button, Grid, IconButton, Skeleton, TextField, Tooltip } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { Link, useHistory, useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 
-import ColorPicker from '../../components/colorPicker/ColorPicker';
-import ImagePicker from '../../components/imagePicker/ImagePicker';
+import { ColorPicker } from '../../components/colorPicker/ColorPicker';
+import { ImagePicker } from '../../components/imagePicker/ImagePicker';
 import { toast } from '../../components/toast/toast';
-import { tagListPageInfo, tagPageInfo } from '../../constants/PageInfos';
+import { tagPageInfo } from '../../constants/PageInfos';
+import { getCustomMetaFor, getCustomMetaKeysFor, RenderCustomFields } from '../../helpers/customFields';
 import { getEditorData, getEditorHtml, initTextEditor } from '../../helpers/editor/editor';
+import { handleOnSaveError } from '../../helpers/handleErrors';
 import commonStyles from '../../styles/common.module.scss';
 import styles from './Tag.module.scss';
 
@@ -21,12 +24,32 @@ const TagPage = () => {
     const [isSaving, setIsSaving] = useState(false);
     const [tagLoading, setTagLoading] = useState<boolean>(false);
     const history = useHistory();
+    const [canValidate, setCanValidate] = useState(false);
     const editorId = 'tag-description-editor';
 
-    const getTagData = async (id: string) => {
+    const getTagData = async (id: number) => {
         let tagData: TTag;
         try {
-            tagData = await client.getTagById(id);
+            tagData = await client.getTagById(id,
+                gql`
+                    fragment AdminPanelTagFragment on Tag {
+                        id
+                        slug
+                        createDate
+                        updateDate
+                        pageTitle
+                        pageDescription
+                        meta {
+                            keywords
+                        }
+                        isEnabled
+                        name
+                        color
+                        image
+                        description
+                        descriptionDelta
+                        customMeta (keys: ${JSON.stringify(getCustomMetaKeysFor(EDBEntity.Tag))})
+                    }`, 'AdminPanelTagFragment');
             if (tagData) {
                 setData(tagData);
             }
@@ -46,7 +69,7 @@ const TagPage = () => {
         setTagLoading(true);
 
         if (tagId && tagId !== 'new') {
-            const tag = await getTagData(tagId);
+            const tag = await getTagData(parseInt(tagId));
 
             try {
                 if (tag?.descriptionDelta)
@@ -57,7 +80,7 @@ const TagPage = () => {
         }
 
         if (tagId === 'new') {
-            setData({ id: tagId } as any);
+            setData({} as any);
         }
 
         setTagLoading(false);
@@ -73,8 +96,12 @@ const TagPage = () => {
         init();
     }, []);
 
+    const checkValid = (value) => value && value !== '';
+
     const handleSave = async () => {
-        if (!data) return;
+        setCanValidate(true);
+        if (!checkValid(data?.name)) return;
+
         setIsSaving(true);
 
         const inputData: TTagInput = {
@@ -90,16 +117,18 @@ const TagPage = () => {
             isEnabled: data.isEnabled,
             description: await getEditorHtml(editorId),
             descriptionDelta: JSON.stringify(await getEditorData(editorId)),
+            customMeta: Object.assign({}, data.customMeta, await getCustomMetaFor(EDBEntity.Tag)),
         }
 
-        if (data?.id === 'new') {
+        if (tagId === 'new') {
             try {
                 const newData = await client?.createTag(inputData);
                 toast.success('Created tag!');
-                history.push(`${tagPageInfo.baseRoute}/${newData.id}`)
+                history.replace(`${tagPageInfo.baseRoute}/${newData.id}`)
                 await getTagData(newData.id);
             } catch (e) {
                 toast.error('Failed to create tag');
+                handleOnSaveError(e);
                 console.error(e);
             }
         } else {
@@ -109,10 +138,12 @@ const TagPage = () => {
                 toast.success('Saved!');
             } catch (e) {
                 toast.error('Failed to save');
+                handleOnSaveError(e);
                 console.error(e)
             }
         }
         setIsSaving(false);
+        setCanValidate(false);
     }
 
     const handleInputChange = (prop: keyof TTag, val: any) => {
@@ -124,6 +155,12 @@ const TagPage = () => {
             });
         }
     }
+
+    const refetchMeta = async () => {
+        if (!tagId) return;
+        const data = await getTagData(parseInt(tagId));
+        return data?.customMeta;
+    };
 
     if (notFound) {
         return (
@@ -137,23 +174,23 @@ const TagPage = () => {
 
     let pageFullUrl;
     if (data) {
-        pageFullUrl = serviceLocator.getFrontendUrl() + resolvePageRoute('tag', { slug: data.slug ?? data.id });
+        pageFullUrl = serviceLocator.getFrontendUrl() + resolvePageRoute('tag', { slug: data.slug ?? data.id + '' });
     }
 
     return (
         <div className={styles.TagPage}>
             <div className={styles.header}>
                 <div className={styles.headerLeft}>
-                    <Link to={tagListPageInfo.route}>
-                        <IconButton>
-                            <ArrowBackIcon />
-                        </IconButton>
-                    </Link>
+                    <IconButton
+                        onClick={() => window.history.back()}
+                    >
+                        <ArrowBackIcon style={{ fontSize: '18px' }} />
+                    </IconButton>
                     <p className={commonStyles.pageTitle}>tag</p>
                 </div>
                 <div className={styles.headerActions}>
                     {pageFullUrl && (
-                        <Tooltip title="Open tag page in new tab">
+                        <Tooltip title="Open tag in the new tab">
                             <IconButton
                                 style={{ marginRight: '10px' }}
                                 className={styles.openPageBtn}
@@ -186,6 +223,7 @@ const TagPage = () => {
                                 variant="standard"
                                 className={styles.textField}
                                 onChange={(e) => { handleInputChange('name', e.target.value) }}
+                                error={canValidate && !checkValid(data?.name)}
                             />
                         </Grid>
                         <Grid item xs={12} sm={6}>
@@ -219,7 +257,7 @@ const TagPage = () => {
                         </Grid>
                         <Grid item xs={12}>
                             <div className={styles.descriptionEditor}>
-                                <div style={{ height: '350px' }} id={editorId}></div>
+                                <div style={{ minHeight: '300px' }} id={editorId}></div>
                             </div>
                         </Grid>
                         <Grid item xs={12}>
@@ -257,13 +295,24 @@ const TagPage = () => {
                                     })
                                 }}
                                 renderInput={(params) => (
-                                    <TextField
-                                        {...params}
-                                        variant="standard"
-                                        label="Meta keywords"
-                                    />
+                                    <Tooltip title="Press ENTER to add">
+                                        <TextField
+                                            {...params}
+                                            variant="standard"
+                                            label="Meta keywords"
+                                        />
+                                    </Tooltip>
                                 )}
                             />
+                        </Grid>
+                        <Grid item xs={12} >
+                            {data && (
+                                <RenderCustomFields
+                                    entityType={EDBEntity.Tag}
+                                    entityData={data}
+                                    refetchMeta={refetchMeta}
+                                />
+                            )}
                         </Grid>
                     </Grid>
                 )}

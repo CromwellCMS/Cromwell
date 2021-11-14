@@ -1,4 +1,5 @@
 import { TBasePageEntityInput, TBasePageMeta } from '@cromwell/core';
+import { GraphQLJSONObject } from 'graphql-type-json';
 import { Field, InputType } from 'type-graphql';
 
 @InputType()
@@ -13,17 +14,20 @@ export class BasePageMetaInput implements TBasePageMeta {
 @InputType()
 export class BasePageInput implements TBasePageEntityInput {
     @Field(() => String, { nullable: true })
-    slug?: string;
+    slug?: string | null;
 
     @Field(() => String, { nullable: true })
-    pageTitle?: string;
+    pageTitle?: string | null;
 
     @Field(() => String, { nullable: true })
-    pageDescription?: string;
+    pageDescription?: string | null;
 
     @Field(() => Boolean, { nullable: true })
-    isEnabled?: boolean;
+    isEnabled?: boolean | null;
 
     @Field(() => BasePageMetaInput, { nullable: true })
     meta?: TBasePageMeta | null | undefined;
+
+    @Field(() => GraphQLJSONObject, { nullable: true })
+    customMeta?: Record<string, string | null> | null;
 }

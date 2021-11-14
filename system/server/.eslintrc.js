@@ -24,5 +24,6 @@ module.exports = {
         "@typescript-eslint/no-empty-function": "off",
         "@typescript-eslint/ban-ts-comment": "off",
         "no-console": ["warn", { "allow": ["warn", "error"] }],
+        "@typescript-eslint/no-non-null-assertion": "off",
     }
 };

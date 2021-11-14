@@ -1,9 +1,10 @@
-import { TProduct, TProductCategory, TProductRating, TProductReview } from '@cromwell/core';
-import { Field, ObjectType } from 'type-graphql';
+import { TProduct, TProductCategory, TProductRating, TProductReview, TStockStatus } from '@cromwell/core';
+import { Field, Int, ObjectType } from 'type-graphql';
 import { Column, Entity, Index, JoinTable, ManyToMany, OneToMany } from 'typeorm';
 
-import { AttributeInstance } from './attribute-instance.entity';
+import { AttributeToProduct } from './attribute-product.entity';
 import { BasePageEntity } from './base-page.entity';
+import { ProductMeta } from './meta/product-meta.entity';
 import { ProductCategory } from './product-category.entity';
 import { ProductReview } from './product-review.entity';
 
@@ -12,80 +13,86 @@ import { ProductReview } from './product-review.entity';
 export class Product extends BasePageEntity implements TProduct {
 
     @Field(type => String, { nullable: true })
-    @Index()
-    @Column({ type: "varchar", nullable: true })
-    name?: string;
+    @Column({ type: "varchar", length: 255, nullable: true })
+    @Index({ fulltext: true })
+    name?: string | null;
 
     @ManyToMany(type => ProductCategory, category => category.products)
     @JoinTable()
-    categories?: TProductCategory[];
+    categories?: TProductCategory[] | null;
 
-    @Field(type => String, { nullable: true })
+    @Field(type => Int, { nullable: true })
+    @Column({ type: "int", nullable: true })
     @Index()
-    @Column({ type: "varchar", nullable: true })
-    mainCategoryId?: string;
-
-    @Field(type => Number, { nullable: true })
-    @Index()
-    @Column({ type: "float", nullable: true })
-    price?: number;
+    mainCategoryId?: number | null;
 
     @Field(type => Number, { nullable: true })
     @Column({ type: "float", nullable: true })
-    oldPrice?: number;
-
-    @Field(type => String, { nullable: true })
     @Index()
-    @Column({ type: "varchar", nullable: true })
-    sku?: string;
+    price?: number | null;
+
+    @Field(type => Number, { nullable: true })
+    @Column({ type: "float", nullable: true })
+    @Index()
+    oldPrice?: number | null;
 
     @Field(type => String, { nullable: true })
-    @Column({ type: "varchar", nullable: true, length: 300 })
-    mainImage?: string;
+    @Column({ type: "varchar", length: 255, nullable: true })
+    @Index({ fulltext: true })
+    sku?: string | null;
+
+    @Field(type => String, { nullable: true })
+    @Column({ type: "varchar", length: 400, nullable: true })
+    mainImage?: string | null;
 
     @Field(type => [String], { nullable: true })
     @Column({ type: "simple-array", nullable: true })
-    images?: string[];
+    images?: string[] | null;
+
+    @Field(type => Int, { nullable: true })
+    @Column({ type: "int", nullable: true })
+    @Index()
+    stockAmount?: number | null;
+
+    @Field(type => String, { nullable: true })
+    @Column({ type: "varchar", length: 255, nullable: true })
+    @Index()
+    stockStatus?: TStockStatus | null;
 
     @Field(type => String, { nullable: true })
     @Column({ type: "text", nullable: true })
-    description?: string;
+    description?: string | null;
 
     @Field(type => String, { nullable: true })
     @Column({ type: "text", nullable: true })
-    descriptionDelta?: string;
+    descriptionDelta?: string | null;
 
     @OneToMany(type => ProductReview, review => review.product, {
-        onDelete: "CASCADE"
+        cascade: true,
     })
-    reviews?: TProductReview[];
+    reviews?: TProductReview[] | null;
 
-    @Field(type => [AttributeInstance], { nullable: true })
-    public get attributes(): AttributeInstance[] | undefined {
-        if (this.attributesJSON) return JSON.parse(this.attributesJSON);
-    }
+    @OneToMany(() => AttributeToProduct, attribute => attribute.product, {
+        cascade: true,
+    })
+    attributeValues?: AttributeToProduct[] | null;
 
-    public set attributes(data: AttributeInstance[] | undefined) {
-        if (data) this.attributesJSON = JSON.stringify(data);
-        else this.attributesJSON = data;
-    }
-
-    @Index()
-    @Column({ type: 'text', nullable: true })
-    private attributesJSON?: string;
-
-    @Field(type => Number, { nullable: true })
-    views?: number
+    views?: number | null;
 
     /** 
      * ! Not real columns, workaround to make SELECT count reviews:
      * https://github.com/CromwellCMS/Cromwell/blob/9eb541b1be060f792abbf4f7133071099a8633f2/system/core/backend/src/repositories/ProductRepository.ts#L39-L45
      */
     @Column({ type: "decimal", nullable: true, select: false, insert: false, readonly: true })
-    averageRating?: number;
+    averageRating?: number | null;
 
     @Column({ type: "int", nullable: true, select: false, insert: false, readonly: true })
-    reviewsCount?: number;
+    reviewsCount?: number | null;
+
+    @OneToMany(() => ProductMeta, meta => meta.entity, {
+        cascade: true,
+    })
+    metaRecords?: ProductMeta[] | null;
 }
 
 @ObjectType()
@@ -93,6 +100,6 @@ export class ProductRating implements TProductRating {
     @Field(type => Number, { nullable: true })
     average?: number;
 
-    @Field(type => Number, { nullable: true })
+    @Field(type => Int, { nullable: true })
     reviewsNumber?: number;
 }

@@ -17,16 +17,20 @@ import { ImageItem } from './ImageItem';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
-class GalleryPicker extends Component<{
+export type GalleryPickerProps = {
     images?: TImageSettings[];
     onChange?: (images: TImageSettings[]) => void;
     classes?: {
         imagePicker?: ImagePickerProps['classes'];
     }
     className?: string;
+    label?: string;
     hideSrc?: boolean;
     editLink?: boolean;
-}, {
+    style?: React.CSSProperties;
+}
+
+export class GalleryPicker extends Component<GalleryPickerProps, {
     editableLink?: number;
     editableLinkText: string | undefined;
 }> {
@@ -117,7 +121,10 @@ class GalleryPicker extends Component<{
         });
 
         return (
-            <div className={clsx(styles.GalleryPicker, this.props.className)}>
+            <div className={clsx(styles.GalleryPicker, this.props.className)} style={this.props.style}>
+                {this.props.label && (
+                    <p className={styles.label}>{this.props.label}</p>
+                )}
                 <ResponsiveGridLayout
                     margin={[0, 0]}
                     isResizable={false}
@@ -212,6 +219,3 @@ class GalleryPicker extends Component<{
         );
     }
 }
-
-
-export default GalleryPicker;

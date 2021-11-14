@@ -53,13 +53,13 @@ const CheckoutPage: TCromwellPage = () => {
 
     const userInfo = getStoreItem('userInfo');
     const [form, setForm] = useState<{
-        email?: string;
-        name?: string;
-        phone?: string;
-        address?: string;
-        comment?: string;
-        shippingMethod?: string;
-        paymentMethod?: string;
+        email?: string | null;
+        name?: string | null;
+        phone?: string | null;
+        address?: string | null;
+        comment?: string | null;
+        shippingMethod?: string | null;
+        paymentMethod?: string | null;
     }>({
         email: userInfo?.email,
         name: userInfo?.fullName,

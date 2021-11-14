@@ -1,15 +1,26 @@
-import { TCmsConfig, serviceLocator } from '@cromwell/core';
+import { serviceLocator, TCmsConfig } from '@cromwell/core';
 
+import { AttributeToProduct } from '../models/entities/attribute-product.entity';
+import { AttributeValue } from '../models/entities/attribute-value.entity';
 import { Attribute } from '../models/entities/attribute.entity';
 import { CmsEntity } from '../models/entities/cms.entity';
+import { CustomEntity } from '../models/entities/custom-entity.entity';
+import { AttributeMeta } from '../models/entities/meta/attribute-meta.entity';
+import { CustomEntityMeta } from '../models/entities/meta/custom-entity-meta.entity';
+import { OrderMeta } from '../models/entities/meta/order-meta.entity';
+import { PostMeta } from '../models/entities/meta/post-meta.entity';
+import { ProductCategoryMeta } from '../models/entities/meta/product-category-meta.entity';
+import { ProductMeta } from '../models/entities/meta/product-meta.entity';
+import { TagMeta } from '../models/entities/meta/tag-meta.entity';
+import { UserMeta } from '../models/entities/meta/user-meta.entity';
 import { Order } from '../models/entities/order.entity';
 import { PageStats } from '../models/entities/page-stats.entity';
 import { PluginEntity } from '../models/entities/plugin.entity';
-import { Post } from '../models/entities/post.entity';
 import { PostComment } from '../models/entities/post-comment.entity';
-import { Product } from '../models/entities/product.entity';
+import { Post } from '../models/entities/post.entity';
 import { ProductCategory } from '../models/entities/product-category.entity';
 import { ProductReview } from '../models/entities/product-review.entity';
+import { Product } from '../models/entities/product.entity';
 import { Tag } from '../models/entities/tag.entity';
 import { ThemeEntity } from '../models/entities/theme.entity';
 import { User } from '../models/entities/user.entity';
@@ -20,6 +31,10 @@ export const ORMEntities = [
     Product, ProductCategory, Post, User,
     Attribute, ProductReview, Order,
     CmsEntity, Tag, PageStats, PostComment,
+    AttributeMeta, OrderMeta, PostMeta,
+    ProductCategoryMeta, ProductMeta, TagMeta,
+    UserMeta, AttributeToProduct, AttributeValue,
+    CustomEntity, CustomEntityMeta,
 ]
 
 export const rendererMessages = {

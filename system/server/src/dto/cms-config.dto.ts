@@ -63,6 +63,9 @@ export class CmsConfigDto implements TCmsSettings {
     @ApiProperty()
     rewrites?: TCmsRedirect[];
 
+    @ApiProperty()
+    customMeta?: Record<string, string>;
+
     parseConfig(config: TCmsSettings) {
         this.domain = config.domain;
         this.url = config.url;
@@ -84,6 +87,7 @@ export class CmsConfigDto implements TCmsSettings {
         this.versions = config.versions;
         this.rewrites = config.rewrites;
         this.redirects = config.redirects;
+        this.customMeta = config.customMeta;
         return this;
     }
 }

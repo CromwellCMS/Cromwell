@@ -1,5 +1,7 @@
-import { TPostInput } from "@cromwell/core";
-import { InputType, Field, ID } from "type-graphql";
+import { TPostInput } from '@cromwell/core';
+import { Field, InputType, Int } from 'type-graphql';
+
+import { CustomDateScalar } from '../objects/custom-date.scalar';
 import { BasePageInput } from './base-page.input';
 
 @InputType({ description: "New Post data" })
@@ -8,8 +10,8 @@ export class UpdatePost extends BasePageInput implements TPostInput {
     @Field(() => String, { nullable: true })
     title: string;
 
-    @Field()
-    authorId: string;
+    @Field(type => Int)
+    authorId: number;
 
     @Field(() => String, { nullable: true })
     mainImage?: string;
@@ -17,8 +19,8 @@ export class UpdatePost extends BasePageInput implements TPostInput {
     @Field(type => String, { nullable: true })
     readTime?: string | null;
 
-    @Field(type => [String], { nullable: true })
-    tagIds?: string[] | null;
+    @Field(type => [Int], { nullable: true })
+    tagIds?: number[] | null;
 
     @Field(() => String, { nullable: true })
     content: string;
@@ -35,6 +37,6 @@ export class UpdatePost extends BasePageInput implements TPostInput {
     @Field(() => Boolean, { nullable: true })
     featured?: boolean;
 
-    @Field(type => Date, { nullable: true })
+    @Field(type => CustomDateScalar, { nullable: true })
     publishDate?: Date | null;
 }

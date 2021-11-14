@@ -1,265 +1,170 @@
-import { gql } from '@apollo/client';
-import {
-    getBlockInstance,
-    getStoreItem,
-    setStoreItem,
-    TAttribute,
-    TFilteredProductList,
-    TPagedParams,
-    TProduct,
-    TProductFilter,
-} from '@cromwell/core';
-import { CList, getGraphQLClient, TCList } from '@cromwell/core-frontend';
-import {
-    AddCircle as AddCircleIcon,
-    Close as CloseIcon,
-    Delete as DeleteIcon,
-    FilterList as FilterListIcon,
-} from '@mui/icons-material';
-import { Checkbox, Drawer, IconButton, Tooltip } from '@mui/material';
+import { EDBEntity, TAttribute, TFilteredProductList, TProduct, TProductFilter } from '@cromwell/core';
+import { getGraphQLClient } from '@cromwell/core-frontend';
+import { Close as CloseIcon, FilterList as FilterListIcon } from '@mui/icons-material';
+import { Drawer, IconButton, Tooltip } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
-import { connect, PropsType } from 'react-redux-ts';
-import { useHistory } from 'react-router-dom';
 
 import ProductFilter from '../../../../../plugins/product-filter/src/frontend/components/Filter';
-import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
-import ConfirmationModal from '../../components/modal/Confirmation';
-import Pagination from '../../components/pagination/Pagination';
-import { listPreloader } from '../../components/skeleton/SkeletonPreloader';
-import { toast } from '../../components/toast/toast';
-import { productPageInfo } from '../../constants/PageInfos';
-import {
-    countSelectedItems,
-    getSelectedInput,
-    resetSelected,
-    toggleItemSelection,
-    toggleSelectAll,
-} from '../../redux/helpers';
-import { TAppState } from '../../redux/store';
-import commonStyles from '../../styles/common.module.scss';
+import { IFrontendFilter } from '../../../../../plugins/product-filter/src/types';
+import EntityTable from '../../components/entity/entityTable/EntityTable';
+import { IEntityListPage, TEntityPageProps } from '../../components/entity/types';
+import { productListInfo, productPageInfo } from '../../constants/PageInfos';
+import { baseEntityColumns } from '../../helpers/customEntities';
 import styles from './ProductList.module.scss';
-import ProductListItem from './ProductListItem';
 
-export type ListItemProps = {
-    handleDeleteProductBtnClick: (product: TProduct) => void;
-    toggleSelection: (data: TProduct) => void;
-}
+const EntityTableComp = EntityTable as React.ComponentType<TEntityPageProps<TProduct, TProductFilter>>;
 
-const mapStateToProps = (state: TAppState) => {
-    return {
-        allSelected: state.allSelected,
-    }
-}
-
-type TPropsType = PropsType<TAppState, Record<string, unknown>,
-    ReturnType<typeof mapStateToProps>>;
-
-const ProductList = (props: TPropsType) => {
+export default function ProductTable() {
     const client = getGraphQLClient();
-    const filterInput = useRef<TProductFilter>({});
-    const listId = "Admin_ProductsList";
-    const history = useHistory();
-    const [attributes, setAttributes] = useState<TAttribute[] | null>(null);
-    const [productToDelete, setProductToDelete] = useState<TProduct | null>(null);
-    const [deleteSelectedOpen, setDeleteSelectedOpen] = useState<boolean>(false);
-    const [isLoading, setIsLoading] = useState<boolean>(false);
-    const totalElements = useRef<number | null>(null);
-    const filterPluginName = '@cromwell/plugin-product-filter';
     const [showFilter, setShowFilter] = useState(false);
-    const headerRef = useRef<HTMLDivElement | null>(null);
-    const filterInstRef = useRef</*IFrontendFilter*/ any | null>(null);
+    const filterInstRef = useRef<IFrontendFilter | null>(null);
+    const [attributes, setAttributes] = useState<TAttribute[] | null>(null);
     const productsRef = useRef<TFilteredProductList | null>(null);
+    const attributesFilterInput = useRef<TProductFilter>({});
+    const initialFilterRef = useRef<TProductFilter>({});
+    const entityListPageRef = useRef<IEntityListPage<TProductFilter> | null>(null);
 
     useEffect(() => {
-        resetSelected();
         init();
 
-        return () => {
-            resetSelected();
+        if (filterInstRef.current && initialFilterRef.current) {
+            const filter = initialFilterRef.current;
+            if (filter.attributes || filter.minPrice || filter.maxPrice || filter.nameSearch) {
+                filterInstRef.current.setFilter(filter);
+                attributesFilterInput.current = filter;
+                entityListPageRef.current?.resetList?.();
+            }
         }
     }, []);
 
     const init = async () => {
-        const attributes = await client?.getAttributes();
+        const attributes = await client.getAttributes();
         setAttributes(attributes);
     }
 
-    const onFilterChange = (params: TProductFilter) => {
-        Object.keys(params).forEach(key => {
-            filterInput.current[key] = params[key];
-        });
-        resetList();
+    const handleToggleFilter = () => {
+        setShowFilter(prev => !prev);
     }
 
     const onFilterMount = () => {
         filterInstRef.current?.updateFilterMeta(productsRef.current);
     }
 
-    const handleGetProducts = async (params: TPagedParams<TProduct>) => {
-        const products = await client?.getFilteredProducts({
-            pagedParams: {
-                ...params,
-                orderBy: 'createDate',
-                order: 'DESC',
-            },
-            customFragment: gql`
-                fragment ProductListFragment on Product {
-                    id
-                    slug
-                    pageTitle
-                    name
-                    price
-                    oldPrice
-                    mainImage
-                }
-            `,
-            customFragmentName: 'ProductListFragment',
-            filterParams: filterInput.current,
+    const onFilterChange = (params: TProductFilter) => {
+        Object.keys(params).forEach(key => {
+            attributesFilterInput.current[key] = params[key];
         });
-        productsRef.current = products;
-        filterInstRef.current?.updateFilterMeta(products);
-
-        if (products?.pagedMeta?.totalElements) {
-            totalElements.current = products.pagedMeta?.totalElements;
-        }
-
-        const plugins = getStoreItem('plugins') ?? {};
-        if (!plugins[filterPluginName]) plugins[filterPluginName] = {};
-        plugins[filterPluginName].data = {
-            ...(plugins[filterPluginName]?.data ?? {}),
-            filterMeta: products.filterMeta,
-        }
-        setStoreItem('plugins', plugins);
-
-        return products;
-    }
-
-    const resetList = () => {
-        const list = getBlockInstance<TCList>(listId)?.getContentInstance();
-        totalElements.current = null;
-        list?.clearState();
-        list?.init();
-    }
-
-    const updateList = () => {
-        totalElements.current = null;
-        const list = getBlockInstance<TCList>(listId)?.getContentInstance();
-        list?.updateData();
-    }
-
-    const handleDeleteProductBtnClick = (product: TProduct) => {
-        setProductToDelete(product);
-    }
-
-    const handleDeleteProduct = async () => {
-        setIsLoading(true);
-        if (productToDelete?.id) {
-            try {
-                await client?.deleteProduct(productToDelete.id)
-                toast.success('Product deleted');
-            } catch (e) {
-                console.error(e);
-                toast.error('Failed to delete product');
-            }
-        }
-        setIsLoading(false);
-        setProductToDelete(null);
-        updateList();
-    }
-
-    const handleCreateProduct = () => {
-        history.push(`${productPageInfo.baseRoute}/new`);
-    }
-
-    const handleToggleItemSelection = (data: TProduct) => {
-        toggleItemSelection(data.id);
-    }
-
-    const handleToggleSelectAll = () => {
-        toggleSelectAll();
-    }
-
-    const handleDeleteSelectedBtnClick = () => {
-        if (countSelectedItems(totalElements.current) > 0)
-            setDeleteSelectedOpen(true);
-    }
-
-    const handleDeleteSelected = async () => {
-        setIsLoading(true);
-        try {
-            await client?.deleteManyFilteredProducts(getSelectedInput(), filterInput.current);
-            toast.success('Products deleted');
-        } catch (e) {
-            console.error(e);
-            toast.error('Failed to delete products');
-        }
-        setDeleteSelectedOpen(false);
-        setIsLoading(false);
-        updateList();
-        resetSelected();
-    }
-
-    const handleToggleFilter = () => {
-        setShowFilter(prev => !prev)
+        entityListPageRef.current?.resetList?.();
     }
 
     return (
-        <div className={styles.ProductList}>
-            <div className={styles.listHeader} ref={headerRef}>
-                <div className={styles.filter}>
-                    <div className={commonStyles.center}>
-                        <Tooltip title="Select all">
-                            <Checkbox
-                                style={{ marginRight: '10px' }}
-                                checked={props.allSelected ?? false}
-                                onChange={handleToggleSelectAll}
-                            />
-                        </Tooltip>
-                    </div>
-                    <Tooltip title="Show filter">
-                        <IconButton
-                            onClick={handleToggleFilter}
-                            aria-label="show filter"
-                        >
-                            <FilterListIcon />
-                        </IconButton>
-                    </Tooltip>
-                </div>
-                <div className={styles.pageActions} >
-                    <Tooltip title="Delete selected">
-                        <IconButton
-                            onClick={handleDeleteSelectedBtnClick}
-                            aria-label="Delete selected"
-                        >
-                            <DeleteIcon />
-                        </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Create new product">
-                        <IconButton
-                            onClick={handleCreateProduct}
-                            aria-label="create product"
-                        >
-                            <AddCircleIcon />
-                        </IconButton>
-                    </Tooltip>
-                </div>
-            </div>
-            <CList<TProduct, ListItemProps>
-                className={styles.listWrapper}
-                id={listId}
-                ListItem={ProductListItem}
-                useAutoLoading
-                usePagination
-                listItemProps={{ handleDeleteProductBtnClick, toggleSelection: handleToggleItemSelection }}
-                useQueryPagination
-                loader={handleGetProducts}
-                cssClasses={{
-                    scrollBox: styles.list,
-                    contentWrapper: styles.listContent,
+        <>
+            <EntityTableComp
+                entityCategory={EDBEntity.Product}
+                entityListRoute={productListInfo.route}
+                entityBaseRoute={productPageInfo.baseRoute}
+                listLabel="Products"
+                entityLabel="Product"
+                nameProperty="name"
+                getManyFiltered={async (options) => {
+                    if (!options.filterParams) options.filterParams = {};
+                    options.filterParams.minPrice = attributesFilterInput.current?.minPrice;
+                    options.filterParams.maxPrice = attributesFilterInput.current?.maxPrice;
+                    options.filterParams.attributes = attributesFilterInput.current?.attributes;
+                    options.filterParams.nameSearch = attributesFilterInput.current?.nameSearch;
+
+                    const data = await client.getFilteredProducts(options);
+                    filterInstRef.current?.updateFilterMeta(data);
+                    productsRef.current = data;
+                    return data;
                 }}
-                elements={{
-                    pagination: Pagination,
-                    preloader: listPreloader
+                deleteOne={client.deleteProduct}
+                deleteMany={client.deleteManyProducts}
+                deleteManyFiltered={client.deleteManyFilteredProducts}
+                getPageListInstance={inst => {
+                    entityListPageRef.current = inst;
+                    initialFilterRef.current = Object.assign({}, inst.getFilterInput());
+                }}
+                onClearAllFilters={() => {
+                    filterInstRef.current?.setFilter({});
+                    attributesFilterInput.current = {};
+                }}
+                isFilterActive={() => {
+                    const filter = attributesFilterInput.current;
+                    return !!(filter.nameSearch || filter.attributes || filter.maxPrice || filter.minPrice);
+                }}
+                columns={[
+                    {
+                        name: 'mainImage',
+                        label: 'Image',
+                        type: 'Image',
+                        visible: true,
+                    },
+                    {
+                        name: 'name',
+                        label: 'Name',
+                        type: 'Simple text',
+                        visible: true,
+                        minWidth: '25%',
+                    },
+                    {
+                        name: 'sku',
+                        label: 'SKU',
+                        type: 'Simple text',
+                        visible: true,
+                    },
+                    {
+                        name: 'price',
+                        label: 'Price',
+                        type: 'Currency',
+                        visible: true,
+                    },
+                    {
+                        name: 'oldPrice',
+                        label: 'Old Price',
+                        type: 'Currency',
+                        visible: false,
+                    },
+                    {
+                        name: 'stockStatus',
+                        label: 'Stock status',
+                        type: 'Simple text',
+                        visible: true,
+                        exactSearch: true,
+                        searchOptions: [
+                            {
+                                value: 'In stock',
+                                label: 'In stock',
+                            },
+                            {
+                                value: 'Out of stock',
+                                label: 'Out of stock',
+                            },
+                            {
+                                value: 'On backorder',
+                                label: 'On backorder',
+                            },
+                        ]
+                    },
+                    ...baseEntityColumns.map(col => {
+                        if (col.name === 'createDate') return { ...col, visible: true }
+                        return { ...col, visible: false }
+                    }),
+                ]}
+                customElements={{
+                    listLeftActions: (
+                        <div>
+                            <Tooltip title="Attribute filter">
+                                <IconButton
+                                className={styles.attributeFilterButton}
+                                    onClick={handleToggleFilter}
+                                    aria-label="show filter"
+                                >
+                                    <FilterListIcon />
+                                </IconButton>
+                            </Tooltip>
+                        </div>
+                    )
                 }}
             />
             <Drawer
@@ -291,23 +196,6 @@ const ProductList = (props: TPropsType) => {
                     }}
                 />
             </Drawer>
-            <ConfirmationModal
-                open={Boolean(productToDelete)}
-                onClose={() => setProductToDelete(null)}
-                onConfirm={handleDeleteProduct}
-                title={`Delete product ${productToDelete?.name ?? ''}?`}
-                disabled={isLoading}
-            />
-            <ConfirmationModal
-                open={deleteSelectedOpen}
-                onClose={() => setDeleteSelectedOpen(false)}
-                onConfirm={handleDeleteSelected}
-                title={`Delete ${countSelectedItems(totalElements.current)} item(s)?`}
-                disabled={isLoading}
-            />
-            <LoadingStatus isActive={isLoading} />
-        </div>
+        </>
     )
 }
-
-export default connect(mapStateToProps)(ProductList);

@@ -47,12 +47,15 @@ const LoginPage = () => {
 
     const checkAuth = async (showError?: boolean) => {
         const userInfo = await apiClient.getUserInfo({ disableLog: true });
-        if (userInfo) {
+        if (userInfo?.id) {
+            if (!userInfo.role || !userInfo.email) {
+                if (showError) toast.error('Incorrect user account');
+                return;
+            }
             setStoreItem('userInfo', userInfo);
             loginSuccess(userInfo);
         } else {
-            if (showError)
-                toast.error('Incorrect email or password');
+            if (showError) toast.error('Incorrect email or password');
         }
     }
 

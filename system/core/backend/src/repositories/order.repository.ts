@@ -1,14 +1,15 @@
-import { TDeleteManyInput, TOrder, TOrderInput, TPagedList, TPagedParams } from '@cromwell/core';
+import { TBasePageEntity, TDeleteManyInput, TOrder, TOrderInput, TPagedList, TPagedParams } from '@cromwell/core';
 import sanitizeHtml from 'sanitize-html';
 import { DeleteQueryBuilder, EntityRepository, SelectQueryBuilder } from 'typeorm';
 import { DateUtils } from 'typeorm/util/DateUtils';
 
-import { OrderFilterInput } from '../models/filters/order.filter';
-import { Order } from '../models/entities/order.entity';
+import { getPaged, handleCustomMetaInput } from '../helpers/base-queries';
 import { getLogger } from '../helpers/logger';
 import { validateEmail } from '../helpers/validation';
+import { BasePageEntity } from '../models/entities/base-page.entity';
+import { Order } from '../models/entities/order.entity';
+import { OrderFilterInput } from '../models/filters/order.filter';
 import { PagedParamsInput } from '../models/inputs/paged-params.input';
-import { checkEntitySlug, getPaged, handleBaseInput } from '../helpers/base-queries';
 import { BaseRepository } from './base.repository';
 
 const logger = getLogger();
@@ -25,7 +26,7 @@ export class OrderRepository extends BaseRepository<Order> {
         return this.getPaged(params)
     }
 
-    async getOrderById(id: string): Promise<Order | undefined> {
+    async getOrderById(id: number): Promise<Order | undefined> {
         logger.log('OrderRepository::getOrderById id: ' + id);
         return this.getById(id);
     }
@@ -48,8 +49,11 @@ export class OrderRepository extends BaseRepository<Order> {
         order.totalQnt = input.totalQnt;
         order.userId = input.userId;
         order.customerName = input.customerName;
-        order.customerPhone = input.customerPhone?.replace?.(/\W/g, '');
-        if (input.customerPhone?.startsWith('+')) order.customerPhone = '+' + order.customerPhone;
+        order.customerPhone = input.customerPhone;
+        if (order.customerPhone) {
+            if (typeof order.customerPhone === 'number') order.customerPhone = order.customerPhone + '';
+            order.customerPhone = order.customerPhone.replace(/\W/g, '');
+        }
         order.customerEmail = input.customerEmail;
         order.customerAddress = input.customerAddress;
         order.customerComment = input.customerComment ? sanitizeHtml(input.customerComment, {
@@ -58,9 +62,12 @@ export class OrderRepository extends BaseRepository<Order> {
         order.shippingMethod = input.shippingMethod;
         order.paymentMethod = input.paymentMethod;
         order.currency = input.currency;
+
+        await order.save();
+        await handleCustomMetaInput(order as any, input);
     }
 
-    async createOrder(inputData: TOrderInput, id?: string): Promise<Order> {
+    async createOrder(inputData: TOrderInput, id?: number | null): Promise<Order> {
         logger.log('OrderRepository::createOrder');
         let order = new Order();
         if (id) order.id = id;
@@ -70,7 +77,7 @@ export class OrderRepository extends BaseRepository<Order> {
         return order;
     }
 
-    async updateOrder(id: string, inputData: TOrderInput): Promise<Order | undefined> {
+    async updateOrder(id: number, inputData: TOrderInput): Promise<Order | undefined> {
         logger.log('OrderRepository::updateOrder id: ' + id);
 
         let order = await this.findOne({
@@ -83,7 +90,7 @@ export class OrderRepository extends BaseRepository<Order> {
         return order;
     }
 
-    async deleteOrder(id: string): Promise<boolean> {
+    async deleteOrder(id: number): Promise<boolean> {
         logger.log('OrderRepository::deleteOrder; id: ' + id);
 
         const order = await this.getOrderById(id);
@@ -95,7 +102,9 @@ export class OrderRepository extends BaseRepository<Order> {
         return true;
     }
 
-    applyOrderFilter(qb: SelectQueryBuilder<TOrder> | DeleteQueryBuilder<TOrder>, filterParams?: OrderFilterInput) {
+    applyOrderFilter(qb: SelectQueryBuilder<TOrder>, filterParams?: OrderFilterInput) {
+        this.applyBaseFilter(qb as SelectQueryBuilder<TBasePageEntity>, filterParams);
+
         // Search by status
         if (filterParams?.status && filterParams.status !== '') {
             const query = `${this.metadata.tablePath}.status = :statusSearch`;
@@ -152,14 +161,19 @@ export class OrderRepository extends BaseRepository<Order> {
 
 
     async deleteManyFilteredOrders(input: TDeleteManyInput, filterParams?: OrderFilterInput): Promise<boolean | undefined> {
-        const qb = this.createQueryBuilder(this.metadata.tablePath).delete();
-        this.applyOrderFilter(qb, filterParams);
-        this.applyDeleteMany(qb, input);
-        await qb.execute();
+        const qbSelect = this.createQueryBuilder(this.metadata.tablePath).select([`${this.metadata.tablePath}.id`]);
+        this.applyOrderFilter(qbSelect, filterParams);
+        this.applyDeleteMany(qbSelect, input);
+
+        const qbDelete = this.createQueryBuilder(this.metadata.tablePath).delete()
+            .where(`${this.metadata.tablePath}.id IN (${qbSelect.getQuery()})`)
+            .setParameters(qbSelect.getParameters());
+
+        await qbDelete.execute();
         return true;
     }
 
-    async getOrdersOfUser(userId: string, pagedParams?: PagedParamsInput<TOrder>): Promise<TPagedList<TOrder>> {
+    async getOrdersOfUser(userId: number, pagedParams?: PagedParamsInput<TOrder>): Promise<TPagedList<TOrder>> {
         const qb = this.createQueryBuilder(this.metadata.tablePath);
         qb.select();
         qb.where(`${this.metadata.tablePath}.${this.quote('userId')} = :userId`, {

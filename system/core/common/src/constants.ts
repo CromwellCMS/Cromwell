@@ -10,6 +10,7 @@ export const GraphQLPaths: { [K in Exclude<TDBEntity, 'Theme' | 'Plugin' | 'Post
         update: "updateGeneric",
         delete: "deleteGeneric",
         deleteMany: "deleteManyGenerics",
+        getFiltered: "getFilteredGenerics",
     },
     Post: {
         getOneBySlug: "getPostBySlug",
@@ -59,13 +60,14 @@ export const GraphQLPaths: { [K in Exclude<TDBEntity, 'Theme' | 'Plugin' | 'Post
         getFiltered: "getFilteredProductCategories",
     },
     Attribute: {
-        getOneBySlug: "",
+        getOneBySlug: "getAttributeBySlug",
         getOneById: "getAttributeById",
         getMany: "getAttributes",
         create: "createAttribute",
         update: "updateAttribute",
         delete: "deleteAttribute",
         deleteMany: "deleteManyAttributes",
+        getFiltered: "getFilteredAttributes"
     },
     ProductReview: {
         getOneBySlug: "getProductReviewBySlug",
@@ -98,6 +100,19 @@ export const GraphQLPaths: { [K in Exclude<TDBEntity, 'Theme' | 'Plugin' | 'Post
         update: "updateTag",
         delete: "deleteTag",
         deleteMany: "deleteManyTags",
+        deleteManyFiltered: "deleteManyFilteredTags",
+        getFiltered: "getFilteredTags",
+    },
+    CustomEntity: {
+        getOneBySlug: "getCustomEntityBySlug",
+        getOneById: "getCustomEntityById",
+        getMany: "getCustomEntities",
+        create: "createCustomEntity",
+        update: "updateCustomEntity",
+        delete: "deleteCustomEntity",
+        deleteMany: "deleteManyCustomEntities",
+        deleteManyFiltered: "deleteManyFilteredCustomEntities",
+        getFiltered: "getFilteredCustomEntities",
     },
 }
 

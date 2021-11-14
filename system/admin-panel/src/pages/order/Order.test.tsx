@@ -2,7 +2,7 @@ import React from 'react';
 import { TOrder } from '@cromwell/core';
 
 const testData: TOrder = {
-    id: '1',
+    id: 1,
     customerName: '_test1_',
 };
 

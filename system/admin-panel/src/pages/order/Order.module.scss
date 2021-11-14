@@ -2,7 +2,7 @@
 
 .OrderPage {
     padding: 20px 20px 0 20px;
-    max-width: 1200px;
+    max-width: 900px;
     margin: 0 auto;
     width: 100%;
     display: flex;
@@ -11,9 +11,22 @@
     min-height: 300px;
 }
 
+.notFoundPage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.notFoundText {
+    font-size: 25px;
+    font-weight: 500;
+}
+
 .header {
     @include paper;
-    padding: 0 20px 0 0;
+    padding: 0 10px 0 0;
+    min-height: 40px;
     width: 100%;
     display: flex;
     justify-content: space-between;

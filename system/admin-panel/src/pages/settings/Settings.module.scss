@@ -36,7 +36,6 @@
 
 .imageField {
     @extend .field;
-    border-bottom: 1px solid #999;
 }
 
 .subheader {
@@ -45,7 +44,7 @@
     margin-top: 15px;
     font-weight: 500;
 
-    > h3 {
+    >h3 {
         font-size: 24px;
     }
 }
@@ -57,6 +56,7 @@ div.textField {
 .category {
     @include paper;
     margin: 5px 0;
+    padding: 5px;
 }
 
 .categoryHeaderWrapper {
@@ -136,6 +136,48 @@ div.textField {
     margin-top: 15px;
 }
 
+div.customEntity {
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    margin: 15px 0;
+    padding: 15px;
+}
+
+.customFieldItem {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.customFieldItemField {
+    margin-right: 20px;
+}
+
+.entityToEdit {
+    @include paper;
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    width: 400px;
+    max-width: 90vw;
+    max-height: 90vh;
+    overflow: auto;
+}
+
+div.entityToEditField {
+    margin-bottom: 15px;
+}
+
+.selectOptions {
+    @include paper;
+    @include styledScrollBar;
+    padding: 15px;
+    width: 200px;
+    max-height: 400px;
+    overflow: auto;
+    margin-bottom: 10px;
+}
+
 @media screen and (max-width: $mobileBreakpoint) {
     // mobile
     // .SettingsPage .list {
@@ -149,8 +191,11 @@ div.textField {
 }
 
 :global(.modeDark) {
+
     .header,
-    .category {
+    .category,
+    .selectOptions,
+    .entityToEdit {
         background-color: #333;
 
         * {

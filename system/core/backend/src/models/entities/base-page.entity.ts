@@ -1,6 +1,8 @@
 import { TBasePageEntity, TBasePageMeta } from '@cromwell/core';
-import { Field, ID, ObjectType } from 'type-graphql';
+import { Field, Int, ObjectType } from 'type-graphql';
 import { BaseEntity, Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+
+import { CustomDateScalar } from '../objects/custom-date.scalar';
 
 @ObjectType()
 export class BasePageMeta implements TBasePageMeta {
@@ -15,24 +17,23 @@ export class BasePageMeta implements TBasePageMeta {
 @ObjectType()
 export class BasePageEntity extends BaseEntity implements TBasePageEntity {
 
-    @Field(() => ID)
-    @Index()
+    @Field(() => Int)
     @PrimaryGeneratedColumn()
-    id: string;
+    id: number;
 
     @Field(() => String, { nullable: true })
-    @Column({ type: "varchar", unique: true, nullable: true })
-    slug?: string;
+    @Column({ type: "varchar", length: 255, unique: true, nullable: true })
+    slug?: string | null;
 
     @Field(() => String, { nullable: true })
-    @Column({ type: "varchar", nullable: true })
-    pageTitle?: string;
+    @Column({ type: "varchar", length: 2000, nullable: true })
+    pageTitle?: string | null;
 
     @Field(() => String, { nullable: true })
-    @Column({ type: "varchar", nullable: true })
-    pageDescription?: string;
+    @Column({ type: "varchar", length: 4000, nullable: true })
+    pageDescription?: string | null;
 
-    @Column({ type: "varchar", nullable: true, length: 5000 })
+    @Column({ type: "text", nullable: true })
     _meta?: string | null;
 
     @Field(() => BasePageMeta, { nullable: true })
@@ -44,17 +45,17 @@ export class BasePageEntity extends BaseEntity implements TBasePageEntity {
         if (data) this._meta = JSON.stringify(data);
     }
 
-    @Field(() => Date)
-    @Index()
+    @Field(() => CustomDateScalar, { nullable: true })
     @CreateDateColumn()
-    createDate: Date;
-
-    @Field(() => Date)
     @Index()
+    createDate?: Date | null;
+
+    @Field(() => CustomDateScalar, { nullable: true })
     @UpdateDateColumn()
-    updateDate: Date;
+    @Index()
+    updateDate?: Date | null;
 
     @Field(() => Boolean, { nullable: true })
     @Column({ type: "boolean", default: true, nullable: true })
-    isEnabled?: boolean;
+    isEnabled?: boolean | null;
 }

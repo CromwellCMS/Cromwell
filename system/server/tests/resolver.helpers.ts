@@ -20,7 +20,7 @@ export const setupResolver = async (name: string): Promise<ApolloServer> => {
         context: (): TGraphQLContext => {
             return {
                 user: {
-                    id: 'test',
+                    id: 1,
                     email: 'test@test.org',
                     role: 'administrator',
                 }

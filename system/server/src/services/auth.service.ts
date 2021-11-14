@@ -68,7 +68,7 @@ export class AuthService {
         return null;
     }
 
-    getUserById = (id: string) => getCustomRepository(UserRepository).getUserById(id);
+    getUserById = (id: number) => getCustomRepository(UserRepository).getUserById(id);
 
     async logIn(input: LoginDto): Promise<TLoginInfo> {
         const user = await this.validateUser(input.email, input.password);
@@ -109,11 +109,16 @@ export class AuthService {
     }
 
     async signUpUser(data: TCreateUser, initiator?: TAuthUserInfo) {
-        const userRepo = getCustomRepository(UserRepository);
         if (data?.role && data.role !== 'customer') {
             if (!initiator?.id || initiator.role !== 'administrator')
                 throw new UnauthorizedException('Denied. You have no permissions to create this type of user');
         }
+        return this.createUser(data);
+    }
+
+    async createUser(data: TCreateUser) {
+        if (!data.password) throw new HttpException('You must provide a password for the user', HttpStatus.BAD_REQUEST);
+        const userRepo = getCustomRepository(UserRepository);
         return userRepo.createUser(data);
     }
 
@@ -142,7 +147,7 @@ export class AuthService {
     async resetUserPassword(input: ResetPasswordDto) {
         const userRepo = getCustomRepository(UserRepository);
         const user = await userRepo.getUserByEmail(input.email);
-        if (!user?.id || !user.resetPasswordCode || !user.resetPasswordDate)
+        if (!user?.id || !user.resetPasswordCode || !user.resetPasswordDate || !user.email)
             throw new HttpException('Failed', HttpStatus.BAD_REQUEST);
 
         const resetUserCode = async () => {
@@ -388,7 +393,7 @@ export class AuthService {
                 const serviceSecret = authHeader.substring(8, authHeader.length);
                 if (serviceSecret === this.authSettings.serviceSecret) {
                     request.user = {
-                        id: 'service',
+                        id: 111,
                         email: 'service',
                         role: 'administrator',
                     }

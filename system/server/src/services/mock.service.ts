@@ -1,4 +1,5 @@
 import {
+    getRandStr,
     TAttributeInput,
     TCreateUser,
     TOrderInput,
@@ -24,6 +25,7 @@ import cryptoRandomString from 'crypto-random-string';
 import nameGenerator from 'project-name-generator';
 import { Service } from 'typedi';
 import { getCustomRepository } from 'typeorm';
+
 import { resetAllPagesCache } from '../helpers/reset-page';
 
 @Injectable()
@@ -177,7 +179,7 @@ export class MockService {
 
             this.shuffleArray(cats);
             const catsNum = Math.floor(Math.random() * cats.length)
-            const categoryIds: string[] = cats.slice(0, catsNum).map(c => c.id);
+            const categoryIds: number[] = cats.slice(0, catsNum).map(c => c.id);
 
             const condition = Math.random() > 0.3 ? 'New' : 'Used';
 
@@ -187,6 +189,8 @@ export class MockService {
                 price: price,
                 oldPrice: oldPrice,
                 mainImage: mainImage,
+                stockStatus: 'In stock',
+                sku: `${getRandStr(4)}-${getRandStr(4)}`,
                 images: (() => {
                     const imgs: string[] = [mainImage];
                     for (let i = 0; i < imagesNum; i++) {
@@ -210,12 +214,12 @@ export class MockService {
                     },
                     {
                         key: 'Size',
-                        values: this.shuffleArray(sizeVals).slice(0, Math.floor(Math.random() * 4) + 3).map(s => ({
+                        values: sizeVals ? this.shuffleArray(sizeVals).slice(0, Math.floor(Math.random() * 4) + 3).map(s => ({
                             value: s.value,
                             productVariant: {
                                 price: price + Math.round(price * 0.2 * Math.random())
                             }
-                        })).sort((a, b) => parseInt(a.value) - parseInt(b.value))
+                        })).sort((a, b) => parseInt(a.value) - parseInt(b.value)) : [],
                     },
                     {
                         key: 'Condition',
@@ -359,7 +363,6 @@ export class MockService {
     }
 
     public async mockUsers() {
-
         const users: TCreateUser[] = [
             {
                 fullName: 'Creed',
@@ -388,7 +391,7 @@ export class MockService {
             {
                 fullName: 'Dwight',
                 email: 'Dwight@example.com',
-                password: cryptoRandomString({ length: 12 }),
+                password: cryptoRandomString({ length: 14 }),
                 role: 'administrator',
             },
         ]
@@ -426,7 +429,7 @@ export class MockService {
                 promises = [];
             }
 
-            const tagIds: string[] = (await this.tagRepo.getAll()).map(tag => tag.id);
+            const tagIds: number[] = (await this.tagRepo.getAll()).map(tag => tag.id);
 
             promises.push(this.postRepo.createPost({
                 content: postContent,
@@ -461,12 +464,12 @@ export class MockService {
                 status: 'Pending',
                 cart: [{
                     product: {
-                        id: '1',
+                        id: 1,
                     },
                     amount: 2
                 }, {
                     product: {
-                        id: '2',
+                        id: 2,
                     },
                 }],
             },
@@ -481,12 +484,12 @@ export class MockService {
                 totalQnt: 2,
                 cart: [{
                     product: {
-                        id: '3',
+                        id: 3,
                     },
                     amount: 1
                 }, {
                     product: {
-                        id: '4',
+                        id: 4,
                     },
                 }]
             },
@@ -501,7 +504,7 @@ export class MockService {
                 totalQnt: 3,
                 cart: [{
                     product: {
-                        id: '5',
+                        id: 5,
                     },
                     amount: 3
                 }]
@@ -516,7 +519,7 @@ export class MockService {
                 shippingPrice: 5,
                 cart: [{
                     product: {
-                        id: '6',
+                        id: 6,
                     },
                 }]
             },
@@ -568,4 +571,3 @@ export class MockService {
         return true;
     }
 }
-

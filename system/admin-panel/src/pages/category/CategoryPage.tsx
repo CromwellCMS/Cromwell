@@ -1,16 +1,25 @@
 import { gql } from '@apollo/client';
-import { resolvePageRoute, serviceLocator, TPagedParams, TProductCategory, TProductCategoryInput } from '@cromwell/core';
-import { getGraphQLClient } from '@cromwell/core-frontend';
+import {
+    EDBEntity,
+    resolvePageRoute,
+    serviceLocator,
+    TPagedParams,
+    TProductCategory,
+    TProductCategoryInput,
+} from '@cromwell/core';
+import { getGraphQLClient, getGraphQLErrorInfo } from '@cromwell/core-frontend';
 import { ArrowBack as ArrowBackIcon, OpenInNew as OpenInNewIcon } from '@mui/icons-material';
 import { Autocomplete as MuiAutocomplete, Button, IconButton, TextField, Tooltip } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { Link, useHistory, useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 
 import Autocomplete from '../../components/autocomplete/Autocomplete';
-import ImagePicker from '../../components/imagePicker/ImagePicker';
+import { ImagePicker } from '../../components/imagePicker/ImagePicker';
 import { toast } from '../../components/toast/toast';
-import { categoryListPageInfo, categoryPageInfo } from '../../constants/PageInfos';
+import { categoryPageInfo } from '../../constants/PageInfos';
+import { getCustomMetaFor, getCustomMetaKeysFor, RenderCustomFields } from '../../helpers/customFields';
 import { getEditorData, getEditorHtml, initTextEditor } from '../../helpers/editor/editor';
+import { handleOnSaveError } from '../../helpers/handleErrors';
 import commonStyles from '../../styles/common.module.scss';
 import styles from './CategoryPage.module.scss';
 
@@ -23,11 +32,12 @@ export default function CategoryPage(props) {
     const [category, setCategoryData] = useState<TProductCategory | undefined | null>(null);
     const editorId = 'category-description-editor';
     const [parentCategory, setParentCategory] = useState<TProductCategory | null>(null);
+    const [canValidate, setCanValidate] = useState(false);
 
     const urlParams = new URLSearchParams(props?.location?.search);
     const parentIdParam = urlParams.get('parentId');
 
-    const getProductCategory = async (id: string) => {
+    const getProductCategory = async (id: number) => {
         let categoryData: TProductCategory | undefined;
         try {
             categoryData = await client?.getProductCategoryById(id,
@@ -55,6 +65,7 @@ export default function CategoryPage(props) {
                             id
                             slug
                         }
+                        customMeta (keys: ${JSON.stringify(getCustomMetaKeysFor(EDBEntity.ProductCategory))})
                     }`,
                 'AdminPanelProductCategoryFragment'
             );
@@ -64,7 +75,7 @@ export default function CategoryPage(props) {
         return categoryData;
     }
 
-    const getParentCategory = async (parentId) => {
+    const getParentCategory = async (parentId: number) => {
         try {
             const parent = await client.getProductCategoryById(parentId);
             if (parent) {
@@ -80,7 +91,7 @@ export default function CategoryPage(props) {
         let categoryData;
         if (categoryId && categoryId !== 'new') {
             try {
-                categoryData = await getProductCategory(categoryId);
+                categoryData = await getProductCategory(parseInt(categoryId));
             } catch (e) {
                 console.error(e);
             }
@@ -97,7 +108,7 @@ export default function CategoryPage(props) {
         }
 
         if (parentIdParam) {
-            getParentCategory(parentIdParam);
+            getParentCategory(parseInt(parentIdParam));
         }
 
         let postContent;
@@ -161,17 +172,29 @@ export default function CategoryPage(props) {
         description: await getEditorHtml(editorId),
         descriptionDelta: JSON.stringify(await getEditorData(editorId)),
         parentId: category.parent?.id,
+        customMeta: Object.assign({}, category.customMeta, await getCustomMetaFor(EDBEntity.ProductCategory)),
     });
 
+    const refetchMeta = async () => {
+        if (!categoryId) return;
+        const data = await getProductCategory(parseInt(categoryId));
+        return data?.customMeta;
+    };
+
+    const checkValid = (value) => value && value !== '';
+
     const handleSave = async () => {
-        setIsSaving(true);
         const inputData: TProductCategoryInput = await getInput();
+        setCanValidate(true);
+        if (!checkValid(inputData.name)) return;
+
+        setIsSaving(true);
 
         if (categoryId === 'new') {
             try {
                 const newData = await client?.createProductCategory(inputData);
                 toast.success('Created category!');
-                history.push(`${categoryPageInfo.baseRoute}/${newData.id}`)
+                history.replace(`${categoryPageInfo.baseRoute}/${newData.id}`)
 
                 const categoryData = await getProductCategory(newData.id);
                 if (categoryData?.id) {
@@ -180,6 +203,7 @@ export default function CategoryPage(props) {
 
             } catch (e) {
                 toast.error('Failed to create category');
+                handleOnSaveError(e);
                 console.error(e)
             }
 
@@ -193,10 +217,12 @@ export default function CategoryPage(props) {
                 toast.success('Saved!');
             } catch (e) {
                 toast.error('Failed to save');
-                console.error(e)
+                handleOnSaveError(e);
+                console.error(getGraphQLErrorInfo(e))
             }
         }
         setIsSaving(false);
+        setCanValidate(false);
     }
 
     if (notFound) {
@@ -211,24 +237,23 @@ export default function CategoryPage(props) {
 
     let pageFullUrl;
     if (category) {
-        pageFullUrl = serviceLocator.getFrontendUrl() + resolvePageRoute('category', { slug: category.slug ?? category.id });
+        pageFullUrl = serviceLocator.getFrontendUrl() + resolvePageRoute('category', { slug: category.slug ?? category.id + '' });
     }
 
     return (
         <div className={styles.CategoryPage}>
             <div className={styles.header}>
                 <div className={styles.headerLeft}>
-                    <Link to={categoryListPageInfo.route}>
-                        <IconButton
-                        >
-                            <ArrowBackIcon />
-                        </IconButton>
-                    </Link>
+                    <IconButton
+                        onClick={() => window.history.back()}
+                    >
+                        <ArrowBackIcon style={{ fontSize: '18px' }} />
+                    </IconButton>
                     <p className={commonStyles.pageTitle}>category</p>
                 </div>
                 <div className={styles.headerActions}>
                     {pageFullUrl && (
-                        <Tooltip title="Open category page in new tab">
+                        <Tooltip title="Open category in the new tab">
                             <IconButton
                                 style={{ marginRight: '10px' }}
                                 className={styles.openPageBtn}
@@ -254,6 +279,7 @@ export default function CategoryPage(props) {
                     fullWidth
                     className={styles.textField}
                     onChange={(e) => { handleInputChange('name', e.target.value) }}
+                    error={canValidate && !checkValid(category?.name)}
                 />
                 <Autocomplete<TProductCategory>
                     loader={handleSearchRequest}
@@ -270,12 +296,13 @@ export default function CategoryPage(props) {
                     onChange={(val) => {
                         handleInputChange('mainImage', val)
                     }}
+                    label="Category image"
                     value={category?.mainImage}
                     className={styles.imageBox}
                     showRemove
                 />
                 <div className={styles.descriptionEditor}>
-                    <div id={editorId}></div>
+                    <div style={{ minHeight: '300px' }} id={editorId}></div>
                 </div>
                 <TextField label="Page URL"
                     value={category?.slug || ''}
@@ -313,13 +340,22 @@ export default function CategoryPage(props) {
                         })
                     }}
                     renderInput={(params) => (
-                        <TextField
-                            {...params}
-                            variant="standard"
-                            label="Meta keywords"
-                        />
+                        <Tooltip title="Press ENTER to add">
+                            <TextField
+                                {...params}
+                                variant="standard"
+                                label="Meta keywords"
+                            />
+                        </Tooltip>
                     )}
                 />
+                {category && (
+                    <RenderCustomFields
+                        entityType={EDBEntity.ProductCategory}
+                        entityData={category}
+                        refetchMeta={refetchMeta}
+                    />
+                )}
             </div>
         </div>
     );

@@ -50,6 +50,7 @@ export class CPlugin extends React.Component<CPluginProps> {
                     if (PluginComponent && isValidElementType(PluginComponent)) return (
                         <ErrorBoundary>
                             <PluginComponent
+                                blockId={data?.id}
                                 data={pluginData}
                                 pluginName={name}
                                 instanceSettings={data?.plugin?.instanceSettings ?? props.plugin?.instanceSettings}

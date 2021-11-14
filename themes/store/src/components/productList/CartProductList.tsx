@@ -88,7 +88,7 @@ export const CartProductList = (props: {
                             <Grid item xs={3} className={styles.itemBlock}>
                                 <Link href={productLink}>
                                     <a onClick={() => props?.onProductOpen?.(product)}>
-                                        <img src={product.mainImage} className={styles.mainImage} />
+                                        <img src={product.mainImage ?? undefined} className={styles.mainImage} />
                                     </a>
                                 </Link>
                             </Grid>

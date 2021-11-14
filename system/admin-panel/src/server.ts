@@ -150,9 +150,7 @@ const start = async () => {
 
     app.get(`/admin`, indexPageHandle);
     app.get(`/admin/`, indexPageHandle);
-    app.get(`/admin/#`, indexPageHandle);
-    app.get(`/admin/#/`, indexPageHandle);
-    app.get(`/admin/#/*`, indexPageHandle);
+    app.get(`/admin/*`, indexPageHandle);
 
     await app.listen(port, '::', 1, (err) => {
         if (err) {

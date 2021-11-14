@@ -1,7 +1,7 @@
 import { TImageSettings } from '@cromwell/core';
 import React from 'react';
 
-import ImagePicker, { ImagePickerProps } from '../imagePicker/ImagePicker';
+import { ImagePicker, ImagePickerProps } from '../imagePicker/ImagePicker';
 import styles from './GalleryPicker.module.scss';
 
 export const ImageItem = (props: {

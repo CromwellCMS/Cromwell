@@ -3,7 +3,7 @@ import {
     ECommonComponentNames,
     getCommonComponent,
     getRandStr,
-    TStaticPageContext,
+    TStaticPagePluginContext,
     TAttribute,
     TFrontendPluginProps,
     TPagedList,
@@ -33,7 +33,7 @@ const ProductShowcase = (props: TFrontendPluginProps<ProductShowcaseProps>): JSX
             const p = props.data;
             if (p) return (
                 <div key={p.id}>
-                    <img src={p?.mainImage} width="300px" />
+                    <img src={p?.mainImage ?? undefined} width="300px" />
                     <Link href={`/product/${p.slug}`}><a>{p.name}</a></Link>
                     <p>{p.price}</p>
                 </div>
@@ -69,7 +69,7 @@ const ProductShowcase = (props: TFrontendPluginProps<ProductShowcaseProps>): JSX
     )
 }
 
-export const getStaticProps = async (context: TStaticPageContext): Promise<ProductShowcaseProps> => {
+export const getStaticProps = async (context: TStaticPagePluginContext): Promise<ProductShowcaseProps> => {
     // slug of a product page
     const client = getGraphQLClient();
     const slug = context?.params?.slug ?? null;
@@ -102,7 +102,7 @@ export const getStaticProps = async (context: TStaticPageContext): Promise<Produ
             }
         });
 
-    } catch (e) {
+    } catch (e: any) {
         console.error('ProductShowcase::getStaticProps', e, JSON.stringify(e?.result?.errors ?? null), null, 2)
     }
 

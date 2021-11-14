@@ -7,6 +7,10 @@
     .removeBtn {
         margin-left: auto;
     }
+
+    // &:global(.standard) {
+    //     border-bottom: 1px solid #999;
+    // }
 }
 
 .valueWrapper {
@@ -37,6 +41,7 @@
     width: 60px;
     min-width: 60px;
     border-radius: 100%;
+    margin-right: 10px;
 }
 
 .image {

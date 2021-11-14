@@ -151,6 +151,20 @@ export default function Home() {
                 <div className={styles.content}>
                     <br style={{ height: '10px' }} />
                     <br style={{ height: '10px' }} />
+                    <h3 className={styles.header3}>Custom data types</h3>
+                    <p>Add custom fields or create new custom entities. Store any kind of data.</p>
+                    <br style={{ height: '10px' }} />
+                </div>
+                <div className={styles.screenshots}>
+                    <CoverFlowImages images={[
+                        "/img/demo-custom1.png",
+                        "/img/demo-custom2.png",
+                    ]} />
+                </div>
+
+                <div className={styles.content}>
+                    <br style={{ height: '10px' }} />
+                    <br style={{ height: '10px' }} />
                     <h3 className={styles.header3}>Good looking default themes</h3>
                     <p>Fully featured free online store and blog out the box.</p>
                     <br style={{ height: '10px' }} />

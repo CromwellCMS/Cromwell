@@ -2,14 +2,14 @@ import React from 'react';
 import { TTag } from '@cromwell/core';
 
 const testData: TTag = {
-    id: '1',
+    id: 1,
     name: '_test1_',
 };
 
 jest.mock('react-router-dom', () => {
     const originalModule = jest.requireActual('react-router-dom');
     return {
-        useParams: () => ({ id: '1' }),
+        useParams: () => ({ id: 1 }),
         BrowserRouter: originalModule.BrowserRouter,
         Link: () => <></>,
         useHistory: () => { },

@@ -80,12 +80,12 @@ export const startService = async ({ path, name, args, dir, sync, watchName, onV
         throw new Error();
     }
 
-    if (await isServiceRunning(name)) {
+    if (name !== cacheKeys.rendererBuilder && await isServiceRunning(name)) {
         let serviceName: TServiceNames | undefined;
         if (name === cacheKeys.adminPanel) serviceName = 'adminPanel';
         if (name === cacheKeys.serverMain) serviceName = 'server';
         if (name === cacheKeys.renderer) serviceName = 'renderer';
-        logger.error(`Base manager:: Service ${serviceName} is already running. You may want to run stop command: npx cromwell stop --sv ${serviceName}`);
+        logger.error(`Base manager:: Service ${serviceName ?? name} is already running. You may want to run stop command: npx cromwell stop --sv ${serviceName}`);
         throw new Error();
     }
 

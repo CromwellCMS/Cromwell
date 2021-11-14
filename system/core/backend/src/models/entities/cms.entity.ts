@@ -6,7 +6,7 @@ export class CmsEntity extends BaseEntity implements TCmsEntity {
 
     @Index()
     @PrimaryGeneratedColumn()
-    id: string;
+    id: number;
 
     public get publicSettings(): TCmsPublicSettings | undefined {
         return this._publicSettings ? JSON.parse(this._publicSettings) : undefined;
@@ -44,5 +44,4 @@ export class CmsEntity extends BaseEntity implements TCmsEntity {
     @Index()
     @UpdateDateColumn()
     updateDate: Date;
-
 }

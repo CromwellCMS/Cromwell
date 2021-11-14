@@ -137,6 +137,24 @@ export type TDBEntity = keyof {
     Plugin;
     Generic;
     CMS;
+    CustomEntity;
+}
+
+export enum EDBEntity {
+    Post = 'Post',
+    PostComment = 'PostComment',
+    Tag = 'Tag',
+    Product = 'Product',
+    ProductCategory = 'ProductCategory',
+    ProductReview = 'ProductReview',
+    Attribute = 'Attribute',
+    Order = 'Order',
+    User = 'User',
+    Theme = 'Theme',
+    Plugin = 'Plugin',
+    Generic = 'Generic',
+    CMS = 'CMS',
+    CustomEntity = 'CustomEntity',
 }
 
 export type GraphQLPathsType = { [K in TDBEntity]: TGraphQLNode };
@@ -145,6 +163,7 @@ export type TGraphQLNode = {
     getOneById: string;
     getOneBySlug: string;
     getMany: string;
+    getFiltered: string;
     create: string;
     update: string;
     delete: string;
@@ -449,6 +468,8 @@ export type TPageStats = {
     pageRoute?: string;
     pageName?: string;
     views?: number;
+    slug?: string | null;
+    entityType?: EDBEntity | string;
 }
 
 export type TSalePerDay = {
@@ -541,6 +562,7 @@ export type TPluginSettingsProps<TSettings = any> = {
 
 export type TFrontendPluginProps<TData = any, TInstanceSettings = any> = {
     data?: TData;
+    blockId?: string;
     pluginName: string;
     instanceSettings?: TInstanceSettings;
 }

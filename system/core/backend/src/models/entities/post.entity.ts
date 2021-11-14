@@ -1,24 +1,32 @@
 import { TPost, TPostComment } from '@cromwell/core';
-import { Field, ObjectType } from 'type-graphql';
-import { Column, Entity, Index, JoinTable, ManyToMany, OneToMany } from 'typeorm';
+import { Field, Int, ObjectType } from 'type-graphql';
+import { Column, Entity, Index, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany } from 'typeorm';
 
+import { CustomDateScalar } from '../objects/custom-date.scalar';
 import { BasePageEntity } from './base-page.entity';
+import { PostMeta } from './meta/post-meta.entity';
 import { PostComment } from './post-comment.entity';
 import { Tag } from './tag.entity';
+import { User } from './user.entity';
+
 
 @Entity()
 @ObjectType()
 export class Post extends BasePageEntity implements TPost {
 
     @Field(type => String, { nullable: true })
-    @Index()
-    @Column({ type: "varchar", nullable: true })
+    @Column({ type: "varchar", length: 255, nullable: true })
+    @Index({ fulltext: true })
     title?: string | null;
 
-    @Field(type => String, { nullable: true })
+    @ManyToOne(() => User, user => user.posts, { onDelete: 'SET NULL' })
+    @JoinColumn({ name: "authorId" })
+    author?: User | null;
+
+    @Field(type => Int, { nullable: true })
+    @Column("int", { nullable: true })
     @Index()
-    @Column()
-    authorId: string;
+    authorId?: number | null;
 
     @Field(type => String, { nullable: true })
     @Column({ type: "text", nullable: true })
@@ -29,15 +37,15 @@ export class Post extends BasePageEntity implements TPost {
     delta?: string | null;
 
     @Field(type => String, { nullable: true })
-    @Column({ type: "varchar", nullable: true, length: 5000 })
+    @Column({ type: "varchar", length: 5000, nullable: true })
     excerpt?: string | null;
 
     @Field(type => String, { nullable: true })
-    @Column({ type: "varchar", nullable: true, length: 300 })
+    @Column({ type: "varchar", length: 400, nullable: true })
     mainImage?: string | null;
 
     @Field(type => String, { nullable: true })
-    @Column({ type: "varchar", nullable: true })
+    @Column({ type: "varchar", length: 255, nullable: true })
     readTime?: string | null;
 
     @Field(type => [Tag], { nullable: true })
@@ -46,11 +54,11 @@ export class Post extends BasePageEntity implements TPost {
     tags?: Tag[] | null;
 
     @Field(type => Boolean, { nullable: true })
-    @Index()
     @Column({ type: "boolean", nullable: true })
+    @Index()
     published?: boolean | null;
 
-    @Field(type => Date, { nullable: true })
+    @Field(type => CustomDateScalar, { nullable: true })
     @Column({ type: Date, nullable: true })
     publishDate?: Date | null;
 
@@ -60,7 +68,12 @@ export class Post extends BasePageEntity implements TPost {
     comments?: TPostComment[];
 
     @Field(type => Boolean, { nullable: true })
-    @Index()
     @Column({ type: "boolean", nullable: true })
+    @Index()
     featured?: boolean | null;
+
+    @OneToMany(() => PostMeta, meta => meta.entity, {
+        cascade: true,
+    })
+    metaRecords?: PostMeta[];
 }

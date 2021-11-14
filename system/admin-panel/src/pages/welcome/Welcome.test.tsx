@@ -5,7 +5,7 @@ import React from 'react';
 const testData: TUser = {
     fullName: '__test1__',
     email: '__test2__',
-    id: '1'
+    id: 1
 }
 jest.mock('@cromwell/core-frontend', () => {
     return {

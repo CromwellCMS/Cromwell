@@ -1,7 +1,7 @@
 import { TAttribute, TAttributeInstanceValue, TAttributeProductVariant, TProduct } from '@cromwell/core';
-import { Button, Fade, IconButton, MenuItem, Paper, Popper, Tooltip } from '@mui/material';
 import { DeleteForever as DeleteForeverIcon, Edit as EditIcon, HighlightOff as HighlightOffIcon } from '@mui/icons-material';
-import React, { useEffect, useState } from 'react';
+import { Button, Fade, IconButton, MenuItem, Paper, Popper, Tooltip } from '@mui/material';
+import React from 'react';
 
 import TransferList from '../../components/transferList/TransferList';
 import MainInfoCard from './MainInfoCard';
@@ -27,7 +27,7 @@ export default function AttributesTab(props: {
 
     attributes.forEach(attr => {
         if (product) {
-            let hasAttr = product.attributes ? product.attributes.some(a => a.key === attr.key) : false;
+            const hasAttr = product.attributes ? product.attributes.some(a => a.key === attr.key) : false;
             if (!hasAttr) {
                 leftAttributesToAdd.push(attr);
             }
@@ -66,7 +66,7 @@ export default function AttributesTab(props: {
                                 </div>
                                 <TransferList
                                     left={leftValues.map(v => v.value)}
-                                    setLeft={(val) => { }}
+                                    setLeft={() => { }}
                                     right={rightValues}
                                     itemComp={(props) => (
                                         <div className={styles.attributeInstanceValue}>
@@ -118,7 +118,7 @@ export default function AttributesTab(props: {
                                     <div className={styles.editingProductVariant}>
                                         <div className={styles.attributeHeader}>
                                             <p className={styles.editingProductVariantTitle}>Editing product variant for value:
-                                                            <span className={styles.tag}>{editingProductVariant.value}</span>
+                                                <span className={styles.tag}>{editingProductVariant.value}</span>
                                             </p>
                                             <div>
                                                 <Tooltip title="Close">
@@ -161,16 +161,20 @@ export default function AttributesTab(props: {
                             </div>
                         )
                     }
-
                 })
             )}
-            <Button variant="outlined" color="primary"
-                onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
-                    setPopperAnchorEl(event.currentTarget);
-                    setPopperOpen((prev) => !prev);
-                }}
-                disabled={!Boolean(leftAttributesToAdd.length)}
-            >Add attribute</Button>
+            <div style={{ width: '100%', display: 'flex' }}>
+                <Button
+                    className={styles.addAttributeBtn}
+                    variant="contained"
+                    color="primary"
+                    onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+                        setPopperAnchorEl(event.currentTarget);
+                        setPopperOpen((prev) => !prev);
+                    }}
+                    disabled={!leftAttributesToAdd.length}
+                >Add attribute</Button>
+            </div>
             <Popper open={popperOpen} anchorEl={popperAnchorEl} placement={'bottom-start'} transition>
                 {({ TransitionProps }) => (
                     <Fade {...TransitionProps} timeout={350}>
@@ -178,6 +182,7 @@ export default function AttributesTab(props: {
                             {leftAttributesToAdd.map(attr => {
                                 return (
                                     <MenuItem
+                                        key={attr.key}
                                         onClick={() => {
                                             const prod: TProduct = JSON.parse(JSON.stringify(product));
                                             if (!prod.attributes) prod.attributes = [];

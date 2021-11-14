@@ -33,11 +33,11 @@ describe('Attribute resolver', () => {
         expect(data.length).toBeTruthy();
     });
 
-    const getAttributeById = async (attributeId: string) => {
+    const getAttributeById = async (attributeId: number) => {
         const path = GraphQLPaths.Attribute.getOneById;
         const res = await server.executeOperation({
             query: gql`
-            query testGetAttributeById($attributeId: String!) {
+            query testGetAttributeById($attributeId: Int!) {
                 ${path}(id: $attributeId) {
                     ...AttributeFragment
                 }
@@ -53,7 +53,7 @@ describe('Attribute resolver', () => {
     }
 
     it(`getAttributeById`, async () => {
-        const data = await getAttributeById('1');
+        const data = await getAttributeById(1);
 
         expect(data).toBeTruthy();
         expect(data.id).toBeTruthy();
@@ -61,7 +61,7 @@ describe('Attribute resolver', () => {
     });
 
     it(`updateAttribute`, async () => {
-        const data1: TAttribute = await getAttributeById('1');
+        const data1: TAttribute = await getAttributeById(1);
         expect(data1).toBeTruthy();
         expect(data1.id).toBeTruthy();
 
@@ -77,7 +77,7 @@ describe('Attribute resolver', () => {
 
         const res = await server.executeOperation({
             query: gql`
-              mutation testUpdateAttribute($id: String!, $data: AttributeInput!) {
+              mutation testUpdateAttribute($id: Int!, $data: AttributeInput!) {
                   ${path}(id: $id, data: $data) {
                       ...AttributeFragment
                   }
@@ -85,7 +85,7 @@ describe('Attribute resolver', () => {
               ${crwClient?.AttributeFragment}
           `,
             variables: {
-                id: '1',
+                id: 1,
                 data: update,
             }
         });
@@ -93,7 +93,7 @@ describe('Attribute resolver', () => {
         expect(resInfo).toBeTruthy();
         expect(!Array.isArray(resInfo)).toBeTruthy();
 
-        const data2 = await getAttributeById('1');
+        const data2 = await getAttributeById(1);
 
         expect(data2).toBeTruthy();
         expect(data2.id).toBeTruthy();
@@ -103,7 +103,7 @@ describe('Attribute resolver', () => {
 
 
     it(`createAttribute`, async () => {
-        const data1: TAttribute = await getAttributeById('1');
+        const data1: TAttribute = await getAttributeById(1);
         expect(data1).toBeTruthy();
         expect(data1.id).toBeTruthy();
         expect(data1.slug).toBeTruthy();
@@ -145,7 +145,7 @@ describe('Attribute resolver', () => {
 
 
     it(`deleteAttribute`, async () => {
-        const data1: TAttribute = await getAttributeById('1');
+        const data1: TAttribute = await getAttributeById(1);
         expect(data1).toBeTruthy();
         expect(data1.id).toBeTruthy();
         expect(data1.slug).toBeTruthy();
@@ -154,19 +154,19 @@ describe('Attribute resolver', () => {
 
         const res = await server.executeOperation({
             query: gql`
-                mutation testDeleteAttribute($id: String!) {
+                mutation testDeleteAttribute($id: Int!) {
                     ${path}(id: $id)
                 }
           `,
             variables: {
-                id: '1',
+                id: 1,
             }
         });
         const success = crwClient?.returnData(res, path);
         expect(!success.ValidationError).toBeTruthy();
         expect(success === true).toBeTruthy();
 
-        const data2 = await getAttributeById('1');
+        const data2 = await getAttributeById(1);
 
         expect(!data2?.id).toBeTruthy();
         expect(!data2?.slug).toBeTruthy();

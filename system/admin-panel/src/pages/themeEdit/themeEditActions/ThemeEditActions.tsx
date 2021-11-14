@@ -18,8 +18,8 @@ import { History } from 'history';
 import queryString from 'query-string';
 import React, { Component } from 'react';
 
+import { ColorPicker } from '../../../components/colorPicker/ColorPicker';
 import { LoadingStatus } from '../../../components/loadBox/LoadingStatus';
-import ColorPicker from '../../../components/colorPicker/ColorPicker';
 import { askConfirmation } from '../../../components/modal/Confirmation';
 import Modal from '../../../components/modal/Modal';
 import { ModeSwitch } from '../../../components/modeSwitch/ModeSwitch';

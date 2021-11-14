@@ -5,12 +5,12 @@ const productsData: TPagedList<TProduct> = {
     pagedMeta: { totalElements: 2, pageNumber: 1, pageSize: 2, totalPages: 1 },
     elements: [
         {
-            id: '1',
+            id: 1,
             name: '_test1_',
             categories: [],
         },
         {
-            id: '2',
+            id: 2,
             name: '_test2_',
             categories: [],
         }
@@ -20,6 +20,7 @@ const productsData: TPagedList<TProduct> = {
 jest.mock('../../constants/PageInfos', () => {
     return {
         productPageInfo: {},
+        productListInfo: {},
     }
 });
 
@@ -36,7 +37,7 @@ jest.mock('@cromwell/core-frontend', () => {
                 return () => (
                     <div>
                         {items.elements.map(it => {
-                            return <ListItem key={it.id} data={it} />
+                            return <ListItem key={it.id} data={it} listItemProps={props.listItemProps} />
                         })}
                     </div>
                 )
@@ -46,7 +47,7 @@ jest.mock('@cromwell/core-frontend', () => {
         CPlugin: () => <></>,
         getGraphQLClient: () => {
             return {
-                getFilteredProducts: jest.fn().mockImplementation(() => productsData),
+                getFilteredProducts: jest.fn().mockImplementation(async () => productsData),
                 getAttributes: jest.fn().mockImplementation(async () => []),
             }
         },

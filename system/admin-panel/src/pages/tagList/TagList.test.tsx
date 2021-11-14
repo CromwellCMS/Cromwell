@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import React from 'react';
 import loadable from '@loadable/component';
 import { TPagedList, TTag } from '@cromwell/core';
@@ -8,11 +8,11 @@ const testData: TPagedList<TTag> = {
     pagedMeta: { totalElements: 2, pageNumber: 1, pageSize: 2, totalPages: 1 },
     elements: [
         {
-            id: '1',
+            id: 1,
             name: '_test1_',
         },
         {
-            id: '2',
+            id: 2,
             name: '_test2_',
         }
     ]
@@ -35,7 +35,7 @@ jest.mock('@cromwell/core-frontend', () => {
                 return () => (
                     <div>
                         {items.elements.map(it => {
-                            return <ListItem key={it.id} data={it} />
+                            return <ListItem key={it.id} data={it} listItemProps={props.listItemProps} />
                         })}
                     </div>
                 )
@@ -44,12 +44,17 @@ jest.mock('@cromwell/core-frontend', () => {
         },
         getGraphQLClient: () => {
             return {
-                getTags: jest.fn().mockImplementation(() => testData)
+                getFilteredTags: jest.fn().mockImplementation(async () => testData)
             }
         },
         getRestApiClient: () => {
             return {
                 getCmsStatus: () => null,
+            }
+        },
+        getCStore: () => {
+            return {
+                getPriceWithCurrency: jest.fn().mockImplementation((val) => val + ''),
             }
         },
     }

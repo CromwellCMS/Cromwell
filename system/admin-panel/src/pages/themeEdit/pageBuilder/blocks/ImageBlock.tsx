@@ -1,9 +1,10 @@
 import { TCromwellBlockData } from '@cromwell/core';
-import { FormControl, InputLabel, MenuItem, Select, TextField, Tooltip, SelectChangeEvent } from '@mui/material';
 import { Image as ImageIcon, Public as PublicIcon } from '@mui/icons-material';
+import { SelectChangeEvent, TextField, Tooltip } from '@mui/material';
 import React from 'react';
 
-import ImagePicker from '../../../../components/imagePicker/ImagePicker';
+import { ImagePicker } from '../../../../components/imagePicker/ImagePicker';
+import { Select } from '../../../../components/select/Select';
 import { useForceUpdate } from '../../../../helpers/forceUpdate';
 import { StylesEditor } from '../components/StylesEditor';
 import styles from './BaseBlock.module.scss';
@@ -84,20 +85,16 @@ export function ImageBlockSidebar(props: TBlockMenuProps) {
                 className={styles.settingsInput}
                 variant="standard"
                 label="Alt" />
-            <FormControl
+            <Select
+                label="Image fit"
+                className={styles.settingsInput}
                 fullWidth
-                className={styles.settingsInput} >
-                <InputLabel >Image fit</InputLabel>
-                <Select
-                    fullWidth
-                    variant="standard"
-                    onChange={handleTextInput('objectFit')}
-                    value={imageData?.objectFit ?? 'contain'}
-                >
-                    <MenuItem value={'contain'}>Contain</MenuItem>
-                    <MenuItem value={'cover'}>Cover</MenuItem>
-                </Select>
-            </FormControl>
+                onChange={handleTextInput('objectFit')}
+                variant="standard"
+                value={imageData?.objectFit ?? 'contain'}
+                options={[{ value: 'contain', label: 'Contain' }, { value: 'cover', label: 'Cover' }]}
+            />
+
             <StylesEditor
                 forceUpdate={forceUpdate}
                 blockProps={props}

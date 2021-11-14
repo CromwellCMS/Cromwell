@@ -44,11 +44,11 @@ describe('Post resolver', () => {
         expect(data.pagedMeta.pageSize === 10).toBeTruthy();
     });
 
-    const getPostById = async (postId: string) => {
+    const getPostById = async (postId: number) => {
         const path = GraphQLPaths.Post.getOneById;
         const res = await server.executeOperation({
             query: gql`
-            query testGetPostById($postId: String!) {
+            query testGetPostById($postId: Int!) {
                 ${path}(id: $postId) {
                     ...PostFragment
                 }
@@ -64,7 +64,7 @@ describe('Post resolver', () => {
     }
 
     it(`getPostById`, async () => {
-        const data = await getPostById('1');
+        const data = await getPostById(1);
 
         expect(data).toBeTruthy();
         expect(data.id).toBeTruthy();
@@ -99,7 +99,7 @@ describe('Post resolver', () => {
     });
 
     it(`updatePost`, async () => {
-        const data1: TPost = await getPostById('10');
+        const data1: TPost = await getPostById(10);
         expect(data1).toBeTruthy();
         expect(data1.id).toBeTruthy();
         expect(data1.slug).toBeTruthy();
@@ -122,7 +122,7 @@ describe('Post resolver', () => {
 
         await server.executeOperation({
             query: gql`
-              mutation testUpdatePost($id: String!, $data: UpdatePost!) {
+              mutation testUpdatePost($id: Int!, $data: UpdatePost!) {
                   ${path}(id: $id, data: $data) {
                       ...PostFragment
                   }
@@ -130,11 +130,11 @@ describe('Post resolver', () => {
               ${crwClient?.PostFragment}
           `,
             variables: {
-                id: '10',
+                id: 10,
                 data: updatePost,
             }
         });
-        const data2 = await getPostById('10');
+        const data2 = await getPostById(10);
 
         expect(data2).toBeTruthy();
         expect(data2.id).toBeTruthy();
@@ -144,7 +144,7 @@ describe('Post resolver', () => {
 
 
     it(`createPost`, async () => {
-        const data1: TPost = await getPostById('10');
+        const data1: TPost = await getPostById(10);
         expect(data1).toBeTruthy();
         expect(data1.id).toBeTruthy();
         expect(data1.slug).toBeTruthy();
@@ -192,7 +192,7 @@ describe('Post resolver', () => {
 
 
     it(`deletePost`, async () => {
-        const data1: TPost = await getPostById('11');
+        const data1: TPost = await getPostById(11);
         expect(data1).toBeTruthy();
         expect(data1.id).toBeTruthy();
         expect(data1.slug).toBeTruthy();
@@ -203,19 +203,19 @@ describe('Post resolver', () => {
 
         const res = await server.executeOperation({
             query: gql`
-                mutation testDeletePost($id: String!) {
+                mutation testDeletePost($id: Int!) {
                     ${path}(id: $id)
                 }
           `,
             variables: {
-                id: '11',
+                id: 11,
             }
         });
         const success = crwClient?.returnData(res, path);
         expect(!Array.isArray(success)).toBeTruthy();
         expect(success === true).toBeTruthy();
 
-        const data2 = await getPostById('11');
+        const data2 = await getPostById(11);
 
         expect(!data2?.id).toBeTruthy();
         expect(!data2?.slug).toBeTruthy();

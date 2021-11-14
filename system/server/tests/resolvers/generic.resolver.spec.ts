@@ -40,11 +40,11 @@ describe('Generic resolver', () => {
         expect(Array.isArray(data)).toBeTruthy();
     });
 
-    const getGenericById = async (id: string) => {
+    const getGenericById = async (id: number) => {
         const path = GraphQLPaths.Generic.getOneById + entityName;
         const res = await server.executeOperation({
             query: gql`
-                query testGenericGetEntityById($id: String!) {
+                query testGenericGetEntityById($id: Int!) {
                     ${path}(id: $id) {
                         ...${fragmentName}
                     }
@@ -59,18 +59,17 @@ describe('Generic resolver', () => {
         return data;
     }
 
-    const getDaultId = async (): Promise<string | undefined> => {
+    const getDefaultId = async (): Promise<number | undefined> => {
         return (await getCustomRepository(GenericPlugin.repository).find())[0]?.id;
     }
-    const getDaultSlug = async (): Promise<string | undefined> => {
+    const getDefaultSlug = async (): Promise<string | undefined | null> => {
         return (await getCustomRepository(GenericPlugin.repository).find())[0]?.slug;
     }
 
     it(`getGenericById`, async () => {
-        let id = await getDaultId();
+        const id = await getDefaultId();
         expect(id).toBeTruthy();
         if (!id) return;
-        id += '';
 
         const data = await getGenericById(id);
         if (Array.isArray(data)) {
@@ -103,7 +102,7 @@ describe('Generic resolver', () => {
     }
 
     it(`getGenericBySlug`, async () => {
-        const slug = await getDaultSlug();
+        const slug = await getDefaultSlug();
         expect(slug).toBeTruthy();
         if (!slug) return;
 
@@ -118,10 +117,9 @@ describe('Generic resolver', () => {
     });
 
     it(`updateGeneric`, async () => {
-        let id = await getDaultId();
+        const id = await getDefaultId();
         expect(id).toBeTruthy();
         if (!id) return;
-        id += '';
 
         const data1 = await getGenericById(id);
         if (Array.isArray(data1)) {
@@ -143,7 +141,7 @@ describe('Generic resolver', () => {
 
         const res = await server.executeOperation({
             query: gql`
-              mutation testUpdateGeneric($id: String!, $data: PluginInput!) {
+              mutation testUpdateGeneric($id: Int!, $data: PluginInput!) {
                   ${path}(id: $id, data: $data) {
                       ...${fragmentName}
                   }
@@ -174,10 +172,9 @@ describe('Generic resolver', () => {
 
 
     it(`createGeneric`, async () => {
-        let id = await getDaultId();
+        const id = await getDefaultId();
         expect(id).toBeTruthy();
         if (!id) return;
-        id += '';
 
         const data1 = await getGenericById(id);
         if (Array.isArray(data1)) {
@@ -229,10 +226,9 @@ describe('Generic resolver', () => {
 
 
     it(`deleteGeneric`, async () => {
-        let id = await getDaultId();
+        const id = await getDefaultId();
         expect(id).toBeTruthy();
         if (!id) return;
-        id += '';
 
         const data1 = await getGenericById(id);
         if (Array.isArray(data1)) {
@@ -245,7 +241,7 @@ describe('Generic resolver', () => {
 
         const res = await server.executeOperation({
             query: gql`
-                mutation testDeleteGeneric($id: String!) {
+                mutation testDeleteGeneric($id: Int!) {
                     ${path}(id: $id)
                 }
           `,

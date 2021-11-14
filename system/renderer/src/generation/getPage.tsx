@@ -1,4 +1,5 @@
 import {
+    EDBEntity,
     getStoreItem,
     isServer,
     setStoreItem,
@@ -8,13 +9,13 @@ import {
     TPageStats,
 } from '@cromwell/core';
 import {
+    BlockStoreProvider,
     CContainer,
     cleanParseContext,
     getModuleImporter,
     getParserTransform,
     getRestApiClient,
     pageRootContainerId,
-    BlockStoreProvider,
 } from '@cromwell/core-frontend';
 import { NextRouter, withRouter } from 'next/router';
 import React, { useRef } from 'react';
@@ -24,12 +25,14 @@ import { isValidElementType } from 'react-is';
 import { CrwDocumentContext, patchDocument } from '../helpers/document';
 import { useForceUpdate } from '../helpers/helpers';
 import { usePatchForRedirects } from '../helpers/redirects';
+import { TPageExports } from '../types';
 
 type PageProps = Partial<TCromwellPageCoreProps> & {
     router: NextRouter;
 }
 
-export const getPage = (pageName: TDefaultPageName | string, PageComponent: TCromwellPage): TCromwellPage => {
+export const getPage = (pageName: TDefaultPageName | string, pageExports: TPageExports): TCromwellPage => {
+    const PageComponent = pageExports?.default;
     if (!PageComponent) throw new Error('getPage !PageComponent');
     if (!isValidElementType(PageComponent)) throw new Error('getPage PageComponent !isValidElementType');
 
@@ -41,7 +44,7 @@ export const getPage = (pageName: TDefaultPageName | string, PageComponent: TCro
             childStaticProps, cmsSettings, themeHeadHtml,
             themeFooterHtml, documentContext,
             palette, defaultPages, pageConfigName,
-            resolvedPageRoute } = props;
+            resolvedPageRoute, slug } = props;
 
         if (!isServer() && documentContext) {
             if (!documentContext.fullUrl)
@@ -95,11 +98,28 @@ export const getPage = (pageName: TDefaultPageName | string, PageComponent: TCro
             }
         }
 
+
+
         if (!isServer()) {
+            let pageDefaultName: TDefaultPageName | undefined;
+            if (defaultPages) {
+                Object.entries(defaultPages).forEach(entry => {
+                    if (entry[1] === pageConfigName) pageDefaultName = entry[0] as TDefaultPageName;
+                });
+            }
+
+            let entityType: EDBEntity = pageDefaultName as any;
+            if (pageDefaultName === 'product') entityType = EDBEntity.Product;
+            if (pageDefaultName === 'category') entityType = EDBEntity.ProductCategory;
+            if (pageDefaultName === 'post') entityType = EDBEntity.Post;
+            if (pageDefaultName === 'tag') entityType = EDBEntity.Tag;
+
             const apiClient = getRestApiClient();
             const pageStats: TPageStats = {
                 pageRoute: window.location.pathname + window.location.search,
                 pageName: pageConfigName,
+                entityType,
+                slug: Array.isArray(slug) ? JSON.stringify(slug) : slug,
             }
             apiClient?.post(`v1/cms/view-page`, pageStats, { disableLog: true }).catch(() => null);
         }

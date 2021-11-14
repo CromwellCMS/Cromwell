@@ -1,14 +1,16 @@
 import { gql } from '@apollo/client';
-import { resolvePageRoute, serviceLocator, TAttribute, TProduct, TProductInput } from '@cromwell/core';
+import { EDBEntity, resolvePageRoute, serviceLocator, TAttribute, TProduct, TProductInput } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
 import { ArrowBack as ArrowBackIcon, OpenInNew as OpenInNewIcon } from '@mui/icons-material';
 import { Button, IconButton, Skeleton, Tab, Tabs, Tooltip } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { Link, useHistory, useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 
 import { toast } from '../../components/toast/toast';
-import { productListInfo, productPageInfo } from '../../constants/PageInfos';
+import { productPageInfo } from '../../constants/PageInfos';
+import { getCustomMetaFor, getCustomMetaKeysFor, RenderCustomFields } from '../../helpers/customFields';
 import { useForceUpdate } from '../../helpers/forceUpdate';
+import { handleOnSaveError } from '../../helpers/handleErrors';
 import { resetSelected } from '../../redux/helpers';
 import { store } from '../../redux/store';
 import commonStyles from '../../styles/common.module.scss';
@@ -34,6 +36,7 @@ const ProductPage = () => {
     const infoCardRef = React.useRef<TInfoCardRef | null>(null);
     const productRef = React.useRef<TProduct | null>(null);
     const [notFound, setNotFound] = useState(false);
+    const [canValidate, setCanValidate] = useState(false);
     const forceUpdate = useForceUpdate();
     const history = useHistory();
 
@@ -53,10 +56,10 @@ const ProductPage = () => {
     }, []);
 
     const getProduct = async () => {
+        let prod: TProduct | undefined;
         if (productId && productId !== 'new') {
-            let prod: TProduct | undefined;
             try {
-                prod = await client?.getProductById(productId, gql`
+                prod = await client?.getProductById(parseInt(productId), gql`
                     fragment AdminPanelProductFragment on Product {
                         id
                         slug
@@ -81,6 +84,7 @@ const ProductPage = () => {
                         categories(pagedParams: {pageSize: 9999}) {
                             id
                         }
+                        customMeta (keys: ${JSON.stringify(getCustomMetaKeysFor(EDBEntity.Product))})
                         attributes {
                             key
                             values {
@@ -121,6 +125,7 @@ const ProductPage = () => {
             setProdData({} as any);
             forceUpdate();
         }
+        return prod;
     }
 
     const getAttributes = async () => {
@@ -139,10 +144,20 @@ const ProductPage = () => {
         })();
     }, []);
 
+    const refetchMeta = async () => {
+        if (!productId) return;
+        const data = await getProduct();
+        return data?.customMeta;
+    };
+
+    const checkValid = (value) => value && value !== '';
 
     const handleSave = async () => {
         await infoCardRef?.current?.save();
         const product = productRef.current;
+        setCanValidate(true);
+
+        if (!checkValid(product?.name)) return;
 
         const productAttributes = product.attributes?.map(attr => ({
             key: attr.key,
@@ -162,7 +177,8 @@ const ProductPage = () => {
         }));
 
         const selectedItems = store.getState().selectedItems;
-        const categoryIds = Object.keys(selectedItems).filter(id => selectedItems[id]);
+        const categoryIds = Object.keys(selectedItems)
+            .filter(id => selectedItems[id]).map(Number).filter(Boolean);
         let mainCategoryId = store.getState().selectedItem ?? null;
         if (mainCategoryId && !categoryIds.includes(mainCategoryId)) mainCategoryId = null;
 
@@ -176,6 +192,8 @@ const ProductPage = () => {
                 sku: product.sku,
                 mainImage: product.mainImage,
                 images: product.images,
+                stockStatus: product.stockStatus ?? 'In stock',
+                stockAmount: product.stockAmount,
                 description: product.description,
                 descriptionDelta: product.descriptionDelta,
                 slug: product.slug,
@@ -185,6 +203,7 @@ const ProductPage = () => {
                 meta: product.meta && {
                     keywords: product.meta.keywords
                 },
+                customMeta: Object.assign({}, product.customMeta, await getCustomMetaFor(EDBEntity.Product)),
                 isEnabled: product.isEnabled,
             }
 
@@ -194,7 +213,7 @@ const ProductPage = () => {
                     const prod = await client?.createProduct(input);
                     if (prod?.id) {
                         toast.success('Created product');
-                        history.push(`${productPageInfo.baseRoute}/${prod.slug}`)
+                        history.replace(`${productPageInfo.baseRoute}/${prod.slug}`)
                         if (prod) setProdData(prod);
                         forceUpdate();
                     } else {
@@ -202,6 +221,7 @@ const ProductPage = () => {
                     }
                 } catch (e) {
                     toast.error('Failed to create');
+                    handleOnSaveError(e);
                     console.error(e);
                 }
                 setIsLoading(false);
@@ -213,11 +233,12 @@ const ProductPage = () => {
                     toast.success('Updated product');
                 } catch (e) {
                     toast.error('Failed to update');
+                    handleOnSaveError(e);
                     console.error(e);
                 }
             }
-
         }
+        setCanValidate(false);
     }
 
     const handleTabChange = (event: React.ChangeEvent<unknown>, newValue: number) => {
@@ -237,7 +258,7 @@ const ProductPage = () => {
 
     let pageFullUrl;
     if (product?.slug) {
-        pageFullUrl = serviceLocator.getFrontendUrl() + resolvePageRoute('product', { slug: product.slug ?? product.id });
+        pageFullUrl = serviceLocator.getFrontendUrl() + resolvePageRoute('product', { slug: product.slug ?? product.id + '' });
     }
 
     return (
@@ -246,12 +267,11 @@ const ProductPage = () => {
             <div className={styles.header}>
                 {/* <p>Product id: {id}</p> */}
                 <div className={styles.headerLeft}>
-                    <Link to={productListInfo.route}>
-                        <IconButton
-                        >
-                            <ArrowBackIcon />
-                        </IconButton>
-                    </Link>
+                    <IconButton
+                        onClick={() => window.history.back()}
+                    >
+                        <ArrowBackIcon style={{ fontSize: '18px' }} />
+                    </IconButton>
                     <p className={commonStyles.pageTitle}>product</p>
                 </div>
                 <div >
@@ -268,7 +288,7 @@ const ProductPage = () => {
                 </div>
                 <div className={styles.headerActions}>
                     {pageFullUrl && (
-                        <Tooltip title="Open product page in new tab">
+                        <Tooltip title="Open product in the new tab">
                             <IconButton
                                 className={styles.openPageBtn}
                                 aria-label="open"
@@ -278,7 +298,9 @@ const ProductPage = () => {
                             </IconButton>
                         </Tooltip>
                     )}
-                    <Button variant="contained" color="primary"
+                    <Button variant="contained"
+                        color="primary"
+                        size="small"
                         className={styles.saveBtn}
                         onClick={handleSave}>
                         Save
@@ -298,6 +320,13 @@ const ProductPage = () => {
                                 product={product}
                                 setProdData={setProdData}
                                 infoCardRef={infoCardRef}
+                                canValidate={canValidate}
+                            />
+                            <div style={{ marginBottom: '15px' }}></div>
+                            <RenderCustomFields
+                                entityType={EDBEntity.Product}
+                                entityData={product}
+                                refetchMeta={refetchMeta}
                             />
                         </div>
                     </TabPanel>
@@ -314,9 +343,7 @@ const ProductPage = () => {
                         <CategoriesTab />
                     </TabPanel>
                 </>
-            )
-            }
-
+            )}
         </div >
     )
 }

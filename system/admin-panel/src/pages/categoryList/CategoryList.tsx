@@ -3,24 +3,26 @@ import { getBlockInstance, TPagedParams, TProductCategory, TProductCategoryFilte
 import { CList, getGraphQLClient, TCList } from '@cromwell/core-frontend';
 import {
     AccountTreeOutlined as AccountTreeOutlinedIcon,
-    Add as AddIcon,
-    Delete as DeleteIcon,
     List as ListIcon,
     UnfoldLess as UnfoldLessIcon,
     UnfoldMore as UnfoldMoreIcon,
 } from '@mui/icons-material';
-import { Checkbox, IconButton, Skeleton, TextField, Tooltip } from '@mui/material';
+import { Button, Checkbox, IconButton, Skeleton, TextField, Tooltip } from '@mui/material';
+import clsx from 'clsx';
 import React, { useEffect, useRef, useState } from 'react';
 import { connect, PropsType } from 'react-redux-ts';
 import { useHistory } from 'react-router-dom';
 import { debounce } from 'throttle-debounce';
 
+import DeleteSelectedButton from '../../components/entity/entityTable/components/DeleteSelectedButton';
+import SortBy, { TSortOption } from '../../components/entity/sort/Sort';
 import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
 import ConfirmationModal from '../../components/modal/Confirmation';
 import Pagination from '../../components/pagination/Pagination';
 import { listPreloader } from '../../components/skeleton/SkeletonPreloader';
 import { toast } from '../../components/toast/toast';
 import { categoryPageInfo } from '../../constants/PageInfos';
+import { useForceUpdate } from '../../helpers/forceUpdate';
 import {
     countSelectedItems,
     getSelectedInput,
@@ -65,6 +67,23 @@ const CategoryList = (props: TPropsType) => {
     const filterInput = useRef<TProductCategoryFilter>({});
     const [deleteSelectedOpen, setDeleteSelectedOpen] = useState<boolean>(false);
     const totalElements = useRef<number | null>(null);
+    const orderByRef = useRef<keyof TProductCategory | null>(null);
+    const orderRef = useRef<'ASC' | 'DESC' | null>(null);
+
+    const availableSorts: TSortOption<TProductCategory>[] = [
+        {
+            key: 'id',
+            label: 'ID'
+        },
+        {
+            key: 'name',
+            label: 'Name'
+        },
+        {
+            key: 'createDate',
+            label: 'Created'
+        },
+    ]
 
     const getRootCategories = async () => {
         setIsLoading(true);
@@ -91,7 +110,7 @@ const CategoryList = (props: TPropsType) => {
         }
     }, []);
 
-    const hanleCollapseAll = () => {
+    const handleCollapseAll = () => {
         collapsedItemsRef.current['all'] = false;
         forceUpdate();
     }
@@ -136,6 +155,10 @@ const CategoryList = (props: TPropsType) => {
     });
 
     const handleGetProductCategories = async (params: TPagedParams<TProductCategory>) => {
+        if (!params) params = {};
+        params.orderBy = orderByRef.current ?? 'id';
+        params.order = orderRef.current ?? 'DESC';
+
         const data = await client?.getFilteredProductCategories({
             pagedParams: params,
             customFragment: gql`
@@ -208,9 +231,32 @@ const CategoryList = (props: TPropsType) => {
         setIsLoading(false);
     }
 
+    const handleChangeOrder = (key: keyof TProductCategory, order: 'ASC' | 'DESC') => {
+        orderByRef.current = key;
+        orderRef.current = order;
+        resetList();
+        forceUpdate();
+    }
+
     return (
         <div className={styles.CategoryList} >
-            <div className={styles.header}>
+            {!props.embeddedView && (
+                <div className={styles.pageHeader}>
+                    <h1 className={clsx(styles.pageTitle, commonStyles.pageTitle)}>Categories</h1>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <DeleteSelectedButton
+                            style={{ marginRight: '10px' }}
+                            onClick={handleDeleteSelectedBtnClick}
+                            totalElements={totalElements.current}
+                        />
+                        <Button variant="contained"
+                            size="small"
+                            onClick={handleCreate}
+                        >Add new</Button>
+                    </div>
+                </div>
+            )}
+            <div className={styles.listHeader}>
                 <div className={styles.filter}>
                     <div className={commonStyles.center}>
                         {!props.embeddedView && (
@@ -247,7 +293,7 @@ const CategoryList = (props: TPropsType) => {
                                 <IconButton
                                     className={styles.actionBtn}
                                     aria-label="Collapse all"
-                                    onClick={hanleCollapseAll}
+                                    onClick={handleCollapseAll}
                                 >
                                     <UnfoldLessIcon />
                                 </IconButton>
@@ -266,27 +312,12 @@ const CategoryList = (props: TPropsType) => {
                         />
                     )}
                 </div>
-                <div>
-                    {!props.embeddedView && (
-                        <>
-                            <Tooltip title="Delete selected">
-                                <IconButton
-                                    onClick={handleDeleteSelectedBtnClick}
-                                    aria-label="Delete selected"
-                                >
-                                    <DeleteIcon />
-                                </IconButton>
-                            </Tooltip>
-                            <Tooltip title="Create category">
-                                <IconButton
-                                    className={styles.actionBtn}
-                                    aria-label="Create category"
-                                    onClick={handleCreate}
-                                >
-                                    <AddIcon />
-                                </IconButton>
-                            </Tooltip>
-                        </>
+                <div className={styles.pageActions}>
+                    {displayType === 'list' && (
+                        <SortBy<TProductCategory>
+                            options={availableSorts}
+                            onChange={handleChangeOrder}
+                        />
                     )}
                 </div>
             </div>
@@ -354,11 +385,6 @@ const CategoryList = (props: TPropsType) => {
             <LoadingStatus isActive={isLoading} />
         </div>
     )
-}
-
-function useForceUpdate() {
-    const state = useState(0);
-    return () => state[1](value => ++value);
 }
 
 export default connect(mapStateToProps)(CategoryList);

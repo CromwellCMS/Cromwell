@@ -20,7 +20,7 @@ export class PluginRepository extends BaseRepository<PluginEntity> {
         return this.getPaged(params);
     }
 
-    async getPluginById(id: string): Promise<PluginEntity | undefined> {
+    async getPluginById(id: number): Promise<PluginEntity | undefined> {
         logger.log('PluginRepository::getPluginById id: ' + id);
         return this.getById(id);
     }
@@ -30,8 +30,8 @@ export class PluginRepository extends BaseRepository<PluginEntity> {
         return this.getBySlug(slug);
     }
 
-    private async handleBasePluginInput(plugin: PluginEntity, input: TPluginEntityInput) {
-        handleBaseInput(plugin, input);
+    private async handleBasePluginInput(plugin: PluginEntity, input: TPluginEntityInput, action: 'update' | 'create') {
+        await handleBaseInput(plugin, input);
 
         plugin.name = input.name;
         plugin.title = input.title;
@@ -40,35 +40,30 @@ export class PluginRepository extends BaseRepository<PluginEntity> {
         plugin.settings = input.settings;
         plugin.defaultSettings = input.defaultSettings;
         plugin.moduleInfo = input.moduleInfo;
+        if (action === 'create') await plugin.save();
+        await checkEntitySlug(plugin, PluginEntity);
     }
 
     async createPlugin(createPlugin: TPluginEntityInput): Promise<PluginEntity> {
         logger.log('PluginRepository::createPlugin');
-        let plugin = new PluginEntity();
+        const plugin = new PluginEntity();
 
-        await this.handleBasePluginInput(plugin, createPlugin);
-
-        plugin = await this.save(plugin);
-        await checkEntitySlug(plugin, PluginEntity);
-
+        await this.handleBasePluginInput(plugin, createPlugin, 'create');
+        await this.save(plugin);
         return plugin;
     }
 
-    async updatePlugin(id: string, updatePlugin: TPluginEntityInput): Promise<PluginEntity> {
+    async updatePlugin(id: number, updatePlugin: TPluginEntityInput): Promise<PluginEntity> {
         logger.log('PluginRepository::updatePlugin id: ' + id);
-
-        let plugin = await this.findOne({
-            where: { id }
-        });
+        const plugin = await this.getById(id);
         if (!plugin) throw new Error(`Plugin ${id} not found!`);
 
-        await this.handleBasePluginInput(plugin, updatePlugin);
-        plugin = await this.save(plugin);
-        await checkEntitySlug(plugin, PluginEntity);
+        await this.handleBasePluginInput(plugin, updatePlugin, 'update');
+        await this.save(plugin);
         return plugin;
     }
 
-    async deletePlugin(id: string): Promise<boolean> {
+    async deletePlugin(id: number): Promise<boolean> {
         logger.log('PluginRepository::deletePlugin; id: ' + id);
 
         const plugin = await this.getPluginById(id);

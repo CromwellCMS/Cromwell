@@ -11,11 +11,11 @@ import {
 } from '@cromwell/core';
 import { getRestApiClient } from '@cromwell/core-frontend/dist/api/CRestApiClient';
 
+import { TPageExports } from '../types';
 import { getThemeStaticProps } from './getThemeStaticProps';
-import { pluginsDataFetcher } from './pluginsDataFetcher';
+import { pluginsDataFetcher, TPluginsSettings } from './pluginsDataFetcher';
 
-export const createGetStaticProps = (pageName: TDefaultPageName | string,
-    pageGetStaticProps: ((context: TStaticPageContext) => any) | undefined | null) => {
+export const createGetStaticProps = (pageName: TDefaultPageName | string, pageExports: TPageExports) => {
     return async function (context: TStaticPageContext): Promise<
         {
             props?: TCromwellPageCoreProps;
@@ -34,11 +34,7 @@ export const createGetStaticProps = (pageName: TDefaultPageName | string,
         // const timestamp = Date.now();
         let rendererData: {
             pageConfig?: TPageConfig;
-            pluginsSettings?: {
-                pluginName: string;
-                version?: string;
-                globalSettings?: any;
-            }[];
+            pluginsSettings?: TPluginsSettings;
             themeConfig?: TThemeConfig;
             userConfig?: TThemeConfig;
             cmsSettings?: TCmsConfig;
@@ -70,7 +66,7 @@ export const createGetStaticProps = (pageName: TDefaultPageName | string,
         context.themeCustomConfig = rendererData.themeCustomConfig;
         context.pagesInfo = rendererData.pagesInfo;
         const [childStaticProps, plugins] = await Promise.all([
-            getThemeStaticProps(pageName, pageGetStaticProps, context),
+            getThemeStaticProps(pageName, pageExports?.getStaticProps, context),
             pluginsDataFetcher(pageConfigName, context, pluginsSettings),
         ]);
 
@@ -86,6 +82,7 @@ export const createGetStaticProps = (pageName: TDefaultPageName | string,
             themeCustomConfig,
             pageConfigName,
             resolvedPageRoute,
+            slug: context?.params?.slug,
             defaultPages: themeConfig?.defaultPages,
             themeHeadHtml: themeConfig?.headHtml,
             themeFooterHtml: themeConfig?.footerHtml,

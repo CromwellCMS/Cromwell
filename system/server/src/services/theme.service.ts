@@ -462,35 +462,44 @@ export class ThemeService {
     }
 
     public async getPluginsAtPage(pageRoute: string, pageConfig?: TPageConfig) {
-        const out: {
+        const out: Record<string, {
             pluginName: string;
-            version?: string;
-            instanceSettings: any;
+            version?: string | null;
+            // { [pluginBlockId]: instanceSettings }
+            pluginInstances?: Record<string, any>;
             globalSettings: any;
-        }[] = [];
+        }> = {};
 
         if (!pageConfig) pageConfig = await this.getPageConfig(pageRoute);
 
         if (pageConfig && pageConfig.modifications && Array.isArray(pageConfig.modifications)) {
-            const promises = pageConfig.modifications.map(async mod => {
+
+            for (const mod of pageConfig.modifications) {
                 const pluginName = mod?.plugin?.pluginName;
-                if (!pluginName) return;
+                if (!pluginName) continue;
 
                 try {
-                    const plugin = await this.pluginService.findOne(pluginName);
-                    if (!plugin) return;
+                    if (out[pluginName]) {
+                        if (mod?.plugin?.instanceSettings) {
+                            if (!out[pluginName].pluginInstances) out[pluginName].pluginInstances = {};
+                            out[pluginName].pluginInstances![mod.id] = mod.plugin.instanceSettings;
+                        }
+                        continue;
+                    }
 
-                    out.push({
+                    const plugin = await this.pluginService.findOne(pluginName);
+                    if (!plugin) continue;
+
+                    out[pluginName] = {
                         pluginName,
                         version: plugin.version,
-                        instanceSettings: mod?.plugin?.instanceSettings,
+                        pluginInstances: { [mod.id]: mod?.plugin?.instanceSettings },
                         globalSettings: await getPluginSettings(pluginName),
-                    })
+                    }
                 } catch (e) {
                     logger.error('Failed to parse plugin settings of ' + pluginName + e)
                 }
-            });
-            await Promise.all(promises);
+            }
         }
 
         return out;

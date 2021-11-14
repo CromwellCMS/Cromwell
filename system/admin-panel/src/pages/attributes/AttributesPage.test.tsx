@@ -3,13 +3,13 @@ import { TAttribute } from '@cromwell/core';
 
 const testData: TAttribute[] = [
     {
-        id: '1',
+        id: 1,
         key: 'test attribute 1',
         values: [],
         type: 'radio',
     },
     {
-        id: '2',
+        id: 2,
         key: 'test2',
         values: [],
         type: 'radio',

@@ -1,8 +1,9 @@
-import { resolvePageRoute, serviceLocator, TAttributeProductVariant, TProduct } from '@cromwell/core';
-import { Autocomplete, TextField } from '@mui/material';
+import { resolvePageRoute, serviceLocator, TAttributeProductVariant, TProduct, TStockStatus } from '@cromwell/core';
+import { Autocomplete, Grid, TextField, Tooltip } from '@mui/material';
 import React, { useEffect, useRef } from 'react';
 
-import GalleryPicker from '../../components/galleryPicker/GalleryPicker';
+import { GalleryPicker } from '../../components/galleryPicker/GalleryPicker';
+import { Select } from '../../components/select/Select';
 import { getEditorData, getEditorHtml, initTextEditor } from '../../helpers/editor/editor';
 import { useForceUpdate } from '../../helpers/forceUpdate';
 import { NumberFormatCustom } from '../../helpers/NumberFormatCustom';
@@ -16,6 +17,7 @@ const MainInfoCard = (props: {
     isProductVariant?: boolean;
     productVariantVal?: string;
     infoCardRef?: React.MutableRefObject<TInfoCardRef>;
+    canValidate?: boolean;
 }) => {
     const productPrevRef = React.useRef<TAttributeProductVariant | TProduct | null>(props.product);
     const productRef = React.useRef<TAttributeProductVariant | TProduct | null>(props.product);
@@ -92,101 +94,138 @@ const MainInfoCard = (props: {
     let pageFullUrl;
     if ((product as TProduct)?.slug) {
         pageFullUrl = serviceLocator.getFrontendUrl() + resolvePageRoute('product', {
-            slug: (product as TProduct).slug ?? (product as TProduct).id,
+            slug: (product as TProduct).slug ?? (product as TProduct).id + '',
         });
     }
 
+    const checkValid = (value) => value && value !== '';
+
     return (
-        <div>
-            <TextField label="Name" variant="outlined"
-                value={product.name ?? ''}
-                className={styles.textField}
-                onChange={(e) => { handleChange('name', e.target.value) }}
-            />
-            <TextField label="Price" variant="outlined"
-                value={product.price ?? ''}
-                className={styles.textField}
-                onChange={(e) => { handleChange('price', e.target.value) }}
-                InputProps={{
-                    inputComponent: NumberFormatCustom as any,
-                }}
-            />
-            <TextField label="Old price" variant="outlined"
-                value={product.oldPrice ?? ''}
-                className={styles.textField}
-                onChange={(e) => {
-                    const val = e.target.value;
-                    handleChange('oldPrice', (val && val !== '') ? val : null);
-                }}
-                InputProps={{
-                    inputComponent: NumberFormatCustom as any,
-                }}
-            />
-            <TextField label="SKU" variant="outlined"
-                value={product.sku ?? ''}
-                className={styles.textField}
-                onChange={(e) => { handleChange('sku', e.target.value) }}
-            />
-            <div className={styles.imageBlock}>
-                <GalleryPicker
-                    classes={{
-                        imagePicker: {
-                            root: styles.imageItem
-                        }
+        <Grid container spacing={3}>
+            <Grid item xs={12} sm={12}>
+                <TextField label="Name" variant="standard"
+                    value={product.name ?? ''}
+                    className={styles.textField}
+                    onChange={(e) => { handleChange('name', e.target.value) }}
+                    error={props.canValidate && !checkValid(product?.name)}
+                />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+                <TextField label="SKU" variant="standard"
+                    value={product.sku ?? ''}
+                    className={styles.textField}
+                    onChange={(e) => { handleChange('sku', e.target.value) }}
+                />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+                <Select
+                    fullWidth
+                    label="Stock status"
+                    variant="standard"
+                    value={product.stockStatus ?? 'In stock'}
+                    onChange={(e) => { handleChange('stockStatus', e.target.value) }}
+                    options={['In stock', 'Out of stock', 'On backorder'] as TStockStatus[]}
+                />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+                <TextField label="Price" variant="standard"
+                    value={product.price ?? ''}
+                    className={styles.textField}
+                    onChange={(e) => { handleChange('price', e.target.value) }}
+                    InputProps={{
+                        inputComponent: NumberFormatCustom as any,
                     }}
-                    images={((product as TProduct)?.images ?? []).map(src => ({ src }))}
-                    onChange={(val) => handleChange('images', val.map(s => s.src))}
                 />
-            </div>
-            <div className={styles.descriptionEditor} >
-                <div id={editorId}></div>
-            </div>
-            {props.isProductVariant !== true && (
-                <TextField label="Page URL" variant="outlined"
-                    value={(product as TProduct).slug ?? ''}
+            </Grid>
+            <Grid item xs={12} sm={6}>
+                <TextField label="Old price" variant="standard"
+                    value={product.oldPrice ?? ''}
                     className={styles.textField}
-                    onChange={(e) => { handleChange('slug', e.target.value) }}
-                    helperText={pageFullUrl}
-                />
-            )}
-            {props.isProductVariant !== true && (
-                <TextField label="Meta title" variant="outlined"
-                    value={(product as TProduct).pageTitle ?? ''}
-                    className={styles.textField}
-                    onChange={(e) => { handleChange('pageTitle', e.target.value) }}
-                />
-            )}
-            {props.isProductVariant !== true && (
-                <TextField label="Meta description" variant="outlined"
-                    value={(product as TProduct).pageDescription ?? ''}
-                    className={styles.textField}
-                    onChange={(e) => { handleChange('pageDescription', e.target.value) }}
-                />
-            )}
-            {props.isProductVariant !== true && (
-                <Autocomplete
-                    multiple
-                    freeSolo
-                    options={[]}
-                    className={styles.textField}
-                    value={((product as TProduct).meta?.keywords ?? []) as any}
-                    getOptionLabel={(option) => option}
-                    onChange={(e, newVal) => {
-                        handleChange('meta', {
-                            ...((product as TProduct).meta ?? {}),
-                            keywords: newVal
-                        })
+                    onChange={(e) => {
+                        const val = e.target.value;
+                        handleChange('oldPrice', (val && val !== '') ? val : null);
                     }}
-                    renderInput={(params) => (
-                        <TextField
-                            {...params}
-                            variant="outlined"
-                            label="Meta keywords"
-                        />
-                    )}
+                    InputProps={{
+                        inputComponent: NumberFormatCustom as any,
+                    }}
                 />
-            )}
-        </div>
+            </Grid>
+            <Grid item xs={12} sm={12}>
+                <div className={styles.imageBlock}>
+                    <GalleryPicker
+                        classes={{
+                            imagePicker: {
+                                root: styles.imageItem
+                            }
+                        }}
+                        label="Gallery"
+                        images={((product as TProduct)?.images ?? []).map(src => ({ src }))}
+                        onChange={(val) => handleChange('images', val.map(s => s.src))}
+                    />
+                </div>
+            </Grid>
+            <Grid item xs={12} sm={12}>
+                <div className={styles.descriptionEditor}>
+                    <div style={{ minHeight: '300px' }} id={editorId}></div>
+                </div>
+            </Grid>
+            <Grid item xs={12} sm={12}>
+                {props.isProductVariant !== true && (
+                    <TextField label="Page URL" variant="standard"
+                        value={(product as TProduct).slug ?? ''}
+                        className={styles.textField}
+                        onChange={(e) => { handleChange('slug', e.target.value) }}
+                        helperText={pageFullUrl}
+                    />
+                )}
+            </Grid>
+            <Grid item xs={12} sm={12}>
+                {props.isProductVariant !== true && (
+                    <TextField label="Meta title" variant="standard"
+                        value={(product as TProduct).pageTitle ?? ''}
+                        className={styles.textField}
+                        onChange={(e) => { handleChange('pageTitle', e.target.value) }}
+                    />
+                )}
+            </Grid>
+            <Grid item xs={12} sm={12}>
+                {props.isProductVariant !== true && (
+                    <TextField label="Meta description" variant="standard"
+                        multiline
+                        value={(product as TProduct).pageDescription ?? ''}
+                        className={styles.textField}
+                        onChange={(e) => { handleChange('pageDescription', e.target.value) }}
+                    />
+                )}
+            </Grid>
+            <Grid item xs={12} sm={12}>
+                {props.isProductVariant !== true && (
+                    <Autocomplete
+                        multiple
+                        freeSolo
+                        options={[]}
+                        className={styles.textField}
+                        value={((product as TProduct).meta?.keywords ?? []) as any}
+                        getOptionLabel={(option) => option}
+                        onChange={(e, newVal) => {
+                            handleChange('meta', {
+                                ...((product as TProduct).meta ?? {}),
+                                keywords: newVal
+                            })
+                        }}
+                        renderInput={(params) => (
+                            <Tooltip title="Press ENTER to add">
+                                <TextField
+                                    {...params}
+                                    variant="standard"
+                                    label="Meta keywords"
+                                />
+                            </Tooltip>
+                        )}
+                    />
+                )}
+            </Grid>
+        </Grid>
     )
 }
 

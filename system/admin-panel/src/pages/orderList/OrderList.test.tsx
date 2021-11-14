@@ -8,11 +8,11 @@ const testData: TPagedList<TOrder> = {
     pagedMeta: { totalElements: 2, pageNumber: 1, pageSize: 2, totalPages: 1 },
     elements: [
         {
-            id: '1',
+            id: 1,
             customerName: '_test1_',
         },
         {
-            id: '2',
+            id: 2,
             customerName: '_test2_',
         }
     ]
@@ -35,7 +35,7 @@ jest.mock('@cromwell/core-frontend', () => {
                 return () => (
                     <div>
                         {items.elements.map(it => {
-                            return <ListItem key={it.id} data={it} />
+                            return <ListItem key={it.id} data={it} listItemProps={props.listItemProps} />
                         })}
                     </div>
                 )
@@ -44,7 +44,7 @@ jest.mock('@cromwell/core-frontend', () => {
         },
         getGraphQLClient: () => {
             return {
-                getFilteredOrders: jest.fn().mockImplementation(() => testData)
+                getFilteredOrders: jest.fn().mockImplementation(async () => testData)
             }
         },
         getRestApiClient: () => {

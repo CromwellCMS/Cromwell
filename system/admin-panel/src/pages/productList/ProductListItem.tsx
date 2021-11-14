@@ -9,7 +9,6 @@ import { Link } from 'react-router-dom';
 import { productPageInfo } from '../../constants/PageInfos';
 import { TAppState } from '../../redux/store';
 import commonStyles from '../../styles/common.module.scss';
-import { ListItemProps } from './ProductList';
 import styles from './ProductList.module.scss';
 
 export type TProductItemProps = {
@@ -17,6 +16,13 @@ export type TProductItemProps = {
     listItemProps: ListItemProps;
     embedded?: boolean;
 }
+
+
+export type ListItemProps = {
+    handleDeleteProductBtnClick: (product: TProduct) => void;
+    toggleSelection: (data: TProduct) => void;
+}
+
 
 const mapStateToProps = (state: TAppState) => {
     return {
@@ -62,8 +68,11 @@ const ProductListItem = (props: TPropsType) => {
                             </div>
                         </div>
                     </Grid>
-                    <Grid item xs={1}></Grid>
-                    <Grid item xs={3} className={styles.listItemActions}>
+                    <Grid item xs={2}>
+                        <p className={styles.itemTitle}>{props.data?.stockStatus ?? 'In stock'}</p>
+                        <p style={{ fontSize: '14px' }} className={styles.ellipsis}>{props.data?.sku}</p>
+                    </Grid>
+                    <Grid item xs={2} className={styles.listItemActions}>
                         <Link to={`${productPageInfo.baseRoute}/${props.data?.id}`}>
                             <IconButton
                                 aria-label="edit"

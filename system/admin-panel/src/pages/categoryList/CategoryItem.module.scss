@@ -1,8 +1,7 @@
 @import "../../styles/common.module.scss";
 
 .CategoryItem {
-    // @include paper;
-    // margin: 5px 0;
+    position: relative;
 }
 
 .none {
@@ -32,6 +31,10 @@
 
 .header:hover {
     background-color: rgba($color: #000000, $alpha: 0.05);
+
+    .itemActions {
+        display: flex;
+    }
 }
 
 :global(.modeDark) {
@@ -74,12 +77,9 @@
     align-items: center;
 }
 
-button.expandBtn {
-    // margin-right: 10px;
-}
-
 .itemActions {
     display: flex;
+    display: none;
     flex-wrap: wrap;
     justify-content: flex-end;
 
@@ -95,4 +95,10 @@ button.expandBtn {
     font-size: 14px;
     justify-content: center;
     align-items: flex-end;
+}
+
+.ellipsis {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }

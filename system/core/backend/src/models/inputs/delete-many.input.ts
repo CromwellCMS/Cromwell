@@ -1,11 +1,11 @@
-import { TDeleteManyInput } from "@cromwell/core";
-import { InputType, Field, ID } from "type-graphql";
+import { TDeleteManyInput } from '@cromwell/core';
+import { Field, InputType, Int } from 'type-graphql';
 
 @InputType()
 export class DeleteManyInput implements TDeleteManyInput {
 
-    @Field(() => [String])
-    ids: string[];
+    @Field(() => [Int])
+    ids: number[];
 
     @Field(() => Boolean)
     all?: boolean;

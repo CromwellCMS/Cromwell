@@ -4,8 +4,8 @@ import { SketchPicker } from 'react-color';
 
 import { useForceUpdate } from '../../helpers/forceUpdate';
 
-export default function ColorPicker(props: {
-    label: string;
+export function ColorPicker(props: {
+    label?: string;
     value?: string;
     className?: string;
     style?: React.CSSProperties;

@@ -1,4 +1,5 @@
 import {
+    EDBEntity,
     GraphQLPaths,
     TAuthRole,
     TFilteredProductList,
@@ -9,8 +10,10 @@ import {
     TProductReview,
 } from '@cromwell/core';
 import {
+    AttributeInstance,
     CreateProduct,
     DeleteManyInput,
+    entityMetaRepository,
     FilteredProduct,
     PagedParamsInput,
     PagedProduct,
@@ -23,7 +26,8 @@ import {
     ProductRepository,
     UpdateProduct,
 } from '@cromwell/core-backend';
-import { Arg, Authorized, FieldResolver, Mutation, Query, Resolver, Root } from 'type-graphql';
+import { GraphQLJSONObject } from 'graphql-type-json';
+import { Arg, Authorized, FieldResolver, Int, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
 import { resetAllPagesCache } from '../helpers/reset-page';
@@ -32,6 +36,8 @@ import { serverFireAction } from '../helpers/server-fire-action';
 const categoriesKey: keyof TProduct = 'categories';
 const ratingKey: keyof TProduct = 'rating';
 const reviewsKey: keyof TProduct = 'reviews';
+const viewsKey: keyof TProduct = 'views';
+const attributesKey: keyof TProduct = 'attributes';
 
 const getOneBySlugPath = GraphQLPaths.Product.getOneBySlug;
 const getOneByIdPath = GraphQLPaths.Product.getOneById;
@@ -62,7 +68,7 @@ export class ProductResolver {
     }
 
     @Query(() => Product, { nullable: true })
-    async [getOneByIdPath](@Arg("id") id: string): Promise<Product | undefined> {
+    async [getOneByIdPath](@Arg("id", () => Int) id: number): Promise<Product | undefined> {
         return this.repository.getProductById(id);
     }
 
@@ -77,7 +83,7 @@ export class ProductResolver {
 
     @Authorized<TAuthRole>("administrator")
     @Mutation(() => Product)
-    async [updatePath](@Arg("id") id: string, @Arg("data") data: UpdateProduct): Promise<Product> {
+    async [updatePath](@Arg("id", () => Int) id: number, @Arg("data") data: UpdateProduct): Promise<Product> {
         const product = await this.repository.updateProduct(id, data);
         serverFireAction('update_product', product);
         resetAllPagesCache();
@@ -86,7 +92,7 @@ export class ProductResolver {
 
     @Authorized<TAuthRole>("administrator")
     @Mutation(() => Boolean)
-    async [deletePath](@Arg("id") id: string): Promise<boolean> {
+    async [deletePath](@Arg("id", () => Int) id: number): Promise<boolean> {
         const product = await this.repository.deleteProduct(id);
         serverFireAction('update_product', { id });
         resetAllPagesCache();
@@ -113,7 +119,10 @@ export class ProductResolver {
     }
 
     @Query(() => PagedProduct)
-    async [getFromCategoryPath](@Arg("categoryId") categoryId: string, @Arg("pagedParams") pagedParams: PagedParamsInput<TProduct>): Promise<TPagedList<TProduct>> {
+    async [getFromCategoryPath](
+        @Arg("categoryId", () => Int) categoryId: number,
+        @Arg("pagedParams") pagedParams: PagedParamsInput<TProduct>
+    ): Promise<TPagedList<TProduct>> {
         return this.repository.getProductsFromCategory(categoryId, pagedParams);
     }
 
@@ -121,7 +130,7 @@ export class ProductResolver {
     async [getFilteredPath](
         @Arg("pagedParams", { nullable: true }) pagedParams?: PagedParamsInput<TProduct>,
         @Arg("filterParams", { nullable: true }) filterParams?: ProductFilterInput,
-        @Arg("categoryId", { nullable: true }) categoryId?: string,
+        @Arg("categoryId", () => Int, { nullable: true }) categoryId?: number,
     ): Promise<TFilteredProductList | undefined> {
         return this.repository.getFilteredProducts(pagedParams, filterParams, categoryId);
     }
@@ -143,5 +152,19 @@ export class ProductResolver {
             average: product.averageRating,
         }
     }
-}
 
+    @FieldResolver(() => GraphQLJSONObject, { nullable: true })
+    async customMeta(@Root() entity: Product, @Arg("keys", () => [String]) fields: string[]): Promise<any> {
+        return entityMetaRepository.getEntityMetaByKeys(EDBEntity.Product, entity.id, fields);
+    }
+
+    @FieldResolver(() => Int, { nullable: true })
+    async [viewsKey](@Root() product: Product): Promise<number | undefined> {
+        return this.repository.getEntityViews(product.id, EDBEntity.Product);
+    }
+
+    @FieldResolver(() => [AttributeInstance], { nullable: true })
+    async [attributesKey](@Root() product: Product): Promise<AttributeInstance[] | undefined> {
+        return this.repository.getProductAttributes(product.id);
+    }
+}

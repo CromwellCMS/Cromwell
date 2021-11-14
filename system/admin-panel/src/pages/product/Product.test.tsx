@@ -2,7 +2,7 @@ import { TProduct } from '@cromwell/core';
 import React from 'react';
 
 const testData: TProduct = {
-    id: '1',
+    id: 1,
     name: '_test1_',
     categories: []
 };
@@ -36,7 +36,8 @@ jest.mock('@cromwell/core-frontend', () => {
             return <div>...images mock</div>
         },
         getCStore: () => ({
-            getActiveCurrencySymbol: () => ''
+            getActiveCurrencySymbol: () => '',
+            getPriceWithCurrency: jest.fn().mockImplementation((val) => val + ''),
         }),
         getRestApiClient: () => {
             return {

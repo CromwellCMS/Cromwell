@@ -1,8 +1,11 @@
-import { getStoreItem, TDeleteManyInput, TPagedList, TPagedParams } from '@cromwell/core';
+import { EDBEntity, getRandStr, getStoreItem, TBasePageEntity, TDeleteManyInput, TPagedList, TPagedParams } from '@cromwell/core';
 import { ConnectionOptions, DeleteQueryBuilder, getConnection, Repository, SelectQueryBuilder } from 'typeorm';
 
-import { getPaged, getSqlBoolStr, getSqlLike, wrapInQuotes } from '../helpers/base-queries';
+import { getPaged, getSqlBoolStr, getSqlLike, wrapInQuotes, applyBaseFilter } from '../helpers/base-queries';
 import { getLogger } from '../helpers/logger';
+import { entityMetaRepository } from '../helpers/entity-meta';
+import { PageStats } from '../models/entities/page-stats.entity';
+import { BaseFilterInput } from '../models/filters/base-filter.filter';
 
 const logger = getLogger();
 
@@ -11,7 +14,7 @@ export class BaseRepository<EntityType, EntityInputType = EntityType> extends Re
     public dbType: ConnectionOptions['type'];
 
     constructor(
-        private EntityClass: new (...args: any[]) => EntityType & { id?: string }
+        private EntityClass: new (...args: any[]) => EntityType & { id?: number }
     ) {
         super();
         this.dbType = getStoreItem('dbInfo')?.dbType as ConnectionOptions['type']
@@ -33,7 +36,7 @@ export class BaseRepository<EntityType, EntityInputType = EntityType> extends Re
         return this.find()
     }
 
-    async getById(id: string, relations?: string[]): Promise<EntityType | undefined> {
+    async getById(id: number, relations?: string[]): Promise<EntityType | undefined> {
         logger.log('BaseRepository::getById');
         const entity = await this.findOne({
             where: { id },
@@ -53,7 +56,7 @@ export class BaseRepository<EntityType, EntityInputType = EntityType> extends Re
         return entity;
     }
 
-    async createEntity(input: EntityInputType, id?: string): Promise<EntityType> {
+    async createEntity(input: EntityInputType, id?: number | null): Promise<EntityType> {
         logger.log('BaseRepository::createEntity');
         let entity = new this.EntityClass();
         if (id) entity.id = id;
@@ -65,7 +68,7 @@ export class BaseRepository<EntityType, EntityInputType = EntityType> extends Re
         return entity;
     }
 
-    async updateEntity(id: string, input: EntityInputType): Promise<EntityType> {
+    async updateEntity(id: number, input: EntityInputType): Promise<EntityType> {
         logger.log('BaseRepository::updateEntity');
         let entity = await this.findOne({
             where: { id }
@@ -80,7 +83,7 @@ export class BaseRepository<EntityType, EntityInputType = EntityType> extends Re
         return entity;
     }
 
-    async deleteEntity(id: string): Promise<boolean> {
+    async deleteEntity(id: number): Promise<boolean> {
         logger.log('BaseRepository::deleteEntity ' + this.metadata.tablePath);
         const entity = await this.getById(id);
         if (!entity) {
@@ -100,6 +103,7 @@ export class BaseRepository<EntityType, EntityInputType = EntityType> extends Re
             }
         } else {
             if (input.ids?.length) {
+                input.ids = input.ids.filter(Boolean).filter(id => typeof id === 'number');
                 qb.andWhere(`${this.metadata.tablePath}.id IN (:...ids)`, { ids: input.ids ?? [] })
             } else {
                 throw new Error(`applyDeleteMany: You have to specify ids to delete for ${this.metadata.tablePath}`);
@@ -113,6 +117,35 @@ export class BaseRepository<EntityType, EntityInputType = EntityType> extends Re
         this.applyDeleteMany(qb, input);
         await qb.execute();
         return true;
+    }
+
+    applyGetEntityViews(qb: SelectQueryBuilder<TBasePageEntity>, entityType: EDBEntity) {
+        const statsTable = PageStats.getRepository().metadata.tablePath;
+        const entityTypeKey = 'entityType' + getRandStr(4);
+        qb.addSelect(`${statsTable}.views`, this.metadata.tablePath + '_' + 'views')
+            .leftJoin(PageStats, statsTable,
+                `${statsTable}.${this.quote('slug')} = ${this.metadata.tablePath}.slug ` +
+                `AND ${statsTable}.${this.quote('entityType')} = :${entityTypeKey}`)
+            .setParameter(entityTypeKey, entityType);
+        return qb;
+    }
+
+    async getEntityViews(entityId: number, entityType: EDBEntity) {
+        const qb: SelectQueryBuilder<TBasePageEntity> = this.createQueryBuilder(this.metadata.tablePath)
+            .select([`${this.metadata.tablePath}.id`]) as any;
+
+        this.applyGetEntityViews(qb, entityType)
+            .where(`${this.metadata.tablePath}.id = :entityId`, { entityId });
+
+        const entity = await qb.getRawOne();
+        return entity?.[this.metadata.tablePath + '_' + 'views'];
+    }
+
+    applyBaseFilter(qb: SelectQueryBuilder<TBasePageEntity>, filter?: BaseFilterInput): SelectQueryBuilder<TBasePageEntity> {
+        if (!filter) return qb;
+        const entityType = entityMetaRepository.getEntityType(this.EntityClass);
+        if (!entityType) return qb;
+        return applyBaseFilter({ qb, filter, entityType, dbType: this.dbType });
     }
 
 }

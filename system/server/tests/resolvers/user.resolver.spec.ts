@@ -53,11 +53,11 @@ describe('User resolver', () => {
         expect(data.pagedMeta.pageSize).toBeTruthy();
     });
 
-    const getUser = async (id: string): Promise<TUser> => {
+    const getUser = async (id: number): Promise<TUser> => {
         const path = GraphQLPaths.User.getOneById;
         const res = await server.executeOperation({
             query: gql`
-            query testGetUserById($id: String!) {
+            query testGetUserById($id: Int!) {
                 ${path}(id: $id) {
                     ...UserFragment
                 }
@@ -73,7 +73,7 @@ describe('User resolver', () => {
     }
 
     it(`getUser`, async () => {
-        const data = await getUser('1');
+        const data = await getUser(1);
         if (Array.isArray(data)) {
             console.error('data error', data)
             expect(!Array.isArray(data)).toBeTruthy();
@@ -84,7 +84,7 @@ describe('User resolver', () => {
     });
 
     it(`updateUser`, async () => {
-        const data1 = await getUser('1');
+        const data1 = await getUser(1);
         if (Array.isArray(data1)) {
             console.error('data error', data1)
             expect(!Array.isArray(data1)).toBeTruthy();
@@ -101,7 +101,7 @@ describe('User resolver', () => {
 
         const res = await server.executeOperation({
             query: gql`
-              mutation testUpdateUser($id: String!, $data: UpdateUser!) {
+              mutation testUpdateUser($id: Int!, $data: UpdateUser!) {
                   ${path}(id: $id, data: $data) {
                       ...UserFragment
                   }
@@ -109,7 +109,7 @@ describe('User resolver', () => {
               ${crwClient?.UserFragment}
           `,
             variables: {
-                id: '1',
+                id: 1,
                 data: inputData,
             }
         });
@@ -118,7 +118,7 @@ describe('User resolver', () => {
             console.error('res error', success)
             expect(!Array.isArray(success)).toBeTruthy();
         }
-        const data2 = await getUser('1');
+        const data2 = await getUser(1);
         if (Array.isArray(data2)) {
             console.error('data error', data2)
             expect(!Array.isArray(data2)).toBeTruthy();
@@ -131,7 +131,7 @@ describe('User resolver', () => {
 
 
     it(`createUser`, async () => {
-        const data1: TUser = await getUser('3');
+        const data1: TUser = await getUser(3);
         if (Array.isArray(data1)) {
             console.error('data error', data1)
             expect(!Array.isArray(data1)).toBeTruthy();
@@ -183,7 +183,7 @@ describe('User resolver', () => {
 
 
     it(`deleteUser`, async () => {
-        const data1 = await getUser('4');
+        const data1 = await getUser(4);
         if (Array.isArray(data1)) {
             console.error('data error', data1)
             expect(!Array.isArray(data1)).toBeTruthy();
@@ -194,12 +194,12 @@ describe('User resolver', () => {
 
         const res = await server.executeOperation({
             query: gql`
-                mutation testDeleteUser($id: String!) {
+                mutation testDeleteUser($id: Int!) {
                     ${path}(id: $id)
                 }
             `,
             variables: {
-                id: '4',
+                id: 4,
             }
         });
         const success = crwClient?.returnData(res, path);
@@ -209,7 +209,7 @@ describe('User resolver', () => {
         }
         expect(success === true).toBeTruthy();
 
-        const data2 = await getUser('4');
+        const data2 = await getUser(4);
         expect(!data2?.id).toBeTruthy();
     });
 });

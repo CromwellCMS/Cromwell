@@ -1,7 +1,7 @@
 @import "../../styles/common.module.scss";
 
 .CategoryList {
-    padding: 10px;
+    padding: 20px 20px 0 20px;
     height: 100%;
     z-index: 5;
     position: relative;
@@ -13,10 +13,11 @@
     min-height: 300px;
 }
 
-.header {
+.listHeader {
     @include paper;
     display: flex;
     justify-content: space-between;
+    min-height: 50px;
     margin-bottom: 15px;
     padding: 0 10px;
 }
@@ -40,15 +41,9 @@
     overflow: auto;
 }
 
-:global(.modeDark) {
-    .treeList,
-    .header {
-        background-color: #333;
-
-        * {
-            color: #eee;
-        }
-    }
+.pageActions {
+    display: flex;
+    align-items: center;
 }
 
 .actionBtn {
@@ -65,4 +60,32 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
+}
+
+.pageHeader {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.pageTitle {
+    font-size: 20px;
+}
+
+:global(.modeDark) {
+
+    .treeList,
+    .listHeader {
+        background-color: #333;
+
+        * {
+            color: #eee;
+        }
+    }
+
+    .pageHeader {
+        * {
+            color: #eee;
+        }
+    }
 }

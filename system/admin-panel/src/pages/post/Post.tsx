@@ -1,5 +1,6 @@
 import { gql } from '@apollo/client';
 import {
+    EDBEntity,
     getStoreItem,
     onStoreChange,
     resolvePageRoute,
@@ -17,13 +18,15 @@ import { Link, useHistory, useParams } from 'react-router-dom';
 
 import { toast } from '../../components/toast/toast';
 import { postListInfo, postPageInfo } from '../../constants/PageInfos';
+import { getCustomMetaKeysFor } from '../../helpers/customFields';
 import { getEditorData, getEditorHtml, initTextEditor } from '../../helpers/editor/editor';
 import { useForceUpdate } from '../../helpers/forceUpdate';
+import { handleOnSaveError } from '../../helpers/handleErrors';
 import styles from './Post.module.scss';
 import PostSettings from './PostSettings';
 
 
-const ArrowBackIcon = <svg width="1em" height="1em" focusable="false" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"></path></svg>
+const ArrowBackIcon = <svg style={{ fontSize: '18px' }} width="1em" height="1em" focusable="false" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"></path></svg>
 const textPreloader = [];
 for (let i = 0; i < 30; i++) {
     textPreloader.push(<Skeleton variant="text" height="10px" style={{ margin: '3px 0' }} key={i} />)
@@ -31,7 +34,7 @@ for (let i = 0; i < 30; i++) {
 
 const Post = (props) => {
     const { id: postId } = useParams<{ id: string }>();
-    const [postData, setPostData] = useState<Partial<TPost> | undefined>(undefined);
+    const [postData, setPostData] = useState<TPost | undefined>(undefined);
     const userInfo: TUser | undefined = getStoreItem('userInfo');
     const client = getGraphQLClient();
     const [allTags, setAllTags] = useState<TTag[] | null>(null);
@@ -47,7 +50,7 @@ const Post = (props) => {
 
     const unregisterBlock = useRef<(() => void) | null>(null);
 
-    const getPostData = async (postId: string): Promise<TPost | undefined> => {
+    const getPostData = async (postId: number): Promise<TPost | undefined> => {
         let post;
         try {
             post = await client?.getPostById(postId, gql`
@@ -81,6 +84,7 @@ const Post = (props) => {
                     content
                     delta
                     published 
+                    customMeta (keys: ${JSON.stringify(getCustomMetaKeysFor(EDBEntity.Post))})
                 }`, 'AdminPanelPostFragment'
             );
             if (post) setPostData(post);
@@ -126,7 +130,7 @@ const Post = (props) => {
             let post;
             setIsLoading(true);
             try {
-                post = await getPostData(postId);
+                post = await getPostData(parseInt(postId));
                 if (post?.delta) {
                     postContent = JSON.parse(post?.delta);
                 }
@@ -145,7 +149,7 @@ const Post = (props) => {
             setPostData({
                 title: 'Untitled',
                 published: false,
-            });
+            } as any);
             await _initEditor();
         }
     }
@@ -176,10 +180,11 @@ const Post = (props) => {
         meta: {
             keywords: postData.meta?.keywords,
         },
-        tagIds: postData.tags?.map(tag => tag.id),
+        tagIds: postData.tags?.map(tag => tag.id)?.filter(Boolean),
         authorId: postData?.author?.id ?? userInfo?.id,
         delta: JSON.stringify(await getEditorData(editorId)),
         content: await getEditorHtml(editorId),
+        customMeta: postData.customMeta,
     });
 
     const saveInput = async (input: TPostInput) => {
@@ -192,10 +197,11 @@ const Post = (props) => {
                 toast.success('Created post!');
 
                 hasChanges.current = false;
-                history.push(`${postPageInfo.baseRoute}/${newPost.id}`)
+                history.replace(`${postPageInfo.baseRoute}/${newPost.id}`)
                 await getPostData(newPost.id);
             } catch (e) {
                 toast.error('Failed to create post');
+                handleOnSaveError(e);
                 console.error(e)
             }
         } else if (postData?.id) {
@@ -206,10 +212,17 @@ const Post = (props) => {
                 toast.success('Saved!');
             } catch (e) {
                 toast.error('Failed to save');
+                handleOnSaveError(e);
                 console.error(e)
             }
         }
     }
+
+    const refetchMeta = async () => {
+        if (!postId) return;
+        const data = await getPostData(parseInt(postId));
+        return data?.customMeta;
+    };
 
     const handlePublish = async () => {
         setIsSaving(true);
@@ -256,7 +269,7 @@ const Post = (props) => {
 
     let pageFullUrl;
     if (postData) {
-        pageFullUrl = serviceLocator.getFrontendUrl() + resolvePageRoute('post', { slug: postData.slug ?? postData.id });
+        pageFullUrl = serviceLocator.getFrontendUrl() + resolvePageRoute('post', { slug: postData.slug ?? postData.id + '' });
     }
 
     return (
@@ -291,10 +304,11 @@ const Post = (props) => {
                             anchorEl={actionsRef.current}
                             isSaving={isSaving}
                             handleUnpublish={handleUnpublish}
+                            refetchMeta={refetchMeta}
                         />
                     )}
                     {pageFullUrl && postData?.published && (
-                        <Tooltip title="Open post page in new tab">
+                        <Tooltip title="Open post in the new tab">
                             <IconButton
                                 style={{ marginRight: '10px' }}
                                 className={styles.openPageBtn}

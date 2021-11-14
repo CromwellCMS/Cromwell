@@ -1,6 +1,6 @@
 {
   "name": "@cromwell/core",
-  "version": "1.1.22",
+  "version": "2.0.1",
   "description": "",
   "license": "MIT",
   "repository": "https://github.com/CromwellCMS/Cromwell",
@@ -41,7 +41,7 @@
     "typescript": "4.3.5"
   },
   "peerDependencies": {
-    "next": "11.1.0",
+    "next": "12.0.3",
     "typeorm": "0.2.37"
   }
 }

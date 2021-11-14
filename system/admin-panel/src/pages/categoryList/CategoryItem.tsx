@@ -130,11 +130,11 @@ const CategoryItem = (props: TPropsType) => {
     if (props.allSelected && !props.selectedItems[category.id]) selected = true;
     if (!props.allSelected && props.selectedItems[category.id]) selected = true;
     const isPrimary = props.selectedItem === category.id;
-    return (
 
+    return (
         <div className={`${styles.CategoryItem} ${displayType === 'list' ? styles.listItem : ''}`}>
             <Grid container className={styles.header}>
-                <Grid item xs={displayType === 'list' ? 4 : 8} className={styles.headerLeft}>
+                <Grid item xs={displayType === 'list' ? 6 : 9} className={styles.headerLeft}>
                     {displayType === 'tree' && (
                         <>
                             {hasChildren ? (
@@ -146,7 +146,7 @@ const CategoryItem = (props: TPropsType) => {
                                         style={{ transform: expanded ? 'rotate(180deg)' : '' }}
                                     />
                                 </IconButton>
-                            ) : <div style={{ height: '48px', width: '48px' }}></div>}
+                            ) : <div style={{ height: '48px', width: '40px' }}></div>}
                         </>
                     )}
                     <div className={commonStyles.center}>
@@ -164,17 +164,17 @@ const CategoryItem = (props: TPropsType) => {
                             </Tooltip>
                         </div>
                     )}
-                    <p>{category.name}</p>
+                    <p className={styles.ellipsis}>{category.name}</p>
                 </Grid>
                 {displayType === 'list' && (
-                    <Grid item xs={4} className={styles.treeInfo}>
+                    <Grid item xs={3} className={styles.treeInfo}>
                         <>
                             <p>id: <b>{category.id}</b></p>
                             {category.parent?.id ? <p>parent id: <b>{category.parent?.id}</b></p> : <b>root category</b>}
                         </>
                     </Grid>
                 )}
-                <Grid item xs={4} className={`${styles.itemActions} ${embeddedView ? styles.none : ''}`}>
+                <Grid item xs={3} className={`${styles.itemActions} ${embeddedView ? styles.none : ''}`}>
                     <Link to={`${categoryPageInfo.baseRoute}/new?parentId=${category?.id}`}>
                         <Tooltip title="Add subcategory">
                             <IconButton
@@ -208,7 +208,7 @@ const CategoryItem = (props: TPropsType) => {
             </Grid>
             {hasChildren && displayType === 'tree' && (
                 <div className={styles.subList}>
-                    {isLoading ? category.children?.map(child => <Skeleton variant="text" height="30px" style={{ margin: '10px 0' }} key={child.id} />)
+                    {isLoading ? category.children?.map(child => <Skeleton variant="text" height="30px" style={{ margin: '10px 20px' }} key={child.id} />)
                         : (
                             <TransitionComponent in={expanded}>
                                 {childCategories?.map(childCat => {

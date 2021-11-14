@@ -1,22 +1,6 @@
 import { TUserRole } from '@cromwell/core';
-import {
-    Dashboard as DashboardIcon,
-    FilterList as FilterListIcon,
-    FormatPaint as FormatPaintIcon,
-    LibraryBooks as LibraryBooksIcon,
-    LocalMall as LocalMallIcon,
-    LocalOfferOutlined as LocalOfferOutlinedIcon,
-    PeopleAlt as PeopleAltIcon,
-    Settings as SettingsIcon,
-    ShoppingBasket as ShoppingBasketIcon,
-    Stars as StarsIcon,
-    Storage as StorageIcon,
-} from '@mui/icons-material';
 import React, { lazy } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-
-import sidebarStyles from '../components/sidebar/Sidebar.module.scss';
-import { CategoryIcon, PluginIcon } from './icons';
 
 const AttributesPage = lazy(() => import('../pages/attributes/AttributesPage'));
 const CategoryPage = lazy(() => import('../pages/category/CategoryPage'));
@@ -43,17 +27,17 @@ const WelcomePage = lazy(() => import('../pages/welcome/Welcome'));
 const PluginMarket = lazy(() => import('../pages/pluginMarket/PluginMarket'));
 const ThemeMarket = lazy(() => import('../pages/themeMarket/ThemeMarket'));
 
-export type SidebarLinkType = {
+export type TSidebarLink = {
     id: string;
     title: string;
     route?: string;
     baseRoute?: string;
-    sublinks?: SidebarLinkType[];
+    subLinks?: TSidebarLink[];
     icon?: React.ReactNode;
     roles: TUserRole[];
 }
 
-export type PageInfo = {
+export type TPageInfo = {
     name: string;
     route: string;
     baseRoute?: string;
@@ -62,66 +46,66 @@ export type PageInfo = {
     roles?: TUserRole[];
 }
 
-export const homePageInfo: PageInfo = {
+export const homePageInfo: TPageInfo = {
     name: 'Dashboard',
     route: '/',
     component: DashboardPage,
     roles: ['administrator', 'guest'],
 };
-export const themeListPageInfo: PageInfo = {
+export const themeListPageInfo: TPageInfo = {
     name: 'ThemeList',
-    route: '/theme-list',
+    route: '/themes',
     component: ThemeListPage,
     roles: ['administrator', 'guest'],
 };
-export const themeEditPageInfo: PageInfo = {
+export const themeEditPageInfo: TPageInfo = {
     name: 'ThemeEdit',
-    route: '/theme-edit',
-    baseRoute: '/theme-edit',
+    route: '/theme-editor',
+    baseRoute: '/theme-editor',
     component: ThemeEditPage,
     roles: ['administrator', 'guest'],
 };
-export const productListInfo: PageInfo = {
+export const productListInfo: TPageInfo = {
     name: 'ProductList',
-    route: '/product-list',
+    route: '/products',
     component: ProductListPage,
     roles: ['administrator', 'guest'],
 };
-export const productPageInfo: PageInfo = {
+export const productPageInfo: TPageInfo = {
     name: 'ProductList',
-    route: '/product/:id',
-    baseRoute: '/product',
+    route: '/products/:id',
+    baseRoute: '/products',
     component: ProductPage,
     roles: ['administrator', 'guest'],
 };
 
-export const categoryListPageInfo: PageInfo = {
+export const categoryListPageInfo: TPageInfo = {
     name: 'CategoryList',
-    route: '/category-list',
+    route: '/categories',
     component: CategoryListPage,
     roles: ['administrator', 'guest'],
 };
-export const categoryPageInfo: PageInfo = {
+export const categoryPageInfo: TPageInfo = {
     name: 'Category',
-    route: '/category/:id',
+    route: '/categories/:id',
     component: CategoryPage,
-    baseRoute: '/category',
+    baseRoute: '/categories',
     roles: ['administrator', 'guest'],
 };
 
-export const attributesInfo: PageInfo = {
+export const attributesInfo: TPageInfo = {
     name: 'Attributes',
-    route: '/product-attributes',
+    route: '/attributes',
     component: AttributesPage,
     roles: ['administrator', 'guest'],
 };
-export const pluginListPageInfo: PageInfo = {
+export const pluginListPageInfo: TPageInfo = {
     name: 'PluginList',
     route: '/plugins',
     component: PluginListPage,
     roles: ['administrator', 'guest'],
 };
-export const pluginPageInfo: PageInfo = {
+export const pluginPageInfo: TPageInfo = {
     name: 'Plugin',
     baseRoute: '/plugin',
     route: '/plugin',
@@ -129,21 +113,21 @@ export const pluginPageInfo: PageInfo = {
     roles: ['administrator', 'guest'],
 };
 
-export const postListInfo: PageInfo = {
+export const postListInfo: TPageInfo = {
     name: 'Posts',
-    route: '/post-list',
+    route: '/posts',
     component: PostListPage,
     roles: ['administrator', 'guest', 'author'],
 };
-export const postPageInfo: PageInfo = {
+export const postPageInfo: TPageInfo = {
     name: 'Post',
-    route: '/post/:id',
+    route: '/posts/:id',
     component: PostPage,
-    baseRoute: '/post',
+    baseRoute: '/posts',
     roles: ['administrator', 'guest', 'author'],
 };
 
-export const loginPageInfo: PageInfo = {
+export const loginPageInfo: TPageInfo = {
     name: 'Login',
     route: '/login',
     component: LoginPage,
@@ -151,239 +135,78 @@ export const loginPageInfo: PageInfo = {
     disableSidebar: true,
 };
 
-export const orderListPageInfo: PageInfo = {
+export const orderListPageInfo: TPageInfo = {
     name: 'Order List',
-    route: '/order-list',
+    route: '/orders',
     component: OrderListPage,
-    baseRoute: '/order-list',
     roles: ['administrator', 'guest'],
 };
 
-export const orderPageInfo: PageInfo = {
+export const orderPageInfo: TPageInfo = {
     name: 'Order',
-    route: '/order/:id',
-    baseRoute: '/order',
+    route: '/orders/:id',
+    baseRoute: '/orders',
     component: OrderPage,
     roles: ['administrator', 'guest'],
 };
 
-export const welcomePageInfo: PageInfo = {
+export const welcomePageInfo: TPageInfo = {
     name: 'Welcome',
     route: '/setup',
     component: WelcomePage,
     disableSidebar: true,
 };
 
-export const settingsPageInfo: PageInfo = {
+export const settingsPageInfo: TPageInfo = {
     name: 'Settings',
     route: '/settings',
     component: SettingsPage,
     roles: ['administrator', 'guest'],
 };
 
-export const userListPageInfo: PageInfo = {
+export const userListPageInfo: TPageInfo = {
     name: 'User List',
-    route: '/user-list',
+    route: '/users',
     component: UserListPage,
     roles: ['administrator', 'guest'],
 };
-export const userPageInfo: PageInfo = {
+export const userPageInfo: TPageInfo = {
     name: 'User',
-    route: '/user/:id',
-    baseRoute: '/user',
+    route: '/users/:id',
+    baseRoute: '/users',
     component: UserPage,
     roles: ['administrator', 'guest', 'author'],
 };
 
-export const tagPageInfo: PageInfo = {
+export const tagPageInfo: TPageInfo = {
     name: 'Tag',
-    route: '/tag/:id',
-    baseRoute: '/tag',
+    route: '/tags/:id',
+    baseRoute: '/tags',
     component: TagPage,
     roles: ['administrator', 'guest', 'author'],
 }
-export const tagListPageInfo: PageInfo = {
+export const tagListPageInfo: TPageInfo = {
     name: 'Tag List',
-    route: '/tag-list',
+    route: '/tags',
     component: TagListPage,
     roles: ['administrator', 'guest', 'author'],
 }
-export const reviewListPageInfo: PageInfo = {
+export const reviewListPageInfo: TPageInfo = {
     name: 'Reviews',
-    route: '/review-list',
+    route: '/reviews',
     component: ReviewListPage,
     roles: ['administrator', 'guest'],
 }
 
-export const pluginMarketPageInfo: PageInfo = {
+export const pluginMarketPageInfo: TPageInfo = {
     name: 'Plugin Market',
     route: '/plugin-market',
     component: PluginMarket,
     roles: ['administrator', 'guest'],
 }
-export const themeMarketPageInfo: PageInfo = {
+export const themeMarketPageInfo: TPageInfo = {
     name: 'Theme Market',
     route: '/theme-market',
     component: ThemeMarket,
     roles: ['administrator', 'guest'],
 }
-
-// Export all pages for react-router
-export const pageInfos: PageInfo[] = [
-    homePageInfo,
-    themeEditPageInfo,
-    themeListPageInfo,
-    productListInfo,
-    productPageInfo,
-    pluginListPageInfo,
-    attributesInfo,
-    pluginPageInfo,
-    postListInfo,
-    postPageInfo,
-    categoryListPageInfo,
-    categoryPageInfo,
-    loginPageInfo,
-    orderListPageInfo,
-    welcomePageInfo,
-    orderPageInfo,
-    settingsPageInfo,
-    userListPageInfo,
-    userPageInfo,
-    tagPageInfo,
-    tagListPageInfo,
-    reviewListPageInfo,
-    pluginMarketPageInfo,
-    themeMarketPageInfo,
-].filter(i => Boolean(i.component));
-
-// Export links for sidebar
-export const sideBarLinks: SidebarLinkType[] = [
-    {
-        id: '1_homePage',
-        title: homePageInfo.name,
-        route: homePageInfo.route,
-        icon: React.createElement(DashboardIcon),
-        roles: ['administrator', 'guest'],
-    },
-    {
-        id: '2_Store',
-        title: 'Store',
-        icon: React.createElement(LocalMallIcon),
-        roles: ['administrator', 'guest'],
-        sublinks: [
-            {
-                id: '3_productList',
-                title: 'Products',
-                route: productListInfo.route,
-                icon: React.createElement(StorageIcon),
-                roles: ['administrator', 'guest'],
-            },
-            {
-                id: '4_Attributes',
-                title: 'Attributes',
-                route: attributesInfo.route,
-                icon: React.createElement(FilterListIcon),
-                roles: ['administrator', 'guest'],
-            },
-            {
-                id: '5_Categories',
-                title: 'Categories',
-                route: categoryListPageInfo.route,
-                icon: React.createElement(CategoryIcon, {
-                    viewBox: "-50 -50 400 400"
-                }),
-                roles: ['administrator', 'guest'],
-            },
-            {
-                id: '11_Order_list',
-                title: 'Orders',
-                route: orderListPageInfo.route,
-                icon: React.createElement(ShoppingBasketIcon),
-                roles: ['administrator', 'guest'],
-            },
-            {
-                id: 'Review_list',
-                title: 'Reviews',
-                route: reviewListPageInfo.route,
-                icon: React.createElement(StarsIcon),
-                roles: ['administrator', 'guest'],
-            }
-        ]
-    },
-    {
-        id: '6_Blog',
-        title: 'Blog',
-        icon: React.createElement('div', {
-            className: sidebarStyles.customIcon,
-            style: { backgroundImage: 'url(/admin/static/icon_blogging.png)' }
-        }),
-        roles: ['administrator', 'guest', 'author'],
-        sublinks: [
-            {
-                id: '7_Posts',
-                title: 'Posts',
-                route: postListInfo.route,
-                icon: React.createElement(LibraryBooksIcon),
-                roles: ['administrator', 'guest', 'author'],
-            },
-            {
-                id: 'tags_page',
-                title: 'Tags',
-                route: tagListPageInfo.route,
-                icon: React.createElement(LocalOfferOutlinedIcon),
-                roles: ['administrator', 'guest', 'author'],
-            },
-        ]
-    },
-    {
-        id: '5_themeListPage',
-        title: 'Themes',
-        route: themeListPageInfo.route,
-        icon: React.createElement(FormatPaintIcon),
-        roles: ['administrator', 'guest'],
-    },
-    {
-        id: '6_pluginsPage',
-        title: 'Plugins',
-        route: pluginListPageInfo.route,
-        icon: React.createElement(PluginIcon, {
-            className: sidebarStyles.customIcon,
-            style: {
-                filter: 'invert(1)',
-            }
-        }),
-        roles: ['administrator', 'guest'],
-    },
-    {
-        id: 'users_page',
-        title: 'Users',
-        route: userListPageInfo.route,
-        icon: React.createElement(PeopleAltIcon),
-        roles: ['administrator', 'guest'],
-    },
-    {
-        id: 'settings_page',
-        title: 'Settings',
-        route: settingsPageInfo.route,
-        icon: React.createElement(SettingsIcon),
-        roles: ['administrator', 'guest'],
-    }
-]
-
-export const getLinkByInfo = (pageInfo: PageInfo) => {
-    if (!pageInfo) return;
-    const getFromLinks = (links: SidebarLinkType[]): (SidebarLinkType & { parentId?: string }) | undefined => {
-        for (const link of links) {
-            if (link.route === pageInfo.route) return link;
-            if (link.sublinks) {
-                const sub = getFromLinks(link.sublinks);
-                if (sub) {
-                    sub.parentId = link.id;
-                    return sub;
-                }
-            }
-        }
-    }
-    return getFromLinks(sideBarLinks);
-}
-

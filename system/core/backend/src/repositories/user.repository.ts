@@ -1,13 +1,13 @@
 import { TCreateUser, TDeleteManyInput, TPagedList, TPagedParams, TUpdateUser, TUser } from '@cromwell/core';
 import bcrypt from 'bcrypt';
-import { DeleteQueryBuilder, EntityRepository, SelectQueryBuilder } from 'typeorm';
+import { EntityRepository, SelectQueryBuilder } from 'typeorm';
 
-import { UserFilterInput } from '../models/filters/user.filter';
-import { User } from '../models/entities/user.entity';
+import { checkEntitySlug, getPaged, handleBaseInput, handleCustomMetaInput } from '../helpers/base-queries';
 import { getLogger } from '../helpers/logger';
 import { validateEmail } from '../helpers/validation';
+import { User } from '../models/entities/user.entity';
+import { UserFilterInput } from '../models/filters/user.filter';
 import { PagedParamsInput } from '../models/inputs/paged-params.input';
-import { checkEntitySlug, getPaged, handleBaseInput } from '../helpers/base-queries';
 import { BaseRepository } from './base.repository';
 
 const logger = getLogger();
@@ -25,7 +25,7 @@ export class UserRepository extends BaseRepository<User> {
         return this.getPaged(params)
     }
 
-    async getUserById(id: string): Promise<User | undefined> {
+    async getUserById(id: number): Promise<User | undefined> {
         logger.log('UserRepository::getUserById id: ' + id);
         return this.getById(id);
     }
@@ -45,11 +45,11 @@ export class UserRepository extends BaseRepository<User> {
         return this.getBySlug(slug);
     }
 
-    async handleUserInput(user: User, userInput: TUpdateUser) {
+    async handleUserInput(user: User, userInput: TUpdateUser, action: 'update' | 'create') {
         if (userInput.email && !validateEmail(userInput.email))
             throw new Error('Provided e-mail is not valid');
 
-        handleBaseInput(user, userInput);
+        await handleBaseInput(user, userInput);
         user.fullName = userInput.fullName;
         user.email = userInput.email;
         user.avatar = userInput.avatar;
@@ -57,12 +57,18 @@ export class UserRepository extends BaseRepository<User> {
         user.phone = userInput.phone;
         user.address = userInput.address;
         user.role = userInput.role;
+
+        if (action === 'create') await user.save();
+        await checkEntitySlug(user, User);
+        await handleCustomMetaInput(user, userInput);
     }
 
-    async createUser(createUser: TCreateUser, id?: string): Promise<User> {
+    async createUser(createUser: TCreateUser, id?: number | null): Promise<User> {
         logger.log('UserRepository::createUser');
         if (!createUser.password || !createUser.email) throw new Error('No credentials provided')
-        let user = new User();
+        if (createUser.password.length > 50) throw new Error('Password length is too long');
+
+        const user = new User();
         if (id) {
             let oldUser;
             try {
@@ -72,16 +78,13 @@ export class UserRepository extends BaseRepository<User> {
             user.id = id;
         }
 
-        await this.handleUserInput(user, createUser);
-
         if (createUser.password) {
             user.password = await this.hashPassword(createUser.password);
         }
         if (!user.role) user.role = 'customer';
 
-        user = await this.save(user);
-        await checkEntitySlug(user, User);
-
+        await this.handleUserInput(user, createUser, 'create');
+        await this.save(user);
         return user;
     }
 
@@ -89,23 +92,17 @@ export class UserRepository extends BaseRepository<User> {
         return bcrypt.hash(password, bcryptSaltRounds);
     }
 
-    async updateUser(id: string, updateUser: TUpdateUser): Promise<User> {
+    async updateUser(id: number, updateUser: TUpdateUser): Promise<User> {
         logger.log('UserRepository::updateUser id: ' + id);
-
-        let user = await this.findOne({
-            where: { id }
-        });
+        const user = await this.getById(id);
         if (!user) throw new Error(`User ${id} not found!`);
 
-        await this.handleUserInput(user, updateUser);
-
-        user = await this.save(user);
-        await checkEntitySlug(user, User);
-
+        await this.handleUserInput(user, updateUser, 'update');
+        await this.save(user);
         return user;
     }
 
-    async deleteUser(id: string): Promise<boolean> {
+    async deleteUser(id: number): Promise<boolean> {
         logger.log('UserRepository::deleteUser; id: ' + id);
 
         const user = await this.getUserById(id);
@@ -118,7 +115,9 @@ export class UserRepository extends BaseRepository<User> {
 
     }
 
-    applyUserFilter(qb: SelectQueryBuilder<TUser> | DeleteQueryBuilder<TUser>, filterParams?: UserFilterInput) {
+    applyUserFilter(qb: SelectQueryBuilder<TUser>, filterParams?: UserFilterInput) {
+        this.applyBaseFilter(qb, filterParams);
+
         // Search by role
         if (filterParams?.role) {
             const query = `${this.metadata.tablePath}.role = :role`;
@@ -158,18 +157,19 @@ export class UserRepository extends BaseRepository<User> {
         const qb = this.createQueryBuilder(this.metadata.tablePath);
         qb.select();
         this.applyUserFilter(qb, filterParams);
-        return await getPaged(qb, this.metadata.tablePath, pagedParams);
+        return await getPaged<TUser>(qb, this.metadata.tablePath, pagedParams);
     }
 
     async deleteManyFilteredUsers(input: TDeleteManyInput, filterParams?: UserFilterInput): Promise<boolean | undefined> {
-        const qb = this.createQueryBuilder()
-            .delete().from<User>(this.metadata.tablePath);
+        const qbSelect = this.createQueryBuilder(this.metadata.tablePath).select([`${this.metadata.tablePath}.id`]);
+        this.applyUserFilter(qbSelect, filterParams);
+        this.applyDeleteMany(qbSelect, input);
 
-        this.applyUserFilter(qb, filterParams);
-        this.applyDeleteMany(qb, input);
-        await qb.execute();
+        const qbDelete = this.createQueryBuilder(this.metadata.tablePath).delete()
+            .where(`${this.metadata.tablePath}.id IN (${qbSelect.getQuery()})`)
+            .setParameters(qbSelect.getParameters());
+
+        await qbDelete.execute();
         return true;
     }
-
-
 }

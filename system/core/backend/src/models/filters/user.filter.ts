@@ -1,8 +1,10 @@
 import { TUserFilter, TUserRole } from '@cromwell/core';
 import { Field, InputType } from 'type-graphql';
 
+import { BaseFilterInput } from './base-filter.filter';
+
 @InputType("UserFilterInput")
-export class UserFilterInput implements TUserFilter {
+export class UserFilterInput extends BaseFilterInput implements TUserFilter {
 
     @Field(type => String, { nullable: true })
     fullName?: string;

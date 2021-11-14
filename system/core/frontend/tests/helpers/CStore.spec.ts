@@ -16,7 +16,7 @@ describe('CStore', () => {
 
         const item: TStoreListItem = {
             product: {
-                id: '1',
+                id: 1,
                 name: '_test_',
             }
         }
@@ -32,7 +32,7 @@ describe('CStore', () => {
 
         const item1: TStoreListItem = {
             product: {
-                id: '1',
+                id: 1,
                 name: '_test_',
             },
             pickedAttributes: {
@@ -41,7 +41,7 @@ describe('CStore', () => {
         }
         const item2: TStoreListItem = {
             product: {
-                id: '1',
+                id: 1,
                 name: '_test_',
             },
             pickedAttributes: {
@@ -67,7 +67,7 @@ describe('CStore', () => {
 
         const item1: TStoreListItem = {
             product: {
-                id: '1',
+                id: 1,
                 name: '_test_',
             },
             pickedAttributes: {
@@ -91,7 +91,7 @@ describe('CStore', () => {
 
         const item1: TStoreListItem = {
             product: {
-                id: '1',
+                id: 1,
                 name: '_test_',
             },
             amount: 1
@@ -117,7 +117,7 @@ describe('CStore', () => {
 
         const item1: TStoreListItem = {
             product: {
-                id: '1',
+                id: 1,
                 name: '_test_',
             },
         }
@@ -137,7 +137,7 @@ describe('CStore', () => {
 
         const item1: TStoreListItem = {
             product: {
-                id: '1',
+                id: 1,
                 name: '_test_',
             },
         }
@@ -156,7 +156,7 @@ describe('CStore', () => {
     it("updates cart", async () => {
         const store = getCStore(true, {
             getProductById: async () => ({
-                id: '1',
+                id: 1,
                 name: '_test2_',
             }),
             getAttributes: async () => [],
@@ -164,7 +164,7 @@ describe('CStore', () => {
 
         const item1: TStoreListItem = {
             product: {
-                id: '1',
+                id: 1,
                 name: '_test_',
             },
         }
@@ -184,14 +184,14 @@ describe('CStore', () => {
 
         const item1: TStoreListItem = {
             product: {
-                id: '1',
+                id: 1,
                 name: '_test1_',
                 price: 10
             },
         }
         const item2: TStoreListItem = {
             product: {
-                id: '2',
+                id: 2,
                 name: '_test2_',
                 price: 20
             },

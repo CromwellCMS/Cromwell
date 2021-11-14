@@ -6,8 +6,8 @@ import { TCmsConfig, TCmsSettings, TDefaultPageName, TPageConfig, TPageInfo, TPa
 import { TPost, TProduct } from './entities';
 
 type ParsedUrlQuery = NodeJS.Dict<string | string[]>;
-export type TStaticPageContext<TPluginSettings = any, Q extends ParsedUrlQuery = ParsedUrlQuery> = {
-    pluginSettings?: TPluginSettings;
+
+export type TStaticPageContext<Q extends ParsedUrlQuery = ParsedUrlQuery> = {
     params?: Q;
     preview?: boolean;
     previewData?: any;
@@ -18,9 +18,19 @@ export type TStaticPageContext<TPluginSettings = any, Q extends ParsedUrlQuery =
     themeCustomConfig?: any;
     pagesInfo?: TPageInfo[];
 }
-export type TGetStaticProps<
+export type TGetStaticProps<Q extends ParsedUrlQuery = ParsedUrlQuery> = (ctx: TStaticPageContext<Q>) => Promise<any>;
+
+export type TStaticPagePluginContext<TPluginSettings = any, Q extends ParsedUrlQuery = ParsedUrlQuery> =
+    TStaticPageContext<Q> & {
+        // Plugin global settings
+        pluginSettings?: TPluginSettings;
+        // Local settings for every instance of a plugin at this page: { [pluginBlockId]: instanceSettings }
+        pluginInstances?: Record<string, any>;
+    }
+
+export type TGetPluginStaticProps<
     TPluginSettings = any,
-    Q extends ParsedUrlQuery = ParsedUrlQuery> = (ctx: TStaticPageContext<TPluginSettings, Q>) => Promise<any>;
+    Q extends ParsedUrlQuery = ParsedUrlQuery> = (ctx: TStaticPagePluginContext<TPluginSettings, Q>) => Promise<any>;
 
 export type TCromwellPage<Props = any | undefined> = NextPage<Props & TCromwellPageCoreProps>;
 
@@ -39,6 +49,7 @@ export type TCromwellPageCoreProps = {
     palette?: TPalette | null;
     defaultPages?: Record<TDefaultPageName, string>;
     pageConfigName?: string;
+    slug?: string | string[] | null;
     resolvedPageRoute?: string;
 }
 

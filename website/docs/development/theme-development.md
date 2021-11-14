@@ -231,7 +231,7 @@ npm publish --access public
 
 ### Publish in the Cromwell CMS market
 
-For your Theme/Plugin to appear in the Admin panel market at `/admin/#/theme-market` page, we need to add it in our central database. For now there's no automatic process and all new Modules are checked manually (to ensure build correctness and acceptable code quality), so please reach us for publication at `cromwellcms@gmail.com`.  
+For your Theme/Plugin to appear in the Admin panel market at `/admin/theme-market` page, we need to add it in our central database. For now there's no automatic process and all new Modules are checked manually (to ensure build correctness and acceptable code quality), so please reach us for publication at `cromwellcms@gmail.com`.  
 The publication is free.
 
 ## Install

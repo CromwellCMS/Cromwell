@@ -1,5 +1,5 @@
 import { TOrderInput } from '@cromwell/core';
-import { Field, InputType } from 'type-graphql';
+import { Field, InputType, Int } from 'type-graphql';
 
 import { BasePageInput } from './base-page.input';
 
@@ -9,8 +9,8 @@ export class OrderInput extends BasePageInput implements TOrderInput {
     @Field(() => String, { nullable: true })
     status?: string;
 
-    @Field(() => String, { nullable: true })
-    userId?: string;
+    @Field(() => Int, { nullable: true })
+    userId?: number;
 
     @Field(() => String, { nullable: true })
     cart?: string;
@@ -27,7 +27,7 @@ export class OrderInput extends BasePageInput implements TOrderInput {
     @Field(() => Number, { nullable: true })
     shippingPrice?: number;
 
-    @Field(() => Number, { nullable: true })
+    @Field(() => Int, { nullable: true })
     totalQnt: number;
 
     @Field(() => String, { nullable: true })

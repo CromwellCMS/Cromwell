@@ -1,12 +1,12 @@
 import { TCromwellBlockData } from '@cromwell/core';
-import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
+import FormatPaintIcon from '@mui/icons-material/FormatPaint';
 import React from 'react';
 
+import { Select } from '../../../../components/select/Select';
 import styles from '../blocks/BaseBlock.module.scss';
 import { TBlockMenuProps } from '../blocks/BlockMenu';
 import { StyleField } from './StyleField';
 import { StyleOffset } from './StyleOffset';
-import FormatPaintIcon from '@mui/icons-material/FormatPaint';
 
 export function StylesEditor(props: {
     forceUpdate: () => any;
@@ -85,20 +85,18 @@ export function StylesEditor(props: {
         </div>
         <div className={styles.stylesGroup}>
             <h3>Block align</h3>
-            <FormControl fullWidth className={styles.settingsInput} >
-                <InputLabel>horizontal align</InputLabel>
-                <Select
-                    fullWidth
-                    variant="standard"
-                    onChange={(e) => handleEditorStyleChange('align', e.target.value as any)}
-                    value={data?.editorStyles?.align}
-                >
-                    <MenuItem value={undefined}>no</MenuItem>
-                    <MenuItem value={'left'}>left</MenuItem>
-                    <MenuItem value={'right'}>right</MenuItem>
-                    <MenuItem value={'center'}>center</MenuItem>
-                </Select>
-            </FormControl>
+            <Select
+                fullWidth
+                variant="standard"
+                onChange={(e) => handleEditorStyleChange('align', e.target.value as any)}
+                value={data?.editorStyles?.align}
+                options={[
+                    { value: undefined, label: 'no' },
+                    { value: 'left', label: 'Left' },
+                    { value: 'right', label: 'Right' },
+                    { value: 'center', label: 'Center' },
+                ]}
+            />
         </div>
         <div className={styles.stylesGroup}>
             <h3>Height (px)</h3>

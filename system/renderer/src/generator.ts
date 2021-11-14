@@ -216,14 +216,12 @@ const devGenerate = async (themeName: string, options) => {
          import '${depsBundlePath}';
          ` : ''}
 
-         import ${pageInfo.compName} from '${pageRelativePath}';
+         import * as ${pageInfo.compName} from '${pageRelativePath}';
  
          ${!disableSSR && pageRelativePath ? `
-         const pageServerModule = require('${pageRelativePath}');
- 
-         export const getStaticProps = createGetStaticProps('${pageInfo.name}', pageServerModule ? pageServerModule.getStaticProps : null);
+         export const getStaticProps = createGetStaticProps('${pageInfo.name}', ${pageInfo.compName});
          
-         export const getStaticPaths = createGetStaticPaths('${pageInfo.name}', pageServerModule ? pageServerModule.getStaticPaths : null);
+         export const getStaticPaths = createGetStaticPaths('${pageInfo.name}', ${pageInfo.compName});
          `: ''}
 
          ${(pageInfo.name === genericPageName && !hasGenericPage) ? `

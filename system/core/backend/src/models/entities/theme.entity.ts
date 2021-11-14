@@ -7,39 +7,39 @@ import { BasePageEntity } from './base-page.entity';
 @ObjectType('Theme')
 export class ThemeEntity extends BasePageEntity implements TThemeEntity {
 
-    @Field()
-    @Column()
-    name: string;
+    @Field(type => String)
+    @Column({ type: "varchar", length: 255 })
+    name?: string | null;
 
     @Field(type => String, { nullable: true })
     @Column({ type: "varchar", nullable: true })
-    version?: string;
+    version?: string | null;
 
     @Field(type => String, { nullable: true })
     @Column({ type: "varchar", nullable: true })
-    title?: string;
+    title?: string | null;
 
-    @Field()
-    @Column()
-    isInstalled: boolean;
+    @Field(type => Boolean, { nullable: true })
+    @Column({ type: "boolean" })
+    isInstalled?: boolean | null;
 
     @Field(type => Boolean, { nullable: true })
     @Column({ type: "boolean", nullable: true })
-    hasAdminBundle?: boolean;
+    hasAdminBundle?: boolean | null;
 
     @Field(type => String, { nullable: true })
     @Column({ type: "text", nullable: true })
-    settings?: string;
+    settings?: string | null;
 
     @Field(type => String, { nullable: true })
     @Column({ type: "text", nullable: true })
-    defaultSettings?: string;
+    defaultSettings?: string | null;
 
     @Field(type => String, { nullable: true })
     @Column({ type: "text", nullable: true })
-    moduleInfo?: string;
+    moduleInfo?: string | null;
 
     @Field(type => Boolean, { nullable: true })
     @Column({ type: "boolean", nullable: true })
-    isUpdating?: boolean = false;
+    isUpdating?: boolean | null = false;
 }

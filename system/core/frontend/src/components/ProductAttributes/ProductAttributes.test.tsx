@@ -28,7 +28,7 @@ describe('ProductAttributes', () => {
         render(<ProductAttributes
             product={{
                 name: '_test1_',
-                id: '1',
+                id: 1,
                 categories: [],
                 attributes: [
                     {
@@ -43,7 +43,7 @@ describe('ProductAttributes', () => {
             }}
             attributes={[
                 {
-                    id: '1',
+                    id: 1,
                     type: 'radio',
                     key: 'test_attr',
                     values: [
@@ -57,5 +57,4 @@ describe('ProductAttributes', () => {
 
         await screen.findByText('_test_val_1_');
     });
-
-})
+});

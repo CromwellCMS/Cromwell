@@ -2,13 +2,14 @@ import { getStoreItem, onStoreChange, setStoreItem } from '@cromwell/core';
 import { ThemeProvider, Toolbar } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
 import clsx from 'clsx';
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import { HashRouter, Route, RouteComponentProps, Switch } from 'react-router-dom';
+import { BrowserRouter, Route, RouteComponentProps, Switch } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 
-import { pageInfos } from '../../constants/PageInfos';
+import { getPageInfos } from '../../helpers/navigation';
 import { useForceUpdate } from '../../helpers/forceUpdate';
+import { store } from '../../redux/store';
 import { LayoutPortal } from '../../helpers/LayoutPortal';
 import Page404 from '../../pages/404/404page';
 import PageErrorBoundary from '../errorBoundaries/PageErrorBoundary';
@@ -29,7 +30,14 @@ function Layout() {
       userRole = user.role;
       forceUpdate();
     }
-  })
+  });
+
+  useEffect(() => {
+    store.setStateProp({
+      prop: 'forceUpdateApp',
+      payload: forceUpdate,
+    });
+  }, []);
 
   const darkMode = getStoreItem('theme')?.mode === 'dark';
 
@@ -67,17 +75,16 @@ function Layout() {
   return (
     <ThemeProvider theme={theme}>
       <div className={clsx(styles.Layout)}>
-        <HashRouter>
+        <BrowserRouter basename={'admin'}>
           <div className={styles.sidebar}>
             <Sidebar />
           </div>
           <div className={styles.main}>
             <Toolbar className={styles.dummyToolbar} />
             <Switch>
-              {pageInfos.map(page => {
+              {getPageInfos().map(page => {
                 if (page.roles && !page.roles.includes(getStoreItem('userInfo')?.role))
                   return null;
-
                 return (
                   <Route exact={!page.baseRoute}
                     path={page.route}
@@ -99,7 +106,7 @@ function Layout() {
               </Route>
             </Switch>
           </div>
-        </HashRouter>
+        </BrowserRouter>
         {document?.body && ReactDOM.createPortal(
           <div className={styles.toastContainer} ><ToastContainer /></div>, document.body)}
         <FileManager />

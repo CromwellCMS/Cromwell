@@ -1,99 +1,71 @@
-import { getRandStr } from '@cromwell/core';
+import { DragIndicator as DragIndicatorIcon } from '@mui/icons-material';
+import { IconButton } from '@mui/material';
 import React, { Component } from 'react';
+import { Responsive, WidthProvider } from 'react-grid-layout';
 
-import { Draggable } from '../../helpers/Draggable/Draggable';
 import styles from './DraggableList.modules.scss';
 
+const ResponsiveGridLayout = WidthProvider(Responsive);
 
-class DraggableList<TData, TCompProps = Record<string, any>> extends Component<{
+export class DraggableList<TData extends { id: string | number }, TCompProps = Record<string, any>> extends Component<{
     data: TData[];
-    onChange: (data: TData[]) => void;
     component: React.ComponentType<{
         data: TData;
         itemProps?: TCompProps;
     }>;
-    componentProps?: TCompProps;
+    onChange?: (data: TData[]) => void;
+    itemProps?: TCompProps;
 }> {
-    private draggable: Draggable;
+    private uncontrolledInput: TData[] = [];
 
-    private refsData: {
-        index: number;
-        ref: React.RefObject<HTMLDivElement>;
-    }[] = [];
-
-    private randId = getRandStr(6);
-    private itemClass = 'item_' + this.randId;
-    private containerClass = 'container_' + this.randId;
-
-    componentDidMount() {
-        this.draggable = new Draggable({
-            draggableSelector: '.' + this.itemClass,
-            containerSelector: '.' + this.containerClass,
-            rootElementSelector: '.' + this.containerClass,
-            onBlockInserted: this.onBlockInserted,
-            dragPlacement: 'element',
-            createFrame: true,
-            disableInsert: true,
-            primaryColor: 'transparent',
-        });
-    }
-
-    componentDidUpdate() {
-        this.draggable?.updateBlocks();
-    }
-
-    private onBlockInserted = (container: HTMLElement, draggedBlock: HTMLElement, nextElement?: HTMLElement) => {
-        let data = [...this.props.data];
-
-        const index = this.refsData.find(data => data.ref.current === draggedBlock)?.index;
-        const nextIndex = this.refsData.find(data => data.ref.current === nextElement)?.index ?? -1;
-
-        if (index !== undefined) {
-            const item = data[index];
-
-            delete data[index];
-
-            if (nextIndex === -1) {
-                data.push(item);
-            } else {
-                const filtered: TData[] = []
-                data.forEach((it, i) => {
-                    if (i === nextIndex) {
-                        filtered.push(item);
-                    }
-                    filtered.push(it);
-                });
-                data = filtered;
-                if (!data.includes(item)) data.push(item);
-            }
-            data = data.filter(Boolean);
-
-            this.props.onChange?.(data);
+    private getGridLayout = (data: TData[]) => {
+        return {
+            xxs: data.map((item, index) => {
+                return { i: (item.id ?? index) + '', x: 0, y: index, w: 1, h: 1 }
+            }),
         }
     }
 
+    private onLayoutChange = (data: TData[]) => (layout) => {
+        const sortedItems: TData[] = [];
+        const sorted = [...layout].sort((a, b) => (a.x + a.y * 10) - (b.x + b.y * 10));
+        sorted.forEach(item => {
+            const it = data.find((_it, index) => (_it.id ?? index) + '' === item.i);
+            if (it) sortedItems.push(it);
+        });
+
+        this.uncontrolledInput = sortedItems;
+        this.props.onChange?.(sortedItems);
+    }
 
     render() {
         const ItemComponent = this.props.component;
-        this.refsData = [];
-
         return (
-            <div className={`${this.itemClass} ${this.containerClass} ${styles.container}`}>
-                {this.props.data.map((item, index) => {
-
-                    const ref = React.createRef<HTMLDivElement>();
-                    this.refsData[index] = {
-                        index, ref,
-                    }
-                    return (
-                        <div className={this.itemClass} ref={ref} key={index}>
-                            <ItemComponent itemProps={this.props.componentProps} data={item} />
-                        </div>
-                    )
-                })}
+            <div className={styles.DraggableList}>
+                <ResponsiveGridLayout
+                    margin={[0, 0]}
+                    isResizable={false}
+                    breakpoints={{ xs: 480, xxs: 0 }}
+                    rowHeight={64}
+                    layouts={this.getGridLayout(this.props.data)}
+                    onLayoutChange={this.onLayoutChange(this.props.data)}
+                    cols={{ xs: 1, xxs: 1 }}
+                    draggableHandle='.draggableHandle'
+                >
+                    {this.props.data.map((item, index) => {
+                        return (<div
+                            key={(item?.id ?? index) + ''}
+                            className={styles.item}
+                        >
+                            <IconButton style={{ cursor: 'move', marginRight: '10px' }}
+                                className="draggableHandle">
+                                <DragIndicatorIcon />
+                            </IconButton>
+                            <ItemComponent data={item} itemProps={this.props.itemProps} />
+                        </div>)
+                    })}
+                </ResponsiveGridLayout>
             </div>
         );
     }
 }
-
-export default DraggableList;
