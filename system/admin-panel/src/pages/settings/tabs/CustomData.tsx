@@ -58,7 +58,7 @@ export default function CustomData(props: TTabProps) {
 
     const getFieldsEntities = (): AdminEntityView[] => [
         ...defaultEntitiesWithCustomFields,
-        ...(settings.customEntities ?? []).map(custom => ({
+        ...(settings?.customEntities ?? []).map(custom => ({
             entityType: custom.entityType,
             label: custom.entityLabel ?? custom?.listLabel,
             custom: true,
@@ -113,7 +113,7 @@ export default function CustomData(props: TTabProps) {
         setCanShowInvalid(true);
         if (!checkProp(entityToEdit?.entityType) || !checkProp(entityToEdit?.listLabel)) return;
 
-        if (settings.customEntities?.find(ent => ent.entityType === entityToEdit.entityType)) {
+        if (settings?.customEntities?.find(ent => ent.entityType === entityToEdit.entityType)) {
             changeSettings('customEntities', [...settings.customEntities].map(ent => {
                 if (ent.entityType === entityToEdit.entityType) {
                     return { ...entityToEdit };
@@ -128,7 +128,7 @@ export default function CustomData(props: TTabProps) {
     }
 
     const deleteCustomEntity = (entityType: string) => {
-        if (settings.customEntities) {
+        if (settings?.customEntities) {
             changeSettings('customEntities', [...settings.customEntities].filter(ent => {
                 if (ent.entityType === entityType) {
                     return false
@@ -152,7 +152,7 @@ export default function CustomData(props: TTabProps) {
                             {entity.custom && (
                                 <div style={{ marginLeft: '10px' }}>
                                     <IconButton onClick={() => setEntityToEdit(
-                                        settings.customEntities?.find(ent => ent.entityType === entity.entityType) ?? null
+                                        settings?.customEntities?.find(ent => ent.entityType === entity.entityType) ?? null
                                     )}>
                                         <SettingsIcon />
                                     </IconButton>
@@ -197,7 +197,7 @@ export default function CustomData(props: TTabProps) {
                 className={styles.entityToEdit}
             >
                 <TextField
-                    label="Key"
+                    label="Type"
                     value={entityToEdit?.entityType ?? ''}
                     onChange={e => changeEntityToEdit('entityType', e.target.value)}
                     variant="standard"
@@ -248,7 +248,7 @@ export default function CustomData(props: TTabProps) {
 type TCustomFieldSettingsData = {
     id: string;
     field: TAdminCustomField;
-    settings: TAdminCmsSettings | null;
+    settings?: TAdminCmsSettings | null;
     changeSettings: (key: keyof TAdminCmsSettings, value: any) => void;
 }
 

@@ -31,6 +31,5 @@ export class AdminCmsConfigDto extends CmsConfigDto {
         this.customEntities = config.customEntities;
         return this;
     }
-
 }
 

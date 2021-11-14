@@ -10,3 +10,4 @@ In this section we are going to overview configuration of main features in Cromw
 - [Migration](./migration)
 - [Payments](./payments)
 - [SEO](./seo)
+- [Custom data](./custom-data)

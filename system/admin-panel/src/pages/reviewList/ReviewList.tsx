@@ -77,6 +77,7 @@ export default function ProductReviewTable() {
                 entityListRoute={reviewListPageInfo.route}
                 listLabel="Product reviews"
                 entityLabel="Review"
+                hideAddNew
                 getManyFiltered={client.getFilteredProductReviews}
                 deleteOne={client.deleteProductReview}
                 deleteMany={client.deleteManyProductReviews}
