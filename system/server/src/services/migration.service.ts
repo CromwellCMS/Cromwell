@@ -347,7 +347,8 @@ export class MigrationService {
             mainCategoryId: ent.mainCategoryId,
             description: ent.description,
             descriptionDelta: ent.descriptionDelta,
-            attributes: this.stringifyValue(await getCustomRepository(ProductRepository).getProductAttributes(ent.id, ent.attributeValues)),
+            attributes: this.stringifyValue(getCustomRepository(ProductRepository)
+                .attributeRecordsToProductAttributeInstances(ent.attributeValues)),
             customMeta: this.stringifyValue(await entityMetaRepository.getEntityMetaByKeys(EDBEntity.Product, ent.id, metaKeys)),
             views: undefined,
         })));

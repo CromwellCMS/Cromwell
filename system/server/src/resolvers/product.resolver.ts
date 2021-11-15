@@ -64,12 +64,12 @@ export class ProductResolver {
 
     @Query(() => Product, { nullable: true })
     async [getOneBySlugPath](@Arg("slug") slug: string): Promise<Product | undefined> {
-        return this.repository.getProductBySlug(slug);
+        return this.repository.getProductBySlug(slug, { withRating: true });
     }
 
     @Query(() => Product, { nullable: true })
     async [getOneByIdPath](@Arg("id", () => Int) id: number): Promise<Product | undefined> {
-        return this.repository.getProductById(id);
+        return this.repository.getProductById(id, { withRating: true });
     }
 
     @Authorized<TAuthRole>("administrator")

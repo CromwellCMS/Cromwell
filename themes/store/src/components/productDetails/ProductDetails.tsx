@@ -1,8 +1,8 @@
+import { TImageSettings } from '@cromwell/core';
 import { CContainer, CGallery, CImage, CText, getBlockHtmlId, getCStore } from '@cromwell/core-frontend';
 import { Rating } from '@mui/material';
-import { TImageSettings } from '@cromwell/core';
 import { useRouter } from 'next/router';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { ProductProps } from '../../pages/product/[slug]';
 import { LoadBox } from '../loadbox/Loadbox';
@@ -13,14 +13,13 @@ export default function ProductDetails(props: {
     compact?: boolean;
 } & ProductProps) {
     const productRef = useRef(props.product);
-    const modifiedProductRef = useRef(props.product);
+    const [product, setProduct] = useState(props.product);
     const cstore = getCStore();
 
-    if (props.product && props.product !== productRef.current) {
+    if (props.product && props.product?.id !== productRef.current?.id) {
         productRef.current = props.product;
-        modifiedProductRef.current = props.product;
+        setProduct(props.product);
     }
-    const product = modifiedProductRef.current;
     const router = useRouter?.();
 
     useEffect(() => {
@@ -116,11 +115,9 @@ export default function ProductDetails(props: {
                         </CContainer>
                         <CContainer id="productActionsBlock">
                             <ProductActions
-                                onAttrChange={(attrs, modified) => {
-                                    modifiedProductRef.current = modified;
-                                }}
+                                onAttrChange={(attrs, modified) => setProduct({ ...modified })}
                                 attributes={props.attributes}
-                                product={product}
+                                product={productRef.current}
                             />
                         </CContainer>
                     </CContainer>

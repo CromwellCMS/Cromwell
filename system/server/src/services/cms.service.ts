@@ -519,7 +519,11 @@ ${content}
 
         let cart: TStoreListItem[] | undefined;
         try {
-            if (input.cart) cart = JSON.parse(input.cart);
+            if (typeof input.cart === 'string') {
+                cart = JSON.parse(input.cart);
+            } else if (typeof input.cart === 'object') {
+                cart = input.cart;
+            }
         } catch (error) {
             logger.error('placeOrder: Failed to parse cart', error);
         }
@@ -528,7 +532,8 @@ ${content}
         const settings = await getCmsSettings();
 
         const cstore = getCStore(true, {
-            getProductById: (id) => getCustomRepository(ProductRepository).getProductById(id),
+            getProductById: (id) => getCustomRepository(ProductRepository).getProductById(id,
+                { withAttributes: true }),
             getAttributes: () => getCustomRepository(AttributeRepository).getAttributes(),
         });
 

@@ -155,18 +155,17 @@ const CheckoutPage: TCromwellPage = () => {
     const validateOrder = () => {
         if (!canValidate) setCanValidate(true);
 
-        if (!form?.name || form.name == '' ||
-            !form?.phone || form.phone == '' ||
-            !form?.address || form.address == ''
-            // || !validateEmail(form.email)
-        ) {
+        if (!form?.name || !form?.phone || !form?.address || !validateEmail(form.email))
             return false;
-        }
         return true;
     }
 
     const handlePlaceOrder = async () => {
-        if (!validateOrder()) return;
+        if (!validateOrder()) {
+            toast.warning('Please fill order information');
+            document.getElementById('shipping_address_header')?.scrollIntoView({ behavior: 'smooth' });
+            return;
+        }
 
         let order;
         setIsLoading(true);
@@ -205,11 +204,24 @@ const CheckoutPage: TCromwellPage = () => {
     }
 
     const handlePay = async () => {
-        if (!validateOrder()) return;
-        if (!orderTotal?.paymentOptions?.length) return;
-        if (!form?.paymentMethod) return;
+        if (!validateOrder()) {
+            toast.warning('Please fill order information');
+            document.getElementById('shipping_address_header')?.scrollIntoView({ behavior: 'smooth' });
+            return;
+        }
+        if (!orderTotal?.paymentOptions?.length) {
+            toast.warning('No payment options available');
+            return;
+        }
+        if (!form?.paymentMethod) {
+            toast.warning('Please choose a payment method');
+            return;
+        }
         const paymentMethod = orderTotal.paymentOptions.find(option => option.name === form.paymentMethod);
-        if (!paymentMethod?.link) return;
+        if (!paymentMethod?.link) {
+            toast.warning('Something is wrong with payment method');
+            return;
+        }
 
         setIsLoading(true);
 
@@ -285,7 +297,7 @@ const CheckoutPage: TCromwellPage = () => {
             )}
             <p></p>
             <div className={styles.delimiter}></div>
-            <h2 className={styles.subHeader}>Shipping Address</h2>
+            <h2 className={styles.subHeader} id="shipping_address_header">Shipping Address</h2>
             <Tooltip open={canValidate && (!form?.name || form.name == '')} title="This field is required" arrow>
                 <TextField label="Name"
                     variant="outlined"
