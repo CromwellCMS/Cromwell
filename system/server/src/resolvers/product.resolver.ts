@@ -50,7 +50,6 @@ const deleteManyFilteredPath = GraphQLPaths.Product.deleteManyFiltered;
 const getFromCategoryPath = GraphQLPaths.Product.getFromCategory;
 const getFilteredPath = GraphQLPaths.Product.getFiltered;
 
-
 @Resolver(Product)
 export class ProductResolver {
 
@@ -130,9 +129,8 @@ export class ProductResolver {
     async [getFilteredPath](
         @Arg("pagedParams", { nullable: true }) pagedParams?: PagedParamsInput<TProduct>,
         @Arg("filterParams", { nullable: true }) filterParams?: ProductFilterInput,
-        @Arg("categoryId", () => Int, { nullable: true }) categoryId?: number,
     ): Promise<TFilteredProductList | undefined> {
-        return this.repository.getFilteredProducts(pagedParams, filterParams, categoryId);
+        return this.repository.getFilteredProducts(pagedParams, filterParams);
     }
 
     @FieldResolver(() => [ProductCategory], { nullable: true })

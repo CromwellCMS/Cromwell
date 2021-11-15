@@ -631,8 +631,7 @@ export class CGraphQLClient {
     }
 
     public getFilteredProducts = async (
-        { categoryId, pagedParams, filterParams, customFragment, customFragmentName }: {
-            categoryId?: number
+        { pagedParams, filterParams, customFragment, customFragmentName }: {
             pagedParams?: TPagedParams<TProduct>;
             filterParams?: TProductFilter;
             customFragment?: DocumentNode;
@@ -645,8 +644,8 @@ export class CGraphQLClient {
 
         return this.query({
             query: gql`
-                query getFilteredProducts($pagedParams: PagedParamsInput, $filterParams: ProductFilterInput, $categoryId: Int) {
-                    ${path}(categoryId: $categoryId, pagedParams: $pagedParams, filterParams: $filterParams) {
+                query getFilteredProducts($pagedParams: PagedParamsInput, $filterParams: ProductFilterInput) {
+                    ${path}(pagedParams: $pagedParams, filterParams: $filterParams) {
                         pagedMeta {
                             ...PagedMetaFragment
                         }
@@ -665,7 +664,6 @@ export class CGraphQLClient {
             variables: {
                 pagedParams: pagedParams ?? {},
                 filterParams,
-                categoryId,
             }
         }, path);
     }
@@ -963,7 +961,7 @@ export class CGraphQLClient {
 
         return this.query({
             query: gql`
-                query coreGetOrdersOfUser($userId: String!, $pagedParams: PagedParamsInput) {
+                query coreGetOrdersOfUser($userId: Int!, $pagedParams: PagedParamsInput) {
                     ${path}(userId: $userId, pagedParams: $pagedParams) {
                         pagedMeta {
                             ...PagedMetaFragment

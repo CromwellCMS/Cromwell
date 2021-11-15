@@ -1,9 +1,9 @@
-import { TPaymentSession } from '@cromwell/core';
+import { TOrderStatus, TPaymentSession } from '@cromwell/core';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateOrderDto implements TPaymentSession {
     @ApiProperty()
-    status?: string;
+    status?: TOrderStatus;
 
     @ApiProperty()
     userId?: number;

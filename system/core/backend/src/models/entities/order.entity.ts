@@ -1,4 +1,4 @@
-import { TOrder } from '@cromwell/core';
+import { TOrder, TOrderStatus } from '@cromwell/core';
 import { Field, Int, ObjectType } from 'type-graphql';
 import {
     BaseEntity,
@@ -26,7 +26,7 @@ export class Order extends BaseEntity implements TOrder {
     @Field(() => String, { nullable: true })
     @Index()
     @Column({ type: "varchar", length: 255, nullable: true })
-    status?: string | null;
+    status?: TOrderStatus | null;
 
     @Field(() => String, { nullable: true })
     @Column({ type: "text", nullable: true })

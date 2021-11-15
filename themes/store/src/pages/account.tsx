@@ -183,6 +183,7 @@ const Account = () => {
                         onClick={handleSave}
                     >Update</Button>
                 </Grid>
+                <Grid item xs={12} sm={12}></Grid>
             </Grid>
             <h2 className={styles.subheader}>Order history</h2>
             <div>
@@ -205,6 +206,10 @@ const Account = () => {
                             <div className={styles.detailsRow}>
                                 <p className={styles.totalText}>Total:</p>
                                 <b className={styles.totalText}>{cstore.getPriceWithCurrency(order?.orderTotalPrice)}</b>
+                            </div>
+                            <div className={styles.detailsRow}>
+                                <p>Status:</p>
+                                <b>{order?.status}</b>
                             </div>
                         </Grid>
                     )

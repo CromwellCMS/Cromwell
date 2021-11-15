@@ -274,16 +274,15 @@ export class ProductRepository extends BaseRepository<Product> {
         return raw;
     }
 
-    applyProductFilter(qb: SelectQueryBuilder<Product>, filterParams?: ProductFilterInput, categoryId?: number) {
+    applyProductFilter(qb: SelectQueryBuilder<Product>, filterParams?: ProductFilterInput) {
         this.applyBaseFilter(qb, filterParams);
 
-        if (categoryId) {
-            // Cannot apply category filter in Delete query
-            applyGetManyFromOne(qb as SelectQueryBuilder<Product>, this.metadata.tablePath, 'categories',
-                getCustomRepository(ProductCategoryRepository).metadata.tablePath, categoryId);
-        }
-
         if (filterParams) {
+            if (filterParams.categoryId) {
+                applyGetManyFromOne(qb, this.metadata.tablePath, 'categories',
+                    getCustomRepository(ProductCategoryRepository).metadata.tablePath, filterParams.categoryId);
+            }
+
             // Attribute filter
             if (filterParams.attributes?.length) {
                 const productAttributeTable = AttributeToProduct.getRepository().metadata.tablePath;
@@ -345,8 +344,8 @@ export class ProductRepository extends BaseRepository<Product> {
         }
     }
 
-    async getFilteredProducts(pagedParams?: PagedParamsInput<TProduct>, filterParams?: ProductFilterInput, categoryId?: number): Promise<TFilteredProductList> {
-        logger.log('ProductRepository::getFilteredProducts categoryId:' + categoryId);
+    async getFilteredProducts(pagedParams?: PagedParamsInput<TProduct>, filterParams?: ProductFilterInput): Promise<TFilteredProductList> {
+        logger.log('ProductRepository::getFilteredProducts');
         const timestamp = Date.now();
 
         const getQb = (shouldApplyPriceFilter = true): SelectQueryBuilder<Product> => {
@@ -356,7 +355,7 @@ export class ProductRepository extends BaseRepository<Product> {
                 ...filterParams,
                 maxPrice: undefined,
                 minPrice: undefined,
-            }, categoryId)
+            })
             return qb;
         }
 
@@ -366,10 +365,12 @@ export class ProductRepository extends BaseRepository<Product> {
 
             let [maxPrice, minPrice] = await Promise.all([
                 qb.select(`MAX(${this.metadata.tablePath}.price)`, "maxPrice")
-                    .groupBy(`${this.metadata.tablePath}.id`)
+                    .orderBy()
+                    .groupBy()
                     .getRawOne().then(res => res?.maxPrice),
                 qb.select(`MIN(${this.metadata.tablePath}.price)`, "minPrice")
-                    .groupBy(`${this.metadata.tablePath}.id`)
+                    .orderBy()
+                    .groupBy()
                     .getRawOne().then(res => res?.minPrice)
             ]);
             if (maxPrice && typeof maxPrice === 'string') maxPrice = parseInt(maxPrice);

@@ -40,8 +40,8 @@ export class HeaderSearch extends React.Component<unknown, {
         try {
             const data = await client?.query({
                 query: gql`
-                    query getFilteredProducts($categoryId: String, $pagedParams: PagedParamsInput, $filterParams: ProductFilterInput) {
-                        getFilteredProducts(categoryId: $categoryId, pagedParams: $pagedParams, filterParams: $filterParams) {
+                    query getFilteredProducts($pagedParams: PagedParamsInput, $filterParams: ProductFilterInput) {
+                        getFilteredProducts(pagedParams: $pagedParams, filterParams: $filterParams) {
                             pagedMeta {
                                 ...PagedMetaFragment
                             }
