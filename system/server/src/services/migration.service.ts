@@ -5,6 +5,7 @@ import {
     TCustomEntityInput,
     TDBEntity,
     TOrderInput,
+    TOrderStatus,
     TPluginEntity,
     TPostInput,
     TProductCategoryInput,
@@ -948,7 +949,7 @@ export class MigrationService {
             EntityClass: Order as any,
             transformInput: (input) => ({
                 ...this.parseBaseInput(input),
-                status: input.status || null,
+                status: input.status as TOrderStatus || null,
                 cart: input.cart || null,
                 orderTotalPrice: this.parseNumber(input.orderTotalPrice),
                 cartTotalPrice: this.parseNumber(input.cartTotalPrice),

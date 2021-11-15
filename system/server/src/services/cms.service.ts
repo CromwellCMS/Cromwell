@@ -453,7 +453,7 @@ ${content}
             shippingPrice: orderTotal.shippingPrice,
             orderTotalPrice: orderTotal.orderTotalPrice,
             cart: input.cart,
-            status: input.status,
+            status: 'Pending',
             userId: input.userId,
             customerName: input.customerName,
             customerPhone: input.customerPhone,

@@ -210,6 +210,7 @@ export type TProductFilter = TBaseFilter & {
     maxPrice?: number;
     attributes?: TProductFilterAttribute[];
     nameSearch?: string;
+    categoryId?: number;
 }
 export type TProductFilterAttribute = TBaseFilter & {
     key: string;
@@ -422,7 +423,7 @@ export type TOrderCore = {
     id?: number | null;
     createDate?: Date | null;
     updateDate?: Date | null;
-    status?: string | null;
+    status?: TOrderStatus | null;
     cart?: string | TStoreListItem[] | null;
     orderTotalPrice?: number | null;
     cartTotalPrice?: number | null;
@@ -443,6 +444,8 @@ export type TOrderCore = {
 }
 
 export type TOrder = TOrderCore;
+
+export type TOrderStatus = 'Pending' | 'Awaiting shipment' | 'Shipped' | 'Refunded' | 'Cancelled' | 'Completed';
 
 export type TOrderInput = TOrderCore;
 

@@ -1,4 +1,4 @@
-import { TOrderInput } from '@cromwell/core';
+import { TOrderInput, TOrderStatus } from '@cromwell/core';
 import { Field, InputType, Int } from 'type-graphql';
 
 import { BasePageInput } from './base-page.input';
@@ -7,7 +7,7 @@ import { BasePageInput } from './base-page.input';
 export class OrderInput extends BasePageInput implements TOrderInput {
 
     @Field(() => String, { nullable: true })
-    status?: string;
+    status?: TOrderStatus;
 
     @Field(() => Int, { nullable: true })
     userId?: number;

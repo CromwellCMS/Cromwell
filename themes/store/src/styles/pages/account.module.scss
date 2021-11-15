@@ -36,7 +36,7 @@
 
 .AccountPage div.order {
     @include paper;
-    margin-bottom: 20px;
+    margin-bottom: 40px;
     padding: 15px;
 }
 
@@ -49,7 +49,9 @@
     justify-content: space-between;
     border-bottom: 1px dashed #bbb;
     margin: 15px 0;
+    max-width: 500px;
 }
+
 .totalText {
     font-size: 18px;
     font-weight: 500;

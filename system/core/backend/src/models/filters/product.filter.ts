@@ -1,5 +1,5 @@
 import { TFilteredProductList, TProductFilter, TProductFilterAttribute, TProductFilterMeta } from '@cromwell/core';
-import { Field, Float, InputType, ObjectType } from 'type-graphql';
+import { Field, Float, InputType, Int, ObjectType } from 'type-graphql';
 
 import { Product } from '../entities/product.entity';
 import { PagedMeta } from '../paged/meta.paged';
@@ -51,4 +51,7 @@ export class ProductFilterInput extends BaseFilterInput implements TProductFilte
 
     @Field(type => String, { nullable: true })
     nameSearch?: string;
+
+    @Field(type => Int, { nullable: true })
+    categoryId?: number;
 }
