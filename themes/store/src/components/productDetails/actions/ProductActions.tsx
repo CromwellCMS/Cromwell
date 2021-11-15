@@ -14,7 +14,7 @@ import styles from './ProductActions.module.scss';
 // import { EqualizerIcon } from '../icons';
 
 export const ProductActions = (props: {
-    product: TProduct;
+    product?: TProduct | null;
     attributes?: TAttribute[];
     onAttrChange: (attrs: any, modified: any) => void;
 }) => {
@@ -31,7 +31,7 @@ export const ProductActions = (props: {
     const cstore = getCStore();
     const inCart = cstore.isInCart(item);
     const sameQntInCart = cstore.hasSameQntInCart(item);
-    const inWishlist = cstore.isInWishlist({ product });
+    const inWishlist = product && cstore.isInWishlist({ product });
     // const inCompare = cstore.isInCompare({ product });
 
     useEffect(() => {
@@ -74,6 +74,7 @@ export const ProductActions = (props: {
     }
 
     const handleAddToWishlist = () => {
+        if (!product) return;
         if (inWishlist) {
             appState.isWishlistOpen = true;
         } else {

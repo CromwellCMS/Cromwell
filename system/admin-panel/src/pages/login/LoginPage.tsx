@@ -10,10 +10,13 @@ import styles from './LoginPage.module.scss';
 
 export type TFromType = 'sign-in' | 'sign-up' | 'forgot-pass' | 'reset-pass';
 
+type TEvent = { preventDefault: () => any };
+
 const LoginPage = () => {
     const apiClient = getRestApiClient();
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [canValidate, setCanValidate] = useState(false);
     const [emailInput, setEmailInput] = useState('');
     const [codeInput, setCodeInput] = useState('');
     const [passwordInput, setPasswordInput] = useState('');
@@ -24,8 +27,10 @@ const LoginPage = () => {
         setShowPassword(!showPassword);
     }
 
-    const handleLoginClick = async () => {
-        if (!emailInput || emailInput == '' || !passwordInput || passwordInput === '') return;
+    const handleLoginClick = async (event: TEvent) => {
+        event?.preventDefault?.();
+        setCanValidate(true);
+        if (!emailInput || !passwordInput) return;
 
         setLoading(true);
         try {
@@ -73,8 +78,10 @@ const LoginPage = () => {
         }
     }
 
-    const handleSubmit = () => {
-        if (formType === 'sign-in') handleLoginClick();
+    const handleSubmit = (event: TEvent) => {
+        setCanValidate(true);
+        event?.preventDefault?.();
+        if (formType === 'sign-in') handleLoginClick(event);
         if (formType === 'forgot-pass') handleForgotPass();
         if (formType === 'reset-pass') handleResetPass();
     }
@@ -161,6 +168,7 @@ const LoginPage = () => {
                             fullWidth
                             variant="standard"
                             id="email-input"
+                            error={canValidate && !emailInput}
                         />
                         <TextField
                             label="Password"
@@ -171,6 +179,7 @@ const LoginPage = () => {
                             fullWidth
                             id="password-input"
                             variant="standard"
+                            error={canValidate && !passwordInput}
                             InputProps={{
                                 endAdornment: (
                                     <InputAdornment position="end">
@@ -205,6 +214,7 @@ const LoginPage = () => {
                             fullWidth
                             variant="standard"
                             id="email-input"
+                            error={canValidate && !passwordInput}
                         />
                         <Button
                             type="submit"
@@ -227,6 +237,7 @@ const LoginPage = () => {
                             fullWidth
                             variant="standard"
                             id="code-input"
+                            error={canValidate && !codeInput}
                         />
                         <TextField
                             label="New password"
@@ -236,6 +247,7 @@ const LoginPage = () => {
                             className={styles.textField}
                             fullWidth
                             id="password-input"
+                            error={canValidate && !passwordInput}
                             variant="standard"
                             InputProps={{
                                 endAdornment: (

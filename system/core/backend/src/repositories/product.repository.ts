@@ -38,6 +38,10 @@ const averageKey: keyof Product = 'averageRating';
 const reviewsCountKey: keyof Product = 'reviewsCount';
 const ratingKey: keyof TProductReview = 'rating';
 
+type TGetProductOptions = {
+    withRating?: boolean;
+    withAttributes?: boolean;
+}
 
 @EntityRepository(Product)
 export class ProductRepository extends BaseRepository<Product> {
@@ -76,18 +80,33 @@ export class ProductRepository extends BaseRepository<Product> {
         return await this.applyAndGetPagedProducts(qb, params);
     }
 
-    async getProductById(id: number): Promise<Product | undefined> {
+    async getProductById(id: number, options?: TGetProductOptions): Promise<Product | undefined> {
         logger.log('ProductRepository::getProductById id: ' + id);
         const qb = this.createQueryBuilder(this.metadata.tablePath).select();
-        this.applyGetProductRating(qb);
-        return qb.where(`${this.metadata.tablePath}.id = :id`, { id }).getOne();
+
+        if (options?.withRating) {
+            this.applyGetProductRating(qb);
+        }
+        const product = await qb.where(`${this.metadata.tablePath}.id = :id`, { id }).getOne();
+
+        if (options?.withAttributes && product) {
+            product.attributes = await this.getProductAttributes(id);
+        }
+        return product;
     }
 
-    async getProductBySlug(slug: string): Promise<Product | undefined> {
+    async getProductBySlug(slug: string, options?: TGetProductOptions): Promise<Product | undefined> {
         logger.log('ProductRepository::getProductBySlug slug: ' + slug);
         const qb = this.createQueryBuilder(this.metadata.tablePath).select();
-        this.applyGetProductRating(qb);
-        return qb.where(`${this.metadata.tablePath}.slug = :slug`, { slug }).getOne();
+        if (options?.withRating) {
+            this.applyGetProductRating(qb);
+        }
+        const product = await qb.where(`${this.metadata.tablePath}.slug = :slug`, { slug }).getOne();
+
+        if (options?.withAttributes && product?.id) {
+            product.attributes = await this.getProductAttributes(product.id);
+        }
+        return product;
     }
 
     async handleProductInput(product: Product, input: TProductInput, action: 'update' | 'create') {
@@ -390,11 +409,7 @@ export class ProductRepository extends BaseRepository<Product> {
         return true;
     }
 
-    async getProductAttributes(productId: number, records?: AttributeToProduct[] | null): Promise<AttributeInstance[] | undefined> {
-        if (!records) {
-            records = await getCustomRepository(AttributeRepository)
-                .getAttributeInstancesOfProduct(productId);
-        }
+    attributeRecordsToProductAttributeInstances(records?: AttributeToProduct[] | null): AttributeInstance[] | undefined {
         if (!records) return;
 
         const instances: Record<string, AttributeInstance> = {};
@@ -411,5 +426,11 @@ export class ProductRepository extends BaseRepository<Product> {
             })
         });
         return Object.values(instances);
+    }
+
+    async getProductAttributes(productId: number): Promise<AttributeInstance[] | undefined> {
+        const records = await getCustomRepository(AttributeRepository)
+            .getAttributeInstancesOfProduct(productId);
+        return this.attributeRecordsToProductAttributeInstances(records);
     }
 }

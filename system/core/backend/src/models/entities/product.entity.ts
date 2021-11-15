@@ -1,4 +1,4 @@
-import { TProduct, TProductCategory, TProductRating, TProductReview, TStockStatus } from '@cromwell/core';
+import { TProduct, TProductCategory, TProductRating, TProductReview, TStockStatus, TAttributeInstance } from '@cromwell/core';
 import { Field, Int, ObjectType } from 'type-graphql';
 import { Column, Entity, Index, JoinTable, ManyToMany, OneToMany } from 'typeorm';
 
@@ -76,6 +76,12 @@ export class Product extends BasePageEntity implements TProduct {
         cascade: true,
     })
     attributeValues?: AttributeToProduct[] | null;
+
+    /**
+     * DB Records from `attributeValues` relation converted for frontend representation 
+     */
+    attributes?: TAttributeInstance[] | null;
+
 
     views?: number | null;
 
