@@ -9,16 +9,77 @@ import {
     TProductFilter,
     TProductFilterMeta,
 } from '@cromwell/core';
-import { TCGraphQLClient, TCList } from '@cromwell/core-frontend';
+import { TCGraphQLClient, TCList, getGraphQLClient, getGraphQLErrorInfo } from '@cromwell/core-frontend';
 
 import { TProductFilterSettings } from '../types';
 
-export type TProductFilterData = {
-    productCategory?: TProductCategory;
-    slug?: string | string[] | null;
+export type TInitialData = {
     attributes?: TAttribute[];
     filterMeta?: TProductFilterMeta;
+    productCategory?: TProductCategory;
+}
+
+export type TProductFilterData = {
+    slug?: string | string[] | null;
     pluginSettings?: TProductFilterSettings;
+}
+
+export const getInitialData = async (slug: string): Promise<TInitialData> => {
+    const client = getGraphQLClient();
+    // const timestamp = Date.now();
+
+    const getCategory = async () => {
+        if (!slug) return;
+        try {
+            return await client?.getProductCategoryBySlug(
+                slug as string,
+                gql`
+                    fragment PCategory on ProductCategory {
+                        id
+                        slug
+                        name
+                        mainImage
+                        parent {
+                            name
+                            slug
+                            id
+                        }
+                        children {
+                          name
+                          slug
+                          id
+                        }
+                    }
+                `,
+                'PCategory'
+            )
+        } catch (error) {
+            console.error('ProductFilter::getStaticProps', error);
+            console.error(JSON.stringify(getGraphQLErrorInfo(error), null, 2));
+        }
+    }
+    const productCategory = await getCategory();
+
+    let attributes: TAttribute[] | undefined;
+    try {
+        attributes = await client?.getAttributes();
+    } catch (e: any) {
+        console.error('ProductFilter::getStaticProps getAttributes', e.message)
+    }
+
+    let filterMeta: TProductFilterMeta | undefined;
+
+    if (productCategory && productCategory.id) {
+        filterMeta = (await getFiltered(client, productCategory.id, { pageSize: 1 }, {}))?.filterMeta;
+    }
+
+    // const timestamp2 = Date.now();
+    // console.log('ProductFilter::getStaticProps time elapsed: ' + (timestamp2 - timestamp) + 'ms');
+    return {
+        productCategory,
+        attributes,
+        filterMeta,
+    }
 }
 
 export const setListProps = (productListId?: string,

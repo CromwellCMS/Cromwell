@@ -6,7 +6,7 @@ import {
     TProductCategory,
     TProductFilter,
 } from '@cromwell/core';
-import { getGraphQLClient, iconFromPath } from '@cromwell/core-frontend';
+import { getGraphQLClient, iconFromPath, LoadBox } from '@cromwell/core-frontend';
 import {
     Card,
     CardHeader,
@@ -33,7 +33,7 @@ import { debounce } from 'throttle-debounce';
 
 import { defaultSettings } from '../../constants';
 import { IFrontendFilter, TInstanceSettings } from '../../types';
-import { filterCList, setListProps, TProductFilterData } from '../service';
+import { filterCList, setListProps, TProductFilterData, getInitialData, TInitialData } from '../service';
 import { styles } from '../styles';
 import { Slider } from './Slider';
 
@@ -46,6 +46,7 @@ type FilterState = {
     minPrice: number;
     maxPrice: number;
     isMobileOpen: boolean;
+    isLoading?: boolean;
 }
 
 type FilterProps = {
@@ -59,21 +60,38 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
     private collapsedByDefault = false;
     private checkedAttrs: Record<string, string[]> = {};
     private client = getGraphQLClient();
+    private initialData?: TInitialData;
 
     constructor(props) {
         super(props);
-        const filterMeta = this.props.data?.filterMeta;
         this.state = {
             collapsedItems: {},
-            minPrice: filterMeta?.minPrice ?? 0,
-            maxPrice: filterMeta?.maxPrice ?? 0,
+            minPrice: 0,
+            maxPrice: 0,
             isMobileOpen: false,
+            isLoading: true,
         }
         this.props?.instanceSettings?.getInstance?.(this);
     }
 
     componentDidMount() {
         this.props?.instanceSettings?.onMount?.(this);
+        this.init();
+    }
+
+    private async init() {
+        if (typeof this.props.data?.slug !== 'string') return;
+        try {
+            this.initialData = await getInitialData(this.props.data?.slug);
+        } catch (error) {
+            console.error(error);
+        }
+        const filterMeta = this.initialData?.filterMeta;
+        this.setState({
+            minPrice: filterMeta?.minPrice ?? 0,
+            maxPrice: filterMeta?.maxPrice ?? 0,
+            isLoading: false,
+        });
     }
 
     private handleSetAttribute = (key: string, checks: string[]) => {
@@ -108,7 +126,8 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
     private applyFilter = () => {
         const filterParams = this.getFilterParams();
         const { instanceSettings } = this.props;
-        const { productCategory, pluginSettings } = this.props.data ?? {};
+        const { pluginSettings } = this.props.data ?? {};
+        const { productCategory } = this.initialData ?? {};
         const productListId = instanceSettings?.listId ?? pluginSettings?.listId;
 
         instanceSettings?.onChange?.(filterParams);
@@ -207,16 +226,22 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
 
     render() {
         const { instanceSettings } = this.props;
-        const { attributes, productCategory, pluginSettings } = this.props.data ?? {};
-        const { isMobileOpen, minPrice, maxPrice, collapsedItems } = this.state;
+        const { pluginSettings } = this.props.data ?? {};
+        const { attributes, productCategory } = this.initialData ?? {};
+        const { isMobileOpen, minPrice, maxPrice, collapsedItems, isLoading } = this.state;
+        instanceSettings?.getInstance?.(this);
+
+        if (isLoading) return (
+            <div style={{ width: '100%', height: '100px' }}>
+                <LoadBox size={60} />
+            </div>
+        );
 
         const isMobile = !instanceSettings?.disableMobile && this.props.isMobile;
         const pcCollapsedByDefault = pluginSettings?.collapsedByDefault ?? defaultSettings.collapsedByDefault
         const mobileCollapsedByDefault = pluginSettings?.mobileCollapsedByDefault ?? defaultSettings.mobileCollapsedByDefault;
         const _collapsedByDefault = isMobile ? mobileCollapsedByDefault : pcCollapsedByDefault;
         const productListId = instanceSettings?.listId ?? pluginSettings?.listId;
-
-        instanceSettings?.getInstance?.(this);
 
         if (this.collapsedByDefault !== _collapsedByDefault) {
             this.collapsedByDefault = _collapsedByDefault;

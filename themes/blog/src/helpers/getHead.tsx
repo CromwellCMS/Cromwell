@@ -1,10 +1,10 @@
-import { CrwDocumentContextType, TBasePageEntity } from '@cromwell/core';
-import React from 'react';
+import { TBasePageEntity, TNextDocumentContext } from '@cromwell/core';
 import Head from 'next/head';
+import React from 'react';
 
 export const getHead = ({ data, documentContext, image }: {
     data?: TBasePageEntity | null;
-    documentContext?: CrwDocumentContextType;
+    documentContext?: TNextDocumentContext;
     image?: string | null;
 }) => {
     const keywords = data?.meta?.keywords;

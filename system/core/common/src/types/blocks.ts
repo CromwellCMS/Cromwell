@@ -35,7 +35,7 @@ export type TGetPluginStaticProps<
 export type TCromwellPage<Props = any | undefined> = NextPage<Props & TCromwellPageCoreProps>;
 
 export type TCromwellPageCoreProps = {
-    documentContext?: CrwDocumentContextType;
+    documentContext?: TNextDocumentContext;
     plugins?: Record<string, {
         data?: any;
         code?: string;
@@ -53,7 +53,7 @@ export type TCromwellPageCoreProps = {
     resolvedPageRoute?: string;
 }
 
-export type CrwDocumentContextType = Partial<DocumentContext> & {
+export type TNextDocumentContext = Partial<DocumentContext> & {
     fullUrl?: string;
     origin?: string;
     cmsConfig?: TCmsConfig;

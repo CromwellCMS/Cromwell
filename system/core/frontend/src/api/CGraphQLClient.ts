@@ -606,8 +606,12 @@ export class CGraphQLClient {
     public deleteManyFilteredProducts = this.createDeleteManyFiltered<TProductFilter>('Product', 'ProductFilterInput');
 
 
-    public getProductsFromCategory = async (categoryId: number, pagedParams?: TPagedParams<TProduct>): Promise<TPagedList<TProduct>> => {
+    public getProductsFromCategory = async (categoryId: number, pagedParams?: TPagedParams<TProduct>,
+        customFragment?: DocumentNode, customFragmentName?: string): Promise<TPagedList<TProduct>> => {
         const path = GraphQLPaths.Product.getFromCategory;
+        const fragment = customFragment ?? this.ProductFragment;
+        const fragmentName = customFragmentName ?? 'ProductFragment';
+
         return this.query({
             query: gql`
                 query coreGetProductsFromCategory($categoryId: Int!, $pagedParams: PagedParamsInput!) {
@@ -616,11 +620,11 @@ export class CGraphQLClient {
                             ...PagedMetaFragment
                         }
                         elements {
-                            ...ProductFragment
+                            ...${fragmentName}
                         }
                     }
                 }
-                ${this.ProductFragment}
+                ${fragment}
                 ${this.PagedMetaFragment}
             `,
             variables: {

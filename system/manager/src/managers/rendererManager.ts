@@ -275,10 +275,8 @@ const pollPages = async (port: string | number) => {
 
     const promises = infos.filter(info => !info.route.startsWith('pages/')).map(async (info) => {
         for (let i = 0; i < 2; i++) {
-            const pageRoute = await resolvePageRoute(info.route, {
-                slug: 'test'
-            });
-
+            if (info.route.includes('[slug]') || info.route.includes('[id]')) continue;
+            const pageRoute = await resolvePageRoute(info.route);
             const pageUrl = `http://localhost:${port}${pageRoute}`;
             try {
                 await fetch(pageUrl);

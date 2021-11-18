@@ -10,20 +10,67 @@ import {
     TProduct,
 } from '@cromwell/core';
 import { CGallery, getGraphQLClient, Link } from '@cromwell/core-frontend';
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 
 import { useStyles } from './styles';
 
 type ProductShowcaseProps = {
-    productShowcase?: TPagedList<TProduct>;
-    attributes?: TAttribute[];
+    slug?: string;
 }
 
 const ProductShowcase = (props: TFrontendPluginProps<ProductShowcaseProps>): JSX.Element => {
     const galleryId = useRef(`ProductShowcase_${getRandStr(5)}`);
     const classes = useStyles();
-    const data = props.data?.productShowcase;
-    const attributes = props.data?.attributes;
+    const [products, setProducts] = useState<TPagedList<TProduct> | undefined>();
+    const [attributes, setAttributes] = useState<TAttribute[] | undefined>();
+
+    const getData = async () => {
+        const slug = props.data?.slug;
+        const client = getGraphQLClient();
+        let data;
+        try {
+            data = await client?.query({
+                query: gql`
+                    query pluginProductShowcase($slug: String) {
+                        pluginProductShowcase(slug: $slug) {
+                            pagedMeta {
+                                pageSize
+                            }
+                            elements {
+                                id
+                                slug
+                                name
+                                price
+                                oldPrice
+                                mainImage
+                                rating {
+                                    average
+                                    reviewsNumber
+                                }
+                            }
+                        }
+                    }
+                `,
+                variables: {
+                    slug
+                }
+            });
+            setProducts(data?.data?.pluginProductShowcase);
+        } catch (e: any) {
+            console.error('ProductShowcase::getStaticProps', e, JSON.stringify(e?.result?.errors ?? null), null, 2)
+        }
+
+        try {
+            const attributes: TAttribute[] | undefined = await client?.getAttributes();
+            setAttributes(attributes)
+        } catch (e) {
+            console.error('Product::getStaticProps', e)
+        }
+    }
+
+    useEffect(() => {
+        getData();
+    }, []);
 
     // Try to load component if a Theme has already defined common Product view
     let ProductComp = getCommonComponent(ECommonComponentNames.ProductCard);
@@ -49,7 +96,7 @@ const ProductShowcase = (props: TFrontendPluginProps<ProductShowcaseProps>): JSX
                 style={{ height: '100%' }}
                 id={galleryId.current}
                 gallery={{
-                    slides: data?.elements?.map(product => {
+                    slides: products?.elements?.map(product => {
                         return (
                             <div className={classes.listItem}>
                                 {ProductComp && <ProductComp data={product}
@@ -71,51 +118,9 @@ const ProductShowcase = (props: TFrontendPluginProps<ProductShowcaseProps>): JSX
 
 export const getStaticProps = async (context: TStaticPagePluginContext): Promise<ProductShowcaseProps> => {
     // slug of a product page
-    const client = getGraphQLClient();
     const slug = context?.params?.slug ?? null;
-    let data;
-    try {
-        data = await client?.query({
-            query: gql`
-                query pluginProductShowcase($slug: String) {
-                    pluginProductShowcase(slug: $slug) {
-                        pagedMeta {
-                            pageSize
-                        }
-                        elements {
-                            id
-                            slug
-                            name
-                            price
-                            oldPrice
-                            mainImage
-                            rating {
-                                average
-                                reviewsNumber
-                            }
-                        }
-                    }
-                }
-            `,
-            variables: {
-                slug
-            }
-        });
-
-    } catch (e: any) {
-        console.error('ProductShowcase::getStaticProps', e, JSON.stringify(e?.result?.errors ?? null), null, 2)
-    }
-
-    let attributes: TAttribute[] | undefined;
-    try {
-        attributes = await client?.getAttributes();
-    } catch (e) {
-        console.error('Product::getStaticProps', e)
-    }
-
     return {
-        attributes,
-        productShowcase: data?.data?.pluginProductShowcase,
+        slug: typeof slug === 'string' ? slug : undefined,
     }
 }
 

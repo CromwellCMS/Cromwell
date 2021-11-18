@@ -18,7 +18,7 @@ export default function Breadcrumbs(props: {
                 <StyledBreadcrumb
                     component="a"
                     label="Home"
-                    icon={<HomeIcon fontSize="small" />}
+                    icon={<HomeIcon style={{ width: '17px', height: '17px' }} fontSize="small" />}
                 />
             </Link>
             {props.breadcrumbs?.map(crumb => {

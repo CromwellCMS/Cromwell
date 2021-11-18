@@ -47,7 +47,7 @@ export const getBreadcrumbs = async (product?: TProduct | null):
                     slug
                     id
                 }
-                query Query($id: String!) {
+                query Query($id: Int!) {
                   getProductCategoryById(id: $id) {
                     ...PCategory
                     parent {

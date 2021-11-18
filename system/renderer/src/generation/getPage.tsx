@@ -31,13 +31,30 @@ type PageProps = Partial<TCromwellPageCoreProps> & {
     router: NextRouter;
 }
 
+const DefaultPageWrapperComp = ((props: any) => props.children ?? <></>);
+const DefaultRootComp = ((props: any) => props.children);
+
 export const getPage = (pageName: TDefaultPageName | string, pageExports: TPageExports): TCromwellPage => {
     const PageComponent = pageExports?.default;
     if (!PageComponent) throw new Error('getPage !PageComponent');
     if (!isValidElementType(PageComponent)) throw new Error('getPage PageComponent !isValidElementType');
 
     patchDocument();
-    if (pageName === '_app') return PageComponent;
+
+    if (pageName === '_app') {
+        return (props: PageProps) => {
+            const RootComp: React.ComponentType = getStoreItem('rendererComponents')?.root ?? DefaultRootComp;
+            return (
+                <BlockStoreProvider value={{ instances: {} }}>
+                    <RootComp>
+                        <CContainer id={pageRootContainerId} isConstant={true}>
+                            <PageComponent {...props} />
+                        </CContainer>
+                    </RootComp >
+                </BlockStoreProvider>
+            )
+        }
+    }
 
     const pageComp = (props: PageProps): JSX.Element => {
         const { plugins, pageConfig, themeCustomConfig,
@@ -98,8 +115,6 @@ export const getPage = (pageName: TDefaultPageName | string, pageExports: TPageE
             }
         }
 
-
-
         if (!isServer()) {
             let pageDefaultName: TDefaultPageName | undefined;
             if (defaultPages) {
@@ -140,8 +155,7 @@ export const getPage = (pageName: TDefaultPageName | string, pageExports: TPageE
             }
         }
 
-        const RootComp: React.ComponentType = getStoreItem('rendererComponents')?.root ?? ((props: any) => props.children);
-        const PageWrapperComp: React.ComponentType = getStoreItem('rendererComponents')?.pageWrapper ?? ((props: any) => props.children ?? <></>);
+        const PageWrapperComp: React.ComponentType = getStoreItem('rendererComponents')?.pageWrapper ?? DefaultPageWrapperComp;
 
         const content = (
             <>
@@ -153,18 +167,12 @@ export const getPage = (pageName: TDefaultPageName | string, pageExports: TPageE
                         />
                     )}
                 </Head>
-                <RootComp>
-                    <BlockStoreProvider value={{ instances: {} }}>
-                        <CContainer id={pageRootContainerId} isConstant={true}>
-                            <PageWrapperComp>
-                                <PageComponent {...pageCompProps} {...props} />
-                            </PageWrapperComp>
-                            {cmsSettings?.footerHtml && ReactHtmlParser(cmsSettings.footerHtml, { transform: parserTransformBody })}
-                            {themeFooterHtml && ReactHtmlParser(themeFooterHtml, { transform: parserTransformBody })}
-                            {pageConfig?.footerHtml && ReactHtmlParser(pageConfig?.footerHtml, { transform: parserTransformBody })}
-                        </CContainer>
-                    </BlockStoreProvider>
-                </RootComp>
+                <PageWrapperComp>
+                    <PageComponent {...pageCompProps} {...props} />
+                    {cmsSettings?.footerHtml && ReactHtmlParser(cmsSettings.footerHtml, { transform: parserTransformBody })}
+                    {themeFooterHtml && ReactHtmlParser(themeFooterHtml, { transform: parserTransformBody })}
+                    {pageConfig?.footerHtml && ReactHtmlParser(pageConfig?.footerHtml, { transform: parserTransformBody })}
+                </PageWrapperComp>
                 <Head>
                     {themeHeadHtml && ReactHtmlParser(themeHeadHtml, { transform: parserTransformHead })}
                     {cmsSettings?.headHtml && ReactHtmlParser(cmsSettings.headHtml, { transform: parserTransformHead })}
@@ -196,7 +204,14 @@ export const getPage = (pageName: TDefaultPageName | string, pageExports: TPageE
 
     const HocComp = withRouter(pageComp);
 
-    return (props: PageProps) => (<CrwDocumentContext.Consumer>
+    const HocPage = (props: PageProps) => (<CrwDocumentContext.Consumer>
         {value => <HocComp {...props} documentContext={value} />}
-    </CrwDocumentContext.Consumer>)
+    </CrwDocumentContext.Consumer>);
+
+    const properties = Object.getOwnPropertyNames(PageComponent);
+    for (const prop of properties) {
+        if (!['length', 'name'].includes(prop))
+            HocPage[prop] = PageComponent[prop];
+    }
+    return HocPage;
 }

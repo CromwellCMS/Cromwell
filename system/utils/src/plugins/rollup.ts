@@ -43,8 +43,6 @@ import {
     collectPackagesInfo,
     cromwellStoreModulesPath,
     getDepVersion,
-    getGlobalModuleStatusStr,
-    getGlobalModuleStr,
     getNodeModuleVersion,
     globPackages,
     interopDefaultContent,
@@ -696,14 +694,17 @@ const generatePagesMeta = async (pagesMetaInfo: TPagesMetaInfo, buildDir: string
 
             packageJson.cromwell.firstLoadedDependencies = Array.from(new Set(packageJson.cromwell.firstLoadedDependencies));
             let importsStr = `${interopDefaultContent}\n`;
+            importsStr += `
+            import { getModuleImporter } from '@cromwell/core-frontend';
+            const importer = getModuleImporter();\n`;
 
             for (const depName of packageJson.cromwell.firstLoadedDependencies) {
 
                 const strippedDepName = depName.replace(/\W/g, '_') + '_' + getRandStr(4);
                 importsStr += `
                     import * as ${strippedDepName} from '${depName}';
-                    ${getGlobalModuleStr(depName)} = interopDefault(${strippedDepName}, 'default');
-                    ${getGlobalModuleStatusStr(depName)} = 'default';
+                    importer.modules['${depName}'] = interopDefault(${strippedDepName}, 'default');
+                    importer.importStatuses['${depName}'] = 'default';
                 `;
             }
 

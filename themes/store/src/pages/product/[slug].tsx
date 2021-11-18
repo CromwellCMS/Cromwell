@@ -1,17 +1,9 @@
 import { gql } from '@apollo/client';
-import {
-    TAttribute,
-    TCromwellBlock,
-    TCromwellPage,
-    TGetStaticProps,
-    TProduct,
-    TProductCategory,
-    TProductReview,
-} from '@cromwell/core';
+import { TAttribute, TCromwellBlock, TGetStaticProps, TProduct, TProductCategory, TProductReview } from '@cromwell/core';
 import { CContainer, CList, CText, getGraphQLClient, getGraphQLErrorInfo, TCList } from '@cromwell/core-frontend';
 import clsx from 'clsx';
 import { useRouter } from 'next/router';
-import React, { useEffect, useRef } from 'react';
+import React, { ReactElement, useEffect, useRef } from 'react';
 
 import Layout from '../../components/layout/Layout';
 import { Pagination } from '../../components/pagination/Pagination';
@@ -24,6 +16,8 @@ import { getHead } from '../../helpers/getHead';
 import commonStyles from '../../styles/common.module.scss';
 import styles from '../../styles/pages/Product.module.scss';
 
+import type { TPageWithLayout } from '../_app';
+
 export interface ProductProps {
     product?: TProduct | null;
     attributes?: TAttribute[];
@@ -31,7 +25,7 @@ export interface ProductProps {
     notFound?: boolean;
 }
 
-const Product: TCromwellPage<ProductProps> = (props) => {
+const Product: TPageWithLayout<ProductProps> = (props) => {
     const client = getGraphQLClient();
     const { product } = props ?? {};
     const reviewsInst = useRef<TCromwellBlock<TCList> | undefined>();
@@ -51,63 +45,70 @@ const Product: TCromwellPage<ProductProps> = (props) => {
     }
 
     return (
-        <Layout>
+
+        <CContainer className={clsx(commonStyles.content, styles.ProductPage)} id="product-1">
             {getHead({
                 documentContext: props.documentContext,
                 image: product?.mainImage,
                 data: product,
             })}
-            <CContainer className={clsx(commonStyles.content, styles.ProductPage)} id="product-1">
-                {!!props.breadcrumbs?.length && (
-                    <div className={styles.breadcrumbs}>
-                        <Breadcrumbs breadcrumbs={props.breadcrumbs} />
-                    </div>
-                )}
-                <ProductDetails {...props} />
-                <CContainer id="Product_ProductShowcase" >
-                    <CText
-                        id="product_showcase-title"
-                        style={{
-                            margin: '40px 20px 10px 20px',
-                            fontWeight: 600,
-                            fontSize: '26px'
-                        }}
-                    >Featured items</CText>
-                </CContainer>
-                {product?.id && (
-                    <CContainer id="product_reviewsBlock" className={styles.reviewsBlock}>
-                        <h3 className={styles.reviewsBlockTitle}>Customer reviews</h3>
-                        <div className={styles.tab} >
-                            <CList<TProductReview>
-                                id={"ProductPage_ReviewList"}
-                                ListItem={(props) => <ReviewItem data={props.data} key={props.data?.id} />}
-                                usePagination
-                                useShowMoreButton
-                                editorHidden
-                                disableCaching
-                                noDataLabel={'No reviews at the moment. Be the first to leave one!'}
-                                pageSize={10}
-                                blockRef={(block) => reviewsInst.current = block}
-                                loader={async (params) => {
-                                    return client.getFilteredProductReviews({
-                                        pagedParams: params,
-                                        filterParams: {
-                                            productId: product.id,
-                                            approved: true,
-                                        }
-                                    });
-                                }}
-                                elements={{
-                                    pagination: Pagination
-                                }}
-                            />
-                            <ReviewForm productId={product.id} />
-                        </div>
-                    </CContainer>
-                )}
+            {!!props.breadcrumbs?.length && (
+                <div className={styles.breadcrumbs}>
+                    <Breadcrumbs breadcrumbs={props.breadcrumbs} />
+                </div>
+            )}
+            <ProductDetails {...props} />
+            <CContainer id="Product_ProductShowcase" >
+                <CText
+                    id="product_showcase-title"
+                    style={{
+                        margin: '40px 20px 10px 20px',
+                        fontWeight: 600,
+                        fontSize: '26px'
+                    }}
+                >Featured items</CText>
             </CContainer>
-        </Layout>
+            {product?.id && (
+                <CContainer id="product_reviewsBlock" className={styles.reviewsBlock}>
+                    <h3 className={styles.reviewsBlockTitle}>Customer reviews</h3>
+                    <div className={styles.tab} >
+                        <CList<TProductReview>
+                            id={"ProductPage_ReviewList"}
+                            ListItem={(props) => <ReviewItem data={props.data} key={props.data?.id} />}
+                            usePagination
+                            useShowMoreButton
+                            editorHidden
+                            disableCaching
+                            noDataLabel={'No reviews at the moment. Be the first to leave one!'}
+                            pageSize={10}
+                            blockRef={(block) => reviewsInst.current = block}
+                            loader={async (params) => {
+                                return client.getFilteredProductReviews({
+                                    pagedParams: params,
+                                    filterParams: {
+                                        productId: product.id,
+                                        approved: true,
+                                    }
+                                });
+                            }}
+                            elements={{
+                                pagination: Pagination
+                            }}
+                        />
+                        <ReviewForm productId={product.id} />
+                    </div>
+                </CContainer>
+            )}
+        </CContainer>
     );
+}
+
+Product.getLayout = (page: ReactElement) => {
+    return (
+        <Layout>
+            {page}
+        </Layout>
+    )
 }
 
 export default Product;

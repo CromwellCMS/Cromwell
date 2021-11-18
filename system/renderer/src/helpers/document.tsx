@@ -1,9 +1,9 @@
-import { CrwDocumentContextType } from '@cromwell/core';
+import { TNextDocumentContext } from '@cromwell/core';
 import { getModuleImporter } from '@cromwell/core-frontend/dist/helpers/importer';
 import { DocumentContext } from 'next/document';
 import React from 'react';
 
-export const CrwDocumentContext = React.createContext<CrwDocumentContextType>({});
+export const CrwDocumentContext = React.createContext<TNextDocumentContext>({});
 
 export const patchDocument = () => {
     const NextDocument = getModuleImporter()?.modules?.['next/document']?.default;
@@ -22,15 +22,17 @@ export const patchDocument = () => {
         const originalRenderPage = ctx.renderPage;
         ctx.renderPage = () =>
             originalRenderPage({
-                enhanceApp: (App) => (props) => (
-                    <CrwDocumentContext.Provider value={{
-                        ...ctx,
-                        fullUrl,
-                        origin,
-                    }}>
-                        {<App {...props} />}
-                    </CrwDocumentContext.Provider>
-                ),
+                enhanceApp: (App) => (props) => {
+                    return (
+                        <CrwDocumentContext.Provider value={{
+                            ...ctx,
+                            fullUrl,
+                            origin,
+                        }}>
+                            <App {...props} />
+                        </CrwDocumentContext.Provider>
+                    )
+                },
             })
 
         return origFetInitialProps(...args);
