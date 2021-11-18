@@ -1,4 +1,4 @@
-import { TCromwellPage, TGetStaticProps, TPost } from '@cromwell/core';
+import { TGetStaticProps, TPost } from '@cromwell/core';
 import { CContainer, getGraphQLClient, getGraphQLErrorInfo, Link, LoadBox } from '@cromwell/core-frontend';
 import { useRouter } from 'next/router';
 import React from 'react';
@@ -10,70 +10,78 @@ import { getHead } from '../../helpers/getHead';
 import commonStyles from '../../styles/common.module.scss';
 import styles from '../../styles/pages/BlogPost.module.scss';
 
+import type { TPageWithLayout } from '../_app';
+
 interface BlogPostProps {
     post?: TPost | undefined;
     notFound?: boolean;
 }
-const BlogPostPage: TCromwellPage<BlogPostProps> = (props) => {
+
+const BlogPostPage: TPageWithLayout<BlogPostProps> = (props) => {
     const { post } = props;
     const router = useRouter?.();
 
-    if (post) {
-        if (!post.pageTitle || post.pageTitle === '') {
-            post.pageTitle = post.title ?? undefined;
-        }
+    if (post && !post.pageTitle) {
+        // Default meta page title
+        post.pageTitle = post.title;
     }
 
     return (
-        <Layout>
+        <CContainer className={styles.BlogPost} id="post_01">
             {getHead({
                 documentContext: props.documentContext,
                 image: post?.mainImage,
                 data: post,
             })}
-            <CContainer className={styles.BlogPost} id="post_01">
-                <CContainer className={commonStyles.content} id="post_02">
-                    {post?.mainImage && (
-                        <img className={styles.mainImage} src={post.mainImage} />
-                    )}
-                </CContainer>
-                <CContainer className={styles.postContent} id="post_03">
-                    {(!post && router && router.isFallback) && (
-                        <LoadBox />
-                    )}
-                    {(!post && !(router && router.isFallback)) && (
-                        <div className={styles.notFound}>
-                            <h3>Post not found</h3>
-                        </div>
-                    )}
-                    {post?.title && (
-                        <h1 className={styles.postTitle}>{post?.title}</h1>
-                    )}
-                    {post?.tags && (
-                        <div className={postStyles.tagsBlock}>
-                            {post?.tags?.map(tag => {
-                                return (
-                                    <Link href={`/tag/${tag.slug}`} key={tag.id}>
-                                        <a className={postStyles.tag}>{tag?.name}</a>
-                                    </Link>
-                                )
-                            })}
-                        </div>
-                    )}
-                    {post && (
-                        <div className={styles.postInfo}>
-                            <PostInfo data={post} />
-                        </div>
-                    )}
-                    {post?.content && (
-                        <div id="text-editor" dangerouslySetInnerHTML={{
-                            __html: post?.content
-                        }}></div>
-                    )}
-                </CContainer>
+            <CContainer className={commonStyles.content} id="post_02">
+                {post?.mainImage && (
+                    <img className={styles.mainImage} src={post.mainImage} />
+                )}
             </CContainer>
-        </Layout>
+            <CContainer className={styles.postContent} id="post_03">
+                {(!post && router && router.isFallback) && (
+                    <LoadBox />
+                )}
+                {(!post && !(router && router.isFallback)) && (
+                    <div className={styles.notFound}>
+                        <h3>Post not found</h3>
+                    </div>
+                )}
+                {post?.title && (
+                    <h1 className={styles.postTitle}>{post?.title}</h1>
+                )}
+                {post?.tags && (
+                    <div className={postStyles.tagsBlock}>
+                        {post?.tags?.map(tag => {
+                            return (
+                                <Link href={`/tag/${tag.slug}`} key={tag.id}>
+                                    <a className={postStyles.tag}>{tag?.name}</a>
+                                </Link>
+                            )
+                        })}
+                    </div>
+                )}
+                {post && (
+                    <div className={styles.postInfo}>
+                        <PostInfo data={post} />
+                    </div>
+                )}
+                {post?.content && (
+                    <div id="text-editor" dangerouslySetInnerHTML={{
+                        __html: post?.content
+                    }}></div>
+                )}
+            </CContainer>
+        </CContainer>
     );
+}
+
+BlogPostPage.getLayout = (page) => {
+    return (
+        <Layout>
+            {page}
+        </Layout >
+    )
 }
 
 export default BlogPostPage;

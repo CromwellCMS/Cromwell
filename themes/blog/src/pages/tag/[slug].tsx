@@ -1,13 +1,4 @@
-import {
-    getBlockInstance,
-    TCromwellPage,
-    TGetStaticProps,
-    TPagedList,
-    TPagedParams,
-    TPost,
-    TPostFilter,
-    TTag,
-} from '@cromwell/core';
+import { getBlockInstance, TGetStaticProps, TPagedList, TPagedParams, TPost, TPostFilter, TTag } from '@cromwell/core';
 import { CContainer, CList, getGraphQLClient, getGraphQLErrorInfo, LoadBox, TCList } from '@cromwell/core-frontend';
 import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import { useRouter } from 'next/router';
@@ -22,17 +13,21 @@ import { handleGetFilteredPosts } from '../../helpers/getPosts';
 import commonStyles from '../../styles/common.module.scss';
 import styles from '../../styles/pages/Blog.module.scss';
 
+import type { TPageWithLayout } from '../_app';
 
-interface BlogProps {
+
+interface TagPageProps {
     posts?: TPagedList<TPost>;
     tag?: TTag;
     notFound?: boolean;
 }
-const TagPage: TCromwellPage<BlogProps> = (props) => {
+
+const TagPage: TPageWithLayout<TagPageProps> = (props) => {
     const filterInput = useRef<TPostFilter>({});
     const listId = 'Blog_list_01';
     const publishSort = useRef<"ASC" | "DESC">('DESC');
     const router = useRouter?.();
+    const tag = props?.tag;
 
     const resetList = () => {
         const list = getBlockInstance<TCList>(listId)?.getContentInstance();
@@ -43,8 +38,8 @@ const TagPage: TCromwellPage<BlogProps> = (props) => {
     const handleGetPosts = async (params: TPagedParams<TPost>): Promise<TPagedList<TPost> | undefined> => {
         params.orderBy = 'publishDate';
         params.order = publishSort.current;
-        if (props?.tag?.id) {
-            filterInput.current.tagIds = [props.tag.id];
+        if (tag?.id) {
+            filterInput.current.tagIds = [tag.id];
             return handleGetFilteredPosts(params, filterInput.current);
         } return { elements: [] }
     }
@@ -55,82 +50,87 @@ const TagPage: TCromwellPage<BlogProps> = (props) => {
         resetList();
     }
 
-    if (props?.tag) {
-        if (!props.tag.pageTitle || props.tag.pageTitle === '') {
-            props.tag.pageTitle = props.tag.name;
-        }
+    if (tag && !tag.pageTitle) {
+        // Default meta page title
+        tag.pageTitle = tag.name;
     }
 
     return (
-        <Layout>
+        <CContainer className={commonStyles.content} id="tag_01">
             {getHead({
                 documentContext: props.documentContext,
                 image: props?.tag?.image,
                 data: props?.tag,
             })}
-            <CContainer className={commonStyles.content} id="tag_01">
-                <CContainer className={styles.filter} id="tag_02">
-                    <div>
-                        <h1 className={styles.title}>{props.tag?.name ?? ''}</h1>
-                    </div>
-                    <FormControl className={styles.filterItem}>
-                        <InputLabel className={styles.sortLabel}>Sort</InputLabel>
-                        <Select
-                            style={{ width: '100px' }}
-                            onChange={handleChangeSort}
-                            variant="standard"
-                            defaultValue='Newest'
-                        >
-                            {['Newest', 'Oldest'].map(sort => (
-                                <MenuItem value={sort} key={sort}>{sort}</MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-                </CContainer>
-                <CContainer style={{ marginBottom: '20px' }} id="tag_03">
-                    {(router?.isFallback) ? (
-                        <LoadBox />
-                    ) : (
-                        <>
-                            <CList<TPost>
-                                id={listId}
-                                ListItem={(props) => (
-                                    <div className={styles.postWrapper}>
-                                        <PostCard data={props.data} key={props.data?.id} />
-                                    </div>
-                                )}
-                                usePagination
-                                useShowMoreButton
-                                useQueryPagination
-                                disableCaching
-                                pageSize={20}
-                                scrollContainerSelector={`.${layoutStyles.Layout}`}
-                                firstBatch={props.posts}
-                                loader={handleGetPosts}
-                                cssClasses={{
-                                    page: styles.postList
-                                }}
-                                elements={{
-                                    pagination: Pagination
-                                }}
-                            />
-                            {props.tag?.description && (
-                                <div
-                                    className={styles.description}
-                                    dangerouslySetInnerHTML={{ __html: props.tag.description }}
-                                ></div>
-                            )}
-                        </>
-                    )}
-                </CContainer>
+            <CContainer className={styles.filter} id="tag_02">
+                <div>
+                    <h1 className={styles.title}>{tag?.name ?? ''}</h1>
+                </div>
+                <FormControl className={styles.filterItem}>
+                    <InputLabel className={styles.sortLabel}>Sort</InputLabel>
+                    <Select
+                        style={{ width: '100px' }}
+                        onChange={handleChangeSort}
+                        variant="standard"
+                        defaultValue='Newest'
+                    >
+                        {['Newest', 'Oldest'].map(sort => (
+                            <MenuItem value={sort} key={sort}>{sort}</MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
             </CContainer>
-        </Layout>
+            <CContainer style={{ marginBottom: '20px' }} id="tag_03">
+                {(router?.isFallback) ? (
+                    <LoadBox />
+                ) : (
+                    <>
+                        <CList<TPost>
+                            id={listId}
+                            ListItem={(props) => (
+                                <div className={styles.postWrapper}>
+                                    <PostCard data={props.data} key={props.data?.id} />
+                                </div>
+                            )}
+                            usePagination
+                            useShowMoreButton
+                            useQueryPagination
+                            disableCaching
+                            pageSize={20}
+                            scrollContainerSelector={`.${layoutStyles.Layout}`}
+                            firstBatch={props.posts}
+                            loader={handleGetPosts}
+                            cssClasses={{
+                                page: styles.postList
+                            }}
+                            elements={{
+                                pagination: Pagination
+                            }}
+                        />
+                        {tag?.description && (
+                            <div
+                                className={styles.description}
+                                dangerouslySetInnerHTML={{ __html: tag.description }}
+                            ></div>
+                        )}
+                    </>
+                )}
+            </CContainer>
+        </CContainer>
     );
+}
+
+TagPage.getLayout = (page) => {
+    return (
+        <Layout>
+            {page}
+        </Layout >
+    )
 }
 
 export default TagPage;
 
-export const getStaticProps: TGetStaticProps = async (context): Promise<BlogProps> => {
+export const getStaticProps: TGetStaticProps = async (context): Promise<TagPageProps> => {
     const slug = context?.params?.slug ?? null;
     const client = getGraphQLClient();
 

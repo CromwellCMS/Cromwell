@@ -4,7 +4,6 @@ import {
     onStoreChange,
     removeOnStoreChange,
     setStoreItem,
-    TCromwellPage,
     TOrder,
     TPaymentSession,
     TStoreListItem,
@@ -34,9 +33,11 @@ import { useForceUpdate } from '../helpers/forceUpdate';
 import commonStyles from '../styles/common.module.scss';
 import styles from '../styles/pages/Checkout.module.scss';
 
+import type { TPageWithLayout } from './_app';
+
 type PaymentStatus = 'cancelled' | 'success';
 
-const CheckoutPage: TCromwellPage = () => {
+const CheckoutPage: TPageWithLayout = () => {
     if (!isServer()) {
         // For pop-up payment window after transaction end and redirect with query param
         const parsedUrl = queryString.parseUrl(window.location.href);
@@ -247,16 +248,14 @@ const CheckoutPage: TCromwellPage = () => {
 
     const wrapContent = (content: JSX.Element | JSX.Element[]) => {
         return (
-            <Layout>
-                <CContainer className={commonStyles.content} id="checkout-1">
-                    <CContainer className={styles.CheckoutPage} style={{ filter: isLoading ? 'blur(2px)' : 'none' }} id="checkout-2">
-                        {isLoading && (
-                            <div className={styles.loadBox}><LoadBox /></div>
-                        )}
-                        {content}
-                    </CContainer>
+            <CContainer className={commonStyles.content} id="checkout-1">
+                <CContainer className={styles.CheckoutPage} style={{ filter: isLoading ? 'blur(2px)' : 'none' }} id="checkout-2">
+                    {isLoading && (
+                        <div className={styles.loadBox}><LoadBox /></div>
+                    )}
+                    {content}
                 </CContainer>
-            </Layout>
+            </CContainer>
         )
     }
 
@@ -430,6 +429,14 @@ const CheckoutPage: TCromwellPage = () => {
             <CartProductList collapsedByDefault={isMobile} cart={orderTotal?.cart as TStoreListItem[]} />
         </CContainer>
     </>);
+}
+
+CheckoutPage.getLayout = (page) => {
+    return (
+        <Layout>
+            {page}
+        </Layout >
+    )
 }
 
 export default CheckoutPage;

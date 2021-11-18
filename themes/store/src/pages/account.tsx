@@ -19,8 +19,10 @@ import { toast } from '../components/toast/toast';
 import commonStyles from '../styles/common.module.scss';
 import styles from '../styles/pages/account.module.scss';
 
+import type { TPageWithLayout } from './_app';
 
-const Account = () => {
+
+const Account: TPageWithLayout = () => {
     const [userData, setUserData] = useState<TUser | undefined | null>(null);
     const [orders, setOrders] = useState<TOrder[] | undefined | null>(null);
     const [loading, setLoading] = useState(false);
@@ -219,42 +221,48 @@ const Account = () => {
     );
 
     return (
-        <Layout>
-            <CContainer className={clsx(commonStyles.content, styles.AccountPage)} id="account-2">
-                {loading && (
-                    <LoadBox />
-                )}
-                {(!loading && userData) && loggedContent}
-                {(!loading && !userData) && (
-                    <CContainer style={{ padding: '20px 15px' }} id="account-3">
-                        <CText className={styles.subheader} id="account-4" element="h2">Log in</CText>
-                        <CContainer className={styles.signInBlock} id="account-5">
-                            <Button variant="outlined"
-                                color="primary"
-                                size="small"
-                                className={styles.singinBtn}
-                                onClick={handleSignInOpen}>
-                                Sign in</Button>
-                            <Button variant="outlined"
-                                color="primary"
-                                size="small"
-                                className={styles.singinBtn}
-                                onClick={handleSignUpOpen}>
-                                Sign up</Button>
-                            {singInOpen && (
-                                <SignInModal
-                                    type={singInType}
-                                    open={singInOpen}
-                                    onClose={() => setSingInOpen(false)}
-                                    onSignIn={handleSignIn}
-                                />
-                            )}
-                        </CContainer>
+        <CContainer className={clsx(commonStyles.content, styles.AccountPage)} id="account-2">
+            {loading && (
+                <LoadBox />
+            )}
+            {(!loading && userData) && loggedContent}
+            {(!loading && !userData) && (
+                <CContainer style={{ padding: '20px 15px' }} id="account-3">
+                    <CText className={styles.subheader} id="account-4" element="h2">Log in</CText>
+                    <CContainer className={styles.signInBlock} id="account-5">
+                        <Button variant="outlined"
+                            color="primary"
+                            size="small"
+                            className={styles.singinBtn}
+                            onClick={handleSignInOpen}>
+                            Sign in</Button>
+                        <Button variant="outlined"
+                            color="primary"
+                            size="small"
+                            className={styles.singinBtn}
+                            onClick={handleSignUpOpen}>
+                            Sign up</Button>
+                        {singInOpen && (
+                            <SignInModal
+                                type={singInType}
+                                open={singInOpen}
+                                onClose={() => setSingInOpen(false)}
+                                onSignIn={handleSignIn}
+                            />
+                        )}
                     </CContainer>
-                )}
-            </CContainer>
-        </Layout>
+                </CContainer>
+            )}
+        </CContainer>
     );
+}
+
+Account.getLayout = (page) => {
+    return (
+        <Layout>
+            {page}
+        </Layout >
+    )
 }
 
 export default Account;

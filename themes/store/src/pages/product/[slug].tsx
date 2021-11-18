@@ -38,10 +38,9 @@ const Product: TPageWithLayout<ProductProps> = (props) => {
         }
     }, [router?.asPath]);
 
-    if (product) {
-        if (!product.pageTitle || product.pageTitle === '') {
-            product.pageTitle = product.name;
-        }
+    if (product && !product.pageTitle) {
+        // Default meta page title
+        product.pageTitle = product.name;
     }
 
     return (

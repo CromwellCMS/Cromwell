@@ -43,10 +43,9 @@ const ProductCategory: TPageWithLayout<CategoryProps> = (props) => {
         prevPath.current = router?.asPath;
     }, [router?.asPath]);
 
-    if (category) {
-        if (!category.pageTitle || category.pageTitle === '') {
-            category.pageTitle = category.name;
-        }
+    if (category && !category.pageTitle) {
+        // Default meta page title
+        category.pageTitle = category.name;
     }
 
     return (
