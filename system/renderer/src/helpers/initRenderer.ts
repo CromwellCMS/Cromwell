@@ -25,7 +25,7 @@ const checkBackendModules = () => {
     pathResolve = nodeRequire('path').resolve;
 }
 
-export const checkCMSConfig = (): void => {
+export const initRenderer = (): void => {
     if (!isServer()) return undefined;
     checkBackendModules();
 

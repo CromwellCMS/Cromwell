@@ -1,16 +1,25 @@
-import { isServer, TCromwellPage } from '@cromwell/core';
+import '@cromwell/core-frontend/dist/_index.css';
+import '@cromwell/renderer/build/editor-styles.css';
+import 'react-toastify/dist/ReactToastify.css';
+import '../styles/global.scss';
+
+import { isServer, TCromwellPage, TPageCmsProps } from '@cromwell/core';
+import { withCromwellApp } from '@cromwell/renderer';
+import { ThemeProvider } from '@mui/material';
 import { AppProps } from 'next/app';
 import React from 'react';
-import { ReactElement, ReactNode } from 'react';
+import { ReactElement } from 'react';
 import ReactDOM from 'react-dom';
 import { ToastContainer } from 'react-toastify';
 
+import { getTheme } from '../helpers/theme';
+
 export type TPageWithLayout<TProps = any> = TCromwellPage<TProps> & {
-    getLayout?: (page: ReactElement) => ReactNode;
+    getLayout?: (page: ReactElement) => JSX.Element;
 }
 
 type AppPropsWithLayout = AppProps & {
-    Component: TPageWithLayout;
+    Component: TCromwellPage & { originalPage: TPageWithLayout };
 }
 
 function App(props: AppPropsWithLayout) {
@@ -20,13 +29,17 @@ function App(props: AppPropsWithLayout) {
     }, []);
 
     const Component = props.Component;
-    const getLayout = Component.getLayout ?? ((page) => page);
+    const getLayout = Component.originalPage.getLayout ?? ((page) => page);
+    const cmsProps: TPageCmsProps | undefined = props.pageProps?.cmsProps;
+    const theme = getTheme(cmsProps?.palette);
 
     return getLayout(<>
-        {Component && <Component {...(props.pageProps ?? {})} />}
-        {!isServer() && document?.body && ReactDOM.createPortal(
-            <div className={"global-toast"} ><ToastContainer /></div>, document.body)}
+        <ThemeProvider theme={theme}>
+            {Component && <Component {...(props.pageProps ?? {})} />}
+            {!isServer() && document?.body && ReactDOM.createPortal(
+                <div className={"global-toast"} ><ToastContainer /></div>, document.body)}
+        </ThemeProvider>
     </>);
 }
 
-export default App;
+export default withCromwellApp(App);

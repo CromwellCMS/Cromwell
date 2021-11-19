@@ -28,9 +28,12 @@ GenericPage.getLayout = (page) => {
 
 export default GenericPage;
 
-export const getStaticProps: TGetStaticProps = async (context): Promise<any> => {
+export const getStaticProps: TGetStaticProps = async (context) => {
     if (!context.pageConfig?.id || !context.pageConfig.route) return {
         notFound: true,
+    }
+    return {
+        props: {}
     }
 }
 

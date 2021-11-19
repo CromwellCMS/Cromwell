@@ -1,4 +1,3 @@
-export { createGetStaticProps } from './generation/createGetStaticProps';
-export { createGetStaticPaths } from './generation/createGetStaticPaths';
-export { getPage } from './generation/getPage';
-export { checkCMSConfig, fsRequire } from './helpers/checkCMSConfig';
+export { initRenderer, fsRequire } from './helpers/initRenderer';
+export { withCromwellApp } from './wrappers/appWrapper';
+import './generated-imports';

@@ -52,9 +52,6 @@ export const buildTask = async (watch?: boolean, port?: string) => {
     }
 
     if (moduleInfo.type === 'theme') {
-
-        await checkModules();
-
         // Clean old build
         const rendererTempDir = getRendererTempDevDir();
 
@@ -62,17 +59,6 @@ export const buildTask = async (watch?: boolean, port?: string) => {
             await fs.remove(rendererTempDir);
             await sleep(0.1);
         }
-
-        console.log(`Starting to pre-build ${moduleInfo.type}...`);
-        const rollupBuildSuccess = await rollupBuild(moduleInfo, moduleConfig, watch);
-
-        if (!rollupBuildSuccess) {
-            console.error(`Failed to pre-build ${moduleInfo.type}`);
-            return false;
-        }
-        console.log(`Successfully pre-built ${moduleInfo.type}`);
-
-        console.log('Running Next.js build...');
 
         if (watch) {
             await rendererStartWatchDev(moduleInfo.name, port);

@@ -9,6 +9,7 @@ import layoutStyles from '../components/layout/Layout.module.scss';
 import { Pagination } from '../components/pagination/Pagination';
 import { PostCard } from '../components/postCard/PostCard';
 import { handleGetFilteredPosts } from '../helpers/getPosts';
+import { removeUndefined } from '../helpers/removeUndefined';
 import commonStyles from '../styles/common.module.scss';
 import styles from '../styles/pages/Blog.module.scss';
 
@@ -145,7 +146,7 @@ SearchPage.getLayout = (page) => {
 
 export default SearchPage;
 
-export const getStaticProps: TGetStaticProps = async (): Promise<SearchPageProps> => {
+export const getStaticProps: TGetStaticProps<SearchPageProps> = async () => {
     const client = getGraphQLClient();
 
     let posts: TPagedList<TPost> | undefined;
@@ -162,8 +163,10 @@ export const getStaticProps: TGetStaticProps = async (): Promise<SearchPageProps
         console.error('SearchPage::getStaticProps', getGraphQLErrorInfo(e))
     }
     return {
-        posts,
-        tags
+        props: removeUndefined({
+            posts,
+            tags
+        })
     }
 }
 

@@ -8,6 +8,7 @@ import { handleGetFilteredPosts } from '../helpers/getPosts';
 import commonStyles from '../styles/common.module.scss';
 import blogStyles from '../styles/pages/Blog.module.scss';
 import styles from '../styles/pages/Index.module.scss';
+import { removeUndefined } from '../helpers/removeUndefined';
 
 import type { TPageWithLayout } from './_app';
 
@@ -85,7 +86,7 @@ IndexPage.getLayout = (page) => {
 
 export default IndexPage;
 
-export const getStaticProps: TGetStaticProps = async (): Promise<IndexPageProps> => {
+export const getStaticProps: TGetStaticProps<IndexPageProps> = async () => {
     let posts: TPagedList<TPost> | undefined;
     try {
         posts = await handleGetFilteredPosts({ pageSize: 20, order: 'DESC', orderBy: 'publishDate' });
@@ -107,7 +108,9 @@ export const getStaticProps: TGetStaticProps = async (): Promise<IndexPageProps>
     }
 
     return {
-        posts,
-        featuredPosts,
+        props: removeUndefined({
+            posts,
+            featuredPosts,
+        })
     }
 }

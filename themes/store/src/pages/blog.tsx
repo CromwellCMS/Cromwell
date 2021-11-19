@@ -8,6 +8,7 @@ import layoutStyles from '../components/layout/Layout.module.scss';
 import { Pagination } from '../components/pagination/Pagination';
 import { PostCard } from '../components/postCard/PostCard';
 import { handleGetFilteredPosts } from '../helpers/getPosts';
+import { removeUndefined } from '../helpers/removeUndefined';
 import commonStyles from '../styles/common.module.scss';
 import styles from '../styles/pages/Blog.module.scss';
 
@@ -19,7 +20,6 @@ interface BlogProps {
 }
 
 const BlogPage: TPageWithLayout<BlogProps> = (props) => {
-    props.cmsSettings
     const filterInput = useRef<TPostFilter>({});
     const listId = 'Blog_list_01';
     const publishSort = useRef<"ASC" | "DESC">('DESC');
@@ -139,7 +139,7 @@ BlogPage.getLayout = (page) => {
 
 export default BlogPage;
 
-export const getStaticProps: TGetStaticProps = async (): Promise<BlogProps> => {
+export const getStaticProps: TGetStaticProps<BlogProps> = async () => {
     const client = getGraphQLClient();
 
     let posts: TPagedList<TPost> | undefined;
@@ -156,8 +156,10 @@ export const getStaticProps: TGetStaticProps = async (): Promise<BlogProps> => {
         console.error('BlogPage::getStaticProps', getGraphQLErrorInfo(e))
     }
     return {
-        posts,
-        tags
+        props: removeUndefined({
+            posts,
+            tags,
+        })
     }
 }
 

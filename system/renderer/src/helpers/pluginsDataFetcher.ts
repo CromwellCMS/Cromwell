@@ -1,7 +1,7 @@
 import { TStaticPageContext, TDefaultPageName, TStaticPagePluginContext } from '@cromwell/core';
 import { getModuleImporter } from '@cromwell/core-frontend';
 
-import { fsRequire, getPluginCjsPath } from '../helpers/checkCMSConfig';
+import { fsRequire, getPluginCjsPath } from './initRenderer';
 
 export type TPluginsSettings = Record<string, {
     pluginName: string;

@@ -13,7 +13,7 @@ export const getThemeStaticProps = async (pageName: TDefaultPageName | string,
     let childStaticProps = {}
     if (pageGetStaticProps) {
         try {
-            childStaticProps = await pageGetStaticProps(context);
+            childStaticProps = (await pageGetStaticProps(context)) ?? {};
         } catch (e) {
             console.error('[Error] getThemeStaticProps: failed to get StaticProps of page: ' + pageName, e);
         }

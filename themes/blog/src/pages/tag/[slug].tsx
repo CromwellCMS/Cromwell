@@ -10,6 +10,7 @@ import { Pagination } from '../../components/pagination/Pagination';
 import { PostCard } from '../../components/postCard/PostCard';
 import { getHead } from '../../helpers/getHead';
 import { handleGetFilteredPosts } from '../../helpers/getPosts';
+import { removeUndefined } from '../../helpers/removeUndefined';
 import commonStyles from '../../styles/common.module.scss';
 import styles from '../../styles/pages/Blog.module.scss';
 
@@ -58,7 +59,7 @@ const TagPage: TPageWithLayout<TagPageProps> = (props) => {
     return (
         <CContainer className={commonStyles.content} id="tag_01">
             {getHead({
-                documentContext: props.documentContext,
+                documentContext: props.cmsProps?.documentContext,
                 image: props?.tag?.image,
                 data: props?.tag,
             })}
@@ -130,7 +131,7 @@ TagPage.getLayout = (page) => {
 
 export default TagPage;
 
-export const getStaticProps: TGetStaticProps = async (context): Promise<TagPageProps> => {
+export const getStaticProps: TGetStaticProps<TagPageProps> = async (context) => {
     const slug = context?.params?.slug ?? null;
     const client = getGraphQLClient();
 
@@ -159,8 +160,10 @@ export const getStaticProps: TGetStaticProps = async (context): Promise<TagPageP
     }
 
     return {
-        posts,
-        tag,
+        props: removeUndefined({
+            posts,
+            tag,
+        })
     }
 }
 

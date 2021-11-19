@@ -199,7 +199,6 @@ export const startServiceByName = async (options: TStartOptions) => {
 
     if (serviceName === 'adminPanel' || serviceName === 'a') {
         const pckg = await getModulePackage('@cromwell/admin-panel')
-        await checkModules(isDevelopment, pckg ? [pckg] : undefined);
         await startAdminPanel(isDevelopment ? 'dev' : 'prod', {
             port: !startAll ? port : undefined,
         });

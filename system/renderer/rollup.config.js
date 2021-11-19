@@ -29,7 +29,10 @@ export default [
                 format: "esm",
             }
         ],
-        external: isExternalForm,
+        external: (ext) => {
+            if (ext === './generated-imports') return true;
+            return isExternalForm(ext)
+        },
         plugins: [
             typescript(typescriptOptions),
             commonjs(),
@@ -55,6 +58,20 @@ export default [
         output: [
             {
                 file: resolve(__dirname, buildDir, 'server.js'),
+                format: "cjs",
+            }
+        ],
+        external: isExternalForm,
+        plugins: [
+            typescript(typescriptOptions),
+            commonjs(),
+        ]
+    },
+    {
+        input: resolve(__dirname, "src/generated-imports.ts"),
+        output: [
+            {
+                file: resolve(__dirname, buildDir, 'generated-imports.js'),
                 format: "cjs",
             }
         ],

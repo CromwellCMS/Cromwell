@@ -1,3 +1,10 @@
+import '@cromwell/core-frontend/dist/_index.css';
+import '@cromwell/renderer/build/editor-styles.css';
+import 'pure-react-carousel/dist/react-carousel.es.css';
+import 'react-image-lightbox/style.css';
+import 'react-toastify/dist/ReactToastify.css';
+import '../styles/global.scss';
+
 import {
     ECommonComponentNames,
     getStoreItem,
@@ -5,22 +12,25 @@ import {
     saveCommonComponent,
     setStoreItem,
     TCromwellPage,
-    TCromwellPageCoreProps,
+    TPageCmsProps,
 } from '@cromwell/core';
 import { getRestApiClient } from '@cromwell/core-frontend';
+import { CacheProvider, EmotionCache } from '@emotion/react';
+import { ThemeProvider } from '@mui/material/styles';
 import { AppProps } from 'next/app';
 import * as React from 'react';
-import { ReactElement, ReactNode } from 'react';
+import { ReactElement } from 'react';
 import ReactDOM from 'react-dom';
 import { ToastContainer } from 'react-toastify';
+import { withCromwellApp } from '@cromwell/renderer';
 
 import { PostCard } from '../components/postCard/PostCard';
 import { ProductCard } from '../components/productCard/ProductCard';
 import { toast } from '../components/toast/toast';
-import { CacheProvider, EmotionCache } from '@emotion/react';
 import { createEmotionCache } from '../helpers/createEmotionCache';
 import { getTheme } from '../helpers/theme';
-import { ThemeProvider } from '@mui/material/styles';
+
+
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
 
@@ -33,11 +43,11 @@ saveCommonComponent(ECommonComponentNames.ProductCard, ProductCard);
 saveCommonComponent(ECommonComponentNames.PostCard, PostCard);
 
 export type TPageWithLayout<TProps = any> = TCromwellPage<TProps> & {
-    getLayout?: (page: ReactElement) => ReactNode
+    getLayout?: (page: ReactElement) => JSX.Element;
 }
 
 type AppPropsWithLayout = AppProps & {
-    Component: TPageWithLayout;
+    Component: TCromwellPage & { originalPage: TPageWithLayout };
     emotionCache?: EmotionCache;
 }
 
@@ -71,11 +81,10 @@ function App(props: AppPropsWithLayout) {
     }
 
     const { Component, emotionCache = clientSideEmotionCache } = props;
-    const pageProps: TCromwellPageCoreProps | undefined = props.pageProps;
+    const getLayout = Component.originalPage.getLayout ?? ((page) => page);
 
-    const getLayout = Component.getLayout ?? ((page) => page);
-    const theme = getTheme(pageProps?.palette);
-    console.log('pageProps?.palette', pageProps?.palette)
+    const cmsProps: TPageCmsProps | undefined = props.pageProps?.cmsProps;
+    const theme = getTheme(cmsProps?.palette);
 
     return getLayout(
         <CacheProvider value={emotionCache}>
@@ -88,5 +97,4 @@ function App(props: AppPropsWithLayout) {
     );
 }
 
-export default App;
-
+export default withCromwellApp(App);

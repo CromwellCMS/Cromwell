@@ -1,30 +1,25 @@
-import { bundledModulesDirName, genericPageName, getRandStr, setStoreItem, sleep, TScriptMetaInfo } from '@cromwell/core';
+import { bundledModulesDirName, getRandStr, setStoreItem, sleep } from '@cromwell/core';
 import { readCMSConfig } from '@cromwell/core-backend/dist/helpers/cms-settings';
 import { getLogger } from '@cromwell/core-backend/dist/helpers/logger';
 import {
-    configFileName,
     getBundledModulesDir,
-    getCmsModuleConfig,
     getCmsModuleInfo,
-    getModulePackage,
     getNodeModuleDir,
     getPublicDir,
-    getRendererBuildDir,
+    getRendererDir,
     getRendererTempDevDir,
     getRendererTempDir,
     getThemeBuildDir,
 } from '@cromwell/core-backend/dist/helpers/paths';
+import { interopDefaultContent } from '@cromwell/utils/build/shared';
 import fs from 'fs-extra';
 import normalizePath from 'normalize-path';
-import { dirname, resolve } from 'path';
+import { join, resolve } from 'path';
 import symlinkDir from 'symlink-dir';
 
+import { defaultGenericPageContent } from './helpers/defaultGenericPage';
 import { jsOperators } from './helpers/helpers';
-import { readThemeExports } from './helpers/readThemeExports';
 
-
-const localThemeBuildDurChunk = 'theme';
-const disableSSR = false;
 const logger = getLogger();
 
 export const generator = async (options: {
@@ -56,258 +51,129 @@ export const generator = async (options: {
 
 const devGenerate = async (themeName: string, options) => {
     const tempDir = getRendererTempDevDir();
-    const tempDirBuild = resolve(tempDir, 'build');
-    const rendererBuildDir = getRendererBuildDir();
-    const themeConfig = await getCmsModuleConfig(themeName);
-    const pagesLocalDir = resolve(tempDir, 'pages');
-    const themeDir = await getNodeModuleDir(themeName);
     const themePackageInfo = await getCmsModuleInfo(themeName);
+    const rendererDir = await getRendererDir();
+    if (!rendererDir) throw new Error('Could not define package @cromwell/renderer directory')
+
 
     await linkFiles(tempDir, themeName, options);
-
-    // Read pages
-    const themeExports = await readThemeExports(themeName);
 
     // Create pages in Nex.js pages dir based on theme's pages
     await fs.ensureDir(tempDir);
     await sleep(0.1);
-    await fs.ensureDir(pagesLocalDir);
+
+    let pagesDir = resolve(process.cwd(), 'pages');
+    if (! await fs.pathExists(pagesDir)) pagesDir = resolve(process.cwd(), 'src/pages');
+    if (! await fs.pathExists(pagesDir)) throw new Error('Pages directory not found');
+
 
     // Add pages/[slug] page for dynamic pages creation in Admin Panel
     // if it was not created by theme
-    const hasGenericPage = themeExports.pagesInfo.some(page => page.name === genericPageName)
-    if (!hasGenericPage) {
-        themeExports.pagesInfo.push({
-            name: genericPageName,
-            compName: 'pages__slug_',
-        });
+    const rootPages = await fs.readdir(pagesDir);
+    const genericPagePath = join(pagesDir, 'pages/[slug].js');
+    if (!rootPages.includes('pages') && ! await fs.pathExists(genericPagePath)) {
+        await fs.outputFile(genericPagePath, defaultGenericPageContent);
     }
 
-    for (const pageInfo of themeExports.pagesInfo) {
-        const cromwellStoreModulesPath = `importer.modules`;
-        const cromwellStoreStatusesPath = `importer.importStatuses`;
+    // Make all exports of Frontend dependencies to be available to load 
+    // in the browser
+    let fdImports = `
+    import { getModuleImporter } from '@cromwell/core-frontend';
+    import { isServer } from '@cromwell/core';
 
-        const defaultImported = ['react', 'react-dom', 'next/dynamic', 'next/link', 'next/head', '@cromwell/core',
-            '@cromwell/core-frontend', 'react-is', 'next/document', 'next/router',
-            'next/image', 'next/amp', 'react-html-parser'
-        ]
+    const importer = getModuleImporter();
 
-        const pageRelativePath: string | undefined = pageInfo.path ? normalizePath(pageInfo.path).replace(
-            normalizePath(themeExports.themeBuildDir), localThemeBuildDurChunk) : undefined;
+    const checkDidDefaultImport = (name) => importer.importStatuses[name] === 'default';
 
-        let depsBundlePath;
-        if (pageInfo.depsBundlePath) {
-            depsBundlePath = normalizePath(pageInfo.depsBundlePath).replace(
-                normalizePath(themeExports.themeBuildDir), localThemeBuildDurChunk);
+    ${interopDefaultContent}\n`;
+
+
+    const defaultImported = ['react', 'react-dom', 'next/dynamic', '@cromwell/core', 'react-is',
+        'next/link', 'next/head', 'next/document', 'next/router'];
+    // Make imports for standard always-packaged externals.
+    defaultImported.forEach(depName => {
+        const pckgHash = getRandStr(4);
+        const pckgNameStripped = depName.replace(/\W/g, '_');
+
+        fdImports += `\nimport * as ${pckgNameStripped}_${pckgHash} from '${depName}';`;
+        fdImports += `\nimporter.modules['${depName}'] = interopDefault(${pckgNameStripped}_${pckgHash}, 'default');`;
+        fdImports += `\nimporter.importStatuses['${depName}'] = 'default';`;
+    });
+
+    const defaultFd = ['@cromwell/core-frontend', 'next/image', 'next/amp', 'react-html-parser'];
+    const frontendDependencies = themePackageInfo?.frontendDependencies ?? [];
+    const firstLoadedDependencies = themePackageInfo?.firstLoadedDependencies ?? [];
+
+    for (const fd of defaultFd) {
+        if (!frontendDependencies.includes(fd)) frontendDependencies.push(fd);
+    }
+    for (const fd of firstLoadedDependencies) {
+        if (!frontendDependencies.includes(fd)) frontendDependencies.push(fd);
+    }
+
+    const processedFds: string[] = []
+
+    for (const dependency of frontendDependencies) {
+        const pckgName = typeof dependency === 'object' ? dependency.name : dependency;
+        if (processedFds.includes(pckgName)) return;
+        processedFds.push(pckgName);
+
+        const pckgNameStripped = pckgName.replace(/\W/g, '_');
+        const pckgHash = getRandStr(4);
+
+        if (firstLoadedDependencies.includes(pckgName)) {
+            // Bundle entirely
+            fdImports += `\nimport * as ${pckgNameStripped}_${pckgHash} from '${pckgName}';`;
+            fdImports += `\nimporter.modules['${pckgName}'] = interopDefault(${pckgNameStripped}_${pckgHash}, 'default');`;
+            fdImports += `\nimporter.importStatuses['${pckgName}'] = 'default';`;
+            continue;
         }
 
-        // Expose used dependencies as Frontend dependencies based on metaInfo file 
-        // so that they will be available to re-use by Plugins.
-        const metaInfo: TScriptMetaInfo = pageInfo.metaInfoPath ? fs.readJSONSync(pageInfo.metaInfoPath) : {};
-        const externals = metaInfo?.externalDependencies ?? {};
+        fdImports += `
+        if (isServer()) {
+            const ${pckgNameStripped}_${pckgHash}_node = require('${pckgName}');
+            importer.modules['${pckgName}'] = interopDefault(${pckgNameStripped}_${pckgHash}_node, 'default');
+            importer.importStatuses['${pckgName}'] = 'default';
+        }`
 
-        let importExtStr = '';
-
-        Object.keys(externals).forEach(depName => {
-            importExtStr += '\n';
-            const pckgChunks = depName.split('@');
-            pckgChunks.pop(); // pckgVersion
-            const pckgName = pckgChunks.join('@');
-
-            if (defaultImported.includes(pckgName)) return;
-            if (!themePackageInfo?.frontendDependencies?.length) return;
-            if (!themePackageInfo.frontendDependencies.includes(pckgName)) return;
-            if (themePackageInfo.bundledDependencies?.includes(pckgName)) return;
-            if (themePackageInfo.firstLoadedDependencies?.includes(pckgName)) return;
-
-            const pckgHash = getRandStr(4);
-            const pckgNameStripped = pckgName.replace(/\W/g, '_');
-
-            if (externals[depName].includes('default')) {
-                // Simple case. Import external entirely, using `import * as lib from 'lib';`
-                importExtStr += `\nimport * as ${pckgNameStripped}_${pckgHash} from '${pckgName}';`;
-                importExtStr += `\n${cromwellStoreModulesPath}['${pckgName}'] = ${pckgNameStripped}_${pckgHash};`;
-                importExtStr += `\n${cromwellStoreStatusesPath}['${pckgName}'] = 'default';`;
-            } else {
-                // Make used imports be instantly available inside a Frontend dependency
-                let namedImports = '';
-                externals[depName].forEach(named => {
-                    namedImports += `${named} as ${named}_${pckgHash}, `;
-                });
-                importExtStr += `\nimport { ${namedImports} } from '${pckgName}';`;
-                importExtStr += `\n${cromwellStoreModulesPath}['${pckgName}'] = {};`;
-                externals[depName].forEach(ext => {
-                    importExtStr += `\n${cromwellStoreModulesPath}['${pckgName}']['${ext}'] = ${ext}_${pckgHash};`;
-                });
-
-                // Make all other exports of external to be available to load additionally into the Frontend dependency
-                let allExports: string[] = [];
-                try {
-                    const pckg = require(pckgName);
-                    allExports = Object.keys(pckg);
-                } catch (error) {
-                    console.error(`Failed to require() package: ${pckgName} during generation of Frontend dependencies`, error);
-                }
-                importExtStr += `\nif (!importer.imports['${pckgName}']) importer.imports['${pckgName}'] = {};\n`;
-                allExports.forEach(otherExport => {
-                    if (jsOperators.includes(otherExport)) return;
-                    // Generate chunk
-                    const otherExportStripped = otherExport.replace(/\W/g, '_') + getRandStr(5);
-                    const exportChunkName = `${pckgNameStripped}_${otherExport.replace(/\W/g, '_')}.js`;
-                    const chunkPath = resolve(tempDir, 'chunks', exportChunkName);
-                    fs.outputFileSync(chunkPath, `import {${otherExport}} from '${pckgName}'; export default ${otherExport};`)
-
-                    importExtStr += `\nconst load_${otherExportStripped} = async () => { \n`;
-                    importExtStr += `   const chunk = await import('${normalizePath(chunkPath)}');\n`;
-                    importExtStr += `   ${cromwellStoreModulesPath}['${pckgName}']['${otherExport}'] = chunk.default || chunk; }`;
-
-                    importExtStr += `\nimporter.imports['${pckgName}']['${otherExport}'] = load_${otherExportStripped};`
-                    importExtStr += `\nimporter.importStatuses['${pckgName}'] = 'ready';`
-                });
-                importExtStr += `\nimporter.imports['${pckgName}']['default'] = async () => { const chunk = await import('${pckgName}'); ${cromwellStoreModulesPath}['${pckgName}']['default'] = chunk.default || chunk; };`
-            }
-        });
-
-
-        let importDefaultStr = '';
-        // Make imports for standard always-packaged externals.
-        defaultImported.forEach(depName => {
-            const pckgHash = getRandStr(4);
-            const pckgNameStripped = depName.replace(/\W/g, '_');
-
-            importDefaultStr += `\nimport * as ${pckgNameStripped}_${pckgHash} from '${depName}';`;
-            importDefaultStr += `\n${cromwellStoreModulesPath}['${depName}'] = ${pckgNameStripped}_${pckgHash};`;
-            importDefaultStr += `\n${cromwellStoreStatusesPath}['${depName}'] = 'default';`;
-        });
-
-        // Add global CSS into _app
-        let globalCssImports = '';
-        if (pageInfo.name === '_app' && themeConfig?.globalCss && pageRelativePath &&
-            themeConfig.globalCss?.length > 0) {
-            themeConfig.globalCss.forEach(css => {
-                if (css.startsWith('.')) {
-                    css = normalizePath(resolve(tempDir, dirname(pageRelativePath), css)).replace(
-                        normalizePath(tempDir) + '/', '');
-                }
-                globalCssImports += `import '${css}';\n`
-            })
-        }
-
-        const pageImports = `
-         import { getModuleImporter } from '@cromwell/core-frontend';
-         import { checkCMSConfig } from 'build/renderer';
-         ${pageInfo.name !== '_document' ? `
-         import { getPage, createGetStaticPaths, createGetStaticProps } from 'build/renderer';
-         ` : ''}
- 
-         checkCMSConfig();
-         
-         const importer = getModuleImporter();
- 
-         ${importDefaultStr}
-         ${importExtStr}
-         `;
-
-        let pageContent = `
-         ${globalCssImports}
-         ${pageImports}
-
-         ${depsBundlePath ? `
-         import '${depsBundlePath}';
-         ` : ''}
-
-         import * as ${pageInfo.compName} from '${pageRelativePath}';
- 
-         ${!disableSSR && pageRelativePath ? `
-         export const getStaticProps = createGetStaticProps('${pageInfo.name}', ${pageInfo.compName});
-         
-         export const getStaticPaths = createGetStaticPaths('${pageInfo.name}', ${pageInfo.compName});
-         `: ''}
-
-         ${(pageInfo.name === genericPageName && !hasGenericPage) ? `
-         export const getStaticProps = createGetStaticProps('${pageInfo.name}', null);
-
-         export const getStaticPaths = function () {
-            return {
-                paths: [],
-                fallback: 'blocking',
-            };
-        };
-         ` : ''}
- 
-         export default getPage('${pageInfo.name}', ${pageInfo.compName});
-         `;
-
-        if (!pageInfo.path && pageInfo.fileContent) {
-            pageContent = pageInfo.fileContent + '';
-        }
-
-        if (pageInfo.name === '_document') {
-            pageContent = `
-             ${pageImports}
- 
-             ${pageInfo.fileContent}
-             `
-        } else {
-            const globalStyles = `
-            import 'pure-react-carousel/dist/react-carousel.es.css';
-            import 'react-image-lightbox/style.css';
-            import '@cromwell/renderer/build/editor-styles.css';
-            import '@cromwell/core-frontend/dist/_index.css';
-            `;
-            pageContent = globalStyles + '\n' + pageContent;
-        }
-
-        const pagePath = resolve(pagesLocalDir, pageInfo.name + '.js');
-
-        await fs.ensureDir(dirname(pagePath));
+        // Bundle as loadable chunks
+        let allExports: string[] = [];
         try {
-            await fs.outputFile(pagePath, pageContent);
+            const pckg = require(pckgName);
+            allExports = Object.keys(pckg);
         } catch (error) {
-            logger.error(error);
+            console.error(`Failed to require() package: ${pckgName} during generation of Frontend dependencies`, error);
         }
-    }
 
-    // Create jsconfig for Next.js
-    const jsconfigPath = resolve(tempDir, 'jsconfig.json')
-    if (!fs.existsSync(jsconfigPath)) {
-        await fs.outputFile(jsconfigPath, `
-         {
-             "compilerOptions": {
-             "baseUrl": "."
-             }
-         }
-         `);
-    }
+        fdImports += `\nif (!importer.imports['${pckgName}']) importer.imports['${pckgName}'] = {};\n`;
+        fdImports += `\nif (!importer.modules['${pckgName}']) importer.modules['${pckgName}'] = {};\n`;
+        fdImports += `\nimporter.importStatuses['${pckgName}'] = 'ready';`
+        fdImports += `\nimporter.imports['${pckgName}']['default'] = async () => { 
+            if (checkDidDefaultImport('${pckgName}')) return; 
+            importer.modules['${pckgName}'] = interopDefault(await import('${pckgName}'), 'default');
+        };`
+
+        allExports.forEach(otherExport => {
+            if (jsOperators.includes(otherExport)) return;
+            // Generate chunk
+            const otherExportStripped = otherExport.replace(/\W/g, '_') + getRandStr(5).toLowerCase();
+            const exportChunkName = `${pckgNameStripped}_${otherExport.replace(/\W/g, '_')}_${getRandStr(4)}.js`.toLowerCase();
+            const chunkPath = resolve(tempDir, 'chunks', exportChunkName);
+            fs.outputFileSync(chunkPath, `import {${otherExport}} from '${pckgName}'; export default ${otherExport};`)
 
 
-    // Create next.config.js
-    const nextConfigPath = resolve(tempDir, 'next.config.js');
-    if (!fs.existsSync(nextConfigPath)) {
-        await fs.outputFile(nextConfigPath, `
-            const cromwellConf = {
-                webpack: (config, { isServer }) => {
-                    config.resolve.symlinks = false
-                    return config
-                }
+            fdImports += `
+            const load_${otherExportStripped} = async () => {
+               if (checkDidDefaultImport('${pckgName}')) return;  
+               const chunk = await import('${normalizePath(chunkPath)}');
+               importer.modules['${pckgName}']['${otherExport}'] = interopDefault(chunk, '${otherExport}'); 
             }
-            ${themeConfig?.nextConfig && themeDir ? `
-            const themeConf = require('${normalizePath(themeDir)}/${configFileName}').nextConfig();
-            ` : `
-            const themeConf = {};
-            `}
-            module.exports = Object.assign({}, cromwellConf, themeConf);
-            `
-
-        );
+            importer.imports['${pckgName}']['${otherExport}'] = load_${otherExportStripped}
+            `;
+        });
     }
 
-    // Link renderer's build dir into next dir
-    if (!fs.existsSync(tempDirBuild) && rendererBuildDir) {
-        try {
-            await symlinkDir(rendererBuildDir, tempDirBuild)
-        } catch (e) { console.error(e) }
-    }
+    await fs.outputFile(join(rendererDir, 'build/generated-imports.js'), fdImports);
 }
 
 const prodGenerate = async (themeName: string, options) => {
@@ -337,13 +203,6 @@ const linkFiles = async (tempDir: string, themeName: string, options) => {
     const tempDirPublic = resolve(tempDir, 'public');
 
     await fs.ensureDir(tempDir);
-
-    const pckg = await getModulePackage(themeName);
-    const { downloader } = require('@cromwell/utils/build/downloader');
-    if (pckg) await downloader({
-        rootDir: process.cwd(),
-        packages: [pckg],
-    });
 
     // Link public dir in root to renderer's public dir for Next.js server
     if (!fs.existsSync(tempDirPublic)) {

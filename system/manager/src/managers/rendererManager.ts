@@ -144,6 +144,8 @@ export const isRendererRunning = async (): Promise<boolean> => {
 
 export const rendererBuild = async (themeName: string): Promise<boolean> => {
     if (!rendererStartupPath) return false;
+    const themeDir = await getNodeModuleDir(themeName);
+    if (!themeDir) throw new Error('Theme directory was not found. Package: ' + themeDir);
 
     const command: TRendererCommands = 'build';
 
@@ -161,7 +163,7 @@ export const rendererBuild = async (themeName: string): Promise<boolean> => {
         });
     })
 
-    const success = await isThemeBuilt(getRendererTempDevDir());
+    const success = await isThemeBuilt(themeDir);
     if (success) {
         logger.log('RendererManager:: Renderer build succeeded');
     } else {
@@ -173,10 +175,10 @@ export const rendererBuild = async (themeName: string): Promise<boolean> => {
 
 export const rendererBuildAndSaveTheme = async (themeModuleName: string): Promise<boolean> => {
     const tempDir = getRendererTempDevDir();
-    const tempNextDir = resolve(tempDir, '.next');
-
     const themeDir = await getNodeModuleDir(themeModuleName);
     if (!themeDir) return false;
+
+    const tempNextDir = resolve(themeDir, '.next');
 
     const buildSuccess = await rendererBuild(themeModuleName);
     if (!buildSuccess) return false;

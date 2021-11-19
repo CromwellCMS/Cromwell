@@ -13,6 +13,7 @@ import ReviewForm from '../../components/productDetails/reviewForm/ReviewForm';
 import { ReviewItem } from '../../components/productDetails/reviewItem/ReviewItem';
 import { getBreadcrumbs } from '../../helpers/getBreadcrumbs';
 import { getHead } from '../../helpers/getHead';
+import { removeUndefined } from '../../helpers/removeUndefined';
 import commonStyles from '../../styles/common.module.scss';
 import styles from '../../styles/pages/Product.module.scss';
 
@@ -47,7 +48,7 @@ const Product: TPageWithLayout<ProductProps> = (props) => {
 
         <CContainer className={clsx(commonStyles.content, styles.ProductPage)} id="product-1">
             {getHead({
-                documentContext: props.documentContext,
+                documentContext: props.cmsProps?.documentContext,
                 image: product?.mainImage,
                 data: product,
             })}
@@ -112,7 +113,7 @@ Product.getLayout = (page: ReactElement) => {
 
 export default Product;
 
-export const getStaticProps: TGetStaticProps = async (context): Promise<ProductProps> => {
+export const getStaticProps: TGetStaticProps<ProductProps> = async (context) => {
     const slug = context?.params?.slug ?? null;
     const client = getGraphQLClient();
 
@@ -161,9 +162,11 @@ export const getStaticProps: TGetStaticProps = async (context): Promise<ProductP
     if (product?.categories) delete product.categories;
 
     return {
-        product,
-        attributes,
-        breadcrumbs,
+        props: removeUndefined({
+            product,
+            attributes,
+            breadcrumbs,
+        })
     }
 }
 

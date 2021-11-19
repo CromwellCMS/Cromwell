@@ -2,28 +2,28 @@ import {
     resolvePageRoute,
     setStoreItem,
     TCmsConfig,
+    TPageCmsProps,
     TCromwellPageCoreProps,
     TDefaultPageName,
+    TGetStaticProps,
     TPageConfig,
     TPageInfo,
     TStaticPageContext,
     TThemeConfig,
 } from '@cromwell/core';
 import { getRestApiClient } from '@cromwell/core-frontend/dist/api/CRestApiClient';
+import { GetStaticPropsResult } from 'next';
 
-import { TPageExports } from '../types';
-import { getThemeStaticProps } from './getThemeStaticProps';
-import { pluginsDataFetcher, TPluginsSettings } from './pluginsDataFetcher';
+import { getThemeStaticProps } from '../helpers/getThemeStaticProps';
+import { pluginsDataFetcher, TPluginsSettings } from '../helpers/pluginsDataFetcher';
+import { removeUndefined } from '../helpers/removeUndefined';
 
-export const createGetStaticProps = (pageName: TDefaultPageName | string, pageExports: TPageExports) => {
-    return async function (context: TStaticPageContext): Promise<
-        {
-            props?: TCromwellPageCoreProps;
-            revalidate?: number;
-            notFound?: boolean;
-            redirect?: any;
-        }> {
+export const wrapGetStaticProps = (pageName: TDefaultPageName | string,
+    originalGet: ((context: TStaticPageContext) => any) | null): TGetStaticProps<TCromwellPageCoreProps> => {
+    if (pageName === '/') pageName = 'index';
+    if (pageName.startsWith('/')) pageName = pageName.slice(1, pageName.length);
 
+    const getStaticWrapper: TGetStaticProps<TCromwellPageCoreProps> = async (context) => {
         // Name to request a page config. Config will be the same for different slugs
         // of a page. There's an exception: generic pages - `pages/[slug]`, 
         // since they can be edited separately in Theme Editor
@@ -66,7 +66,7 @@ export const createGetStaticProps = (pageName: TDefaultPageName | string, pageEx
         context.themeCustomConfig = rendererData.themeCustomConfig;
         context.pagesInfo = rendererData.pagesInfo;
         const [childStaticProps, plugins] = await Promise.all([
-            getThemeStaticProps(pageName, pageExports?.getStaticProps, context),
+            getThemeStaticProps(pageName, originalGet, context),
             pluginsDataFetcher(pageConfigName, context, pluginsSettings),
         ]);
 
@@ -74,9 +74,10 @@ export const createGetStaticProps = (pageName: TDefaultPageName | string, pageEx
         // console.log('getStaticProps for page: ' + pageName);
         // console.log('time elapsed: ' + (timestamp2 - timestamp) + 'ms');
 
-        const props: TCromwellPageCoreProps = {
+        if (childStaticProps && !childStaticProps.props) childStaticProps.props = {};
+
+        const cmsProps: TPageCmsProps = {
             plugins,
-            childStaticProps,
             pageConfig,
             cmsSettings,
             themeCustomConfig,
@@ -89,11 +90,17 @@ export const createGetStaticProps = (pageName: TDefaultPageName | string, pageEx
             palette: themeConfig?.palette,
         }
 
-        return {
-            props: JSON.parse(JSON.stringify(props)),
+        const pageProps: GetStaticPropsResult<TCromwellPageCoreProps> = {
+            ...childStaticProps,
             revalidate: childStaticProps?.revalidate ?? 60,
-            notFound: childStaticProps?.notFound ? true : undefined,
-            redirect: childStaticProps?.redirect,
+            props: {
+                ...(childStaticProps.props ?? {}),
+                cmsProps: cmsProps
+            }
         }
+
+        return removeUndefined(pageProps);
     }
+
+    return getStaticWrapper;
 }

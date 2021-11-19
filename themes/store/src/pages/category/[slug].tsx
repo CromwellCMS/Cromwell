@@ -11,6 +11,7 @@ import layoutStyles from '../../components/layout/Layout.module.scss';
 import { Pagination } from '../../components/pagination/Pagination';
 import { ProductCard } from '../../components/productCard/ProductCard';
 import { getHead } from '../../helpers/getHead';
+import { removeUndefined } from '../../helpers/removeUndefined';
 import commonStyles from '../../styles/common.module.scss';
 import styles from '../../styles/pages/Category.module.scss';
 
@@ -61,7 +62,7 @@ const ProductCategory: TPageWithLayout<CategoryProps> = (props) => {
                     </div>
                 </CContainer>
                 {getHead({
-                    documentContext: props.documentContext,
+                    documentContext: props.cmsProps?.documentContext,
                     image: category?.mainImage,
                     data: category,
                 })}
@@ -123,7 +124,7 @@ ProductCategory.getLayout = (page: ReactElement) => {
     )
 }
 
-export const getStaticProps: TGetStaticProps = async (context): Promise<CategoryProps> => {
+export const getStaticProps: TGetStaticProps<CategoryProps> = async (context) => {
     const slug = context?.params?.slug;
     const client = getGraphQLClient();
     // const timestamp = Date.now();
@@ -182,10 +183,12 @@ export const getStaticProps: TGetStaticProps = async (context): Promise<Category
     // console.log('ProductCategory::getAttributes time elapsed: ' + (timestamp4 - timestamp) + 'ms');
 
     return {
-        slug: slug as string,
-        category: category ? category : null,
-        products: products ? products : null,
-        attributes
+        props: removeUndefined({
+            slug: slug as string,
+            category,
+            products,
+            attributes
+        })
     }
 
 }

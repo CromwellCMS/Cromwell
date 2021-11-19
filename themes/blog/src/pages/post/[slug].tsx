@@ -7,6 +7,7 @@ import Layout from '../../components/layout/Layout';
 import { PostInfo } from '../../components/postCard/PostCard';
 import postStyles from '../../components/postCard/PostCard.module.scss';
 import { getHead } from '../../helpers/getHead';
+import { removeUndefined } from '../../helpers/removeUndefined';
 import commonStyles from '../../styles/common.module.scss';
 import styles from '../../styles/pages/BlogPost.module.scss';
 
@@ -29,7 +30,7 @@ const BlogPostPage: TPageWithLayout<BlogPostProps> = (props) => {
     return (
         <CContainer className={styles.BlogPost} id="post_01">
             {getHead({
-                documentContext: props.documentContext,
+                documentContext: props.cmsProps?.documentContext,
                 image: post?.mainImage,
                 data: post,
             })}
@@ -87,7 +88,7 @@ BlogPostPage.getLayout = (page) => {
 export default BlogPostPage;
 
 
-export const getStaticProps: TGetStaticProps = async (context): Promise<BlogPostProps> => {
+export const getStaticProps: TGetStaticProps<BlogPostProps> = async (context) => {
     const slug = context?.params?.slug ?? null;
     const client = getGraphQLClient();
     let post: TPost | undefined = undefined;
@@ -110,7 +111,9 @@ export const getStaticProps: TGetStaticProps = async (context): Promise<BlogPost
     }
 
     return {
-        post,
+        props: removeUndefined({
+            post,
+        })
     }
 
 }
