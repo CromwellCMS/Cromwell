@@ -90,7 +90,6 @@ export class HeaderSearch extends React.Component<unknown, {
     }
 
     render() {
-        const cstore = getCStore();
         const { isLoading, searchItems, searchOpen } = this.state;
 
         return (
@@ -105,51 +104,62 @@ export class HeaderSearch extends React.Component<unknown, {
                         onChange={(event) => this.handleSearchInput(event.currentTarget.value)}
                     />
                 </div>
-                <Popper open={searchOpen} anchorEl={this.searchAnchorRef.current}
+                <Popper open={searchOpen}
+                    anchorEl={this.searchAnchorRef.current}
                     style={{ zIndex: 9999 }}
-                    transition>
+                    transition
+                >
                     {({ TransitionProps }) => (
                         <Fade {...TransitionProps} timeout={350}>
-                            <ClickAwayListener onClickAway={this.handleSearchClose}>
-                                <div className={styles.searchContent} onClick={this.handleSearchClose}>
-                                    {isLoading && (
-                                        <LoadBox size={100} />
-                                    )}
-                                    {!isLoading && searchItems.length === 0 && (
-                                        <p className={styles.notFoundText}>No items found</p>
-                                    )}
-                                    {!isLoading && searchItems.map(product => {
-                                        return (
-                                            <Link href={`/product/${product.slug}`} key={product.id}>
-                                                <Grid container className={styles.listItem}>
-                                                    <Grid xs={7} className={styles.itemMain}>
-                                                        <div
-                                                            style={{ backgroundImage: `url(${product?.mainImage})` }}
-                                                            className={styles.itemImage}
-                                                        ></div>
-                                                        <div className={styles.itemMainInfo}>
-                                                            <p className={styles.itemTitle}>{product.name}</p>
-                                                        </div>
-                                                    </Grid>
-                                                    <Grid xs={5} className={styles.itemSubInfo}>
-                                                        <div className={styles.priceBlock}>
-                                                            {(product.oldPrice !== undefined && product.oldPrice !== null) && (
-                                                                <p className={styles.oldPrice}>{cstore.getPriceWithCurrency(product.oldPrice)}</p>
-                                                            )}
-                                                            <p className={styles.price}>{cstore.getPriceWithCurrency(product.price)}</p>
-                                                        </div>
-                                                    </Grid>
-                                                </Grid>
-                                            </Link>
-                                        )
-                                    })}
-                                </div>
-                            </ClickAwayListener>
+                            {/* ClickAwayListener directly inside Fade crashes the app, we need div wrapper */}
+                            <div>
+                                <ClickAwayListener onClickAway={this.handleSearchClose}>
+                                    <div className={styles.searchContent} onClick={this.handleSearchClose}>
+                                        {isLoading && (
+                                            <LoadBox size={100} />
+                                        )}
+                                        {!isLoading && searchItems.length === 0 && (
+                                            <p className={styles.notFoundText}>No items found</p>
+                                        )}
+                                        {!isLoading && <SearchContent searchItems={searchItems} />}
+                                    </div>
+                                </ClickAwayListener>
+                            </div>
                         </Fade>
                     )}
                 </Popper>
             </>
         );
     }
+}
 
+const SearchContent = (props: { searchItems: TProduct[]; }) => {
+    const { searchItems } = props;
+    const cstore = getCStore();
+
+    return (<>
+        {searchItems?.map(product => (
+            <Link href={`/product/${product.slug}`} key={product.id}>
+                <Grid container className={styles.listItem}>
+                    <Grid xs={7} className={styles.itemMain}>
+                        <div
+                            style={{ backgroundImage: `url(${product?.mainImage})` }}
+                            className={styles.itemImage}
+                        ></div>
+                        <div className={styles.itemMainInfo}>
+                            <p className={styles.itemTitle}>{product.name}</p>
+                        </div>
+                    </Grid>
+                    <Grid xs={5} className={styles.itemSubInfo}>
+                        <div className={styles.priceBlock}>
+                            {(product.oldPrice !== undefined && product.oldPrice !== null) && (
+                                <p className={styles.oldPrice}>{cstore.getPriceWithCurrency(product.oldPrice)}</p>
+                            )}
+                            <p className={styles.price}>{cstore.getPriceWithCurrency(product.price)}</p>
+                        </div>
+                    </Grid>
+                </Grid>
+            </Link>
+        ))}
+    </>)
 }
