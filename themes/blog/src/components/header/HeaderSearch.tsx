@@ -111,33 +111,35 @@ export class HeaderSearch extends React.Component<unknown, {
                     transition>
                     {({ TransitionProps }) => (
                         <Fade {...TransitionProps} timeout={350}>
-                            <ClickAwayListener onClickAway={this.handleSearchClose}>
-                                <div className={styles.searchContent} onClick={this.handleSearchClose}>
-                                    {isLoading && (
-                                        <LoadBox size={100} />
-                                    )}
-                                    {!isLoading && searchItems.length === 0 && (
-                                        <p className={styles.notFoundText}>No items found</p>
-                                    )}
-                                    {!isLoading && searchItems.map(post => {
-                                        return (
-                                            <Grid container className={styles.listItem} key={post.id}>
-                                                <Link href={`/post/${post.slug}`} >
-                                                    <Grid item xs={12} className={styles.itemMain}>
-                                                        <div
-                                                            style={{ backgroundImage: `url(${post?.mainImage})` }}
-                                                            className={styles.itemImage}
-                                                        ></div>
-                                                        <div className={styles.itemMainInfo}>
-                                                            <p className={styles.itemTitle}>{post.title ?? ''}</p>
-                                                        </div>
-                                                    </Grid>
-                                                </Link>
-                                            </Grid>
-                                        )
-                                    })}
-                                </div>
-                            </ClickAwayListener>
+                            <div>
+                                <ClickAwayListener onClickAway={this.handleSearchClose}>
+                                    <div className={styles.searchContent} onClick={this.handleSearchClose}>
+                                        {isLoading && (
+                                            <LoadBox size={100} />
+                                        )}
+                                        {!isLoading && searchItems.length === 0 && (
+                                            <p className={styles.notFoundText}>No items found</p>
+                                        )}
+                                        {!isLoading && searchItems.map(post => {
+                                            return (
+                                                <Grid container className={styles.listItem} key={post.id}>
+                                                    <Link href={`/post/${post.slug}`} >
+                                                        <Grid item xs={12} className={styles.itemMain}>
+                                                            <div
+                                                                style={{ backgroundImage: `url(${post?.mainImage})` }}
+                                                                className={styles.itemImage}
+                                                            ></div>
+                                                            <div className={styles.itemMainInfo}>
+                                                                <p className={styles.itemTitle}>{post.title ?? ''}</p>
+                                                            </div>
+                                                        </Grid>
+                                                    </Link>
+                                                </Grid>
+                                            )
+                                        })}
+                                    </div>
+                                </ClickAwayListener>
+                            </div>
                         </Fade>
                     )}
                 </Popper>
