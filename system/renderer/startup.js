@@ -4,7 +4,7 @@ const { resolve } = require('path');
 const npmRunPath = require('npm-run-path');
 const { setStoreItem } = require('@cromwell/core');
 const {
-    getRendererDir, getRendererTempDir, getRendererBuildDir
+    getRendererDir, getRendererTempDir, getRendererBuildDir, getRendererTempDevDir
 } = require('@cromwell/core-backend/dist/helpers/paths');
 const { readCMSConfigSync } = require('@cromwell/core-backend/dist/helpers/cms-settings');
 const { rendererMessages } = require('@cromwell/core-backend/dist/helpers/constants');
@@ -64,9 +64,10 @@ const main = () => {
                 buildService();
             }
             await gen();
+            const tempDir = getRendererTempDevDir();
             await new Promise(done => {
                 const proc = spawn(`next build`, [],
-                    { shell: true, stdio: 'pipe', env: npmRunPath.env() });
+                    { shell: true, stdio: 'pipe', cwd: tempDir, env: npmRunPath.env() });
 
                 if (proc.stderr && proc.stderr.on) {
                     proc.stderr.on('data', (data) => {
@@ -128,10 +129,12 @@ const main = () => {
             await gen();
             const port = args.port || 4256;
             const startNextServer = require(resolve(buildDir, 'server.js')).startNextServer;
+            const tempDir = getRendererTempDevDir();
 
             await startNextServer({
                 port,
                 dev: true,
+                dir: tempDir,
             });
         })();
         return;

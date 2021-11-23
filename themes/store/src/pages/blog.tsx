@@ -76,7 +76,7 @@ const BlogPage: TPageWithLayout<BlogProps> = (props) => {
                     value={filterInput.current.tagIds?.map(id => props.tags?.find(tag => tag.id === id)) ?? []}
                     className={styles.filterItem}
                     options={props.tags ?? []}
-                    getOptionLabel={(option) => option?.name ?? ''}
+                    getOptionLabel={(option: any) => option?.name ?? ''}
                     style={{ width: 300 }}
                     onChange={handleChangeTags}
                     renderInput={(params) => (

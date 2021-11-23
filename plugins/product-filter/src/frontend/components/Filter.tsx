@@ -72,10 +72,20 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
             isLoading: true,
         }
         this.props?.instanceSettings?.getInstance?.(this);
+
+        this.props.router?.events?.on('routeChangeComplete', this.routeChangeComplete);
     }
 
     componentDidMount() {
         this.props?.instanceSettings?.onMount?.(this);
+        this.init();
+    }
+
+    componentWillUnmount() {
+        this.props.router?.events?.off('routeChangeComplete', this.routeChangeComplete)
+    }
+
+    private routeChangeComplete = () => {
         this.init();
     }
 

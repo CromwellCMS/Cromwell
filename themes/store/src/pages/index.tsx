@@ -73,7 +73,7 @@ Index.getLayout = (page) => {
     return (
         <Layout>
             {page}
-        </Layout >
+        </Layout>
     )
 }
 

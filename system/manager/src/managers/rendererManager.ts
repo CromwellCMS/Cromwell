@@ -2,21 +2,10 @@ import { resolvePageRoute, setStoreItem, sleep, TCmsSettings, TPageInfo } from '
 import { readCMSConfig } from '@cromwell/core-backend/dist/helpers/cms-settings';
 import { rendererMessages } from '@cromwell/core-backend/dist/helpers/constants';
 import { getLogger } from '@cromwell/core-backend/dist/helpers/logger';
-import {
-    buildDirName,
-    getNodeModuleDir,
-    getRendererStartupPath,
-    getRendererTempDevDir,
-    getThemeAdminPanelDir,
-    getThemeBuildDir,
-    getThemeRollupBuildDir,
-    getThemeTempAdminPanelDir,
-} from '@cromwell/core-backend/dist/helpers/paths';
+import { getNodeModuleDir, getRendererStartupPath, getRendererTempDevDir } from '@cromwell/core-backend/dist/helpers/paths';
 import { getRestApiClient } from '@cromwell/core-frontend/dist/api/CRestApiClient';
 import fs from 'fs-extra';
-import glob from 'glob';
 import fetch, { Response } from 'node-fetch';
-import normalizePath from 'normalize-path';
 import { resolve } from 'path';
 import tcpPortUsed from 'tcp-port-used';
 
@@ -142,7 +131,8 @@ export const isRendererRunning = async (): Promise<boolean> => {
     return isServiceRunning(cacheKeys.renderer);
 }
 
-export const rendererBuild = async (themeName: string): Promise<boolean> => {
+
+export const rendererRunBuild = async (themeName: string): Promise<boolean> => {
     if (!rendererStartupPath) return false;
     const themeDir = await getNodeModuleDir(themeName);
     if (!themeDir) throw new Error('Theme directory was not found. Package: ' + themeDir);
@@ -163,7 +153,7 @@ export const rendererBuild = async (themeName: string): Promise<boolean> => {
         });
     })
 
-    const success = await isThemeBuilt(themeDir);
+    const success = await isThemeBuilt(getRendererTempDevDir());
     if (success) {
         logger.log('RendererManager:: Renderer build succeeded');
     } else {
@@ -172,75 +162,6 @@ export const rendererBuild = async (themeName: string): Promise<boolean> => {
 
     return success;
 }
-
-export const rendererBuildAndSaveTheme = async (themeModuleName: string): Promise<boolean> => {
-    const tempDir = getRendererTempDevDir();
-    const themeDir = await getNodeModuleDir(themeModuleName);
-    if (!themeDir) return false;
-
-    const tempNextDir = resolve(themeDir, '.next');
-
-    const buildSuccess = await rendererBuild(themeModuleName);
-    if (!buildSuccess) return false;
-
-    // Clean old build
-    const themeBuildDir = await getThemeBuildDir(themeModuleName);
-    if (themeBuildDir && await fs.pathExists(themeBuildDir)) {
-        try {
-            await fs.remove(themeBuildDir);
-        } catch (e) {
-            logger.error(e);
-        }
-        await sleep(0.1);
-    }
-
-    const themeBuildNextDir = resolve(themeDir, buildDirName, '.next');
-    await sleep(0.1);
-    try {
-        if (await fs.pathExists(themeBuildNextDir)) await fs.remove(themeBuildNextDir);
-    } catch (e) {
-        logger.error(e);
-    }
-    await sleep(0.2);
-
-    // Remove cache
-    const nextCacheDir = resolve(tempNextDir, 'cache');
-    if (await fs.pathExists(nextCacheDir)) await fs.remove(nextCacheDir);
-    await sleep(0.1);
-
-    // Remove generated HTML & JSON since either they generated with Theme's
-    // author data or with no data at all, in any case, end-user will
-    // have to re-generate them all.
-    const nextPagesDir = resolve(tempNextDir, 'server/pages');
-    const generatedPages = glob.sync(`${normalizePath(nextPagesDir)}/**/*.+(html|json)`);
-    generatedPages.forEach(pageFile => {
-        fs.removeSync(pageFile);
-    });
-
-    await fs.move(tempNextDir, themeBuildNextDir);
-    await sleep(0.2);
-
-    const themeRollupBuildDir = await getThemeRollupBuildDir(themeModuleName);
-    const themeTempAdminBuildDir = getThemeTempAdminPanelDir();
-    const adminBuildDir = await getThemeAdminPanelDir(themeModuleName);
-
-    if (themeRollupBuildDir) {
-        if (await fs.pathExists(themeRollupBuildDir)) await fs.remove(themeRollupBuildDir);
-        await sleep(0.2);
-
-        if (themeTempAdminBuildDir && adminBuildDir &&
-            await fs.pathExists(themeTempAdminBuildDir)) {
-            await fs.move(themeTempAdminBuildDir, adminBuildDir);
-        }
-    }
-
-    await fs.remove(tempDir);
-    await sleep(0.1);
-
-    logger.log('RendererManager:: successfully saved theme');
-    return true;
-}
-
 
 export const rendererStartWatchDev = async (themeName: string, port?: string) => {
     if (!rendererStartupPath) return false;

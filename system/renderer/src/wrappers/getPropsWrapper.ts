@@ -18,8 +18,10 @@ import { getThemeStaticProps } from '../helpers/getThemeStaticProps';
 import { pluginsDataFetcher, TPluginsSettings } from '../helpers/pluginsDataFetcher';
 import { removeUndefined } from '../helpers/removeUndefined';
 
-export const wrapGetStaticProps = (pageName: TDefaultPageName | string,
-    originalGet: ((context: TStaticPageContext) => any) | null): TGetStaticProps<TCromwellPageCoreProps> => {
+const wrapGetProps = (pageName: TDefaultPageName | string,
+    originalGet: ((context: TStaticPageContext) => any) | null,
+    getType: 'getServerSideProps' | 'getInitialProps' | 'getStaticProps'
+): TGetStaticProps<TCromwellPageCoreProps> => {
     if (pageName === '/') pageName = 'index';
     if (pageName.startsWith('/')) pageName = pageName.slice(1, pageName.length);
 
@@ -92,15 +94,56 @@ export const wrapGetStaticProps = (pageName: TDefaultPageName | string,
 
         const pageProps: GetStaticPropsResult<TCromwellPageCoreProps> = {
             ...childStaticProps,
-            revalidate: childStaticProps?.revalidate ?? 60,
             props: {
                 ...(childStaticProps.props ?? {}),
                 cmsProps: cmsProps
             }
         }
 
+        if (getType === 'getStaticProps') {
+            pageProps.revalidate = childStaticProps?.revalidate ?? 60;
+        }
+
         return removeUndefined(pageProps);
     }
 
     return getStaticWrapper;
+}
+
+export const wrapGetStaticProps = (addExport: (name: string, content: any) => any,
+    pageName: string, pageComponents: any) => {
+    if (pageComponents.getInitialProps) return;
+    if (pageComponents.getServerSideProps) return;
+
+    addExport('getStaticProps', wrapGetProps(pageName,
+        pageComponents.getStaticProps, 'getStaticProps'));
+}
+
+export const wrapGetInitialProps = (addExport: (name: string, content: any) => any,
+    pageName: string, pageComponents: any) => {
+    if (pageComponents.getInitialProps)
+        addExport('getInitialProps', wrapGetProps(pageName,
+            pageComponents.getInitialProps, 'getInitialProps'));
+}
+
+export const wrapGetServerSideProps = (addExport: (name: string, content: any) => any,
+    pageName: string, pageComponents: any) => {
+    if (pageComponents.getServerSideProps)
+        addExport('getServerSideProps', wrapGetProps(pageName,
+            pageComponents.getServerSideProps, 'getServerSideProps'));
+}
+
+export const wrapGetStaticPaths = (addExport: (name: string, content: any) => any,
+    pageName: string, pageComponents: any) => {
+    if (pageComponents.getStaticPaths)
+        addExport('getStaticPaths', pageComponents.getStaticPaths)
+}
+
+export const createGetStaticProps = (pageName: string, comps) => {
+    return wrapGetProps(pageName,
+        comps.getStaticProps, 'getStaticProps')
+}
+
+export const createGetStaticPaths = (pageName: string, comps) => {
+    return comps.getStaticPaths
 }

@@ -1,10 +1,3 @@
-import '@cromwell/core-frontend/dist/_index.css';
-import '@cromwell/renderer/build/editor-styles.css';
-import 'pure-react-carousel/dist/react-carousel.es.css';
-import 'react-image-lightbox/style.css';
-import 'react-toastify/dist/ReactToastify.css';
-import '../styles/global.scss';
-
 import {
     ECommonComponentNames,
     getStoreItem,
@@ -22,14 +15,12 @@ import * as React from 'react';
 import { ReactElement } from 'react';
 import ReactDOM from 'react-dom';
 import { ToastContainer } from 'react-toastify';
-import { withCromwellApp } from '@cromwell/renderer';
 
 import { PostCard } from '../components/postCard/PostCard';
 import { ProductCard } from '../components/productCard/ProductCard';
 import { toast } from '../components/toast/toast';
 import { createEmotionCache } from '../helpers/createEmotionCache';
 import { getTheme } from '../helpers/theme';
-
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
@@ -47,26 +38,11 @@ export type TPageWithLayout<TProps = any> = TCromwellPage<TProps> & {
 }
 
 type AppPropsWithLayout = AppProps & {
-    Component: TCromwellPage & { originalPage: TPageWithLayout };
+    Component: TPageWithLayout & { originalPage?: TPageWithLayout };
     emotionCache?: EmotionCache;
 }
 
 function App(props: AppPropsWithLayout) {
-    React.useEffect(() => {
-        // Remove the server-side injected CSS.
-        // const jssStyles = document.querySelector('#jss-server-side');
-        // jssStyles?.parentElement?.removeChild(jssStyles);
-
-        if (!isServer()) {
-            getRestApiClient()?.onError((info) => {
-                if (info.statusCode === 429) {
-                    toast.error('Too many requests. Try again later');
-                }
-            }, '_app');
-
-            getUser();
-        }
-    }, []);
 
     const getUser = async () => {
         const userInfo = getStoreItem('userInfo');
@@ -80,21 +56,35 @@ function App(props: AppPropsWithLayout) {
         }
     }
 
+    React.useEffect(() => {
+        if (!isServer()) {
+            getRestApiClient()?.onError((info) => {
+                if (info.statusCode === 429) {
+                    toast.error('Too many requests. Try again later');
+                }
+            }, '_app');
+
+            getUser();
+        }
+    }, []);
+
     const { Component, emotionCache = clientSideEmotionCache } = props;
-    const getLayout = Component.originalPage.getLayout ?? ((page) => page);
+    const getLayout = Component.getLayout ?? Component.originalPage?.getLayout ?? ((page) => page);
 
     const cmsProps: TPageCmsProps | undefined = props.pageProps?.cmsProps;
     const theme = getTheme(cmsProps?.palette);
 
-    return getLayout(
+    return (
         <CacheProvider value={emotionCache}>
             <ThemeProvider theme={theme}>
-                {Component && <Component {...(props.pageProps ?? {})} />}
-                {!isServer() && document?.body && ReactDOM.createPortal(
-                    <div className={"global-toast"} ><ToastContainer /></div>, document.body)}
+                {getLayout(<>
+                    {Component && <Component {...(props.pageProps ?? {})} />}
+                    {!isServer() && document?.body && ReactDOM.createPortal(
+                        <div className={"global-toast"} ><ToastContainer /></div>, document.body)}
+                </>)}
             </ThemeProvider>
         </CacheProvider>
     );
 }
 
-export default withCromwellApp(App);
+export default App;

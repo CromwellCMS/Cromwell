@@ -1,3 +1,9 @@
+
 export { initRenderer, fsRequire } from './helpers/initRenderer';
 export { withCromwellApp } from './wrappers/appWrapper';
-import './generated-imports';
+export { withCromwellPage } from './wrappers/pageWrapper';
+export {
+    wrapGetInitialProps, wrapGetStaticProps,
+    wrapGetServerSideProps, wrapGetStaticPaths,
+    createGetStaticProps, createGetStaticPaths
+} from './wrappers/getPropsWrapper';

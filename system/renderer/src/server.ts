@@ -11,7 +11,8 @@ import send from 'send';
 import { parse } from 'url';
 
 import { processCacheRequest } from './helpers/cacheManager';
-import { wrapGetStaticProps } from './wrappers/getStaticPropsWrapper';
+
+export { purgeNextJsFileCache } from './helpers/cacheManager';
 
 const logger = getLogger();
 
@@ -39,24 +40,6 @@ export const startNextServer = async (options?: {
 
     const handle = app.getRequestHandler();
     await app.prepare();
-
-    // Patch to wrap any getStaticProps
-    const nextServer: any = await (app as any).getServer();
-    const disallowedPaged = ['/_error'];
-
-    const findPageComponents: (() => any) = nextServer.findPageComponents;
-    nextServer.findPageComponents = async (...args) => {
-        const pageComponents = await findPageComponents.apply(nextServer, args as any);
-        const pageName = args[0];
-
-        if (pageComponents?.components && !pageComponents.components.getInitialProps
-            && !disallowedPaged.includes(pageName)) {
-            pageComponents.components.getStaticProps =
-                wrapGetStaticProps(pageName, pageComponents.components.getStaticProps)
-        }
-
-        return pageComponents;
-    }
 
     const server = createServer(async (req, res) => {
         const parsedUrl = parse(req.url!, true);

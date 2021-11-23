@@ -104,27 +104,8 @@ const purgeEntireCache = async (options: ManagerOptions) => {
     if (!cache) return;
 
     try {
-        const generatedPages = await new Promise<string[] | undefined>(done => {
-            glob(`${normalizePath(pagesDir)}/**/*.+(html|json)`, (err, matches) => {
-                if (err) {
-                    logger.error(err);
-                    done(undefined);
-                    return;
-                }
-                done(matches);
-            });
-        });
+        await purgeNextJsFileCache(pagesDir);
 
-        if (generatedPages?.length) {
-            await Promise.all(generatedPages.map(async pageFile => {
-                try {
-                    await fs.remove(pageFile);
-                } catch (error) {
-                    logger.error(error);
-                }
-            }));
-            await sleep(0.05);
-        }
         cache.prune();
         cache.reset();
         await sleep(0.05);
@@ -132,5 +113,30 @@ const purgeEntireCache = async (options: ManagerOptions) => {
         logger.log(`Entire Next.js cache was successfully purged`);
     } catch (error) {
         logger.error(`Could not purge entire Next.js cache - ${error}`);
+    }
+}
+
+export const purgeNextJsFileCache = async (pagesDir: string) => {
+
+    const generatedPages = await new Promise<string[] | undefined>(done => {
+        glob(`${normalizePath(pagesDir)}/**/*.+(html|json)`, (err, matches) => {
+            if (err) {
+                logger.error(err);
+                done(undefined);
+                return;
+            }
+            done(matches);
+        });
+    });
+
+    if (generatedPages?.length) {
+        await Promise.all(generatedPages.map(async pageFile => {
+            try {
+                await fs.remove(pageFile);
+            } catch (error) {
+                logger.error(error);
+            }
+        }));
+        await sleep(0.05);
     }
 }

@@ -167,7 +167,7 @@ export const getStaticProps: TGetStaticProps<CategoryProps> = async (context) =>
                     }
                 }`, 'ProductShortFragment')
         } catch (e) {
-            console.error('ProductCategory::getStaticProps 2, slug: ' + slug, getGraphQLErrorInfo(e))
+            console.error('ProductCategory::getStaticProps 2, slug: ' + slug, getGraphQLErrorInfo(e));
         }
     }
 

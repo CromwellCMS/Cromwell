@@ -25,7 +25,7 @@ type PageProps = Partial<TCromwellPageCoreProps> & {
 
 const DefaultPageWrapperComp = ((props: any) => props.children ?? <></>);
 
-export const withCromwellPage = (OriginalPage: TCromwellPage): NextPage & { originalPage?: NextPage } => {
+export const withCromwellPage = (OriginalPage: { default: TCromwellPage }): NextPage & { originalPage?: NextPage } => {
 
     const pageComp = (props: PageProps): JSX.Element => {
         const { plugins, pageConfig, themeCustomConfig,
@@ -139,7 +139,7 @@ export const withCromwellPage = (OriginalPage: TCromwellPage): NextPage & { orig
                     )}
                 </Head>
                 <PageWrapperComp>
-                    <OriginalPage {...pageCompProps} {...props} />
+                    <OriginalPage.default {...pageCompProps} {...props} />
                     {cmsSettings?.footerHtml && ReactHtmlParser(cmsSettings.footerHtml, { transform: parserTransformBody })}
                     {themeFooterHtml && ReactHtmlParser(themeFooterHtml, { transform: parserTransformBody })}
                     {pageConfig?.footerHtml && ReactHtmlParser(pageConfig?.footerHtml, { transform: parserTransformBody })}
@@ -181,5 +181,6 @@ export const withCromwellPage = (OriginalPage: TCromwellPage): NextPage & { orig
         }} />}
     </CrwDocumentContext.Consumer>);
 
+    HocPage.originalPage = OriginalPage.default;
     return HocPage;
 }
