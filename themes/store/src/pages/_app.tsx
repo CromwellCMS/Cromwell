@@ -69,7 +69,7 @@ function App(props: AppPropsWithLayout) {
     }, []);
 
     const { Component, emotionCache = clientSideEmotionCache } = props;
-    const getLayout = Component.getLayout ?? Component.originalPage?.getLayout ?? ((page) => page);
+    const getLayout = Component.originalPage?.getLayout ?? ((page) => page);
 
     const cmsProps: TPageCmsProps | undefined = props.pageProps?.cmsProps;
     const theme = getTheme(cmsProps?.palette);
