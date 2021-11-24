@@ -4,37 +4,9 @@ module.exports = {
     },
     globalCss: [
         "react-toastify/dist/ReactToastify.css",
-        '../styles/global.scss'
+        './src/styles/global.scss'
     ],
     headHtml: "<link href=\"https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700;900&display=swap\" rel=\"stylesheet\" /><meta name=\"viewport\" content=\"width=device-width\">",
-    rollupConfig: () => {
-        const commonjs = require('@rollup/plugin-commonjs');
-        const json = require('@rollup/plugin-json');
-        const typescript = require('rollup-plugin-ts-compiler');
-
-        // All plugins below will be instantiated for every output options (pages, admin panel, etc)
-        // But rollup-plugin-ts-compiler with shared state object will have only one instance across all compilations.
-        // We can do that only if we don't need to use different tsconfigs for outputs.
-        // Shared state will decrease compile time in N times for every output. 
-        const tsSharedState = {};
-
-        const getDefaultPlugins = () => [
-            typescript({
-                sharedState: tsSharedState,
-                monorepo: true,
-            }),
-            commonjs(),
-            json(),
-        ];
-
-        return {
-            main: {
-                plugins: [
-                    ...getDefaultPlugins(),
-                ]
-            },
-        }
-    },
     defaultPages: {
         index: 'index',
         category: 'category/[slug]',

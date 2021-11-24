@@ -1,13 +1,4 @@
-import {
-    getBlockInstance,
-    TCromwellPage,
-    TGetStaticProps,
-    TPagedList,
-    TPagedParams,
-    TPost,
-    TPostFilter,
-    TTag,
-} from '@cromwell/core';
+import { getBlockInstance, TGetStaticProps, TPagedList, TPagedParams, TPost, TPostFilter, TTag } from '@cromwell/core';
 import { CContainer, CList, getGraphQLClient, getGraphQLErrorInfo, TCList } from '@cromwell/core-frontend';
 import { Autocomplete, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
@@ -17,15 +8,18 @@ import layoutStyles from '../components/layout/Layout.module.scss';
 import { Pagination } from '../components/pagination/Pagination';
 import { PostCard } from '../components/postCard/PostCard';
 import { handleGetFilteredPosts } from '../helpers/getPosts';
+import { removeUndefined } from '../helpers/removeUndefined';
 import commonStyles from '../styles/common.module.scss';
 import styles from '../styles/pages/Blog.module.scss';
+
+import type { TPageWithLayout } from './_app';
 
 interface BlogProps {
     posts?: TPagedList<TPost>;
     tags?: TTag[];
 }
 
-const BlogPage: TCromwellPage<BlogProps> = (props) => {
+const BlogPage: TPageWithLayout<BlogProps> = (props) => {
     const filterInput = useRef<TPostFilter>({});
     const listId = 'Blog_list_01';
     const publishSort = useRef<"ASC" | "DESC">('DESC');
@@ -74,72 +68,78 @@ const BlogPage: TCromwellPage<BlogProps> = (props) => {
     }
 
     return (
-        <Layout>
-            <CContainer className={commonStyles.content} id="blog-1">
-                <CContainer className={styles.filter} id="blog-2">
-                    <Autocomplete
-                        multiple
-                        freeSolo
-                        value={filterInput.current.tagIds?.map(id => props.tags?.find(tag => tag.id === id)) ?? []}
-                        className={styles.filterItem}
-                        options={props.tags ?? []}
-                        getOptionLabel={(option) => option?.name ?? ''}
-                        style={{ width: 300 }}
-                        onChange={handleChangeTags}
-                        renderInput={(params) => (
-                            <TextField
-                                {...params}
-                                variant="standard"
-                                placeholder="Tags"
-                            />
-                        )}
-                    />
-                    <FormControl className={styles.filterItem}>
-                        <InputLabel className={styles.sortLabel}>Sort</InputLabel>
-                        <Select
-                            onChange={handleChangeSort}
+        <CContainer className={commonStyles.content} id="blog-1">
+            <CContainer className={styles.filter} id="blog-2">
+                <Autocomplete
+                    multiple
+                    freeSolo
+                    value={filterInput.current.tagIds?.map(id => props.tags?.find(tag => tag.id === id)) ?? []}
+                    className={styles.filterItem}
+                    options={props.tags ?? []}
+                    getOptionLabel={(option: any) => option?.name ?? ''}
+                    style={{ width: 300 }}
+                    onChange={handleChangeTags}
+                    renderInput={(params) => (
+                        <TextField
+                            {...params}
                             variant="standard"
-                            defaultValue='Newest'
-                        >
-                            {['Newest', 'Oldest'].map(sort => (
-                                <MenuItem value={sort} key={sort}>{sort}</MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-                </CContainer>
-                <CContainer style={{ marginBottom: '20px' }} id="blog-3">
-                    <CList<TPost>
-                        id={listId}
-                        editorHidden
-                        ListItem={(props) => (
-                            <div className={styles.postWrapper}>
-                                <PostCard onTagClick={handleTagClick} data={props.data} key={props.data?.id} />
-                            </div>
-                        )}
-                        usePagination
-                        useShowMoreButton
-                        useQueryPagination
-                        disableCaching
-                        pageSize={20}
-                        scrollContainerSelector={`.${layoutStyles.Layout}`}
-                        firstBatch={props.posts}
-                        loader={handleGetPosts}
-                        cssClasses={{
-                            page: styles.postList
-                        }}
-                        elements={{
-                            pagination: Pagination
-                        }}
-                    />
-                </CContainer>
+                            placeholder="Tags"
+                        />
+                    )}
+                />
+                <FormControl className={styles.filterItem}>
+                    <InputLabel className={styles.sortLabel}>Sort</InputLabel>
+                    <Select
+                        onChange={handleChangeSort}
+                        variant="standard"
+                        defaultValue='Newest'
+                    >
+                        {['Newest', 'Oldest'].map(sort => (
+                            <MenuItem value={sort} key={sort}>{sort}</MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
             </CContainer>
-        </Layout>
+            <CContainer style={{ marginBottom: '20px' }} id="blog-3">
+                <CList<TPost>
+                    id={listId}
+                    editorHidden
+                    ListItem={(props) => (
+                        <div className={styles.postWrapper}>
+                            <PostCard onTagClick={handleTagClick} data={props.data} key={props.data?.id} />
+                        </div>
+                    )}
+                    usePagination
+                    useShowMoreButton
+                    useQueryPagination
+                    disableCaching
+                    pageSize={20}
+                    scrollContainerSelector={`.${layoutStyles.Layout}`}
+                    firstBatch={props.posts}
+                    loader={handleGetPosts}
+                    cssClasses={{
+                        page: styles.postList
+                    }}
+                    elements={{
+                        pagination: Pagination
+                    }}
+                />
+            </CContainer>
+        </CContainer>
     );
+}
+
+BlogPage.getLayout = (page) => {
+    return (
+        <Layout>
+            {page}
+        </Layout >
+    )
 }
 
 export default BlogPage;
 
-export const getStaticProps: TGetStaticProps = async (): Promise<BlogProps> => {
+export const getStaticProps: TGetStaticProps<BlogProps> = async () => {
     const client = getGraphQLClient();
 
     let posts: TPagedList<TPost> | undefined;
@@ -156,8 +156,10 @@ export const getStaticProps: TGetStaticProps = async (): Promise<BlogProps> => {
         console.error('BlogPage::getStaticProps', getGraphQLErrorInfo(e))
     }
     return {
-        posts,
-        tags
+        props: removeUndefined({
+            posts,
+            tags,
+        })
     }
 }
 

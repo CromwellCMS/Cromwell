@@ -1,4 +1,4 @@
-import { NextPage } from 'next';
+import { NextPage, GetStaticPropsResult } from 'next';
 import { DocumentContext } from 'next/document';
 import React from 'react';
 
@@ -18,7 +18,9 @@ export type TStaticPageContext<Q extends ParsedUrlQuery = ParsedUrlQuery> = {
     themeCustomConfig?: any;
     pagesInfo?: TPageInfo[];
 }
-export type TGetStaticProps<Q extends ParsedUrlQuery = ParsedUrlQuery> = (ctx: TStaticPageContext<Q>) => Promise<any>;
+
+export type TGetStaticProps<P = any, Q extends ParsedUrlQuery = ParsedUrlQuery> = (ctx: TStaticPageContext<Q>) =>
+    Promise<GetStaticPropsResult<P>> | GetStaticPropsResult<P>;
 
 export type TStaticPagePluginContext<TPluginSettings = any, Q extends ParsedUrlQuery = ParsedUrlQuery> =
     TStaticPageContext<Q> & {
@@ -32,15 +34,12 @@ export type TGetPluginStaticProps<
     TPluginSettings = any,
     Q extends ParsedUrlQuery = ParsedUrlQuery> = (ctx: TStaticPagePluginContext<TPluginSettings, Q>) => Promise<any>;
 
-export type TCromwellPage<Props = any | undefined> = NextPage<Props & TCromwellPageCoreProps>;
-
-export type TCromwellPageCoreProps = {
+export type TPageCmsProps = {
     documentContext?: TNextDocumentContext;
     plugins?: Record<string, {
         data?: any;
         code?: string;
     }>;
-    childStaticProps?: Record<string, any> | null;
     pageConfig?: TPageConfig | null;
     cmsSettings?: TCmsSettings | null;
     themeCustomConfig?: Record<string, any> | null;
@@ -52,6 +51,10 @@ export type TCromwellPageCoreProps = {
     slug?: string | string[] | null;
     resolvedPageRoute?: string;
 }
+
+export type TCromwellPageCoreProps = { cmsProps: TPageCmsProps };
+
+export type TCromwellPage<Props = any | undefined> = NextPage<Props & TCromwellPageCoreProps>;
 
 export type TNextDocumentContext = Partial<DocumentContext> & {
     fullUrl?: string;

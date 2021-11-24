@@ -29,7 +29,9 @@ export default [
                 format: "esm",
             }
         ],
-        external: isExternalForm,
+        external: (ext) => {
+            return isExternalForm(ext)
+        },
         plugins: [
             typescript(typescriptOptions),
             commonjs(),

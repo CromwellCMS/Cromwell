@@ -8,7 +8,8 @@
   "bugs": {
     "url": "https://github.com/CromwellCMS/Cromwell/issues"
   },
-  "main": "buld/renderer.js",
+  "main": "build/renderer.js",
+  "types": "build",
   "files": [
     "build",
     "startup.js"

@@ -12,6 +12,8 @@ import { parse } from 'url';
 
 import { processCacheRequest } from './helpers/cacheManager';
 
+export { purgeNextJsFileCache } from './helpers/cacheManager';
+
 const logger = getLogger();
 
 export const startNextServer = async (options?: {
@@ -34,7 +36,8 @@ export const startNextServer = async (options?: {
     const app = next({
         dev: options?.dev ?? false,
         dir: options?.dir,
-    })
+    });
+
     const handle = app.getRequestHandler();
     await app.prepare();
 

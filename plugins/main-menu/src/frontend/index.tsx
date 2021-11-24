@@ -1,6 +1,6 @@
 import { TFrontendPluginProps, TGetPluginStaticProps } from '@cromwell/core';
 import { iconFromPath, Link } from '@cromwell/core-frontend';
-import { Collapse, IconButton, MenuItem, Popover, useMediaQuery, useTheme } from '@mui/material';
+import { Collapse, IconButton, MenuItem, Popover, useMediaQuery } from '@mui/material';
 import React, { useState } from 'react';
 
 import { TMainMenuItem, TMainMenuSettings } from '../types';
@@ -13,8 +13,7 @@ const MainMenu = (props: TFrontendPluginProps<TMainMenuSettings>) => {
     const items = props?.data?.items ?? [];
     const [activeItem, setActiveItem] = useState<string>('none');
     const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
+    const isMobile = useMediaQuery('(max-width:600px)');
 
     const handlePopoverOpen = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
         setAnchorEl(event.currentTarget);

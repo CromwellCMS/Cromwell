@@ -46,7 +46,7 @@ const Select = withStyles({
 
 export const Header = () => {
     const cmsConfig = getCmsSettings();
-    const currencies: TCurrency[] = cmsConfig?.currencies ?? [];
+    const currencies: TCurrency[] | undefined = cmsConfig?.currencies;
     const cstore = getCStore();
     const [itemsInCart, setItemsInCart] = useState(cstore.getCart().length);
     const [singInOpen, setSingInOpen] = useState(false);
@@ -113,18 +113,21 @@ export const Header = () => {
                 <CContainer id="header_22" className={`${commonStyles.content} ${styles.topPanelContent}`}>
                     <CContainer className={styles.leftBlock} id="header_11">
                         <CContainer id="header_01" className={styles.currencyOption}>
-                            <FormControl className={styles.formControl}>
-                                <Select
-                                    className={styles.select}
-                                    value={currency ?? ''}
-                                    variant="standard"
-                                    onChange={(event) => handleCurrencyChange(event)}
-                                >
-                                    {currencies && Array.isArray(currencies) && currencies.map(curr => (
-                                        <MenuItem value={curr.tag} key={curr.tag}>{curr.tag}</MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
+                            {!!currencies?.length && (
+                                <FormControl className={styles.formControl}>
+                                    <Select
+                                        className={styles.select}
+                                        value={currency ?? currencies[0]?.tag}
+                                        variant="standard"
+                                        onChange={(event) => handleCurrencyChange(event)}
+                                        color="primary"
+                                    >
+                                        {currencies && Array.isArray(currencies) && currencies.map(curr => (
+                                            <MenuItem value={curr.tag} key={curr.tag}>{curr.tag}</MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                            )}
                         </CContainer>
                         <CContainer id="header_51">
                             <Tooltip title="Viewed items">

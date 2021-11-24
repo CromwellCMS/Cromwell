@@ -27,6 +27,7 @@ module.exports = {
         "@typescript-eslint/no-explicit-any": "off",
         "@typescript-eslint/no-var-requires": "off",
         "react/prop-types": "off",
+        "react/display-name": "off",
         "no-empty": "off",
         "no-console": ["warn", { "allow": ["warn", "error"] }],
     }

@@ -1,13 +1,4 @@
-import {
-    getBlockInstance,
-    TCromwellPage,
-    TGetStaticProps,
-    TPagedList,
-    TPagedParams,
-    TPost,
-    TPostFilter,
-    TTag,
-} from '@cromwell/core';
+import { getBlockInstance, TGetStaticProps, TPagedList, TPagedParams, TPost, TPostFilter, TTag } from '@cromwell/core';
 import { CContainer, CList, getGraphQLClient, getGraphQLErrorInfo, TCList } from '@cromwell/core-frontend';
 import { Autocomplete, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from '@mui/material';
 import React, { useRef, useState } from 'react';
@@ -18,16 +9,18 @@ import layoutStyles from '../components/layout/Layout.module.scss';
 import { Pagination } from '../components/pagination/Pagination';
 import { PostCard } from '../components/postCard/PostCard';
 import { handleGetFilteredPosts } from '../helpers/getPosts';
+import { removeUndefined } from '../helpers/removeUndefined';
 import commonStyles from '../styles/common.module.scss';
 import styles from '../styles/pages/Blog.module.scss';
 
+import type { TPageWithLayout } from './_app';
 
-interface BlogProps {
+interface SearchPageProps {
     posts?: TPagedList<TPost>;
     tags?: TTag[];
 }
 
-const SearchPage: TCromwellPage<BlogProps> = (props) => {
+const SearchPage: TPageWithLayout<SearchPageProps> = (props) => {
     const filterInput = useRef<TPostFilter>({});
     const listId = 'Blog_list_01';
     const publishSort = useRef<"ASC" | "DESC">('DESC');
@@ -73,81 +66,87 @@ const SearchPage: TCromwellPage<BlogProps> = (props) => {
     });
 
     return (
-        <Layout>
-            <CContainer className={commonStyles.content} id="search_01">
-                <CContainer className={styles.filter} id="search_02">
-                    <div className={styles.filterLeft}>
-                        <TextField
-                            className={styles.filterItem}
-                            placeholder="Search by title"
-                            id={titleSearchId}
-                            variant="standard"
-                            onChange={handleTitleInput}
-                        />
-                        <Autocomplete
-                            multiple
-                            freeSolo
-                            value={filterInput.current.tagIds?.map(id => props.tags?.find(tag => tag.id === id)) ?? []}
-                            className={styles.filterItem}
-                            options={props.tags ?? []}
-                            getOptionLabel={(option) => option?.name ?? ''}
-                            style={{ width: 300 }}
-                            onChange={handleChangeTags}
-                            renderInput={(params) => (
-                                <TextField
-                                    {...params}
-                                    variant="standard"
-                                    placeholder="Tags"
-                                />
-                            )}
-                        />
-                    </div>
-                    <FormControl className={styles.filterItem}>
-                        <InputLabel className={styles.sortLabel}>Sort</InputLabel>
-                        <Select
-                            style={{ width: '100px' }}
-                            onChange={handleChangeSort}
-                            variant="standard"
-                            defaultValue='Newest'
-                        >
-                            {['Newest', 'Oldest'].map(sort => (
-                                <MenuItem value={sort} key={sort}>{sort}</MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-                </CContainer>
-                <CContainer style={{ marginBottom: '20px' }} id="search_03">
-                    <CList<TPost>
-                        id={listId}
-                        ListItem={(props) => (
-                            <div className={styles.postWrapper}>
-                                <PostCard onTagClick={handleTagClick} data={props.data} key={props.data?.id} />
-                            </div>
-                        )}
-                        usePagination
-                        useShowMoreButton
-                        useQueryPagination
-                        disableCaching
-                        pageSize={20}
-                        scrollContainerSelector={`.${layoutStyles.Layout}`}
-                        firstBatch={props.posts}
-                        loader={handleGetPosts}
-                        cssClasses={{
-                            page: styles.postList
-                        }}
-                        elements={{
-                            pagination: Pagination
-                        }}
+        <CContainer className={commonStyles.content} id="search_01">
+            <CContainer className={styles.filter} id="search_02">
+                <div className={styles.filterLeft}>
+                    <TextField
+                        className={styles.filterItem}
+                        placeholder="Search by title"
+                        id={titleSearchId}
+                        variant="standard"
+                        onChange={handleTitleInput}
                     />
-                </CContainer>
+                    <Autocomplete
+                        multiple
+                        freeSolo
+                        value={filterInput.current.tagIds?.map(id => props.tags?.find(tag => tag.id === id)) ?? []}
+                        className={styles.filterItem}
+                        options={props.tags ?? []}
+                        getOptionLabel={(option: any) => option?.name ?? ''}
+                        style={{ width: 300 }}
+                        onChange={handleChangeTags}
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                variant="standard"
+                                placeholder="Tags"
+                            />
+                        )}
+                    />
+                </div>
+                <FormControl className={styles.filterItem}>
+                    <InputLabel className={styles.sortLabel}>Sort</InputLabel>
+                    <Select
+                        style={{ width: '100px' }}
+                        onChange={handleChangeSort}
+                        variant="standard"
+                        defaultValue='Newest'
+                    >
+                        {['Newest', 'Oldest'].map(sort => (
+                            <MenuItem value={sort} key={sort}>{sort}</MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
             </CContainer>
-        </Layout>
+            <CContainer style={{ marginBottom: '20px' }} id="search_03">
+                <CList<TPost>
+                    id={listId}
+                    ListItem={(props) => (
+                        <div className={styles.postWrapper}>
+                            <PostCard onTagClick={handleTagClick} data={props.data} key={props.data?.id} />
+                        </div>
+                    )}
+                    usePagination
+                    useShowMoreButton
+                    useQueryPagination
+                    disableCaching
+                    pageSize={20}
+                    scrollContainerSelector={`.${layoutStyles.Layout}`}
+                    firstBatch={props.posts}
+                    loader={handleGetPosts}
+                    cssClasses={{
+                        page: styles.postList
+                    }}
+                    elements={{
+                        pagination: Pagination
+                    }}
+                />
+            </CContainer>
+        </CContainer>
     );
+}
+
+SearchPage.getLayout = (page) => {
+    return (
+        <Layout>
+            {page}
+        </Layout >
+    )
 }
 
 export default SearchPage;
 
-export const getStaticProps: TGetStaticProps = async (): Promise<BlogProps> => {
+export const getStaticProps: TGetStaticProps<SearchPageProps> = async () => {
     const client = getGraphQLClient();
 
     let posts: TPagedList<TPost> | undefined;
@@ -164,8 +163,10 @@ export const getStaticProps: TGetStaticProps = async (): Promise<BlogProps> => {
         console.error('SearchPage::getStaticProps', getGraphQLErrorInfo(e))
     }
     return {
-        posts,
-        tags
+        props: removeUndefined({
+            posts,
+            tags
+        })
     }
 }
 

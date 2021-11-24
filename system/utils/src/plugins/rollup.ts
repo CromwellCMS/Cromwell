@@ -552,13 +552,13 @@ export const rollupPluginCromwellFrontend = async (settings?: {
                     return mergedBindings;
                 }
 
-                const importBingingsCache: Record<string, Record<string, string[]>> = {}
+                const importBindingsCache: Record<string, Record<string, string[]>> = {}
                 const getImportBingingsForModule = (modId: string): Record<string, string[]> => {
                     modId = normalizePath(modId);
-                    if (importBingingsCache[modId]) return importBingingsCache[modId];
+                    if (importBindingsCache[modId]) return importBindingsCache[modId];
 
                     let importedBindings = {};
-                    importBingingsCache[modId] = {};
+                    importBindingsCache[modId] = {};
                     if (importsInfo[modId]) {
                         Object.keys(importsInfo[modId].externals).forEach(libName => {
                             if (!isExternalForm(libName)) return;
@@ -577,7 +577,7 @@ export const rollupPluginCromwellFrontend = async (settings?: {
                             importedBindings = mergeBindings(importedBindings, internalBinds);
                         })
                     }
-                    importBingingsCache[modId] = importedBindings;
+                    importBindingsCache[modId] = importedBindings;
                     return importedBindings;
                 }
 

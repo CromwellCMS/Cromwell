@@ -18,21 +18,22 @@
     "watch": "npx --no-install cromwell b -w"
   },
   "dependencies": {
+    "@emotion/cache": "11.5.0",
+    "@emotion/server": "11.4.0",
     "@mui/icons-material": "5.0.4",
     "@mui/lab": "5.0.0-alpha.51",
     "@mui/material": "5.0.4",
     "@mui/styles": "5.0.1",
-    "date-fns": "2.25.0",
     "mobx": "6.3.2",
     "mobx-react": "7.2.0",
     "reset-css": "5.0.1"
   },
   "devDependencies": {
     "@apollo/client": "3.2.1",
-    "@cromwell/cli": "2.0.5",
-    "@cromwell/core": "2.0.4",
-    "@cromwell/core-frontend": "2.0.4",
-    "@cromwell/utils": "2.0.4",
+    "@cromwell/cli": "^2.0.5",
+    "@cromwell/core": "^2.0.4",
+    "@cromwell/core-frontend": "^2.0.4",
+    "@cromwell/utils": "^2.0.4",
     "@rollup/plugin-alias": "3.1.5",
     "@rollup/plugin-commonjs": "20.0.0",
     "@rollup/plugin-json": "4.1.0",
@@ -52,6 +53,7 @@
     "@typescript-eslint/parser": "4.29.2",
     "autoprefixer": "10.3.1",
     "clsx": "1.1.1",
+    "date-fns": "2.25.0",
     "eslint": "7.32.0",
     "eslint-config-next": "11.0.1",
     "eslint-plugin-react": "7.24.0",
@@ -93,7 +95,8 @@
       "@mui/styles",
       "@mui/lab",
       "date-fns",
-      "throttle-debounce"
+      "throttle-debounce",
+      "tslib"
     ],
     "firstLoadedDependencies": [
       "mobx",

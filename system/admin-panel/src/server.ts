@@ -44,9 +44,6 @@ const start = async () => {
     if (!isDevelopment && !isProduction)
         throw (`devServer::startDevServer: process.argv[2] is invalid - ${env} valid values - "development" and "production"`);
 
-    const { downloader } = require('@cromwell/utils/build/downloader');
-    await downloader();
-
     const projectPublicDir = normalizePath(getPublicDir());
     const publicDir = normalizePath(getAdminPanelWebPublicDir());
     const webTempDir = normalizePath(getAdminPanelTempDir());

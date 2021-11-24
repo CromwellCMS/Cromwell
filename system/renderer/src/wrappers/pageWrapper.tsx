@@ -8,60 +8,31 @@ import {
     TDefaultPageName,
     TPageStats,
 } from '@cromwell/core';
-import {
-    BlockStoreProvider,
-    CContainer,
-    cleanParseContext,
-    getModuleImporter,
-    getParserTransform,
-    getRestApiClient,
-    pageRootContainerId,
-} from '@cromwell/core-frontend';
+import { cleanParseContext, getModuleImporter, getParserTransform, getRestApiClient } from '@cromwell/core-frontend';
+import { NextPage } from 'next';
 import { NextRouter, withRouter } from 'next/router';
-import React, { useRef } from 'react';
+import React, { ReactNode, useRef } from 'react';
 import ReactHtmlParser from 'react-html-parser';
-import { isValidElementType } from 'react-is';
 
-import { CrwDocumentContext, patchDocument } from '../helpers/document';
+import { CrwDocumentContext } from '../helpers/document';
 import { useForceUpdate } from '../helpers/helpers';
 import { usePatchForRedirects } from '../helpers/redirects';
-import { TPageExports } from '../types';
 
 type PageProps = Partial<TCromwellPageCoreProps> & {
-    router: NextRouter;
+    router?: NextRouter;
+    children?: ReactNode;
 }
 
 const DefaultPageWrapperComp = ((props: any) => props.children ?? <></>);
-const DefaultRootComp = ((props: any) => props.children);
 
-export const getPage = (pageName: TDefaultPageName | string, pageExports: TPageExports): TCromwellPage => {
-    const PageComponent = pageExports?.default;
-    if (!PageComponent) throw new Error('getPage !PageComponent');
-    if (!isValidElementType(PageComponent)) throw new Error('getPage PageComponent !isValidElementType');
-
-    patchDocument();
-
-    if (pageName === '_app') {
-        return (props: PageProps) => {
-            const RootComp: React.ComponentType = getStoreItem('rendererComponents')?.root ?? DefaultRootComp;
-            return (
-                <BlockStoreProvider value={{ instances: {} }}>
-                    <RootComp>
-                        <CContainer id={pageRootContainerId} isConstant={true}>
-                            <PageComponent {...props} />
-                        </CContainer>
-                    </RootComp >
-                </BlockStoreProvider>
-            )
-        }
-    }
+export const withCromwellPage = (OriginalPage: { default: TCromwellPage }): NextPage & { originalPage?: NextPage } => {
 
     const pageComp = (props: PageProps): JSX.Element => {
         const { plugins, pageConfig, themeCustomConfig,
-            childStaticProps, cmsSettings, themeHeadHtml,
+            cmsSettings, themeHeadHtml,
             themeFooterHtml, documentContext,
             palette, defaultPages, pageConfigName,
-            resolvedPageRoute, slug } = props;
+            resolvedPageRoute, slug } = props?.cmsProps ?? {};
 
         if (!isServer() && documentContext) {
             if (!documentContext.fullUrl)
@@ -139,7 +110,7 @@ export const getPage = (pageName: TDefaultPageName | string, pageExports: TPageE
             apiClient?.post(`v1/cms/view-page`, pageStats, { disableLog: true }).catch(() => null);
         }
 
-        const pageCompProps = forcedChildStaticProps.current ?? childStaticProps;
+        const pageCompProps = forcedChildStaticProps.current ?? props;
         const Head = getModuleImporter()?.modules?.['next/head']?.default;
         const pageId = documentContext?.fullUrl ?? resolvedPageRoute as string;
         const parserTransformHead = getParserTransform(pageId);
@@ -168,7 +139,7 @@ export const getPage = (pageName: TDefaultPageName | string, pageExports: TPageE
                     )}
                 </Head>
                 <PageWrapperComp>
-                    <PageComponent {...pageCompProps} {...props} />
+                    <OriginalPage.default {...pageCompProps} {...props} />
                     {cmsSettings?.footerHtml && ReactHtmlParser(cmsSettings.footerHtml, { transform: parserTransformBody })}
                     {themeFooterHtml && ReactHtmlParser(themeFooterHtml, { transform: parserTransformBody })}
                     {pageConfig?.footerHtml && ReactHtmlParser(pageConfig?.footerHtml, { transform: parserTransformBody })}
@@ -201,17 +172,15 @@ export const getPage = (pageName: TDefaultPageName | string, pageExports: TPageE
         return content;
     }
 
-
-    const HocComp = withRouter(pageComp);
+    const HocComp = withRouter<PageProps & { router: NextRouter }>(pageComp);
 
     const HocPage = (props: PageProps) => (<CrwDocumentContext.Consumer>
-        {value => <HocComp {...props} documentContext={value} />}
+        {value => <HocComp {...props} cmsProps={{
+            ...(props?.cmsProps ?? {}),
+            documentContext: value,
+        }} />}
     </CrwDocumentContext.Consumer>);
 
-    const properties = Object.getOwnPropertyNames(PageComponent);
-    for (const prop of properties) {
-        if (!['length', 'name'].includes(prop))
-            HocPage[prop] = PageComponent[prop];
-    }
+    HocPage.originalPage = OriginalPage.default;
     return HocPage;
 }
