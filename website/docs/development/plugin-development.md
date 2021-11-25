@@ -535,16 +535,26 @@ npx cromwell build -w
 Go to Admin panel and make sure your Plugin appeared at `/admin/plugins` page.  
 The settings icon should open `PluginSettings` widget.
 
+
 ## Customize bundler
 
-We use Rollup under the hood to build Plugins. Configurations set in `cromwell.config.js` [similar to Themes](/docs/development/theme-development#customize-bundler), but there are more types of options:
-- `main` - Options used by default for all bundles.
+We use [Rollup](https://rollupjs.org) under the hood to build Plugins. This means you need to change Rollup config if you want to customize your build. This config is a part of `cromwell.config.js` 
+
+Open `cromwell.config.js`. You can see there's `rollupConfig` function that returns configuring object in the format: 
+```javascript
+{
+  main: RollupOptions,
+  backend: RollupOptions
+}
+```
+Usually, `RollupOptions` is an object exported from [Rollup Config File](https://rollupjs.org/guide/en/#configuration-files). CMS builder needs different configs for different targets, so your `rollupConfig` function should return an object with configs labeled by properties:
+- `main` - Options used by default for all types of bundles.
 - `adminPanel` - Options that replace main only for Admin panel bundles.
-- `frontend` - Options for frontend bundle.
+- `frontend` - Options for frontend bundle ().
 - `backend` - Options for backend bundle.
 
-:::important
-All bundles built with these options will be executed as-is. So you have to apply appropriate optimizations such as code minification (terser) and transpilation to older versions of JavaScript like ES5 via Babel/Typescript compiler in the `cromwell.config.js`.
+:::note
+For there are no additional optimizations applied. So you have to setup them in the config. You most probably need code minification (terser) and transpilation to older versions of JavaScript via Babel/Typescript compiler.
 :::
 
 ## Publish

@@ -1,3 +1,5 @@
+import { collectPlugins } from '@cromwell/core-backend';
+
 import { AuthController } from '../controllers/auth.controller';
 import { CmsController } from '../controllers/cms.controller';
 import { MockController } from '../controllers/mock.controller';
@@ -10,7 +12,6 @@ import { MockService } from '../services/mock.service';
 import { PluginService } from '../services/plugin.service';
 import { RendererService } from '../services/renderer.service';
 import { ThemeService } from '../services/theme.service';
-import { collectPlugins } from './collect-plugins';
 
 export const getControllers = async (dev?: boolean) => {
     const def: any[] = [

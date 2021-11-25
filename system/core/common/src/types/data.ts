@@ -216,6 +216,7 @@ export type TCmsConfig = {
     redirects?: TCmsRedirect[];
     rewrites?: TCmsRedirect[];
     cmsInfo?: TCmsInfo;
+    monolith?: boolean;
 };
 
 /**

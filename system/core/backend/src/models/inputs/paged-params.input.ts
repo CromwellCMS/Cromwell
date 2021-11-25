@@ -5,16 +5,15 @@ import { TPagedParams } from '@cromwell/core';
 export class PagedParamsInput<T> implements TPagedParams<T> {
 
     @Field(() => Int, { nullable: true })
-    pageNumber: number;
+    pageNumber?: number;
 
     @Field(() => Int, { nullable: true })
-    pageSize: number;
+    pageSize?: number;
 
     @Field(() => String, { nullable: true })
-    orderBy: keyof T;
+    orderBy?: keyof T;
 
     @Field(() => String, { nullable: true })
-    order: 'ASC' | 'DESC';
-
+    order?: 'ASC' | 'DESC';
 }
 

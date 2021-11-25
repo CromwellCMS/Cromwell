@@ -173,7 +173,7 @@ export const rendererStartWatchDev = async (themeName: string, port?: string) =>
 
     await startService({
         path: rendererStartupPath,
-        name: cacheKeys.renderer,
+        name: cacheKeys.rendererBuilder,
         args: [command, `--theme-name=${themeName}`, port ? '--port=' + port : ''],
     });
 }

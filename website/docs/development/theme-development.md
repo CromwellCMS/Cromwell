@@ -21,22 +21,13 @@ npx @cromwell/cli create --type theme my-theme-name
 
 - **`cromwell.config.js`** - [Optional config file for your Theme/Plugin.](/docs/development/module-config)  
 - **`src/pages`** - Directory for Next.js pages. By default, there's `index.tsx` created by CLI. You can rename it to .jsx if you don't want to work with TypeScript.
-- **`static`** - Directory for static files (images). After installation of this Theme by end-user files from `static` directory will be copied into `public` directory of the CMS, from where they will be served to the frontend. In your code you can access static files of your Theme through the following pattern: `/themes/${packageName}/${pathInStaticDir}`.  
+- **`static`** - Directory for static files (images). Unlike `public` directory used by Next.js, `static` should be distributed with your package. After installation by end-user files from `static` directory will be copied into `public` directory of the CMS, from where they will be served to the frontend. You can access static files of your Theme through the following pattern: `/themes/${packageName}/${pathInStaticDir}`.  
 Image example:  `<img src="/themes/@cromwell/theme-store/free_shipping.png" />`
 
 
 ## Compile
 
-To make your Theme work with the CMS we need to run additional [pre-build phase](#pre-build-phase). With that, you cannot directly use Next.js CLI, but Cromwell CLI has a replacement that works in a similar way.  
-
-First you may optionally start the CMS to retrieve data/plugins from API server:
-```bash
-npx cromwell start --detached 
-```
-Or via shortcut:
-```bash
-npx crw s -d
-```
+To make your Theme work with the CMS we generate wrappers and meta files. These files help to inject settings from the admin panel (that's how theme editor works) and make [Frontend dependencies](/docs/development/frontend-dependencies) sharable between plugins. With that, you cannot directly use Next.js CLI, but Cromwell CLI has a replacement that works in a similar way and invokes Next.js CLI under the hood.  
 
 To start Next.js development server with watcher (same as `next dev`):
 ```bash
@@ -48,7 +39,7 @@ npx crw b -w
 ```
 Open [http://localhost:4256/](http://localhost:4256/) to see your website.  
 
-When your Theme is ready and you want to try it with the CMS in production environment, your need to build it. Same as `next build`:
+When your Theme is ready and you want to try it with the CMS in production environment, your need to build it. Same as `next build` run:
 ```bash
 npx cromwell build
 ```
@@ -56,32 +47,246 @@ npx cromwell build
 Now you can go into Admin panel > Themes > click "Set active" on your Theme card. It will change active CMS Theme at [http://localhost:4016/](http://localhost:4016/)
 
 
-## Pre-build phase
+## Data fetching
 
-This is a multipurpose phase that happens before we run Webpack compiler of Next.js.
+There are two data fetching methods: via requests to API server and via [TypeORM](https://typeorm.io/).
 
-1. We wrap your pages in a root component that requests and injects settings from Admin panel such as custom head HTML, metadata (SEO), settings for Plugins, etc.
+### API
 
-2. Cromwell CMS needs to generate meta info files on your source code. In order to parse your files, we need to transpile them into plain JavaScript first.
+This way is simplest and it allows you to work with GraphQL. Another advantage is that load is distributed between API server and Next.js server.   
 
-3. We make your Frontend dependencies available to re-use for Plugins. See [Frontend dependencies](/docs/development/frontend-dependencies) page for details.
-
-
-## Customize bundler
-
-We use [Rollup](https://rollupjs.org) for the pre-build phase. This means you need to change Rollup config if you want to customize your build. The purpose of the phase is to build plain JavaScript, so you won't need to customize Next.js's Webpack config.  
-
-By default CMS build command can transpile React and handle CSS/SASS by passing stylesheets to Next.js.  
-After generating Theme template with Cromwell CLI, you will also have TypeScript compiler in the build config.
-
-Open `cromwell.config.js`. You can see there's `rollupConfig` function that returns configuring object in the format: 
-```javascript
+In development you will probably need to see list of all available API methods. For that start the CMS in development mode. In your project root create `cmsconfig.json` file with the content:
+```json
 {
-    main: RollupOptions,
+  "env": "dev"
 }
 ```
-Usually, `RollupOptions` is an object exported from [Rollup Config File](https://rollupjs.org/guide/en/#configuration-files). But might need to use different configs, so we return them in the `rollupConfig` labeled by properties.
-- `main` - Options used by default for all types of bundles.
+
+Now start the CMS:
+```bash
+npx cromwell start --detached 
+```
+Or via shortcut:
+```bash
+npx crw s -d
+```
+
+For data flow the CMS uses GraphQL. You can see and play with requests in the [Apollo](https://www.apollographql.com/) Graph sandbox. Go to http://localhost:4016/api/graphql and it will suggest you to start one.
+
+Additionally there is Nest.js REST API designed for other CMS transaction. You can open swagger at http://localhost:4016/api/api-docs
+
+
+To simplify work with API Server, CMS provides API client from `@cromwell/core-frontend` package. You can use it on client or server.  
+For example, you want to render a page with 3 recent posts:  
+
+```tsx title="src/pages/index.tsx"
+import { TCromwellPage, TGetStaticProps, TPost } from '@cromwell/core';
+import { getGraphQLClient } from '@cromwell/core-frontend';
+
+type MyPageProps = {
+    latestPosts?: TPost[];
+}
+
+const MyPage: TCromwellPage<MyPageProps> = (props) => {
+    return (<>
+        {props.latestPosts?.map(post => (
+            <p key={post.id}>{post.title}</p>
+        ))}
+    </>)
+}
+
+export default MyPage;
+
+export const getStaticProps: TGetStaticProps<MyPageProps> = async (context) => {
+    const client = getGraphQLClient();
+    const posts = await client.getFilteredPosts({
+        pagedParams: {
+            pageSize: 3,
+        },
+        filterParams: {
+            sorts: [
+                {
+                    key: 'publishDate',
+                    sort: 'DESC'
+                }
+            ]
+        }
+    });
+
+    return {
+        props: {
+            latestPosts: posts.elements
+        }
+    }
+}
+```
+
+In the example above `getFilteredPosts` used a default fragment for us. But if we want to leverage GraphQL we can provide a custom fragment for a Post: 
+
+```ts
+import { gql } from '@apollo/client';
+import { getGraphQLClient } from '@cromwell/core-frontend';
+
+const client = getGraphQLClient();
+
+const posts = await client.getFilteredPosts({
+    pagedParams: {
+        pageSize: 3,
+    },
+    filterParams: {
+        sorts: [
+            {
+                key: 'publishDate',
+                sort: 'DESC'
+            }
+        ]
+    },
+    customFragment: gql`
+        fragment PostListFragment on Post {
+            id
+            slug
+            title
+            createDate
+            excerpt
+            author {
+                id
+                email
+                fullName
+            }
+            tags {
+                name
+            }
+        }`,
+    customFragmentName: 'PostListFragment',
+});
+```
+
+Or we can make a completely custom request:
+```ts
+import { gql } from '@apollo/client';
+import { getGraphQLClient } from '@cromwell/core-frontend';
+
+const client = getGraphQLClient();
+
+const response = await client.query({
+    query: gql`
+        query getFilteredPosts($pagedParams: PagedParamsInput, $filterParams: PostFilterInput) {
+            getFilteredPosts(pagedParams: $pagedParams, filterParams: $filterParams) {
+                pagedMeta {
+                    ...PagedMetaFragment
+                }
+                elements {
+                    id
+                    isEnabled
+                    slug
+                    title
+                    mainImage
+                }
+            }
+        }
+        ${client.PagedMetaFragment}
+        `,
+    variables: {
+        pagedParams: {
+            pageSize: 3,
+        },
+        filterParams: {
+          sorts: [
+              {
+                  key: 'publishDate',
+                  sort: 'DESC'
+              }
+          ]
+      },
+    }
+}); 
+
+const posts = response?.data?.getFilteredPosts?.elements;
+```
+
+You can notice that some methods of GraphQLClient create or update database records. They all require authentication. To log in on frontend use REST API client:
+```ts
+import { getGraphQLClient, getRestApiClient } from '@cromwell/core-frontend';
+
+const user = await getRestApiClient().login({
+    email: 'email',
+    password: 'password'
+});
+
+// If user is an author or administrator you will be able to create a post:
+getGraphQLClient().createPost({
+    title: 'title',
+    /** ... */
+});
+```
+
+[See API docs](https://cromwellcms.com/docs/api/classes/frontend.CGraphQLClient) for the full list of methods.  
+Also see [custom data](https://cromwellcms.com/docs/features/custom-data) about how to retrieve data of custom fields and entities.  
+
+For Theme authors it's recommended to use API clients. If clients are not enough you can extend API server by [making Plugins](/docs/development/plugin-development#backend).  
+If it's still not what you want and you are building your own app, there is a second option.
+
+### Monolithic data fetching
+
+This is yet-to-be-improved approach and it is disabled by default. To connect Next.js server to your database, add an option to your `cmsconfig.json` and restart the CMS 
+```json title="cmsconfig.json"
+{
+  "monolith": true
+}
+```
+
+Now you can use backend tools from `@cromwell/core-backend` or make any custom query with TypeORM.
+
+```tsx
+import { TCromwellPage, TGetStaticProps, TPost, nodeRequire } from '@cromwell/core';
+declare const __non_webpack_require__: (name: string) => any; 
+
+type MyPageProps = {
+    latestPosts?: TPost[];
+}
+
+const MyPage: TCromwellPage<MyPageProps> = (props) => {
+    return (<>
+        {props.latestPosts?.map(post => (
+            <p key={post.id}>{post.title}</p>
+        ))}
+    </>)
+}
+
+export default MyPage;
+
+export const getStaticProps: TGetStaticProps<MyPageProps> = async (context) => {
+    // We use __non_webpack_require__ to avoid processing heavy modules by Webpack
+    // since they will be present in user backend environment anyway.
+    const typeorm: typeof import('typeorm') = __non_webpack_require__('typeorm');
+    const coreBackend: typeof import('@cromwell/core-backend') = __non_webpack_require__('@cromwell/core-backend');
+
+    // Use repository methods
+    const posts = await typeorm.getCustomRepository(coreBackend.PostRepository).getFilteredPosts({
+        pageSize: 3,
+    }, {
+        sorts: [
+            {
+                key: 'publishDate',
+                sort: 'DESC'
+            }
+        ]
+    });
+
+    // Use query builder
+    typeorm.getManager().createQueryBuilder(coreBackend.Post.metadata.tablePath).select(['id'])
+
+    // Execute raw SQL
+    typeorm.getManager().query('SELECT * FROM crw_post')
+
+    return {
+        props: {
+            latestPosts: posts.elements
+        }
+    }
+}
+```
+[See API docs](https://cromwellcms.com/docs/api/modules/backend) for all available backend classes and functions.
 
 
 ## Theme Editor support

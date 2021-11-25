@@ -4,7 +4,7 @@ import { isAbsolute, resolve } from 'path';
 import { cmsPackageName } from './constants';
 import { readPackage, resolvePackageJsonPath } from './paths';
 
-export const readCmsModules = async () => {
+export const readCmsModules = async (dir?: string) => {
     const themes: string[] = [];
     const plugins: string[] = [];
 
@@ -63,7 +63,7 @@ export const readCmsModules = async () => {
     }
 
     await readPackageCmsModules(cmsPackageName);
-    await readPackageCmsModules(resolve(process.cwd(), 'package.json'), true);
+    await readPackageCmsModules(resolve(dir ?? process.cwd(), 'package.json'), true);
 
     return {
         themes,

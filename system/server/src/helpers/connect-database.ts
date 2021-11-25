@@ -1,22 +1,17 @@
-import { setStoreItem } from '@cromwell/core';
 import {
+    connectDatabase as coreConnectDatabase,
     GenericPlugin,
     GenericTheme,
     getLogger,
     getModuleStaticDir,
     getPublicPluginsDir,
     getPublicThemesDir,
-    getServerDir,
-    getServerTempDir,
-    ORMEntities,
-    readCMSConfig,
     readCmsModules,
 } from '@cromwell/core-backend';
 import fs from 'fs-extra';
-import normalizePath from 'normalize-path';
 import { resolve } from 'path';
 import { Container } from 'typedi';
-import { ConnectionOptions, createConnection, getConnection, getCustomRepository, Logger } from 'typeorm';
+import { ConnectionOptions, getConnection, getCustomRepository } from 'typeorm';
 import { MysqlConnectionOptions } from 'typeorm/driver/mysql/MysqlConnectionOptions';
 import yargs from 'yargs-parser';
 
@@ -24,108 +19,19 @@ import { CmsService } from '../services/cms.service';
 import { MockService } from '../services/mock.service';
 import { PluginService } from '../services/plugin.service';
 import { ThemeService } from '../services/theme.service';
-import { collectPlugins } from './collect-plugins';
-import { DeepWriteable, Writeable } from './constants';
-import { getMigrationsDirName, loadEnv } from './settings';
+import { Writeable } from './constants';
+import { loadEnv } from './settings';
 
 const logger = getLogger();
+
 
 export const connectDatabase = async (ormConfigOverride?: Partial<Writeable<ConnectionOptions & MysqlConnectionOptions>>,
     awaitCheck?: boolean) => {
 
-    const args = yargs(process.argv.slice(2));
-    const cmsConfig = await readCMSConfig();
-    const tempDBPath = resolve(getServerTempDir(), 'db.sqlite3');
     const env = loadEnv();
+    await coreConnectDatabase({ ormConfigOverride, development: env.envMode === 'dev' });
 
-    const defaultOrmConfig: ConnectionOptions = {
-        type: "sqlite",
-        database: tempDBPath,
-        entityPrefix: 'crw_',
-        migrationsTableName: "crw_migrations",
-        cli: {
-            migrationsDir: "migrations/sqlite"
-        },
-        logging: ["error", "warn", "info", "migration"],
-        logger: {
-            logQuery: () => null,
-            logQueryError: logger.error,
-            logQuerySlow: logger.warn,
-            logSchemaBuild: logger.log,
-            logMigration: logger.info,
-            log: (level, message) => {
-                if (level === 'info') logger.info(message);
-                if (level === 'warn') logger.warn(message);
-                if (level === 'log') logger.log(message);
-            },
-        } as Logger,
-    }
-
-    let hasDatabasePath = false;
-    const serverDir = getServerDir();
-    if (cmsConfig?.orm?.database) hasDatabasePath = true;
-
-    let ormconfig: DeepWriteable<ConnectionOptions> = Object.assign({}, defaultOrmConfig, ormConfigOverride, cmsConfig.orm)
-
-    if (!ormconfig.cli) ormconfig.cli = {};
-    ormconfig.cli.migrationsDir = getMigrationsDirName(ormconfig.type);
-
-    if (!ormconfig || !ormconfig.type) throw new Error('Invalid ormconfig');
-    setStoreItem('dbInfo', {
-        dbType: ormconfig.type
-    });
-
-    // Adjust unset options for different DBs
-    const adjustedOptions: Partial<DeepWriteable<ConnectionOptions & MysqlConnectionOptions>> = {};
-    adjustedOptions.migrationsRun = true;
-    adjustedOptions.synchronize = false;
-
-    if (ormconfig.type === 'sqlite') {
-        if (env.envMode === 'dev') {
-            adjustedOptions.synchronize = true;
-            adjustedOptions.migrationsRun = false;
-        }
-
-        if (!hasDatabasePath) {
-            if (!await fs.pathExists(defaultOrmConfig.database) && serverDir) {
-                // Server probably was launched at the first time and has no DB created
-                // Use mocked DB
-                const mockedDBPath = resolve(serverDir, 'db.sqlite3');
-                if (await fs.pathExists(mockedDBPath)) {
-                    await fs.copy(mockedDBPath, tempDBPath);
-                }
-            }
-        }
-    }
-
-    if (ormconfig.type === 'mysql' || ormconfig.type === 'mariadb') {
-        adjustedOptions.timezone = '+0';
-    }
-
-    if (ormconfig.type === 'postgres') {
-        adjustedOptions.timezone = '+0';
-    }
-
-    ormconfig = Object.assign(adjustedOptions, ormconfig);
-
-    const pluginExports = await collectPlugins(true);
-
-    const connectionOptions: ConnectionOptions = {
-        ...(ormconfig as ConnectionOptions),
-        entities: [
-            ...ORMEntities,
-            ...(pluginExports.entities ?? [] as any),
-            ...(ormconfig?.entities ?? [])
-        ],
-        migrations: [
-            ...(pluginExports.migrations ?? [] as any),
-            (serverDir && ormconfig?.cli?.migrationsDir) ?
-                normalizePath(resolve(serverDir, ormconfig.cli.migrationsDir)) + '/*.js' : '',
-        ].filter(it => it && it !== ''),
-    };
-
-    if (connectionOptions) await createConnection(connectionOptions);
-
+    const args = yargs(process.argv.slice(2));
     const checking = checkData(args.init);
     if (awaitCheck) await checking;
 }

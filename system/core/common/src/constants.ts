@@ -147,3 +147,5 @@ export const systemPackages = [
     '@cromwell/server',
     '@cromwell/utils',
 ] as const;
+
+export const nodeRequire = ((name: string) => eval(`require('${name}');`)) as NodeRequire;
