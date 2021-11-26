@@ -7,7 +7,7 @@ import cookie from 'cookie';
 import fs from 'fs-extra';
 import { createServer } from 'http';
 import next from 'next';
-import { join, resolve } from 'path';
+import { join } from 'path';
 import send from 'send';
 import { parse } from 'url';
 

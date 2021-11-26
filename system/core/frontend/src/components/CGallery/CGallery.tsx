@@ -12,6 +12,7 @@ import {
     ImageWithZoom,
     Slide,
     Slider,
+    ImageProps,
     WithStore,
 } from 'pure-react-carousel';
 import React, { useContext, useEffect } from 'react';
@@ -27,6 +28,8 @@ export type TCGalleryProps = {
     className?: string;
     shouldComponentUpdate?: boolean;
 } & TCromwellBlockProps;
+
+export type TImageComponent = React.ComponentClass<Partial<ImageProps>>;
 
 /** @internal */
 class CarouselStoreSetterRaw extends React.Component<CarouselInjectedProps & {
@@ -104,7 +107,7 @@ export class CGallery extends React.Component<TCGalleryProps> {
         this.thumbsId = `${this.galleryId}_thumbs`;
 
         if (!gallerySettings || !(gallerySettings.images || gallerySettings.slides)) return <></>;
-        const Image = gallerySettings.zoom ? ImageWithZoom : CarouselImage;
+        const Image = (gallerySettings.zoom ? ImageWithZoom : CarouselImage) as TImageComponent;
 
         const totalSlides = gallerySettings.images?.length ?? gallerySettings.slides?.length ?? 0
         let visibleSlides = gallerySettings.visibleSlides ?? 1;
@@ -163,9 +166,7 @@ export class CGallery extends React.Component<TCGalleryProps> {
                                     style={containerHeight !== undefined ? {
                                         height: containerHeight + 'px',
                                     } : undefined}
-                                    overlayClassName={styles.imageOverlay}
                                     alt={img.alt}
-                                    hasMasterSpinner={true}
                                     className={clsx(gallerySettings?.backgroundSize === 'contain' ? styles.slideContain : styles.slideCover)}
                                 />
                             );

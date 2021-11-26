@@ -4,6 +4,7 @@ import { Rating } from '@mui/material';
 import { useRouter } from 'next/router';
 import React, { useEffect, useRef, useState } from 'react';
 
+import { appState } from '../../helpers/AppState';
 import { ProductProps } from '../../pages/product/[slug]';
 import { LoadBox } from '../loadbox/Loadbox';
 import { ProductActions } from './actions/ProductActions';
@@ -28,6 +29,7 @@ export default function ProductDetails(props: {
 
 
     const scrollToReviews = () => {
+        if (props.compact) return;
         document.getElementById(getBlockHtmlId('product_reviewsBlock'))?.scrollIntoView({ behavior: "smooth" });
     }
 
@@ -40,9 +42,11 @@ export default function ProductDetails(props: {
     })) || [{ src: '/themes/@cromwell/theme-store/no-photos.png' }];
 
     const onTitleClick = () => {
-        const productLink = `/product/${product?.slug ?? product?.id}`;
-        if (props.compact)
+        if (props.compact) {
+            const productLink = `/product/${product?.slug ?? product?.id}`;
             router.push(productLink);
+            appState.closeAllModals();
+        }
     }
 
     return (

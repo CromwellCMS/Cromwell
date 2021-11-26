@@ -21,8 +21,8 @@
     "watch": "npx --no-install cromwell b -w"
   },
   "dependencies": {
-    "@mui/material": "5.0.4",
-    "@mui/styles": "5.0.1"
+    "@mui/material": "5.2.1",
+    "@mui/styles": "5.2.1"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "20.0.0",

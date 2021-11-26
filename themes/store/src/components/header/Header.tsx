@@ -38,7 +38,7 @@ import { HeaderSearch } from './HeaderSearch';
 import { MobileHeader } from './MobileHeader';
 
 const Select = withStyles({
-    root: {
+    select: {
         fontSize: '1em',
         padding: '4px'
     }
@@ -186,7 +186,7 @@ export const Header = () => {
                                     >
                                         <div>
                                             <Link href="/account">
-                                                <MenuItem className={styles.optionsItem}>
+                                                <MenuItem className={styles.optionsItem} onClick={() => setUserOptionsOpen(false)}>
                                                     <AccountCircleOutlinedIcon />
                                                     <p>Your profile</p>
                                                 </MenuItem>
@@ -237,7 +237,7 @@ export const Header = () => {
             </CContainer>
             <CContainer id="header_24" className={styles.mainMenu}>
                 <CContainer className={`${commonStyles.content} ${styles.mainMenuContent}`} id="header_13">
-                    <CPlugin id="header_main_menu" />
+                    <CPlugin id="header_main_menu" pluginName={"@cromwell/plugin-main-menu"} />
                 </CContainer>
             </CContainer>
             <div className={styles.mobileHeader}>

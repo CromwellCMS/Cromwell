@@ -27,9 +27,10 @@
     "migration:generate:all-example": "npm run migration:generate:all --name=init"
   },
   "dependencies": {
-    "@mui/lab": "5.0.0-alpha.51",
-    "@mui/material": "5.0.4",
-    "@mui/styles": "5.0.1"
+    "@mui/lab": "5.0.0-alpha.57",
+    "@mui/material": "5.2.1",
+    "@mui/styles": "5.2.1",
+    "@mui/system": "5.2.1"
   },
   "devDependencies": {
     "@nestjs/testing": "8.0.6",
@@ -80,7 +81,8 @@
     "icon": "static/icon_email.png",
     "frontendDependencies": [
       "@mui/material",
-      "@mui/lab"
+      "@mui/lab",
+      "@mui/system"
     ]
   }
 }

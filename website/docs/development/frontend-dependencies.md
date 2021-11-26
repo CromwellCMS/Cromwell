@@ -33,7 +33,7 @@ You need to add Frontend dependencies into `frontendDependencies` array of your 
   "name": "your-plugin-name",
   "version": "1.0.0",
   "dependencies": {
-    "@mui/material": "4.12.3"
+    "@mui/material": "5.2.1"
   },
   "cromwell": {
     "type": "plugin",

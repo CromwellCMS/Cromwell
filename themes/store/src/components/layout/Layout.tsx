@@ -19,13 +19,7 @@ export default function Layout(props: TProps | undefined) {
     const router = useRouter?.();
 
     useEffect(() => {
-        if (appState.isCartOpen) appState.isCartOpen = false;
-        if (appState.isSignInOpen) appState.isSignInOpen = false;
-        if (appState.isCartOpen) appState.isCartOpen = false;
-        if (appState.isWishlistOpen) appState.isWishlistOpen = false;
-        if (appState.isCompareOpen) appState.isCompareOpen = false;
-        if (appState.isWatchedOpen) appState.isWatchedOpen = false;
-        if (appState.isQuickViewOpen) appState.isQuickViewOpen = false;
+        appState.closeAllModals();
     }, [router?.asPath]);
 
     return (
