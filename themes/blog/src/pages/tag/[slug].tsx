@@ -1,8 +1,17 @@
-import { getBlockInstance, TGetStaticProps, TPagedList, TPagedParams, TPost, TPostFilter, TTag } from '@cromwell/core';
+import {
+    getBlockInstance,
+    TCromwellBlock,
+    TGetStaticProps,
+    TPagedList,
+    TPagedParams,
+    TPost,
+    TPostFilter,
+    TTag,
+} from '@cromwell/core';
 import { CContainer, CList, getGraphQLClient, getGraphQLErrorInfo, LoadBox, TCList } from '@cromwell/core-frontend';
 import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import { useRouter } from 'next/router';
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 import Layout from '../../components/layout/Layout';
 import layoutStyles from '../../components/layout/Layout.module.scss';
@@ -29,12 +38,24 @@ const TagPage: TPageWithLayout<TagPageProps> = (props) => {
     const publishSort = useRef<"ASC" | "DESC">('DESC');
     const router = useRouter?.();
     const tag = props?.tag;
+    const listInst = useRef<TCromwellBlock<TCList> | undefined>();
+    const prevPath = useRef<string | undefined>();
 
     const resetList = () => {
         const list = getBlockInstance<TCList>(listId)?.getContentInstance();
         list?.clearState();
         list?.updateData();
     }
+
+    useEffect(() => {
+        if (prevPath.current) {
+            const list: TCList | undefined = listInst.current?.getContentInstance();
+            if (list) {
+                list.updateData();
+            }
+        }
+        prevPath.current = router?.asPath;
+    }, [router?.asPath]);
 
     const handleGetPosts = async (params: TPagedParams<TPost>): Promise<TPagedList<TPost> | undefined> => {
         params.orderBy = 'publishDate';
@@ -93,6 +114,7 @@ const TagPage: TPageWithLayout<TagPageProps> = (props) => {
                                     <PostCard data={props.data} key={props.data?.id} />
                                 </div>
                             )}
+                            blockRef={(block) => listInst.current = block}
                             usePagination
                             useShowMoreButton
                             useQueryPagination

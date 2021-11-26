@@ -19,6 +19,8 @@
     "watch": "npx --no-install cromwell b -w"
   },
   "dependencies": {
+    "@emotion/cache": "11.5.0",
+    "@emotion/server": "11.4.0",
     "@mui/lab": "5.0.0-alpha.57",
     "@mui/material": "5.2.1",
     "@mui/styles": "5.2.1",

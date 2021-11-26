@@ -41,17 +41,17 @@ export default function Breadcrumbs(props: {
 const StyledBreadcrumb = withStyles((theme: Theme) => ({
     root: {
         cursor: 'pointer',
-        backgroundColor: theme.palette.grey[250],
+        backgroundColor: 'rgba(0, 0, 0, 0.08)',
         height: theme.spacing(3),
-        color: theme.palette.grey[800],
-        fontWeight: theme.typography.fontWeightRegular,
+        color: '#424242',
+        fontWeight: 400,
         '&:hover, &:focus': {
-            backgroundColor: theme.palette.grey[600],
+            backgroundColor: '#757575',
             color: '#fff',
         },
         '&:active': {
             boxShadow: theme.shadows[1],
-            backgroundColor: emphasize(theme.palette.grey[600], 0.12),
+            backgroundColor: emphasize('#757575', 0.12),
             color: '#fff',
         },
     },
