@@ -91,3 +91,4 @@ export * from './helpers/theme-config';
 export * from './helpers/base-queries';
 export * from './helpers/plugin-settings';
 export * from './helpers/entity-meta';
+export * from './helpers/connect-database';

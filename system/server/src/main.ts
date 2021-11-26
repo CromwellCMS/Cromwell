@@ -1,6 +1,7 @@
 import 'reflect-metadata';
 
 import {
+    collectPlugins,
     getAuthSettings,
     getLogger,
     graphQlAuthChecker,
@@ -19,7 +20,6 @@ import getPort from 'get-port';
 import { buildSchema } from 'type-graphql';
 
 import { ExceptionFilter } from './filters/exception.filter';
-import { collectPlugins } from './helpers/collect-plugins';
 import { connectDatabase } from './helpers/connect-database';
 import { corsHandler } from './helpers/cors-handler';
 import { getResolvers } from './helpers/get-resolvers';

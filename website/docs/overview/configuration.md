@@ -88,6 +88,7 @@ In production it used by Next.js service to make API requests at server-side ren
 - **accessTokenExpirationTime** `: number` (`600`) - Time in seconds after which access token will be considered as expired.
 - **refreshTokenExpirationTime** `: number` (`1296000`) - Same as accessTokenExpirationTime, but for refresh JWT.
 - **serviceSecret** `: string` - Secret key used for interservice communications. Basically can be any string. Usually it generated automatically, but if for example, you host Next.js server on one dedicated server and API server on another, you must set manually the same serviceSecret key on both machines, otherwise requests from Next.js server will be unauthorized and rejected.
+- **monolith** `: boolean` - Enable monolithic mode. Next.js server will be connected to the database. 
 - **defaultSettings** `: Object` - Default values used to initialize database settings of the CMS on first launch.
     - **installed** `: boolean` (`false`) - If false, open installation window on admin panel visit until installation finished. Important to note that when there's "installed: false" in DB, all routes will be unprotected by authorization, which means anyone can open admin panel, configure new admin account or make any changes on other pages.
     - **themeName** `: string` (`@cromwell/theme-store`) - NPM package name of an initial theme to use.

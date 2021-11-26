@@ -1,12 +1,13 @@
 import { findRedirect, setStoreItem, TCmsSettings } from '@cromwell/core';
 import { getAuthSettings } from '@cromwell/core-backend/dist/helpers/auth-settings';
 import { readCMSConfig } from '@cromwell/core-backend/dist/helpers/cms-settings';
+import { connectDatabase } from '@cromwell/core-backend/dist/helpers/connect-database';
 import { getLogger } from '@cromwell/core-backend/dist/helpers/logger';
 import cookie from 'cookie';
 import fs from 'fs-extra';
 import { createServer } from 'http';
 import next from 'next';
-import { join } from 'path';
+import { join, resolve } from 'path';
 import send from 'send';
 import { parse } from 'url';
 
@@ -38,6 +39,16 @@ export const startNextServer = async (options?: {
         dir: options?.dir,
     });
 
+    if (config.monolith) {
+        try {
+            await connectDatabase({
+                development: config.env === 'dev',
+            });
+        } catch (error) {
+            logger.error(error);
+        }
+    }
+    
     const handle = app.getRequestHandler();
     await app.prepare();
 

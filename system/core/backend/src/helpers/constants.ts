@@ -1,4 +1,5 @@
 import { serviceLocator, TCmsConfig } from '@cromwell/core';
+import { ConnectionOptions } from 'typeorm';
 
 import { AttributeToProduct } from '../models/entities/attribute-product.entity';
 import { AttributeValue } from '../models/entities/attribute-value.entity';
@@ -115,3 +116,8 @@ export const defaultCmsConfig: TCmsConfig = {
 
 export const cmsPackageName = '@cromwell/cms';
 
+export const getMigrationsDirName = (dbType: ConnectionOptions['type']) => {
+    if (dbType === 'sqlite') return 'migrations/sqlite';
+    if (dbType === 'mysql' || dbType === 'mariadb') return 'migrations/mysql';
+    if (dbType === 'postgres') return 'migrations/postgres';
+}
