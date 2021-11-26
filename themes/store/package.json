@@ -20,10 +20,10 @@
   "dependencies": {
     "@emotion/cache": "11.5.0",
     "@emotion/server": "11.4.0",
-    "@mui/icons-material": "5.0.4",
-    "@mui/lab": "5.0.0-alpha.51",
-    "@mui/material": "5.0.4",
-    "@mui/styles": "5.0.1",
+    "@mui/icons-material": "5.2.0",
+    "@mui/lab": "5.0.0-alpha.57",
+    "@mui/material": "5.2.1",
+    "@mui/styles": "5.2.1",
     "mobx": "6.3.2",
     "mobx-react": "7.2.0",
     "reset-css": "5.0.1"
@@ -94,6 +94,7 @@
       "@mui/material",
       "@mui/styles",
       "@mui/lab",
+      "@mui/system",
       "date-fns",
       "throttle-debounce",
       "tslib"
@@ -105,6 +106,7 @@
       "react-resize-detector",
       "@mui/material",
       "@mui/styles",
+      "@mui/system",
       "react-toastify",
       "prop-types",
       "hoist-non-react-statics",

@@ -1,8 +1,8 @@
 import { getRestApiClient } from '@cromwell/core-frontend';
-import { Alert, AlertProps, Button, InputBase, Tooltip } from '@mui/material';
+import { Alert, AlertProps, Button, InputUnstyled, Tooltip } from '@mui/material';
 import React, { useState } from 'react';
 
-import { useStyles } from './styles';
+import { StyledInputElement, useStyles } from './styles';
 
 export default function NewsletterPlugin(): JSX.Element {
     const [email, setEmail] = useState('');
@@ -10,17 +10,10 @@ export default function NewsletterPlugin(): JSX.Element {
     const [canValidate, setCanValidate] = useState(false);
     const classes = useStyles();
 
-    const validateEmail = (email) => {
-        if (!canValidate) setCanValidate(true);
-
-        if (/\S+@\S+\.\S+/.test(email)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
+    const validateEmail = (email) => /\S+@\S+\.\S+/.test(email);
 
     const submit = async () => {
+        if (!canValidate) setCanValidate(true);
         if (!validateEmail(email)) return;
 
         const client = getRestApiClient();
@@ -46,16 +39,20 @@ export default function NewsletterPlugin(): JSX.Element {
             ) : (<>
                 <Tooltip open={canValidate && !validateEmail(email)}
                     title="Invalid e-mail"
-                    // title={
-                    //     <CustomAlert severity="warning">Invalid e-mail</CustomAlert>
-                    // }
                     arrow>
-                    <InputBase
+                    {/* <InputBase
                         className={classes.subscribeInput}
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                         inputComponent={(props) =>
                             <input {...props}
                                 aria-label="Leave e-mail to subscribe for newsletter"
                             />}
+
+                    /> */}
+                    <InputUnstyled
+                        components={{ Input: StyledInputElement }}
+                        className={classes.subscribeInput}
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                     />

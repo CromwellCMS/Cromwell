@@ -242,11 +242,13 @@ const devGenerate = async (themeName: string, options) => {
             // doesn't (though almost) correctly gets static props:
 
             // pageContent = `
-            //     import { withCromwellPage, wrapGetStaticProps, wrapGetInitialProps,
+            //     import { wrapGetStaticProps, wrapGetInitialProps,
             //         wrapGetServerSideProps, wrapGetStaticPaths } from '@cromwell/renderer';
 
             //     /*eslint-disable */
             //     import * as PageComponents from '${resolvePagePath(pageName)}';
+            //     export default PageComponents.default; 
+
 
             //     const addExport = (name, content) => {
             //         __webpack_require__.d(__webpack_exports__, {
@@ -258,9 +260,6 @@ const devGenerate = async (themeName: string, options) => {
             //     wrapGetInitialProps(addExport, '${pageName}', PageComponents);
             //     wrapGetServerSideProps(addExport, '${pageName}', PageComponents);
             //     wrapGetStaticPaths(addExport, '${pageName}', PageComponents);
-
-            //     const Page = withCromwellPage(PageComponents);
-            //     export default Page; 
             //     /*eslint-enable */
             // `;
 
@@ -269,15 +268,14 @@ const devGenerate = async (themeName: string, options) => {
             // It doesn't work with getServerSideProps, because Next.js won't allow to export
             // it along with getStaticProps, even if one of them is undefined.  
             pageContent = `
-                import { withCromwellPage, createGetStaticProps, 
+                import { createGetStaticProps, 
                     createGetStaticPaths } from '@cromwell/renderer';
 
                 import * as PageComponents from '${resolvePagePath(pageName)}';
-                const Page = withCromwellPage(PageComponents);
 
                 export const getStaticPaths = createGetStaticPaths('${pageName}', PageComponents);
                 export const getStaticProps = createGetStaticProps('${pageName}', PageComponents);
-                export default Page; 
+                export default PageComponents.default; 
             `;
         }
 

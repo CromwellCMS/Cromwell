@@ -26,7 +26,7 @@ import { getTheme } from '../helpers/theme';
 const clientSideEmotionCache = createEmotionCache();
 
 if (isServer()) {
-    // disable ssr useLayoutEffect warnings
+    // Disable SSR useLayoutEffect warnings
     (React as any).useLayoutEffect = React.useEffect;
 }
 
@@ -38,7 +38,7 @@ export type TPageWithLayout<TProps = any> = TCromwellPage<TProps> & {
 }
 
 type AppPropsWithLayout = AppProps & {
-    Component: TPageWithLayout & { originalPage?: TPageWithLayout };
+    Component: TPageWithLayout;
     emotionCache?: EmotionCache;
 }
 
@@ -69,7 +69,7 @@ function App(props: AppPropsWithLayout) {
     }, []);
 
     const { Component, emotionCache = clientSideEmotionCache } = props;
-    const getLayout = Component.originalPage?.getLayout ?? ((page) => page);
+    const getLayout = Component.getLayout ?? ((page) => page);
 
     const cmsProps: TPageCmsProps | undefined = props.pageProps?.cmsProps;
     const theme = getTheme(cmsProps?.palette);

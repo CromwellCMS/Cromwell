@@ -1,10 +1,12 @@
 import { TGallerySettings } from '@cromwell/core';
 import clsx from 'clsx';
-import { CarouselProvider, Image as CarouselImage, Slide, Slider } from 'pure-react-carousel';
+import { CarouselProvider, Image, Slide, Slider } from 'pure-react-carousel';
 import React from 'react';
 
 import styles from './CGallery.module.scss';
+import { TImageComponent } from './CGallery';
 
+const CarouselImage = Image as TImageComponent;
 
 /** @internal */
 export default class Thumbs extends React.Component<{
@@ -70,7 +72,6 @@ export default class Thumbs extends React.Component<{
                                     <CarouselImage
                                         className={clsx(styles.thumbnailImg,
                                             thumbOpts?.backgroundSize === 'contain' ? styles.slideContain : styles.slideCover)}
-                                        hasMasterSpinner={false}
                                         src={imgSrc}
                                     />
                                 </Slide>

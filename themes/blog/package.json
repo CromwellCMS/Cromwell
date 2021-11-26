@@ -19,9 +19,9 @@
     "watch": "npx --no-install cromwell b -w"
   },
   "dependencies": {
-    "@mui/lab": "5.0.0-alpha.51",
-    "@mui/material": "5.0.4",
-    "@mui/styles": "5.0.1",
+    "@mui/lab": "5.0.0-alpha.57",
+    "@mui/material": "5.2.1",
+    "@mui/styles": "5.2.1",
     "reset-css": "5.0.1"
   },
   "devDependencies": {
@@ -85,12 +85,14 @@
       "@mui/lab",
       "@mui/material",
       "@mui/styles",
+      "@mui/system",
       "date-fns"
     ],
     "firstLoadedDependencies": [
       "date-fns",
       "@mui/material",
       "@mui/styles",
+      "@mui/system",
       "react-toastify",
       "prop-types",
       "hoist-non-react-statics",

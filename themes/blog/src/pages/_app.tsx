@@ -16,15 +16,14 @@ export type TPageWithLayout<TProps = any> = TCromwellPage<TProps> & {
 
 const clientSideEmotionCache = createEmotionCache();
 
-
 type AppPropsWithLayout = AppProps & {
-    Component: TPageWithLayout & { originalPage?: TPageWithLayout };
+    Component: TPageWithLayout;
     emotionCache?: EmotionCache;
 }
 
 function App(props: AppPropsWithLayout) {
     const { Component, emotionCache = clientSideEmotionCache } = props;
-    const getLayout = Component.originalPage?.getLayout ?? ((page) => page);
+    const getLayout = Component.getLayout ?? ((page) => page);
     const cmsProps: TPageCmsProps | undefined = props.pageProps?.cmsProps;
     const theme = getTheme(cmsProps?.palette);
 

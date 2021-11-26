@@ -87,6 +87,10 @@ import * as _material_ui_lab_n37c from '@mui/lab';
 importer.modules['@mui/lab'] = interopDefault(_material_ui_lab_n37c, 'default');
 importer.importStatuses['@mui/lab'] = 'default';
 
+import * as _material_ui_system from '@mui/system';
+importer.modules['@mui/system'] = interopDefault(_material_ui_system, 'default');
+importer.importStatuses['@mui/system'] = 'default';
+
 import emotionReact from '@emotion/react';
 importer.modules['@emotion/react'] = interopDefault(emotionReact, 'default');
 importer.importStatuses['@emotion/react'] = 'default';
