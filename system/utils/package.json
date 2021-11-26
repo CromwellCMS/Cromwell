@@ -1,6 +1,6 @@
 {
   "name": "@cromwell/utils",
-  "version": "2.0.5",
+  "version": "2.0.6",
   "keywords": [],
   "license": "MIT",
   "repository": "https://github.com/CromwellCMS/Cromwell",
@@ -23,7 +23,7 @@
     "@babel/preset-react": "7.14.5",
     "@cromwell/core": "2.0.5",
     "@cromwell/core-backend": "2.0.5",
-    "@cromwell/core-frontend": "2.0.5",
+    "@cromwell/core-frontend": "2.0.6",
     "@rollup/plugin-babel": "5.3.0",
     "@rollup/plugin-node-resolve": "13.0.4",
     "@rollup/plugin-virtual": "2.0.3",
