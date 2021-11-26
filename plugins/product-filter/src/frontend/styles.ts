@@ -109,7 +109,7 @@ const iOSBoxShadow =
 
 export const IOSSliderStyles: any = withStyles((theme: Theme) => ({
     root: {
-        color: theme.palette.primary.main,
+        color: theme?.palette?.primary?.main ?? '#222',
         height: 2,
         padding: '15px 0',
     },

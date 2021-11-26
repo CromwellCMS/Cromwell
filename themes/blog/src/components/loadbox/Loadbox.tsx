@@ -1,8 +1,8 @@
-import { CircularProgress, Theme } from '@mui/material';
+import { CircularProgress } from '@mui/material';
 import { createStyles, makeStyles } from '@mui/styles';
 import React from 'react';
 
-const useStylesLoadBox = makeStyles((theme: Theme) =>
+const useStylesLoadBox = makeStyles(() =>
     createStyles({
         loadBox: {
             height: '100%',

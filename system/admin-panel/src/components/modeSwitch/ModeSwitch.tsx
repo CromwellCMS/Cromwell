@@ -14,7 +14,7 @@ interface Props extends SwitchProps {
     classes: Styles;
 }
 
-export const ModeSwitch = withStyles((theme: Theme) =>
+export const ModeSwitch = withStyles((theme: Theme | undefined) =>
     createStyles({
         track: {
             backgroundImage: "url('/admin/static/sun.svg')",

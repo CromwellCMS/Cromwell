@@ -1,7 +1,7 @@
 import { Theme } from '@mui/material';
 import { createStyles, makeStyles } from '@mui/styles';
 
-export const useStyles = makeStyles((theme: Theme) =>
+export const useStyles = makeStyles((theme: Theme | undefined) =>
     createStyles({
         root: {
             maxWidth: 345,
@@ -13,7 +13,7 @@ export const useStyles = makeStyles((theme: Theme) =>
         expand: {
             transform: 'rotate(0deg)',
             marginLeft: 'auto',
-            transition: theme.transitions.create('transform', {
+            transition: theme?.transitions && theme.transitions.create('transform', {
                 duration: theme.transitions.duration.shortest,
             }),
         },
