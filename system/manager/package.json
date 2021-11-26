@@ -1,6 +1,6 @@
 {
   "name": "@cromwell/cms",
-  "version": "2.0.7",
+  "version": "2.0.8",
   "keywords": [],
   "license": "MIT",
   "repository": "https://github.com/CromwellCMS/Cromwell",
@@ -21,11 +21,11 @@
   },
   "dependencies": {
     "@cromwell/admin-panel": "2.0.7",
-    "@cromwell/cli": "2.0.7",
+    "@cromwell/cli": "2.0.8",
     "@cromwell/core": "2.0.5",
     "@cromwell/core-backend": "2.0.5",
     "@cromwell/core-frontend": "2.0.6",
-    "@cromwell/renderer": "2.0.6",
+    "@cromwell/renderer": "2.0.7",
     "@cromwell/server": "2.0.6",
     "@cromwell/utils": "2.0.6",
     "async": "3.2.1",
