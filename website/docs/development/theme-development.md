@@ -64,16 +64,12 @@ In development you will probably need to see list of all available API methods. 
 
 Now start the CMS:
 ```bash
-npx cromwell start --detached 
-```
-Or via shortcut:
-```bash
-npx crw s -d
+npx cromwell start 
 ```
 
-For data flow the CMS uses GraphQL. You can see and play with requests in the [Apollo](https://www.apollographql.com/) Graph sandbox. Go to http://localhost:4016/api/graphql and it will suggest you to start one.
+For data flow the CMS uses GraphQL. You can see and play with requests in the [Apollo](https://www.apollographql.com/) Graph sandbox. Go to [http://localhost:4016/api/graphql](http://localhost:4016/api/graphql) and it will suggest you to start one.
 
-Additionally there is Nest.js REST API designed for other CMS transaction. You can open swagger at http://localhost:4016/api/api-docs
+Additionally there is Nest.js REST API designed for other CMS transaction. You can open swagger at [http://localhost:4016/api/api-docs](http://localhost:4016/api/api-docs)
 
 
 To simplify work with API Server, CMS provides API client from `@cromwell/core-frontend` package. You can use it on client or server.  
@@ -258,11 +254,14 @@ export default MyPage;
 export const getStaticProps: TGetStaticProps<MyPageProps> = async (context) => {
     // We use __non_webpack_require__ to avoid processing heavy modules by Webpack
     // since they will be present in user backend environment anyway.
-    const typeorm: typeof import('typeorm') = __non_webpack_require__('typeorm');
-    const coreBackend: typeof import('@cromwell/core-backend') = __non_webpack_require__('@cromwell/core-backend');
+    const { getCustomRepository, getManager }: typeof import('typeorm') 
+        = __non_webpack_require__('typeorm');
+
+    const { PostRepository, Post }: typeof import('@cromwell/core-backend') 
+        = __non_webpack_require__('@cromwell/core-backend');
 
     // Use repository methods
-    const posts = await typeorm.getCustomRepository(coreBackend.PostRepository).getFilteredPosts({
+    const posts = await getCustomRepository(PostRepository).getFilteredPosts({
         pageSize: 3,
     }, {
         sorts: [
@@ -274,10 +273,10 @@ export const getStaticProps: TGetStaticProps<MyPageProps> = async (context) => {
     });
 
     // Use query builder
-    typeorm.getManager().createQueryBuilder(coreBackend.Post.metadata.tablePath).select(['id'])
+    getManager().createQueryBuilder(Post.metadata.tablePath).select(['id'])
 
     // Execute raw SQL
-    typeorm.getManager().query('SELECT * FROM crw_post')
+    getManager().query('SELECT * FROM crw_post')
 
     return {
         props: {
