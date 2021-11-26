@@ -85,8 +85,13 @@ const Header = () => {
                     </div>
                     <div>
                         <CPlugin
-                            id="header_main_menu_mobile"
-                            pluginName={"@cromwell/plugin-main-menu"} />
+                            id="header_main_menu"
+                            plugin={{
+                                instanceSettings: {
+                                    mobile: true
+                                },
+                                pluginName: "@cromwell/plugin-main-menu"
+                            }} />
                     </div>
                 </div>
             </SwipeableDrawer>

@@ -154,7 +154,13 @@ export const MobileHeader = () => {
                         <HeaderSearch />
                     </div>
                     <CContainer id="mobile_header_13">
-                        <CPlugin id="header_main_menu" pluginName={"@cromwell/plugin-main-menu"} />
+                        <CPlugin id="header_main_menu"
+                            plugin={{
+                                instanceSettings: {
+                                    mobile: true
+                                },
+                                pluginName: "@cromwell/plugin-main-menu"
+                            }} />
                     </CContainer>
                 </div>
             </SwipeableDrawer>

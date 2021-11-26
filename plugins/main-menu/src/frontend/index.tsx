@@ -1,14 +1,14 @@
 import { TFrontendPluginProps, TGetPluginStaticProps } from '@cromwell/core';
 import { iconFromPath, Link } from '@cromwell/core-frontend';
-import { Collapse, IconButton, MenuItem, Popover, useMediaQuery } from '@mui/material';
+import { Box, Collapse, IconButton, MenuItem, Popover, useMediaQuery } from '@mui/material';
 import React, { useState } from 'react';
 
-import { TMainMenuItem, TMainMenuSettings } from '../types';
+import { TInstanceSettings, TMainMenuItem, TMainMenuSettings } from '../types';
 import { useStyles } from './styles';
 
 const ExpandMoreIcon = iconFromPath(<path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"></path>);
 
-const MainMenu = (props: TFrontendPluginProps<TMainMenuSettings>) => {
+const MainMenu = (props: TFrontendPluginProps<TMainMenuSettings, TInstanceSettings>) => {
     const classes = useStyles();
     const items = props?.data?.items ?? [];
     const [activeItem, setActiveItem] = useState<string>('none');
@@ -40,7 +40,13 @@ const MainMenu = (props: TFrontendPluginProps<TMainMenuSettings>) => {
     }
 
     return (
-        <div className={isMobile ? classes.mobileMenuList : classes.menuList}>
+        <Box
+            sx={{
+                display: 'flex',
+                flexDirection: props.instanceSettings?.mobile ? 'column' : 'row',
+                width: '100%',
+            }}
+        >
             {items.map((i, index) => {
                 const isActive = activeItem === i.title;
 
@@ -120,7 +126,7 @@ const MainMenu = (props: TFrontendPluginProps<TMainMenuSettings>) => {
                 return menuItem;
 
             })}
-        </div>
+        </Box>
     )
 }
 

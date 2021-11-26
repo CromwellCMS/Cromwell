@@ -4,6 +4,10 @@ export type TMainMenuSettings = {
     mobileBreakpoint?: number;
 }
 
+export type TInstanceSettings = {
+    mobile?: boolean;
+}
+
 export type TMainMenuItem = {
     title: string;
     href?: string;
