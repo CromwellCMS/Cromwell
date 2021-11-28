@@ -82,3 +82,5 @@ In conclusion
 WordPress is often chosen because of its plugins and themes abundance. I cannot replicate it. But I can try to create an environment, what next is up to community. Together we can create a great ecosystem. And more people are using it, more will. Things like that can change the web.
 I’m not saying that my system is better than WordPress (since I haven’t spent a dozen years on it yet), but I’m trying to solve problems and provide a solution that can be better in a number of ways.
 For now, I’m asking for feedback on how to improve it. And the project is open-source, anyone can try it. In the end, it all depends on the community. How soon we’ll embrace a new most popular language at backend development? Will there be a day when Node.js is powering 78.9% of the internet? ;)
+
+Originally published in https://itnext.io/remaking-wordpress-in-js-stack-hello-to-a-new-cms-for-next-js-websites-63096bc5f98b

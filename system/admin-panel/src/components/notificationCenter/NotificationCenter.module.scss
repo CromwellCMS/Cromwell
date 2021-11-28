@@ -19,17 +19,18 @@ div.item {
     margin-bottom: 15px;
 }
 
-.update {
+div.update {
     @extend .item;
     display: flex;
     flex-direction: column;
     padding: 15px;
 
-    > p {
+    >p {
         margin: 6px 0 5px 0;
         font-size: 13px;
     }
 }
+
 .updateTitle {
     display: flex;
     align-items: center;
@@ -56,6 +57,7 @@ div.alert {
     :global(.MuiAlert-icon) {
         padding: 0;
     }
+
     :global(.MuiAlert-message) {
         padding: 0;
     }
@@ -74,15 +76,17 @@ div.message {
     align-items: center;
     margin-bottom: 10px;
 
-    > p {
+    >p {
         cursor: pointer;
         font-size: 13px;
     }
-    > svg {
+
+    >svg {
         cursor: pointer;
         margin-left: 5px;
     }
 }
+
 .changelogList {
     padding-bottom: 10px;
 
@@ -90,6 +94,7 @@ div.message {
         font-weight: 500;
         margin-bottom: 6px;
     }
+
     br {
         // display: none;
         content: " ";
@@ -99,13 +104,14 @@ div.message {
         border-bottom: 1px solid #ccc;
         margin: 10px 0;
     }
+
     li {
         margin-bottom: 6px;
         font-size: 13px;
     }
 }
 
-div.updateProgress {
+.list .updateProgress {
     margin: 15px 0 5px 0;
 }
 
@@ -117,6 +123,7 @@ div.updateProgress {
     svg {
         color: #ff9100;
     }
+
     p {
         font-weight: 500;
     }

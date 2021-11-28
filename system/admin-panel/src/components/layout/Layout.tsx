@@ -14,7 +14,7 @@ import { LayoutPortal } from '../../helpers/LayoutPortal';
 import Page404 from '../../pages/404/404page';
 import PageErrorBoundary from '../errorBoundaries/PageErrorBoundary';
 import FileManager from '../fileManager/FileManager';
-import LoadBox from '../loadBox/LoadBox';
+// import LoadBox from '../loadBox/LoadBox';
 import { ConfirmPrompt } from '../modal/Confirmation';
 import Sidebar from '../sidebar/Sidebar';
 import styles from './Layout.module.scss';
@@ -92,7 +92,7 @@ function Layout() {
                     component={(props: RouteComponentProps) => {
                       return (
                         <PageErrorBoundary>
-                          <Suspense fallback={<LoadBox />}>
+                          <Suspense fallback={/*<LoadBox />*/<></>}>
                             <page.component {...props} />
                           </Suspense>
                         </PageErrorBoundary>
