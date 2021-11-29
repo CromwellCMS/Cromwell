@@ -408,7 +408,7 @@ ${content}
     }
 
     async viewPage(input: PageStatsDto) {
-        if (!input?.pageRoute || input.pageRoute === '') return;
+        if (!input?.pageRoute) return;
 
         let page: PageStats | undefined;
         try {

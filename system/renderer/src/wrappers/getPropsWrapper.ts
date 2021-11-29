@@ -72,6 +72,9 @@ const wrapGetProps = (pageName: TDefaultPageName | string,
             pluginsDataFetcher(pageConfigName, context, pluginsSettings),
         ]);
 
+        const pluginsNextProps = Object.assign({}, ...Object.values(plugins)
+            .map(plugin => plugin.nextProps).filter(Boolean));
+
         // const timestamp2 = Date.now();
         // console.log('getStaticProps for page: ' + pageName);
         // console.log('time elapsed: ' + (timestamp2 - timestamp) + 'ms');
@@ -94,6 +97,7 @@ const wrapGetProps = (pageName: TDefaultPageName | string,
 
         const pageProps: GetStaticPropsResult<TCromwellPageCoreProps> = {
             ...childStaticProps,
+            ...pluginsNextProps,
             props: {
                 ...(childStaticProps.props ?? {}),
                 cmsProps: cmsProps

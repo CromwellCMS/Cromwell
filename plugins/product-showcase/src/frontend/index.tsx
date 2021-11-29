@@ -3,19 +3,19 @@ import {
     ECommonComponentNames,
     getCommonComponent,
     getRandStr,
-    TStaticPagePluginContext,
     TAttribute,
     TFrontendPluginProps,
+    TGetPluginStaticProps,
     TPagedList,
     TProduct,
 } from '@cromwell/core';
 import { CGallery, getGraphQLClient, Link } from '@cromwell/core-frontend';
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { useStyles } from './styles';
 
 type ProductShowcaseProps = {
-    slug?: string;
+    slug?: string | null;
 }
 
 const ProductShowcase = (props: TFrontendPluginProps<ProductShowcaseProps>): JSX.Element => {
@@ -116,11 +116,13 @@ const ProductShowcase = (props: TFrontendPluginProps<ProductShowcaseProps>): JSX
     )
 }
 
-export const getStaticProps = async (context: TStaticPagePluginContext): Promise<ProductShowcaseProps> => {
+export const getStaticProps: TGetPluginStaticProps<ProductShowcaseProps> = async (context) => {
     // slug of a product page
     const slug = context?.params?.slug ?? null;
     return {
-        slug: typeof slug === 'string' ? slug : undefined,
+        props: {
+            slug: typeof slug === 'string' ? slug : null
+        }
     }
 }
 

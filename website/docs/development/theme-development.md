@@ -323,7 +323,7 @@ export default HomePage;
 We put elements into `CContainer`s. This component equals to `<div>` tag plus properties available to all Blocks: 
 - Draggable - User can drag and drop Block into another position inside any other CContainer.
 - Modifiable - User can edit properties of Block. Properties can be common such as styles and Block type-specific such as 'image path' for `CImage` Block. 
-- Removable - User can delete Block. Component will remain in the code since we cannot edit files of your Theme, but it will render `<></>` instead of its content.
+- Removable - User can delete Block. Component will remain in the code since we cannot edit files of your Theme, but it will render nothing instead of its content.
 
 :::important
 You must always provide a unique `id` prop to Blocks. We need it to keep in sync user's and Theme author's changes.  
@@ -380,8 +380,8 @@ All available Default pages with route examples:
 
 ## Use Plugins
 
-Plugins unlike other blocks can only be added in the page config. In order to retrieve static props of Plugins on server we need to know what Plugins are used on pages before executing them.  
-So in your page you can add a container:
+For Theme authors Plugins can only be registered in the page config of `cromwell.config.js`. That's because in order to retrieve static props of Plugins on the server we need to know what Plugins are used on pages before executing JSX code.  
+So in most cases in your page you can add a container:
 ```tsx
 <CContainer id="some-plugin-container"></CContainer>
 ```
@@ -397,6 +397,23 @@ And add Plugin to the `modifications` of a [page config](#page-config-properties
   }
 }
 ```
+
+If your plugin can accept props, then you can use CPlugin block, for example:
+
+```tsx
+<CContainer id="wrapper">
+  <CPlugin id="main_menu"
+    plugin={{
+      instanceSettings: {
+        mobile: true
+      },
+      pluginName: "@cromwell/plugin-main-menu"
+    }} />
+</CContainer>
+```
+
+**Important!** Even if you placed `CPlugin` component on the page, you still need to register it in `cromwell.config.js` as in the example above.
+
 
 ## Generic pages
 

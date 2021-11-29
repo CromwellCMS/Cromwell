@@ -320,7 +320,7 @@ export class CmsController {
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async setActiveTheme(@Query('themeName') themeName: string): Promise<boolean> {
         logger.log('CmsController::setActiveTheme');
-        if (!themeName || themeName === '')
+        if (!themeName)
             throw new HttpException(`Invalid theme name: ${themeName}`, HttpStatus.NOT_ACCEPTABLE);
 
         return this.themeService.setActive(themeName);
@@ -341,7 +341,7 @@ export class CmsController {
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async activateTheme(@Query('themeName') themeName: string): Promise<boolean> {
         logger.log('CmsController::activateTheme');
-        if (!themeName || themeName === '')
+        if (!themeName)
             throw new HttpException(`Invalid theme name: ${themeName}`, HttpStatus.NOT_ACCEPTABLE);
 
         return this.themeService.activateTheme(themeName);
@@ -362,7 +362,7 @@ export class CmsController {
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async activatePlugin(@Query('pluginName') pluginName: string): Promise<boolean> {
         logger.log('PluginController::activatePlugin');
-        if (!pluginName || pluginName === '')
+        if (!pluginName)
             throw new HttpException(`Invalid plugin name: ${pluginName}`, HttpStatus.NOT_ACCEPTABLE);
 
         return this.pluginService.activatePlugin(pluginName);
@@ -456,7 +456,7 @@ export class CmsController {
         status: 200
     })
     async viewPage(@Body() input: PageStatsDto): Promise<boolean> {
-        if (!input?.pageRoute || input.pageRoute === '')
+        if (!input?.pageRoute)
             throw new HttpException("pageRoute is not valid", HttpStatus.NOT_ACCEPTABLE);
 
         await this.cmsService.viewPage(input);

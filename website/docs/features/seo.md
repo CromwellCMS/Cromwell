@@ -34,5 +34,5 @@ You can edit content of robots.txt in Admin panel > Settings > SEO. It should ha
 
 Default Sitemap is generated and updated once a day. It uses Theme's pages with info from DB, so all available products, posts, etc should be included in it. 
 :::note
-After you create a new product/post, it won't display in the sitemap immediately. If you want newly added data to appear in it right after creation, there's `Rebuild Sitemap` button in Settings.
+After you create a new product/post, it won't be displayed in the sitemap immediately. If you want newly added data to appear in it right away, there's `Rebuild Sitemap` button in SEO Settings.
 :::

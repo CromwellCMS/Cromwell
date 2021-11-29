@@ -118,8 +118,7 @@ const LoginPage = () => {
     }
 
     const handleResetPass = async () => {
-        if (!emailInput || emailInput == '' || !codeInput || codeInput === ''
-            || !passwordInput || passwordInput === '') return;
+        if (!emailInput || !codeInput || !passwordInput) return;
 
         setLoading(true);
         try {

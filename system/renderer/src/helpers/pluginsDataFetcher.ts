@@ -25,6 +25,7 @@ export const pluginsDataFetcher = async (pageName: TDefaultPageName | string, co
     pluginsData?: TPluginsSettings) => {
     const plugins: Record<string, {
         data?: any;
+        nextProps?: any;
     }> = {};
 
     if (!pluginsData) return plugins;
@@ -87,7 +88,9 @@ export const pluginsDataFetcher = async (pageName: TDefaultPageName | string, co
                 console.error('[Error] pluginsDataFetcher: Failed to getStaticProps of ' + pluginName, e);
             }
         }
-        plugins[pluginName].data = pluginStaticProps;
+        const { props, ...nextProps } = pluginStaticProps ?? {};
+        plugins[pluginName].data = props;
+        plugins[pluginName].nextProps = nextProps;
     });
 
     try {

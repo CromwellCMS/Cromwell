@@ -95,7 +95,7 @@ export const handleCustomMetaInput = async <
 export const checkEntitySlug = async <T extends BasePageEntity>(entity: T, EntityClass: new (...args: any[]) => T): Promise<T> => {
     // check for absence and set id instead
     let hasModified = false;
-    if (!entity.slug || entity.slug === '') {
+    if (!entity.slug) {
         entity.slug = entity.id + '';
         hasModified = true;
     }

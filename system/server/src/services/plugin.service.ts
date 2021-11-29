@@ -198,7 +198,7 @@ export class PluginService {
 
     async updatePlugin(pluginName: string): Promise<boolean> {
         const pluginPckgOld = await getModulePackage(pluginName);
-        if (!pluginName || pluginName === '' || !pluginPckgOld?.version) throw new HttpException('Plugin package not found', HttpStatus.INTERNAL_SERVER_ERROR);
+        if (!pluginName || !pluginPckgOld?.version) throw new HttpException('Plugin package not found', HttpStatus.INTERNAL_SERVER_ERROR);
         const oldVersion = pluginPckgOld.version;
 
         const updateInfo = await this.checkPluginUpdate(pluginName)
@@ -279,7 +279,7 @@ export class PluginService {
 
     async installPlugin(pluginName: string): Promise<boolean> {
         const info = await this.getPluginLatest(pluginName);
-        if (!pluginName || pluginName === '' || !info || !info.packageVersion || !info.version) throw new HttpException('Plugin was not found', HttpStatus.METHOD_NOT_ALLOWED);
+        if (!pluginName || !info || !info.packageVersion || !info.version) throw new HttpException('Plugin was not found', HttpStatus.METHOD_NOT_ALLOWED);
 
         const settings = await getCmsSettings();
         const isBeta = !!settings?.beta;
@@ -454,7 +454,7 @@ export class PluginService {
     private async deletePlugin(pluginName: string): Promise<boolean> {
         const pluginPckgOld = await getModulePackage(pluginName);
         const oldVersion = pluginPckgOld?.version;
-        if (!pluginName || pluginName === '' || !oldVersion) throw new HttpException('Plugin package not found', HttpStatus.INTERNAL_SERVER_ERROR);
+        if (!pluginName || !oldVersion) throw new HttpException('Plugin package not found', HttpStatus.INTERNAL_SERVER_ERROR);
 
         const pluginExports = (await readPluginsExports()).find(p => p.pluginName === pluginName);
         if (!pluginExports) throw new HttpException('Plugin in not a CMS module', HttpStatus.INTERNAL_SERVER_ERROR);

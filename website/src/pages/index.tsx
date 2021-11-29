@@ -22,8 +22,8 @@ export default function Home() {
                     <p className={styles.subheader}>It&apos;s time for everyone to make blazing-fast websites
                         <WhatshotIcon className={styles.fireIcon} style={{ width: '20px', height: '20px' }} />
                     </p>
-                    <p className={styles.quote}>Cromwell CMS is a next-gen e-commerce and blogging platform
-                        designed to work as fast as possible.</p>
+                    <p className={styles.quote}>Cromwell CMS is a next-gen e-commerce and blogging
+                        platform that unites bleeding-edge web techs in extraordinary user-friendly format.</p>
                     <div className={styles.mainActions}>
                         <Link href="/docs/overview/intro">
                             <Button

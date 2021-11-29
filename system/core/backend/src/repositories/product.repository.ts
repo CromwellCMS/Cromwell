@@ -148,7 +148,7 @@ export class ProductRepository extends BaseRepository<Product> {
             })[] = [];
 
             for (const inputAttribute of input.attributes) {
-                if (!inputAttribute.key || inputAttribute.key === '') continue;
+                if (!inputAttribute.key) continue;
                 const attribute = await getCustomRepository(AttributeRepository).getAttributeByKey(inputAttribute.key);
                 if (!attribute) continue;
 
@@ -288,7 +288,7 @@ export class ProductRepository extends BaseRepository<Product> {
                 const productAttributeTable = AttributeToProduct.getRepository().metadata.tablePath;
 
                 filterParams.attributes.forEach((attr, attrIndex) => {
-                    if (!attr.key || attr.key === '' || !attr.values?.length) return;
+                    if (!attr.key || !attr.values?.length) return;
 
                     const joinName = `${productAttributeTable}_${attrIndex}`;
                     qb.leftJoin(AttributeToProduct, joinName,
@@ -296,7 +296,7 @@ export class ProductRepository extends BaseRepository<Product> {
                 });
 
                 filterParams.attributes.forEach((attr, attrIndex) => {
-                    if (!attr.key || attr.key === '' || !attr.values?.length) return;
+                    if (!attr.key || !attr.values?.length) return;
                     const joinName = `${productAttributeTable}_${attrIndex}`;
 
                     const brackets = new Brackets(subQb1 => {
