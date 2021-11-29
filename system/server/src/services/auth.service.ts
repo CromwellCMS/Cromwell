@@ -420,7 +420,7 @@ export class AuthService {
             }
 
             // If access token is expired, validate refresh token
-            if (!refreshToken || refreshToken === '' || refreshToken === 'null')
+            if (!refreshToken || refreshToken === 'null')
                 throw new UnauthorizedException('Refresh token is not set');
 
             const refreshTokenPayload = await this.validateRefreshToken(refreshToken);

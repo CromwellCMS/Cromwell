@@ -5,7 +5,7 @@ sidebar_position: 5
 # Custom data types
 
 In WordPress there are many solutions for storing specific data in your CMS.  
-By the core WordPress provides a concept for custom post types. That is very convenient if you want to manage in the CMS other basic types of content: products, movies or whatever. 
+As a core feature WordPress provides custom post types. That is very convenient if you want to manage in the CMS other basic types of content: products, movies or whatever. 
 And if you want to extend existing posts with some custom fields, you can install a plugin to handle the data.
 
 In Cromwell CMS these concepts are implemented in the core. In design this is a compilation of three well-known features:   

@@ -21,7 +21,7 @@ export function InputSlider(props: {
     };
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        changeValue(event.target.value === '' ? '' : Number(event.target.value));
+        changeValue(!event.target.value ? '' : Number(event.target.value));
     };
 
     const handleBlur = () => {

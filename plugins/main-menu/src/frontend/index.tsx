@@ -132,6 +132,8 @@ const MainMenu = (props: TFrontendPluginProps<TMainMenuSettings, TInstanceSettin
 
 export default MainMenu;
 
-export const getStaticProps: TGetPluginStaticProps<TMainMenuSettings> = async (context): Promise<TMainMenuSettings | undefined> => {
-    return context.pluginSettings;
+export const getStaticProps: TGetPluginStaticProps<TMainMenuSettings | undefined, TMainMenuSettings> = async (context) => {
+    return {
+        props: context.pluginSettings
+    }
 }

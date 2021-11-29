@@ -178,7 +178,7 @@ export class MigrationService {
     }
 
     private stringifyValue = (value: any): string => {
-        if (value === undefined || value === null || value === '' ||
+        if (value === undefined || value === null ||
             typeof value === 'undefined') return '';
         if (typeof value === 'object') {
             if (value instanceof Date) {
@@ -622,7 +622,7 @@ export class MigrationService {
             const entity = {};
             for (let j = 0; j < row.length; j++) {
                 let val: string | number | null | boolean = row[j];
-                if (val === '' || !val) val = null;
+                if (!val) val = null;
                 entity[header[j]] = val;
             }
             entities.push(entity);

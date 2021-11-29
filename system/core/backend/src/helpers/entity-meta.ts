@@ -78,7 +78,7 @@ class EntityMetaRepository {
 
         const qb = repo.createQueryBuilder().select();
         keys.forEach(key => {
-            if (!key || key === '') return;
+            if (!key) return;
             const brackets = new Brackets(subQb => {
                 subQb.where({ entityId: id });
                 subQb.andWhere({ key });
@@ -98,8 +98,8 @@ class EntityMetaRepository {
     }
 
     async createEntityMeta(type: EDBEntity, entityId: number, key?: string, value?: string | null): Promise<TEntityMeta | undefined> {
-        if (!value || value === '') return;
-        if (!key || key === '') return;
+        if (!value) return;
+        if (!key) return;
         if (entityId === undefined || entityId === null) return;
         const EntityMetaClass = this.getMetaClass(type);
         if (!EntityMetaClass) return;
@@ -121,14 +121,14 @@ class EntityMetaRepository {
      */
     async setEntityMeta(type?: EDBEntity, entityId?: number, key?: string, value?: string | null): Promise<TEntityMeta | undefined> {
         if (!type) return;
-        if (!key || key === '') return;
+        if (!key) return;
         if (entityId === undefined || entityId === null) return;
         const repo = this.getMetaClass(type)?.getRepository();
         if (!repo) return;
 
         const meta = await this.getEntityMetaByKey(type, entityId, key).catch(() => null);
         if (meta) {
-            if (!value || value === '') {
+            if (!value) {
                 await repo.delete(meta.id);
                 return;
             } else {

@@ -30,7 +30,7 @@ export class PluginController {
     async getPluginSettings(@Query('pluginName') pluginName: string): Promise<any | undefined> {
         logger.log('PluginController::getPluginSettings ' + pluginName);
 
-        if (!pluginName || pluginName === '')
+        if (!pluginName)
             throw new HttpException(`Invalid plugin name: ${pluginName}`, HttpStatus.NOT_ACCEPTABLE);
 
         return getPluginSettings(pluginName);
@@ -52,7 +52,7 @@ export class PluginController {
     async savePluginSettings(@Query('pluginName') pluginName: string, @Body() input): Promise<boolean> {
         logger.log('PluginController::savePluginSettings');
 
-        if (!pluginName || pluginName === '')
+        if (!pluginName)
             throw new HttpException(`Invalid plugin name: ${pluginName}`, HttpStatus.NOT_ACCEPTABLE);
 
         return savePluginSettings(pluginName, input);
@@ -71,7 +71,7 @@ export class PluginController {
     async getPluginFrontendBundle(@Query('pluginName') pluginName: string): Promise<TFrontendBundle | undefined> {
         logger.log('PluginController::getPluginFrontendBundle');
 
-        if (!pluginName || pluginName === '')
+        if (!pluginName)
             throw new HttpException(`Invalid plugin name: ${pluginName}`, HttpStatus.NOT_ACCEPTABLE);
 
         const bundle = await this.pluginService.getPluginBundle(pluginName, 'frontend');
@@ -96,7 +96,7 @@ export class PluginController {
     async getPluginAdminBundle(@Query('pluginName') pluginName: string): Promise<TFrontendBundle | undefined> {
         logger.log('PluginController::getPluginAdminBundle');
 
-        if (!pluginName || pluginName === '')
+        if (!pluginName)
             throw new HttpException(`Invalid plugin name: ${pluginName}`, HttpStatus.NOT_ACCEPTABLE);
 
         const bundle = await this.pluginService.getPluginBundle(pluginName, 'admin');
@@ -119,7 +119,7 @@ export class PluginController {
         type: UpdateInfoDto,
     })
     async checkUpdate(@Query('pluginName') pluginName: string): Promise<UpdateInfoDto | boolean | undefined> {
-        if (!pluginName || pluginName === '')
+        if (!pluginName)
             throw new HttpException(`Invalid plugin name: ${pluginName}`, HttpStatus.NOT_ACCEPTABLE);
 
         const update = await this.pluginService.checkPluginUpdate(pluginName);
@@ -140,7 +140,7 @@ export class PluginController {
         type: Boolean,
     })
     async updatePlugin(@Query('pluginName') pluginName: string): Promise<boolean | undefined> {
-        if (!pluginName || pluginName === '')
+        if (!pluginName)
             throw new HttpException(`Invalid plugin name: ${pluginName}`, HttpStatus.NOT_ACCEPTABLE);
 
         return this.pluginService.handlePluginUpdate(pluginName);
@@ -159,7 +159,7 @@ export class PluginController {
         type: Boolean,
     })
     async installPlugin(@Query('pluginName') pluginName: string): Promise<boolean | undefined> {
-        if (!pluginName || pluginName === '')
+        if (!pluginName)
             throw new HttpException(`Invalid plugin name: ${pluginName}`, HttpStatus.NOT_ACCEPTABLE);
 
         return this.pluginService.handleInstallPlugin(pluginName);
@@ -178,7 +178,7 @@ export class PluginController {
         type: Boolean,
     })
     async deletePlugin(@Query('pluginName') pluginName: string): Promise<boolean | undefined> {
-        if (!pluginName || pluginName === '')
+        if (!pluginName)
             throw new HttpException(`Invalid plugin name: ${pluginName}`, HttpStatus.NOT_ACCEPTABLE);
 
         return this.pluginService.handleDeletePlugin(pluginName);

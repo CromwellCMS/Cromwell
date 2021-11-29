@@ -138,7 +138,7 @@ export class FontSize implements InlineTool {
 
             // Remove empty span tags
             (this.currentSpan?.parentElement ?? this.currentSpan).querySelectorAll('span').forEach(span => {
-                if (span.innerText === '') span.remove();
+                if (!span.innerText) span.remove();
             });
 
             // If parent is the same span as only child, swap content

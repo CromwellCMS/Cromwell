@@ -20,4 +20,4 @@ To setup your payments, create a new account at https://stripe.com, go to dashbo
 Now go to Cromwell Admin panel > Plugins > Stripe integration > paste your key into `Stripe Secret API Key` field, click Save.  
 After you activate and setup your Stripe account at stripe.com payments should work.
 
-If `Pay with card / Google Pay` button is still disabled in your default store, there may be something wrong with your account setup. You can check server's logs or ./.cromwell/logs/error.log for detailed info. 
+If `Pay with card / Google Pay` button is still disabled in your default store, there may be something wrong with your account setup. You can check server's logs or `[project root]/.cromwell/logs/error.log` for detailed info. 

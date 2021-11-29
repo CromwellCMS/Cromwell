@@ -31,7 +31,7 @@ export default function WelcomePage() {
     const handleSubmitClick = async () => {
         setSubmitPressed(true);
 
-        if (!emailInput || emailInput === '' || !passwordInput || passwordInput === '' || !nameInput || nameInput === '') {
+        if (!emailInput || !passwordInput || !nameInput) {
             return;
         }
 

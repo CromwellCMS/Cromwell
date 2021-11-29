@@ -228,11 +228,11 @@ export class ThemeService {
             logger.error('Server::saveUserPageConfig: Invalid userPageConfig')
             return false;
         }
-        if (!userPageConfig.route || userPageConfig.route === '') {
+        if (!userPageConfig.route) {
             logger.error('Server::saveUserPageConfig: Invalid userPageConfig, no route', JSON.stringify(userPageConfig));
             throw new HttpException("Invalid page config, no route", HttpStatus.NOT_ACCEPTABLE);
         }
-        if (!userPageConfig.name || userPageConfig.name === '') {
+        if (!userPageConfig.name) {
             logger.error('Server::saveUserPageConfig: Invalid userPageConfig, no name', JSON.stringify(userPageConfig));
             throw new HttpException("Invalid page config, no name", HttpStatus.NOT_ACCEPTABLE);
         }
@@ -670,7 +670,7 @@ export class ThemeService {
 
     async updateTheme(themeName: string): Promise<boolean> {
         const pckgOld = await getModulePackage(themeName);
-        if (!themeName || themeName === '' || !pckgOld?.version) throw new HttpException('Theme package not found', HttpStatus.INTERNAL_SERVER_ERROR);
+        if (!themeName || !pckgOld?.version) throw new HttpException('Theme package not found', HttpStatus.INTERNAL_SERVER_ERROR);
         const oldVersion = pckgOld.version;
 
         const updateInfo = await this.checkThemeUpdate(themeName)
@@ -755,7 +755,7 @@ export class ThemeService {
 
     async installTheme(themeName: string): Promise<boolean> {
         const info = await this.getThemeLatest(themeName)
-        if (!themeName || themeName === '' || !info || !info.packageVersion || !info.version) throw new HttpException('Theme was not found', HttpStatus.METHOD_NOT_ALLOWED);
+        if (!themeName || !info || !info.packageVersion || !info.version) throw new HttpException('Theme was not found', HttpStatus.METHOD_NOT_ALLOWED);
 
         const settings = await getCmsSettings();
         const isBeta = !!settings?.beta;
@@ -803,7 +803,7 @@ export class ThemeService {
     private async deleteTheme(themeName: string): Promise<boolean> {
         const pckgOld = await getModulePackage(themeName);
         const oldVersion = pckgOld?.version;
-        if (!themeName || themeName === '' || !oldVersion) throw new HttpException('Plugin package not found', HttpStatus.INTERNAL_SERVER_ERROR);
+        if (!themeName || !oldVersion) throw new HttpException('Plugin package not found', HttpStatus.INTERNAL_SERVER_ERROR);
 
         await runShellCommand(`yarn remove ${themeName} --non-interactive`);
         await sleep(1);

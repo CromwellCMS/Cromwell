@@ -28,7 +28,7 @@ export class RendererController {
     })
     async getRendererData(@Query('pageRoute') pageRoute: string) {
         logger.log('RendererController::getRendererData');
-        if (!pageRoute || pageRoute === '')
+        if (!pageRoute)
             throw new HttpException('Page route is not valid: ' + pageRoute, HttpStatus.NOT_ACCEPTABLE);
 
         return await this.rendererService.getRendererData(pageRoute);
@@ -47,7 +47,7 @@ export class RendererController {
     })
     async purgePageCache(@Query('pageRoute') pageRoute: string) {
         logger.log('RendererController::purgePageCache');
-        if (!pageRoute || pageRoute === '')
+        if (!pageRoute)
             throw new HttpException('Page route is not valid: ' + pageRoute, HttpStatus.NOT_ACCEPTABLE);
 
         await this.rendererService.purgePageCache(pageRoute);

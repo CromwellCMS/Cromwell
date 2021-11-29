@@ -37,7 +37,7 @@ export default function SingIn(props: {
         e.preventDefault();
         setSubmitPressed(true);
 
-        if (!emailInput || emailInput == '' || !passwordInput || passwordInput === '') return;
+        if (!emailInput || !passwordInput) return;
 
         setLoading(true);
         try {
@@ -50,7 +50,7 @@ export default function SingIn(props: {
             } else {
                 throw new Error('!user');
             }
-        } catch (e) {
+        } catch (e: any) {
             console.error(e);
             let info = e?.message;
             try {
@@ -70,8 +70,7 @@ export default function SingIn(props: {
         e.preventDefault();
         setSubmitPressed(true);
 
-        if (!emailInput || emailInput == '' || !passwordInput
-            || passwordInput === '' || !nameInput || nameInput === '') return;
+        if (!emailInput || !passwordInput || !nameInput) return;
 
         setLoading(true);
         try {
@@ -92,7 +91,7 @@ export default function SingIn(props: {
             } else {
                 throw new Error('!user');
             }
-        } catch (e) {
+        } catch (e: any) {
             console.error(e);
             let info = e?.message;
             try {
@@ -124,7 +123,7 @@ export default function SingIn(props: {
             } else {
                 throw new Error('!success');
             }
-        } catch (e) {
+        } catch (e: any) {
             console.error(e);
             let info = e?.message;
             try {
@@ -144,8 +143,7 @@ export default function SingIn(props: {
         e.preventDefault();
         setSubmitPressed(true);
 
-        if (!emailInput || emailInput == '' || !codeInput || codeInput === ''
-            || !passwordInput || passwordInput === '') return;
+        if (!emailInput || !codeInput || !passwordInput) return;
 
         setLoading(true);
         try {
@@ -162,7 +160,7 @@ export default function SingIn(props: {
             } else {
                 throw new Error('!success');
             }
-        } catch (e) {
+        } catch (e: any) {
             console.error(e);
             let info = e?.message;
             try {

@@ -139,7 +139,7 @@ export const registerSimpleTextCustomField = (settings: {
                 {...(settings.props ?? {})}
             />
         },
-        saveData: () => (!customFieldValue || customFieldValue === '') ? null : customFieldValue,
+        saveData: () => (!customFieldValue) ? null : customFieldValue,
     });
 }
 
@@ -239,7 +239,7 @@ export const registerSelectCustomField = (settings: {
                 />
             )
         },
-        saveData: () => (!customFieldValue || customFieldValue === '') ? null : customFieldValue,
+        saveData: () => (!customFieldValue) ? null : customFieldValue,
     });
 }
 
@@ -274,7 +274,7 @@ export const registerImageCustomField = (settings: {
                 />
             )
         },
-        saveData: () => (!customFieldValue || customFieldValue === '') ? null : customFieldValue,
+        saveData: () => (!customFieldValue) ? null : customFieldValue,
     });
 }
 
@@ -308,7 +308,7 @@ export const registerGalleryCustomField = (settings: {
                 />
             )
         },
-        saveData: () => (!customFieldValue || customFieldValue === '') ? null : customFieldValue,
+        saveData: () => (!customFieldValue) ? null : customFieldValue,
     });
 }
 
@@ -341,7 +341,7 @@ export const registerColorCustomField = (settings: {
                 />
             )
         },
-        saveData: () => (!customFieldValue || customFieldValue === '') ? null : customFieldValue,
+        saveData: () => (!customFieldValue) ? null : customFieldValue,
     });
 }
 

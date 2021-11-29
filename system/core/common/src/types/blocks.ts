@@ -31,8 +31,10 @@ export type TStaticPagePluginContext<TPluginSettings = any, Q extends ParsedUrlQ
     }
 
 export type TGetPluginStaticProps<
+    TResult = any,
     TPluginSettings = any,
-    Q extends ParsedUrlQuery = ParsedUrlQuery> = (ctx: TStaticPagePluginContext<TPluginSettings, Q>) => Promise<any>;
+    Q extends ParsedUrlQuery = ParsedUrlQuery> = (ctx: TStaticPagePluginContext<TPluginSettings, Q>) =>
+        Promise<GetStaticPropsResult<TResult>> | GetStaticPropsResult<TResult>;
 
 export type TPageCmsProps = {
     documentContext?: TNextDocumentContext;

@@ -150,6 +150,9 @@ export default function HomePageOfSomeTheme() {
 }
 ```
 
+[We'll show you below](#frontend) how to access instance settings.
+
+
 ### Settings default interface
 
 Admin panel has a set of components that can help you to build admin panel interface. Moreover standard interface can make an interface of all Plugins to be intuitively comprehensive for a user which results in better UX.  
@@ -296,23 +299,23 @@ Frontend bundle follows the principles of Next.js pages. You have to export a Re
 ```tsx
 import { TGetPluginStaticProps, TFrontendPluginProps } from '@cromwell/core';
 
-type DataType = {
+type PluginData = {
   message: string;
   globalSettings: {
     someGlobalSettingsProp: string;
   }
 }
 
-type MyLocalSettingsType = {
+type PluginInstanceSettings = {
   someLocalSettingsProp: string;
 }
 
-type MyGlobalSettings = {
+type PluginGlobalSettings = {
   someGlobalSettingsProp: string;
   secretKey: string;
 }
 
-export default function YouPluginName(props: TFrontendPluginProps<DataType, MyLocalSettingsType>) {
+export default function YouPluginName(props: TFrontendPluginProps<PluginData, PluginInstanceSettings>) {
   return (
     <>
       <div>{props.data?.message}</div>
@@ -322,20 +325,23 @@ export default function YouPluginName(props: TFrontendPluginProps<DataType, MyLo
   )
 }
 
-export const getStaticProps: TGetPluginStaticProps<MyGlobalSettings> = async (context): Promise<DataType> => {
+export const getStaticProps: TGetPluginStaticProps<PluginData, PluginGlobalSettings> = async (context) => {
   // Filter out private data at the backend
   const { secretKey, ...restSettings } = context.pluginSettings;
   // And pass the rest to the frontend
   return {
-    message: 'Hello world',
-    globalSettings: restSettings,
+    props: {
+      message: 'Hello world',
+      globalSettings: restSettings,
+    }
   }
 }
 ```
 
-`getStaticProps` here works the same way as in Next.js pages. Cromwell CMS will collect props for all Plugins on the requested page and pass them to components. This means your plugin can be statically pre-rendered with all the data at the Next.js server.  
+`getStaticProps` here works the same way as in Next.js pages with the difference that props from `getStaticProps` will be available in `props.data` of React component.   
+Cromwell CMS will collect props for all Plugins on the requested page and pass them to components. This means your plugin can be statically pre-rendered with all the data at the Next.js server.  
 
-Plugin's settings will be passed to `getStaticProps` in the context. Since this function is executed only at the backend, you can safely extract your private settings and pass others to the frontend as data.
+Plugin's global settings will be passed to `getStaticProps` in the context. Since this function is executed only at the backend, you can safely extract your private settings and pass others to the frontend as data.
 
 Note that a user can possibly drop your Plugin several times at one page. But `getStaticProps` will be called only once at the page! Therefore `props.data` passed to the React components will be the same for all instances.  
 If you have custom instance settings and you want to fetch different data for a specific Plugin instances in `getStaticProps`, you can access `context.pluginInstances`. This object contains settings for each Plugin instance (if these settings were passed) labelled by block id. Block id is a unique id of every Block on the page like CPlugin. You can access block id at the frontend via `props.blockId`. So your solution in this case will be like that:
@@ -354,21 +360,23 @@ export default function YouPluginName(props: TFrontendPluginProps<DataType>) {
   return (
     <>
       <p>Data of this plugin instance:</p>
-      <div>{props.myData?.find(data => data.blockId === props.blockId)?.instanceData}</div>
+      <div>{props.data.myData?.find(data => data.blockId === props.blockId)?.instanceData}</div>
     </>
   )
 }
 
-export const getStaticProps: TGetPluginStaticProps = async (context): Promise<DataType> => {
+export const getStaticProps: TGetPluginStaticProps<DataType> = async (context) => {
   if (context.pluginInstances) {
     return {
-      myData: await Promise.all(Object.keys(context.pluginInstances).map(async blockId => {
-        const data = await fetchMyCustomDataByInstanceSettings(context.pluginInstances[blockId])
-        return {
-          blockId,
-          instanceData: data,
-        }
-      }))
+      props: {
+        myData: await Promise.all(Object.keys(context.pluginInstances).map(async blockId => {
+          const data = await fetchMyCustomDataByInstanceSettings(context.pluginInstances[blockId])
+          return {
+            blockId,
+            instanceData: data,
+          }
+        }))
+      }
     }
   }
 }

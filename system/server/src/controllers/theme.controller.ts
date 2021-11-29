@@ -37,7 +37,7 @@ export class ThemeController {
     async getPageConfig(@Query('pageRoute') pageRoute: string): Promise<TPageConfig | null> {
         logger.log('ThemeController::getPageConfig');
 
-        if (!pageRoute || pageRoute === '')
+        if (!pageRoute)
             throw new HttpException('Page route is not valid: ' + pageRoute, HttpStatus.NOT_ACCEPTABLE);
 
         return this.themeService.getPageConfig(pageRoute)
@@ -79,7 +79,7 @@ export class ThemeController {
     async deletePage(@Query('pageRoute') pageRoute: string): Promise<boolean | null> {
         logger.log('ThemeController::deletePage');
 
-        if (!pageRoute || pageRoute === '')
+        if (!pageRoute)
             throw new HttpException('Page route is not valid: ' + pageRoute, HttpStatus.NOT_ACCEPTABLE);
 
         return await this.themeService.deletePage(pageRoute);
@@ -100,7 +100,7 @@ export class ThemeController {
     async resetPage(@Query('pageRoute') pageRoute: string): Promise<boolean | null> {
         logger.log('ThemeController::resetPage');
 
-        if (!pageRoute || pageRoute === '')
+        if (!pageRoute)
             throw new HttpException('Page route is not valid: ' + pageRoute, HttpStatus.NOT_ACCEPTABLE);
 
         return await this.themeService.resetPage(pageRoute);
@@ -155,7 +155,7 @@ export class ThemeController {
     async getPluginsAtPage(@Query('pageRoute') pageRoute: string) {
         logger.log('ThemeController::getPluginsAtPage');
 
-        if (!pageRoute || pageRoute === '')
+        if (!pageRoute)
             throw new HttpException('Page route is not valid: ' + pageRoute, HttpStatus.NOT_ACCEPTABLE);
 
         return this.themeService.getPluginsAtPage(pageRoute)
