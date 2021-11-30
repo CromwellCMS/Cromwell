@@ -13,8 +13,8 @@
     width: 100%;
     height: auto;
     object-fit: cover;
-    border: 6px solid #e4e4e4;
-    border-style: double;
+    /* border: 6px solid #e4e4e4; */
+    /* border-style: double; */
 }
 
 .image {

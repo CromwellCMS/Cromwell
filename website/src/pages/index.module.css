@@ -191,6 +191,11 @@ p.featureTitle {
   margin: 0;
 }
 
+p.sectionSubHeader {
+  font-size: 18px;
+  margin: 10px 0;
+}
+
 .block {
   margin: 20px 0 30px;
 }
@@ -203,6 +208,8 @@ p.featureTitle {
 
 .demoImage {
   width: 100%;
+  height: auto;
+  border-radius: 10px;
 }
 
 

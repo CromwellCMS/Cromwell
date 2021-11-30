@@ -60,7 +60,7 @@ export const TextBlockSidebar = (props: TBlockMenuProps) => {
             <TextField
                 fullWidth
                 onChange={(e) => handleChangeLink(e.target.value)}
-                value={data?.text?.href ?? (props.block.getContentInstance().props as any)?.href ?? ''}
+                value={data?.text?.href ?? (props.block?.getContentInstance()?.props as any)?.href ?? ''}
                 className={styles.settingsInput}
                 variant="standard"
                 label="Link"

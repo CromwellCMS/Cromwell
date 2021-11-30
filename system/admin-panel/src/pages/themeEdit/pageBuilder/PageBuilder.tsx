@@ -554,8 +554,7 @@ export class PageBuilder extends Component<{
         if (instances) {
             Object.values(instances).forEach(inst => {
                 if (inst?.getData()?.id === id && inst?.rerender) blockInst = inst;
-
-            })
+            });
         }
         if (blockInst) await blockInst.rerender();
     }

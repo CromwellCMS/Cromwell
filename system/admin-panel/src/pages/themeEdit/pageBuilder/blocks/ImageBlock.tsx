@@ -13,7 +13,7 @@ import { TBlockMenuProps } from './BlockMenu';
 export function ImageBlockSidebar(props: TBlockMenuProps) {
     const forceUpdate = useForceUpdate();
     const data = props.block?.getData();
-    const imageData = Object.assign({}, props.block.getContentInstance().props, data?.image)
+    const imageData = Object.assign({}, props.block?.getContentInstance()?.props, data?.image)
 
     const handleChange = (key: keyof TCromwellBlockData['image'], value: any) => {
         const data = props.block?.getData();

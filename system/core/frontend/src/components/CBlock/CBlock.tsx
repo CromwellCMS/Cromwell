@@ -71,6 +71,7 @@ export class CBlock<TContentBlock = React.Component> extends
             this.pageInstances[id] = inst;
         }
     }
+
     public registerGlobalBlockInstance = () => {
         let instances = getStoreItem('blockInstances');
         if (!instances) {
@@ -408,8 +409,13 @@ export class CBlock<TContentBlock = React.Component> extends
         return (<BlockStoreConsumer key={this.htmlId + '_render'}>
             {(value) => {
                 this.pageInstances = value?.instances;
-                if (this.pageInstances && !this.pageInstances[this.props.id]) {
+                if (!isServer()) (window as any).pageInstances = this.pageInstances;
+
+                if (this.pageInstances && (!this.pageInstances[this.props.id] ||
+                    this.pageInstances[this.props.id]?.getInstanceId() !== this.getInstanceId())) {
+
                     this.setBlockInstance(this.props.id, this as any);
+
                     if (this.data?.parentId && this.hasBeenMoved) {
                         const parentInst = this.getBlockInstance(this.data?.parentId);
                         if (parentInst) {
