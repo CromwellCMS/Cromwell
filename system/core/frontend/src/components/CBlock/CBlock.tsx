@@ -290,25 +290,23 @@ export class CBlock<TContentBlock = React.Component> extends
     public getDefaultContent(setClasses?: (classes: string) => void): React.ReactNode | null {
         const data = this.getData();
 
+        const jsxChildren = this.props.content?.(this.data,
+            this.blockRef,
+            inst => this.contentInstance = inst,
+            setClasses,
+        );
+
         if (data?.type === 'container') {
             return (
                 <>
-                    {this.props.content?.(this.data,
-                        this.blockRef,
-                        inst => this.contentInstance = inst,
-                        setClasses,
-                    )}
                     {this.getChildBlocks()}
+                    {jsxChildren}
                 </>
             )
         }
 
         if (this.props.content) {
-            return this.props.content(this.data,
-                this.blockRef,
-                inst => this.contentInstance = inst,
-                setClasses,
-            );
+            return jsxChildren;
         }
 
         return this.props.children;
@@ -394,7 +392,7 @@ export class CBlock<TContentBlock = React.Component> extends
     }
 
     public consumerRender(): JSX.Element | null {
-        return (<BlockContentConsumer>
+        return (<BlockContentConsumer key={this.htmlId + '_consumer'}>
             {(content) => {
                 this.contextComponentDidUpdate = content?.componentDidUpdate;
                 return this.contentRender(content?.getter, content?.blockClass)

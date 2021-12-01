@@ -62,7 +62,7 @@ svg.fireIcon {
 }
 
 .content .quote {
-  font-size: 30px;
+  font-size: 26px;
   line-height: 40px;
   padding-left: 20px;
   margin: 60px 0;
@@ -93,7 +93,8 @@ button.getStartedBtn {
   line-height: 22px;
   font-weight: 300;
   color: #fff;
-  background-color: #333;
+  /* background-color: #333; */
+  background: linear-gradient(144deg, rgb(73 1 199), rgb(150 0 134));
   padding: 5px 20px;
   border-radius: 6px;
   cursor: pointer;
@@ -106,6 +107,7 @@ button.getStartedBtn {
 
 button.getStartedBtn:hover {
   background: linear-gradient(144deg, rgb(73 1 199), rgb(150 0 134));
+  box-shadow: 0 17px 39px 7px rgb(60 0 166 / 18%), 0 0 22px 2px rgb(119 0 116 / 24%);
   transition: 0.3s;
   text-decoration: none;
 }
