@@ -7,11 +7,13 @@
     justify-content: center;
     position: absolute;
     bottom: 10px;
+    pointer-events: none;
 }
 
 .pagination {
     @include paper;
     padding: 5px 10px;
+    pointer-events: all;
 }
 
 :global(.modeDark) {

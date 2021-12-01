@@ -145,9 +145,9 @@ export class MockService {
     public async mockProducts(amount?: number): Promise<boolean> {
 
         const images = [
-            '/themes/@cromwell/theme-store/product1.png',
-            '/themes/@cromwell/theme-store/product2.png',
-            '/themes/@cromwell/theme-store/product3.png'
+            '/themes/@cromwell/theme-store/product1.jpg',
+            '/themes/@cromwell/theme-store/product2.jpg',
+            '/themes/@cromwell/theme-store/product3.jpg'
         ];
         const imagesNum = 6;
         const getRandImg = () => images[Math.floor(Math.random() * (images.length))];

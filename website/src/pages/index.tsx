@@ -31,14 +31,166 @@ export default function Home() {
                                 className={styles.getStartedBtn}
                             >Get started</Button>
                         </Link>
-                        <Link href="/docs/overview/intro#examples">
+                    </div>
+
+                </div>
+
+                <div className={styles.content}>
+                    <br style={{ height: '10px' }} />
+                    <br style={{ height: '10px' }} />
+                    <h3 className={styles.header3}>The most advanced visual editor for Next.js apps</h3>
+                    <p className={styles.sectionSubHeader}>Install properly crafted themes by frontend developers.
+                        Drag and drop theme blocks. Add plugins, change content,
+                        styles and more. Make it yours!</p>
+                    <br style={{ height: '20px' }} />
+                </div>
+                <CoverFlowImages images={[
+                    "/img/demo-theme-editor.mp4",
+                ]} />
+
+                <div className={styles.content}>
+                    <br style={{ height: '20px' }} />
+                    <br style={{ height: '20px' }} />
+                    <h3 className={styles.header3}>Modern block styled rich text editor</h3>
+                    <p className={styles.sectionSubHeader}>Embed video links or upload images. Manage your media with file manager.</p>
+                    <br style={{ height: '10px' }} />
+                </div>
+                <CoverFlowImages images={[
+                    "/img/demo-editor.jpg",
+                    "/img/demo-filemanager.png",
+                ]} />
+
+                <div className={styles.content}>
+                    <br style={{ height: '20px' }} />
+                    <br style={{ height: '20px' }} />
+                    <h3 className={styles.header3}>Customizable statistics dashboard</h3>
+                    <p className={styles.sectionSubHeader}>Move and resize dashboard blocks. Monitor server load.</p>
+                    <br style={{ height: '20px' }} />
+                </div>
+                <CoverFlowImages images={[
+                    "/img/demo-dashboard.mp4",
+                    "/img/demo-sysusage.png",
+                ]} />
+
+                <div className={styles.content}>
+                    <br style={{ height: '10px' }} />
+                    <br style={{ height: '10px' }} />
+                    <h3 className={styles.header3}>Custom data types</h3>
+                    <p className={styles.sectionSubHeader}>Add custom fields or create new custom entities. Store any kind of data.</p>
+                    <br style={{ height: '10px' }} />
+                </div>
+                <CoverFlowImages images={[
+                    "/img/demo-custom1.png",
+                    "/img/demo-custom-entities.mp4",
+                    "/img/demo-custom2.png",
+                ]} />
+
+                <div className={styles.content}>
+                    <br style={{ height: '10px' }} />
+                    <br style={{ height: '10px' }} />
+                    <h3 className={styles.header3}>Good looking default themes</h3>
+                    <p className={styles.sectionSubHeader}>Fully featured free online store and blog out of
+                        the box.</p>
+                    <br style={{ height: '10px' }} />
+                </div>
+                <CoverFlowImages images={[
+                    "/img/demo-site1.png",
+                    "/img/demo-site2.png",
+                    "/img/demo-site3.png",
+                    "/img/demo-site4.png",
+                ]} />
+
+                <div className={styles.content}>
+                    <br style={{ height: '10px' }} />
+                    <br style={{ height: '10px' }} />
+                    <h3 className={styles.header3}>Developer?</h3>
+                    <p className={styles.sectionSubHeader} >Make plugins that work with themes and can be
+                        statically pre-rendered by Next.js. Publish them to the market and let
+                        everyone use with a couple of clicks.</p>
+                    <br style={{ height: '10px' }} />
+                </div>
+                <CoverFlowImages images={[
+                    "/img/demo-install-plugin.mp4",
+                ]} />
+
+                <div className={styles.content}>
+                    <br style={{ height: '10px' }} />
+                    <br style={{ height: '10px' }} />
+                    <h3 className={styles.header3}>Use the power of React and Next.js</h3>
+                    <p className={styles.sectionSubHeader}>
+                        Make themes by writing JSX code. We will build your Next.js app so
+                        representation of your code can be fully customized by your customers.
+                        Yes, these React components
+                        will be dragged/dropped/removed/styles in the theme editor!</p>
+                    <br style={{ height: '10px' }} />
+                </div>
+                <CoverFlowImages images={[
+                    "/img/demo-theme-dev.png",
+                ]} />
+
+
+                <div className={styles.content}>
+                    <br style={{ height: '10px' }} />
+                    <br style={{ height: '10px' }} />
+                    <h3 className={styles.header3}>Extend server API</h3>
+                    <p className={styles.sectionSubHeader}>Make plugins to extend server API with the
+                        best enterprise-grade
+                        TypeScript frameworks: Nest.js, TypeGraphQL and TypeORM.</p>
+                    <br style={{ height: '10px' }} />
+                </div>
+                <CoverFlowImages images={[
+                    "/img/demo-plugins-api.jpg",
+                ]} />
+
+                <div className={styles.content}>
+                    <br style={{ height: '10px' }} />
+                    <br style={{ height: '10px' }} />
+                    <h3 className={styles.header3}>Go headless</h3>
+                    <p className={styles.sectionSubHeader}>Cromwell CMS follows principles of
+                        headless CMS. You can
+                        make any kind of custom frontend and query our API server with GraphQL.
+                    </p>
+                    <br style={{ height: '10px' }} />
+                </div>
+                <CoverFlowImages images={[
+                    "/img/demo-headless.png",
+                ]} />
+
+                <div className={styles.content}>
+                    <br />
+                    <p className={styles.quote}>With Cromwell CMS there is no need to assemble your CMS piece
+                        by piece with dozens of different apps and services. Get ones of the best modern web
+                        techs designed to work together. In one pack.</p>
+                </div>
+
+                <div className={styles.content}>
+                    <br style={{ height: '10px' }} />
+                    <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        width: '100%',
+                        justifyContent: 'center',
+                    }}>
+                        <Link href="/docs/overview/intro">
+                            <Button
+                                style={{ margin: '0' }}
+                                variant="contained"
+                                className={styles.getStartedBtn}
+                            >Get started</Button>
+                        </Link>
+                        <Link href="/docs/overview/intro#examples" style={{ marginLeft: '30px' }}>
                             <Button
                                 variant="contained"
                                 className={styles.examplesBtn}
                             >Examples</Button>
                         </Link>
                     </div>
-                    <p className={styles.header2}>Easy to setup and maintain, includes:</p>
+                    <br />
+                    <br />
+                    <br />
+                </div>
+
+                <div className={styles.content}>
                     <div className={styles.features}>
                         <div className={styles.feature}>
                             <div className={styles.featureImg} style={{
@@ -110,92 +262,7 @@ export default function Home() {
                     </div>
                     <br style={{ height: '20px' }} />
                 </div>
-                <div className={styles.content}>
-                    <h3 className={styles.header3}>Customizable statistics dashboard. System monitor.</h3>
-                    <p>Move and resize dashboard blocks. Monitor server load.</p>
-                    <br style={{ height: '20px' }} />
-                </div>
-                <div className={styles.screenshots}>
-                    <CoverFlowImages images={[
-                        "/img/demo-dashboard.jpg",
-                        "/img/demo-sysusage.png",
-                    ]} />
-                </div>
-                <div className={styles.content}>
-                    <br style={{ height: '20px' }} />
-                    <br style={{ height: '20px' }} />
-                    <h3 className={styles.header3}>Modern block styled text editor.</h3>
-                    <p>Embed video links or upload images. Manage your media with file manager.</p>
-                    <br style={{ height: '10px' }} />
-                </div>
-                <div className={styles.screenshots}>
-                    <CoverFlowImages images={[
-                        "/img/demo-editor.jpg",
-                        "/img/demo-filemanager.png",
-                    ]} />
-                </div>
-                <div className={styles.content}>
-                    <br style={{ height: '10px' }} />
-                    <br style={{ height: '10px' }} />
-                    <h3 className={styles.header3}>Advanced theme editor.</h3>
-                    <p>Drag and drop editor blocks. Add plugins, change content, styles and more.</p>
-                    <br style={{ height: '10px' }} />
-                </div>
-                <div className={styles.screenshots}>
-                    <CoverFlowImages images={[
-                        "/img/demo-theme.jpg",
-                        "/img/demo-theme-2.png"
-                    ]} />
-                </div>
 
-                <div className={styles.content}>
-                    <br style={{ height: '10px' }} />
-                    <br style={{ height: '10px' }} />
-                    <h3 className={styles.header3}>Custom data types</h3>
-                    <p>Add custom fields or create new custom entities. Store any kind of data.</p>
-                    <br style={{ height: '10px' }} />
-                </div>
-                <div className={styles.screenshots}>
-                    <CoverFlowImages images={[
-                        "/img/demo-custom1.png",
-                        "/img/demo-custom2.png",
-                    ]} />
-                </div>
-
-                <div className={styles.content}>
-                    <br style={{ height: '10px' }} />
-                    <br style={{ height: '10px' }} />
-                    <h3 className={styles.header3}>Good looking default themes</h3>
-                    <p>Fully featured free online store and blog out the box.</p>
-                    <br style={{ height: '10px' }} />
-                </div>
-                <div className={styles.screenshots}>
-                    <CoverFlowImages images={[
-                        "/img/demo-site1.png",
-                        "/img/demo-site2.png",
-                        "/img/demo-site3.png",
-                        "/img/demo-site4.png",
-                    ]} />
-                </div>
-
-                <div className={styles.content}>
-                    <br />
-                    <br />
-                    <p className={styles.header3} style={{ textAlign: 'center' }}>That and much more!</p>
-                    <br style={{ height: '10px' }} />
-                    <div style={{ textAlign: 'center' }}>
-                        <Link href="/docs/overview/intro">
-                            <Button
-                                style={{ margin: '0' }}
-                                variant="contained"
-                                className={styles.getStartedBtn}
-                            >Get started</Button>
-                        </Link>
-                    </div>
-                    <br />
-                    <br />
-                    <br />
-                </div>
             </div>
         </Layout >
     );

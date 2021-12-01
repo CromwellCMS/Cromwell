@@ -29,6 +29,7 @@
     "prism-react-renderer": "^1.2.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "react-image-lightbox": "5.1.4",
     "swiper": "^7.0.3",
     "url-loader": "^4.1.1"
   },

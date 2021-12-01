@@ -458,6 +458,9 @@ export class ThemeService {
             await this.saveThemeUserConfig(configs.userConfig);
         }
 
+        // Reset Next.js cached pages
+        await resetAllPagesCache();
+
         return true;
     }
 

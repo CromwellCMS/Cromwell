@@ -43,15 +43,15 @@ class PluginNewsletterController {
     async placeSubscription(@Body() input: PluginNewsletterSubscription): Promise<boolean | undefined> {
         const email = input?.email;
         if (!email || !/\S+@\S+\.\S+/.test(email)) {
-            throw new HttpException(`Invalid email`, HttpStatus.NOT_ACCEPTABLE);
+            throw new HttpException(`Invalid email`, HttpStatus.BAD_REQUEST);
         }
 
-        const already = await getManager().findOne(PluginNewsletter, {
+        const hasSubscribed = await getManager().findOne(PluginNewsletter, {
             where: {
                 email
             }
         });
-        if (already) return true;
+        if (hasSubscribed) return true;
 
         const newsletter = new PluginNewsletter();
         newsletter.email = email;

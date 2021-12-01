@@ -33,7 +33,7 @@ const Index: TPageWithLayout = () => {
                         <CImage id="main_34" src="/themes/@cromwell/theme-store/technical-support.png" />
                         <CContainer id="main_10" className={styles.advantageItemText}>
                             <CText id="main_08" className={styles.advantageItemHeader} >ONLINE SUPPORT 24/7</CText>
-                            <CText id="main_35" >100% 24/7 online support</CText>
+                            <CText id="main_35" >24/7 online support</CText>
                         </CContainer>
                     </CContainer>
                 </CContainer>

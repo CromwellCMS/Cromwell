@@ -359,9 +359,12 @@ export class ThemeEditActions extends Component<{
                 console.error(e);
             }
         }
-
         this.forceUpdate();
-        this.getThemeEditor().setEditingPageConfig(Object.assign({}, pageInfo, pageConfig));
+
+        pageConfig = Object.assign({}, pageInfo, pageConfig);
+        pageConfig.modifications = [...(pageConfig.modifications ?? [])];
+        this.getThemeEditor().setEditingPageConfig(pageConfig);
+
         await fadeOutPromise;
         this.getThemeEditor().setState({ isPageLoading: false });
         setTimeout(() => {
