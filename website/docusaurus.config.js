@@ -5,7 +5,7 @@
   baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
-  favicon: 'img/icon_small.png',
+  favicon: '/img/icon_small.png',
   organizationName: 'Cromwell CMS',
   projectName: 'Cromwell CMS',
 

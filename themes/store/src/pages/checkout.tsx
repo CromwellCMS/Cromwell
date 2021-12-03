@@ -10,18 +10,7 @@ import {
     TUser,
 } from '@cromwell/core';
 import { CContainer, getCStore, getRestApiClient, LoadBox } from '@cromwell/core-frontend';
-import {
-    Alert,
-    Button,
-    FormControl,
-    FormControlLabel,
-    Radio,
-    RadioGroup,
-    TextField,
-    Tooltip,
-    useMediaQuery,
-    useTheme,
-} from '@mui/material';
+import { Alert, Button, FormControl, FormControlLabel, Radio, RadioGroup, TextField, Tooltip } from '@mui/material';
 import queryString from 'query-string';
 import React, { useEffect, useState } from 'react';
 
@@ -77,9 +66,6 @@ const CheckoutPage: TPageWithLayout = () => {
     const [singInType, setSingInType] = useState<TFromType>('sign-in');
     const [placedOrder, setPlacedOrder] = useState<TOrder | null>(null);
     const [orderTotal, setOrderTotal] = useState<TPaymentSession | null>(null);
-
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
 
     useEffect(() => {
         const onUserChange = (value: TUser | undefined) => {
@@ -426,7 +412,7 @@ const CheckoutPage: TPageWithLayout = () => {
             )}
         </CContainer>
         <CContainer className={styles.cartZone} id="checkout-5">
-            <CartProductList collapsedByDefault={isMobile} cart={orderTotal?.cart as TStoreListItem[]} />
+            <CartProductList collapsedByDefault={false} cart={orderTotal?.cart as TStoreListItem[]} />
         </CContainer>
     </>);
 }

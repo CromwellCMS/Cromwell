@@ -24,6 +24,8 @@ let fs = require('fs');
     const rootNodeModulesDir = resolve(projectRootDir, 'node_modules');
 
     const managerStartupPath = resolve(projectRootDir, 'system/manager/startup.js');
+    const adminStartupPath = resolve(projectRootDir, 'system/admin-panel/startup.js');
+    const serverStartupPath = resolve(projectRootDir, 'system/server/startup.js');
     const cliStartupPath = resolve(projectRootDir, 'system/cli/startup.js');
     const backendNode_modules = resolve(coreDir, 'backend/node_modules');
     const frontendNode_modules = resolve(coreDir, 'frontend/node_modules');
@@ -73,12 +75,19 @@ let fs = require('fs');
         }
     }
 
-    // Build manager
+    // Builds manager, renderer and utils
     const managerCommand = scriptName === 'build' ? 'buildService' : 'check';
     spawnSync(`node ${managerStartupPath} ${managerCommand}`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
 
     // Build cli
     spawnSync(`node ${cliStartupPath} ${managerCommand}`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
+
+    if (scriptName === 'build') {
+        // Build server
+        spawnSync(`node ${serverStartupPath} build`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
+        // Build admin
+        spawnSync(`node ${adminStartupPath} build`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
+    }
 
     // Check themes
     const themesDir = resolve(projectRootDir, 'themes');
@@ -94,10 +103,6 @@ let fs = require('fs');
                 }
             }
         }
-    }
-
-    if (scriptName === 'build') {
-        spawnSync(`node ${managerStartupPath} ${scriptName}`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
     }
 
     // Check plugins

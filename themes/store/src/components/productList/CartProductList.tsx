@@ -1,6 +1,6 @@
 import { TProduct, TStoreListItem } from '@cromwell/core';
 import { getCStore, Link } from '@cromwell/core-frontend';
-import { Collapse, Grid, IconButton, useMediaQuery, useTheme } from '@mui/material';
+import { Collapse, Grid, IconButton, Theme, useMediaQuery } from '@mui/material';
 import clsx from 'clsx';
 import React, { useEffect, useRef, useState } from 'react';
 
@@ -25,8 +25,7 @@ export const CartProductList = (props: {
     const _collapsedByDefault = useRef<boolean>(!!props.collapsedByDefault);
     const isCollapsed = useRef<boolean>(!!props.collapsedByDefault);
     const cstore = getCStore();
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
+    const isMobile = useMediaQuery<Theme>((theme) => theme.breakpoints.down('sm'));
     const isStatic = !!props.cart;
 
     if (_collapsedByDefault.current !== props.collapsedByDefault) {

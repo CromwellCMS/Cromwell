@@ -1,7 +1,7 @@
 import { getStoreItem, onStoreChange, removeOnStoreChange, TAttribute, TProduct, TStoreListItem } from '@cromwell/core';
 import { getCStore, Link } from '@cromwell/core-frontend';
 import SearchIcon from '@mui/icons-material/Search';
-import { IconButton, Rating, Tooltip, useMediaQuery, useTheme } from '@mui/material';
+import { IconButton, Rating, Theme, Tooltip, useMediaQuery } from '@mui/material';
 import clsx from 'clsx';
 import * as NextImage from 'next/image';
 import React, { useEffect, useRef } from 'react';
@@ -27,8 +27,7 @@ export const ProductCard = (props?: {
     const productLink = `/product/${data?.slug ?? data?.id}`;
     const wrapperRef = useRef<HTMLDivElement>(null);
     const cstore = getCStore();
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
+    const isMobile = useMediaQuery<Theme>((theme) => theme.breakpoints.down('sm'));
     const product = props?.data;
 
     const item: TStoreListItem = {

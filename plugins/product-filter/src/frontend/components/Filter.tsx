@@ -21,7 +21,6 @@ import {
     ListItemText,
     SwipeableDrawer,
     TextField,
-    Theme,
     Typography,
     useMediaQuery,
 } from '@mui/material';
@@ -33,7 +32,7 @@ import { debounce } from 'throttle-debounce';
 
 import { defaultSettings } from '../../constants';
 import { IFrontendFilter, TInstanceSettings } from '../../types';
-import { filterCList, setListProps, TProductFilterData, getInitialData, TInitialData } from '../service';
+import { filterCList, getInitialData, setListProps, TInitialData, TProductFilterData } from '../service';
 import { styles } from '../styles';
 import { Slider } from './Slider';
 
@@ -50,7 +49,7 @@ type FilterState = {
 }
 
 type FilterProps = {
-    router: NextRouter;
+    router?: NextRouter;
     isMobile?: boolean;
 } & TFrontendPluginProps<TProductFilterData, TInstanceSettings>;
 
@@ -455,6 +454,7 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
                         open={isMobileOpen}
                         onClose={this.handleMobileClose}
                         onOpen={onOpen}
+                        classes={{ paper: 'productFilter_styledScrollBar' }}
                     >
                         <div className="productFilter_drawer">
                             {filterContent}
@@ -468,20 +468,10 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
     }
 }
 
-const withMediaQuery = (queries: Record<string, ((theme: Theme) => string)> = {}) => Component => props => {
-    const mediaProps = {}
-    Object.keys(queries).forEach(qName => {
-        mediaProps[qName] = useMediaQuery(queries[qName], {
-            defaultMatches: true,
-        })
-    })
-    return <Component {...mediaProps} {...props} />
+let HocComp: any = (props: TFrontendPluginProps<TProductFilterData, TInstanceSettings>) => {
+    const isMobile = useMediaQuery(`(max-width:${props.data?.pluginSettings?.mobileBreakpoint || 600}px)`);
+    return <ProductFilter {...props} isMobile={isMobile} />
 }
 
-let HocComp: any = withMediaQuery({
-    'isMobile': theme => theme?.breakpoints?.down('xs'),
-})(ProductFilter);
-
 HocComp = withStyles(styles)(HocComp);
-
 export default HocComp;

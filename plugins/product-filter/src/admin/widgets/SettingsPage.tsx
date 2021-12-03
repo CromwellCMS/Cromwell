@@ -26,7 +26,16 @@ export function SettingsPage(props: TPluginSettingsProps<TProductFilterSettings>
                             style={{ marginBottom: '15px', marginRight: '15px', maxWidth: '450px' }}
                             onChange={e => changeSetting('listId', e.target.value)}
                         />
-                        <h3 style={{ marginBottom: '15px' }}>Mobile icon position (in pixels):</h3>
+                        <TextFieldWithTooltip label="Mobile breakpoint (px)"
+                            tooltipText="Width of the browser window in pixels that triggers mobile device mode where will be displayed only small icon that invokes filter modal pop-up"
+                            value={(pluginSettings?.mobileBreakpoint ?? 600) + ''}
+                            style={{ marginBottom: '15px', marginRight: '15px', maxWidth: '450px' }}
+                            onChange={e => {
+                                const num = Number(e.target.value);
+                                if (!isNaN(num)) changeSetting('mobileBreakpoint', num);
+                            }}
+                        />
+                        <h3 style={{ marginBottom: '15px', marginTop: '20px' }}>Mobile icon position (in pixels):</h3>
                         <TextField label="Top"
                             value={mobileIconPosition.top}
                             style={{ marginBottom: '15px', marginRight: '15px', maxWidth: '150px' }}

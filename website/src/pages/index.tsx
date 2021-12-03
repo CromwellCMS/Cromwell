@@ -1,5 +1,5 @@
 import Link from '@docusaurus/Link';
-import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+// import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import { Button } from '@mui/material';
 import WhatshotIcon from '@mui/icons-material/Whatshot';
 import Layout from '@theme/Layout';
@@ -7,14 +7,19 @@ import React from 'react';
 
 import { CoverFlowImages } from '../components/CoverFlowImages';
 import styles from './index.module.css';
-
+import Head from '@docusaurus/Head';
 
 export default function Home() {
-    const { siteConfig } = useDocusaurusContext();
+    // const { siteConfig } = useDocusaurusContext();
     return (
         <Layout
-            title={`Hello from ${siteConfig.title}`}
-            description="Description will go into a meta tag in <head />">
+            title="Cromwell CMS - next-gen e-commerce and blogging platform that unites bleeding-edge web techs in extraordinary user-friendly format"
+            description="Cromwell CMS - next-gen e-commerce and blogging platform that unites bleeding-edge web techs in extraordinary user-friendly format"
+        >
+            <Head>
+                <meta charSet="utf-8" />
+                <meta property="og:image" content={'/img/icon_small.png'} />
+            </Head>
             <div className={styles.IndexPage}>
                 <div className={styles.content}>
                     <div className={styles.moon}></div>
@@ -22,8 +27,11 @@ export default function Home() {
                     <p className={styles.subheader}>It&apos;s time for everyone to make blazing-fast websites
                         <WhatshotIcon className={styles.fireIcon} style={{ width: '20px', height: '20px' }} />
                     </p>
-                    <p className={styles.quote}>Cromwell CMS is a next-gen e-commerce and blogging
-                        platform that unites bleeding-edge web techs in extraordinary user-friendly format.</p>
+                    <div>
+                        <p className={styles.quote}>
+                            Cromwell CMS is a next-gen e-commerce and blogging
+                            platform that unites bleeding-edge web techs in extraordinary user-friendly format.</p>
+                    </div>
                     <div className={styles.mainActions}>
                         <Link href="/docs/overview/intro">
                             <Button
@@ -36,7 +44,6 @@ export default function Home() {
                 </div>
 
                 <div className={styles.content}>
-                    <br style={{ height: '10px' }} />
                     <br style={{ height: '10px' }} />
                     <h3 className={styles.header3}>The most advanced visual editor for Next.js apps</h3>
                     <p className={styles.sectionSubHeader}>Install properly crafted themes by frontend developers.

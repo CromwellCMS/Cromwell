@@ -2,6 +2,7 @@ import { TFilteredProductList, TProductCategory, TProductFilter } from '@cromwel
 
 export type TProductFilterSettings = {
     listId?: string;
+    mobileBreakpoint?: number;
     mobileIconPosition?: {
         top: number;
         left: number;

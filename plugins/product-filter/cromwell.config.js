@@ -1,6 +1,7 @@
 module.exports = {
     defaultSettings: {
-        listId: "Category_ProductList"
+        listId: "Category_ProductList",
+        mobileBreakpoint: 600,
     },
     rollupConfig: () => {
         const commonjs = require('@rollup/plugin-commonjs');

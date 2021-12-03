@@ -12,4 +12,5 @@ export const defaultSettings: Required<TProductFilterSettings> = {
     },
     collapsedByDefault: false,
     mobileCollapsedByDefault: false,
+    mobileBreakpoint: 600,
 }
