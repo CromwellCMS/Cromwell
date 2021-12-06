@@ -7,6 +7,7 @@ import {
     OrderInput,
     OrderRepository,
     PagedOrder,
+    Coupon,
     PagedParamsInput,
     TGraphQLContext,
 } from '@cromwell/core-backend';
@@ -26,6 +27,7 @@ const deleteManyPath = GraphQLPaths.Order.deleteMany;
 const deleteManyFilteredPath = GraphQLPaths.Order.deleteManyFiltered;
 const getFilteredPath = GraphQLPaths.Order.getFiltered;
 const getOrdersOfUser = GraphQLPaths.Order.getOrdersOfUser;
+const couponsKey: keyof TOrder = 'coupons';
 
 @Resolver(Order)
 export class OrderResolver {
@@ -128,5 +130,10 @@ export class OrderResolver {
     @FieldResolver(() => GraphQLJSONObject, { nullable: true })
     async customMeta(@Root() entity: Order, @Arg("keys", () => [String]) fields: string[]): Promise<any> {
         return entityMetaRepository.getEntityMetaByKeys(EDBEntity.Order, entity.id, fields);
+    }
+
+    @FieldResolver(() => [Coupon], { nullable: true })
+    async [couponsKey](@Root() post: Order): Promise<Coupon[] | undefined | null> {
+        return this.repository.getCouponsOfOrder(post.id);
     }
 }

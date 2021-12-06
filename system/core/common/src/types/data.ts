@@ -138,6 +138,7 @@ export type TDBEntity = keyof {
     Generic;
     CMS;
     CustomEntity;
+    Coupon;
 }
 
 export enum EDBEntity {
@@ -155,6 +156,7 @@ export enum EDBEntity {
     Generic = 'Generic',
     CMS = 'CMS',
     CustomEntity = 'CustomEntity',
+    Coupon = 'Coupon',
 }
 
 export type GraphQLPathsType = { [K in TDBEntity]: TGraphQLNode };

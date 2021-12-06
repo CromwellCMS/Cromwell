@@ -133,13 +133,21 @@ const PostSettings = (props: {
                         label="Publish date"
                         value={publishDate}
                         onChange={(newValue) => {
-                            setPublishDate(newValue);
+                            if (!newValue) {
+                                setPublishDate(null);
+                                return;
+                            }
+                            const date = new Date(newValue);
+                            if (isNaN(date.getTime())) {
+                                setPublishDate(null);
+                                return;
+                            }
+                            setPublishDate(date);
                         }}
                         renderInput={(params) => <TextField
                             variant="standard"
                             fullWidth
                             {...params} />}
-                    // disableToolbar
                     />
                 </LocalizationProvider>
                 <FormControlLabel

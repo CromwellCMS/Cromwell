@@ -96,11 +96,9 @@ const TagPage = () => {
         init();
     }, []);
 
-    const checkValid = (value) => value && value !== '';
-
     const handleSave = async () => {
         setCanValidate(true);
-        if (!checkValid(data?.name)) return;
+        if (!data?.name) return;
 
         setIsSaving(true);
 
@@ -223,7 +221,7 @@ const TagPage = () => {
                                 variant="standard"
                                 className={styles.textField}
                                 onChange={(e) => { handleInputChange('name', e.target.value) }}
-                                error={canValidate && !checkValid(data?.name)}
+                                error={canValidate && !data?.name}
                             />
                         </Grid>
                         <Grid item xs={12} sm={6}>

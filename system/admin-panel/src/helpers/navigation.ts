@@ -10,9 +10,9 @@ import {
     ShoppingBasket as ShoppingBasketIcon,
     Stars as StarsIcon,
     Storage as StorageIcon,
+    ConfirmationNumber as ConfirmationNumberIcon,
 } from '@mui/icons-material';
 import React from 'react';
-
 import sidebarStyles from '../components/sidebar/Sidebar.module.scss';
 import { CategoryIcon, PluginIcon } from '../constants/icons';
 import {
@@ -31,6 +31,8 @@ import {
     productListInfo,
     productPageInfo,
     reviewListPageInfo,
+    couponListPageInfo,
+    couponPageInfo,
     settingsPageInfo,
     tagListPageInfo,
     tagPageInfo,
@@ -82,6 +84,8 @@ export const getPageInfos = (): TPageInfo[] => {
         reviewListPageInfo,
         pluginMarketPageInfo,
         themeMarketPageInfo,
+        couponListPageInfo,
+        couponPageInfo,
     ];
 
     let infos = [...defaultPageInfos, ...getCustomEntityPages()].filter(i => Boolean(i.component));
@@ -135,6 +139,13 @@ export const getSideBarLinks = (): TSidebarLink[] => {
                     title: 'Orders',
                     route: orderListPageInfo.route,
                     icon: React.createElement(ShoppingBasketIcon),
+                    roles: ['administrator', 'guest'],
+                },
+                {
+                    id: 'Coupon_list',
+                    title: 'Coupons',
+                    route: couponListPageInfo.route,
+                    icon: React.createElement(ConfirmationNumberIcon),
                     roles: ['administrator', 'guest'],
                 },
                 {

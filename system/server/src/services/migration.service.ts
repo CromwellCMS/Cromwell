@@ -2,6 +2,8 @@ import {
     EDBEntity,
     TAttributeInput,
     TBasePageEntity,
+    TCoupon,
+    TCouponInput,
     TCustomEntityInput,
     TDBEntity,
     TOrderInput,
@@ -21,6 +23,8 @@ import {
     AttributeRepository,
     BasePageEntity,
     CmsEntity,
+    Coupon,
+    CouponRepository,
     CustomEntity,
     CustomEntityRepository,
     entityMetaRepository,
@@ -67,6 +71,7 @@ enum ESheetNames {
     Tag = 'Post tags',
     Theme = 'Themes',
     User = 'Users',
+    Coupon = 'Coupons',
 }
 type TBaseEntityRecord = Omit<TBasePageEntity, 'id'> & { id?: number | null };
 type TEntityRecord<TEntity> = Record<keyof (TEntity & { id }), string | null | undefined>;
@@ -135,6 +140,9 @@ export class MigrationService {
         if (entityTypes.includes('CustomEntity') || exportAll) {
             await this.exportCustomEntities(workbook);
         }
+        if (entityTypes.includes('Coupon') || exportAll) {
+            await this.exportCoupons(workbook);
+        }
 
         try {
             workbook.deleteSheet("Sheet1");
@@ -165,6 +173,7 @@ export class MigrationService {
             await this.importPosts({ workbook, removeSurplus });
 
             await this.importCategories({ workbook, removeSurplus });
+            await this.importCoupons({ workbook, removeSurplus })
             await this.importAttributes({ workbook, removeSurplus });
             await this.importProducts({ workbook, removeSurplus });
             await this.importReviews({ workbook, removeSurplus });
@@ -444,7 +453,7 @@ export class MigrationService {
 
     // ORDERS
     private async exportOrders(workbook: any) {
-        const orders = await getCustomRepository(OrderRepository).find();
+        const orders = await getCustomRepository(OrderRepository).find({ relations: ['coupons'] });
         const metaKeys = await entityMetaRepository.getAllEntityMetaKeys(EDBEntity.Order) ?? [];
 
         const ordersSheet: Record<keyof Omit<TOrderInput, 'fromUrl'>, any>[] = await Promise.all(
@@ -468,11 +477,45 @@ export class MigrationService {
                 shippingMethod: ent.shippingMethod,
                 paymentMethod: ent.paymentMethod,
                 currency: ent.currency,
+                couponCodes: ent.coupons?.map(coupon => coupon.code),
                 customMeta: await entityMetaRepository.getEntityMetaByKeys(EDBEntity.Order, ent.id, metaKeys),
                 views: undefined,
             })));
 
         this.fillSheet(workbook, ESheetNames.Order, ordersSheet);
+    }
+
+    // COUPONS
+    private async exportCoupons(workbook: any) {
+        const reviews = await getCustomRepository(CouponRepository).find();
+        const metaKeys = await entityMetaRepository.getAllEntityMetaKeys(EDBEntity.Coupon) ?? [];
+
+        const dataSheet: Record<keyof TCouponInput, any>[] = await Promise.all(reviews.map(async ent => ({
+            id: ent.id,
+            slug: ent.slug,
+            pageTitle: ent.pageTitle,
+            pageDescription: ent.pageDescription,
+            meta: ent.meta,
+            createDate: ent.createDate,
+            updateDate: ent.updateDate,
+            isEnabled: ent.isEnabled,
+            discountType: ent.discountType,
+            value: ent.value,
+            code: ent.code,
+            description: ent.description,
+            allowFreeShipping: ent.allowFreeShipping,
+            minimumSpend: ent.minimumSpend,
+            maximumSpend: ent.maximumSpend,
+            categoryIds: ent.categoryIds,
+            productIds: ent.productIds,
+            expiryDate: ent.expiryDate,
+            usageLimit: ent.usageLimit,
+            usedTimes: ent.usedTimes,
+            customMeta: await entityMetaRepository.getEntityMetaByKeys(EDBEntity.Coupon, ent.id, metaKeys),
+            views: undefined,
+        })));
+
+        this.fillSheet(workbook, ESheetNames.Coupon, dataSheet);
     }
 
     // USERS
@@ -966,6 +1009,7 @@ export class MigrationService {
                 paymentMethod: input.paymentMethod || null,
                 fromUrl: input.fromUrl || null,
                 currency: input.currency || null,
+                couponCodes: this.parseJson(input.couponCodes),
             }),
             update: async (input) => input.id && getCustomRepository(OrderRepository).updateOrder(input.id, input),
             create: (input) => getCustomRepository(OrderRepository).createOrder(input, input.id),
@@ -1051,6 +1095,31 @@ export class MigrationService {
             }),
             update: async (input) => input.id && getCustomRepository(CustomEntityRepository).updateCustomEntity(input.id, input),
             create: (input) => getCustomRepository(CustomEntityRepository).createCustomEntity(input, input.id),
+        });
+    }
+
+    private async importCoupons(options: TImportOptions) {
+        await this.importBase<Omit<TCoupon, 'id'>>({
+            ...options,
+            sheetName: ESheetNames.Coupon,
+            EntityClass: Coupon,
+            transformInput: (input) => ({
+                ...this.parseBaseInput(input),
+                discountType: input.discountType as any || null,
+                value: this.parseNumber(input.value),
+                code: input.code || null,
+                description: input.description || null,
+                allowFreeShipping: this.parseBoolean(input.allowFreeShipping),
+                minimumSpend: this.parseNumber(input.minimumSpend),
+                maximumSpend: this.parseNumber(input.maximumSpend),
+                categoryIds: this.parseJson(input.categoryIds),
+                productIds: this.parseJson(input.productIds),
+                expiryDate: this.parseDate(input.expiryDate),
+                usageLimit: this.parseNumber(input.usageLimit),
+                usedTimes: this.parseNumber(input.usedTimes),
+            }),
+            update: async (input) => input.id && getCustomRepository(CouponRepository).updateCoupon(input.id, input),
+            create: (input) => getCustomRepository(CouponRepository).createCoupon(input, input.id),
         });
     }
 

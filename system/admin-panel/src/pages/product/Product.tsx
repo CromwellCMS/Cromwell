@@ -150,14 +150,12 @@ const ProductPage = () => {
         return data?.customMeta;
     };
 
-    const checkValid = (value) => value && value !== '';
-
     const handleSave = async () => {
         await infoCardRef?.current?.save();
         const product = productRef.current;
         setCanValidate(true);
 
-        if (!checkValid(product?.name)) return;
+        if (!product?.name) return;
 
         const productAttributes = product.attributes?.map(attr => ({
             key: attr.key,

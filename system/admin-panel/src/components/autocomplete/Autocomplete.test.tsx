@@ -9,7 +9,7 @@ describe('Autocomplete component', () => {
         render(<Autocomplete
             loader={async () => {
                 return [
-                    { title: '_test1_' }
+                    { title: '_test1_', id: 'test1' }
                 ]
             }}
             getOptionLabel={(item => item.title)}

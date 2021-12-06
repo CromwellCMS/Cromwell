@@ -1,6 +1,8 @@
 import {
     TAttribute,
     TCmsSettings,
+    TCoupon,
+    TCustomEntity,
     TOrder,
     TPaymentSession,
     TPost,
@@ -10,7 +12,6 @@ import {
     TProductReview,
     TTag,
     TUser,
-    TCustomEntity
 } from '@cromwell/core';
 
 export type TBackendModule = {
@@ -74,6 +75,10 @@ export type ActionTypes = {
     create_custom_entity: Action<TCustomEntity>;
     update_custom_entity: Action<TCustomEntity>;
     delete_custom_entity: Action<{ id: number }>;
+
+    create_coupon: Action<TCoupon>;
+    update_coupon: Action<TCoupon>;
+    delete_coupon: Action<{ id: number }>;
 
     update_settings: Action<TCmsSettings>;
 

@@ -1,16 +1,17 @@
 import { TBasePageEntity, TDeleteManyInput, TOrder, TOrderInput, TPagedList, TPagedParams } from '@cromwell/core';
 import sanitizeHtml from 'sanitize-html';
-import { DeleteQueryBuilder, EntityRepository, SelectQueryBuilder } from 'typeorm';
+import { EntityRepository, getCustomRepository, SelectQueryBuilder } from 'typeorm';
 import { DateUtils } from 'typeorm/util/DateUtils';
 
 import { getPaged, handleCustomMetaInput } from '../helpers/base-queries';
 import { getLogger } from '../helpers/logger';
 import { validateEmail } from '../helpers/validation';
-import { BasePageEntity } from '../models/entities/base-page.entity';
+import { Coupon } from '../models/entities/coupon.entity';
 import { Order } from '../models/entities/order.entity';
 import { OrderFilterInput } from '../models/filters/order.filter';
 import { PagedParamsInput } from '../models/inputs/paged-params.input';
 import { BaseRepository } from './base.repository';
+import { CouponRepository } from './coupon.repository';
 
 const logger = getLogger();
 
@@ -62,6 +63,9 @@ export class OrderRepository extends BaseRepository<Order> {
         order.shippingMethod = input.shippingMethod;
         order.paymentMethod = input.paymentMethod;
         order.currency = input.currency;
+
+        if (input.couponCodes) order.coupons = await getCustomRepository(CouponRepository)
+            .getCouponsByCodes(input.couponCodes);
 
         await order.save();
         await handleCustomMetaInput(order as any, input);
@@ -180,5 +184,11 @@ export class OrderRepository extends BaseRepository<Order> {
             userId,
         });
         return await getPaged<TOrder>(qb, this.metadata.tablePath, pagedParams);
+    }
+
+    async getCouponsOfOrder(id: number): Promise<Coupon[] | undefined | null> {
+        return (await this.findOne(id, {
+            relations: ['coupons']
+        }))?.coupons;
     }
 }
