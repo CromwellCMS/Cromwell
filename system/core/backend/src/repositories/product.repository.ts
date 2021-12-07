@@ -41,6 +41,7 @@ const ratingKey: keyof TProductReview = 'rating';
 type TGetProductOptions = {
     withRating?: boolean;
     withAttributes?: boolean;
+    withCategories?: boolean;
 }
 
 @EntityRepository(Product)
@@ -89,9 +90,7 @@ export class ProductRepository extends BaseRepository<Product> {
         }
         const product = await qb.where(`${this.metadata.tablePath}.id = :id`, { id }).getOne();
 
-        if (options?.withAttributes && product) {
-            product.attributes = await this.getProductAttributes(id);
-        }
+        await this.applyGetProductOptions(product, options);
         return product;
     }
 
@@ -103,10 +102,19 @@ export class ProductRepository extends BaseRepository<Product> {
         }
         const product = await qb.where(`${this.metadata.tablePath}.slug = :slug`, { slug }).getOne();
 
-        if (options?.withAttributes && product?.id) {
+        await this.applyGetProductOptions(product, options);
+        return product;
+    }
+
+    private async applyGetProductOptions(product?: Product, options?: TGetProductOptions) {
+        if (!product?.id || !options) return;
+        if (options.withAttributes) {
             product.attributes = await this.getProductAttributes(product.id);
         }
-        return product;
+        if (options.withCategories) {
+            product.categories = await getCustomRepository(ProductCategoryRepository)
+                .getCategoriesOfProduct(product.id, { pageSize: 1000 });
+        }
     }
 
     async handleProductInput(product: Product, input: TProductInput, action: 'update' | 'create') {

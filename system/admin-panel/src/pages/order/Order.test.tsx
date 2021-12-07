@@ -28,6 +28,8 @@ jest.mock('@cromwell/core-frontend', () => {
             return {
                 getOrderById: jest.fn().mockImplementation(() => testData),
                 updateOrder: jest.fn().mockImplementation(() => testData),
+                CouponFragment: '',
+                OrderFragment: '',
             }
         },
         getCStore: () => {
@@ -37,9 +39,11 @@ jest.mock('@cromwell/core-frontend', () => {
                 addToCart: jest.fn().mockImplementation(() => []),
                 clearCart: jest.fn().mockImplementation(() => []),
                 removeFromCart: jest.fn().mockImplementation(() => []),
+                getCoupons: jest.fn().mockImplementation(() => []),
                 getCartTotal: jest.fn().mockImplementation(() => ({})),
                 getPriceWithCurrency: jest.fn().mockImplementation(() => ''),
                 getActiveCurrencySymbol: jest.fn().mockImplementation(() => ''),
+                setCoupons: jest.fn().mockImplementation(() => ''),
             }
         },
     }

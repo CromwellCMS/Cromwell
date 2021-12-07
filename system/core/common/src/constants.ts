@@ -124,6 +124,7 @@ export const GraphQLPaths: { [K in Exclude<TDBEntity, 'Theme' | 'Plugin' | 'Post
         deleteMany: "deleteManyCoupons",
         deleteManyFiltered: "deleteManyFilteredCoupons",
         getFiltered: "getFilteredCoupons",
+        getCouponsByCodes: "getCouponsByCodes",
     },
 }
 

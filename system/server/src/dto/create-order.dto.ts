@@ -43,4 +43,7 @@ export class CreateOrderDto implements TPaymentSession {
 
     @ApiProperty()
     cancelUrl?: string;
+
+    @ApiProperty({ type: [String] })
+    couponCodes?: string[] | null;
 }

@@ -463,13 +463,14 @@ export type TOrderFilter = TBaseFilter & {
     dateTo?: string;
 }
 
-export type TPaymentSession = TOrderCore & {
+export type TPaymentSession = TOrderInput & {
     paymentOptions?: {
         name?: string;
         link?: string;
     }[];
     successUrl?: string;
     cancelUrl?: string;
+    appliedCoupons?: string[];
 }
 
 

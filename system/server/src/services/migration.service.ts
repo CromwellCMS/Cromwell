@@ -116,6 +116,9 @@ export class MigrationService {
         if (entityTypes.includes('Order') || exportAll) {
             await this.exportOrders(workbook);
         }
+        if (entityTypes.includes('Coupon') || exportAll) {
+            await this.exportCoupons(workbook);
+        }
         if (entityTypes.includes('Post') || exportAll) {
             await this.exportPosts(workbook);
         }
@@ -139,9 +142,6 @@ export class MigrationService {
         }
         if (entityTypes.includes('CustomEntity') || exportAll) {
             await this.exportCustomEntities(workbook);
-        }
-        if (entityTypes.includes('Coupon') || exportAll) {
-            await this.exportCoupons(workbook);
         }
 
         try {

@@ -1133,6 +1133,26 @@ export class CGraphQLClient {
     public deleteManyCoupons = this.createDeleteMany('Coupon');
     public deleteManyFilteredCoupons = this.createDeleteManyFiltered<TBaseFilter>('Coupon', 'BaseFilterInput');
 
+    public getCouponsByCodes = async (codes: string[],
+        customFragment?: DocumentNode, customFragmentName?: string): Promise<TCoupon[] | undefined> => {
+        const path = GraphQLPaths.Coupon.getCouponsByCodes;
+        const fragment = customFragment ?? this.CouponFragment;
+        const fragmentName = customFragmentName ?? 'CouponFragment';
+
+        return this.query({
+            query: gql`
+                query coreGetCouponsByCodes($codes: String[]!) {
+                    ${path}(codes: $codes, pagedParams: $pagedParams) {
+                        ...${fragmentName}
+                    }
+                }
+                ${fragment}
+            `,
+            variables: {
+                codes,
+            }
+        }, path);
+    }
 }
 
 export type TCGraphQLClient = CGraphQLClient;

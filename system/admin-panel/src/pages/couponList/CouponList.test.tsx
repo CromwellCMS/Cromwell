@@ -20,8 +20,9 @@ const testData: TPagedList<TCoupon> = {
 
 jest.mock('../../constants/PageInfos', () => {
     return {
-        tagListPageInfo: {},
-        tagPageInfo: {},
+        couponListPageInfo: {},
+        orderListPageInfo: {},
+        couponPageInfo: {},
     }
 });
 
@@ -44,7 +45,7 @@ jest.mock('@cromwell/core-frontend', () => {
         },
         getGraphQLClient: () => {
             return {
-                getFilteredTags: jest.fn().mockImplementation(async () => testData)
+                getFilteredCoupons: jest.fn().mockImplementation(async () => testData)
             }
         },
         getRestApiClient: () => {
@@ -65,9 +66,9 @@ import CouponList from './CouponList';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { store } from '../../redux/store';
 
-describe('TagList page', () => {
+describe('CouponList page', () => {
 
-    it("renders tags", async () => {
+    it("renders page", async () => {
         render(
             <Provider store={store}>
                 <Router>

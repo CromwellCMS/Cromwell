@@ -17,6 +17,7 @@ export default function Migration() {
         { key: 'ProductCategory', title: 'Categories', checked: true, },
         { key: 'ProductReview', title: 'Reviews', checked: true, },
         { key: 'Attribute', title: 'Attributes', checked: true, },
+        { key: 'Coupon', title: 'Coupons', checked: true, },
         { key: 'Post', title: 'Posts', checked: true, },
         { key: 'Tag', title: 'Tags', checked: true, },
         { key: 'Order', title: 'Orders', checked: true, },

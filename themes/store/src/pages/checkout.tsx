@@ -1,4 +1,5 @@
 import {
+    getRandStr,
     getStoreItem,
     isServer,
     onStoreChange,
@@ -10,9 +11,23 @@ import {
     TUser,
 } from '@cromwell/core';
 import { CContainer, getCStore, getRestApiClient, LoadBox } from '@cromwell/core-frontend';
-import { Alert, Button, FormControl, FormControlLabel, Radio, RadioGroup, TextField, Tooltip } from '@mui/material';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import CloseIcon from '@mui/icons-material/Close';
+import GppBadIcon from '@mui/icons-material/GppBad';
+import {
+    Alert,
+    Box,
+    Button,
+    FormControl,
+    FormControlLabel,
+    IconButton,
+    Radio,
+    RadioGroup,
+    TextField,
+    Tooltip,
+} from '@mui/material';
 import queryString from 'query-string';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import Layout from '../components/layout/Layout';
 import SignInModal, { TFromType } from '../components/modals/signIn/SignIn';
@@ -61,6 +76,10 @@ const CheckoutPage: TPageWithLayout = () => {
     const cstore = getCStore();
     const forceUpdate = useForceUpdate();
     const [singInOpen, setSingInOpen] = useState(false);
+    const coupons = useRef<Record<string, {
+        value: string;
+        applied?: boolean;
+    }>>({});
     const [isLoading, setIsLoading] = useState(false);
     const [canValidate, setCanValidate] = useState(false);
     const [singInType, setSingInType] = useState<TFromType>('sign-in');
@@ -91,6 +110,7 @@ const CheckoutPage: TPageWithLayout = () => {
         }
     }, []);
 
+
     const getOrderTotal = async () => {
         setIsLoading(true);
         try {
@@ -100,7 +120,15 @@ const CheckoutPage: TPageWithLayout = () => {
                 fromUrl: window.location.origin,
                 successUrl: `${window.location.origin}/checkout?paymentStatus=success`,
                 cancelUrl: `${window.location.origin}/checkout?paymentStatus=cancelled`,
+                couponCodes: Object.values(coupons.current).map(c => c.value).filter(Boolean),
             });
+            if (total?.appliedCoupons?.length) {
+                for (const couponId of Object.keys(coupons.current)) {
+                    if (total.appliedCoupons.includes(coupons.current[couponId].value)) {
+                        coupons.current[couponId].applied = true;
+                    }
+                }
+            }
             if (total) setOrderTotal(total);
         } catch (error) {
             console.error(error);
@@ -169,6 +197,7 @@ const CheckoutPage: TPageWithLayout = () => {
                 currency: cstore.getActiveCurrencyTag(),
                 shippingMethod: form.shippingMethod,
                 paymentMethod: form.paymentMethod,
+                couponCodes: Object.values(coupons.current).map(c => c.value).filter(Boolean),
             });
         } catch (e) {
             console.error(e);
@@ -352,7 +381,68 @@ const CheckoutPage: TPageWithLayout = () => {
             </FormControl>
             <div className={styles.delimiter}></div>
 
+            <h2 className={styles.subHeader}>Coupons</h2>
+            <Button
+                sx={{ mb: 1 }}
+                variant="outlined"
+                onClick={() => {
+                    coupons.current = { ...coupons.current, [getRandStr(8)]: { value: '' } };
+                    forceUpdate();
+                }}
+            >Add coupon</Button>
+            {Object.entries(coupons.current).map(([couponId, coupon]) => {
+                return (
+                    <Box sx={{ my: 2, display: 'flex', alignItems: 'center' }} key={couponId} >
+                        {!isLoading && coupon.applied === true && (
+                            <CheckCircleOutlineIcon sx={{ mr: 1, color: '#357a38' }} />
+                        )}
+                        {!isLoading && coupon.applied === false && (
+                            <GppBadIcon sx={{ mr: 1, color: '#b2102f' }} />
+                        )}
+                        <TextField
+                            id={couponId}
+                            fullWidth
+                            size="small"
+                        />
+                        <Button
+                            style={{ margin: '-1px 0px 0 -4px', height: '41px' }}
+                            variant="contained"
+                            onClick={() => {
+                                coupons.current = {
+                                    ...coupons.current,
+                                    [couponId]: {
+                                        value: (document.getElementById(couponId) as HTMLInputElement)?.value,
+                                        applied: false,
+                                    }
+                                }
+                                getOrderTotal();
+                            }}
+                        >Apply</Button>
+                        <IconButton
+                            sx={{ ml: 1 }}
+                            onClick={() => {
+                                if (coupons.current[couponId].applied) {
+                                    setTimeout(getOrderTotal, 50);
+                                }
+                                delete coupons.current[couponId];
+                                forceUpdate();
+                            }}
+                        >
+                            <CloseIcon />
+                        </IconButton>
+                    </Box>
+                )
+            })}
+            <div className={styles.delimiter}></div>
+
             <h2 className={styles.subHeader}>Order details</h2>
+            {!!(orderTotal?.cartTotalPrice && orderTotal?.cartOldTotalPrice &&
+                orderTotal.cartTotalPrice !== orderTotal.cartOldTotalPrice) && (
+                    <div className={styles.detailsRow}>
+                        <p style={{ color: '#999' }}>Cart total without discount: </p>
+                        <p style={{ color: '#999', textDecoration: 'line-through' }}>{cstore.getPriceWithCurrency(orderTotal.cartOldTotalPrice)}</p>
+                    </div>
+                )}
             <div className={styles.detailsRow}>
                 <p>Cart total: </p>
                 <b>{cstore.getPriceWithCurrency(orderTotal?.cartTotalPrice)}</b>

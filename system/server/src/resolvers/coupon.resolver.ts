@@ -24,6 +24,7 @@ const updatePath = GraphQLPaths.Coupon.update;
 const deletePath = GraphQLPaths.Coupon.delete;
 const deleteManyPath = GraphQLPaths.Coupon.deleteMany;
 const deleteManyFilteredPath = GraphQLPaths.Coupon.deleteManyFiltered;
+const getCouponsByCodesPath = GraphQLPaths.Coupon.getCouponsByCodes;
 
 @Resolver(Coupon)
 export class CouponResolver {
@@ -102,5 +103,12 @@ export class CouponResolver {
     @FieldResolver(() => GraphQLJSONObject, { nullable: true })
     async customMeta(@Root() entity: Coupon, @Arg("keys", () => [String]) fields: string[]): Promise<any> {
         return entityMetaRepository.getEntityMetaByKeys(EDBEntity.Coupon, entity.id, fields);
+    }
+
+    @Authorized<TAuthRole>('administrator', 'guest')
+    @Query(() => [Coupon])
+    async [getCouponsByCodesPath](@Arg("codes", () => [String]) codes: string[]):
+        Promise<TCoupon[] | undefined> {
+        return this.repository.getCouponsByCodes(codes);
     }
 }

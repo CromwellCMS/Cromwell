@@ -39,6 +39,4 @@ export class CouponInput extends BasePageInput implements TCouponInput {
 
     @Field(type => Int, { nullable: true })
     usageLimit?: number | null;
-
-    usedTimes?: number | null;
 }
