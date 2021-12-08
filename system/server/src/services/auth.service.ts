@@ -15,7 +15,7 @@ import {
 } from '@cromwell/core-backend';
 import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import bcrypt from 'bcrypt';
+import bcrypt from '@node-rs/bcrypt';
 import cryptoRandomString from 'crypto-random-string';
 import { FastifyReply } from 'fastify';
 import { getCustomRepository } from 'typeorm';
