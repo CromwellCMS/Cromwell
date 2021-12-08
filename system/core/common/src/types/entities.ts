@@ -131,7 +131,7 @@ export type TProduct = TBasePageEntity & {
      */
     mainCategoryId?: number | null;
     /**
-     * Categories of the prooduct
+     * Categories of the product
      */
     categories?: TProductCategory[] | null;
     /**
@@ -151,7 +151,7 @@ export type TProduct = TBasePageEntity & {
      */
     mainImage?: string | null;
     /**
-     * Hrefs of iamges
+     * Hrefs of images
      */
     images?: string[] | null;
     /**
@@ -443,11 +443,15 @@ export type TOrderCore = {
     customMeta?: Record<string, string | null> | null;
 }
 
-export type TOrder = TOrderCore;
+export type TOrder = TOrderCore & {
+    coupons?: TCoupon[] | null;
+};
 
 export type TOrderStatus = 'Pending' | 'Awaiting shipment' | 'Shipped' | 'Refunded' | 'Cancelled' | 'Completed';
 
-export type TOrderInput = TOrderCore;
+export type TOrderInput = TOrderCore & {
+    couponCodes?: string[] | null;
+};
 
 export type TOrderFilter = TBaseFilter & {
     status?: string;
@@ -459,13 +463,14 @@ export type TOrderFilter = TBaseFilter & {
     dateTo?: string;
 }
 
-export type TPaymentSession = TOrderCore & {
+export type TPaymentSession = TOrderInput & {
     paymentOptions?: {
         name?: string;
         link?: string;
     }[];
     successUrl?: string;
     cancelUrl?: string;
+    appliedCoupons?: string[];
 }
 
 
@@ -485,6 +490,64 @@ export type TPostCommentCore = {
 export type TPostComment = TPostCommentCore & TBasePageEntity;
 
 export type TPostCommentInput = TPostCommentCore & TBasePageEntityInput;
+
+/**
+ * Store discount coupon
+ */
+export type TCouponCore = {
+    /**
+     * How to apply coupon: subtract a fixed value from cart/product price or a percent of it.  
+     */
+    discountType?: 'fixed' | 'percentage' | null;
+    /**
+     * How much to subtract
+     */
+    value?: number | null;
+    /**
+     * A secret code that customer will use to apply coupon
+     */
+    code?: string | null;
+    /**
+     * Describe coupon
+     */
+    description?: string | null;
+    /**
+     * Set zero shipping price
+     */
+    allowFreeShipping?: boolean | null;
+    /**
+     * Minimum cart total to apply this coupon
+     */
+    minimumSpend?: number | null;
+    /**
+     * Maximum cart total to apply this coupon
+     */
+    maximumSpend?: number | null;
+    /**
+     * Specific categories where coupon can be applied. Applied to all if not set
+     */
+    categoryIds?: number[] | null;
+    /**
+     * Specific products on what coupon can be applied. Applied to all if not set
+     */
+    productIds?: number[] | null;
+    /**
+     * Date after which coupon will no longer be applicable
+     */
+    expiryDate?: Date | null;
+    /**
+     * Limit usage times of this coupon
+     */
+    usageLimit?: number | null;
+    /**
+     * How many time this coupon was applied to orders
+     */
+    usedTimes?: number | null;
+}
+
+export type TCoupon = TCouponCore & TBasePageEntity;
+
+export type TCouponInput = TCouponCore & TBasePageEntityInput;
 
 
 export type TCmsModuleEntity = {
@@ -637,7 +700,7 @@ export type TCmsInternalSettings = {
      */
     installed?: boolean;
     /**
-     * Internal. Recieve unstable beta-updates
+     * Internal. Receive unstable beta-updates
      */
     beta?: boolean;
     /**
@@ -654,7 +717,7 @@ export type TServiceVersions = {
 };
 
 export type TCustomFieldType = 'Simple text' | 'Text editor' | 'Select' | 'Image' | 'Gallery' |
-    'Color' | 'Date' | 'Time' | 'Datetime' | 'Currency' | 'Rating';
+    'Color' | 'Date' | 'Time' | 'Datetime' | 'Currency' | 'Rating' | 'Checkbox';
 
 export type TAdminCustomField = {
     entityType: EDBEntity | string;
@@ -707,7 +770,7 @@ export type TCurrency = {
     id: string;
     tag: string;
     title?: string;
-    /** Local curency symbols that will be added to price in getPriceWithCurrency method */
+    /** Local currency symbols that will be added to price in getPriceWithCurrency method */
     symbol?: string;
     /** Ratio for currencies to compare: "USD": 1,"EURO": 0.83, "GBP": 0.72 etc. */
     ratio?: number;

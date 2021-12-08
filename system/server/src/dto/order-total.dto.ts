@@ -42,10 +42,13 @@ export class OrderTotalDto implements TPaymentSession {
 
     @ApiProperty()
     fromUrl?: string;
-    
+
     @ApiProperty()
     successUrl?: string;
 
     @ApiProperty()
     cancelUrl?: string;
+
+    @ApiProperty()
+    appliedCoupons?: string[];
 }

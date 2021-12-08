@@ -98,8 +98,6 @@ const MainInfoCard = (props: {
         });
     }
 
-    const checkValid = (value) => value && value !== '';
-
     return (
         <Grid container spacing={3}>
             <Grid item xs={12} sm={12}>
@@ -107,7 +105,7 @@ const MainInfoCard = (props: {
                     value={product.name ?? ''}
                     className={styles.textField}
                     onChange={(e) => { handleChange('name', e.target.value) }}
-                    error={props.canValidate && !checkValid(product?.name)}
+                    error={props.canValidate && !product?.name}
                 />
             </Grid>
             <Grid item xs={12} sm={6}>

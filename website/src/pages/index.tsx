@@ -164,14 +164,8 @@ export default function Home() {
                 ]} />
 
                 <div className={styles.content}>
-                    <br />
-                    <p className={styles.quote}>With Cromwell CMS there is no need to assemble your CMS piece
-                        by piece with dozens of different apps and services. Get ones of the best modern web
-                        techs designed to work together. In one pack.</p>
-                </div>
-
-                <div className={styles.content}>
-                    <br style={{ height: '10px' }} />
+                    <br style={{ height: '20px' }} />
+                    <br style={{ height: '20px' }} />
                     <div style={{
                         display: 'flex',
                         alignItems: 'center',

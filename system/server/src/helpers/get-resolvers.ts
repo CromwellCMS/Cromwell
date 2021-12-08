@@ -9,6 +9,7 @@ import { ProductReviewResolver } from '../resolvers/product-review.resolver';
 import { ProductResolver } from '../resolvers/product.resolver';
 import { TagResolver } from '../resolvers/tag.resolver';
 import { UserResolver } from '../resolvers/user.resolver';
+import { CouponResolver } from '../resolvers/coupon.resolver';
 
 const nativeResolvers = [
     AttributeResolver,
@@ -22,6 +23,7 @@ const nativeResolvers = [
     GenericThemeResolver,
     TagResolver,
     CustomEntityResolver,
+    CouponResolver,
 ];
 
 export const getResolvers = async (): Promise<any> => [

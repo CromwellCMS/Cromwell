@@ -1,9 +1,9 @@
 import React from 'react';
-import { TOrder } from '@cromwell/core';
+import { TCoupon } from '@cromwell/core';
 
-const testData: TOrder = {
+const testData: TCoupon = {
     id: 1,
-    customerName: '_test1_',
+    code: '_test1_',
 };
 
 jest.mock('react-router-dom', () => {
@@ -11,14 +11,14 @@ jest.mock('react-router-dom', () => {
     return {
         useParams: () => ({ id: '1' }),
         BrowserRouter: originalModule.BrowserRouter,
+        useHistory: () => { },
         Link: () => <></>,
     }
 });
 
 jest.mock('../../constants/PageInfos', () => {
     return {
-        orderListPageInfo: {},
-        orderPageInfo: {},
+        couponPageInfo: {},
     }
 });
 
@@ -26,10 +26,7 @@ jest.mock('@cromwell/core-frontend', () => {
     return {
         getGraphQLClient: () => {
             return {
-                getOrderById: jest.fn().mockImplementation(() => testData),
-                updateOrder: jest.fn().mockImplementation(() => testData),
-                CouponFragment: '',
-                OrderFragment: '',
+                getCouponById: jest.fn().mockImplementation(() => testData),
             }
         },
         getCStore: () => {
@@ -39,11 +36,9 @@ jest.mock('@cromwell/core-frontend', () => {
                 addToCart: jest.fn().mockImplementation(() => []),
                 clearCart: jest.fn().mockImplementation(() => []),
                 removeFromCart: jest.fn().mockImplementation(() => []),
-                getCoupons: jest.fn().mockImplementation(() => []),
                 getCartTotal: jest.fn().mockImplementation(() => ({})),
                 getPriceWithCurrency: jest.fn().mockImplementation(() => ''),
                 getActiveCurrencySymbol: jest.fn().mockImplementation(() => ''),
-                setCoupons: jest.fn().mockImplementation(() => ''),
             }
         },
     }
@@ -53,13 +48,13 @@ jest.mock('@cromwell/core-frontend', () => {
 import { render, screen } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 
-import OrderPage from './Order';
+import CouponPage from './Coupon';
 
 
-describe('Order page', () => {
+describe('Coupon page', () => {
 
     it("renders order", async () => {
-        render(<Router><OrderPage /></Router>);
+        render(<Router><CouponPage /></Router>);
 
         await screen.findByDisplayValue('_test1_');
     });

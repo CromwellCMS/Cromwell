@@ -1,12 +1,12 @@
 import { getBlockInstance, getRandStr, TPagedList, TPagedParams } from '@cromwell/core';
 import { CList, TCList } from '@cromwell/core-frontend';
-import { Close as CloseIcon } from '@mui/icons-material';
-import { Fade, IconButton, InputAdornment, ListItem, Popper, Skeleton, TextField as MuiTextField } from '@mui/material';
+import { Autocomplete as MuiAutocomplete, Checkbox, Fade, Popper, Skeleton, TextField as MuiTextField, ClickAwayListener } from '@mui/material';
 import { withStyles } from '@mui/styles';
 import clsx from 'clsx';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { debounce } from 'throttle-debounce';
 
+import { useForceUpdate } from '../../helpers/forceUpdate';
 import styles from './Autocomplete.module.scss';
 
 const TextField = withStyles({
@@ -18,30 +18,33 @@ const TextField = withStyles({
     },
 })(MuiTextField);
 
-class Autocomplete<TItemDataType> extends React.Component<{
-    loader: (search: string, params?: TPagedParams<TItemDataType>) => Promise<(TPagedList<TItemDataType> | TItemDataType[]) | undefined>;
+class Autocomplete<TItemData extends { id: number | string }> extends React.Component<{
+    loader: (search: string, params?: TPagedParams<TItemData>) => Promise<(TPagedList<TItemData> | TItemData[]) | undefined>;
     itemComponent?: (props: {
-        data: TItemDataType;
+        data: TItemData;
     }) => JSX.Element;
-    getOptionLabel: (data: TItemDataType) => string;
-    getOptionValue?: (data: TItemDataType) => string;
-    onSelect?: (data: TItemDataType | null) => void;
+    getOptionLabel: (data: TItemData) => string;
+    getOptionValue?: (data: TItemData) => string;
+    onSelect?: (data: TItemData | TItemData[] | null) => void;
     className?: string;
     fullWidth?: boolean;
-    defaultValue?: TItemDataType;
+    defaultValue?: TItemData | TItemData[];
     label?: string;
     variant?: 'standard' | 'outlined' | 'filled';
+    multiple?: boolean;
 }, {
-    searchOpen: boolean;
+    searchOpen?: boolean;
     isLoading: boolean;
-    searchItems: TItemDataType[];
-    searchText: string;
-    pickedText: string;
-    defaultValue?: TItemDataType;
+    searchItems?: TItemData[];
+    searchText?: string;
+    pickedText?: string;
+    pickedItems?: string[];
+    defaultValue?: TItemData | TItemData[];
 }> {
     private searchAnchorRef = React.createRef<HTMLDivElement>();
     private listId = 'AutocompleteList_' + getRandStr();
     private listSkeleton = [];
+    private pickedData: Record<string, TItemData> = {};
 
     constructor(props: any) {
         super(props);
@@ -49,10 +52,6 @@ class Autocomplete<TItemDataType> extends React.Component<{
         this.state = {
             searchOpen: false,
             isLoading: false,
-            searchItems: [],
-            searchText: '',
-            pickedText: props.defaultValue ? props.getOptionValue?.(props.defaultValue) ?? props.getOptionLabel(props.defaultValue) : '',
-            defaultValue: props.defaultValue,
         }
 
         for (let i = 0; i < 5; i++) {
@@ -60,18 +59,51 @@ class Autocomplete<TItemDataType> extends React.Component<{
         }
     }
 
-    componentDidUpdate() {
-        if (this.props.defaultValue && this.state.defaultValue !== this.props.defaultValue) {
-            const text = this.props.getOptionValue?.(this.props.defaultValue) ?? this.props.getOptionLabel(this.props.defaultValue);
+    private setDefaultValue = (defaultValue: TItemData | TItemData[]) => {
+        const { getOptionValue, getOptionLabel } = this.props;
+
+        if (Array.isArray(defaultValue)) {
+            const pickedItems: string[] = [];
+
+            for (const val of defaultValue) {
+                const pickedText = defaultValue ? (getOptionValue?.(val)
+                    ?? getOptionLabel(val)) : '';
+
+                this.pickedData[pickedText] = val;
+                pickedItems.push(pickedText);
+            }
+
+            Object.values(this.multiSelectionListeners).forEach(func => func(pickedItems));
             this.setState({
-                defaultValue: this.props.defaultValue,
-                pickedText: text,
-                searchText: text,
-            })
+                searchText: '',
+                pickedText: '',
+                pickedItems,
+                defaultValue,
+            });
+
+        } else {
+            const pickedText = defaultValue ? (getOptionValue?.(defaultValue)
+                ?? getOptionLabel(defaultValue)) : '';
+
+            this.setState({
+                searchText: pickedText,
+                pickedText: pickedText,
+                defaultValue,
+            });
         }
     }
 
-    private fetchItems = async (searchText: string, params?: TPagedParams<TItemDataType>) => {
+    componentDidMount() {
+        this.setDefaultValue(this.props.defaultValue);
+    }
+
+    componentDidUpdate() {
+        if (this.props.defaultValue && this.state.defaultValue !== this.props.defaultValue) {
+            this.setDefaultValue(this.props.defaultValue);
+        }
+    }
+
+    private fetchItems = async (searchText: string, params?: TPagedParams<TItemData>) => {
         if (!this.state.isLoading)
             this.setState({ isLoading: true });
 
@@ -103,7 +135,7 @@ class Autocomplete<TItemDataType> extends React.Component<{
         list.init();
     });
 
-    private loadMore = (params: TPagedParams<TItemDataType>) => {
+    private loadMore = (params: TPagedParams<TItemData>) => {
         return this.fetchItems(this.state.searchText, params);
     }
 
@@ -114,7 +146,9 @@ class Autocomplete<TItemDataType> extends React.Component<{
             this.setState({ isLoading: true });
 
         if (!this.state.searchOpen) {
-            this.setState({ searchOpen: true });
+            setTimeout(() => {
+                this.setState({ searchOpen: true });
+            }, 100);
         }
         this.searchRequest();
     }
@@ -123,14 +157,44 @@ class Autocomplete<TItemDataType> extends React.Component<{
         this.setState({ searchOpen: false, searchText: this.state.pickedText });
     }
 
-    private handleItemClick = (data: TItemDataType) => {
+    private handleItemClick = (data: TItemData) => {
         const pickedText = this.props.getOptionValue?.(data) ?? this.props.getOptionLabel(data);
-        this.setState({
-            searchText: pickedText,
-            pickedText: pickedText,
-            searchOpen: false,
+        this.pickedData[pickedText] = data;
+        const { multiple } = this.props;
+
+        this.setState(prev => {
+            if (multiple) {
+                let pickedItems = [...new Set([...(prev.pickedItems ?? [])])];
+                if (pickedItems.includes(pickedText)) {
+                    pickedItems = pickedItems.filter(item => item !== pickedText);
+                } else {
+                    pickedItems.push(pickedText);
+                }
+                this.props.onSelect?.(pickedItems.map(item => this.pickedData[item]));
+                Object.values(this.multiSelectionListeners).forEach(func => func(pickedItems));
+
+                return {
+                    searchText: '',
+                    pickedText: '',
+                    pickedItems,
+                }
+            }
+
+            this.props.onSelect?.(data);
+            return {
+                searchText: pickedText,
+                pickedText: pickedText,
+                searchOpen: false,
+            }
         });
-        this.props.onSelect?.(data);
+    }
+
+    private multiSelectionListeners: Record<string, ((pickedItems: string[]) => any)> = {};
+    public addMultiSelectListener = (id: string, listener: (pickedItems: string[]) => any) => {
+        this.multiSelectionListeners[id] = listener;
+    }
+    public removeMultiSelectListener = (id: string) => {
+        delete this.multiSelectionListeners[id];
     }
 
     private handleClear = () => {
@@ -143,31 +207,45 @@ class Autocomplete<TItemDataType> extends React.Component<{
     }
 
     render() {
-        const { searchOpen } = this.state;
-        const ItemComponent = this.props.itemComponent;
+        const { searchOpen, pickedItems, pickedText } = this.state;
+        const { multiple } = this.props;
 
         return (
             <>
-                <TextField
-                    label={this.props.label ?? "Search..."}
-                    variant={this.props.variant ?? 'standard'}
-                    size="small"
-                    ref={this.searchAnchorRef}
-                    value={this.state.searchText}
-                    onChange={(event) => this.handleSearchInput(event.currentTarget.value)}
-                    onFocus={() => this.handleSearchInput(this.state.searchText)}
-                    onBlur={this.handleSearchClose}
-                    fullWidth={this.props.fullWidth}
+                <MuiAutocomplete
                     className={this.props.className}
-                    InputProps={{
-                        endAdornment: (
-                            <InputAdornment position="end">
-                                <IconButton onClick={this.handleClear}>
-                                    <CloseIcon />
-                                </IconButton>
-                            </InputAdornment>
-                        ),
+                    multiple={multiple}
+                    options={pickedItems ?? []}
+                    getOptionLabel={(option) => option as any}
+                    value={multiple ? (pickedItems ?? []) : (pickedText ?? '')}
+                    onChange={(event, newValue) => {
+                        if (!newValue) {
+                            this.handleClear();
+                        }
+                        if (multiple && newValue) {
+                            const pickedItems = [...new Set([...(newValue as any)])];
+                            this.props.onSelect?.(pickedItems.map(item => this.pickedData[item]));
+                            Object.values(this.multiSelectionListeners).forEach(func => func(pickedItems));
+                            this.setState({
+                                pickedItems,
+                            });
+                        }
                     }}
+                    PopperComponent={() => <></>}
+                    renderInput={(params) => (
+                        <TextField
+                            {...params}
+                            value={this.state.searchText ?? ''}
+                            onChange={(event) => this.handleSearchInput(event.currentTarget.value)}
+                            onFocus={() => this.handleSearchInput(this.state.searchText)}
+                            onBlur={() => !multiple && this.handleSearchClose()}
+                            label={this.props.label ?? "Search..."}
+                            fullWidth={this.props.fullWidth}
+                            ref={this.searchAnchorRef}
+                            size="small"
+                            variant={this.props.variant ?? 'standard'}
+                        />
+                    )}
                 />
                 <Popper open={searchOpen} anchorEl={this.searchAnchorRef.current}
                     style={{ zIndex: 9999 }}
@@ -175,34 +253,34 @@ class Autocomplete<TItemDataType> extends React.Component<{
                     {({ TransitionProps }) => (
                         <Fade {...TransitionProps} timeout={350}>
                             <div className={styles.searchContent}>
-                                {/* {isLoading && (
+                                <ClickAwayListener onClickAway={this.handleSearchClose}>
+                                    {/* {isLoading && (
                                     <LoadBox size={100} />
                                 )}
                                 {!isLoading && searchItems.length === 0 && (
                                     <p className={styles.notFoundText}>No items found</p>
                                 )}
                                 {!isLoading && ( */}
-                                <CList<TItemDataType>
-                                    useAutoLoading
-                                    className={styles.list}
-                                    id={this.listId}
-                                    loader={this.loadMore}
-                                    elements={{ preloader: <div className={styles.listPreloader}>{this.listSkeleton}</div> }}
-                                    ListItem={(props) => {
-                                        return (
-                                            <div onClick={() => this.handleItemClick(props.data)} className={styles.itemWrapper}>
-                                                {ItemComponent ? (
-                                                    <ItemComponent data={props.data} />
-                                                ) : (
-                                                    <ListItem button>
-                                                        <p className={clsx(styles.itemText)}>{this.props.getOptionLabel(props.data)}</p>
-                                                    </ListItem>
-                                                )}
-                                            </div>
-                                        )
-                                    }}
-                                />
-                                {/* )} */}
+                                    <CList<TItemData, ListItemProps<TItemData>>
+                                        useAutoLoading
+                                        className={styles.list}
+                                        id={this.listId}
+                                        loader={this.loadMore}
+                                        elements={{ preloader: <div className={styles.listPreloader}>{this.listSkeleton}</div> }}
+                                        ListItem={ListItem}
+                                        listItemProps={{
+                                            handleItemClick: this.handleItemClick,
+                                            getOptionLabel: this.props.getOptionLabel,
+                                            getOptionValue: this.props.getOptionValue,
+                                            pickedItems: this.state?.pickedItems,
+                                            multiple,
+                                            ItemComponent: this.props.itemComponent,
+                                            addMultiSelectListener: this.addMultiSelectListener,
+                                            removeMultiSelectListener: this.removeMultiSelectListener,
+                                        }}
+                                    />
+                                    {/* )} */}
+                                </ClickAwayListener>
                             </div>
                         </Fade>
                     )}
@@ -214,3 +292,56 @@ class Autocomplete<TItemDataType> extends React.Component<{
 }
 
 export default Autocomplete;
+
+type ListItemProps<TItemData extends { id: number | string }> = {
+    handleItemClick: (data: TItemData) => any;
+    getOptionLabel: (data: TItemData) => string;
+    getOptionValue?: (data: TItemData) => string;
+    pickedItems?: string[];
+    multiple?: boolean;
+    ItemComponent?: (props: {
+        data: TItemData;
+    }) => JSX.Element;
+    addMultiSelectListener: (id: string, listener: (pickedItems: string[]) => any) => any;
+    removeMultiSelectListener: (id: string) => any;
+}
+
+type TListItem = <TItemData extends { id: number | string }>(props: {
+    data?: TItemData;
+    listItemProps: ListItemProps<TItemData>;
+}) => JSX.Element;
+
+const ListItem: TListItem = (props) => {
+    const { pickedItems, getOptionValue, getOptionLabel, handleItemClick, multiple,
+        ItemComponent, addMultiSelectListener, removeMultiSelectListener } = props.listItemProps;
+    const pickedText = getOptionValue?.(props.data) ?? getOptionLabel(props.data);
+    const picked = pickedItems?.includes(pickedText);
+    const update = useForceUpdate();
+
+    useEffect(() => {
+        if (props.data?.id) {
+            addMultiSelectListener(props.data.id + '', (picked) => {
+                props.listItemProps.pickedItems = picked;
+                update();
+            });
+        }
+        return () => {
+            if (props.data?.id) {
+                removeMultiSelectListener(props.data.id + '');
+            }
+        }
+    }, [])
+
+    return (
+        <div onClick={() => handleItemClick(props.data)} className={styles.itemWrapper}>
+            {multiple && (
+                <Checkbox checked={picked} />
+            )}
+            {ItemComponent ? (
+                <ItemComponent data={props.data} />
+            ) : (
+                <p className={clsx(styles.itemText)}>{getOptionLabel(props.data)}</p>
+            )}
+        </div>
+    )
+}

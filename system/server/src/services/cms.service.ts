@@ -19,6 +19,7 @@ import {
     AttributeRepository,
     BasePageEntity,
     cmsPackageName,
+    CouponRepository,
     getCmsEntity,
     getCmsInfo,
     getCmsModuleInfo,
@@ -51,7 +52,7 @@ import { getCentralServerClient, getCStore } from '@cromwell/core-frontend';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { format } from 'date-fns';
 import fs from 'fs-extra';
-import { resolve, join } from 'path';
+import { join, resolve } from 'path';
 import { pipeline } from 'stream';
 import { Container, Service } from 'typedi';
 import { getConnection, getCustomRepository, getManager, Repository } from 'typeorm';
@@ -439,11 +440,63 @@ ${content}
         const orderTotal = await this.calcOrderTotal(input);
         const settings = await getCmsSettings();
         const { themeConfig } = await getThemeConfigs();
-        let cart: TStoreListItem[] | undefined;
-        try {
-            if (input.cart) cart = JSON.parse(input.cart);
-        } catch (error) {
-            logger.error('placeOrder: Failed to parse cart', error)
+
+        // Clean up products
+        if (orderTotal.cart?.length) {
+            orderTotal.cart = orderTotal.cart.map(item => {
+                if (item.pickedAttributes) {
+                    if (Object.keys(item.pickedAttributes).length > 1000) item.pickedAttributes = undefined;
+                }
+                if (item.pickedAttributes) {
+                    Object.keys(item.pickedAttributes).forEach(key => {
+                        if (!item.pickedAttributes![key]?.length) {
+                            delete item.pickedAttributes![key];
+                        }
+                        if (item.pickedAttributes![key].length > 1000) {
+                            delete item.pickedAttributes![key];
+                        }
+                    })
+                }
+                if (item.product) item.product = {
+                    id: item.product.id,
+                    createDate: item.product.createDate,
+                    updateDate: item.product.updateDate,
+                    name: item.product.name,
+                    mainCategoryId: item.product.mainCategoryId,
+                    price: item.product.price,
+                    oldPrice: item.product.oldPrice,
+                    sku: item.product.sku,
+                    mainImage: item.product.mainImage,
+                    images: item.product.images,
+                    attributes: item.product.attributes,
+                    stockAmount: item.product.stockAmount,
+                    stockStatus: item.product.stockStatus,
+                    categories: item.product.categories?.map(cat => ({
+                        id: cat.id,
+                        name: cat.name,
+                    })),
+                }
+                return {
+                    amount: item.amount,
+                    pickedAttributes: item.pickedAttributes,
+                    product: item.product,
+                }
+            });
+        }
+
+        if (orderTotal.appliedCoupons?.length) {
+            try {
+                const coupons = await getCustomRepository(CouponRepository)
+                    .getCouponsByCodes(orderTotal.appliedCoupons);
+
+                for (const coupon of (coupons ?? [])) {
+                    if (!coupon.usedTimes) coupon.usedTimes = 1;
+                    else coupon.usedTimes++;
+                    await coupon.save();
+                }
+            } catch (error) {
+                logger.error(error);
+            }
         }
 
         const createOrder: TOrderInput = {
@@ -452,7 +505,8 @@ ${content}
             totalQnt: orderTotal.totalQnt,
             shippingPrice: orderTotal.shippingPrice,
             orderTotalPrice: orderTotal.orderTotalPrice,
-            cart: input.cart,
+            couponCodes: orderTotal.appliedCoupons,
+            cart: orderTotal.cart,
             status: 'Pending',
             userId: input.userId,
             customerName: input.customerName,
@@ -482,7 +536,7 @@ ${content}
                     orderLink: (themeConfig?.defaultPages?.account) && fromUrl + '/' + themeConfig.defaultPages.account,
                     totalPrice: cstore.getPriceWithCurrency((orderTotal.orderTotalPrice ?? 0).toFixed(2)),
                     unsubscribeUrl: fromUrl,
-                    products: (cart ?? []).map(item => {
+                    products: (orderTotal.cart ?? []).map(item => {
                         return {
                             link: (themeConfig?.defaultPages?.product && item?.product?.slug) ?
                                 resolvePageRoute('product', { slug: item.product.slug }) : '/',
@@ -533,8 +587,10 @@ ${content}
 
         const cstore = getCStore(true, {
             getProductById: (id) => getCustomRepository(ProductRepository).getProductById(id,
-                { withAttributes: true }),
+                { withAttributes: true, withCategories: true, }),
             getAttributes: () => getCustomRepository(AttributeRepository).getAttributes(),
+            getCouponsByCodes: (codes) => getCustomRepository(CouponRepository)
+                .getCouponsByCodes(codes)
         });
 
         if (input.currency) {
@@ -542,6 +598,7 @@ ${content}
         }
 
         cstore.saveCart(cart);
+        await cstore.applyCouponCodes(input.couponCodes);
         await cstore.updateCart();
         const total = cstore.getCartTotal();
 
@@ -549,9 +606,14 @@ ${content}
         orderTotal.cartOldTotalPrice = total.totalOld;
         orderTotal.cartTotalPrice = total.total ?? 0;
         orderTotal.totalQnt = total.amount;
+        orderTotal.appliedCoupons = total.coupons.map(coupon => coupon.code!);
+
         orderTotal.shippingPrice = settings?.defaultShippingPrice ?
             parseFloat(settings?.defaultShippingPrice + '') : 0;
+        orderTotal.shippingPrice = parseFloat(orderTotal.shippingPrice.toFixed(2));
+
         orderTotal.orderTotalPrice = (orderTotal?.cartTotalPrice ?? 0) + (orderTotal?.shippingPrice ?? 0);
+        orderTotal.orderTotalPrice = parseFloat(orderTotal.orderTotalPrice.toFixed(2));
         return orderTotal;
     }
 

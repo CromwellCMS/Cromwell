@@ -181,12 +181,10 @@ export default function CategoryPage(props) {
         return data?.customMeta;
     };
 
-    const checkValid = (value) => value && value !== '';
-
     const handleSave = async () => {
         const inputData: TProductCategoryInput = await getInput();
         setCanValidate(true);
-        if (!checkValid(inputData.name)) return;
+        if (!inputData.name) return;
 
         setIsSaving(true);
 
@@ -279,7 +277,7 @@ export default function CategoryPage(props) {
                     fullWidth
                     className={styles.textField}
                     onChange={(e) => { handleInputChange('name', e.target.value) }}
-                    error={canValidate && !checkValid(category?.name)}
+                    error={canValidate && !category.name}
                 />
                 <Autocomplete<TProductCategory>
                     loader={handleSearchRequest}

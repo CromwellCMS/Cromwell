@@ -25,6 +25,8 @@ import { Product } from '../models/entities/product.entity';
 import { Tag } from '../models/entities/tag.entity';
 import { ThemeEntity } from '../models/entities/theme.entity';
 import { User } from '../models/entities/user.entity';
+import { Coupon } from '../models/entities/coupon.entity';
+import { CouponMeta } from '../models/entities/meta/coupon-meta.entity';
 
 
 export const ORMEntities = [
@@ -35,7 +37,7 @@ export const ORMEntities = [
     AttributeMeta, OrderMeta, PostMeta,
     ProductCategoryMeta, ProductMeta, TagMeta,
     UserMeta, AttributeToProduct, AttributeValue,
-    CustomEntity, CustomEntityMeta,
+    CustomEntity, CustomEntityMeta, Coupon, CouponMeta,
 ]
 
 export const rendererMessages = {

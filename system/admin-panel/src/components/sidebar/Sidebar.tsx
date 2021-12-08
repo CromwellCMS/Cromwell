@@ -49,7 +49,6 @@ export default function Sidebar() {
     const popperAnchorEl = useRef<HTMLDivElement | null>(null);
     const history = useHistory?.();
     const forceUpdate = useForceUpdate();
-    (window as any).SidebarforceUpdate = forceUpdate;
 
     const userInfo: TUser | undefined = getStoreItem('userInfo');
     const toggleSubMenu = (panel: string) => (event: React.ChangeEvent<any>, isExpanded: boolean) => {

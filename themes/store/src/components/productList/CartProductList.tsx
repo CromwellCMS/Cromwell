@@ -18,6 +18,7 @@ export const CartProductList = (props: {
     onProductOpen?: (product: TProduct) => void;
     collapsedByDefault?: boolean;
     cart?: TStoreListItem[];
+    hideDelete?: boolean;
 }) => {
     const [cart, setCart] = useState<TStoreListItem[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -26,7 +27,6 @@ export const CartProductList = (props: {
     const isCollapsed = useRef<boolean>(!!props.collapsedByDefault);
     const cstore = getCStore();
     const isMobile = useMediaQuery<Theme>((theme) => theme.breakpoints.down('sm'));
-    const isStatic = !!props.cart;
 
     if (_collapsedByDefault.current !== props.collapsedByDefault) {
         isCollapsed.current = !!props.collapsedByDefault;
@@ -43,7 +43,7 @@ export const CartProductList = (props: {
          * Since getCart method wll retrieve products from local storage and 
          * after a while products can be modified at the server, we need to refresh cart first  
          */
-        if (!isStatic) {
+        if (!props.cart) {
             (async () => {
                 setIsLoading(true);
                 await cstore.updateCart();
@@ -113,7 +113,7 @@ export const CartProductList = (props: {
                             </Grid>
                             <Grid item xs={2} className={styles.itemBlock} style={{ marginLeft: 'auto', paddingRight: '0px' }}>
                                 <div className={styles.actions} >
-                                    {!isStatic && (
+                                    {!props.hideDelete && (
                                         <IconButton
                                             aria-label="Delete from cart"
                                             onClick={() => { handleDeleteItem(it); }}

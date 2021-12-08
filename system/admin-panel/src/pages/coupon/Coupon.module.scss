@@ -1,20 +1,10 @@
 @import "../../styles/common.module.scss";
 
-.TagPage {
+.CouponPage {
     padding: 20px;
     max-width: 900px;
     margin: 0 auto;
     width: 100%;
-}
-
-.header {
-    @include paper;
-    padding: 5px 10px 5px 0;
-    width: 100%;
-    margin-bottom: 15px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
 }
 
 .notFoundPage {
@@ -27,6 +17,16 @@
 .notFoundText {
     font-size: 25px;
     font-weight: 500;
+}
+
+.header {
+    @include paper;
+    padding: 5px 10px 5px 0;
+    width: 100%;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .headerLeft {

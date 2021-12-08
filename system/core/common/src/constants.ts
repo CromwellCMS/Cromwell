@@ -114,6 +114,18 @@ export const GraphQLPaths: { [K in Exclude<TDBEntity, 'Theme' | 'Plugin' | 'Post
         deleteManyFiltered: "deleteManyFilteredCustomEntities",
         getFiltered: "getFilteredCustomEntities",
     },
+    Coupon: {
+        getOneBySlug: "getCouponBySlug",
+        getOneById: "getCouponById",
+        getMany: "getCoupons",
+        create: "createCoupon",
+        update: "updateCoupon",
+        delete: "deleteCoupon",
+        deleteMany: "deleteManyCoupons",
+        deleteManyFiltered: "deleteManyFilteredCoupons",
+        getFiltered: "getFilteredCoupons",
+        getCouponsByCodes: "getCouponsByCodes",
+    },
 }
 
 export enum ECommonComponentNames {

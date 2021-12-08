@@ -26,6 +26,8 @@ const UserListPage = lazy(() => import('../pages/userList/UserList'));
 const WelcomePage = lazy(() => import('../pages/welcome/Welcome'));
 const PluginMarket = lazy(() => import('../pages/pluginMarket/PluginMarket'));
 const ThemeMarket = lazy(() => import('../pages/themeMarket/ThemeMarket'));
+const CouponList = lazy(() => import('../pages/couponList/CouponList'));
+const CouponPage = lazy(() => import('../pages/coupon/Coupon'));
 
 export type TSidebarLink = {
     id: string;
@@ -191,6 +193,7 @@ export const tagListPageInfo: TPageInfo = {
     component: TagListPage,
     roles: ['administrator', 'guest', 'author'],
 }
+
 export const reviewListPageInfo: TPageInfo = {
     name: 'Reviews',
     route: '/reviews',
@@ -208,5 +211,19 @@ export const themeMarketPageInfo: TPageInfo = {
     name: 'Theme Market',
     route: '/theme-market',
     component: ThemeMarket,
+    roles: ['administrator', 'guest'],
+}
+
+export const couponPageInfo: TPageInfo = {
+    name: 'Coupon',
+    route: '/coupons/:id',
+    baseRoute: '/coupons',
+    component: CouponPage,
+    roles: ['administrator', 'guest'],
+}
+export const couponListPageInfo: TPageInfo = {
+    name: 'Coupon List',
+    route: '/coupons',
+    component: CouponList,
     roles: ['administrator', 'guest'],
 }

@@ -113,17 +113,14 @@ export default function UserPage() {
         customMeta: Object.assign({}, userData.customMeta, await getCustomMetaFor(EDBEntity.User)),
     });
 
-    const checkValid = (value) => value && value !== '';
-
     const handleSave = async () => {
         setCanValidate(true);
         const inputData = await getInput();
 
-        if (!checkValid(inputData.email) || !checkValid(inputData.fullName)
-            || !checkValid(inputData.role)) return;
+        if (!inputData.email || !inputData.fullName || !inputData.role) return;
 
         if (isNew) {
-            if (!checkValid(passwordInput)) return;
+            if (!passwordInput) return;
             try {
                 const createInput: TCreateUser = {
                     ...inputData,
@@ -199,7 +196,7 @@ export default function UserPage() {
                             variant="standard"
                             className={styles.field}
                             onChange={(e) => { handleInputChange('fullName', e.target.value) }}
-                            error={canValidate && !checkValid(userData?.fullName)}
+                            error={canValidate && !userData?.fullName}
                         />
                     </Grid>
                     <Grid item xs={12} sm={6}>
@@ -223,7 +220,7 @@ export default function UserPage() {
                             variant="standard"
                             className={styles.field}
                             onChange={(e) => { handleInputChange('email', e.target.value) }}
-                            error={canValidate && !checkValid(userData?.email)}
+                            error={canValidate && !userData?.email}
                         />
                     </Grid>
                     {isNew && (
@@ -236,7 +233,7 @@ export default function UserPage() {
                                 variant="standard"
                                 className={styles.field}
                                 onChange={(e) => { setPasswordInput(e.target.value) }}
-                                error={canValidate && !checkValid(passwordInput)}
+                                error={canValidate && !passwordInput}
                                 InputProps={{
                                     endAdornment: (
                                         <InputAdornment position="end">
@@ -262,7 +259,7 @@ export default function UserPage() {
                             onChange={(event: SelectChangeEvent<unknown>) => {
                                 handleInputChange('role', event.target.value)
                             }}
-                            error={canValidate && !checkValid(userData?.role)}
+                            error={canValidate && !userData?.role}
                             options={userRoles.map(role => ({ label: role, value: role }))}
                         />
                     </Grid>

@@ -198,8 +198,10 @@ const Account: TPageWithLayout = () => {
                             <h3 className={styles.orderTitle}>Order #{order.id} from {order.createDate?.toLocaleDateString?.() ?? ''}</h3>
                             <div>
                                 <CartProductList
+                                    hideDelete={true}
                                     cart={order.cart as TStoreListItem[]}
-                                    collapsedByDefault={true} />
+                                    collapsedByDefault={true}
+                                />
                             </div>
                             <div className={styles.detailsRow}>
                                 <p>Shipping:</p>

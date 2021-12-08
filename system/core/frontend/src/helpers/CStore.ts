@@ -1,4 +1,4 @@
-import { getStoreItem, isServer, setStoreItem, TAttribute, TProduct, TStoreListItem } from '@cromwell/core';
+import { getStoreItem, isServer, setStoreItem, TAttribute, TCoupon, TProduct, TStoreListItem } from '@cromwell/core';
 
 import { getGraphQLClient } from '../api/CGraphQLClient';
 
@@ -17,6 +17,7 @@ type TLocalStorage = {
 export type TApiClient = {
     getProductById: (id: number) => Promise<TProduct | undefined>;
     getAttributes: () => Promise<TAttribute[] | undefined>;
+    getCouponsByCodes?: (codes: string[]) => Promise<TCoupon[] | undefined>;
 };
 
 export type OperationResult = {
@@ -39,6 +40,7 @@ export class CStore {
 
     private store: TLocalStorage;
     private apiClient?: TApiClient;
+    private appliedCoupons: TCoupon[] = [];
 
     constructor(local?: boolean, apiClient?: TApiClient) {
         if (local || isServer()) this.store = this.localStorage;
@@ -441,18 +443,82 @@ export class CStore {
 
     public getCartTotal = (customCart?: TStoreListItem[]) => {
         const cart = customCart ?? this.getCart();
-        const total: number = cart.reduce<number>((prev, current) =>
+
+        const baseTotal: number = cart.reduce<number>((prev, current) =>
             prev += (current.product?.price ?? 0) * (current.amount ?? 1), 0);
 
-        const totalOld: number = cart.reduce<number>(
+        const coupons: TCoupon[] = [];
+
+        for (const coupon of this.appliedCoupons) {
+            coupon.productIds = coupon.productIds?.map(id => Number(id));
+            coupon.categoryIds = coupon.categoryIds?.map(id => Number(id));
+
+            if (coupon.maximumSpend) {
+                if (baseTotal > coupon.maximumSpend) continue;
+            }
+            if (coupon.minimumSpend) {
+                if (baseTotal < coupon.minimumSpend) continue;
+            }
+            coupons.push(coupon);
+        }
+
+        let total: number = cart.reduce<number>((prev, current) => {
+            let price = current.product?.price ?? 0;
+
+            // Apply coupons per product
+            for (const coupon of coupons) {
+                if (current.product && coupon.value && (coupon.productIds?.length || coupon.categoryIds?.length)) {
+                    if (coupon.productIds?.includes(current.product.id)) {
+                        if (coupon.discountType === 'fixed') {
+                            price -= coupon.value;
+                        }
+                        if (coupon.discountType === 'percentage') {
+                            price = price - price * coupon.value / 100;
+                        }
+                        // Coupon applied
+                        continue;
+                    }
+                    if (current.product.categories?.length && current.product.categories.some(cat =>
+                        coupon.categoryIds?.includes(cat.id))) {
+                        if (coupon.discountType === 'fixed') {
+                            price -= coupon.value;
+                        }
+                        if (coupon.discountType === 'percentage') {
+                            price = price - price * coupon.value / 100;
+                        }
+                        continue;
+                    }
+                }
+            }
+            if (price < 0) price = 0;
+            return prev += price * (current.amount ?? 1)
+        }, 0);
+
+        // Apply coupons per cart
+        for (const coupon of coupons) {
+            if (coupon.value && !(coupon.productIds?.length || coupon.categoryIds?.length)) {
+                if (coupon.discountType === 'fixed') {
+                    total -= coupon.value;
+                }
+                if (coupon.discountType === 'percentage') {
+                    total = total - total * coupon.value / 100;
+                }
+            }
+        }
+        if (total < 0) total = 0;
+
+        total = parseFloat(total.toFixed(2));
+
+        let totalOld: number = cart.reduce<number>(
             (prev, current) => prev += (current.product?.oldPrice ?? current.product?.price ?? 0) * (current.amount ?? 1)
             , 0);
+        totalOld = parseFloat(totalOld.toFixed(2));
 
         const amount: number = cart.reduce<number>((prev, current) =>
             prev += (current.amount ?? 1), 0);
 
         return {
-            total, totalOld, amount
+            total, totalOld, amount, coupons
         }
     }
 
@@ -493,6 +559,52 @@ export class CStore {
             return newProd;
         }
         return product;
+    }
+
+    // Validate and save coupons in the cart
+    async applyCouponCodes(codes?: string[] | null): Promise<TCoupon[] | undefined> {
+        const appliedCoupons: TCoupon[] = [];
+        codes = codes?.filter(Boolean);
+        if (!codes?.length) return;
+        if (!this.apiClient?.getCouponsByCodes) {
+            console.error('CStore::applyCouponCodes: cannot apply coupons, API method `getCouponsByCodes` is not provided');
+            return;
+        }
+
+        // Validate coupons
+        try {
+            const coupons = await this.apiClient.getCouponsByCodes(codes);
+            if (!coupons?.length) return;
+
+            for (const coupon of coupons) {
+                if (!coupon.code || !coupon.value || !coupon.discountType) continue;
+                if (coupon.usageLimit === 0) continue;
+                if (coupon.usedTimes && coupon.usageLimit &&
+                    coupon.usedTimes >= coupon.usageLimit) continue;
+
+                if (coupon.expiryDate) {
+                    const expiryDate = new Date(coupon.expiryDate);
+                    if (isNaN(expiryDate.getTime())) continue;
+                    if (expiryDate.getTime() - Date.now() > 0)
+                        appliedCoupons.push(coupon);
+                } else {
+                    appliedCoupons.push(coupon);
+                }
+            }
+        } catch (error) { console.error(error) }
+
+        this.appliedCoupons = appliedCoupons;
+        return [...appliedCoupons];
+    }
+
+    // Set coupons without validation. If coupons are outdates, getCartTotal
+    // may produce wrong calculation
+    public setCoupons(coupons: TCoupon[]) {
+        this.appliedCoupons = [...coupons];
+    }
+
+    public getCoupons() {
+        return [...this.appliedCoupons];
     }
 
     // < / HELPERS > 

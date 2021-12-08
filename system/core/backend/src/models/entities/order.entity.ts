@@ -9,10 +9,14 @@ import {
     OneToMany,
     PrimaryGeneratedColumn,
     UpdateDateColumn,
+    ManyToMany,
+    JoinTable,
+
 } from 'typeorm';
 
 import { OrderMeta } from './meta/order-meta.entity';
 import { CustomDateScalar } from '../objects/custom-date.scalar';
+import { Coupon } from './coupon.entity';
 
 @Entity()
 @ObjectType()
@@ -101,6 +105,10 @@ export class Order extends BaseEntity implements TOrder {
     @Index()
     @UpdateDateColumn()
     updateDate?: Date | null;
+
+    @JoinTable()
+    @ManyToMany(type => Coupon)
+    coupons?: Coupon[] | null;
 
     @OneToMany(() => OrderMeta, meta => meta.entity, {
         cascade: true,
