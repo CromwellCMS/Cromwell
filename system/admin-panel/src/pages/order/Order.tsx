@@ -348,12 +348,12 @@ const OrderPage = () => {
                             const productLink = `${productPageInfo.baseRoute}/${product.id}`;
                             return (
                                 <Grid key={i} className={styles.cartItem} container>
-                                    <Grid item xs={3} className={styles.itemBlock}>
+                                    <Grid item xs={2} className={styles.itemBlock}>
                                         <Link to={productLink}>
                                             <img src={product.mainImage} className={styles.mainImage} />
                                         </Link>
                                     </Grid>
-                                    <Grid item xs={3} className={styles.itemBlock}>
+                                    <Grid item xs={4} className={styles.itemBlock}>
                                         <Link to={productLink} className={styles.productName}>{product.name}</Link>
                                         <div className={styles.priceBlock}>
                                             {(product?.oldPrice !== undefined && product?.oldPrice !== null) && (

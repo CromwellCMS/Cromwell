@@ -39,6 +39,14 @@ h3 {
         background-color: #777;
     }
 
+    :global(div.Mui-disabled) {
+        -webkit-text-fill-color: #aaa;
+    }
+
+    :global(input.Mui-disabled) {
+        -webkit-text-fill-color: #aaa;
+    }
+
     :global(.MuiChip-root) {
         background-color: #555;
     }

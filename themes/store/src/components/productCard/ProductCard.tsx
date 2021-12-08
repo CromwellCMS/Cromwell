@@ -4,6 +4,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import { IconButton, Rating, Theme, Tooltip, useMediaQuery } from '@mui/material';
 import clsx from 'clsx';
 import * as NextImage from 'next/image';
+import { useRouter } from 'next/router';
 import React, { useEffect, useRef } from 'react';
 
 import { appState } from '../../helpers/AppState';
@@ -29,6 +30,7 @@ export const ProductCard = (props?: {
     const cstore = getCStore();
     const isMobile = useMediaQuery<Theme>((theme) => theme.breakpoints.down('sm'));
     const product = props?.data;
+    const router = useRouter?.();
 
     const item: TStoreListItem = {
         product: props?.data ?? undefined,
@@ -154,11 +156,15 @@ export const ProductCard = (props?: {
     // }
     const mainImage = data?.mainImage ?? '/themes/@cromwell/theme-store/no-photos.png';
 
+    const openLink = () => {
+        router?.push(productLink);
+    }
+
     return (
         <div className={clsx(styles.Product, commonStyles.onHoverLinkContainer,
             props?.className, (props?.variant === 'list' && !isMobile) ? styles.listVariant : null)}
             ref={wrapperRef}>
-            <div className={styles.imageBlock}>
+            <div className={styles.imageBlock} onClick={openLink}>
                 <Link href={productLink}>
                     <a aria-label={`Product ${data?.name}`}>
                         <Image
@@ -172,7 +178,7 @@ export const ProductCard = (props?: {
                 </Link>
             </div>
             <div className={styles.caption}>
-                <div className={styles.productNameContainer}>
+                <div className={styles.productNameContainer} onClick={openLink}>
                     <Link href={productLink}>
                         <a className={clsx(styles.productName, commonStyles.onHoverLink)}>{data?.name}</a>
                     </Link>

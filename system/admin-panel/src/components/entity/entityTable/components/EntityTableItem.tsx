@@ -139,7 +139,7 @@ class EntityTableItem<TEntityType extends TBasePageEntity, TFilterType extends T
                                 <Tooltip
                                     classes={{ popper: styles.cellTooltipPaper }}
                                     title={<TooltipContent title={(tooltipValue ?? '') + ''} />} enterDelay={1500}
-                                >{content}</Tooltip>
+                                >{content ?? <></>}</Tooltip>
                             </div>
                         )
                     })}
