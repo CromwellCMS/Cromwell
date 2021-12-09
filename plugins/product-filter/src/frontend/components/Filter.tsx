@@ -68,7 +68,7 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
             minPrice: 0,
             maxPrice: 0,
             isMobileOpen: false,
-            isLoading: true,
+            isLoading: false,
         }
         this.props?.instanceSettings?.getInstance?.(this);
 
@@ -89,9 +89,10 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
     }
 
     private async init() {
-        if (typeof this.props.data?.slug !== 'string') return;
+        this.setState({ isLoading: true });
+
         try {
-            this.initialData = await getInitialData(this.props.data?.slug);
+            this.initialData = await getInitialData(this.props.data?.slug as any);
         } catch (error) {
             console.error(error);
         }

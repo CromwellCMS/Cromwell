@@ -24,7 +24,7 @@ export type TProductFilterData = {
     pluginSettings?: TProductFilterSettings;
 }
 
-export const getInitialData = async (slug: string): Promise<TInitialData> => {
+export const getInitialData = async (slug?: string): Promise<TInitialData> => {
     const client = getGraphQLClient();
     // const timestamp = Date.now();
 
