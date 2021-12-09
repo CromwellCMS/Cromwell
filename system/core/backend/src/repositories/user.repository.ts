@@ -1,7 +1,8 @@
 import { TCreateUser, TDeleteManyInput, TPagedList, TPagedParams, TUpdateUser, TUser } from '@cromwell/core';
-import bcrypt from 'bcrypt';
+import bcrypt from '@node-rs/bcrypt';
 import { EntityRepository, SelectQueryBuilder } from 'typeorm';
 
+import { bcryptSaltRounds } from '../helpers/auth-settings';
 import { checkEntitySlug, getPaged, handleBaseInput, handleCustomMetaInput } from '../helpers/base-queries';
 import { getLogger } from '../helpers/logger';
 import { validateEmail } from '../helpers/validation';
@@ -11,7 +12,6 @@ import { PagedParamsInput } from '../models/inputs/paged-params.input';
 import { BaseRepository } from './base.repository';
 
 const logger = getLogger();
-const bcryptSaltRounds = 10;
 
 @EntityRepository(User)
 export class UserRepository extends BaseRepository<User> {

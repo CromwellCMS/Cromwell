@@ -29,7 +29,7 @@
     "@nestjs/platform-fastify": "8.0.6",
     "@nestjs/swagger": "5.0.9",
     "@nestjs/throttler": "2.0.0",
-    "bcrypt": "5.0.1",
+    "@node-rs/bcrypt": "1.4.2",
     "cacache": "15.2.0",
     "class-validator": "0.13.1",
     "colors": "1.4.0",
@@ -55,7 +55,6 @@
   "devDependencies": {
     "@rollup/plugin-commonjs": "20.0.0",
     "@rollup/plugin-node-resolve": "13.0.4",
-    "@types/bcrypt": "5.0.0",
     "@types/fs-extra": "9.0.12",
     "@types/jest": "27.0.1",
     "@types/node": "14.14.31",
