@@ -8,15 +8,11 @@ import {
     TNextDocumentContext,
     TPageStats,
 } from '@cromwell/core';
-import {
-    BlockStoreProvider,
-    CContainer,
-    cleanParseContext,
-    getModuleImporter,
-    getParserTransform,
-    getRestApiClient,
-    pageRootContainerId,
-} from '@cromwell/core-frontend';
+import { getRestApiClient } from '@cromwell/core-frontend/dist/api/CRestApiClient';
+import { CContainer } from '@cromwell/core-frontend/dist/components/CContainer/CContainer';
+import { BlockStoreProvider, pageRootContainerId } from '@cromwell/core-frontend/dist/constants';
+import { getModuleImporter } from '@cromwell/core-frontend/dist/helpers/importer';
+import { cleanParseContext, getParserTransform } from '@cromwell/core-frontend/dist/helpers/parserTransform';
 import { AppProps } from 'next/app';
 import { NextRouter } from 'next/router';
 import React from 'react';

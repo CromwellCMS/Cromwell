@@ -207,10 +207,9 @@ const devGenerate = async (themeName: string, options: TOptions) => {
             return React.createElement(props.Component, props.pageProps);
         }
 
-        // export default withCromwellApp(App);
-        export default App;
+        export default withCromwellApp(App);
         `;
-        await fs.outputFile(resolve(tempDir, 'pages', '_app.ts'), pageContent);
+        await fs.outputFile(resolve(tempDir, 'pages', '_app.js'), pageContent);
     }
 
     const nextConfigPath = normalizePath(resolve(tempDir, 'next.config.js'));

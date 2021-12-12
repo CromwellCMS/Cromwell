@@ -26,7 +26,7 @@ export default [
             {
                 file: resolve(__dirname, buildDir, 'renderer.js'),
                 // dir: './build',
-                format: "esm",
+                format: "cjs",
             }
         ],
         external: (ext) => {
