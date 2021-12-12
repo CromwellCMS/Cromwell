@@ -24,10 +24,13 @@ import { jsOperators } from './helpers/helpers';
 
 const logger = getLogger();
 
-export const generator = async (options: {
+type TOptions = {
     scriptName: string;
     targetThemeName?: string;
-}) => {
+    watch?: boolean;
+}
+
+export const generator = async (options: TOptions) => {
     const { scriptName, targetThemeName } = options;
     const config = await readCMSConfig();
     if (config) setStoreItem('cmsSettings', config);
@@ -51,7 +54,7 @@ export const generator = async (options: {
     }
 };
 
-const devGenerate = async (themeName: string, options) => {
+const devGenerate = async (themeName: string, options: TOptions) => {
     const tempDir = normalizePath(getRendererTempDevDir());
     const themePackageInfo = await getCmsModuleInfo(themeName);
     const themeDir = normalizePath(process.cwd());
@@ -262,7 +265,8 @@ const devGenerate = async (themeName: string, options) => {
         await fs.outputFile(join(tempDir, 'tsconfig.json'), tsConfigContent);
     }
 
-    startPagesWatcher(pagesGlobStr);
+    if (options.watch)
+        startPagesWatcher(pagesGlobStr);
 }
 
 const getGlobalCssImports = async () => {
@@ -344,8 +348,10 @@ export const devGeneratePageWrapper = async (pagePath: string) => {
             || targetPageContent.includes('function getInitialProps'));
 
         pageContent = `
+            /*eslint-disable */
             import { createGetStaticProps, createGetStaticPaths, 
                 createGetServerSideProps, createGetInitialProps } from '@cromwell/renderer';
+            /*eslint-enable */
 
             import * as PageComponents from '${resolvePagePath(pageName)}';
 
