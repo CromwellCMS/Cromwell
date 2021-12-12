@@ -125,6 +125,17 @@ function Footer() {
           </div>
         )}
       </div>
+      <div dangerouslySetInnerHTML={{
+        __html: `
+          <script async src="https://www.googletagmanager.com/gtag/js?id=G-W8QY5D61KR"></script>
+          <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-W8QY5D61KR');
+          </script>
+        `}}>
+      </div>
     </footer>
   );
 }

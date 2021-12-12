@@ -12,6 +12,7 @@ import {
     getThemeBuildDir,
 } from '@cromwell/core-backend/dist/helpers/paths';
 import { interopDefaultContent } from '@cromwell/utils/build/shared';
+import chokidar from 'chokidar';
 import fs from 'fs-extra';
 import glob from 'glob';
 import normalizePath from 'normalize-path';
@@ -23,10 +24,13 @@ import { jsOperators } from './helpers/helpers';
 
 const logger = getLogger();
 
-export const generator = async (options: {
+type TOptions = {
     scriptName: string;
     targetThemeName?: string;
-}) => {
+    watch?: boolean;
+}
+
+export const generator = async (options: TOptions) => {
     const { scriptName, targetThemeName } = options;
     const config = await readCMSConfig();
     if (config) setStoreItem('cmsSettings', config);
@@ -50,10 +54,9 @@ export const generator = async (options: {
     }
 };
 
-const devGenerate = async (themeName: string, options) => {
+const devGenerate = async (themeName: string, options: TOptions) => {
     const tempDir = normalizePath(getRendererTempDevDir());
     const themePackageInfo = await getCmsModuleInfo(themeName);
-    const themeConfig = await getCmsModuleConfig(themeName);
     const themeDir = normalizePath(process.cwd());
 
     await linkFiles(tempDir, themeName, options);
@@ -62,9 +65,7 @@ const devGenerate = async (themeName: string, options) => {
     await fs.ensureDir(tempDir);
     await sleep(0.1);
 
-    const pagesDir = normalizePath(resolve(process.cwd(), 'src/pages'));
-    if (! await fs.pathExists(pagesDir)) throw new Error('Pages directory not found at: ' + pagesDir);
-
+    const pagesDir = await getPagesDir();
 
     // Add pages/[slug] page for dynamic pages creation in Admin Panel
     // if it was not created by theme
@@ -183,108 +184,21 @@ const devGenerate = async (themeName: string, options) => {
         } catch (e) { console.error(e) }
     }
 
-
-    const pagePaths = glob.sync(normalizePath(pagesDir) + '/**/*.+(js|jsx|ts|tsx)').map(p => normalizePath(p));
+    const pagesGlobStr = normalizePath(pagesDir) + '/**/*.+(js|jsx|ts|tsx)';
+    const pagePaths = glob.sync(pagesGlobStr).map(p => normalizePath(p));
     let hasApp = false;
 
-    const getGlobalCssImports = () => {
-        let globalCssImports = '';
-        if (themeConfig?.globalCss?.length) {
-            themeConfig.globalCss.forEach(css => {
-                if (css.startsWith('.')) css = normalizePath(resolve(tempDir, css));
-                globalCssImports += `import '${css}';\n`
-            })
-        }
-        return globalCssImports;
-    }
-
-    const resolvePagePath = (pageName) => `src/pages/${pageName}`;
-    // const resolvePagePath = (pageName) => normalizePath(join(themeDir, `src/pages/${pageName}`));
-
     for (const pagePath of pagePaths) {
-        const pageRelativePath = pagePath.replace(pagesDir, '').replace(/^\//, '');
-        const pageName = pageRelativePath.split('.').slice(0, -1).join('.');
-
-        let pageContent = '';
-
+        const pageName = await getPageName(pagePath);
         if (pageName === '_app') {
             hasApp = true;
-            // Add global CSS into _app
-
-            pageContent = `
-                ${getGlobalCssImports()}
-                import '@cromwell/core-frontend/dist/_index.css';
-                import '@cromwell/renderer/build/editor-styles.css';
-                import 'pure-react-carousel/dist/react-carousel.es.css';
-                import 'react-image-lightbox/style.css';
-
-                import App from '${resolvePagePath(pageName)}';
-                import '../generated-imports';
-                import { withCromwellApp } from '@cromwell/renderer';
-            
-                export default withCromwellApp(App);
-            `;
-
-        } else if (pageName === '_document') {
-            pageContent = `
-                import Document from '${resolvePagePath(pageName)}';
-                export default Document;
-            `;
-
-        } else {
-            // We need to check if target page has exported Next.js methods
-            // such as getStaticProps, getServerSideProps; and based on this info
-            // conditionally re-create same exports in generated page file. If we use
-            // module.exports to conditionally assign to it exports, 
-            // then PageComponents import may have a Promise value during backend execution 
-            // and everything will be broken (weird behavior of webpack or misconfiguration
-            // of Next.js). So first attempt is to use __webpack_require__, but it
-            // doesn't (though almost) correctly gets static props:
-
-            // pageContent = `
-            //     import { wrapGetStaticProps, wrapGetInitialProps,
-            //         wrapGetServerSideProps, wrapGetStaticPaths } from '@cromwell/renderer';
-
-            //     /*eslint-disable */
-            //     import * as PageComponents from '${resolvePagePath(pageName)}';
-            //     export default PageComponents.default; 
-
-
-            //     const addExport = (name, content) => {
-            //         __webpack_require__.d(__webpack_exports__, {
-            //             [name]: () => content
-            //         });
-            //     }
-
-            //     wrapGetStaticProps(addExport, '${pageName}', PageComponents);
-            //     wrapGetInitialProps(addExport, '${pageName}', PageComponents);
-            //     wrapGetServerSideProps(addExport, '${pageName}', PageComponents);
-            //     wrapGetStaticPaths(addExport, '${pageName}', PageComponents);
-            //     /*eslint-enable */
-            // `;
-
-
-            // Second way is to blindly export constants, though they may have undefined value
-            // It doesn't work with getServerSideProps, because Next.js won't allow to export
-            // it along with getStaticProps, even if one of them is undefined.  
-            pageContent = `
-                import { createGetStaticProps, 
-                    createGetStaticPaths } from '@cromwell/renderer';
-
-                import * as PageComponents from '${resolvePagePath(pageName)}';
-
-                export const getStaticPaths = createGetStaticPaths('${pageName}', PageComponents);
-                export const getStaticProps = createGetStaticProps('${pageName}', PageComponents);
-                export default PageComponents.default; 
-            `;
         }
-
-        await fs.outputFile(resolve(tempDir, 'pages', pageName + '.js'), pageContent);
+        await devGeneratePageWrapper(pagePath);
     }
 
     if (!hasApp) {
         const pageContent = `
-        ${getGlobalCssImports()}
+        ${await getGlobalCssImports()}
         import React from 'react';
         import { withCromwellApp } from '@cromwell/renderer';
         import '../generated-imports';
@@ -304,10 +218,24 @@ const devGenerate = async (themeName: string, options) => {
     const themeHasNextConf = await fs.pathExists(themeNextConfPath);
 
     await fs.outputFile(nextConfigPath, `
+        const makeProperties = (obj, str) => {
+            let target = obj;
+            for (const prop of str.split('.')) {
+                if (!target[prop]) target[prop] = {};
+                target = target[prop];
+            }
+        }
+
         const cromwellConf = {
             webpack: (config, { isServer }) => {
+                makeProperties(config, 'resolve');
                 config.resolve.symlinks = false;
+
+                makeProperties(config, 'module.parser.javascript');
                 config.module.parser.javascript.commonjsMagicComments = true;
+
+                makeProperties(config, 'experiments');
+                config.experiments.topLevelAwait = true;
                 return config;
             }
         }
@@ -336,6 +264,124 @@ const devGenerate = async (themeName: string, options) => {
     } else {
         await fs.outputFile(join(tempDir, 'tsconfig.json'), tsConfigContent);
     }
+
+    if (options.watch)
+        startPagesWatcher(pagesGlobStr);
+}
+
+const getGlobalCssImports = async () => {
+    const themeConfig = await getCmsModuleConfig(process.cwd());
+    const tempDir = normalizePath(getRendererTempDevDir());
+    let globalCssImports = '';
+
+    if (themeConfig?.globalCss?.length) {
+        themeConfig.globalCss.forEach(css => {
+            if (css.startsWith('.')) css = normalizePath(resolve(tempDir, css));
+            globalCssImports += `import '${css}';\n`
+        })
+    }
+    return globalCssImports;
+}
+
+const getPagesDir = async () => {
+    const pagesDir = normalizePath(resolve(process.cwd(), 'src/pages'));
+    if (! await fs.pathExists(pagesDir)) throw new Error('Pages directory not found at: ' + pagesDir);
+    return pagesDir;
+}
+
+const getPageName = async (pagePath: string) => {
+    pagePath = normalizePath(pagePath);
+    const pagesDir = await getPagesDir();
+    const pageRelativePath = pagePath.replace(pagesDir, '').replace(/^\//, '');
+    const pageName = pageRelativePath.split('.').slice(0, -1).join('.');
+    return pageName;
+}
+
+export const devGeneratePageWrapper = async (pagePath: string) => {
+    const pageName = await getPageName(pagePath);
+    const resolvePagePath = (pageName) => `src/pages/${pageName}`;
+    // const resolvePagePath = (pageName) => normalizePath(join(themeDir, `src/pages/${pageName}`));
+
+    let pageContent = '';
+
+    if (pageName === '_app') {
+        // Add global CSS into _app
+
+        pageContent = `
+            ${await getGlobalCssImports()}
+            import '@cromwell/core-frontend/dist/_index.css';
+            import '@cromwell/renderer/build/editor-styles.css';
+            import 'pure-react-carousel/dist/react-carousel.es.css';
+            import 'react-image-lightbox/style.css';
+
+            import App from '${resolvePagePath(pageName)}';
+            import '../generated-imports';
+            import { withCromwellApp } from '@cromwell/renderer';
+        
+            export default withCromwellApp(App);
+        `;
+
+    } else if (pageName === '_document') {
+        pageContent = `
+            import Document from '${resolvePagePath(pageName)}';
+            export default Document;
+        `;
+
+    } else {
+        // We need to check if target page has exported Next.js methods
+        // such as getStaticProps, getServerSideProps; and based on this info
+        // conditionally re-create same exports in generated page file. 
+        const targetPageContent = (await fs.readFile(pagePath).catch(() => ''))?.toString();
+
+        if (!targetPageContent) {
+            logger.log(`Page at ${pagePath} was not found`);
+            return;
+        }
+
+        const hasGetStaticPaths = targetPageContent && (targetPageContent.includes('const getStaticPaths')
+            || targetPageContent.includes('function getStaticPaths'));
+        const hasGetStaticProps = targetPageContent && (targetPageContent.includes('const getStaticProps')
+            || targetPageContent.includes('function getStaticProps'));
+        const hasGetServerSideProps = targetPageContent && (targetPageContent.includes('const getServerSideProps')
+            || targetPageContent.includes('function getServerSideProps'));
+        const hasGetInitialProps = targetPageContent && (targetPageContent.includes('const getInitialProps')
+            || targetPageContent.includes('function getInitialProps'));
+
+        pageContent = `
+            /*eslint-disable */
+            import { createGetStaticProps, createGetStaticPaths, 
+                createGetServerSideProps, createGetInitialProps } from '@cromwell/renderer';
+            /*eslint-enable */
+
+            import * as PageComponents from '${resolvePagePath(pageName)}';
+
+            ${hasGetStaticPaths ? `
+            export const getStaticPaths = createGetStaticPaths('${pageName}', PageComponents);
+            `: ''}
+
+            ${hasGetStaticProps ? `
+            export const getStaticProps = createGetStaticProps('${pageName}', PageComponents);
+            `: ''}
+
+            ${hasGetServerSideProps ? `
+            export const getServerSideProps = createGetServerSideProps('${pageName}', PageComponents);
+            `: ''}
+
+            ${hasGetInitialProps ? `
+            export const getInitialProps = createGetInitialProps('${pageName}', PageComponents);
+            `: ''}
+
+            export default PageComponents.default; 
+            `;
+    }
+
+    await fs.outputFile(await getPageWrapperPath(pagePath), pageContent);
+}
+
+const getPageWrapperPath = async (pagePath: string) => {
+    const tempDir = normalizePath(getRendererTempDevDir());
+    const pageName = await getPageName(pagePath);
+    return normalizePath(resolve(tempDir, 'pages', pageName + '.js'));
 }
 
 const prodGenerate = async (themeName: string, options) => {
@@ -388,4 +434,30 @@ const linkFiles = async (tempDir: string, themeName: string, options) => {
         envContent += `API_URL=${options.serverUrl}`;
         await fs.outputFile(resolve(tempDir, '.env.local'), envContent);
     }
+}
+
+
+let pagesWatcherActive = false;
+const startPagesWatcher = async (pagesGlobStr: string) => {
+    if (pagesWatcherActive) return;
+    pagesWatcherActive = true;
+
+    const updatePageWrapper = async (targetPage: string) => {
+        await devGeneratePageWrapper(targetPage);
+    }
+
+    const removePageWrapper = async (targetPage: string) => {
+        const wrapperPath = await getPageWrapperPath(targetPage);
+        await fs.remove(wrapperPath).catch(() => '');
+    }
+
+    const watcher = chokidar.watch(pagesGlobStr, {
+        ignored: /(^|[/\\])\../, // ignore dotfiles
+        persistent: true
+    });
+
+    watcher
+        .on('add', updatePageWrapper)
+        .on('change', updatePageWrapper)
+        .on('unlink', removePageWrapper);
 }

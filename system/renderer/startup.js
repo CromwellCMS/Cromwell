@@ -49,11 +49,12 @@ const main = () => {
             { shell: true, stdio: 'inherit', cwd: rendererRootDir, env: npmRunPath.env() });
     }
 
-    const gen = async () => {
+    const gen = async (watch) => {
         const generator = require(resolve(buildDir, 'generator.js')).generator;
         await generator({
             scriptName,
             targetThemeName: args.themeName,
+            watch,
         });
     }
 
@@ -126,7 +127,7 @@ const main = () => {
         }
 
         (async () => {
-            await gen();
+            await gen(true);
             const port = args.port || 4256;
             const startNextServer = require(resolve(buildDir, 'server.js')).startNextServer;
             const tempDir = getRendererTempDevDir();
