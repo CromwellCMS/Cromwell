@@ -20,9 +20,6 @@
     "test": "npx --no-install jest",
     "watch": "npx rollup -cw"
   },
-  "resolutions": {
-    "webpack": "5.50.0"
-  },
   "dependencies": {
     "@apollo/client": "3.2.1",
     "@cromwell/core": "2.0.7",
@@ -81,6 +78,6 @@
     "typescript-plugin-css-modules": "3.4.0"
   },
   "peerDependencies": {
-    "next": "12.0.3"
+    "next": "12.0.7"
   }
 }

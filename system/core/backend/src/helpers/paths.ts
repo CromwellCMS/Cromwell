@@ -207,7 +207,8 @@ export const getThemeAdminPanelDir = async (themeModuleName: string) => {
 }
 
 export const getCmsModuleConfig = async (moduleName?: string): Promise<TModuleConfig | undefined> => {
-    const path = moduleName ? await getNodeModuleDir(moduleName) : process.cwd();
+    const path = moduleName ? isAbsolute(moduleName) ? moduleName :
+        await getNodeModuleDir(moduleName) : process.cwd();
     if (path) {
         const configPath = resolve(path, configFileName);
         try {

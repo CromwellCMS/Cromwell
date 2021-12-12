@@ -4,5 +4,6 @@ export { withCromwellApp } from './wrappers/appWrapper';
 export {
     wrapGetInitialProps, wrapGetStaticProps,
     wrapGetServerSideProps, wrapGetStaticPaths,
-    createGetStaticProps, createGetStaticPaths
+    createGetStaticProps, createGetStaticPaths,
+    createGetServerSideProps, createGetInitialProps,
 } from './wrappers/getPropsWrapper';

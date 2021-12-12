@@ -143,6 +143,16 @@ export const wrapGetStaticPaths = (addExport: (name: string, content: any) => an
         addExport('getStaticPaths', pageComponents.getStaticPaths)
 }
 
+export const createGetServerSideProps = (pageName: string, comps) => {
+    return wrapGetProps(pageName,
+        comps.getServerSideProps, 'getServerSideProps')
+}
+
+export const createGetInitialProps = (pageName: string, comps) => {
+    return wrapGetProps(pageName,
+        comps.getInitialProps, 'getInitialProps')
+}
+
 export const createGetStaticProps = (pageName: string, comps) => {
     return wrapGetProps(pageName,
         comps.getStaticProps, 'getStaticProps')
