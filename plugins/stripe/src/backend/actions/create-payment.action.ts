@@ -4,11 +4,12 @@ import { getCStore } from '@cromwell/core-frontend';
 import Stripe from 'stripe';
 
 import { pluginName } from '../../constants';
+import { SettingsType } from '../../types';
 
 const logger = getLogger();
 
 export const createPayment = async (input: TPaymentSession) => {
-    const settings = await getPluginSettings(pluginName);
+    const settings: SettingsType = await getPluginSettings(pluginName);
     const { stripeApiKey } = settings ?? {};
     const cart = input.cart as TStoreListItem[] ?? [];
 
@@ -36,9 +37,12 @@ export const createPayment = async (input: TPaymentSession) => {
         timeout: 20 * 1000,
     });
 
-    const store = getCStore();
+    const store = getCStore(true);
     const defaultCurrency = store.getDefaultCurrencyTag() ?? 'usd';
     const currency = input.currency ?? defaultCurrency;
+
+    const convertPrice = (price: number | null | undefined) => (parseFloat(store.convertPrice(price ?? 0,
+        defaultCurrency, currency) as any) * 100).toFixed(2);
 
     try {
         const session = await stripe.checkout.sessions.create({
@@ -47,8 +51,7 @@ export const createPayment = async (input: TPaymentSession) => {
                 ...cart.map(item => ({
                     price_data: {
                         currency: currency?.toLowerCase() ?? 'usd',
-                        unit_amount_decimal: (parseFloat(store.convertPrice(item.product?.price ?? 0,
-                            defaultCurrency, currency) + '') * 100).toFixed(2),
+                        unit_amount_decimal: convertPrice(item.product?.price),
                         product_data: {
                             // images: item.product?.images,
                             name: item.product?.name + '',
@@ -58,8 +61,7 @@ export const createPayment = async (input: TPaymentSession) => {
                 })), {
                     price_data: {
                         currency: currency?.toLowerCase() ?? 'usd',
-                        unit_amount_decimal: (parseFloat(store.convertPrice(input?.shippingPrice ?? 0,
-                            defaultCurrency, currency) + '') * 100).toFixed(2),
+                        unit_amount_decimal: convertPrice(input?.shippingPrice),
                         product_data: {
                             name: 'shipping',
                         },
@@ -73,7 +75,6 @@ export const createPayment = async (input: TPaymentSession) => {
         });
 
         output.link = session.url;
-
     } catch (error) {
         logger.error(error);
     }

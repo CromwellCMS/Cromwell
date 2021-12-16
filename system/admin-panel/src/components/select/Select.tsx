@@ -1,5 +1,16 @@
-import { FormControl, InputLabel, MenuItem, Select as MuiSelect, SelectProps } from '@mui/material';
+import { HelpOutlineOutlined } from '@mui/icons-material';
+import {
+    FormControl,
+    IconButton,
+    InputAdornment,
+    InputLabel,
+    MenuItem,
+    Select as MuiSelect,
+    SelectProps,
+    Tooltip,
+} from '@mui/material';
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 
 export function Select(props: {
     options?: ({
@@ -8,7 +19,21 @@ export function Select(props: {
     } | string | number | undefined)[];
     selectStyle?: React.CSSProperties;
     selectClassName?: string;
+    tooltipText?: string;
+    tooltipLink?: string;
 } & SelectProps<string | number>) {
+    const history = useHistory();
+
+    const openLink = () => {
+        if (props.tooltipLink) {
+            if (props.tooltipLink.startsWith('http')) {
+                window.open(props.tooltipLink, '_blank');
+            } else {
+                history.push(props.tooltipLink);
+            }
+        }
+    }
+
     return (
         <FormControl
             fullWidth={props.fullWidth}
@@ -24,6 +49,17 @@ export function Select(props: {
                 {...props}
                 className={props.selectClassName}
                 style={props.selectStyle}
+                endAdornment={(
+                    (props.tooltipText || props.tooltipLink) && (
+                        <InputAdornment position="end" sx={{ mr: 1 }}>
+                            <Tooltip title={props.tooltipText}>
+                                <IconButton onClick={openLink}>
+                                    <HelpOutlineOutlined />
+                                </IconButton>
+                            </Tooltip>
+                        </InputAdornment>
+                    )
+                )}
             >
                 {props.options?.map((option) => {
                     const label = typeof option === 'object' ? option.label : option;

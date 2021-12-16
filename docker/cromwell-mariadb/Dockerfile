@@ -4,7 +4,7 @@ COPY ./cromwell-mariadb /app
 COPY ./nginx.conf /app/nginx.conf
 
 RUN apt update && apt install nginx curl python ca-certificates libssl-dev apt-transport-https -y \
-    && curl -sL https://deb.nodesource.com/setup_14.x -o nodesource_setup.sh \
+    && curl -sL https://deb.nodesource.com/setup_16.x -o nodesource_setup.sh \
     && bash nodesource_setup.sh \
     && apt install nodejs -y
 

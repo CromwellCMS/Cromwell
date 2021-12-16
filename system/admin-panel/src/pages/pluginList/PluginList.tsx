@@ -60,7 +60,7 @@ class PluginList extends React.Component<Partial<RouteComponentProps>, {
         this.setState({ isLoading: false });
 
         await this.getPluginUpdates();
-        setTimeout(this.checkUpdates, 30000);
+        setTimeout(this.checkUpdates, 60000);
     }
 
     private checkUpdates = async () => {
@@ -68,7 +68,7 @@ class PluginList extends React.Component<Partial<RouteComponentProps>, {
             await this.getPluginList();
             await this.getPluginUpdates();
 
-            requestAnimationFrame(() => setTimeout(this.checkUpdates, 30000));
+            requestAnimationFrame(() => setTimeout(this.checkUpdates, 60000));
         }
     }
 
@@ -241,7 +241,7 @@ class PluginList extends React.Component<Partial<RouteComponentProps>, {
                     const pluginName = info.name;
                     const pluginIcon = info.icon;
                     const pluginEntity = installedPlugins?.find(ent => ent.name === pluginName);
-                    const title = pluginEntity?.title ?? info.title ?? pluginName;
+                    const title = info.title ?? pluginEntity?.title ?? pluginName;
                     let availableUpdate: TCCSVersion | undefined = this.pluginUpdates[info.name];
                     if (availableUpdate?.packageVersion === info?.version) availableUpdate = undefined;
 
