@@ -48,6 +48,7 @@
         "plugins/product-filter",
         "plugins/product-showcase",
         "plugins/stripe",
+        "plugins/paypal",
         "themes/blog",
         "themes/store",
         "website"

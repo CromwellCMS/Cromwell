@@ -85,7 +85,8 @@
       "@cromwell/plugin-main-menu",
       "@cromwell/plugin-product-showcase",
       "@cromwell/plugin-newsletter",
-      "@cromwell/plugin-stripe"
+      "@cromwell/plugin-stripe",
+      "@cromwell/plugin-paypal"
     ],
     "frontendDependencies": [
       "mobx",

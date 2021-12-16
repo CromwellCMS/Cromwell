@@ -1,3 +1,5 @@
+import { SettingsType } from '../../src/types';
+
 jest.mock('@cromwell/core-frontend', () => {
     return {
         getCStore: () => ({
@@ -10,8 +12,9 @@ jest.mock('@cromwell/core-frontend', () => {
 jest.mock('@cromwell/core-backend', () => {
     return {
         getPluginSettings: () => ({
-            stripeApiKey: 'sk_test_4eC39HqLyjWDarjtT1zdp7dc'
-        }),
+            client_id: 'EBWKjlELKMYqRNQ6sYvFo64FtaRLRR5BdHEESmha49TM',
+            client_secret: 'EO422dn3gQLgDbuwqTjzrFgFtaRLRR5BdHEESmha49TM',
+        } as SettingsType),
         getLogger: () => ({
             warn: console.warn,
             error: console.error,
@@ -29,6 +32,7 @@ describe('createPayment action', () => {
             cart: [
                 { product: { name: 'test1', id: 1, price: 10 } }
             ],
+            orderTotalPrice: 10,
             cancelUrl: 'http://example.org/test1',
             successUrl: 'http://example.org/test2',
         });

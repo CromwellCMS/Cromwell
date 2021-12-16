@@ -12,6 +12,7 @@ export { default as ConfirmationModal, ConfirmPrompt, askConfirmation } from './
 export { default as Pagination } from './components/pagination/Pagination';
 export { default as PluginSettingsLayout } from './components/pluginSettingsLayout/PluginSettingsLayout';
 export { default as TextFieldWithTooltip } from './components/textFieldWithTooltip/TextFieldWithTooltip';
+export { Select } from './components/select/Select';
 export * from './components/toast/toast';
 export { default as TransferList } from './components/transferList/TransferList';
 export * from './components/skeleton/SkeletonPreloader';

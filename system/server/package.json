@@ -69,16 +69,13 @@
     "graphql-type-json": "0.3.2",
     "handlebars": "4.7.7",
     "http-proxy": "1.18.1",
-    "mysql": "2.18.1",
     "node-cleanup": "2.1.2",
     "node-fetch": "2.6.1",
     "normalize-path": "3.0.0",
-    "pg": "8.7.1",
     "project-name-generator": "2.1.9",
     "reflect-metadata": "0.1.13",
     "require-from-string": "2.0.2",
     "rxjs": "7.3.0",
-    "sqlite3": "5.0.2",
     "symlink-dir": "5.0.1",
     "systeminformation": "5.8.0",
     "tcp-port-used": "1.0.2",
@@ -88,6 +85,11 @@
     "typeorm": "0.2.37",
     "xlsx-populate": "1.21.0",
     "yargs-parser": "20.2.9"
+  },
+  "optionalDependencies": {
+    "mysql": "2.18.1",
+    "pg": "8.7.1",
+    "sqlite3": "5.0.2"
   },
   "devDependencies": {
     "@nestjs/testing": "8.0.6",

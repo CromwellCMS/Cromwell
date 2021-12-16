@@ -1,0 +1,64 @@
+{
+  "name": "@cromwell/plugin-paypal",
+  "version": "1.0.0",
+  "description": "",
+  "license": "MIT",
+  "repository": "https://github.com/CromwellCMS/Cromwell",
+  "author": "Astrex LLC",
+  "bugs": {
+    "url": "https://github.com/CromwellCMS/Cromwell/issues"
+  },
+  "files": [
+    "build",
+    "static",
+    "cromwell.config.js"
+  ],
+  "scripts": {
+    "build": "npx cromwell b",
+    "test": "cd tests && npx --no-install jest",
+    "watch": "npx cromwell b -w"
+  },
+  "dependencies": {
+    "paypal-rest-sdk": "1.8.1"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "20.0.0",
+    "@rollup/plugin-json": "4.1.0",
+    "@testing-library/dom": "8.1.0",
+    "@testing-library/jest-dom": "5.14.1",
+    "@testing-library/react": "12.0.0",
+    "@testing-library/user-event": "13.2.1",
+    "@types/jest": "27.0.1",
+    "@types/node": "14.14.31",
+    "@types/paypal-rest-sdk": "1.7.6",
+    "@types/react": "17.0.18",
+    "@types/react-dom": "17.0.9",
+    "@types/testing-library__jest-dom": "5.14.1",
+    "@types/testing-library__react": "10.2.0",
+    "jest": "27.0.6",
+    "rollup-plugin-postcss": "4.0.1",
+    "rollup-plugin-terser": "7.0.2",
+    "rollup-plugin-ts-compiler": "1.0.16",
+    "ts-jest": "27.0.5",
+    "ts-node": "10.2.0",
+    "typescript": "4.3.5"
+  },
+  "peerDependencies": {
+    "@cromwell/admin-panel": "^2.0.0",
+    "@cromwell/cli": "^2.0.0",
+    "@cromwell/core": "^2.0.0",
+    "@cromwell/core-backend": "^2.0.0",
+    "@cromwell/core-frontend": "^2.0.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  },
+  "cromwell": {
+    "type": "plugin",
+    "icon": "static/paypal-icon.png",
+    "title": "Paypal integration",
+    "link": "https://cromwellcms.com/docs/features/payments",
+    "excerpt": "Integration of Paypal payments into your online store",
+    "description": "Integration of Paypal payments into your online store",
+    "author": "Cromwell CMS"
+  }
+}

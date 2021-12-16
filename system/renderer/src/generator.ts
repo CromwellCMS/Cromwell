@@ -346,6 +346,8 @@ export const devGeneratePageWrapper = async (pagePath: string) => {
         const hasGetInitialProps = targetPageContent && (targetPageContent.includes('const getInitialProps')
             || targetPageContent.includes('function getInitialProps'));
 
+        const hasAnyGetProps = hasGetStaticPaths || hasGetStaticProps || hasGetServerSideProps || hasGetInitialProps;
+
         pageContent = `
             /*eslint-disable */
             import { createGetStaticProps, createGetStaticPaths, 
@@ -358,7 +360,7 @@ export const devGeneratePageWrapper = async (pagePath: string) => {
             export const getStaticPaths = createGetStaticPaths('${pageName}', PageComponents);
             `: ''}
 
-            ${hasGetStaticProps ? `
+            ${hasGetStaticProps || !hasAnyGetProps ? `
             export const getStaticProps = createGetStaticProps('${pageName}', PageComponents);
             `: ''}
 
