@@ -1,6 +1,6 @@
 {
   "name": "@cromwell/core-frontend",
-  "version": "2.0.9",
+  "version": "2.0.10",
   "description": "",
   "license": "MIT",
   "repository": "https://github.com/CromwellCMS/Cromwell",
@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@apollo/client": "3.2.1",
-    "@cromwell/core": "2.0.8",
+    "@cromwell/core": "2.0.9",
     "@loadable/component": "5.15.0",
     "clsx": "1.1.1",
     "graphql": "15.5.1",

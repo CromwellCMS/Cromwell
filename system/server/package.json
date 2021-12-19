@@ -1,6 +1,6 @@
 {
   "name": "@cromwell/server",
-  "version": "2.0.13",
+  "version": "2.0.14",
   "description": "",
   "keywords": [],
   "license": "MIT",
@@ -30,9 +30,9 @@
     "migration:generate:all-example": "npm run migration:generate:all --name=init"
   },
   "dependencies": {
-    "@cromwell/core": "2.0.8",
-    "@cromwell/core-backend": "2.0.9",
-    "@cromwell/core-frontend": "2.0.9",
+    "@cromwell/core": "2.0.9",
+    "@cromwell/core-backend": "2.0.10",
+    "@cromwell/core-frontend": "2.0.10",
     "@nestjs/common": "8.0.6",
     "@nestjs/core": "8.0.6",
     "@nestjs/graphql": "8.0.2",

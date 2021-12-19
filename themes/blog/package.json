@@ -1,6 +1,6 @@
 {
   "name": "@cromwell/theme-blog",
-  "version": "1.2.22",
+  "version": "1.2.23",
   "license": "MIT",
   "repository": "https://github.com/CromwellCMS/Cromwell",
   "author": "Astrex LLC",
@@ -29,8 +29,8 @@
   "devDependencies": {
     "@apollo/client": "3.2.1",
     "@cromwell/cli": "2.0.15",
-    "@cromwell/core": "2.0.8",
-    "@cromwell/core-frontend": "2.0.9",
+    "@cromwell/core": "2.0.9",
+    "@cromwell/core-frontend": "2.0.10",
     "@rollup/plugin-alias": "3.1.5",
     "@rollup/plugin-commonjs": "20.0.0",
     "@rollup/plugin-json": "4.1.0",
