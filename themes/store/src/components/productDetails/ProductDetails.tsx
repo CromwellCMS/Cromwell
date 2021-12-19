@@ -122,6 +122,7 @@ export default function ProductDetails(props: {
                                 onAttrChange={(attrs, modified) => setProduct({ ...modified })}
                                 attributes={props.attributes}
                                 product={productRef.current}
+                                modified={product}
                             />
                         </CContainer>
                     </CContainer>

@@ -20,7 +20,7 @@ export const CustomDateScalar = new GraphQLScalarType({
             return new Date(ast.value);
         }
         if (ast.kind === Kind.INT) {
-            return new Date(parseInt(ast.value, 10)); // Convert hard-coded AST string to integer and then to Date
+            return new Date(parseInt(ast.value, 10));
         }
         return null;
     },

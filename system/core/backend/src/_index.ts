@@ -66,8 +66,10 @@ export * from './models/inputs/plugin.input';
 export * from './models/inputs/custom-entity.input';
 export * from './models/inputs/coupon.input';
 
-export * from './models/objects/attribute-product-variant.object';
+export * from './models/objects/product-variant.object';
 export * from './models/objects/attribute-instance.object';
+export * from './models/objects/product-variant.object';
+export * from './models/objects/custom-date.scalar';
 
 export * from './repositories/product-category.repository';
 export * from './repositories/product.repository';

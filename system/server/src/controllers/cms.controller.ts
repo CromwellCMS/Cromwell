@@ -263,7 +263,9 @@ export class CmsController {
             return;
         }
 
+
         if ((await fs.lstat(fullPath)).isFile()) {
+            response.header('Content-Disposition', `attachment; filename=${fileName}`);
             try {
                 const readStream = fs.createReadStream(fullPath);
                 response.type('text/html').send(readStream);
@@ -272,6 +274,7 @@ export class CmsController {
                 response.code(500).send({ message: error + '' });
             }
         } else {
+            response.header('Content-Disposition', `attachment; filename=${fileName}.zip`);
             // zip the directory
             const archive = archiver('zip', {
                 zlib: { level: 9 }

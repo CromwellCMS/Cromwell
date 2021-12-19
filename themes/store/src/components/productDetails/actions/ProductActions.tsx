@@ -15,6 +15,7 @@ import styles from './ProductActions.module.scss';
 
 export const ProductActions = (props: {
     product?: TProduct | null;
+    modified?: TProduct | null;
     attributes?: TAttribute[];
     onAttrChange: (attrs: any, modified: any) => void;
 }) => {
@@ -22,7 +23,7 @@ export const ProductActions = (props: {
     const [amount, setAmount] = useState(1);
     const [canValidate, setCanValidate] = useState(false);
     const [pickedAttributes, setPickedAttributes] = useState<Record<string, string[]>>({});
-    const { product, attributes } = props;
+    const { product, attributes, modified } = props;
     const item: TStoreListItem = {
         product: product ?? undefined,
         pickedAttributes: pickedAttributes,
@@ -168,14 +169,24 @@ export const ProductActions = (props: {
                 )}
             </div>
             <div className={styles.cartAndAMountBlock}>
-                <Button
-                    onClick={handleAddToCart}
-                    variant="contained"
-                    color="primary"
-                    size="large"
-                    className={clsx(styles.actionButton, commonStyles.button)}
-                    startIcon={inCart ? <ShoppingCartIcon /> : <AddShoppingCartIcon />}
-                >{inCart ? sameQntInCart ? 'Open cart' : 'Update qty' : 'Add to cart'}</Button>
+                {(modified?.stockStatus === 'Out of stock' || modified?.stockStatus === 'On backorder') ? (
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        size="large"
+                        disabled
+                        className={clsx(styles.actionButton, commonStyles.button)}
+                    >{modified?.stockStatus}</Button>
+                ) : (
+                    <Button
+                        onClick={handleAddToCart}
+                        variant="contained"
+                        color="primary"
+                        size="large"
+                        className={clsx(styles.actionButton, commonStyles.button)}
+                        startIcon={inCart ? <ShoppingCartIcon /> : <AddShoppingCartIcon />}
+                    >{inCart ? sameQntInCart ? 'Open cart' : 'Update qty' : 'Add to cart'}</Button>
+                )}
                 <div className={styles.amountPicker}>
                     <Input
                         className={styles.amountInput}
@@ -228,6 +239,6 @@ export const ProductActions = (props: {
                 >{inCompare ? 'Open comparison list' : 'Compare'}</Button> */}
             </div>
 
-        </div>
+        </div >
     )
 }

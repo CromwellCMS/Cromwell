@@ -1,4 +1,4 @@
-import { getStoreItem, isServer, setStoreItem, TAttribute, TCoupon, TProduct, TStoreListItem } from '@cromwell/core';
+import { getStoreItem, isServer, setStoreItem, TAttribute, TCoupon, TProduct, TProductVariant, TStoreListItem } from '@cromwell/core';
 
 import { getGraphQLClient } from '../api/CGraphQLClient';
 
@@ -358,10 +358,10 @@ export class CStore {
 
         const updatedProducts: (TProduct | undefined)[] = await Promise.all(Object.values(promises));
 
-        let attributes: TAttribute[] | undefined = undefined;
-        try {
-            attributes = await this.apiClient?.getAttributes();
-        } catch (e) { console.error(e) }
+        // let attributes: TAttribute[] | undefined = undefined;
+        // try {
+        //     attributes = await this.apiClient?.getAttributes();
+        // } catch (e) { console.error(e) }
 
         const updatedList: TStoreListItem[] = [];
 
@@ -389,7 +389,7 @@ export class CStore {
                 }
                 if (hasAllAttrs) {
                     listItem.product = this.applyProductVariants(updated,
-                        listItem.pickedAttributes, attributes);
+                        listItem.pickedAttributes);
 
                     if (listItem.pickedAttributes) {
                         for (const key of Object.keys(listItem.pickedAttributes)) {
@@ -529,32 +529,43 @@ export class CStore {
     // < HELPERS > 
 
     /** Applies all ProductVariants from values of checked attributes */
-    public applyProductVariants = (product: TProduct, checkedAttrs?: Record<string, string[]>,
-        attributes?: TAttribute[]): TProduct => {
-        if (product.attributes && checkedAttrs && attributes) {
+    public applyProductVariants = (product: TProduct, checkedAttrs?: Record<string, (string | number)[]>): TProduct => {
+        if (checkedAttrs && Object.keys(checkedAttrs).length && product.variants?.length) {
             const newProd = Object.assign({}, product);
+            const matchedVariants: {
+                variant: TProductVariant;
+                matches: number;
+            }[] = [];
 
-            for (const key of Object.keys(checkedAttrs)) {
-                const origAttribute = attributes.find(a => a.key === key);
-                const attributeInstance = product.attributes.find(a => a.key === key);
-                if (origAttribute && attributeInstance) {
-                    if (origAttribute.type === 'radio') {
-                        // checks array should contain one element for value
-                        if (checkedAttrs[key] && checkedAttrs[key].length === 1) {
-                            const valueInstance = attributeInstance.values.find(v => v.value === checkedAttrs[key][0])
-                            if (valueInstance && valueInstance.productVariant) {
-                                const variant = valueInstance.productVariant;
+            for (const variant of product.variants) {
+                if (!variant.attributes) continue;
+                const filteredAttributes: Record<string, string | number> = {};
+                Object.entries(variant.attributes).forEach(([key, value]) => {
+                    if (value) filteredAttributes[key] = value;
+                });
+                if (!Object.keys(filteredAttributes).length) continue;
 
-                                for (const varKey of Object.keys(variant)) {
-                                    const varValue = (variant as any)[varKey];
-                                    if (varValue !== null && varValue !== undefined) {
-                                        (newProd as any)[varKey] = varValue;
-                                    }
-                                }
-                            }
-                        }
+                let matches = 0;
+                Object.entries(filteredAttributes).forEach(([key, value]) => {
+                    if (checkedAttrs[key] && checkedAttrs[key].includes(value)) {
+                        matches++;
                     }
+                });
+                if (matches && Object.keys(filteredAttributes).length === matches) {
+                    matchedVariants.push({
+                        matches,
+                        variant: variant,
+                    })
                 }
+            }
+            matchedVariants.sort((a, b) => a.matches - b.matches);
+
+            for (const variant of matchedVariants) {
+                Object.entries(variant.variant).forEach(([key, value]) => {
+                    if (!key || key === 'id') return;
+                    if (value === null || value === undefined) return;
+                    newProd[key] = value;
+                });
             }
             return newProd;
         }

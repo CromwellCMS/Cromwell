@@ -182,6 +182,7 @@ export class MockService {
             const categoryIds: number[] = cats.slice(0, catsNum).map(c => c.id);
 
             const condition = Math.random() > 0.3 ? 'New' : 'Used';
+            const sizes = sizeVals ? this.shuffleArray(sizeVals).slice(0, Math.floor(Math.random() * 4) + 3) : [];
 
             promises.push(this.productRepo.createProduct({
                 name: this.getRandomName(),
@@ -206,34 +207,32 @@ export class MockService {
                         values: [
                             {
                                 value: color,
-                                productVariant: {
-                                    images: [mainImage]
-                                }
                             }
                         ]
                     },
                     {
                         key: 'Size',
-                        values: sizeVals ? this.shuffleArray(sizeVals).slice(0, Math.floor(Math.random() * 4) + 3).map(s => ({
+                        values: sizes.map(s => ({
                             value: s.value,
-                            productVariant: {
-                                price: price + Math.round(price * 0.2 * Math.random())
-                            }
-                        })).sort((a, b) => parseInt(a.value) - parseInt(b.value)) : [],
+                        })).sort((a, b) => parseInt(a.value) - parseInt(b.value)),
                     },
                     {
                         key: 'Condition',
                         values: [
                             {
                                 value: condition,
-                                productVariant: {
-                                    price: condition === 'Used' ? Math.round(price * 0.4) : undefined
-                                }
                             }
                         ]
                     }
                 ],
-                views: Math.floor(Math.random() * 1000)
+                variants: sizes.map(size => ({
+                    id: getRandStr(8),
+                    price: price + Math.round(price * 0.2 * Math.random()),
+                    attributes: {
+                        'Size': size.value,
+                    }
+                })),
+                views: Math.floor(Math.random() * 1000),
             }));
         }
         await Promise.all(promises);

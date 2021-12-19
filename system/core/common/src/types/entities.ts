@@ -183,9 +183,17 @@ export type TProduct = TBasePageEntity & {
      */
     stockAmount?: number | null;
     /**
-     * Manually set is the item availability in stock
+     * Should store automatically deduct stockAmount when order is placed?
+     */
+    manageStock?: boolean | null;
+    /**
+     * Manually set this product availability in the stock
      */
     stockStatus?: TStockStatus | null;
+    /**
+     * Product variants
+     */
+    variants?: TProductVariant[] | null;
 }
 
 export type TStockStatus = 'In stock' | 'Out of stock' | 'On backorder';
@@ -373,10 +381,10 @@ export type TAttributeInstance = {
 
 export type TAttributeInstanceValue = {
     value: string;
-    productVariant?: TAttributeProductVariant;
 }
 
-export type TAttributeProductVariant = {
+export type TProductVariant = {
+    id?: string;
     name?: string;
     price?: number;
     oldPrice?: number;
@@ -386,7 +394,9 @@ export type TAttributeProductVariant = {
     description?: string;
     descriptionDelta?: string;
     stockAmount?: number;
-    stockStatus?: string;
+    manageStock?: boolean;
+    stockStatus?: TStockStatus;
+    attributes?: Record<string, string | number | 'any'>;
 }
 
 

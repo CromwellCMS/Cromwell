@@ -1,11 +1,9 @@
-import { TAttribute, TAttributeInstanceValue, TAttributeProductVariant, TProduct } from '@cromwell/core';
-import { DeleteForever as DeleteForeverIcon, Edit as EditIcon, HighlightOff as HighlightOffIcon } from '@mui/icons-material';
+import { TAttribute, TAttributeInstanceValue, TProduct } from '@cromwell/core';
+import { DeleteForever as DeleteForeverIcon } from '@mui/icons-material';
 import { Button, Fade, IconButton, MenuItem, Paper, Popper, Tooltip } from '@mui/material';
 import React from 'react';
 
 import TransferList from '../../components/transferList/TransferList';
-import MainInfoCard from './MainInfoCard';
-import { TInfoCardRef } from './Product';
 import styles from './Product.module.scss';
 
 
@@ -13,13 +11,9 @@ export default function AttributesTab(props: {
     product: TProduct;
     attributes: TAttribute[];
     setProdData: (data: TProduct) => void;
-    infoCardRef: React.MutableRefObject<TInfoCardRef>;
     forceUpdate: () => void;
 }) {
-    const { product, attributes, setProdData, infoCardRef, forceUpdate } = props;
-    const [editingProductVariant, setEditingProductVariant] = React.useState<{
-        prodAttrIdx: number; value: string;
-    } | null>(null);
+    const { product, attributes, setProdData, forceUpdate } = props;
     const [popperAnchorEl, setPopperAnchorEl] = React.useState<HTMLButtonElement | null>(null);
     const [popperOpen, setPopperOpen] = React.useState(false);
 
@@ -71,22 +65,6 @@ export default function AttributesTab(props: {
                                     itemComp={(props) => (
                                         <div className={styles.attributeInstanceValue}>
                                             <p>{props.value}</p>
-                                            {rightValues.includes(props.value) && (
-                                                <Tooltip title="Edit product variant">
-                                                    <IconButton
-                                                        aria-label="edit product variant"
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            setEditingProductVariant({
-                                                                prodAttrIdx,
-                                                                value: props.value
-                                                            })
-                                                        }}
-                                                    >
-                                                        <EditIcon />
-                                                    </IconButton>
-                                                </Tooltip>
-                                            )}
                                         </div>
                                     )}
                                     setRight={(val) => {
@@ -114,50 +92,6 @@ export default function AttributesTab(props: {
                                         forceUpdate();
                                     }}
                                 />
-                                {editingProductVariant && editingProductVariant.prodAttrIdx === prodAttrIdx && (
-                                    <div className={styles.editingProductVariant}>
-                                        <div className={styles.attributeHeader}>
-                                            <p className={styles.editingProductVariantTitle}>Editing product variant for value:
-                                                <span className={styles.tag}>{editingProductVariant.value}</span>
-                                            </p>
-                                            <div>
-                                                <Tooltip title="Close">
-                                                    <IconButton
-                                                        aria-label="close"
-                                                        onClick={() => {
-                                                            setEditingProductVariant(null)
-                                                        }}
-                                                    >
-                                                        <HighlightOffIcon />
-                                                    </IconButton>
-                                                </Tooltip>
-                                            </div>
-                                        </div>
-                                        <div className={styles.editingProductVariantCard}>
-                                            <MainInfoCard
-                                                infoCardRef={infoCardRef}
-                                                productVariantVal={editingProductVariant.value}
-                                                product={prodAttr.values.find(a => a.value === editingProductVariant.value)?.productVariant || product}
-                                                setProdData={(data: TAttributeProductVariant) => {
-                                                    const prod: TProduct = JSON.parse(JSON.stringify(product));
-                                                    if (prod.attributes) {
-                                                        prod.attributes[prodAttrIdx].values = prod.attributes[prodAttrIdx].values.map(val => {
-                                                            if (val.value === editingProductVariant.value) {
-                                                                return {
-                                                                    value: val.value,
-                                                                    productVariant: data
-                                                                }
-                                                            } else return val;
-                                                        });
-                                                        setProdData(prod);
-                                                    }
-                                                }}
-                                                isProductVariant
-                                            />
-                                        </div>
-
-                                    </div>
-                                )}
                             </div>
                         )
                     }

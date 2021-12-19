@@ -16,14 +16,9 @@ import { store } from '../../redux/store';
 import commonStyles from '../../styles/common.module.scss';
 import AttributesTab from './AttributesTab';
 import CategoriesTab from './CategoriesTab';
+import VariantsTab from './VariantsTab';
 import MainInfoCard from './MainInfoCard';
 import styles from './Product.module.scss';
-
-export const editorId = "prod-text-editor";
-
-export type TInfoCardRef = {
-    save: () => Promise<void>;
-};
 
 const ProductPage = () => {
     const { id: productId } = useParams<{ id: string }>();
@@ -33,7 +28,6 @@ const ProductPage = () => {
     const [attributes, setAttributes] = useState<TAttribute[]>([]);
 
     const [activeTabNum, setActiveTabNum] = React.useState(0);
-    const infoCardRef = React.useRef<TInfoCardRef | null>(null);
     const productRef = React.useRef<TProduct | null>(null);
     const [notFound, setNotFound] = useState(false);
     const [canValidate, setCanValidate] = useState(false);
@@ -43,10 +37,7 @@ const ProductPage = () => {
     const product: TProduct | undefined = productRef.current;
 
     const setProdData = (data: TProduct) => {
-        if (!productRef.current) productRef.current = data;
-        else Object.keys(data).forEach(key => {
-            productRef.current[key] = data[key];
-        });
+        productRef.current = Object.assign({}, productRef.current, data);
     }
 
     useEffect(() => {
@@ -81,6 +72,9 @@ const ProductPage = () => {
                         descriptionDelta
                         views
                         mainCategoryId
+                        stockAmount
+                        stockStatus
+                        manageStock
                         categories(pagedParams: {pageSize: 9999}) {
                             id
                         }
@@ -89,17 +83,22 @@ const ProductPage = () => {
                             key
                             values {
                                 value
-                                productVariant {
-                                    name
-                                    price
-                                    oldPrice
-                                    sku
-                                    mainImage
-                                    images
-                                    description
-                                    descriptionDelta
-                                }
                             }
+                        }
+                        variants {
+                            id
+                            name
+                            price
+                            oldPrice
+                            sku
+                            mainImage
+                            images
+                            description
+                            descriptionDelta
+                            stockAmount
+                            stockStatus
+                            manageStock
+                            attributes
                         }
                     }`, 'AdminPanelProductFragment'
                 );
@@ -151,7 +150,6 @@ const ProductPage = () => {
     };
 
     const handleSave = async () => {
-        await infoCardRef?.current?.save();
         const product = productRef.current;
         setCanValidate(true);
 
@@ -161,17 +159,7 @@ const ProductPage = () => {
             key: attr.key,
             values: attr.values ? attr.values.map(val => ({
                 value: val.value,
-                productVariant: val.productVariant ? {
-                    name: val.productVariant.name,
-                    price: typeof val.productVariant.price === 'string' ? parseFloat(val.productVariant.price) : val.productVariant.price,
-                    oldPrice: typeof val.productVariant.oldPrice === 'string' ? parseFloat(val.productVariant.oldPrice) : val.productVariant.oldPrice,
-                    sku: val.productVariant.sku,
-                    mainImage: val.productVariant.mainImage,
-                    images: val.productVariant.images,
-                    description: val.productVariant.description,
-                    descriptionDelta: val.productVariant.descriptionDelta,
-                } : undefined
-            })) : []
+            })) : [],
         }));
 
         const selectedItems = store.getState().selectedItems;
@@ -201,9 +189,37 @@ const ProductPage = () => {
                 meta: product.meta && {
                     keywords: product.meta.keywords
                 },
+                variants: product.variants?.map(variant => ({
+                    id: variant.id,
+                    name: variant.name,
+                    price: typeof variant.price === 'string' ? parseFloat(variant.price) : variant.price,
+                    oldPrice: typeof variant.oldPrice === 'string' ? parseFloat(variant.oldPrice) : variant.oldPrice,
+                    sku: variant.sku,
+                    mainImage: variant.mainImage,
+                    images: variant.images,
+                    description: variant.description,
+                    descriptionDelta: variant.descriptionDelta,
+                    stockAmount: variant.stockAmount,
+                    stockStatus: variant.stockStatus,
+                    attributes: variant.attributes,
+                })),
                 customMeta: Object.assign({}, product.customMeta, await getCustomMetaFor(EDBEntity.Product)),
                 isEnabled: product.isEnabled,
             }
+
+
+            if (input.variants?.length) {
+                // Ensure that variants have at least one specified attribute
+                input.variants.forEach((variant, i) => {
+                    const filteredAttributes: Record<string, string | number> = {};
+                    Object.entries((variant.attributes ?? {})).forEach(([key, value]) => {
+                        if (value && value !== 'any') filteredAttributes[key] = value;
+                    });
+                    if (!Object.keys(filteredAttributes).length) delete input.variants[i];
+                });
+                input.variants = input.variants.filter(Boolean);
+            }
+
 
             if (productId === 'new') {
                 setIsLoading(true);
@@ -281,6 +297,7 @@ const ProductPage = () => {
                     >
                         <Tab label="Main" />
                         <Tab label="Attributes" />
+                        <Tab label="Variants" />
                         <Tab label="Categories" />
                     </Tabs>
                 </div>
@@ -303,7 +320,6 @@ const ProductPage = () => {
                         onClick={handleSave}>
                         Save
                     </Button>
-
                 </div>
             </div>
             {isLoading && <Skeleton width="100%" height="100%" style={{
@@ -317,7 +333,6 @@ const ProductPage = () => {
                             <MainInfoCard
                                 product={product}
                                 setProdData={setProdData}
-                                infoCardRef={infoCardRef}
                                 canValidate={canValidate}
                             />
                             <div style={{ marginBottom: '15px' }}></div>
@@ -334,10 +349,17 @@ const ProductPage = () => {
                             product={product}
                             attributes={attributes}
                             setProdData={setProdData}
-                            infoCardRef={infoCardRef}
                         />
                     </TabPanel>
                     <TabPanel value={activeTabNum} index={2}>
+                        <VariantsTab
+                            forceUpdate={forceUpdate}
+                            product={product}
+                            attributes={attributes}
+                            setProdData={setProdData}
+                        />
+                    </TabPanel>
+                    <TabPanel value={activeTabNum} index={3}>
                         <CategoriesTab />
                     </TabPanel>
                 </>

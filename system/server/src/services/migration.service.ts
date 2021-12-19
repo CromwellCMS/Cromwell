@@ -353,6 +353,7 @@ export class MigrationService {
             mainImage: ent.mainImage,
             images: ent.images,
             stockStatus: ent.stockStatus,
+            manageStock: ent.manageStock,
             stockAmount: ent.stockAmount,
             mainCategoryId: ent.mainCategoryId,
             description: ent.description,
@@ -361,6 +362,7 @@ export class MigrationService {
                 .attributeRecordsToProductAttributeInstances(ent.attributeValues)),
             customMeta: this.stringifyValue(await entityMetaRepository.getEntityMetaByKeys(EDBEntity.Product, ent.id, metaKeys)),
             views: undefined,
+            variants: this.stringifyValue(ent.variants),
         })));
 
         this.fillSheet(workbook, ESheetNames.Product, productsSheet);
@@ -955,9 +957,10 @@ export class MigrationService {
                 description: input.description || null,
                 descriptionDelta: input.descriptionDelta || null,
                 stockAmount: this.parseNumber(input.stockAmount),
+                manageStock: this.parseBoolean(input.manageStock),
                 stockStatus: input.stockStatus as TStockStatus || null,
                 views: null,
-
+                variants: this.parseJson(input.variants),
             }),
             update: async (input) => input.id && getCustomRepository(ProductRepository).updateProduct(input.id, input),
             create: (input) => getCustomRepository(ProductRepository).createProduct(input, input.id),
