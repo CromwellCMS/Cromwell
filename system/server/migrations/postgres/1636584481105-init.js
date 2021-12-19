@@ -51,7 +51,7 @@ module.exports = class init1636584481105 {
         await queryRunner.query(`CREATE INDEX "IDX_c717d9265ea3490790ee35edcd" ON "crw_product" ("sku") `);
         await queryRunner.query(`CREATE INDEX "IDX_5adfdd26419d9b737b683a8c65" ON "crw_product" ("stockAmount") `);
         await queryRunner.query(`CREATE INDEX "IDX_77dc2abc46299b49ead89048d4" ON "crw_product" ("stockStatus") `);
-        await queryRunner.query(`CREATE TABLE "crw_attribute_to_product" ("id" SERIAL NOT NULL, "productId" integer, "attributeValueId" integer, "key" character varying(255) NOT NULL, "value" character varying(255), "productVariantJson" text, CONSTRAINT "PK_3ef08411c210625bceb79a0e4bb" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE TABLE "crw_attribute_to_product" ("id" SERIAL NOT NULL, "productId" integer, "attributeValueId" integer, "key" character varying(255) NOT NULL, "value" character varying(255), CONSTRAINT "PK_3ef08411c210625bceb79a0e4bb" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE INDEX "IDX_533b299ee136f75e261be4ebcf" ON "crw_attribute_to_product" ("productId") `);
         await queryRunner.query(`CREATE INDEX "IDX_6a9b506859de7cc2ac65414ec9" ON "crw_attribute_to_product" ("attributeValueId") `);
         await queryRunner.query(`CREATE INDEX "IDX_d4292415b7431d518278318057" ON "crw_attribute_to_product" ("key") `);

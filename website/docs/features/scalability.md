@@ -10,7 +10,7 @@ You can see more info about services in [development document](https://github.co
 By default command `npx cromwell start` will launch all three services, but it's possible to launch services independently via CLI.
 
 - Run `npx crw s --sv s` to start API server.
-- Run `npx crw s --sv r` to start Next.js server.
+- Run `npx crw s --sv r` to start Next.js server (renderer).
 - Run `npx crw s --sv s` to start admin panel server.
 
 ## Deployment
@@ -173,15 +173,9 @@ Provide URL to the server group:
 
 No further configuration with tokens is required, since tokens will be synchronized inside one project.
 
+
 ## Caveats
 
-For now, there are two limitations with load balancing setup:
+CMS services must have an access to the same file system. For example, a user can install a plugin or upload a file. If you host API servers on different machines, you need to configure a third party service that will emulate a shared file system for all of them.  
 
-1. Admin cannot install plugins in GUI. Since a request to install a Plugin will be processed by only one server in a group, other servers will not have installed this Plugin. It can be solved by installing Plugins in terminal via `yarn install` on all machines.  
-In future updates we are planning to distribute installation requests among a group to make automatic installation possible.
-2. Uploaded content via file manager (Media) GUI will appear in the public directory of only one API server. For now solution is to copy public content across servers manually.  
-Same as before, with distributing API, content can be copied over all servers specified in a config.
-
-
-While full scaling support will be added natively later, there are other options available that solve the limitation above. 
-For example, EFS and AWS Fargate. [See the introduction and an example of scaling with Wordpress](https://pages.awscloud.com/Modernize-Content-Management-Systems-with-EFS-and-AWS-Fargate_2021_0407-CON_OD.html)
+[For example, you can host on AWS EC2 and configure EFS for EC2 instances.](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AmazonEFS.html)

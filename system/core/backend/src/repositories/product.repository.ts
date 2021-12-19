@@ -130,6 +130,8 @@ export class ProductRepository extends BaseRepository<Product> {
         product.descriptionDelta = input.descriptionDelta;
         product.stockAmount = input.stockAmount;
         product.stockStatus = input.stockStatus;
+        product.manageStock = input.manageStock;
+        product.variants = input.variants;
 
         // Move mainImage into first item in the array if it is not
         if (product.images && product.images.length > 0 && product.mainImage
@@ -168,7 +170,6 @@ export class ProductRepository extends BaseRepository<Product> {
                     inputValues.push({
                         key: inputAttribute.key,
                         value: inputValue.value,
-                        productVariant: inputValue.productVariant,
                         attribute,
                         attributeValue,
                     });
@@ -192,13 +193,11 @@ export class ProductRepository extends BaseRepository<Product> {
                     value => value.key === inputValue.key && value.value === inputValue.value);
 
                 if (currentValue) {
-                    currentValue.productVariant = inputValue.productVariant;
                     await currentValue.save();
                     updatedValues.push(currentValue);
                 } else {
                     const newValue = await getCustomRepository(AttributeRepository)
-                        .addAttributeValueToProduct(product, inputValue.attributeValue,
-                            inputValue.productVariant);
+                        .addAttributeValueToProduct(product, inputValue.attributeValue);
 
                     if (newValue) updatedValues.push(newValue);
                 }
@@ -431,7 +430,6 @@ export class ProductRepository extends BaseRepository<Product> {
             }
             instances[record.key].values.push({
                 value: record.value,
-                productVariant: record.productVariant,
             })
         });
         return Object.values(instances);

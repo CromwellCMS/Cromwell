@@ -49,7 +49,7 @@ export const ProductAttributes = (props: {
             newCheckedAttrs[key] = checks;
             setTimeout(() => {
                 onChange?.(newCheckedAttrs, cstore.applyProductVariants(
-                    product, newCheckedAttrs, attributes));
+                    product, newCheckedAttrs));
             }, 10);
 
             return newCheckedAttrs;

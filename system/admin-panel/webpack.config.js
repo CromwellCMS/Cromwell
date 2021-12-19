@@ -6,7 +6,6 @@ const { getAdminPanelDir } = require('@cromwell/core-backend/dist/helpers/paths'
 const styleLoaderPath = resolveFrom(getAdminPanelDir(), 'style-loader');
 const cssLoaderPath = resolveFrom(getAdminPanelDir(), 'css-loader');
 const sassLoaderPath = resolveFrom(getAdminPanelDir(), 'sass-loader');
-const tsLoaderPath = resolveFrom(getAdminPanelDir(), 'ts-loader');
 const buildMode = process.env.NODE_ENV || 'production';
 const isProduction = buildMode === 'production';
 const styleLoaderOptions = {
@@ -18,7 +17,7 @@ if (!isProduction) {
     entry.unshift('webpack-hot-middleware/client');
 }
 
-console.log('Admin panel build mode:', buildMode)
+// console.log('Admin panel build mode:', buildMode)
 
 module.exports = {
     mode: buildMode,
@@ -51,12 +50,22 @@ module.exports = {
         rules: [
             {
                 test: /\.ts(x?)$/,
-                exclude: /node_modules/,
-                use: [
-                    {
-                        loader: tsLoaderPath
-                    },
-                ]
+                exclude: /(node_modules|bower_components)/,
+                use: {
+                    loader: "swc-loader",
+                    options: {
+                        jsc: {
+                            parser: {
+                                syntax: "typescript"
+                            }
+                        }
+                    }
+                },
+                // use: [
+                //     {
+                //         loader: resolveFrom(getAdminPanelDir(), 'ts-loader');
+                //     },
+                // ]
             },
             {
                 test: /\.css$/i,

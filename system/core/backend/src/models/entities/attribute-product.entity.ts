@@ -1,7 +1,6 @@
 import { Field, Int, ObjectType } from 'type-graphql';
 import { BaseEntity, Column, Entity, Index, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
-import { AttributeProductVariant } from '../objects/attribute-product-variant.object';
 import { AttributeValue } from './attribute-value.entity';
 import { Product } from './product.entity';
 
@@ -44,17 +43,4 @@ export class AttributeToProduct extends BaseEntity {
     @Column({ type: "varchar", length: 255, nullable: true })
     @Index()
     value: string;
-
-    @Column({ type: "text", nullable: true })
-    productVariantJson?: string;
-
-    @Field(type => AttributeProductVariant, { nullable: true })
-    get productVariant(): AttributeProductVariant | undefined {
-        if (this.productVariantJson) return JSON.parse(this.productVariantJson);
-    }
-
-    set productVariant(variant: AttributeProductVariant | undefined) {
-        if (variant) this.productVariantJson = JSON.stringify(variant);
-        else this.productVariantJson = variant;
-    }
 }

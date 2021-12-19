@@ -1,4 +1,4 @@
-import { TAttribute, TAttributeInput, TAttributeProductVariant } from '@cromwell/core';
+import { TAttribute, TAttributeInput } from '@cromwell/core';
 import { EntityRepository } from 'typeorm';
 
 import { checkEntitySlug, handleBaseInput, handleCustomMetaInput } from '../helpers/base-queries';
@@ -47,15 +47,13 @@ export class AttributeRepository extends BaseRepository<Attribute> {
         });
     }
 
-    async addAttributeValueToProduct(product: Product, value: AttributeValue,
-        productVariant?: TAttributeProductVariant): Promise<AttributeToProduct | undefined> {
+    async addAttributeValueToProduct(product: Product, value: AttributeValue): Promise<AttributeToProduct | undefined> {
         if (!value.key) return;
         const attributeToProduct = new AttributeToProduct();
         attributeToProduct.product = product;
         attributeToProduct.productId = product.id;
         attributeToProduct.attributeValue = value;
         attributeToProduct.attributeValueId = value.id;
-        attributeToProduct.productVariant = productVariant;
         attributeToProduct.key = value.key;
         attributeToProduct.value = value.value;
         await attributeToProduct.save();

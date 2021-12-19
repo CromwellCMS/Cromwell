@@ -1,7 +1,15 @@
-import { TProduct, TProductCategory, TProductRating, TProductReview, TStockStatus, TAttributeInstance } from '@cromwell/core';
+import {
+    TAttributeInstance,
+    TProduct,
+    TProductCategory,
+    TProductRating,
+    TProductReview,
+    TStockStatus,
+} from '@cromwell/core';
 import { Field, Int, ObjectType } from 'type-graphql';
 import { Column, Entity, Index, JoinTable, ManyToMany, OneToMany } from 'typeorm';
 
+import { ProductVariant } from '../objects/product-variant.object';
 import { AttributeToProduct } from './attribute-product.entity';
 import { BasePageEntity } from './base-page.entity';
 import { ProductMeta } from './meta/product-meta.entity';
@@ -59,6 +67,10 @@ export class Product extends BasePageEntity implements TProduct {
     @Index()
     stockStatus?: TStockStatus | null;
 
+    @Field(type => Boolean, { nullable: true })
+    @Column({ type: "boolean", nullable: true })
+    manageStock?: boolean | null;
+
     @Field(type => String, { nullable: true })
     @Column({ type: "text", nullable: true })
     description?: string | null;
@@ -82,6 +94,19 @@ export class Product extends BasePageEntity implements TProduct {
      */
     attributes?: TAttributeInstance[] | null;
 
+
+    @Column({ type: "text", nullable: true })
+    variantsJson?: string | null;
+
+    @Field(type => [ProductVariant], { nullable: true })
+    get variants(): ProductVariant[] | undefined {
+        if (this.variantsJson) return JSON.parse(this.variantsJson);
+    }
+
+    set variants(variants: ProductVariant[] | undefined | null) {
+        if (variants) this.variantsJson = JSON.stringify(variants);
+        else this.variantsJson = variants;
+    }
 
     views?: number | null;
 

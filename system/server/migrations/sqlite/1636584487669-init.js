@@ -51,7 +51,7 @@ module.exports = class init1636584487669 {
         await queryRunner.query(`CREATE INDEX "IDX_c717d9265ea3490790ee35edcd" ON "crw_product" ("sku") `);
         await queryRunner.query(`CREATE INDEX "IDX_5adfdd26419d9b737b683a8c65" ON "crw_product" ("stockAmount") `);
         await queryRunner.query(`CREATE INDEX "IDX_77dc2abc46299b49ead89048d4" ON "crw_product" ("stockStatus") `);
-        await queryRunner.query(`CREATE TABLE "crw_attribute_to_product" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "productId" integer, "attributeValueId" integer, "key" varchar(255) NOT NULL, "value" varchar(255), "productVariantJson" text)`);
+        await queryRunner.query(`CREATE TABLE "crw_attribute_to_product" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "productId" integer, "attributeValueId" integer, "key" varchar(255) NOT NULL, "value" varchar(255))`);
         await queryRunner.query(`CREATE INDEX "IDX_533b299ee136f75e261be4ebcf" ON "crw_attribute_to_product" ("productId") `);
         await queryRunner.query(`CREATE INDEX "IDX_6a9b506859de7cc2ac65414ec9" ON "crw_attribute_to_product" ("attributeValueId") `);
         await queryRunner.query(`CREATE INDEX "IDX_d4292415b7431d518278318057" ON "crw_attribute_to_product" ("key") `);
@@ -201,8 +201,8 @@ module.exports = class init1636584487669 {
         await queryRunner.query(`DROP INDEX "IDX_6a9b506859de7cc2ac65414ec9"`);
         await queryRunner.query(`DROP INDEX "IDX_d4292415b7431d518278318057"`);
         await queryRunner.query(`DROP INDEX "IDX_854e20470498807068e94d87a8"`);
-        await queryRunner.query(`CREATE TABLE "temporary_crw_attribute_to_product" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "productId" integer, "attributeValueId" integer, "key" varchar(255) NOT NULL, "value" varchar(255), "productVariantJson" text, CONSTRAINT "FK_533b299ee136f75e261be4ebcf1" FOREIGN KEY ("productId") REFERENCES "crw_product" ("id") ON DELETE CASCADE ON UPDATE NO ACTION, CONSTRAINT "FK_6a9b506859de7cc2ac65414ec95" FOREIGN KEY ("attributeValueId") REFERENCES "crw_attribute_value" ("id") ON DELETE CASCADE ON UPDATE NO ACTION)`);
-        await queryRunner.query(`INSERT INTO "temporary_crw_attribute_to_product"("id", "productId", "attributeValueId", "key", "value", "productVariantJson") SELECT "id", "productId", "attributeValueId", "key", "value", "productVariantJson" FROM "crw_attribute_to_product"`);
+        await queryRunner.query(`CREATE TABLE "temporary_crw_attribute_to_product" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "productId" integer, "attributeValueId" integer, "key" varchar(255) NOT NULL, "value" varchar(255), CONSTRAINT "FK_533b299ee136f75e261be4ebcf1" FOREIGN KEY ("productId") REFERENCES "crw_product" ("id") ON DELETE CASCADE ON UPDATE NO ACTION, CONSTRAINT "FK_6a9b506859de7cc2ac65414ec95" FOREIGN KEY ("attributeValueId") REFERENCES "crw_attribute_value" ("id") ON DELETE CASCADE ON UPDATE NO ACTION)`);
+        await queryRunner.query(`INSERT INTO "temporary_crw_attribute_to_product"("id", "productId", "attributeValueId", "key", "value") SELECT "id", "productId", "attributeValueId", "key", "value" FROM "crw_attribute_to_product"`);
         await queryRunner.query(`DROP TABLE "crw_attribute_to_product"`);
         await queryRunner.query(`ALTER TABLE "temporary_crw_attribute_to_product" RENAME TO "crw_attribute_to_product"`);
         await queryRunner.query(`CREATE INDEX "IDX_533b299ee136f75e261be4ebcf" ON "crw_attribute_to_product" ("productId") `);
@@ -405,8 +405,8 @@ module.exports = class init1636584487669 {
         await queryRunner.query(`DROP INDEX "IDX_6a9b506859de7cc2ac65414ec9"`);
         await queryRunner.query(`DROP INDEX "IDX_533b299ee136f75e261be4ebcf"`);
         await queryRunner.query(`ALTER TABLE "crw_attribute_to_product" RENAME TO "temporary_crw_attribute_to_product"`);
-        await queryRunner.query(`CREATE TABLE "crw_attribute_to_product" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "productId" integer, "attributeValueId" integer, "key" varchar(255) NOT NULL, "value" varchar(255), "productVariantJson" text)`);
-        await queryRunner.query(`INSERT INTO "crw_attribute_to_product"("id", "productId", "attributeValueId", "key", "value", "productVariantJson") SELECT "id", "productId", "attributeValueId", "key", "value", "productVariantJson" FROM "temporary_crw_attribute_to_product"`);
+        await queryRunner.query(`CREATE TABLE "crw_attribute_to_product" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "productId" integer, "attributeValueId" integer, "key" varchar(255) NOT NULL, "value" varchar(255))`);
+        await queryRunner.query(`INSERT INTO "crw_attribute_to_product"("id", "productId", "attributeValueId", "key", "value") SELECT "id", "productId", "attributeValueId", "key", "value", FROM "temporary_crw_attribute_to_product"`);
         await queryRunner.query(`DROP TABLE "temporary_crw_attribute_to_product"`);
         await queryRunner.query(`CREATE INDEX "IDX_854e20470498807068e94d87a8" ON "crw_attribute_to_product" ("value") `);
         await queryRunner.query(`CREATE INDEX "IDX_d4292415b7431d518278318057" ON "crw_attribute_to_product" ("key") `);

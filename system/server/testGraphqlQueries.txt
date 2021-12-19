@@ -24,14 +24,6 @@ query getProduct {
       key
       values {
         value
-        productVariant {
-      			name
-            price
-            oldPrice
-            mainImage
-            images
-            description
-        }
       }
     }
     categories(pagedParams: {pageSize: 9999}) {

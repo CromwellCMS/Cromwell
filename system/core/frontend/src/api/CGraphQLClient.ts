@@ -576,6 +576,9 @@ export class CGraphQLClient {
             mainCategoryId
             description
             views
+            stockAmount
+            stockStatus
+            manageStock
             rating {
                 average
                 reviewsNumber
@@ -584,15 +587,21 @@ export class CGraphQLClient {
                 key
                 values {
                     value
-                    productVariant {
-                        name
-                        price
-                        oldPrice
-                        mainImage
-                        images
-                        description
-                    }
                 }
+            }
+            variants {
+                id
+                name
+                price
+                oldPrice
+                sku
+                mainImage
+                images
+                description
+                stockAmount
+                stockStatus
+                manageStock
+                attributes
             }
         }
     `;

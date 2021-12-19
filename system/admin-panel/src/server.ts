@@ -81,11 +81,11 @@ const start = async () => {
         compiler = webpack(webpackConfig);
 
         compiler.hooks.watchRun.tap('adminPanelStart', () => {
-            console.log(chalk.cyan('\r\nBegin compile at ' + new Date() + '\r\n'));
+            console.log(chalk.cyan('\r\nBegin admin panel compile at ' + new Date() + '\r\n'));
         });
         compiler.hooks.done.tap('adminPanelDone', () => {
             setTimeout(() => {
-                console.log(chalk.cyan('\r\nEnd compile at ' + new Date() + '\r\n'));
+                console.log(chalk.cyan('\r\nEnd admin panel compile at ' + new Date() + '\r\n'));
             }, 100)
         });
 

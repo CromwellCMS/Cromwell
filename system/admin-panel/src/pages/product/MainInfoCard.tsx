@@ -1,32 +1,31 @@
-import { resolvePageRoute, serviceLocator, TAttributeProductVariant, TProduct, TStockStatus } from '@cromwell/core';
+import { resolvePageRoute, serviceLocator, TProductVariant, TProduct, TStockStatus, getRandStr } from '@cromwell/core';
 import { Autocomplete, Grid, TextField, Tooltip } from '@mui/material';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 
 import { GalleryPicker } from '../../components/galleryPicker/GalleryPicker';
 import { Select } from '../../components/select/Select';
 import { getEditorData, getEditorHtml, initTextEditor } from '../../helpers/editor/editor';
 import { useForceUpdate } from '../../helpers/forceUpdate';
 import { NumberFormatCustom } from '../../helpers/NumberFormatCustom';
-import { editorId, TInfoCardRef } from './Product';
 import styles from './Product.module.scss';
+import { debounce } from 'throttle-debounce';
 
 
 const MainInfoCard = (props: {
-    product: TAttributeProductVariant | TProduct,
-    setProdData: (data: TProduct) => void;
+    product: TProduct | TProductVariant,
+    setProdData: (data: TProduct | TProductVariant) => void;
     isProductVariant?: boolean;
-    productVariantVal?: string;
-    infoCardRef?: React.MutableRefObject<TInfoCardRef>;
     canValidate?: boolean;
 }) => {
-    const productPrevRef = React.useRef<TAttributeProductVariant | TProduct | null>(props.product);
-    const productRef = React.useRef<TAttributeProductVariant | TProduct | null>(props.product);
+    const productPrevRef = React.useRef<TProductVariant | TProduct | null>(props.product);
+    const cardIdRef = React.useRef<string>(getRandStr(10));
+    const productRef = React.useRef<TProductVariant | TProduct | null>(props.product);
     if (props.product !== productPrevRef.current) {
         productPrevRef.current = props.product;
         productRef.current = props.product;
     }
     const forceUpdate = useForceUpdate();
-
+    const editorId = "prod-text-editor_" + cardIdRef.current;
     const product = productRef.current;
 
     const setProdData = (data: TProduct) => {
@@ -43,23 +42,8 @@ const MainInfoCard = (props: {
         });
     }
 
-    if (props.infoCardRef) props.infoCardRef.current = {
-        save: async () => await fullSave(),
-    };
-
-    const productVariantVal = useRef(props.productVariantVal);
-    const isNewVariant = productVariantVal.current !== props.productVariantVal;
-    if (isNewVariant) {
-        productVariantVal.current = props.productVariantVal;
-    }
-
     useEffect(() => {
         init();
-
-        // Save editor content on close
-        return () => {
-            fullSave();
-        }
     }, [])
 
     const init = async () => {
@@ -70,10 +54,15 @@ const MainInfoCard = (props: {
             } catch (e) { console.error(e) }
         }
 
+        const updateText = debounce(600, () => {
+            fullSave();
+        })
+
         await initTextEditor({
             htmlId: editorId,
             data: descriptionDelta,
             placeholder: 'Product description...',
+            onChange: updateText,
         });
     }
 
@@ -120,7 +109,7 @@ const MainInfoCard = (props: {
                     fullWidth
                     label="Stock status"
                     variant="standard"
-                    value={product.stockStatus ?? 'In stock'}
+                    value={product.stockStatus}
                     onChange={(e) => { handleChange('stockStatus', e.target.value) }}
                     options={['In stock', 'Out of stock', 'On backorder'] as TStockStatus[]}
                 />
