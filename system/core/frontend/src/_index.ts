@@ -9,7 +9,6 @@ export { CList } from './components/CList/CList';
 export { CEditor } from './components/CEditor/CEditor';
 export { TCList, TCListProps, TItemComponentProps, TPaginationProps } from './components/CList/types';
 export { Link } from './components/Link/Link';
-export { ProductAttributes } from './components/ProductAttributes/ProductAttributes';
 export { LoadBox } from './components/loadBox/Loadbox';
 export * from './components/AdminPanelWidget/AdminPanelWidgetPlace';
 export {

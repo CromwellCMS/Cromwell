@@ -33,6 +33,7 @@
     "@cromwell/cli": "2.0.15",
     "@cromwell/core": "2.0.9",
     "@cromwell/core-frontend": "2.0.10",
+    "@cromwell/commerce": "^1.0.0",
     "@cromwell/utils": "2.0.11",
     "@rollup/plugin-alias": "3.1.5",
     "@rollup/plugin-commonjs": "20.0.0",
