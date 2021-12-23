@@ -209,9 +209,11 @@ export type TProductRating = {
     reviewsNumber?: number | null;
 }
 
-export type TProductInput = Omit<TProduct, TDBAuxiliaryColumns | 'categories' | 'rating' | 'reviews'> & {
-    categoryIds?: number[] | null;
-};
+export type TProductInput = Omit<TProduct, TDBAuxiliaryColumns | 'categories' | 'rating' | 'reviews'
+    | 'variants'> & {
+        categoryIds?: number[] | null;
+        variants?: TProductVariantInput[] | null;
+    };
 
 export type TProductFilter = TBaseFilter & {
     minPrice?: number;
@@ -383,22 +385,25 @@ export type TAttributeInstanceValue = {
     value: string;
 }
 
-export type TProductVariant = {
-    id?: string;
-    name?: string;
-    price?: number;
-    oldPrice?: number;
-    sku?: string;
-    mainImage?: string;
-    images?: string[];
-    description?: string;
-    descriptionDelta?: string;
-    stockAmount?: number;
-    manageStock?: boolean;
-    stockStatus?: TStockStatus;
-    attributes?: Record<string, string | number | 'any'>;
+export type TProductVariant = TBasePageEntity & {
+    name?: string | null;
+    price?: number | null;
+    oldPrice?: number | null;
+    sku?: string | null;
+    mainImage?: string | null;
+    images?: string[] | null;
+    description?: string | null;
+    descriptionDelta?: string | null;
+    stockAmount?: number | null;
+    manageStock?: boolean | null;
+    stockStatus?: TStockStatus | null;
+    attributes?: Record<string, string | number | 'any'> | null;
 }
 
+export type TProductVariantInput = Omit<TProductVariant, TDBAuxiliaryColumns> & {
+    id?: number | null;
+    productId?: number | null;
+};
 
 /**
  * ProductReview

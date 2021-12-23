@@ -128,6 +128,7 @@ export type TDBEntity = keyof {
     PostComment;
     Tag;
     Product;
+    ProductVariant;
     ProductCategory;
     ProductReview;
     Attribute;
@@ -157,6 +158,7 @@ export enum EDBEntity {
     CMS = 'CMS',
     CustomEntity = 'CustomEntity',
     Coupon = 'Coupon',
+    ProductVariant = 'ProductVariant',
 }
 
 export type GraphQLPathsType = { [K in TDBEntity]: TGraphQLNode };

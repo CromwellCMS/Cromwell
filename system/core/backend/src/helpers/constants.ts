@@ -27,6 +27,8 @@ import { ThemeEntity } from '../models/entities/theme.entity';
 import { User } from '../models/entities/user.entity';
 import { Coupon } from '../models/entities/coupon.entity';
 import { CouponMeta } from '../models/entities/meta/coupon-meta.entity';
+import { ProductVariant } from '../models/entities/product-variant.entity';
+import { ProductVariantMeta } from '../models/entities/meta/product-variant-meta.entity';
 
 
 export const ORMEntities = [
@@ -38,6 +40,7 @@ export const ORMEntities = [
     ProductCategoryMeta, ProductMeta, TagMeta,
     UserMeta, AttributeToProduct, AttributeValue,
     CustomEntity, CustomEntityMeta, Coupon, CouponMeta,
+    ProductVariant, ProductVariantMeta,
 ]
 
 export const rendererMessages = {

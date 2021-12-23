@@ -13,6 +13,7 @@ import {
     TProductCategoryInput,
     TProductInput,
     TProductReviewInput,
+    TProductVariantInput,
     TStockStatus,
     TTagInput,
     TThemeEntity,
@@ -44,6 +45,8 @@ import {
     ProductRepository,
     ProductReview,
     ProductReviewRepository,
+    ProductVariant,
+    ProductVariantRepository,
     Tag,
     TagRepository,
     ThemeEntity,
@@ -66,6 +69,7 @@ enum ESheetNames {
     Post = 'Posts',
     PostComment = 'Post comments',
     Product = 'Products',
+    ProductVariant = 'Product variants',
     ProductCategory = 'Product categories',
     ProductReview = 'Product reviews',
     Tag = 'Post tags',
@@ -103,6 +107,7 @@ export class MigrationService {
 
         if (entityTypes.includes('Product') || exportAll) {
             await this.exportProducts(workbook);
+            await this.exportProductVariants(workbook);
         }
         if (entityTypes.includes('ProductCategory') || exportAll) {
             await this.exportCategories(workbook);
@@ -176,8 +181,9 @@ export class MigrationService {
             await this.importCoupons({ workbook, removeSurplus })
             await this.importAttributes({ workbook, removeSurplus });
             await this.importProducts({ workbook, removeSurplus });
+            await this.importProductVariants({ workbook, removeSurplus });
             await this.importReviews({ workbook, removeSurplus });
-
+            
             await this.importOrders({ workbook, removeSurplus });
             await this.importPlugins({ workbook, removeSurplus });
             await this.importThemes({ workbook, removeSurplus });
@@ -367,6 +373,44 @@ export class MigrationService {
 
         this.fillSheet(workbook, ESheetNames.Product, productsSheet);
     }
+
+    // PRODUCT VARIANTS
+    private async exportProductVariants(workbook: any) {
+        const variants = await getCustomRepository(ProductVariantRepository).find({
+            relations: ['product']
+        });
+        const metaKeys = await entityMetaRepository.getAllEntityMetaKeys(EDBEntity.ProductVariant) ?? [];
+
+        const sheet: Record<keyof TProductVariantInput, any>[] = await Promise.all(variants.map(async ent => ({
+            id: ent.id,
+            productId: ent.product?.id,
+            slug: ent.slug,
+            pageTitle: ent.pageTitle,
+            pageDescription: ent.pageDescription,
+            meta: ent.meta,
+            createDate: ent.createDate,
+            updateDate: ent.updateDate,
+            isEnabled: ent.isEnabled,
+            name: ent.name,
+            price: ent.price,
+            oldPrice: ent.oldPrice,
+            sku: ent.sku,
+            mainImage: ent.mainImage,
+            images: ent.images,
+            stockStatus: ent.stockStatus,
+            manageStock: ent.manageStock,
+            stockAmount: ent.stockAmount,
+            description: ent.description,
+            descriptionDelta: ent.descriptionDelta,
+            attributes: this.stringifyValue(ent.attributes),
+            customMeta: this.stringifyValue(await entityMetaRepository
+                .getEntityMetaByKeys(EDBEntity.ProductVariant, ent.id, metaKeys)),
+            views: undefined,
+        })));
+
+        this.fillSheet(workbook, ESheetNames.ProductVariant, sheet);
+    }
+
 
     // CATEGORIES
     private async exportCategories(workbook: any) {
@@ -966,6 +1010,35 @@ export class MigrationService {
             create: (input) => getCustomRepository(ProductRepository).createProduct(input, input.id),
         })
     }
+
+
+    private async importProductVariants(options: TImportOptions) {
+        await this.importBase<TProductVariantInput>({
+            ...options,
+            sheetName: ESheetNames.ProductVariant,
+            EntityClass: ProductVariant,
+            transformInput: (input) => ({
+                ...this.parseBaseInput(input),
+                productId: this.parseNumber(input.productId),
+                attributes: this.parseJson(input.attributes),
+                images: this.parseJson(input.images),
+                name: input.name || null,
+                price: this.parseNumber(input.price),
+                oldPrice: this.parseNumber(input.oldPrice),
+                sku: input.sku || null,
+                mainImage: input.mainImage || null,
+                description: input.description || null,
+                descriptionDelta: input.descriptionDelta || null,
+                stockAmount: this.parseNumber(input.stockAmount),
+                manageStock: this.parseBoolean(input.manageStock),
+                stockStatus: input.stockStatus as TStockStatus || null,
+                views: null,
+            }),
+            update: async (input) => input.id && getCustomRepository(ProductVariantRepository).updateProductVariant(input.id, input),
+            create: (input) => getCustomRepository(ProductVariantRepository).createProductVariant(input, input.id),
+        })
+    }
+
 
     private async importReviews(options: TImportOptions) {
         await this.importBase<TProductReviewInput>({

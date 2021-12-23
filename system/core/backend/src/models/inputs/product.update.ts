@@ -2,8 +2,8 @@ import { TProductInput, TStockStatus } from '@cromwell/core';
 import { Field, InputType, Int } from 'type-graphql';
 
 import { AttributeInstance } from '../objects/attribute-instance.object';
-import { ProductVariant } from '../objects/product-variant.object';
 import { BasePageInput } from './base-page.input';
+import { ProductVariantInput } from './product-variant.input';
 
 @InputType({ description: "Update Product data" })
 export class UpdateProduct extends BasePageInput implements TProductInput {
@@ -49,6 +49,6 @@ export class UpdateProduct extends BasePageInput implements TProductInput {
     @Field(type => Boolean, { nullable: true })
     manageStock?: boolean;
 
-    @Field(type => [ProductVariant], { nullable: true })
-    variants?: ProductVariant[];
+    @Field(type => [ProductVariantInput], { nullable: true })
+    variants?: ProductVariantInput[];
 }

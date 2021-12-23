@@ -7,6 +7,7 @@ export * from './models/entities/attribute-value.entity';
 export * from './models/entities/attribute.entity';
 export * from './models/entities/attribute-product.entity';
 export * from './models/entities/product-review.entity';
+export * from './models/entities/product-variant.entity';
 export * from './models/entities/plugin.entity';
 export * from './models/entities/theme.entity';
 export * from './models/entities/cms.entity';
@@ -26,6 +27,7 @@ export * from './models/entities/meta/product-category-meta.entity';
 export * from './models/entities/meta/product-meta.entity';
 export * from './models/entities/meta/tag-meta.entity';
 export * from './models/entities/meta/user-meta.entity';
+export * from './models/entities/meta/product-variant-meta.entity';
 
 export * from './models/paged/product.paged';
 export * from './models/paged/meta.paged';
@@ -65,10 +67,9 @@ export * from './models/inputs/delete-many.input';
 export * from './models/inputs/plugin.input';
 export * from './models/inputs/custom-entity.input';
 export * from './models/inputs/coupon.input';
+export * from './models/inputs/product-variant.input';
 
-export * from './models/objects/product-variant.object';
 export * from './models/objects/attribute-instance.object';
-export * from './models/objects/product-variant.object';
 export * from './models/objects/custom-date.scalar';
 
 export * from './repositories/product-category.repository';
@@ -84,6 +85,7 @@ export * from './repositories/tag.repository';
 export * from './repositories/page-stats.repository';
 export * from './repositories/custom-entity.repository';
 export * from './repositories/coupon.repository';
+export * from './repositories/product-variant.repository';
 
 export * from './helpers/paths';
 export * from './helpers/logger';
