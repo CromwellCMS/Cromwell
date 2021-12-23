@@ -1,5 +1,5 @@
-import { EDBEntity, TBasePageEntity } from '@cromwell/core';
-import { Brackets, Repository, BaseEntity } from 'typeorm';
+import { EDBEntity } from '@cromwell/core';
+import { Brackets, BaseEntity } from 'typeorm';
 
 import { Attribute } from '../models/entities/attribute.entity';
 import { BasePageEntity } from '../models/entities/base-page.entity';
@@ -22,11 +22,12 @@ import { CustomEntity } from '../models/entities/custom-entity.entity';
 import { CustomEntityMeta } from '../models/entities/meta/custom-entity-meta.entity';
 import { Coupon } from '../models/entities/coupon.entity';
 import { CouponMeta } from '../models/entities/meta/coupon-meta.entity';
+import { ProductVariant } from '../models/entities/product-variant.entity';
+import { ProductVariantMeta } from '../models/entities/meta/product-variant-meta.entity';
 
 type TEntityMetaModel = BaseEntityMeta & TEntityMeta;
 
 class EntityMetaRepository {
-
     getMetaClass(entityType: EDBEntity): (new (...args: any[]) => TEntityMetaModel) & typeof BaseEntity | undefined {
         if (entityType === EDBEntity.Attribute) return AttributeMeta;
         if (entityType === EDBEntity.Order) return OrderMeta;
@@ -37,6 +38,7 @@ class EntityMetaRepository {
         if (entityType === EDBEntity.User) return UserMeta;
         if (entityType === EDBEntity.CustomEntity) return CustomEntityMeta;
         if (entityType === EDBEntity.Coupon) return CouponMeta;
+        if (entityType === EDBEntity.ProductVariant) return ProductVariantMeta;
     }
 
     getEntityClass(entityType: EDBEntity): (new (...args: any[]) => BasePageEntity) & typeof BaseEntity | undefined {
@@ -50,6 +52,7 @@ class EntityMetaRepository {
         if (entityType === EDBEntity.User) return User;
         if (entityType === EDBEntity.CustomEntity) return CustomEntity;
         if (entityType === EDBEntity.Coupon) return Coupon;
+        if (entityType === EDBEntity.ProductVariant) return ProductVariant;
     }
 
     getEntityType(entityClass: any): EDBEntity | undefined {
@@ -63,6 +66,7 @@ class EntityMetaRepository {
         if (entityClass instanceof User || entityClass === User) return EDBEntity.User;
         if (entityClass instanceof CustomEntity || entityClass === CustomEntity) return EDBEntity.CustomEntity;
         if (entityClass instanceof Coupon || entityClass === Coupon) return EDBEntity.Coupon;
+        if (entityClass instanceof ProductVariant || entityClass === ProductVariant) return EDBEntity.ProductVariant;
     }
 
     async getEntityMetaByKey(type: EDBEntity, id: number, key: string): Promise<TEntityMetaModel | undefined | null> {

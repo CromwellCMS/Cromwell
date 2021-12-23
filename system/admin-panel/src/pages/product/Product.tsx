@@ -16,9 +16,9 @@ import { store } from '../../redux/store';
 import commonStyles from '../../styles/common.module.scss';
 import AttributesTab from './AttributesTab';
 import CategoriesTab from './CategoriesTab';
-import VariantsTab from './VariantsTab';
 import MainInfoCard from './MainInfoCard';
 import styles from './Product.module.scss';
+import VariantsTab from './VariantsTab';
 
 const ProductPage = () => {
     const { id: productId } = useParams<{ id: string }>();
@@ -190,7 +190,7 @@ const ProductPage = () => {
                     keywords: product.meta.keywords
                 },
                 variants: product.variants?.map(variant => ({
-                    id: variant.id,
+                    id: typeof variant.id === 'number' ? variant.id : undefined,
                     name: variant.name,
                     price: typeof variant.price === 'string' ? parseFloat(variant.price) : variant.price,
                     oldPrice: typeof variant.oldPrice === 'string' ? parseFloat(variant.oldPrice) : variant.oldPrice,

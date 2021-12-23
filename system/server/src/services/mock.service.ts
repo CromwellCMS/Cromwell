@@ -226,7 +226,6 @@ export class MockService {
                     }
                 ],
                 variants: sizes.map(size => ({
-                    id: getRandStr(8),
                     price: price + Math.round(price * 0.2 * Math.random()),
                     attributes: {
                         'Size': size.value,

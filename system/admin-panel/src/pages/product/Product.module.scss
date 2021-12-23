@@ -138,10 +138,6 @@
     }
 }
 
-.addAttributeBtn {
-    margin: 20px auto 30px;
-}
-
 .notFoundPage {
     display: flex;
     justify-content: center;
@@ -186,6 +182,8 @@ button.galleryAddImageBtn {
 
 .newAttributesList {
     background-color: #fff;
+    max-height: 90vh;
+    overflow: auto;
 }
 
 .newAttributeOption {
