@@ -1,5 +1,5 @@
 import { TNextDocumentContext } from '@cromwell/core';
-import { getModuleImporter } from '@cromwell/core-frontend/dist/helpers/importer';
+import { getModuleImporter } from '@cromwell/core-frontend';
 import { DocumentContext } from 'next/document';
 import React from 'react';
 
