@@ -22,7 +22,7 @@ export default function VariantsTab({ product, setProdData, forceUpdate }: {
 
   if (product.variants?.length) {
     for (const variant of product.variants) {
-      if (!variant.id) variant.id = getRandStr(8);
+      if (!variant.id) variant.id = getRandStr(8) as any;
     }
   }
 
@@ -34,7 +34,7 @@ export default function VariantsTab({ product, setProdData, forceUpdate }: {
     setProdData({
       ...product,
       variants: [...(product?.variants ?? []), {
-        id: getRandStr(8),
+        id: getRandStr(8) as any,
       }],
     });
     forceUpdate();

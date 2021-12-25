@@ -1,5 +1,5 @@
 import { TDefaultPageName, TStaticPageContext, TStaticPagePluginContext } from '@cromwell/core';
-import { getModuleImporter } from '@cromwell/core-frontend/dist/helpers/importer';
+import { getModuleImporter } from '@cromwell/core-frontend';
 
 import { fsRequire, getPluginCjsPath } from './initRenderer';
 

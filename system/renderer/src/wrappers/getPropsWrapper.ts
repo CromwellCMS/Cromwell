@@ -2,16 +2,16 @@ import {
     resolvePageRoute,
     setStoreItem,
     TCmsConfig,
-    TPageCmsProps,
     TCromwellPageCoreProps,
     TDefaultPageName,
     TGetStaticProps,
+    TPageCmsProps,
     TPageConfig,
     TPageInfo,
     TStaticPageContext,
     TThemeConfig,
 } from '@cromwell/core';
-import { getRestApiClient } from '@cromwell/core-frontend/dist/api/CRestApiClient';
+import { getRestApiClient } from '@cromwell/core-frontend';
 import { GetStaticPropsResult } from 'next';
 
 import { getThemeStaticProps } from '../helpers/getThemeStaticProps';

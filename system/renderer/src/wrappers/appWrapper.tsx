@@ -8,14 +8,18 @@ import {
     TNextDocumentContext,
     TPageStats,
 } from '@cromwell/core';
-import { getRestApiClient } from '@cromwell/core-frontend/dist/api/CRestApiClient';
-import { CContainer } from '@cromwell/core-frontend/dist/components/CContainer/CContainer';
-import { BlockStoreProvider, pageRootContainerId } from '@cromwell/core-frontend/dist/constants';
-import { getModuleImporter } from '@cromwell/core-frontend/dist/helpers/importer';
-import { cleanParseContext, getParserTransform } from '@cromwell/core-frontend/dist/helpers/parserTransform';
+import {
+    BlockStoreProvider,
+    CContainer,
+    cleanParseContext,
+    getModuleImporter,
+    getParserTransform,
+    getRestApiClient,
+    pageRootContainerId,
+} from '@cromwell/core-frontend';
 import { AppProps } from 'next/app';
 import { NextRouter } from 'next/router';
-import React from 'react';
+import React, { useRef } from 'react';
 import { ReactNode, useEffect } from 'react';
 import ReactHtmlParser from 'react-html-parser';
 
@@ -40,6 +44,7 @@ export const withCromwellApp = (App: ((props: TAppProps) => JSX.Element | null))
     initRenderer();
 
     return (props: TAppProps) => {
+        const pageInstances = useRef({});
         const Page = props.Component;
         const pageProps = props.pageProps;
 
@@ -149,7 +154,7 @@ export const withCromwellApp = (App: ((props: TAppProps) => JSX.Element | null))
         }, [props.router?.asPath]);
 
         const content = (
-            <BlockStoreProvider value={{ instances: {} }}>
+            <BlockStoreProvider value={{ instances: pageInstances.current }}>
                 <CrwDocumentContext.Consumer>
                     {documentContext => (
                         <RootComp>

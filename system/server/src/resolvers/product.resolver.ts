@@ -24,6 +24,7 @@ import {
     ProductFilterInput,
     ProductRating,
     ProductRepository,
+    ProductVariant,
     UpdateProduct,
 } from '@cromwell/core-backend';
 import { GraphQLJSONObject } from 'graphql-type-json';
@@ -38,6 +39,7 @@ const ratingKey: keyof TProduct = 'rating';
 const reviewsKey: keyof TProduct = 'reviews';
 const viewsKey: keyof TProduct = 'views';
 const attributesKey: keyof TProduct = 'attributes';
+const variantsKey: keyof TProduct = 'variants';
 
 const getOneBySlugPath = GraphQLPaths.Product.getOneBySlug;
 const getOneByIdPath = GraphQLPaths.Product.getOneById;
@@ -164,5 +166,10 @@ export class ProductResolver {
     @FieldResolver(() => [AttributeInstance], { nullable: true })
     async [attributesKey](@Root() product: Product): Promise<AttributeInstance[] | undefined> {
         return this.repository.getProductAttributes(product.id);
+    }
+
+    @FieldResolver(() => [ProductVariant], { nullable: true })
+    async [variantsKey](@Root() product: Product): Promise<ProductVariant[] | undefined | null> {
+        return this.repository.getProductVariantsOfProduct(product.id);
     }
 }

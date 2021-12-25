@@ -24,6 +24,7 @@ import { AttributeToProduct } from '../models/entities/attribute-product.entity'
 import { AttributeValue } from '../models/entities/attribute-value.entity';
 import { Attribute } from '../models/entities/attribute.entity';
 import { ProductReview } from '../models/entities/product-review.entity';
+import { ProductVariant } from '../models/entities/product-variant.entity';
 import { Product } from '../models/entities/product.entity';
 import { ProductFilterInput } from '../models/filters/product.filter';
 import { PagedParamsInput } from '../models/inputs/paged-params.input';
@@ -32,6 +33,7 @@ import { AttributeRepository } from './attribute.repository';
 import { BaseRepository } from './base.repository';
 import { ProductCategoryRepository } from './product-category.repository';
 import { ProductReviewRepository } from './product-review.repository';
+import { ProductVariantRepository } from './product-variant.repository';
 
 const logger = getLogger();
 const averageKey: keyof Product = 'averageRating';
@@ -88,7 +90,8 @@ export class ProductRepository extends BaseRepository<Product> {
         if (options?.withRating) {
             this.applyGetProductRating(qb);
         }
-        const product = await qb.where(`${this.metadata.tablePath}.id = :id`, { id }).getOne();
+        qb.where(`${this.metadata.tablePath}.id = :id`, { id });
+        const product = await qb.getOne();
 
         await this.applyGetProductOptions(product, options);
         return product;
@@ -97,6 +100,7 @@ export class ProductRepository extends BaseRepository<Product> {
     async getProductBySlug(slug: string, options?: TGetProductOptions): Promise<Product | undefined> {
         logger.log('ProductRepository::getProductBySlug slug: ' + slug);
         const qb = this.createQueryBuilder(this.metadata.tablePath).select();
+
         if (options?.withRating) {
             this.applyGetProductRating(qb);
         }
@@ -131,7 +135,13 @@ export class ProductRepository extends BaseRepository<Product> {
         product.stockAmount = input.stockAmount;
         product.stockStatus = input.stockStatus;
         product.manageStock = input.manageStock;
-        product.variants = input.variants;
+
+        if (action === 'create') await product.save();
+
+        if (input.variants) {
+            await getCustomRepository(ProductVariantRepository)
+                .handleVariantsInputForProduct(product, input.variants);
+        } else product.variants = input.variants;
 
         // Move mainImage into first item in the array if it is not
         if (product.images && product.images.length > 0 && product.mainImage
@@ -148,7 +158,6 @@ export class ProductRepository extends BaseRepository<Product> {
             product.mainImage = product.images[0];
         }
 
-        if (action === 'create') await product.save();
 
         if (input.attributes) {
             // Flatten attributes and values
@@ -439,5 +448,11 @@ export class ProductRepository extends BaseRepository<Product> {
         const records = await getCustomRepository(AttributeRepository)
             .getAttributeInstancesOfProduct(productId);
         return this.attributeRecordsToProductAttributeInstances(records);
+    }
+
+    async getProductVariantsOfProduct(productId: number): Promise<ProductVariant[] | undefined | null> {
+        return getCustomRepository(ProductVariantRepository).find({
+            where: { productId },
+        });
     }
 }

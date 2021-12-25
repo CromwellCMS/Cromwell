@@ -9,12 +9,12 @@ import {
 import { Field, Int, ObjectType } from 'type-graphql';
 import { Column, Entity, Index, JoinTable, ManyToMany, OneToMany } from 'typeorm';
 
-import { ProductVariant } from '../objects/product-variant.object';
 import { AttributeToProduct } from './attribute-product.entity';
 import { BasePageEntity } from './base-page.entity';
 import { ProductMeta } from './meta/product-meta.entity';
 import { ProductCategory } from './product-category.entity';
 import { ProductReview } from './product-review.entity';
+import { ProductVariant } from './product-variant.entity';
 
 @Entity()
 @ObjectType()
@@ -94,19 +94,10 @@ export class Product extends BasePageEntity implements TProduct {
      */
     attributes?: TAttributeInstance[] | null;
 
-
-    @Column({ type: "text", nullable: true })
-    variantsJson?: string | null;
-
-    @Field(type => [ProductVariant], { nullable: true })
-    get variants(): ProductVariant[] | undefined {
-        if (this.variantsJson) return JSON.parse(this.variantsJson);
-    }
-
-    set variants(variants: ProductVariant[] | undefined | null) {
-        if (variants) this.variantsJson = JSON.stringify(variants);
-        else this.variantsJson = variants;
-    }
+    @OneToMany(() => ProductVariant, meta => meta.product, {
+        cascade: true,
+    })
+    variants?: ProductVariant[] | null;
 
     views?: number | null;
 

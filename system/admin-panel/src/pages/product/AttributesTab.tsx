@@ -1,6 +1,6 @@
 import { TAttribute, TAttributeInstanceValue, TProduct } from '@cromwell/core';
 import { DeleteForever as DeleteForeverIcon } from '@mui/icons-material';
-import { Button, Fade, IconButton, MenuItem, Paper, Popper, Tooltip } from '@mui/material';
+import { Box, Button, Fade, IconButton, MenuItem, Paper, Popper, Tooltip } from '@mui/material';
 import React from 'react';
 
 import TransferList from '../../components/transferList/TransferList';
@@ -28,6 +28,27 @@ export default function AttributesTab(props: {
         }
     });
 
+    const addAttribute = (key: string) => {
+        const prod: TProduct = JSON.parse(JSON.stringify(product));
+        if (!prod.attributes) prod.attributes = [];
+        prod.attributes.push({
+            key,
+            values: []
+        })
+        setPopperOpen(false);
+        setProdData(prod);
+        forceUpdate();
+    }
+
+    const deleteAttribute = (index: number) => {
+        const prod: TProduct = JSON.parse(JSON.stringify(product));
+        if (prod.attributes) {
+            prod.attributes = prod.attributes.filter((a, i) => i !== index);
+            setProdData(prod);
+            forceUpdate();
+        }
+    }
+
     return (
         <div>
             {product.attributes && attributes && (
@@ -46,14 +67,7 @@ export default function AttributesTab(props: {
                                     <Tooltip title="Delete attribute">
                                         <IconButton
                                             aria-label="delete attribute"
-                                            onClick={() => {
-                                                const prod: TProduct = JSON.parse(JSON.stringify(product));
-                                                if (prod.attributes) {
-                                                    prod.attributes = prod.attributes.filter((a, i) => i !== prodAttrIdx);
-                                                    setProdData(prod);
-                                                    forceUpdate();
-                                                }
-                                            }}
+                                            onClick={() => deleteAttribute(prodAttrIdx)}
                                         ><DeleteForeverIcon />
                                         </IconButton>
                                     </Tooltip>
@@ -97,9 +111,9 @@ export default function AttributesTab(props: {
                     }
                 })
             )}
-            <div style={{ width: '100%', display: 'flex' }}>
+            <Box sx={{ my: 4 }} style={{ width: '100%', display: 'flex' }}>
                 <Button
-                    className={styles.addAttributeBtn}
+                    sx={{ mx: 'auto', display: 'block' }}
                     variant="contained"
                     color="primary"
                     onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
@@ -108,7 +122,7 @@ export default function AttributesTab(props: {
                     }}
                     disabled={!leftAttributesToAdd.length}
                 >Add attribute</Button>
-            </div>
+            </Box>
             <Popper open={popperOpen} anchorEl={popperAnchorEl} placement={'bottom-start'} transition>
                 {({ TransitionProps }) => (
                     <Fade {...TransitionProps} timeout={350}>
@@ -117,16 +131,7 @@ export default function AttributesTab(props: {
                                 return (
                                     <MenuItem
                                         key={attr.key}
-                                        onClick={() => {
-                                            const prod: TProduct = JSON.parse(JSON.stringify(product));
-                                            if (!prod.attributes) prod.attributes = [];
-                                            prod.attributes.push({
-                                                key: attr.key,
-                                                values: []
-                                            })
-                                            setPopperOpen(false);
-                                            setProdData(prod);
-                                        }}
+                                        onClick={() => addAttribute(attr.key)}
                                         className={styles.newAttributeOption}
                                     >{attr.key}</MenuItem>
                                 )
