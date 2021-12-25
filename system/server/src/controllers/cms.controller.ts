@@ -263,7 +263,6 @@ export class CmsController {
             return;
         }
 
-
         if ((await fs.lstat(fullPath)).isFile()) {
             response.header('Content-Disposition', `attachment; filename=${fileName}`);
             try {

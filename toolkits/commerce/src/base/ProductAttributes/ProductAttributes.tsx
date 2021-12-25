@@ -1,16 +1,12 @@
 import { TAttribute, TAttributeInstance, TAttributeInstanceValue, TProduct } from '@cromwell/core';
 import { getCStore } from '@cromwell/core-frontend';
+import clsx from 'clsx';
 import React, { useState } from 'react';
 
+import { useAdapter } from '../../adapter';
 import styles from './ProductAttributes.module.scss';
 
-
-/**
- * Displays product's attributes
- * When user picks an attribute applies product variant and returns modified
- * product from `onChange` function prop
- */
-export const ProductAttributes = (props: {
+export type ProductAttributesProps = {
   /** Unmodified instance of Product */
   product: TProduct;
 
@@ -30,20 +26,39 @@ export const ProductAttributes = (props: {
     attributeValue?: React.ComponentType<{
       onClick: () => void;
       value: string;
-      isChecked: boolean;
+      checked: boolean;
+      valid?: boolean;
       icon?: string;
       attribute?: TAttribute;
       attributeInstance?: TAttributeInstance;
     }>;
-    attributeTitle?: React.ComponentType<{ attribute?: TAttribute; }>;
+    attributeTitle?: React.ComponentType<{
+      attribute?: TAttribute;
+      valid?: boolean;
+    }>;
   }
-}): JSX.Element => {
-  const { attributes, product, onChange } = props;
+
+  /**
+   * Show error if some required attributes weren't selected?
+   */
+  canValidate?: boolean;
+}
+
+/**
+ * Displays product's attributes
+ * When user picks an attribute applies product variant and returns modified
+ * product from `onChange` function prop
+ */
+export const ProductAttributes = (props: ProductAttributesProps): JSX.Element => {
+  const { attributes, product, onChange, canValidate } = props;
   const productAttributes = product.attributes;
   const [checkedAttrs, setCheckedAttrs] = useState<Record<string, string[]>>({});
   const cstore = getCStore();
-  const ValueComp = props.elements?.attributeValue;
-  const TitleComp = props.elements?.attributeTitle;
+  const { AttributeValue, AttributeTitle } = useAdapter();
+  const ValueComp = props.elements?.attributeValue ?? AttributeValue;
+  const TitleComp = props.elements?.attributeTitle ?? AttributeTitle ?? (
+    (props) => <p>{props.attribute?.key}</p>
+  );
 
   const handleSetAttribute = (key: string, checks: string[]) => {
     setCheckedAttrs(prev => {
@@ -59,23 +74,35 @@ export const ProductAttributes = (props: {
   };
 
   return (
-    <div className={styles.ProductAttributes}>
+    <div className={clsx(styles.ProductAttributes,
+      !!canValidate && styles.productAttributesValidate)}>
       {productAttributes?.map(attr => {
         const checked: string[] | undefined = checkedAttrs[attr.key];
         const origAttribute = attributes?.find(a => a.key === attr.key);
+        let isValid = true;
+
+        if (origAttribute?.required && origAttribute.key) {
+          if (!checkedAttrs || !checkedAttrs[origAttribute.key]
+            || !checkedAttrs[origAttribute.key].length)
+            isValid = false;
+        }
+
         if (origAttribute) {
           return (
             <div key={attr.key} className={styles.attribute}>
               <div className={styles.headerWrapper}>
-                {TitleComp ? <TitleComp attribute={origAttribute}>{attr.key}</TitleComp> : <p>{attr.key}</p>}
+                <TitleComp
+                  attribute={origAttribute}
+                  valid={isValid}
+                />
               </div>
               <div className={styles.valuesWrapper}>
                 {attr.values.map((attrValue: TAttributeInstanceValue) => {
                   const value = attrValue.value
                   const origValue = origAttribute?.values?.find(v => v.value === value);
                   const isChecked = Boolean(checked ? checked.indexOf(value) !== -1 : false);
-                  if (origValue) {
 
+                  if (origValue) {
                     const handleClick = () => {
                       const newChecked = checked ? [...checked] : [];
                       if (origAttribute?.type === 'radio') {
@@ -101,24 +128,27 @@ export const ProductAttributes = (props: {
                         key={value}
                         onClick={handleClick}
                         value={value}
-                        isChecked={isChecked}
+                        icon={origValue.icon}
+                        checked={isChecked}
+                        valid={isValid}
                         attribute={origAttribute}
                         attributeInstance={attr}
                       />
                     }
 
                     return (
-                      <div
-                        key={value}
-                        className={`${styles.attrValue} ${isChecked ? styles.attrValueChecked : ''}`}
+                      <div key={value}
+                        className={clsx(styles.attributeValue,
+                          isChecked && styles.attributeValue_checked,
+                          !isValid && styles.invalidAttributeValue)}
                         onClick={handleClick}
                       >
                         {origValue && origValue.icon && (
                           <div
                             style={{ backgroundImage: `url(${origValue.icon}` }}
-                            className={styles.attrValueIcon}></div>
+                            className={styles.attributeValueIcon}></div>
                         )}
-                        <p style={{ textTransform: 'none' }}>{value}</p>
+                        <p className={styles.attributeValueText} style={{ textTransform: 'none' }}>{value}</p>
                       </div>
                     );
                   }

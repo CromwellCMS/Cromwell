@@ -36,18 +36,17 @@ export const PostCard = (props?: {
             <div className={styles.imageBlock}
                 style={{ height: props?.imageHeight }}
             >
-                <Link href={postLink}>
-                    <a aria-label={`Post ${data?.title}`}
-                        style={{ display: 'flex' }}>
-                        <Image
-                            alt={data?.title ?? undefined}
-                            unoptimized
-                            loader={imageLoader}
-                            objectFit="cover"
-                            layout="fill"
-                            src={mainImage}
-                        />
-                    </a>
+                <Link href={postLink}
+                    aria-label={`Post ${data?.title}`}
+                    style={{ display: 'flex' }}
+                ><Image
+                        alt={data?.title ?? undefined}
+                        unoptimized
+                        loader={imageLoader}
+                        objectFit="cover"
+                        layout="fill"
+                        src={mainImage}
+                    />
                 </Link>
             </div>
             {props?.coverImage && (
@@ -65,16 +64,17 @@ export const PostCard = (props?: {
                             )
                         }
                         return (
-                            <Link key={tag?.id} href={`/tag/${tag.slug}`}>
-                                <a className={styles.tag}>{tag?.name}</a>
-                            </Link>
+                            <Link key={tag?.id}
+                                href={`/tag/${tag.slug}`}
+                                className={styles.tag}
+                            >{tag?.name}</Link>
                         )
                     })}
                 </div>
                 <div className={styles.titleBlock}>
-                    <Link href={postLink}>
-                        <a className={clsx(styles.title, styles._onHoverLink)}>{data?.title}</a>
-                    </Link>
+                    <Link href={postLink}
+                        className={clsx(styles.title, styles._onHoverLink)}
+                    >{data?.title}</Link>
                 </div>
                 {data?.excerpt && (
                     <p className={styles.excerpt}>{data?.excerpt}</p>

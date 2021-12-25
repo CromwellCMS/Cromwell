@@ -1,7 +1,8 @@
 import commonjs from '@rollup/plugin-commonjs';
-import { isAbsolute, resolve } from 'path';
+import { isAbsolute, resolve, basename } from 'path';
 import postcss from 'rollup-plugin-postcss';
 import typescript from 'rollup-plugin-ts-compiler';
+import stringHash from "string-hash";
 
 const external = id => {
     return !id.startsWith('\0') && !id.startsWith('.') && !id.startsWith('/') && !isAbsolute(id);
@@ -32,7 +33,12 @@ const getPlugins = () => {
         commonjs(),
         postcss({
             extract: true,
-            modules: true,
+            modules: {
+                generateScopedName: function (name, filename) {
+                    const hash = stringHash(basename(filename)).toString(36).substr(0, 5);
+                    return `ccom_${name}_${hash}`;
+                },
+            },
             writeDefinitions: false,
             inject: false,
             use: ['sass'],

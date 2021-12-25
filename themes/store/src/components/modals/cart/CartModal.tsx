@@ -30,17 +30,15 @@ export const CartModal = observer(() => {
                 <div className={styles.cartList}>
                     <CartProductList onProductOpen={handleCartClose} />
                 </div>
-                <Link href="/checkout">
-                    <a onClick={handleCartClose} style={{ display: 'flex' }}>
-                        <Button
-                            aria-label={"Open checkout"}
-                            className={styles.checkoutBtn}
-                            variant="contained"
-                            color="primary"
-                            size="large"
-                            startIcon={<ShoppingCartIcon />}
-                        >Checkout</Button>
-                    </a>
+                <Link href="/checkout" onClick={handleCartClose} style={{ display: 'flex' }}>
+                    <Button
+                        aria-label={"Open checkout"}
+                        className={styles.checkoutBtn}
+                        variant="contained"
+                        color="primary"
+                        size="large"
+                        startIcon={<ShoppingCartIcon />}
+                    >Checkout</Button>
                 </Link>
             </div>
         </Modal>

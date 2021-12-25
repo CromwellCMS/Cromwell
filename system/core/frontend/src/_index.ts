@@ -10,6 +10,7 @@ export { CEditor } from './components/CEditor/CEditor';
 export { TCList, TCListProps, TItemComponentProps, TPaginationProps } from './components/CList/types';
 export { Link } from './components/Link/Link';
 export { LoadBox } from './components/loadBox/Loadbox';
+export { BaseEntityHead } from './components/BaseEntityHead/BaseEntityHead';
 export * from './components/AdminPanelWidget/AdminPanelWidgetPlace';
 export {
     getBlockHtmlId,

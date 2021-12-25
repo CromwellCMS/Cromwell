@@ -5,10 +5,13 @@ import React, { useEffect, useState } from 'react';
 import { useAdapter } from '../../adapter';
 import styles from './ReviewForm.module.scss';
 
-export const ReviewForm = ({ productId, notifier }: {
+export type ReviewFormProps = {
   productId: number;
   notifier?: TCromwellNotify;
-}) => {
+  successText?: string;
+}
+
+export const ReviewForm = ({ productId, notifier, successText }: ReviewFormProps) => {
   const userInfo = getStoreItem('userInfo');
   const [name, setName] = useState(userInfo?.fullName ?? '');
   const [rating, setRating] = useState<number | null>(0);
@@ -64,15 +67,15 @@ export const ReviewForm = ({ productId, notifier }: {
 
   if (placedReview) {
     return (
-      <div className={styles.reviewBox}>
-        <Alert severity="success">Thank you! Your review will appear on this page after approval by the website moderator</Alert>
+      <div className={styles.ReviewForm}>
+        <Alert severity="success">{successText ?? 'Thank you! Your review will appear on this page after approval by the website moderator'}</Alert>
       </div>
     )
   }
 
   return (
-    <div className={styles.reviewBox}>
-      <h3 className={styles.reviewBoxTitle}>Write a review</h3>
+    <div className={styles.ReviewForm}>
+      <h3 className={styles.reviewFormTitle}>Write a review</h3>
       <Tooltip open={canValidate && (!name || name == '')} title="This field is required" arrow>
         <TextField label="Name"
           variant="outlined"
@@ -111,10 +114,9 @@ export const ReviewForm = ({ productId, notifier }: {
         value={description}
         onChange={e => setDescription(e.target.value)}
       />
-      <div className={styles.btnWrapper}>
+      <div className={styles.submitBtnWrapper}>
         <Button variant="contained"
           color="primary"
-          className={styles.dtn}
           size="large"
           onClick={handleSubmit}
           disabled={isLoading}

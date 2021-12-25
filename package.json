@@ -11,13 +11,12 @@
         "inst": "yarn",
         "dev": "node ./system/manager/startup.js development",
         "dev:win": "node ./system/manager/src/utils/windowsDev.js",
-        "link:cli": "cd ./system/cli && npm link --only=production && yarn",
         "bundle:modules": "npx crw bm",
         "lerna:patch": "npx lerna version patch --exact",
         "lerna:publish": "npx lerna publish from-package",
         "clean": "node system/cli/src/utils/cleanup.js",
         "clean-modules": "node system/cli/src/utils/cleanup-modules.js",
-        "win-remove-node-modules": "rmdir \"./node_modules\" /q /s",
+        "win-remove-node-modules": "rmdir /q /s \"./node_modules\"",
         "test": "npm run test:server && npm run test:backend && npm run test:frontend && npm run test:admin && npm run test:cli && npm run test:utils",
         "test:server": "cd system/server && npm run test",
         "test:admin": "cd system/admin-panel && npm run test",
@@ -51,6 +50,7 @@
         "plugins/paypal",
         "themes/blog",
         "themes/store",
+        "toolkits/commerce",
         "website"
     ],
     "engines": {

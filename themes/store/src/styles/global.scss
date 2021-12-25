@@ -26,6 +26,10 @@ body {
   flex-direction: column;
 }
 
+body a {
+  color: #333;
+}
+
 #text-editor {
   * {
       font-size: 16px;

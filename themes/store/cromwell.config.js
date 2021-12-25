@@ -3,8 +3,9 @@ module.exports = {
         primaryColor: '#9900CC',
     },
     globalCss: [
-        "react-toastify/dist/ReactToastify.css",
-        './src/styles/global.scss'
+        'react-toastify/dist/ReactToastify.css',
+        './src/styles/global.scss',
+        '@cromwell/commerce/dist/index.css'
     ],
     headHtml: "<link href=\"https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700;900&display=swap\" rel=\"stylesheet\" /><meta name=\"viewport\" content=\"width=device-width\">",
     defaultPages: {
@@ -86,8 +87,7 @@ module.exports = {
             modifications: [
                 {
                     "type": "plugin",
-                    "id": "Product_ProductShowcase_Plugin",
-                    "parentId": "Product_ProductShowcase",
+                    "id": "Product_ProductShowcase",
                     "style": { height: '440px' },
                     "index": 2,
                     "isVirtual": true,

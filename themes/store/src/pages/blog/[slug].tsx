@@ -57,9 +57,10 @@ const BlogPostPage: TPageWithLayout<BlogPostProps> = (props) => {
                     <CContainer className={postStyles.tagsBlock} id="blog_05">
                         {post?.tags?.map(tag => {
                             return (
-                                <Link href={`/tag/${tag.slug}`} key={tag.id}>
-                                    <a className={postStyles.tag}>{tag?.name}</a>
-                                </Link>
+                                <Link href={`/tag/${tag.slug}`}
+                                    key={tag.id}
+                                    className={postStyles.tag}
+                                >{tag?.name}</Link>
                             )
                         })}
                     </CContainer>

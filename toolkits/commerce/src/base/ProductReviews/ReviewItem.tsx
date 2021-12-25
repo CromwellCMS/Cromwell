@@ -5,9 +5,11 @@ import React from 'react';
 import { useAdapter } from '../../adapter';
 import styles from './ReviewItem.module.scss';
 
-export const ReviewItem = (props: {
+export type ReviewItemProps = {
   data?: TProductReview;
-}) => {
+}
+
+export const ReviewItem = (props: ReviewItemProps) => {
   const data = props.data;
   const { Rating } = useAdapter();
   return (

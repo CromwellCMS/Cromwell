@@ -1,18 +1,11 @@
-import { gql } from '@apollo/client';
-import { TAttribute, TCromwellBlock, TGetStaticProps, TProduct, TProductCategory, TProductReview } from '@cromwell/core';
-import { CContainer, CList, CText, getGraphQLClient, getGraphQLErrorInfo, TCList } from '@cromwell/core-frontend';
+import { MuiBreadcrumbs, MuiProductReviews } from '@cromwell/commerce';
+import { TAttribute, TGetStaticProps, TProduct, TProductCategory } from '@cromwell/core';
+import { BaseEntityHead, CContainer, CPlugin, CText, getGraphQLClient, getGraphQLErrorInfo } from '@cromwell/core-frontend';
 import clsx from 'clsx';
-import { useRouter } from 'next/router';
-import React, { ReactElement, useEffect, useRef } from 'react';
+import React, { ReactElement } from 'react';
 
 import Layout from '../../components/layout/Layout';
-import { Pagination } from '../../components/pagination/Pagination';
-import Breadcrumbs from '../../components/productDetails/breadcrumbs/Breadcrumbs';
 import ProductDetails from '../../components/productDetails/ProductDetails';
-import ReviewForm from '../../components/productDetails/reviewForm/ReviewForm';
-import { ReviewItem } from '../../components/productDetails/reviewItem/ReviewItem';
-import { getBreadcrumbs } from '../../helpers/getBreadcrumbs';
-import { getHead } from '../../helpers/getHead';
 import { removeUndefined } from '../../helpers/removeUndefined';
 import commonStyles from '../../styles/common.module.scss';
 import styles from '../../styles/pages/Product.module.scss';
@@ -27,17 +20,7 @@ export interface ProductProps {
 }
 
 const Product: TPageWithLayout<ProductProps> = (props) => {
-    const client = getGraphQLClient();
     const { product } = props ?? {};
-    const reviewsInst = useRef<TCromwellBlock<TCList> | undefined>();
-    const router = useRouter?.();
-
-    useEffect(() => {
-        const list: TCList | undefined = reviewsInst.current?.getContentInstance();
-        if (list) {
-            list.updateData();
-        }
-    }, [router?.asPath]);
 
     if (product && !product.pageTitle) {
         // Default meta page title
@@ -45,20 +28,19 @@ const Product: TPageWithLayout<ProductProps> = (props) => {
     }
 
     return (
-
         <CContainer className={clsx(commonStyles.content, styles.ProductPage)} id="product-1">
-            {getHead({
-                documentContext: props.cmsProps?.documentContext,
-                image: product?.mainImage,
-                data: product,
-            })}
+            <BaseEntityHead
+                pageProps={props}
+                entity={product}
+                image={product?.mainImage}
+            />
             {!!props.breadcrumbs?.length && (
                 <div className={styles.breadcrumbs}>
-                    <Breadcrumbs breadcrumbs={props.breadcrumbs} />
+                    <MuiBreadcrumbs data={props.breadcrumbs} />
                 </div>
             )}
             <ProductDetails {...props} />
-            <CContainer id="Product_ProductShowcase" >
+            <CContainer id="Product_ProductShowcase_container" >
                 <CText
                     id="product_showcase-title"
                     style={{
@@ -67,36 +49,16 @@ const Product: TPageWithLayout<ProductProps> = (props) => {
                         fontSize: '26px'
                     }}
                 >Featured items</CText>
+                <CPlugin
+                    id="Product_ProductShowcase"
+                    plugin={{
+                        pluginName: "@cromwell/plugin-product-showcase",
+                    }}
+                />
             </CContainer>
             {product?.id && (
                 <CContainer id="product_reviewsBlock" className={styles.reviewsBlock}>
-                    <h3 className={styles.reviewsBlockTitle}>Customer reviews</h3>
-                    <div className={styles.tab} >
-                        <CList<TProductReview>
-                            id={"ProductPage_ReviewList"}
-                            ListItem={(props) => <ReviewItem data={props.data} key={props.data?.id} />}
-                            usePagination
-                            useShowMoreButton
-                            editorHidden
-                            disableCaching
-                            noDataLabel={'No reviews at the moment. Be the first to leave one!'}
-                            pageSize={10}
-                            blockRef={(block) => reviewsInst.current = block}
-                            loader={async (params) => {
-                                return client.getFilteredProductReviews({
-                                    pagedParams: params,
-                                    filterParams: {
-                                        productId: product.id,
-                                        approved: true,
-                                    }
-                                });
-                            }}
-                            elements={{
-                                pagination: Pagination
-                            }}
-                        />
-                        <ReviewForm productId={product.id} />
-                    </div>
+                    <MuiProductReviews productId={product?.id} />
                 </CContainer>
             )}
         </CContainer>
@@ -120,21 +82,7 @@ export const getStaticProps: TGetStaticProps<ProductProps> = async (context) => 
     let product: TProduct | undefined = undefined;
     if (slug && typeof slug === 'string') {
         try {
-            product = await client.getProductBySlug(slug, gql`
-                ${client.ProductFragment}
-                fragment ProductListFragment on Product {
-                    ...ProductFragment
-                    categories(pagedParams: {
-                      pageSize: 99
-                    }) {
-                      id
-                      name
-                      parent {
-                          id
-                      }
-                    }
-                }
-            `, 'ProductListFragment');
+            product = await client.getProductBySlug(slug);
         } catch (e) {
             console.error('Product::getStaticProps', getGraphQLErrorInfo(e))
         }
@@ -156,10 +104,7 @@ export const getStaticProps: TGetStaticProps<ProductProps> = async (context) => 
         console.error('Product::getStaticProps', getGraphQLErrorInfo(e))
     }
 
-    // Breadcrumbs
-    const breadcrumbs = await getBreadcrumbs(product);
-
-    if (product?.categories) delete product.categories;
+    const breadcrumbs = await MuiBreadcrumbs.getData(product?.id);
 
     return {
         props: removeUndefined({

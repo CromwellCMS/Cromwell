@@ -1,5 +1,7 @@
+import { MuiProductAttributes } from '@cromwell/commerce';
+import { ProductAttributes } from '@cromwell/commerce';
 import { TAttribute, TProduct, TStoreListItem } from '@cromwell/core';
-import { getCStore, ProductAttributes } from '@cromwell/core-frontend';
+import { getCStore } from '@cromwell/core-frontend';
 import { Button, IconButton, Input } from '@mui/material';
 import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
@@ -119,53 +121,28 @@ export const ProductActions = (props: {
 
     return (
         <div className={styles.ProductActions}>
-            <div className={clsx(styles.productAttributesBlock, canValidate && styles.validateAttributes)}>
+            <div className={clsx(styles.productAttributesBlock)}>
                 {product && props.attributes && (
-                    <ProductAttributes
-                        attributes={props.attributes}
-                        product={product}
-                        onChange={(attrs, modified) => {
-                            props.onAttrChange(attrs, modified);
-                            setPickedAttributes(attrs);
-                        }}
-                        elements={{
-                            attributeValue: (attrProps) => {
-                                let isValid = true;
-                                if (attrProps.attribute?.required && attrProps.attribute.key) {
-                                    if (!pickedAttributes || !pickedAttributes[attrProps.attribute.key]
-                                        || !pickedAttributes[attrProps.attribute.key].length)
-                                        isValid = false;
-                                }
-
-                                return (
-                                    <Button
-                                        color="inherit"
-                                        onClick={attrProps.onClick}
-                                        aria-label={`Attribute ${attrProps?.attribute?.key} - value: ${attrProps?.value}`}
-                                        variant={attrProps.isChecked ? 'contained' : 'outlined'}
-                                        className={clsx(styles.attrValue, !isValid && styles.invalidAttrValue,
-                                            attrProps.isChecked && styles.attrValueChecked)}
-                                    >
-                                        {attrProps.icon && (
-                                            <div
-                                                style={{ backgroundImage: `url(${attrProps.icon}` }}
-                                                className={styles.attrValueIcon}></div>
-                                        )}
-                                        <p className={styles.attrValueText} style={{ textTransform: 'none' }}>{attrProps.value}</p>
-                                    </Button>
-                                )
-                            },
-                            attributeTitle: (props) => {
-                                let isValid = true;
-                                if (props.attribute?.required && props.attribute.key) {
-                                    if (!pickedAttributes || !pickedAttributes[props.attribute.key]
-                                        || !pickedAttributes[props.attribute.key].length)
-                                        isValid = false;
-                                }
-                                return <p className={clsx(styles.attrTitle, !isValid && styles.invalidAttrTitle)}>{props.attribute?.key}</p>
-                            }
-                        }}
-                    />
+                    <>
+                        <ProductAttributes
+                            attributes={props.attributes}
+                            product={product}
+                            onChange={(attrs, modified) => {
+                                props.onAttrChange(attrs, modified);
+                                setPickedAttributes(attrs);
+                            }}
+                            canValidate={canValidate}
+                        />
+                        <MuiProductAttributes
+                            attributes={props.attributes}
+                            product={product}
+                            onChange={(attrs, modified) => {
+                                props.onAttrChange(attrs, modified);
+                                setPickedAttributes(attrs);
+                            }}
+                            canValidate={canValidate}
+                        />
+                    </>
                 )}
             </div>
             <div className={styles.cartAndAMountBlock}>

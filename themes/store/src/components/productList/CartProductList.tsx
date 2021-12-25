@@ -92,10 +92,10 @@ export const CartProductList = (props: {
                                 </Link>
                             </Grid>
                             <Grid item xs={4} className={clsx(styles.itemBlock, styles.caption)}>
-                                <Link href={productLink}>
-                                    <a onClick={() => props?.onProductOpen?.(product)}
-                                        className={clsx(commonStyles.onHoverLink, styles.productName)}>{product.name}</a>
-                                </Link>
+                                <Link href={productLink}
+                                    onClick={() => props?.onProductOpen?.(product)}
+                                    className={clsx(commonStyles.onHoverLink, styles.productName)}
+                                >{product.name}</Link>
                                 <div className={styles.priceBlock}>
                                     {(product?.oldPrice !== undefined && product?.oldPrice !== null) && (
                                         <p className={styles.oldPrice}>{cstore.getPriceWithCurrency(product.oldPrice)}</p>

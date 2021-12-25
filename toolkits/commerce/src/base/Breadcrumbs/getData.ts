@@ -1,13 +1,30 @@
 import { gql } from '@apollo/client';
-import { TProduct, TProductCategory } from '@cromwell/core';
+import { TProductCategory } from '@cromwell/core';
 import { getGraphQLClient, getGraphQLErrorInfo } from '@cromwell/core-frontend';
 
-export const getBreadcrumbs = async (product?: TProduct | null):
+export const getData = async (productId?: number | null):
     Promise<TProductCategory[] | undefined> => {
-    if (!product?.categories?.length) return;
-    const categories = product.categories;
+    if (!productId) return;
     const client = getGraphQLClient();
 
+    const product = await client.getProductById(productId, gql`
+        ${client.ProductFragment}
+        fragment ProductListFragment on Product {
+            ...ProductFragment
+            categories(pagedParams: {
+              pageSize: 30
+            }) {
+              id
+              name
+              parent {
+                  id
+              }
+            }
+        }
+    `, 'ProductListFragment');
+
+    if (!product?.categories?.length) return;
+    const categories = product.categories;
     let targetCategoryId: number | undefined | null = product?.mainCategoryId;
 
     if (!targetCategoryId) {
@@ -36,8 +53,6 @@ export const getBreadcrumbs = async (product?: TProduct | null):
         });
         targetCategoryId = mostNested?.id;
     }
-
-
 
     try {
         const parentCategories = await client.query({

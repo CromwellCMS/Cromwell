@@ -165,16 +165,17 @@ export const ProductCard = (props?: {
             props?.className, (props?.variant === 'list' && !isMobile) ? styles.listVariant : null)}
             ref={wrapperRef}>
             <div className={styles.imageBlock} onClick={openLink}>
-                <Link href={productLink}>
-                    <a aria-label={`Product ${data?.name}`}>
-                        <Image
-                            alt={data?.name ?? undefined}
-                            loader={imageLoader}
-                            unoptimized
-                            objectFit="contain"
-                            layout="fill"
-                            src={mainImage}
-                        /></a>
+                <Link href={productLink}
+                    aria-label={`Product ${data?.name}`}
+                >
+                    <Image
+                        alt={data?.name ?? undefined}
+                        loader={imageLoader}
+                        unoptimized
+                        objectFit="contain"
+                        layout="fill"
+                        src={mainImage}
+                    />
                 </Link>
             </div>
             <div className={styles.caption}>

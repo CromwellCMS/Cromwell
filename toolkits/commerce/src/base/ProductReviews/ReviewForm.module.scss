@@ -1,6 +1,6 @@
-@import "../../../styles/common.module.scss";
+@import "../common.module.scss";
 
-.reviewBox {
+.ReviewForm {
   @include paper;
   margin: 20px auto;
   padding: 15px;
@@ -11,12 +11,12 @@
   }
 }
 
-.reviewBoxTitle {
+.reviewFormTitle {
   font-size: 24px;
   margin-bottom: 25px;
 }
 
-.btnWrapper {
+.submitBtnWrapper {
   margin-top: 10px;
   display: flex;
   justify-content: center;

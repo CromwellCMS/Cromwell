@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import { TPaginationProps } from '@cromwell/core-frontend';
+import { ProductAttributesProps } from './base/ProductAttributes/ProductAttributes';
 
 export type AdapterContentType = {
     Pagination: React.ComponentType<TPaginationProps>;
@@ -61,6 +62,22 @@ export type AdapterContentType = {
         style?: React.CSSProperties;
         arrow?: boolean;
     }>;
+    Breadcrumbs: React.ComponentType<{
+        id?: string;
+        className?: string;
+        style?: React.CSSProperties;
+        maxItems?: number;
+    }>;
+    Chip: React.ComponentType<{
+        component: React.ElementType;
+        className?: string;
+        label?: string;
+        style?: React.CSSProperties;
+        icon?: React.ReactNode | null;
+        children?: React.ReactNode | null;
+    }>;
+    AttributeValue: Required<ProductAttributesProps>['elements']['attributeValue'];
+    AttributeTitle: Required<ProductAttributesProps>['elements']['attributeTitle'];
 }
 
 const DefaultAdapterContent: AdapterContentType = {
@@ -70,9 +87,13 @@ const DefaultAdapterContent: AdapterContentType = {
     Alert: (props) => React.createElement('div', { ...props }),
     TextField: (props) => React.createElement('input', { ...props }),
     Tooltip: (props) => React.createElement(React.Fragment, { ...props }),
+    Breadcrumbs: (props) => React.createElement('div', { style: { display: 'flex' }, ...props }),
+    Chip: (props) => React.createElement('div', { ...props }),
+    AttributeValue: null as any,
+    AttributeTitle: null as any,
 }
 
-export type AdapterType = () => AdapterContentType;
+export type AdapterType = () => Partial<AdapterContentType>;
 
 export const AdapterContext = React.createContext<AdapterType | null>(null);
 
@@ -82,9 +103,13 @@ export const useAdapter = (): AdapterContentType => {
 }
 
 export const withAdapter = <T>(Component: T, adapter: AdapterType): T => {
-    return ((props) => {
+    const hoc = ((props) => {
         return React.createElement(AdapterContext.Provider, {
             value: adapter,
         }, React.createElement(Component as any, props))
     }) as any;
+
+    //@ts-ignore
+    if (Component.getData) hoc.getData = Component.getData;
+    return hoc;
 }

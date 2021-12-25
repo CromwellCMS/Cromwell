@@ -8,36 +8,71 @@ import {
   TCListProps,
   TItemComponentProps,
 } from '@cromwell/core-frontend';
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
+import { useRouter } from 'next/router';
 
 import { useAdapter } from '../../adapter';
 import styles from './ProductReviews.module.scss';
-import { ReviewForm } from './ReviewForm';
-import { ReviewItem } from './ReviewItem';
+import { ReviewForm, ReviewFormProps } from './ReviewForm';
+import { ReviewItem, ReviewItemProps } from './ReviewItem';
 
-type TListItemProps = TItemComponentProps<TProductReview, any>;
-
-const ListItem = (props: TListItemProps) => {
-  return <ReviewItem data={props.data} key={props.data?.id} />
+export type ProductReviewsProps = {
+  /**
+   * Target product's ID
+   */
+  productId: number;
+  /**
+   * Override props to CList
+   */
+  listProps?: TCListProps<TProductReview, TListItemProps>;
+  /**
+   * Notifier tool
+   */
+  notifier?: TCromwellNotify;
+  /**
+   * Override title. 'Customer reviews' by default
+   */
+  titleText?: string;
+  /**
+   * Replace ReviewForm component by custom
+   */
+  ReviewForm?: React.ComponentType<ReviewFormProps>;
+  /**
+   * Replace ReviewItem component by custom
+   */
+  ReviewItem?: React.ComponentType<ReviewItemProps>;
 }
 
-export function ProductReviews({ productId, listProps, notifier, title }: {
-  productId: number;
-  listProps?: TCListProps<TProductReview, TListItemProps>;
-  notifier?: TCromwellNotify;
-  title?: string;
-}) {
+type TListItemProps = TItemComponentProps<TProductReview, ProductReviewsProps>;
+
+const ListItem = (props: TListItemProps) => {
+  const Comp = props.listItemProps?.ReviewItem ?? ReviewItem;
+  return <Comp data={props.data} key={props.data?.id} />
+}
+
+export function ProductReviews(props: ProductReviewsProps) {
+  const { productId, listProps, notifier, titleText, ReviewForm: CustomReviewForm } = props;
   const reviewsInst = useRef<TCromwellBlock<TCList> | undefined>();
   const client = getGraphQLClient();
   const { Pagination } = useAdapter();
+  const router = useRouter?.();
+  const Form = CustomReviewForm ?? ReviewForm;
+
+  useEffect(() => {
+    const list: TCList | undefined = reviewsInst.current?.getContentInstance();
+    if (list) {
+      list.updateData();
+    }
+  }, [router?.asPath]);
 
   return (
-    <CContainer id="product_reviews_block">
-      <CText id="product_reviews_title" className={styles.reviewsTitle}>{title ?? 'Customer reviews'}</CText>
+    <CContainer id="product_reviews_block" className={styles.ProductReviews}>
+      <CText id="product_reviews_title" className={styles.reviewsTitle}>{titleText ?? 'Customer reviews'}</CText>
       <CContainer id="product_reviews_list_container">
         <CList<TProductReview>
           id={"product_reviews_list"}
           ListItem={ListItem}
+          listItemProps={props}
           usePagination
           useShowMoreButton
           editorHidden
@@ -59,7 +94,7 @@ export function ProductReviews({ productId, listProps, notifier, title }: {
           }}
           {...(listProps ?? {})}
         />
-        <ReviewForm productId={productId} notifier={notifier} />
+        <Form productId={productId} notifier={notifier} />
       </CContainer>
     </CContainer>
   )

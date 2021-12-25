@@ -55,9 +55,10 @@ const BlogPostPage: TPageWithLayout<BlogPostProps> = (props) => {
                     <div className={postStyles.tagsBlock}>
                         {post?.tags?.map(tag => {
                             return (
-                                <Link href={`/tag/${tag.slug}`} key={tag.id}>
-                                    <a className={postStyles.tag}>{tag?.name}</a>
-                                </Link>
+                                <Link href={`/tag/${tag.slug}`}
+                                    key={tag.id}
+                                    className={postStyles.tag}
+                                >{tag?.name}</Link>
                             )
                         })}
                     </div>
