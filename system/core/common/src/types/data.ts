@@ -374,11 +374,11 @@ export type TPluginInfo = {
 /**
  * UI Notification service. In Admin panel it's react-toastify, for example.
  */
-export type TCromwellNotify = {
-    success?: (message: string, options?) => void;
-    warning?: (message: string, options?) => void;
-    error?: (message: string, options?) => void;
-    info?: (message: string, options?) => void;
+export type TCromwellNotify<TOptions = any> = {
+    success?: (message: string, options?: TOptions) => void;
+    warning?: (message: string, options?: TOptions) => void;
+    error?: (message: string, options?: TOptions) => void;
+    info?: (message: string, options?: TOptions) => void;
 }
 
 /**

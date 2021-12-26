@@ -562,7 +562,7 @@ export class CStore {
 
             for (const variant of matchedVariants) {
                 Object.entries(variant.variant).forEach(([key, value]) => {
-                    if (!key || key === 'id') return;
+                    if (!key || key === 'id' || key === 'attributes') return;
                     if (value === null || value === undefined) return;
                     newProd[key] = value;
                 });

@@ -1,0 +1,19 @@
+.ProductActions {
+    position: relative;
+}
+
+.actionsCartBlock {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.ProductActions .actionButton {
+    margin-right: 15px;
+    margin-bottom: 10px;
+}
+
+.actionsWishlistBlock {
+    position: relative;
+}

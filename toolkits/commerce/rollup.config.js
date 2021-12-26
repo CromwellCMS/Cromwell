@@ -12,11 +12,10 @@ const input = resolve(__dirname, 'src/index.ts');
 
 const getOutput = (format = 'esm') => {
     if (format === 'esm') {
-        return { dir: resolve(__dirname, 'es'), format, sourcemap: true, };
+        return { dir: resolve(__dirname, 'es'), format, sourcemap: true, exports: 'auto' };
     }
-    return { dir: resolve(__dirname, 'dist'), format };
+    return { dir: resolve(__dirname, 'dist'), format, exports: 'auto' };
 };
-
 const sharedState = {};
 
 const getPlugins = () => {

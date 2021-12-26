@@ -1,0 +1,40 @@
+.notifierContainer {
+    display: flex;
+    align-items: center;
+}
+
+
+div.notifierAlert {
+    width: 100%;
+    font-size: 16px;
+    min-height: 50px;
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+
+    :global(.MuiAlert-icon) {
+        padding: 0;
+    }
+
+    :global(.MuiAlert-message) {
+        padding: 0;
+    }
+}
+
+.muiToast {
+    background-color: transparent;
+    padding: 0;
+    min-height: 30px;
+
+    :global(.Toastify__toast-body) {
+        margin: 0;
+        padding: 0;
+    }
+
+    :global(.Toastify__close-button) {
+        position: absolute;
+        right: 5px;
+        top: 5px;
+        color: #111;
+    }
+}

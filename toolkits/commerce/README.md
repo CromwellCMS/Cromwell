@@ -1,1 +1,1 @@
-A toolkit for building e-commerce websites with Cromwell CMS
+Toolkit for building e-commerce websites with Cromwell CMS

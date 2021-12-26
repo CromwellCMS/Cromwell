@@ -1,29 +1,30 @@
 import { TAttribute, TAttributeInstance, TAttributeInstanceValue, TProduct } from '@cromwell/core';
-import { getCStore } from '@cromwell/core-frontend';
+import { CContainer, getCStore, getGraphQLClient, getGraphQLErrorInfo } from '@cromwell/core-frontend';
 import clsx from 'clsx';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
-import { useAdapter } from '../../adapter';
+import { useForceUpdate } from '../../helpers/forceUpdate';
+import { moduleState } from '../../helpers/state';
 import styles from './ProductAttributes.module.scss';
 
 export type ProductAttributesProps = {
-  /** Unmodified instance of Product */
-  product: TProduct;
+  /** Product data. Required */
+  product?: TProduct | null;
 
   /** All available attributes */
   attributes?: TAttribute[];
 
   /** 
-   * Called when user picks any attribute, if picked value has productVariant,
-   * it applies modifications to "product" prop and calls this method.
-   * If value has no productVariant, then original product will be returned  
+   * Called when user picks any attribute. If picked value of an attribute has assigned
+   * product variant, it applies modifications of variant to original "product" prop
+   * and calls this method.
    * */
-  onChange?: (checkedAttrs: Record<string, string[]>, modifiedProduct: TProduct) => void;
+  onChange?: (checkedAttributes: Record<string, string[]>, modifiedProduct: TProduct) => void;
 
   /** UI elements to replace default ones */
   elements?: {
     /** Component for a value of an attribute. Must implement onClick prop */
-    attributeValue?: React.ComponentType<{
+    AttributeValue?: React.ComponentType<{
       onClick: () => void;
       value: string;
       checked: boolean;
@@ -32,7 +33,7 @@ export type ProductAttributesProps = {
       attribute?: TAttribute;
       attributeInstance?: TAttributeInstance;
     }>;
-    attributeTitle?: React.ComponentType<{
+    AttributeTitle?: React.ComponentType<{
       attribute?: TAttribute;
       valid?: boolean;
     }>;
@@ -50,35 +51,72 @@ export type ProductAttributesProps = {
  * product from `onChange` function prop
  */
 export const ProductAttributes = (props: ProductAttributesProps): JSX.Element => {
-  const { attributes, product, onChange, canValidate } = props;
-  const productAttributes = product.attributes;
+  const { product, onChange,
+    canValidate = product?.id ? moduleState.products[product.id]?.canValidate : undefined } = props;
+  const attributesRef = useRef(props.attributes);
+  if (props.attributes && props.attributes !== attributesRef.current) {
+    attributesRef.current = props.attributes;
+  }
+  const productAttributes = product?.attributes;
   const [checkedAttrs, setCheckedAttrs] = useState<Record<string, string[]>>({});
   const cstore = getCStore();
-  const { AttributeValue, AttributeTitle } = useAdapter();
-  const ValueComp = props.elements?.attributeValue ?? AttributeValue;
-  const TitleComp = props.elements?.attributeTitle ?? AttributeTitle ?? (
+  const ValueComp = props.elements?.AttributeValue;
+  const TitleComp = props.elements?.AttributeTitle ?? (
     (props) => <p>{props.attribute?.key}</p>
   );
+  const forceUpdate = useForceUpdate();
+
+  useEffect(() => {
+    checkAttributesData();
+
+    const onUpdateId = product?.id && moduleState.addOnProductUpdateListener(product.id, () => {
+      forceUpdate();
+    });
+
+    return () => {
+      if (product?.id) {
+        delete moduleState.products[product.id];
+        if (onUpdateId) {
+          moduleState.removeOnProductUpdateListener(product?.id, onUpdateId);
+        }
+      }
+    }
+  }, []);
+
+  const checkAttributesData = async () => {
+    const client = getGraphQLClient();
+    if (!attributesRef.current) {
+      try {
+        attributesRef.current = await client?.getAttributes();
+        forceUpdate();
+      } catch (e) {
+        console.error('ProductAttributes::checkAttributesData', getGraphQLErrorInfo(e))
+      }
+    }
+  }
 
   const handleSetAttribute = (key: string, checks: string[]) => {
+    if (!product) return;
     setCheckedAttrs(prev => {
       const newCheckedAttrs: Record<string, string[]> = Object.assign({}, prev);
       newCheckedAttrs[key] = checks;
-      setTimeout(() => {
-        onChange?.(newCheckedAttrs, cstore.applyProductVariants(
-          product, newCheckedAttrs));
-      }, 10);
+      const modifiedProduct = cstore.applyProductVariants(product, newCheckedAttrs)
+
+      onChange?.(newCheckedAttrs, modifiedProduct);
+      moduleState.setCheckedAttributes(product.id, newCheckedAttrs, modifiedProduct);
 
       return newCheckedAttrs;
     })
   };
 
   return (
-    <div className={clsx(styles.ProductAttributes,
-      !!canValidate && styles.productAttributesValidate)}>
+    <CContainer className={clsx(styles.ProductAttributes,
+      !!canValidate && styles.productAttributesValidate)}
+      id="ccom_product_attributes"
+    >
       {productAttributes?.map(attr => {
         const checked: string[] | undefined = checkedAttrs[attr.key];
-        const origAttribute = attributes?.find(a => a.key === attr.key);
+        const origAttribute = attributesRef.current?.find(a => a.key === attr.key);
         let isValid = true;
 
         if (origAttribute?.required && origAttribute.key) {
@@ -158,6 +196,6 @@ export const ProductAttributes = (props: ProductAttributesProps): JSX.Element =>
           )
         }
       })}
-    </div>
+    </CContainer>
   )
 }

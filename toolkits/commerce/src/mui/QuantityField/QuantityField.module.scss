@@ -1,0 +1,19 @@
+.QuantityField {
+    width: 115px;
+    font-size: 20px;
+    text-align: center;
+
+    input {
+        text-align: center;
+    }
+}
+
+.controlButton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    span {
+        font-size: 24px;
+    }
+}

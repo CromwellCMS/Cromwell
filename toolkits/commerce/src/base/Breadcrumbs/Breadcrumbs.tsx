@@ -1,63 +1,83 @@
 import { TProductCategory } from '@cromwell/core';
-import { Link } from '@cromwell/core-frontend';
-import { withStyles } from '@mui/styles';
+import { Link, CContainer } from '@cromwell/core-frontend';
+import clsx from 'clsx';
 import React from 'react';
 
-import { useAdapter } from '../../adapter';
 import { HomeIcon } from '../icons';
+import styles from './Breadcrumbs.module.scss';
 import { getData } from './getData';
 
-export function Breadcrumbs(props: {
+export type BreadcrumbProps = {
   /**
    * data from getData function
    */
   data: TProductCategory[] | undefined;
-}) {
-  const { Breadcrumbs: MuiBreadcrumbs, Chip } = useAdapter();
+  className?: string;
+  style?: React.CSSProperties;
+  maxItems?: number;
+  elements?: BreadcrumbElements;
+}
 
-  const StyledBreadcrumb = withStyles(() => ({
-    root: {
-      cursor: 'pointer',
-      backgroundColor: 'rgba(0, 0, 0, 0.08)',
-      height: '24px',
-      color: '#424242',
-      fontWeight: 400,
-      '&:hover, &:focus': {
-        backgroundColor: '#757575',
-        color: '#fff',
-      },
-      '&:active': {
-        boxShadow: ' 0px 2px 1px -1px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%);',
-        backgroundColor: '#757575',
-        color: '#fff',
-      },
-    },
-  }))(Chip) as typeof Chip;
+export type BreadcrumbElements = {
+  Wrapper?: React.ComponentType<{
+    id?: string;
+    className?: string;
+    style?: React.CSSProperties;
+    maxItems?: number;
+  }>;
+  Breadcrumb?: React.ComponentType<{
+    className?: string;
+    id?: string;
+    label?: string;
+    style?: React.CSSProperties;
+    icon?: React.ReactNode | null;
+    children?: React.ReactNode | null;
+  }>;
+}
+
+export function Breadcrumbs(props: BreadcrumbProps) {
+  const { maxItems, className, style, data, elements } = props;
+  const Wrapper = elements?.Wrapper ?? ((props) => (
+    <div style={{ display: 'flex', ...(props.style ?? {}) }}
+      className={props.className}
+      id={props.id}
+    >{props.children}</div>
+  ));
+  const Breadcrumb = elements?.Breadcrumb ?? ((props) => (
+    <div style={props.style}
+      className={props.className}
+      id={props.id}
+    >{props.icon} {props.label}</div>
+  ));
 
   return (
-    <MuiBreadcrumbs
-      maxItems={5}
+    <CContainer id="ccom_breadcrumbs"
+      className={clsx(styles.Breadcrumbs, className)}
+      style={style}
     >
-      <Link href="/">
-        <StyledBreadcrumb
-          component="a"
-          label="Home"
-          icon={<HomeIcon style={{ width: '17px', height: '17px' }} fontSize="small" />}
-        />
-      </Link>
-      {props.data?.map(crumb => {
-        return (
-          <Link
-            key={crumb.id}
-            href={`/category/${crumb.slug}`}>
-            <StyledBreadcrumb
-              label={crumb.name ?? ''}
-              component="a"
-            />
-          </Link>
-        )
-      })}
-    </MuiBreadcrumbs>
+      <Wrapper maxItems={maxItems ?? 5}>
+        <Link href="/">
+          <Breadcrumb
+            label="Home"
+            key="/"
+            className={styles.breadcrumb}
+            icon={<HomeIcon style={{ width: '17px', height: '17px' }} fontSize="small" />}
+          />
+        </Link>
+        {data?.map(crumb => {
+          return (
+            <Link
+              key={crumb.id}
+              href={`/category/${crumb.slug}`}>
+              <Breadcrumb
+                className={styles.breadcrumb}
+                label={crumb.name ?? ''}
+              />
+            </Link>
+          )
+        })}
+      </Wrapper>
+    </CContainer>
   )
 }
 

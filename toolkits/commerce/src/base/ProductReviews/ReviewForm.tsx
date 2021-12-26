@@ -1,17 +1,22 @@
 import { getStoreItem, onStoreChange, removeOnStoreChange, TCromwellNotify, TProductReview, TUser } from '@cromwell/core';
-import { getRestApiClient } from '@cromwell/core-frontend';
+import { CContainer, CText, getRestApiClient } from '@cromwell/core-frontend';
 import React, { useEffect, useState } from 'react';
 
-import { useAdapter } from '../../adapter';
+import { BaseAlert } from '../shared/Alert';
+import { BaseButton } from '../shared/Button';
+import { BaseRating } from '../shared/Rating';
+import { BaseTextField } from '../shared/TextField';
+import { BaseTooltip } from '../shared/Tooltip';
+import { ProductReviewsProps } from './ProductReviews';
 import styles from './ReviewForm.module.scss';
 
 export type ReviewFormProps = {
   productId: number;
   notifier?: TCromwellNotify;
-  successText?: string;
+  parentProps: ProductReviewsProps;
 }
 
-export const ReviewForm = ({ productId, notifier, successText }: ReviewFormProps) => {
+export const ReviewForm = ({ productId, notifier, parentProps = {} }: ReviewFormProps) => {
   const userInfo = getStoreItem('userInfo');
   const [name, setName] = useState(userInfo?.fullName ?? '');
   const [rating, setRating] = useState<number | null>(0);
@@ -20,8 +25,9 @@ export const ReviewForm = ({ productId, notifier, successText }: ReviewFormProps
   const [isLoading, setIsLoading] = useState(false);
   const [canValidate, setCanValidate] = useState(false);
   const [placedReview, setPlacedReview] = useState<TProductReview | null>(null);
-
-  const { Alert, Button, Rating, TextField, Tooltip } = useAdapter();
+  const { text = {}, elements } = parentProps;
+  const { Alert = BaseAlert, Button = BaseButton, Rating = BaseRating,
+    TextField = BaseTextField, Tooltip = BaseTooltip } = elements ?? {};
 
   const userInfoChange = (userInfo: TUser | undefined) => {
     setName(userInfo?.fullName ?? '');
@@ -56,7 +62,7 @@ export const ReviewForm = ({ productId, notifier, successText }: ReviewFormProps
       });
     } catch (e) {
       console.error(e);
-      notifier?.error?.('Failed to post review');
+      notifier?.error?.(text.failedToSubmit ?? 'Failed to post review');
     }
     setIsLoading(false);
 
@@ -68,16 +74,19 @@ export const ReviewForm = ({ productId, notifier, successText }: ReviewFormProps
   if (placedReview) {
     return (
       <div className={styles.ReviewForm}>
-        <Alert severity="success">{successText ?? 'Thank you! Your review will appear on this page after approval by the website moderator'}</Alert>
+        <Alert severity="success">{text.submitSuccess ?? 'Thank you! Your review will appear on this page after approval by the website moderator'}</Alert>
       </div>
     )
   }
 
+  const fieldRequired = text.fieldRequired ?? 'This field is required';
+
   return (
-    <div className={styles.ReviewForm}>
-      <h3 className={styles.reviewFormTitle}>Write a review</h3>
-      <Tooltip open={canValidate && (!name || name == '')} title="This field is required" arrow>
-        <TextField label="Name"
+    <CContainer id="ccom_product_reviews_form" className={styles.ReviewForm}>
+      <CText id="ccom_product_reviews_write_review_title" className={styles.reviewFormTitle}>{text.writeReview ?? 'Write a review'}</CText>
+      <Tooltip open={canValidate && (!name || name == '')} title={fieldRequired} arrow>
+        <TextField label={text.fieldNameLabel ?? 'Name'}
+          name="Name"
           variant="outlined"
           size="small"
           fullWidth
@@ -86,7 +95,7 @@ export const ReviewForm = ({ productId, notifier, successText }: ReviewFormProps
           onChange={e => setName(e.target.value)}
         />
       </Tooltip>
-      <Tooltip open={canValidate && (!rating)} title="This field is required" arrow>
+      <Tooltip open={canValidate && (!rating)} title={fieldRequired} arrow>
         <Rating name="read-only"
           value={rating}
           className={styles.reviewInput}
@@ -94,7 +103,8 @@ export const ReviewForm = ({ productId, notifier, successText }: ReviewFormProps
           precision={0.5}
         />
       </Tooltip>
-      <TextField label="Title"
+      <TextField label={text.fieldTitleLabel ?? 'Title'}
+        name="Title"
         variant="outlined"
         size="small"
         fullWidth
@@ -103,7 +113,8 @@ export const ReviewForm = ({ productId, notifier, successText }: ReviewFormProps
         onChange={e => setTitle(e.target.value)}
       />
       <TextField
-        label="Review"
+        label={text.fieldReviewLabel ?? 'Review'}
+        name="Review"
         variant="outlined"
         size="small"
         fullWidth
@@ -120,8 +131,8 @@ export const ReviewForm = ({ productId, notifier, successText }: ReviewFormProps
           size="large"
           onClick={handleSubmit}
           disabled={isLoading}
-        >Submit</Button>
+        >{text.submitButton ?? 'Submit'}</Button>
       </div>
-    </div>
+    </CContainer>
   );
 }

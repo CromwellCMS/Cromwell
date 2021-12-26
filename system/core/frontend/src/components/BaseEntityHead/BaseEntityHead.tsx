@@ -3,7 +3,7 @@ import { getStore } from '@cromwell/core';
 import { TBasePageEntity, TCromwellPageCoreProps } from '@cromwell/core';
 
 /**
- * Creates a default head (SEO meta tags) for any BaseEntity 
+ * Creates a default head (SEO meta tags) for any BaseEntity (e.g. Post, Product, etc. See EDBEntity)
  */
 export function BaseEntityHead({ entity, pageProps, image }: {
     entity?: TBasePageEntity | null;

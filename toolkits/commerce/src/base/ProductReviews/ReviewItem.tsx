@@ -2,16 +2,18 @@ import { TProductReview } from '@cromwell/core';
 import { format } from 'date-fns';
 import React from 'react';
 
-import { useAdapter } from '../../adapter';
+import { BaseRating } from '../shared/Rating';
+import { ProductReviewsProps } from './ProductReviews';
 import styles from './ReviewItem.module.scss';
 
 export type ReviewItemProps = {
   data?: TProductReview;
+  parentProps: ProductReviewsProps;
 }
 
 export const ReviewItem = (props: ReviewItemProps) => {
   const data = props.data;
-  const { Rating } = useAdapter();
+  const { Rating = BaseRating } = props.parentProps?.elements ?? {};
   return (
     <div className={styles.ReviewItem}>
       {data && (

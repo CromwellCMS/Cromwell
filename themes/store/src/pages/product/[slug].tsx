@@ -16,7 +16,6 @@ export interface ProductProps {
     product?: TProduct | null;
     attributes?: TAttribute[];
     breadcrumbs?: TProductCategory[];
-    notFound?: boolean;
 }
 
 const Product: TPageWithLayout<ProductProps> = (props) => {
@@ -34,21 +33,16 @@ const Product: TPageWithLayout<ProductProps> = (props) => {
                 entity={product}
                 image={product?.mainImage}
             />
-            {!!props.breadcrumbs?.length && (
-                <div className={styles.breadcrumbs}>
-                    <MuiBreadcrumbs data={props.breadcrumbs} />
-                </div>
-            )}
+            <MuiBreadcrumbs data={props.breadcrumbs} className={styles.breadcrumbs} />
             <ProductDetails {...props} />
             <CContainer id="Product_ProductShowcase_container" >
-                <CText
-                    id="product_showcase-title"
+                <CText id="product_showcase-title"
                     style={{
                         margin: '40px 20px 10px 20px',
                         fontWeight: 600,
                         fontSize: '26px'
                     }}
-                >Featured items</CText>
+                >Similar items</CText>
                 <CPlugin
                     id="Product_ProductShowcase"
                     plugin={{
@@ -56,11 +50,9 @@ const Product: TPageWithLayout<ProductProps> = (props) => {
                     }}
                 />
             </CContainer>
-            {product?.id && (
-                <CContainer id="product_reviewsBlock" className={styles.reviewsBlock}>
-                    <MuiProductReviews productId={product?.id} />
-                </CContainer>
-            )}
+            <CContainer id="product_reviewsBlock" className={styles.reviewsBlock}>
+                <MuiProductReviews productId={product?.id} />
+            </CContainer>
         </CContainer>
     );
 }
@@ -87,7 +79,7 @@ export const getStaticProps: TGetStaticProps<ProductProps> = async (context) => 
             console.error('Product::getStaticProps', getGraphQLErrorInfo(e))
         }
     } else {
-        console.error('Product::getStaticProps: !pid')
+        console.error('Product::getStaticProps: slug is invalid')
     }
 
     if (!product) {
