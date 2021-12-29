@@ -5,8 +5,10 @@ import {
     getBundledModulesDir,
     getCmsModuleConfig,
     getCmsModuleInfo,
+    getModuleStaticDir,
     getNodeModuleDir,
     getPublicDir,
+    getPublicThemesDir,
     getRendererTempDevDir,
     getRendererTempDir,
     getThemeBuildDir,
@@ -16,7 +18,7 @@ import chokidar from 'chokidar';
 import fs from 'fs-extra';
 import glob from 'glob';
 import normalizePath from 'normalize-path';
-import { join, resolve } from 'path';
+import { dirname, join, resolve } from 'path';
 import symlinkDir from 'symlink-dir';
 
 import { defaultGenericPageContent, tsConfigContent } from './helpers/defaultContents';
@@ -264,8 +266,10 @@ const devGenerate = async (themeName: string, options: TOptions) => {
         await fs.outputFile(join(tempDir, 'tsconfig.json'), tsConfigContent);
     }
 
-    if (options.watch)
+    if (options.watch) {
         startPagesWatcher(pagesGlobStr);
+        startStaticWatcher(themeName);
+    }
 }
 
 const getGlobalCssImports = async () => {
@@ -461,4 +465,36 @@ const startPagesWatcher = async (pagesGlobStr: string) => {
         .on('add', updatePageWrapper)
         .on('change', updatePageWrapper)
         .on('unlink', removePageWrapper);
+}
+
+
+let staticWatcherActive = false;
+const startStaticWatcher = async (moduleName: string) => {
+    if (staticWatcherActive) return;
+    staticWatcherActive = true;
+
+    const staticDir = normalizePath((await getModuleStaticDir(process.cwd())) ?? '');
+    await fs.ensureDir(staticDir);
+    const publicDir = getPublicThemesDir();
+
+    const globStr = `${staticDir}/**`;
+
+    const copyFile = async (filePath: string) => {
+        const pathChunk = normalizePath(filePath).replace(staticDir, '');
+        const publicPath = join(publicDir, moduleName, pathChunk);
+        try {
+            await fs.ensureDir(dirname(publicPath));
+            await fs.copyFile(filePath, publicPath);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    const watcher = chokidar.watch(globStr, {
+        persistent: true
+    });
+
+    watcher
+        .on('change', copyFile)
+        .on('add', copyFile);
 }

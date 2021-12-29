@@ -5,10 +5,11 @@ import { moduleState } from './state';
 
 /**
  * A hook that will track selection of product attributes by user and apply
- * product variants, so returned value will be modified product
+ * product variants, so returned value will be modified product (new object).
+ * Store this value in a separate variable and do not pass this modified value back.
  * @param original Original, unmodified product
  */
-export const useProductVariants = (original?: TProduct | null | undefined): TProduct | null | undefined => {
+export const useProductVariants = (original?: TProduct | null): TProduct => {
     const productRef = useRef(original);
     const [product, setProduct] = useState(original);
     if (original && original.id !== productRef.current?.id) {
@@ -30,5 +31,5 @@ export const useProductVariants = (original?: TProduct | null | undefined): TPro
         }
     }, [productRef.current]);
 
-    return product;
+    return product!;
 }

@@ -13,27 +13,28 @@ export default function ProductDetails(props: {
 } & ProductProps) {
   const cstore = getCStore();
   const router = useRouter();
-  const product = useProductVariants(props.product);
+  const { attributes, compact, product: originalProduct } = props;
+  const productVariant = useProductVariants(originalProduct);
 
   useEffect(() => {
-    if (product) cstore.addToWatchedItems({ product });
+    if (originalProduct) cstore.addToWatchedItems({ product: originalProduct });
   }, [props.product]);
 
 
   const scrollToReviews = () => {
-    if (props.compact) return;
+    if (compact) return;
     document.getElementById(getBlockHtmlId('product_reviewsBlock'))?.scrollIntoView({ behavior: "smooth" });
   }
 
   const onTitleClick = () => {
-    if (props.compact) {
-      const productLink = `/product/${product?.slug ?? product?.id}`;
+    if (compact) {
+      const productLink = `/product/${productVariant?.slug ?? productVariant?.id}`;
       router.push(productLink);
       appState.closeAllModals();
     }
   }
 
-  if (!product) {
+  if (!productVariant) {
     return (
       <div className={styles.productNotFound}>
         <h3>Product not found</h3>
@@ -43,12 +44,12 @@ export default function ProductDetails(props: {
 
   return (
     <CContainer id="product_01"
-      className={styles.ProductDetails + (props.compact ? ' ' + styles.compact : '')}
-      style={{ backgroundColor: !props.compact ? '#fff' : undefined }}
+      className={styles.ProductDetails + (compact ? ' ' + styles.compact : '')}
+      style={{ backgroundColor: !compact ? '#fff' : undefined }}
     >
       <CContainer id="product_0" className={styles.imageAndCaptionBlock}>
         <CContainer id="product_2" className={styles.imageBlock}>
-          <ProductGallery product={product}
+          <ProductGallery product={productVariant}
             noImagePlaceholder="/themes/@cromwell/theme-store/no-photos.png"
           />
         </CContainer>
@@ -56,32 +57,33 @@ export default function ProductDetails(props: {
           <CContainer id="product_4">
             <h1 onClick={onTitleClick}
               style={{
-                textDecoration: props.compact ? 'underline' : 'none',
-                cursor: props.compact ? 'pointer' : 'initial',
+                textDecoration: compact ? 'underline' : 'none',
+                cursor: compact ? 'pointer' : 'initial',
               }}
-              className={styles.productName}>{product?.name}</h1>
+              className={styles.productName}>{productVariant?.name}</h1>
           </CContainer>
           <CContainer id="product_13" className={styles.ratingBlock}>
-            <Rating name="read-only" value={product?.rating?.average} precision={0.5} readOnly />
-            {product?.rating?.reviewsNumber ? (
+            <Rating name="read-only" value={productVariant?.rating?.average} precision={0.5} readOnly />
+            {!!productVariant?.rating?.reviewsNumber && (
               <a className={styles.ratingCaption} onClick={scrollToReviews}>
-                ({product?.rating?.average ? product?.rating?.average.toFixed(2) : ''}) {product?.rating?.reviewsNumber} reviews.</a>
-            ) : null}
+                ({productVariant?.rating?.average ? productVariant?.rating?.average.toFixed(2) : ''}) {productVariant?.rating?.reviewsNumber} reviews.</a>
+            )}
           </CContainer>
           <CContainer id="product_5" className={styles.priceBlock}>
-            {(product?.oldPrice !== undefined && product.oldPrice !== null) && (
-              <p className={styles.oldPrice}>{cstore.getPriceWithCurrency(product.oldPrice)}</p>
+            {(productVariant?.oldPrice !== undefined && productVariant.oldPrice !== null) && (
+              <p className={styles.oldPrice}>{cstore.getPriceWithCurrency(productVariant.oldPrice)}</p>
             )}
-            <p className={styles.price}>{cstore.getPriceWithCurrency(product.price)}</p>
+            <p className={styles.price}>{cstore.getPriceWithCurrency(productVariant.price)}</p>
           </CContainer>
           <CContainer id="productActionsBlock">
             <MuiProductAttributes
-              attributes={props.attributes}
-              product={props.product}
+              attributes={attributes}
+              product={originalProduct}
             />
+            <CContainer id="product_41" className={styles.delimiter}></CContainer>
             <MuiProductActions
-              attributes={props.attributes}
-              product={props.product}
+              attributes={attributes}
+              product={originalProduct}
               onCartOpen={() => appState.isCartOpen = true}
               onWishlistOpen={() => appState.isWishlistOpen = true}
             />
@@ -93,11 +95,11 @@ export default function ProductDetails(props: {
         <CContainer id="product_11" className={styles.tabsBlock}>
           <div className={styles.tab} >
             <div className={styles.tabDescription}
-              dangerouslySetInnerHTML={(product?.description) ? { __html: product.description } : undefined}
+              dangerouslySetInnerHTML={(productVariant?.description) ? { __html: productVariant.description } : undefined}
             ></div>
           </div>
         </CContainer>
-        {!props.compact && (
+        {!compact && (
           <CContainer id="product_8" className={styles.infoBlock}>
             <CContainer id="product_9" className={styles.advantagesBlock}>
               <CContainer id="main_02" className={styles.advantageItem}>
@@ -119,8 +121,6 @@ export default function ProductDetails(props: {
                 </CContainer>
               </CContainer>
             </CContainer>
-            <CImage id="product_10" src="/themes/@cromwell/theme-store/sub_banner_3.jpg"
-              className={styles.infoBanner} imgLink="/category/1" withEffect={true} />
           </CContainer>
         )}
       </CContainer>

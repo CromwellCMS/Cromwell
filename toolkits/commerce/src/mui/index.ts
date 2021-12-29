@@ -1,4 +1,4 @@
-import { Alert, Breadcrumbs as MuiLibBreadcrumbs, Button, Rating, TextField, Tooltip } from '@mui/material';
+import { Alert, Breadcrumbs as MuiLibBreadcrumbs, Button, IconButton, Rating, TextField, Tooltip } from '@mui/material';
 import React from 'react';
 import { toast as toastify } from 'react-toastify';
 
@@ -8,12 +8,14 @@ import {
   ProductAttributes as BaseProductAttributes,
   ProductAttributesProps,
 } from '../base/ProductAttributes/ProductAttributes';
+import { ProductCard as BaseProductCard, ProductCardProps } from '../base/ProductCard/ProductCard';
 import { ProductReviews as BaseProductReviews, ProductReviewsProps } from '../base/ProductReviews/ProductReviews';
 import { withElements } from '../helpers/withElements';
 import { StyledBreadcrumb } from './Breadcrumbs/Breadcrumbs';
 import { NotifierWrapper } from './Notifier/Notifier';
 import notifierStyles from './Notifier/Notifier.module.scss';
 import { Pagination } from './Pagination/Pagination';
+import { ActionButton } from './ProductActions/ProductActions';
 import { AttributeTitle } from './ProductAttributes/AttributeTitle';
 import { AttributeValue } from './ProductAttributes/AttributeValue';
 import { QuantityField } from './QuantityField/QuantityField';
@@ -38,7 +40,7 @@ export const MuiProductReviews = withElements(BaseProductReviews, {
 } as ProductReviewsProps['elements']);
 
 export const MuiProductActions = withElements(BaseProductActions, {
-  Button,
+  Button: ActionButton,
   Alert,
   QuantityField,
 } as ProductActionsProps['elements'], {
@@ -48,3 +50,19 @@ export const MuiProductActions = withElements(BaseProductActions, {
     Wrapper: NotifierWrapper,
   }
 } as ProductActionsProps);
+
+export const MuiProductCard = withElements(BaseProductCard, {
+  Button: IconButton,
+  AddCartButton: IconButton,
+  AddWishlistButton: IconButton,
+  Alert,
+  Rating,
+  QuantityField,
+  Tooltip: Tooltip,
+} as ProductCardProps['elements'], {
+  notifierOptions: {
+    position: toastify.POSITION.TOP_RIGHT,
+    className: notifierStyles.muiToast,
+    Wrapper: NotifierWrapper,
+  }
+} as ProductCardProps);

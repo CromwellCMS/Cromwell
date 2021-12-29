@@ -1,6 +1,6 @@
 import React from 'react';
 
-export type TBaseButton = React.ComponentType<{
+export type TBaseButtonProps = {
     disabled?: boolean;
     className?: string;
     id?: string;
@@ -10,7 +10,9 @@ export type TBaseButton = React.ComponentType<{
     color?: 'primary';
     size?: 'small' | 'medium' | 'large';
     startIcon?: React.ReactNode;
-}>;
+    'aria-label'?: string;
+}
+export type TBaseButton = React.ComponentType<TBaseButtonProps>;
 
 export const BaseButton: TBaseButton = (props) => {
     return <button

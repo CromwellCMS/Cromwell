@@ -106,10 +106,6 @@
     flex-direction: column;
 }
 
-.infoBanner {
-    margin-top: 20px;
-}
-
 .tabsBlock {
     position: relative;
     padding-right: 20px;
@@ -138,6 +134,12 @@ div.tabsHeader {
 
 .tabsAndSidebar {
     display: flex;
+}
+
+.delimiter {
+    height: 10px;
+    margin: 15px 0 25px;
+    border-bottom: 1px solid #ddd;
 }
 
 .compact {
@@ -178,6 +180,7 @@ div.tabsHeader {
     }
 }
 
+
 @media screen and (max-width: $mobileBreakpoint) {
     .mainBlock {
         width: 100%;
@@ -203,6 +206,7 @@ div.tabsHeader {
         .captionBlock {
             width: 100%;
         }
+
         .imageBlock {
             width: 100%;
         }
@@ -221,4 +225,3 @@ div.tabsHeader {
         margin: 0;
     }
 }
-

@@ -1,6 +1,6 @@
 import React from 'react';
 
-export type TBaseRating = React.ComponentType<{
+export type TBaseRatingProps = {
     disabled?: boolean;
     icon?: React.ReactNode;
     name?: string;
@@ -13,7 +13,8 @@ export type TBaseRating = React.ComponentType<{
     className?: string;
     style?: React.CSSProperties;
     id?: string;
-}>
+}
+export type TBaseRating = React.ComponentType<TBaseRatingProps>;
 
 export const BaseRating: TBaseRating = (props) => {
     return <div

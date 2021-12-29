@@ -20,7 +20,18 @@ export type TApiClient = {
     getCouponsByCodes?: (codes: string[]) => Promise<TCoupon[] | undefined>;
 };
 
-export type OperationResult = {
+/**
+ * Result of cstore operation with lists. E.g. "add to cart", 
+ * "remove from wishlist", etc.
+ * Codes:
+ * 0 - add success
+ * 1 - add failed, already in the list
+ * 3 - add failed, invalid product
+ * 4 - add failed, missing required attributes
+ * 6 - remove failed, no such item in the list
+ * 7 - remove success
+ */
+export type TCStoreOperationResult = {
     success: boolean;
     message?: string;
     code: number;
@@ -125,7 +136,7 @@ export class CStore {
         return index;
     }
 
-    private addToList = (key: string, product: TStoreListItem): OperationResult => {
+    private addToList = (key: string, product: TStoreListItem): TCStoreOperationResult => {
         const list = this.getList(key);
         if (this.getIndexInList(key, product) === -1) {
             list.push(product);
@@ -156,7 +167,7 @@ export class CStore {
         delete this.onListUpdatedCallbacks[key][id];
     }
 
-    private removeFromList = (key: string, product: TStoreListItem): OperationResult => {
+    private removeFromList = (key: string, product: TStoreListItem): TCStoreOperationResult => {
         const list = this.getList(key);
         const index = this.getIndexInList(key, product);
         if (index > -1) {
@@ -200,7 +211,7 @@ export class CStore {
         return false;
     }
 
-    public addToCart = (product: TStoreListItem, attributes?: TAttribute[]): OperationResult & {
+    public addToCart = (product: TStoreListItem, attributes?: TAttribute[]): TCStoreOperationResult & {
         missingAttributes?: TAttribute[];
     } => {
         if (!product?.product) return {
@@ -268,7 +279,7 @@ export class CStore {
         return false;
     }
 
-    public addToWishlist = (product: TStoreListItem): OperationResult => {
+    public addToWishlist = (product: TStoreListItem): TCStoreOperationResult => {
         return this.addToList(wishlistKey, product);
     }
 
@@ -294,7 +305,7 @@ export class CStore {
         return false;
     }
 
-    public addToCompare = (product: TStoreListItem): OperationResult => {
+    public addToCompare = (product: TStoreListItem): TCStoreOperationResult => {
         return this.addToList(compareKey, product);
     }
 
@@ -432,7 +443,7 @@ export class CStore {
         this.saveList(wishlistKey, []);
     }
 
-    public clearComparisionList = () => {
+    public clearComparisonList = () => {
         this.saveList(compareKey, []);
     }
 
@@ -648,10 +659,14 @@ export class CStore {
         return priceStr;
     }
 
-    /** Returns merged price with sign of active (picked by user or default) currency */
-    public getPriceWithCurrency = (price: any): string => {
+    /** 
+     * Returns price converted to an active currency (picked by user or default) 
+     * with a symbol of this active currency. Expects input price to be in 
+     * default currency of the store  
+     */
+    public getPriceWithCurrency = (price: any, position?: 'before' | 'after'): string => {
         let priceStr = this.getPrice(price);
-        if (!priceStr || priceStr === '') return '';
+        if (!priceStr) return '';
 
         const cmsSettings = getStoreItem('cmsSettings');
         const currency = this.getActiveCurrencyTag();
@@ -659,7 +674,13 @@ export class CStore {
 
         if (currency && defaultCurrency) {
             const currencySymbol = cmsSettings?.currencies?.find(curr => curr.tag === currency)?.symbol;
-            if (currencySymbol) priceStr = currencySymbol + priceStr;
+            if (currencySymbol) {
+                if (position === 'after') {
+                    priceStr = priceStr + currencySymbol;
+                } else {
+                    priceStr = currencySymbol + priceStr;
+                }
+            }
         }
         return priceStr;
     }

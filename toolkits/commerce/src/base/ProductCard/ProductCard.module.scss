@@ -1,0 +1,154 @@
+.ProductCard {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    z-index: 3;
+    width: 100%;
+    max-width: 300px;
+    min-width: 170px;
+}
+
+.imageBlock {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    height: 200px;
+    width: 100%;
+    margin-bottom: 15px;
+
+    a {
+        height: 100%;
+        width: 100%;
+    }
+}
+
+.image {
+    width: 100%;
+    object-fit: contain;
+}
+
+.caption {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding: 0 15px 20px 15px;
+}
+
+.productName {
+    font-size: 18px;
+    text-align: center;
+}
+
+.productNameContainer {
+    display: flex;
+    justify-content: center;
+}
+
+.priceCartBlock {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.priceBlock {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    font-size: 18px;
+    margin: 3px 0;
+}
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.price {
+    font-weight: 500;
+}
+
+.oldPrice {
+    text-decoration: line-through;
+    opacity: 0.7;
+    margin-right: 10px;
+}
+
+.description {
+    display: none;
+}
+
+.descriptionGradient {
+    display: none;
+}
+
+.ratingBlock {
+    display: flex;
+}
+
+.ratingCaption {
+    margin-left: 10px;
+}
+
+.ProductCard.horizontalVariant {
+    flex-direction: row;
+    max-width: 100%;
+
+    .caption {
+        align-items: flex-start;
+    }
+
+    .description {
+        display: block;
+        position: relative;
+        height: 80px;
+        overflow: hidden;
+        font-size: 16px;
+    }
+
+    .descriptionGradient {
+        display: block;
+        position: absolute;
+        width: 100%;
+        bottom: 0;
+        height: 50px;
+        background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 1));
+    }
+
+    .productNameContainer {
+        justify-content: flex-start;
+    }
+
+    .productName {
+        font-weight: 500;
+        font-size: 20px;
+        margin-bottom: 10px;
+        text-align: left;
+    }
+
+    .imageBlock {
+        min-width: 260px;
+        width: 260px;
+        height: 260px;
+
+        >a {
+            height: 100%;
+        }
+    }
+
+    .image {
+        height: 100%;
+        width: auto;
+    }
+
+    .caption {
+        padding: 20px;
+    }
+}
+
+.actionBtn {
+    padding: 10px;
+}

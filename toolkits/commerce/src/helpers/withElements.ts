@@ -4,7 +4,8 @@ export const withElements = <T>(Component: T, elements: any, otherProps?: any): 
     const hoc = (props) => {
         return React.createElement(Component as any, {
             ...(otherProps ?? {}),
-            elements, ...props
+            ...props,
+            elements: Object.assign({}, elements, props.elements),
         });
     };
     // @ts-ignore

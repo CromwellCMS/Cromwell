@@ -11,7 +11,7 @@ import {
   FavoriteIcon as BaseFavoriteIcon,
   ShoppingCartIcon as BaseShoppingCartIcon,
 } from '../icons';
-import { BaseAlert, TBaseAlert } from '../shared/Alert';
+import { TBaseAlert } from '../shared/Alert';
 import { BaseButton, TBaseButton } from '../shared/Button';
 import styles from './ProductActions.module.scss';
 
@@ -41,7 +41,8 @@ export type ProductActionsProps = {
   onCartOpen?: () => any;
   onWishlistOpen?: () => any;
   /**
-   * Notifier tool
+   * Notifier tool. Will show notifications when user adds a product to the cart or
+   * wishlist. To disable pass an empty object
    */
   notifier?: TCromwellNotify<NotifierActionOptions>;
   /**
@@ -65,7 +66,7 @@ export const ProductActions = (props: ProductActionsProps) => {
   } = props;
 
   // Custom / default elements
-  const { Button = BaseButton, Alert = BaseAlert,
+  const { Button = BaseButton,
     AddShoppingCartIcon = BaseAddShoppingCartIcon,
     ShoppingCartIcon = BaseShoppingCartIcon,
     FavoriteIcon = BaseFavoriteIcon, QuantityField = ((props) => {
@@ -119,23 +120,20 @@ export const ProductActions = (props: ProductActionsProps) => {
       const result = cstore.addToCart(item, attributes);
       if (result.success) {
         notifier?.success?.("Added! Click here to open cart", {
-          ...notifierOptions,
-          Wrapper: Alert,
           onClick: () => {
             onCartOpen?.();
-          }
+          },
+          ...notifierOptions,
         });
       }
       if (result.code === 1) {
         notifier?.warning?.("Product is already in your cart!", {
           ...notifierOptions,
-          Wrapper: Alert,
         });
       }
       if (result.missingAttributes?.length) {
         notifier?.error?.(`Please pick following attributes: ${result.missingAttributes.map(attr => attr.key).join(', ')}`, {
           ...notifierOptions,
-          Wrapper: Alert,
         });
         if (product?.id) moduleState.setCanValidate(product?.id, true);
       }
@@ -151,16 +149,14 @@ export const ProductActions = (props: ProductActionsProps) => {
       const hasBeenAdded = cstore.addToWishlist({ product });
       if (hasBeenAdded) {
         notifier?.success?.("Added! Click here to open wishlist", {
-          ...notifierOptions,
-          Wrapper: Alert,
           onClick: () => {
             onWishlistOpen?.();
-          }
+          },
+          ...notifierOptions,
         });
       } else {
         notifier?.warning?.("Product is already in your wishlist!", {
           ...notifierOptions,
-          Wrapper: Alert,
         });
       }
       forceUpdate();

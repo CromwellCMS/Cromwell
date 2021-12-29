@@ -1,6 +1,6 @@
 import React from 'react';
 
-export type TBaseTextField = React.ComponentType<{
+export type TBaseTextFieldProps = {
     disabled?: boolean;
     error?: boolean;
     fullWidth?: boolean;
@@ -19,7 +19,8 @@ export type TBaseTextField = React.ComponentType<{
     className?: string;
     name?: string;
     style?: React.CSSProperties;
-}>;
+}
+export type TBaseTextField = React.ComponentType<TBaseTextFieldProps>;
 
 export const BaseTextField: TBaseTextField = (props) => {
     return <input onChange={props.onChange}

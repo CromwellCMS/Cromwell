@@ -3,7 +3,7 @@ import { isValidElementType } from 'react-is';
 import React from 'react';
 
 type TLinkProps = React.AnchorHTMLAttributes<HTMLAnchorElement> & {
-    href: string;
+    href?: string;
     children?: React.ReactNode;
     className?: string;
 }

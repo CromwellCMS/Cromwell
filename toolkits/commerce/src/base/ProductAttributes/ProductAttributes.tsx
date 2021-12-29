@@ -17,8 +17,8 @@ export type ProductAttributesProps = {
   /** 
    * Called when user picks any attribute. If picked value of an attribute has assigned
    * product variant, it applies modifications of variant to original "product" prop
-   * and calls this method.
-   * */
+   * and calls this method. *Prefer to use `useProductVariants` hook instead.*
+   */
   onChange?: (checkedAttributes: Record<string, string[]>, modifiedProduct: TProduct) => void;
 
   /** UI elements to replace default ones */
@@ -33,6 +33,7 @@ export type ProductAttributesProps = {
       attribute?: TAttribute;
       attributeInstance?: TAttributeInstance;
     }>;
+    /** Title of attribute block */
     AttributeTitle?: React.ComponentType<{
       attribute?: TAttribute;
       valid?: boolean;

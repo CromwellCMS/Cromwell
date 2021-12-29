@@ -6,9 +6,12 @@ import {
     TCromwellBlock,
     TCromwellBlockData,
     TCromwellBlockType,
+    TCromwellPageCoreProps,
 } from '@cromwell/core';
 import loadable from '@loadable/component';
 import React, { ComponentType } from 'react';
+
+import type { NextRouter } from 'next/router';
 
 export const blockCssClass = 'CB';
 export const getBlockHtmlId = (id: string): string => `CB_${id}`;
@@ -75,3 +78,18 @@ export const awaitImporter = async () => {
     }
 }
 
+export type TPagePropsContext = {
+    pageProps?: TCromwellPageCoreProps;
+    router?: NextRouter;
+    routeInfo?: {
+        fullUrl?: string;
+        origin?: string;
+    }
+    forceUpdatePage?: () => void;
+}
+
+export const PagePropsContext = React.createContext<TPagePropsContext>({});
+
+export const usePagePropsContext = (): TPagePropsContext => {
+    return React.useContext(PagePropsContext);
+}

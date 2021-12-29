@@ -1,6 +1,6 @@
 import React from 'react';
 
-export type TBaseTooltip = React.ComponentType<{
+export type TBaseTooltipProps = {
     open?: boolean;
     onOpen?: (event: React.SyntheticEvent) => void;
     enterDelay?: number;
@@ -11,12 +11,9 @@ export type TBaseTooltip = React.ComponentType<{
     className?: string;
     style?: React.CSSProperties;
     arrow?: boolean;
-}>;
+}
+export type TBaseTooltip = React.ComponentType<TBaseTooltipProps>;
 
 export const BaseTooltip: TBaseTooltip = (props) => {
-    return <div
-        className={props.className}
-        style={props.style}
-        id={props.id}
-    >{props.children}</div>
+    return <>{props.children}</>
 }

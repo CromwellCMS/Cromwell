@@ -1,16 +1,16 @@
-body .attrValue {
+body .attributeValue {
     margin-right: 10px;
     margin-bottom: 10px;
     border: 1px solid #aaa;
 }
 
-body .attrValueChecked {
+body .attributeValueChecked {
     box-shadow: none;
     border: 2px solid #333;
     font-weight: 900;
 }
 
-.attrValueIcon {
+.attributeValueIcon {
     width: 20px;
     height: 20px;
     background-position: center;
@@ -24,16 +24,16 @@ body .attrValueChecked {
 }
 
 .productAttributesValidate {
-    .invalidAttrTitle {
+    .invalidAttributeTitle {
         color: #aa2e25;
         font-weight: 500;
     }
 
-    .invalidAttrValue {
+    .invalidAttributeValue {
         background-color: #ff000021;
         border: 2px solid #d9443a;
 
-        .attrValueText {
+        .attributeValueText {
             color: #aa2e25;
         }
     }
