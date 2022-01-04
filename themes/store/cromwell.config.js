@@ -65,22 +65,6 @@ module.exports = {
       ]
     },
     {
-      id: "category/[slug]",
-      route: "category/[slug]",
-      name: "Product category",
-      modifications: [
-        {
-          "type": "plugin",
-          "id": "Category_ProductFilter_Plugin",
-          "parentId": "Category_ProductFilter",
-          "isVirtual": true,
-          "plugin": {
-            "pluginName": "@cromwell/plugin-product-filter"
-          }
-        }
-      ]
-    },
-    {
       id: "product/[slug]",
       route: "product/[slug]",
       name: "Product",

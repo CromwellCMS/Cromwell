@@ -1,16 +1,22 @@
-export { ProductAttributes } from './base/ProductAttributes/ProductAttributes';
-export { Breadcrumbs } from './base/Breadcrumbs/Breadcrumbs';
-export { ProductReviews } from './base/ProductReviews/ProductReviews';
-export { ProductActions } from './base/ProductActions/ProductActions';
-export { ProductGallery } from './base/ProductGallery/ProductGallery';
-export { ProductCard } from './base/ProductCard/ProductCard';
+export { ProductAttributes, ProductAttributesProps } from './base/ProductAttributes/ProductAttributes';
+export { Breadcrumbs, BreadcrumbProps } from './base/Breadcrumbs/Breadcrumbs';
+export { ProductReviews, ProductReviewsProps } from './base/ProductReviews/ProductReviews';
+export { ProductActions, ProductActionsProps } from './base/ProductActions/ProductActions';
+export { ProductGallery, ProductGalleryProps } from './base/ProductGallery/ProductGallery';
+export { ProductCard, ProductCardProps } from './base/ProductCard/ProductCard';
+export { CategoryList, CategoryListProps } from './base/CategoryList/CategoryList';
+export { CategorySort, CategorySortProps } from './base/CategorySort/CategorySort';
+export { CategoryFilter, CategoryFilterProps } from './base/CategoryFilter/CategoryFilter';
 
 export {
+    MuiPagination,
     MuiProductReviews,
     MuiProductAttributes,
     MuiBreadcrumbs,
     MuiProductActions,
     MuiProductCard,
+    MuiCategoryList,
+    MuiCategorySort,
 } from './mui/index';
 
 export { moduleState } from './helpers/state';

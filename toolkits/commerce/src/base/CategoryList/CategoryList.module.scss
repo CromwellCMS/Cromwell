@@ -1,0 +1,37 @@
+.CategoryList {
+    position: relative;
+}
+
+.productList {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 20px;
+    padding-right: 0;
+}
+
+.productWrapper {
+    width: 25%;
+    margin: 0;
+    margin-bottom: 15px;
+    padding: 5px;
+}
+
+@media (max-width: 985px) {
+    .productWrapper {
+        width: 33%;
+    }
+}
+
+@media (max-width: 725px) {
+    .productWrapper {
+        width: 50%;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .productList {
+        padding: 20px;
+        padding-right: 5px;
+        padding-left: 5px;
+    }
+}

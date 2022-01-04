@@ -1,21 +1,18 @@
-import { MuiProductCard } from '@cromwell/commerce';
-import { TAttribute, TProduct } from '@cromwell/core';
+import { MuiProductCard, ProductCardProps } from '@cromwell/commerce';
 import SearchIcon from '@mui/icons-material/Search';
 import { IconButton, Theme, Tooltip, useMediaQuery } from '@mui/material';
 import clsx from 'clsx';
 import { useRouter } from 'next/router';
 import React from 'react';
-import commonStyles from '../../styles/common.module.scss';
+
 import { appState } from '../../helpers/AppState';
+import commonStyles from '../../styles/common.module.scss';
 import styles from './ProductCard.module.scss';
 
-export const ProductCard = (props?: {
-  data?: TProduct;
-  attributes?: TAttribute[];
+export const ProductCard = (props?: ProductCardProps & {
   className?: string;
-  variant?: 'vertical' | 'horizontal';
 }) => {
-  const product = props?.data;
+  const { product } = props ?? {};
   const router = useRouter();
   const isMobile = useMediaQuery<Theme>((theme) => theme.breakpoints.down('sm'));
 
@@ -31,7 +28,7 @@ export const ProductCard = (props?: {
         root: clsx(props?.className, commonStyles.onHoverLinkContainer, styles.Product),
         title: commonStyles.onHoverLink,
       }}
-      product={props?.data}
+      product={product}
       attributes={props?.attributes}
       onOpenCart={() => appState.isCartOpen = true}
       onOpenWishlist={() => appState.isWishlistOpen = true}

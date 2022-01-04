@@ -25,6 +25,7 @@ import {
 } from '@cromwell/core';
 import queryString from 'query-string';
 
+import { getServiceSecret } from '../helpers/getServiceSecret';
 import { fetch } from '../helpers/isomorphicFetch';
 
 export type TErrorInfo = {
@@ -79,6 +80,7 @@ export class CRestApiClient {
 
     /** @internal */
     private async init() {
+        // Set API URL from cookie
         if (!isServer() && !getStoreItem('cmsSettings')?.apiUrl) {
             try {
                 const getCookie = (name) => {
@@ -99,28 +101,9 @@ export class CRestApiClient {
         }
 
         if (isServer()) {
-            try {
-                // If backend, try to find service secret key to make 
-                // authorized requests to the API server.
-                const nodeRequire = (name: string) => eval(`require('${name}');`);
-
-                const getAuthSettings: typeof import('@cromwell/core-backend')['getAuthSettings']
-                    = nodeRequire('@cromwell/core-backend/dist/helpers/auth-settings').getAuthSettings;
-
-                let cmsConfig = getStoreItem('cmsSettings');
-                if (!cmsConfig) {
-                    const readCMSConfig: typeof import('@cromwell/core-backend')['readCMSConfig']
-                        = nodeRequire('@cromwell/core-backend/dist/helpers/cms-settings').readCMSConfig;
-                    cmsConfig = await readCMSConfig();
-                    setStoreItem('cmsSettings', cmsConfig);
-                }
-                if (!cmsConfig.serviceSecret) {
-                    cmsConfig.serviceSecret = (await getAuthSettings())?.serviceSecret;
-                }
-                this.serviceSecret = cmsConfig.serviceSecret;
-            } catch (error) {
-                console.error(error);
-            }
+            // If backend, try to find service secret key to make 
+            // authorized requests to the API server.
+            this.serviceSecret = await getServiceSecret();
         }
     }
 
@@ -763,7 +746,9 @@ export class CRestApiClient {
      * @auth admin
      */
     public purgeRendererPageCache = async (pageRoute: string, options?: TRequestOptions): Promise<any> => {
-        return this.get(`v1/renderer/purge-page-cache?pageRoute=${pageRoute}`, options);
+        return this.get(`v1/renderer/purge-page-cache?pageRoute=${pageRoute}`, options ?? {
+            disableLog: true,
+        });
     }
 
     /** 
@@ -771,7 +756,9 @@ export class CRestApiClient {
      * @auth admin
      */
     public purgeRendererEntireCache = async (options?: TRequestOptions): Promise<any> => {
-        return this.get(`v1/renderer/purge-entire-cache`, options);
+        return this.get(`v1/renderer/purge-entire-cache`, options ?? {
+            disableLog: true,
+        });
     }
 
 

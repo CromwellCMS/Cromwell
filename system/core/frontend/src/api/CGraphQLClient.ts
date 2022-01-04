@@ -15,17 +15,17 @@ import {
     isServer,
     serviceLocator,
     setStoreItem,
-    TCouponInput,
     TAttribute,
     TAttributeInput,
     TBaseFilter,
+    TCoupon,
+    TCouponInput,
     TCreateUser,
     TCustomEntity,
     TCustomEntityFilter,
     TCustomEntityInput,
     TDBEntity,
     TDeleteManyInput,
-    TCoupon,
     TFilteredProductList,
     TOrder,
     TOrderFilter,
@@ -52,6 +52,7 @@ import {
 } from '@cromwell/core';
 import clone from 'rfdc';
 
+import { getServiceSecret } from '../helpers/getServiceSecret';
 import { fetch as isomorphicFetch } from '../helpers/isomorphicFetch';
 
 export type TGraphQLErrorInfo = {
@@ -61,6 +62,13 @@ export type TGraphQLErrorInfo = {
     message: string;
     extraInfo: any;
     stack: any;
+}
+
+export type TGetFilteredOptions<TEntity, TFilter> = {
+    pagedParams?: TPagedParams<TEntity>;
+    filterParams?: TFilter;
+    customFragment?: DocumentNode;
+    customFragmentName?: string;
 }
 
 export const getGraphQLErrorInfo = (error: any): TGraphQLErrorInfo => {
@@ -89,6 +97,8 @@ export class CGraphQLClient {
     private fetch;
     /** @internal */
     private lastBaseUrl: string | undefined;
+    /** @internal */
+    private serviceSecret;
 
     /** @internal */
     public getBaseUrl = () => {
@@ -104,14 +114,31 @@ export class CGraphQLClient {
         this.fetch = fetch;
         this.checkUrl();
     }
+    
+    /** @internal */
+    private checkUrl() {
+        const baseUrl = this.getBaseUrl();
+        if (!baseUrl) return;
+        if (this.lastBaseUrl === baseUrl) return;
+
+        this.lastBaseUrl = baseUrl;
+        this.createClient();
+    }
 
     /** @internal */
-    private createClient() {
+    private async createClient() {
+        if (isServer()) {
+            // If backend, try to find service secret key to make 
+            // authorized requests to the API server.
+            this.serviceSecret = await getServiceSecret();
+        }
+
         const cache = new InMemoryCache();
         const link = createHttpLink({
             uri: this.getBaseUrl(),
             credentials: 'include',
             fetch: this.fetch,
+            headers: this.serviceSecret && { 'Authorization': `Service ${this.serviceSecret}` },
         });
 
         this.apolloClient = new ApolloClient({
@@ -128,16 +155,6 @@ export class CGraphQLClient {
                 },
             },
         });
-    }
-
-    /** @internal */
-    private checkUrl() {
-        const baseUrl = this.getBaseUrl();
-        if (!baseUrl) return;
-        if (this.lastBaseUrl === baseUrl) return;
-
-        this.lastBaseUrl = baseUrl;
-        this.createClient();
     }
 
     public async query<T = any>(options: QueryOptions, path: string): Promise<T>;
@@ -427,13 +444,8 @@ export class CGraphQLClient {
 
     /** @internal */
     public createGetFiltered<TEntity, TFilter>(entityName: TDBEntity, nativeFragment: DocumentNode,
-        nativeFragmentName: string, filterName: string): ((options: {
-            pagedParams?: TPagedParams<TEntity>;
-            filterParams?: TFilter;
-            customFragment?: DocumentNode;
-            customFragmentName?: string;
-        }) => Promise<TPagedList<TEntity>>) {
-        const path = GraphQLPaths[entityName].getFiltered;
+        nativeFragmentName: string, filterName: string, path?: string): ((options: TGetFilteredOptions<TEntity, TFilter>) => Promise<TPagedList<TEntity>>) {
+        path = path ?? GraphQLPaths[entityName].getFiltered;
 
         return ({ pagedParams, filterParams, customFragment, customFragmentName }) => {
             const fragment = customFragment ?? nativeFragment;
@@ -458,7 +470,7 @@ export class CGraphQLClient {
                     pagedParams: pagedParams ?? {},
                     filterParams,
                 }
-            }, path);
+            }, path as string);
         }
     }
 
@@ -548,6 +560,17 @@ export class CGraphQLClient {
                 data,
             }
         }, path);
+    }
+
+    /** 
+    * Get filtered records of a generic entity 
+    * @auth admin
+    */
+    public getFilteredEntities<TEntity, TFilter>(entityName: string, fragment: DocumentNode,
+        fragmentName: string, options: TGetFilteredOptions<TEntity, TFilter>) {
+        const path = GraphQLPaths.Generic.getFiltered + entityName;
+        return this.createGetFiltered<TEntity, TBaseFilter>('Generic',
+            fragment, fragmentName, 'BaseFilterInput', path)(options);
     }
 
     // < Generic CRUD >
@@ -1043,11 +1066,13 @@ export class CGraphQLClient {
             isEnabled
             name
             title
+            version
             isInstalled
             isUpdating
             hasAdminBundle
             settings
             defaultSettings
+            moduleInfo
         }
     `;
     // </Plugin>
@@ -1064,11 +1089,13 @@ export class CGraphQLClient {
             updateDate
             isEnabled
             name
+            version
             isInstalled
             isUpdating
             hasAdminBundle
             settings
             defaultSettings
+            moduleInfo
         }
     `;
     // </Theme>

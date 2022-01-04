@@ -1,12 +1,11 @@
 import { TGetStaticProps, TPost } from '@cromwell/core';
-import { CContainer, getGraphQLClient, getGraphQLErrorInfo, Link, LoadBox } from '@cromwell/core-frontend';
+import { CContainer, EntityHead, getGraphQLClient, getGraphQLErrorInfo, Link, LoadBox } from '@cromwell/core-frontend';
 import { useRouter } from 'next/router';
 import React from 'react';
 
 import Layout from '../../components/layout/Layout';
 import { PostInfo } from '../../components/postCard/PostCard';
 import postStyles from '../../components/postCard/PostCard.module.scss';
-import { getHead } from '../../helpers/getHead';
 import { removeUndefined } from '../../helpers/removeUndefined';
 import commonStyles from '../../styles/common.module.scss';
 import styles from '../../styles/pages/BlogPost.module.scss';
@@ -29,11 +28,10 @@ const BlogPostPage: TPageWithLayout<BlogPostProps> = (props) => {
 
     return (
         <CContainer className={styles.BlogPost} id="post_01">
-            {getHead({
-                documentContext: props.cmsProps?.documentContext,
-                image: post?.mainImage,
-                data: post,
-            })}
+            <EntityHead
+                entity={post}
+                useFallback
+            />
             <CContainer className={commonStyles.content} id="post_02">
                 {post?.mainImage && (
                     <img className={styles.mainImage} src={post.mainImage} />

@@ -1,11 +1,21 @@
-import { EDBEntity, getRandStr, getStoreItem, TBasePageEntity, TDeleteManyInput, TPagedList, TPagedParams } from '@cromwell/core';
-import { ConnectionOptions, DeleteQueryBuilder, getConnection, Repository, SelectQueryBuilder } from 'typeorm';
+import {
+    EDBEntity,
+    getRandStr,
+    getStoreItem,
+    TBasePageEntity,
+    TDeleteManyInput,
+    TPagedList,
+    TPagedParams,
+} from '@cromwell/core';
+import { ConnectionOptions, DeleteQueryBuilder, getConnection, Repository, BaseEntity, SelectQueryBuilder } from 'typeorm';
 
-import { getPaged, getSqlBoolStr, getSqlLike, wrapInQuotes, applyBaseFilter } from '../helpers/base-queries';
-import { getLogger } from '../helpers/logger';
+import { applyBaseFilter, getPaged, getSqlBoolStr, getSqlLike, wrapInQuotes } from '../helpers/base-queries';
 import { entityMetaRepository } from '../helpers/entity-meta';
+import { BasePageEntity } from '../models/entities/base-page.entity';
+import { getLogger } from '../helpers/logger';
 import { PageStats } from '../models/entities/page-stats.entity';
 import { BaseFilterInput } from '../models/filters/base-filter.filter';
+import { PagedParamsInput } from '../models/inputs/paged-params.input';
 
 const logger = getLogger();
 
@@ -14,7 +24,7 @@ export class BaseRepository<EntityType, EntityInputType = EntityType> extends Re
     public dbType: ConnectionOptions['type'];
 
     constructor(
-        private EntityClass: new (...args: any[]) => EntityType & { id?: number }
+        private EntityClass: (new (...args: any[]) => EntityType & { id?: number }),
     ) {
         super();
         this.dbType = getStoreItem('dbInfo')?.dbType as ConnectionOptions['type']
@@ -64,7 +74,7 @@ export class BaseRepository<EntityType, EntityInputType = EntityType> extends Re
         for (const key of Object.keys(input)) {
             entity[key] = input[key];
         }
-        entity = await this.save<EntityType>(entity);
+        entity = await this.save(entity);
         return entity;
     }
 
@@ -141,11 +151,19 @@ export class BaseRepository<EntityType, EntityInputType = EntityType> extends Re
         return entity?.[this.metadata.tablePath + '_' + 'views'];
     }
 
-    applyBaseFilter(qb: SelectQueryBuilder<TBasePageEntity>, filter?: BaseFilterInput): SelectQueryBuilder<TBasePageEntity> {
+    applyBaseFilter<EntityType = TBasePageEntity>(qb: SelectQueryBuilder<EntityType>, filter?: BaseFilterInput): SelectQueryBuilder<EntityType> {
         if (!filter) return qb;
         const entityType = entityMetaRepository.getEntityType(this.EntityClass);
-        if (!entityType) return qb;
-        return applyBaseFilter({ qb, filter, entityType, dbType: this.dbType });
+        return applyBaseFilter({
+            qb, filter, dbType: this.dbType, entityType,
+            EntityClass: this.EntityClass as any,
+        });
     }
 
+    async getFilteredEntities(pagedParams?: PagedParamsInput<EntityType>, filterParams?: BaseFilterInput) {
+        logger.log('BaseRepository::getFilteredEntities ' + this.metadata.tablePath, pagedParams, filterParams);
+        const qb = this.createQueryBuilder(this.metadata.tablePath).select();
+        this.applyBaseFilter(qb, filterParams);
+        return await getPaged<EntityType>(qb, this.metadata.tablePath, pagedParams);
+    }
 }

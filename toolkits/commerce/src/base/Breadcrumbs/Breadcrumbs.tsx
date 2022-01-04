@@ -1,18 +1,26 @@
-import { TProductCategory } from '@cromwell/core';
-import { Link, CContainer } from '@cromwell/core-frontend';
+import { TGetStaticProps, TProductCategory } from '@cromwell/core';
+import { CContainer, Link, usePagePropsContext } from '@cromwell/core-frontend';
 import clsx from 'clsx';
 import React from 'react';
 
+import { removeUndefined } from '../../helpers/removeUndefined';
 import { HomeIcon } from '../icons';
 import styles from './Breadcrumbs.module.scss';
 import { getData } from './getData';
 
+type ServerSideData = TProductCategory[] | undefined | null;
+
+type GetStaticPropsData = {
+  'ccom_breadcrumbs'?: ServerSideData;
+}
+
+
 export type BreadcrumbProps = {
   /**
-   * data from getData function
+   * Override data by manually calling `getData` function and passing its result 
    */
-  data: TProductCategory[] | undefined;
-  className?: string;
+  data?: TProductCategory[] | undefined;
+  classes?: Partial<Record<'root' | 'wrapper' | 'breadcrumb' | 'link', string>>;
   style?: React.CSSProperties;
   maxItems?: number;
   elements?: BreadcrumbElements;
@@ -36,7 +44,10 @@ export type BreadcrumbElements = {
 }
 
 export function Breadcrumbs(props: BreadcrumbProps) {
-  const { maxItems, className, style, data, elements } = props;
+  const { maxItems, classes, style, elements } = props;
+  const pageProps = usePagePropsContext<GetStaticPropsData>();
+  const data: ServerSideData = Object.assign({}, pageProps.pageProps?.ccom_breadcrumbs, props.data);
+
   const Wrapper = elements?.Wrapper ?? ((props) => (
     <div style={{ display: 'flex', ...(props.style ?? {}) }}
       className={props.className}
@@ -52,15 +63,17 @@ export function Breadcrumbs(props: BreadcrumbProps) {
 
   return (
     <CContainer id="ccom_breadcrumbs"
-      className={clsx(styles.Breadcrumbs, className)}
+      className={clsx(styles.Breadcrumbs, classes?.root)}
       style={style}
     >
-      <Wrapper maxItems={maxItems ?? 5}>
+      <Wrapper maxItems={maxItems ?? 5}
+        className={clsx(classes?.wrapper)}
+      >
         <Link href="/">
           <Breadcrumb
             label="Home"
             key="/"
-            className={styles.breadcrumb}
+            className={clsx(styles.breadcrumb, classes?.breadcrumb)}
             icon={<HomeIcon style={{ width: '17px', height: '17px' }} fontSize="small" />}
           />
         </Link>
@@ -68,9 +81,11 @@ export function Breadcrumbs(props: BreadcrumbProps) {
           return (
             <Link
               key={crumb.id}
-              href={`/category/${crumb.slug}`}>
+              href={`/category/${crumb.slug}`}
+              className={clsx(classes?.link)}
+            >
               <Breadcrumb
-                className={styles.breadcrumb}
+                className={clsx(styles.breadcrumb, classes?.breadcrumb)}
                 label={crumb.name ?? ''}
               />
             </Link>
@@ -81,4 +96,27 @@ export function Breadcrumbs(props: BreadcrumbProps) {
   )
 }
 
+Breadcrumbs.withGetProps = (originalGetProps?: TGetStaticProps) => {
+  const getProps: TGetStaticProps<GetStaticPropsData> = async (context) => {
+    const originProps = (await originalGetProps?.(context)) ?? {};
+    const contextSlug = context?.params?.slug;
+    const slug = (contextSlug && typeof contextSlug === 'string') && contextSlug || null;
+
+    return {
+      ...originProps,
+      props: {
+        ...(((originProps as any).props ?? {}) as Record<string, any>),
+        ccom_breadcrumbs: removeUndefined(slug && await getData({ productSlug: slug })) || null,
+      }
+    }
+  }
+
+  return getProps;
+}
+
 Breadcrumbs.getData = getData;
+
+Breadcrumbs.useData = (): ServerSideData | undefined => {
+  const pageProps = usePagePropsContext<GetStaticPropsData>();
+  return pageProps.pageProps?.ccom_breadcrumbs;
+}

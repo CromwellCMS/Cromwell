@@ -1,6 +1,16 @@
-import { TProduct, getRandStr } from '@cromwell/core';
+import { getRandStr, TAttribute, TProduct } from '@cromwell/core';
 
 class ModuleState {
+    /**
+     * `id` of CList block rendered by `Category` base ccom component
+     */
+    public categoryListId?: string;
+
+    /**
+     * All available attributes in the store. Used for validation and displaying info
+     */
+    public attributes?: TAttribute[];
+
     /**
      * { [product_id]: product_state}
      */
@@ -64,6 +74,8 @@ class ModuleState {
         this.products[productId].canValidate = canValidate;
         this.triggerProductUpdateListeners(productId);
     }
+
+
 
 }
 

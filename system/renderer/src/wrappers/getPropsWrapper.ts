@@ -67,10 +67,13 @@ const wrapGetProps = (pageName: TDefaultPageName | string,
         context.cmsSettings = rendererData.cmsSettings;
         context.themeCustomConfig = rendererData.themeCustomConfig;
         context.pagesInfo = rendererData.pagesInfo;
-        const [childStaticProps, plugins] = await Promise.all([
-            getThemeStaticProps(pageName, originalGet, context),
-            pluginsDataFetcher(pageConfigName, context, pluginsSettings),
-        ]);
+
+        const childStaticProps = await getThemeStaticProps(pageName, originalGet, context);
+        const extraPlugins = childStaticProps?.extraPlugins;
+        if (childStaticProps?.extraPlugins) delete childStaticProps?.extraPlugins;
+
+        const plugins = await pluginsDataFetcher(pageConfigName, context, pluginsSettings,
+            extraPlugins);
 
         const pluginsNextProps = Object.assign({}, ...Object.values(plugins)
             .map(plugin => plugin.nextProps).filter(Boolean));

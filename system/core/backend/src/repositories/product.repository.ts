@@ -58,7 +58,9 @@ export class ProductRepository extends BaseRepository<Product> {
         qb.addSelect(`AVG(${reviewTable}.${String(ratingKey)})`, this.metadata.tablePath + '_' + averageKey)
             .addSelect(`COUNT(${reviewTable}.id)`, this.metadata.tablePath + '_' + reviewsCountKey)
             .leftJoin(ProductReview, reviewTable,
-                `${reviewTable}.${this.quote('productId')} = ${this.metadata.tablePath}.id `)
+                `${reviewTable}.${this.quote('productId')} = ${this.metadata.tablePath}.id AND ` +
+                `${reviewTable}.${this.quote('approved')} = :approvedValue `)
+            .setParameter('approvedValue', true)
             .groupBy(`${this.metadata.tablePath}.id`);
     }
 

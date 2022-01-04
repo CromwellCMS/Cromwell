@@ -3,6 +3,7 @@ import { Arg, Args, ArgsType, Authorized, Field, Int, Mutation, ObjectType, Quer
 import { EntityRepository, getCustomRepository, ObjectType as TObjectType } from 'typeorm';
 
 import { PagedParamsInput } from '../models/inputs/paged-params.input';
+import { BaseFilterInput } from '../models/filters/base-filter.filter';
 import { PagedMeta } from '../models/paged/meta.paged';
 import { BaseRepository } from '../repositories/base.repository';
 
@@ -48,6 +49,7 @@ export const createGenericEntity = <EntityType, EntityInputType = EntityType>(en
     const createPath = GraphQLPaths.Generic.create + entityName;
     const updatePath = GraphQLPaths.Generic.update + entityName;
     const deletePath = GraphQLPaths.Generic.delete + entityName;
+    const getFilteredPath = GraphQLPaths.Generic.getFiltered + entityName;
 
     @Resolver(EntityClass, { isAbstract: true })
     abstract class GenericResolver {
@@ -77,6 +79,15 @@ export const createGenericEntity = <EntityType, EntityInputType = EntityType>(en
         @Query(() => EntityClass)
         async [getByIdPath](@Arg("id", () => Int) id: number): Promise<EntityType | undefined> {
             return this.repository.getById(id);
+        }
+
+        @Authorized<TAuthRole>("administrator", "guest", "author")
+        @Query(() => PagedEntity)
+        async [getFilteredPath](
+            @Arg("pagedParams", () => PagedParamsInput, { nullable: true }) pagedParams?: PagedParamsInput<EntityType>,
+            @Arg("filterParams", () => BaseFilterInput, { nullable: true }) filterParams?: BaseFilterInput,
+        ): Promise<TPagedList<EntityType> | undefined> {
+            return this.repository.getFilteredEntities(pagedParams, filterParams);
         }
 
         @Authorized<TAuthRole>("administrator")

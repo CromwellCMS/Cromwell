@@ -78,8 +78,8 @@ export const awaitImporter = async () => {
     }
 }
 
-export type TPagePropsContext = {
-    pageProps?: TCromwellPageCoreProps;
+export type TPagePropsContext<TProps = unknown> = {
+    pageProps?: TCromwellPageCoreProps & TProps;
     router?: NextRouter;
     routeInfo?: {
         fullUrl?: string;
@@ -90,6 +90,6 @@ export type TPagePropsContext = {
 
 export const PagePropsContext = React.createContext<TPagePropsContext>({});
 
-export const usePagePropsContext = (): TPagePropsContext => {
-    return React.useContext(PagePropsContext);
+export const usePagePropsContext = <TProps = unknown>(): TPagePropsContext<TProps> => {
+    return React.useContext<TPagePropsContext<TProps>>(PagePropsContext as any);
 }

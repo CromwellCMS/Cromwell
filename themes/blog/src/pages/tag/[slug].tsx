@@ -8,7 +8,15 @@ import {
     TPostFilter,
     TTag,
 } from '@cromwell/core';
-import { CContainer, CList, getGraphQLClient, getGraphQLErrorInfo, LoadBox, TCList } from '@cromwell/core-frontend';
+import {
+    CContainer,
+    CList,
+    EntityHead,
+    getGraphQLClient,
+    getGraphQLErrorInfo,
+    LoadBox,
+    TCList,
+} from '@cromwell/core-frontend';
 import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import { useRouter } from 'next/router';
 import React, { useEffect, useRef } from 'react';
@@ -17,7 +25,6 @@ import Layout from '../../components/layout/Layout';
 import layoutStyles from '../../components/layout/Layout.module.scss';
 import { Pagination } from '../../components/pagination/Pagination';
 import { PostCard } from '../../components/postCard/PostCard';
-import { getHead } from '../../helpers/getHead';
 import { handleGetFilteredPosts } from '../../helpers/getPosts';
 import { removeUndefined } from '../../helpers/removeUndefined';
 import commonStyles from '../../styles/common.module.scss';
@@ -79,11 +86,10 @@ const TagPage: TPageWithLayout<TagPageProps> = (props) => {
 
     return (
         <CContainer className={commonStyles.content} id="tag_01">
-            {getHead({
-                documentContext: props.cmsProps?.documentContext,
-                image: props?.tag?.image,
-                data: props?.tag,
-            })}
+            <EntityHead
+                entity={tag}
+                useFallback
+            />
             <CContainer className={styles.filter} id="tag_02">
                 <div>
                     <h1 className={styles.title}>{tag?.name ?? ''}</h1>
@@ -168,7 +174,7 @@ export const getStaticProps: TGetStaticProps<TagPageProps> = async (context) => 
 
     if (!tag) {
         return {
-            notFound: true
+            notFound: true,
         }
     }
 

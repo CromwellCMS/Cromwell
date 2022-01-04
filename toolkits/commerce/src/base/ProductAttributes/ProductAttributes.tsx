@@ -1,10 +1,11 @@
 import { TAttribute, TAttributeInstance, TAttributeInstanceValue, TProduct } from '@cromwell/core';
-import { CContainer, getCStore, getGraphQLClient, getGraphQLErrorInfo } from '@cromwell/core-frontend';
+import { CContainer, getCStore } from '@cromwell/core-frontend';
 import clsx from 'clsx';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { useForceUpdate } from '../../helpers/forceUpdate';
 import { moduleState } from '../../helpers/state';
+import { useStoreAttributes } from '../../helpers/useStoreAttributes';
 import styles from './ProductAttributes.module.scss';
 
 export type ProductAttributesProps = {
@@ -54,10 +55,7 @@ export type ProductAttributesProps = {
 export const ProductAttributes = (props: ProductAttributesProps): JSX.Element => {
   const { product, onChange,
     canValidate = product?.id ? moduleState.products[product.id]?.canValidate : undefined } = props;
-  const attributesRef = useRef(props.attributes);
-  if (props.attributes && props.attributes !== attributesRef.current) {
-    attributesRef.current = props.attributes;
-  }
+  const attributes = useStoreAttributes(props.attributes);
   const productAttributes = product?.attributes;
   const [checkedAttrs, setCheckedAttrs] = useState<Record<string, string[]>>({});
   const cstore = getCStore();
@@ -68,8 +66,6 @@ export const ProductAttributes = (props: ProductAttributesProps): JSX.Element =>
   const forceUpdate = useForceUpdate();
 
   useEffect(() => {
-    checkAttributesData();
-
     const onUpdateId = product?.id && moduleState.addOnProductUpdateListener(product.id, () => {
       forceUpdate();
     });
@@ -83,18 +79,6 @@ export const ProductAttributes = (props: ProductAttributesProps): JSX.Element =>
       }
     }
   }, []);
-
-  const checkAttributesData = async () => {
-    const client = getGraphQLClient();
-    if (!attributesRef.current) {
-      try {
-        attributesRef.current = await client?.getAttributes();
-        forceUpdate();
-      } catch (e) {
-        console.error('ProductAttributes::checkAttributesData', getGraphQLErrorInfo(e))
-      }
-    }
-  }
 
   const handleSetAttribute = (key: string, checks: string[]) => {
     if (!product) return;
@@ -117,7 +101,7 @@ export const ProductAttributes = (props: ProductAttributesProps): JSX.Element =>
     >
       {productAttributes?.map(attr => {
         const checked: string[] | undefined = checkedAttrs[attr.key];
-        const origAttribute = attributesRef.current?.find(a => a.key === attr.key);
+        const origAttribute = attributes?.find(a => a.key === attr.key);
         let isValid = true;
 
         if (origAttribute?.required && origAttribute.key) {

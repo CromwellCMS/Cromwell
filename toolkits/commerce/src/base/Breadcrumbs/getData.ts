@@ -1,27 +1,35 @@
-import { gql } from '@apollo/client';
+import { gql, DocumentNode } from '@apollo/client';
 import { TProductCategory } from '@cromwell/core';
 import { getGraphQLClient, getGraphQLErrorInfo } from '@cromwell/core-frontend';
 
-export const getData = async (productId?: number | null):
+export const getData = async ({ productId, productSlug, productFragment, productFragmentName }: {
+    productId?: number | null;
+    productSlug?: string | null;
+    productFragment?: DocumentNode;
+    productFragmentName?: string;
+}):
     Promise<TProductCategory[] | undefined> => {
-    if (!productId) return;
     const client = getGraphQLClient();
+    if (!productId && !productSlug) return;
 
-    const product = await client.getProductById(productId, gql`
-        ${client.ProductFragment}
-        fragment ProductListFragment on Product {
-            ...ProductFragment
-            categories(pagedParams: {
-              pageSize: 30
-            }) {
+    if (!productFragment) productFragment = gql`
+    ${client.ProductFragment}
+    fragment ProductListFragment on Product {
+        ...ProductFragment
+        categories(pagedParams: {
+          pageSize: 30
+        }) {
+          id
+          name
+          parent {
               id
-              name
-              parent {
-                  id
-              }
-            }
+          }
         }
-    `, 'ProductListFragment');
+    }`;
+    if (!productFragmentName) productFragmentName = 'ProductListFragment';
+
+    const product = await (productId ? client.getProductById(productId, productFragment, productFragmentName) :
+        productSlug && client.getProductBySlug(productSlug, productFragment, productFragmentName)) || undefined;
 
     if (!product?.categories?.length) return;
     const categories = product.categories;

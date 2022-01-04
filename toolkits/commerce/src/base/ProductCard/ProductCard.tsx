@@ -270,7 +270,6 @@ export const ProductCard = (props: ProductCardProps) => {
             ))}
         </div>
       </div>
-
     </div>
   )
 }
