@@ -15,7 +15,7 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useRef } from 'react';
 
 import { removeUndefined } from '../../helpers/removeUndefined';
-import { moduleState } from '../../helpers/state';
+import { useModuleState } from '../../helpers/state';
 import { useStoreAttributes } from '../../helpers/useStoreAttributes';
 import { ProductCard as BaseProductCard, ProductCardProps } from '../ProductCard/ProductCard';
 import styles from './CategoryList.module.scss';
@@ -49,14 +49,13 @@ export function CategoryList(props: CategoryListProps) {
   const { category } = data;
   const { ProductCard = BaseProductCard, Pagination } = props?.elements ?? {};
   const attributes = useStoreAttributes(data.attributes);
+  const moduleState = useModuleState();
 
   const listInst = useRef<TCromwellBlock<TCList> | undefined>();
   const prevPath = useRef<string | undefined>();
   const listId = useRef<string>(props.listId ?? 'ccom_category_product_list');
   const router = useRouter();
   const client = getGraphQLClient();
-
-  moduleState.categoryListId = listId.current;
 
   useEffect(() => {
     if (prevPath.current) {
@@ -66,6 +65,8 @@ export function CategoryList(props: CategoryListProps) {
       }
     }
     prevPath.current = router?.asPath;
+
+    moduleState.setCategoryListId(listId.current);
   }, [router?.asPath]);
 
   return (
@@ -83,7 +84,7 @@ export function CategoryList(props: CategoryListProps) {
             return (
               <div className={styles.productWrapper} key={p.data?.id}>
                 <ProductCard
-                  product={p.data}
+                  data={p.data}
                   attributes={attributes}
                 />
               </div>

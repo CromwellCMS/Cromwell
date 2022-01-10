@@ -17,7 +17,7 @@ export default function ProductDetails(props: {
   const productVariant = useProductVariants(originalProduct);
 
   useEffect(() => {
-    if (originalProduct) cstore.addToWatchedItems({ product: originalProduct });
+    if (originalProduct) cstore.addToViewedItems({ product: originalProduct });
   }, [props.product]);
 
 

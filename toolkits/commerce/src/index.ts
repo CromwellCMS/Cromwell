@@ -7,6 +7,10 @@ export { ProductCard, ProductCardProps } from './base/ProductCard/ProductCard';
 export { CategoryList, CategoryListProps } from './base/CategoryList/CategoryList';
 export { CategorySort, CategorySortProps } from './base/CategorySort/CategorySort';
 export { CategoryFilter, CategoryFilterProps } from './base/CategoryFilter/CategoryFilter';
+export { ProductSearch, ProductSearchProps } from './base/ProductSearch/ProductSearch';
+export { Wishlist, WishlistProps } from './base/Wishlist/Wishlist';
+export { ViewedItems, ViewedItemsProps } from './base/ViewedItems/ViewedItems';
+export { CurrencySwitch, CurrencySwitchProps } from './base/CurrencySwitch/CurrencySwitch';
 
 export {
     MuiPagination,
@@ -17,7 +21,11 @@ export {
     MuiProductCard,
     MuiCategoryList,
     MuiCategorySort,
+    MuiProductSearch,
+    MuiViewedItems,
+    MuiWishlist,
+    MuiCurrencySwitch,
 } from './mui/index';
 
-export { moduleState } from './helpers/state';
+export { moduleState, useModuleState } from './helpers/state';
 export { useProductVariants } from './helpers/useProductVariants';

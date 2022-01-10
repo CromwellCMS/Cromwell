@@ -5,7 +5,7 @@ import { getGraphQLClient } from '../api/CGraphQLClient';
 const cartKey = 'crw_shop_cart_list';
 const wishlistKey = 'crw_shop_wish_list';
 const compareKey = 'crw_shop_compare_list';
-const watchedKey = 'crw_shop_watched_items';
+const viewedKey = 'crw_shop_viewed_items';
 
 const currencyKey = 'crw_shop_currency';
 
@@ -42,7 +42,7 @@ export type TCStoreOperationResult = {
  */
 export class CStore {
 
-    // < LISTS >    cart / wishlist / comparison list / watched items
+    // < LISTS >    cart / wishlist / comparison list / viewed items
     private localStorage: TLocalStorage & { internalStore: Record<string, any> } = {
         internalStore: {},
         getItem: (key: string) => this.localStorage.internalStore[key],
@@ -322,29 +322,29 @@ export class CStore {
     }
 
 
-    public getWatchedItems = () => {
-        return this.getList(watchedKey);
+    public getViewedItems = () => {
+        return this.getList(viewedKey);
     }
 
-    public saveWatchedItems = (items: TStoreListItem[]) => {
-        return this.saveList(watchedKey, items);
+    public saveViewedItems = (items: TStoreListItem[]) => {
+        return this.saveList(viewedKey, items);
     }
 
-    public isInWatchedItems = (item: TStoreListItem): boolean => {
-        if (this.getIndexInList(watchedKey, item) > -1) return true;
+    public isInViewedItems = (item: TStoreListItem): boolean => {
+        if (this.getIndexInList(viewedKey, item) > -1) return true;
         return false;
     }
 
-    public addToWatchedItems = (item: TStoreListItem) => {
-        return this.addToList(watchedKey, item);
+    public addToViewedItems = (item: TStoreListItem) => {
+        return this.addToList(viewedKey, item);
     }
 
-    public onWatchedItemsUpdate = (cb: (cart: TStoreListItem[]) => any, id?: string): string => {
-        return this.addOnListUpdated(watchedKey, cb, id);
+    public onViewedItemsUpdate = (cb: (cart: TStoreListItem[]) => any, id?: string): string => {
+        return this.addOnListUpdated(viewedKey, cb, id);
     }
 
-    public removeOnWatchedItemsUpdate = (id: string) => {
-        return this.removeOnListUpdated(watchedKey, id);
+    public removeOnViewedItemsUpdate = (id: string) => {
+        return this.removeOnListUpdated(viewedKey, id);
     }
 
     /**
@@ -430,8 +430,8 @@ export class CStore {
         await this.updateList(compareKey);
     }
 
-    public updateWatchedItems = async () => {
-        await this.updateList(watchedKey);
+    public updateViewedItems = async () => {
+        await this.updateList(viewedKey);
     }
 
 
@@ -447,8 +447,8 @@ export class CStore {
         this.saveList(compareKey, []);
     }
 
-    public clearWatchedItems = () => {
-        this.saveList(watchedKey, []);
+    public clearViewedItems = () => {
+        this.saveList(viewedKey, []);
     }
 
 

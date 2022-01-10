@@ -17,6 +17,7 @@ import {
     TPageInfo,
     TPalette,
     TPaymentSession,
+    TPluginEntity,
     TProductReview,
     TProductReviewInput,
     TSystemUsage,
@@ -820,6 +821,15 @@ export class CRestApiClient {
     public savePluginSettings = async (pluginName: string, settings: any, options?: TRequestOptions): Promise<boolean> => {
         const data = await this.post<boolean>(`v1/plugin/settings?pluginName=${pluginName}`, settings, options);
         return data ?? false;
+    }
+
+    /**
+     * Get Plugin's full DB record
+     * @param pluginName npm package name of Plugin
+     * @auth admin
+     */
+    public getPluginEntity = async (pluginName: string, options?: TRequestOptions): Promise<TPluginEntity | undefined> => {
+        return this.get(`v1/plugin/entity?pluginName=${pluginName}`, options);
     }
 
     /**

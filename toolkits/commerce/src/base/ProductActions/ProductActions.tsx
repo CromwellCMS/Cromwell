@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 
 import { useForceUpdate } from '../../helpers/forceUpdate';
 import { notifier as baseNotifier, NotifierActionOptions } from '../../helpers/notifier';
-import { moduleState } from '../../helpers/state';
+import { useModuleState } from '../../helpers/state';
 import {
   AddShoppingCartIcon as BaseAddShoppingCartIcon,
   FavoriteIcon as BaseFavoriteIcon,
@@ -58,6 +58,7 @@ export type ProductActionsProps = {
 
 export const ProductActions = (props: ProductActionsProps) => {
   // Props
+  const moduleState = useModuleState();
   const { product, attributes, onCartOpen,
     modifiedProduct = (product?.id ? moduleState.products[product?.id]?.modifiedProduct
       : undefined) ?? product,
@@ -69,11 +70,8 @@ export const ProductActions = (props: ProductActionsProps) => {
   const { Button = BaseButton,
     AddShoppingCartIcon = BaseAddShoppingCartIcon,
     ShoppingCartIcon = BaseShoppingCartIcon,
-    FavoriteIcon = BaseFavoriteIcon, QuantityField = ((props) => {
-      return <input value={props + ''}
-        onChange={(event) => props.onChange(Number(event.target.value))}
-      />;
-    })
+    FavoriteIcon = BaseFavoriteIcon,
+    QuantityField = DefaultQuantityField,
   } = elements;
 
   const forceUpdate = useForceUpdate();
@@ -243,4 +241,13 @@ export const ProductActions = (props: ProductActionsProps) => {
       </CContainer>
     </CContainer>
   )
+}
+
+const DefaultQuantityField = (props) => {
+  return <input value={props.value + ''}
+    type="number"
+    min="1"
+    style={{ maxWidth: '50px' }}
+    onChange={(event) => props.onChange(Number(event.target.value))}
+  />;
 }

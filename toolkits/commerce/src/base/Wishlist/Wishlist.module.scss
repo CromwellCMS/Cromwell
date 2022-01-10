@@ -1,0 +1,12 @@
+@import "../common.module.scss";
+
+.Wishlist {
+    position: relative;
+    height: 100%;
+    overflow: auto;
+    @include styledScrollBar;
+}
+
+.wishlistProduct {
+    margin-bottom: 15px;
+}

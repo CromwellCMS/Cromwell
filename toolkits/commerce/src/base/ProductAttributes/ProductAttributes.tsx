@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
 
 import { useForceUpdate } from '../../helpers/forceUpdate';
-import { moduleState } from '../../helpers/state';
+import { useModuleState } from '../../helpers/state';
 import { useStoreAttributes } from '../../helpers/useStoreAttributes';
 import styles from './ProductAttributes.module.scss';
 
@@ -53,6 +53,7 @@ export type ProductAttributesProps = {
  * product from `onChange` function prop
  */
 export const ProductAttributes = (props: ProductAttributesProps): JSX.Element => {
+  const moduleState = useModuleState();
   const { product, onChange,
     canValidate = product?.id ? moduleState.products[product.id]?.canValidate : undefined } = props;
   const attributes = useStoreAttributes(props.attributes);

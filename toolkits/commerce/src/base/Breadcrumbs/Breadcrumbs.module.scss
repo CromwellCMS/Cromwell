@@ -5,3 +5,13 @@
 .breadcrumb {
     position: relative;
 }
+
+.defaultBreadcrumb {
+    margin-right: 14px;
+    display: flex;
+    align-items: center;
+    border: 1px solid #333;
+    border-radius: 30px;
+    padding: 2px 8px;
+    font-size: 14px;
+}

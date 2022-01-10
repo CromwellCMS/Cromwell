@@ -6,7 +6,7 @@ import { Footer } from '../footer/Footer';
 import { Header } from '../header/Header';
 import { CartModal } from '../modals/cart/CartModal';
 import ProductQuickView from '../modals/productQuickView/ProductQuickView';
-import { WatchedModal } from '../modals/watched/WatchedModal';
+import { ViewedModal } from '../modals/viewed/ViewedModal';
 import { WishlistModal } from '../modals/wishlist/WishlistModal';
 import styles from './Layout.module.scss';
 
@@ -28,7 +28,7 @@ export default function Layout(props: TProps | undefined) {
             <CartModal />
             <WishlistModal />
             {/* <CompareModal /> */}
-            <WatchedModal />
+            <ViewedModal />
             <ProductQuickView />
             <div className={styles.main}>
                 {props?.children}

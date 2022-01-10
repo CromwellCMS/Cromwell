@@ -1,7 +1,7 @@
 import { TProduct } from '@cromwell/core';
 import { useEffect, useRef, useState } from 'react';
 
-import { moduleState } from './state';
+import { useModuleState } from './state';
 
 /**
  * A hook that will track selection of product attributes by user and apply
@@ -10,6 +10,7 @@ import { moduleState } from './state';
  * @param original Original, unmodified product
  */
 export const useProductVariants = (original?: TProduct | null): TProduct => {
+    const moduleState = useModuleState();
     const productRef = useRef(original);
     const [product, setProduct] = useState(original);
     if (original && original.id !== productRef.current?.id) {

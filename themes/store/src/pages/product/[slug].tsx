@@ -1,5 +1,5 @@
 import { MuiBreadcrumbs, MuiProductReviews } from '@cromwell/commerce';
-import { TAttribute, TGetStaticProps, TProduct, TProductCategory } from '@cromwell/core';
+import { TAttribute, TGetStaticProps, TProduct } from '@cromwell/core';
 import { CContainer, CPlugin, CText, EntityHead, getGraphQLClient, getGraphQLErrorInfo } from '@cromwell/core-frontend';
 import clsx from 'clsx';
 import React, { ReactElement } from 'react';
@@ -15,7 +15,6 @@ import type { TPageWithLayout } from '../_app';
 export interface ProductProps {
   product?: TProduct | null;
   attributes?: TAttribute[];
-  breadcrumbs?: TProductCategory[];
 }
 
 const Product: TPageWithLayout<ProductProps> = (props) => {
@@ -27,7 +26,7 @@ const Product: TPageWithLayout<ProductProps> = (props) => {
         entity={product}
         useFallback
       />
-      <MuiBreadcrumbs data={props.breadcrumbs} classes={{ root: styles.breadcrumbs }} />
+      <MuiBreadcrumbs classes={{ root: styles.breadcrumbs }} />
       <ProductDetails {...props} />
       <CContainer id="Product_ProductShowcase_container" >
         <CText id="product_showcase-title"

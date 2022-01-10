@@ -1,6 +1,8 @@
-import { gql, DocumentNode } from '@apollo/client';
+import { DocumentNode, gql } from '@apollo/client';
 import { TProductCategory } from '@cromwell/core';
 import { getGraphQLClient, getGraphQLErrorInfo } from '@cromwell/core-frontend';
+
+import { ServerSideData } from './Breadcrumbs';
 
 export const getData = async ({ productId, productSlug, productFragment, productFragmentName }: {
     productId?: number | null;
@@ -8,7 +10,7 @@ export const getData = async ({ productId, productSlug, productFragment, product
     productFragment?: DocumentNode;
     productFragmentName?: string;
 }):
-    Promise<TProductCategory[] | undefined> => {
+    Promise<ServerSideData> => {
     const client = getGraphQLClient();
     if (!productId && !productSlug) return;
 
@@ -100,7 +102,9 @@ export const getData = async ({ productId, productSlug, productFragment, product
         if (parentCategories)
             getBreadCrumb(parentCategories);
 
-        return breadCrumbs.reverse();
+        return {
+            categories: breadCrumbs.reverse(),
+        }
     } catch (error) {
         console.error(getGraphQLErrorInfo(error));
     }

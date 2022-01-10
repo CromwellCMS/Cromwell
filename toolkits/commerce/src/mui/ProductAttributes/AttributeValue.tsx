@@ -1,9 +1,10 @@
-
 import { Button } from '@mui/material';
 import clsx from 'clsx';
 import React from 'react';
-import styles from './ProductAttributes.module.scss';
-import { ProductAttributesProps } from '../../base/ProductAttributes/ProductAttributes'
+
+import { ProductAttributesProps } from '../../base/ProductAttributes/ProductAttributes';
+import styles from './MuiProductAttributes.module.scss';
+
 
 type CompType = Required<Required<ProductAttributesProps>['elements']>['AttributeValue'];
 

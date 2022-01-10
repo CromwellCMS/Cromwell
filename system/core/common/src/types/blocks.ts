@@ -24,7 +24,7 @@ export type TGetStaticPropsResult<P> = GetStaticPropsResult<P> & {
      * Register extra plugins on a page without configuring them in `cromwell.config.js`
      * Note: every plugin on the page must be registered to get its settings server-side.
      */
-    extraPlugins?: TRegisteredPluginInfo[];
+    extraPlugins?: (TRegisteredPluginInfo | string)[];
 }
 
 export type TGetStaticProps<P = any, Q extends ParsedUrlQuery = ParsedUrlQuery> = (ctx: TStaticPageContext<Q>) =>

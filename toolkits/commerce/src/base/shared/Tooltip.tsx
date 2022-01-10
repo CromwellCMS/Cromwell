@@ -15,5 +15,5 @@ export type TBaseTooltipProps = {
 export type TBaseTooltip = React.ComponentType<TBaseTooltipProps>;
 
 export const BaseTooltip: TBaseTooltip = (props) => {
-    return <>{props.children}</>
+    return <>{props.children}</>;
 }

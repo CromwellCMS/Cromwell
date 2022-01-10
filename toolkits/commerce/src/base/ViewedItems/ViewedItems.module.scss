@@ -1,0 +1,12 @@
+@import "../common.module.scss";
+
+.ViewedItems {
+    position: relative;
+    height: 100%;
+    overflow: auto;
+    @include styledScrollBar;
+}
+
+.viewedItemsProduct {
+    margin-bottom: 15px;
+}

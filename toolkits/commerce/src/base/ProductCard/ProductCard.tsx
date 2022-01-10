@@ -6,10 +6,11 @@ import {
   TDefaultPageName,
   TProduct,
   TStoreListItem,
+  resolvePageRoute
 } from '@cromwell/core';
 import { getCStore, Link, TCStoreOperationResult, usePagePropsContext } from '@cromwell/core-frontend';
 import clsx from 'clsx';
-import * as NextImage from 'next/image';
+import Image, { ImageProps } from 'next/image';
 import React, { useEffect } from 'react';
 
 import { useForceUpdate } from '../../helpers/forceUpdate';
@@ -20,11 +21,10 @@ import { BaseRating, TBaseRatingProps } from '../shared/Rating';
 import { BaseTooltip, TBaseTooltipProps } from '../shared/Tooltip';
 import styles from './ProductCard.module.scss';
 
-const Image = NextImage.default;
-const Empty = (props) => props?.children;
+const Empty = (props) => props?.children ?? null;
 
 export type ProductCardProps = {
-  product?: TProduct;
+  data?: TProduct;
   attributes?: TAttribute[];
   classes?: Partial<Record<'root' | 'horizontal_variant' | 'image' | 'image_container' | 'actions' | 'action_button'
     | 'title' | 'price_block' | 'description' | 'rating', string>>;
@@ -56,7 +56,7 @@ export type ProductCardProps = {
       cardProps: ProductCardProps;
     }>;
   }
-  imageProps?: Partial<NextImage.ImageProps>;
+  imageProps?: Partial<ImageProps>;
   noImagePlaceholder?: string;
   getProductLink?: (product: TProduct) => string;
   text?: {
@@ -71,7 +71,7 @@ export type ProductCardProps = {
 }
 
 export const ProductCard = (props: ProductCardProps) => {
-  const { product, onOpenCart, notifier = baseNotifier, notifierOptions = {},
+  const { data: product, onOpenCart, notifier = baseNotifier, notifierOptions = {},
     elements = {}, imageProps, getProductLink, classes, text } = props ?? {};
   const { OtherActions = Empty, Rating = BaseRating,
     AddCartButton = BaseButton, AddWishlistButton = BaseButton,
@@ -85,7 +85,7 @@ export const ProductCard = (props: ProductCardProps) => {
       ' or provide `getProductLink` prop');
   }
   const productLink = product && (getProductLink ? getProductLink(product) :
-    `/${productBaseRoute}/${product?.slug ?? product?.id}`);
+    productBaseRoute && resolvePageRoute(productBaseRoute, { slug: product?.slug ?? product?.id }));
   const cstore = getCStore();
 
   const item: TStoreListItem = {
@@ -101,8 +101,8 @@ export const ProductCard = (props: ProductCardProps) => {
     width: number;
     quality?: number;
   }) => {
+    const origin = pageContext.routeInfo?.origin;
     if (src.startsWith('/') && origin) {
-      const origin = pageContext.routeInfo?.origin;
       src = origin + src;
     }
     return src;

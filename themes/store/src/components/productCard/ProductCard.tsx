@@ -12,9 +12,10 @@ import styles from './ProductCard.module.scss';
 export const ProductCard = (props?: ProductCardProps & {
   className?: string;
 }) => {
-  const { product } = props ?? {};
+  const { data: product } = props ?? {};
   const router = useRouter();
   const isMobile = useMediaQuery<Theme>((theme) => theme.breakpoints.down('sm'));
+  const variant = (props?.variant === 'horizontal' && !isMobile) ? 'horizontal' : 'vertical';
 
   const handleOpenQuickView = () => {
     if (!product?.id) return;
@@ -24,16 +25,16 @@ export const ProductCard = (props?: ProductCardProps & {
 
   return (
     <MuiProductCard
+      data={product}
+      attributes={props?.attributes}
       classes={{
         root: clsx(props?.className, commonStyles.onHoverLinkContainer, styles.Product),
         title: commonStyles.onHoverLink,
       }}
-      product={product}
-      attributes={props?.attributes}
       onOpenCart={() => appState.isCartOpen = true}
       onOpenWishlist={() => appState.isWishlistOpen = true}
       noImagePlaceholder={'/themes/@cromwell/theme-store/no-photos.png'}
-      variant={(props?.variant === 'horizontal' && !isMobile) ? 'horizontal' : 'vertical'}
+      variant={variant}
       onFailedAddToCart={(item, result) => {
         if (result.code === 4) {
           handleOpenQuickView();

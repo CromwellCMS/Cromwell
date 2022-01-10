@@ -2,7 +2,7 @@ import { getBlockInstance, TProduct } from '@cromwell/core';
 import { TCList } from '@cromwell/core-frontend';
 import React, { useState } from 'react';
 
-import { moduleState } from '../../helpers/state';
+import { useModuleState } from '../../helpers/state';
 import { BaseSelect, TBaseSelect } from '../shared/Select';
 import styles from './CategorySort.module.scss';
 
@@ -28,18 +28,19 @@ export type CategorySortProps = {
 }
 
 export const CategorySort = (props: CategorySortProps) => {
-  const [sortTitle, setSortTitle] = useState('Default');
+  const [sortValue, setSortValue] = useState<string>('id');
   const { text } = props;
   const { Select = BaseSelect } = props?.elements ?? {};
+  const moduleState = useModuleState();
 
-  const handleKeyChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleValueChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value;
-    setSortTitle(value);
+    setSortValue(value);
     setTimeout(() => {
       const { listId = moduleState.categoryListId } = props;
       const option: TSortOption | undefined = sortOptions.find(o => o.value === value);
       if (option && listId) {
-        if (!option.value || option.value === 'Default' as any) {
+        if (!option.value) {
           option.value = 'id';
         }
 
@@ -54,10 +55,11 @@ export const CategorySort = (props: CategorySortProps) => {
       }
     }, 100);
   }
+
   const sortOptions: TSortOption[] = [
     {
       label: text?.default ?? 'Default',
-      value: 'Default' as any,
+      value: 'id',
     },
     {
       value: 'rating',
@@ -86,8 +88,8 @@ export const CategorySort = (props: CategorySortProps) => {
       className={styles.CategorySort}
       label={text?.sort ?? 'Sort'}
       options={sortOptions}
-      onChange={e => handleKeyChange(e)}
-      value={sortTitle}
+      onChange={e => handleValueChange(e)}
+      value={sortValue}
     />
   )
 }

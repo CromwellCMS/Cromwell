@@ -6,29 +6,35 @@ import { BreadcrumbElements, Breadcrumbs as BaseBreadcrumbs } from '../base/Brea
 import { CategoryList as BaseCategoryList, CategoryListProps } from '../base/CategoryList/CategoryList';
 import { CategorySort as BaseCategorySort } from '../base/CategorySort/CategorySort';
 import { ProductActions as BaseProductActions, ProductActionsProps } from '../base/ProductActions/ProductActions';
+import { CurrencySwitch, CurrencySwitchProps } from '../base/CurrencySwitch/CurrencySwitch';
 import {
   ProductAttributes as BaseProductAttributes,
   ProductAttributesProps,
 } from '../base/ProductAttributes/ProductAttributes';
 import { ProductCard as BaseProductCard, ProductCardProps } from '../base/ProductCard/ProductCard';
 import { ProductReviews as BaseProductReviews, ProductReviewsProps } from '../base/ProductReviews/ProductReviews';
+import { ProductSearch as BaseProductSearch, ProductSearchProps } from '../base/ProductSearch/ProductSearch';
+import { ViewedItems, ViewedItemsProps } from '../base/ViewedItems/ViewedItems';
+import { Wishlist, WishlistProps } from '../base/Wishlist/Wishlist';
 import { withElements } from '../helpers/withElements';
 import { StyledBreadcrumb } from './Breadcrumbs/Breadcrumbs';
+import { Loadbox } from './Loadbox/Loadbox';
 import { NotifierWrapper } from './Notifier/Notifier';
 import notifierStyles from './Notifier/Notifier.module.scss';
 import { Pagination } from './Pagination/Pagination';
+import { Popper } from './Popper/Popper';
 import { ActionButton } from './ProductActions/ProductActions';
 import { AttributeTitle } from './ProductAttributes/AttributeTitle';
 import { AttributeValue } from './ProductAttributes/AttributeValue';
 import { QuantityField } from './QuantityField/QuantityField';
-import { Select } from './Select';
+import { Select } from './Select/Select';
 
 export const MuiPagination = Pagination;
 
 export const MuiBreadcrumbs = withElements(BaseBreadcrumbs, {
   Wrapper: MuiLibBreadcrumbs,
   Breadcrumb: (props) => React.createElement(StyledBreadcrumb, { onClick: () => '', component: "div", ...props, } as any),
-} as BreadcrumbElements)
+} as BreadcrumbElements);
 
 export const MuiProductAttributes = withElements(BaseProductAttributes, {
   AttributeValue,
@@ -88,4 +94,29 @@ export const MuiCategoryList = withElements(BaseCategoryList, {
 
 export const MuiCategorySort = withElements(BaseCategorySort, {
   Select,
-})
+});
+
+export const MuiProductSearch = withElements(BaseProductSearch, {
+  Popper,
+  TextField: (props) => React.createElement(TextField, {
+    variant: 'outlined',
+    fullWidth: true,
+    size: 'small',
+    ...props,
+  }),
+} as ProductSearchProps['elements']);
+
+export const MuiWishlist = withElements(Wishlist, {
+  Loadbox,
+  ProductCard: MuiProductCard,
+} as WishlistProps['elements']);
+
+export const MuiViewedItems = withElements(ViewedItems, {
+  Loadbox,
+  ProductCard: MuiProductCard,
+} as ViewedItemsProps['elements']);
+
+export const MuiCurrencySwitch = withElements(CurrencySwitch, {
+  Select: Select,
+} as CurrencySwitchProps['elements']);
+

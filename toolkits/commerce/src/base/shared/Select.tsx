@@ -17,16 +17,15 @@ export type TSelectProps = {
 export type TBaseSelect = React.ComponentType<TSelectProps>;
 
 export const BaseSelect = (props: TSelectProps) => {
-  const { name, label, style, className, onChange } = props;
+  const { name, label, style, className, options, onChange } = props;
   const id = useRef(props.id || getRandStr(8));
   return (
     <div style={style} className={className}>
-      <p>{label ?? ''}</p>
-      <label htmlFor={id.current}>{props.label}</label>
+      <label htmlFor={id.current}>{label ?? ''}</label>
       <select name={name ?? id.current} id={id.current}
         onChange={onChange}
       >
-        {props.options?.map((option) => {
+        {options?.map((option) => {
           const label = typeof option === 'object' ? option.label : option;
           const value = typeof option === 'object' ? option.value : option;
           return (

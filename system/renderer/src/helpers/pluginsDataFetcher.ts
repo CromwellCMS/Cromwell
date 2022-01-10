@@ -1,5 +1,5 @@
 import { TDefaultPageName, TRegisteredPluginInfo, TStaticPageContext, TStaticPagePluginContext } from '@cromwell/core';
-import { getModuleImporter } from '@cromwell/core-frontend';
+import { getModuleImporter, getRestApiClient } from '@cromwell/core-frontend';
 
 import { fsRequire, getPluginCjsPath } from './initRenderer';
 
@@ -17,7 +17,7 @@ const cachedPlugins: Record<string, {
  * @param context - StaticPageContext of Page
  */
 export const pluginsDataFetcher = async (pageName: TDefaultPageName | string, context: TStaticPageContext,
-    pluginsData?: TPluginsSettings, extraPlugins?: TRegisteredPluginInfo[]) => {
+    pluginsData?: TPluginsSettings, extraPlugins?: (TRegisteredPluginInfo | string)[]) => {
     const plugins: Record<string, {
         data?: any;
         nextProps?: any;
@@ -27,8 +27,37 @@ export const pluginsDataFetcher = async (pageName: TDefaultPageName | string, co
 
     const configPlugins = Object.values(pluginsData);
     for (const extra of (extraPlugins ?? [])) {
-        if (!configPlugins.find(p => p.pluginName === extra.pluginName)) {
-            configPlugins.push(extra);
+        const extraName = typeof extra === 'object' ? extra.pluginName : extra;
+
+        if (!configPlugins.find(p => {
+            const name = typeof p === 'object' ? p.pluginName : p;
+            return name === extraName;
+        })) {
+            if (typeof extra === 'string') {
+                const client = getRestApiClient();
+                // Register plugin dynamically. Usually Plugins registered in the cromwell.config.js 
+                // file or in the DB (by Theme editor). But it's also possible to register
+                // plugins by theme authors in `getStaticProps` function. In this case
+                // we don't get Plugin's info and settings from `client.getRendererRage` so 
+                // we need fetch settings here
+                const entity = await client.getPluginEntity(extra);
+
+                let pluginSettings = null;
+                try {
+                    pluginSettings = entity?.settings && JSON.parse(entity?.settings) || null;
+                } catch (error) {
+                    console.error('Failed to parse JSON settings of ' + extra, error);
+                }
+                configPlugins.push({
+                    pluginName: extra,
+                    // It's better to pass `version` in `extraPlugins` to allow caching
+                    version: entity?.version || null,
+                    globalSettings: pluginSettings,
+                });
+            }
+            if (typeof extra === 'object') {
+                configPlugins.push(extra);
+            }
         }
     }
 

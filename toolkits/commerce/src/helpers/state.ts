@@ -1,4 +1,6 @@
 import { getRandStr, TAttribute, TProduct } from '@cromwell/core';
+import { useEffect } from 'react';
+import { useForceUpdate } from './forceUpdate';
 
 class ModuleState {
     /**
@@ -6,10 +8,20 @@ class ModuleState {
      */
     public categoryListId?: string;
 
+    public setCategoryListId(id: string) {
+        this.categoryListId = id;
+        this.triggerUpdateHooks();
+    }
+
     /**
      * All available attributes in the store. Used for validation and displaying info
      */
     public attributes?: TAttribute[];
+
+    public setAttributes(attributes: TAttribute[] | undefined) {
+        this.attributes = attributes;
+        this.triggerUpdateHooks();
+    }
 
     /**
      * { [product_id]: product_state}
@@ -75,8 +87,34 @@ class ModuleState {
         this.triggerProductUpdateListeners(productId);
     }
 
+    private updateHooks: Record<string, (() => void)> = {};
 
+    public addOnUpdateHook(cb: (() => any)): string {
+        const cbId = getRandStr(8);
+        this.updateHooks[cbId] = cb;
+        return cbId;
+    }
 
+    public removeOnUpdateHook(cbId: string) {
+        delete this.updateHooks[cbId];
+    }
+
+    private triggerUpdateHooks() {
+        for (const listener of Object.values(this.updateHooks)) {
+            listener();
+        }
+    }
 }
 
 export const moduleState = new ModuleState();
+
+export const useModuleState = (): ModuleState => {
+    const update = useForceUpdate();
+    useEffect(() => {
+        const cbId = moduleState.addOnUpdateHook(() => update());
+        return () => {
+            moduleState.removeOnUpdateHook(cbId);
+        }
+    });
+    return moduleState;
+}

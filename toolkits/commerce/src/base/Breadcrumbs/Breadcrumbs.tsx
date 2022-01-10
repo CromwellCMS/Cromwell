@@ -1,5 +1,5 @@
 import { TGetStaticProps, TProductCategory } from '@cromwell/core';
-import { CContainer, Link, usePagePropsContext } from '@cromwell/core-frontend';
+import { Link, usePagePropsContext } from '@cromwell/core-frontend';
 import clsx from 'clsx';
 import React from 'react';
 
@@ -8,18 +8,19 @@ import { HomeIcon } from '../icons';
 import styles from './Breadcrumbs.module.scss';
 import { getData } from './getData';
 
-type ServerSideData = TProductCategory[] | undefined | null;
+export type ServerSideData = {
+  categories?: TProductCategory[] | undefined;
+} | undefined | null;
 
 type GetStaticPropsData = {
   'ccom_breadcrumbs'?: ServerSideData;
 }
 
-
 export type BreadcrumbProps = {
   /**
    * Override data by manually calling `getData` function and passing its result 
    */
-  data?: TProductCategory[] | undefined;
+  data?: ServerSideData;
   classes?: Partial<Record<'root' | 'wrapper' | 'breadcrumb' | 'link', string>>;
   style?: React.CSSProperties;
   maxItems?: number;
@@ -48,51 +49,37 @@ export function Breadcrumbs(props: BreadcrumbProps) {
   const pageProps = usePagePropsContext<GetStaticPropsData>();
   const data: ServerSideData = Object.assign({}, pageProps.pageProps?.ccom_breadcrumbs, props.data);
 
-  const Wrapper = elements?.Wrapper ?? ((props) => (
-    <div style={{ display: 'flex', ...(props.style ?? {}) }}
-      className={props.className}
-      id={props.id}
-    >{props.children}</div>
-  ));
-  const Breadcrumb = elements?.Breadcrumb ?? ((props) => (
-    <div style={props.style}
-      className={props.className}
-      id={props.id}
-    >{props.icon} {props.label}</div>
-  ));
+  const Wrapper = elements?.Wrapper ?? DefaultWrapper;
+  const Breadcrumb = elements?.Breadcrumb ?? DefaultBreadcrumb;
 
   return (
-    <CContainer id="ccom_breadcrumbs"
-      className={clsx(styles.Breadcrumbs, classes?.root)}
+    <Wrapper maxItems={maxItems ?? 5}
       style={style}
+      className={clsx(styles.Breadcrumbs, classes?.root)}
     >
-      <Wrapper maxItems={maxItems ?? 5}
-        className={clsx(classes?.wrapper)}
-      >
-        <Link href="/">
-          <Breadcrumb
-            label="Home"
-            key="/"
-            className={clsx(styles.breadcrumb, classes?.breadcrumb)}
-            icon={<HomeIcon style={{ width: '17px', height: '17px' }} fontSize="small" />}
-          />
-        </Link>
-        {data?.map(crumb => {
-          return (
-            <Link
-              key={crumb.id}
-              href={`/category/${crumb.slug}`}
-              className={clsx(classes?.link)}
-            >
-              <Breadcrumb
-                className={clsx(styles.breadcrumb, classes?.breadcrumb)}
-                label={crumb.name ?? ''}
-              />
-            </Link>
-          )
-        })}
-      </Wrapper>
-    </CContainer>
+      <Link href="/">
+        <Breadcrumb
+          label="Home"
+          key="/"
+          className={clsx(styles.breadcrumb, classes?.breadcrumb)}
+          icon={<HomeIcon style={{ width: '17px', height: '17px' }} fontSize="small" />}
+        />
+      </Link>
+      {data?.categories?.map(crumb => {
+        return (
+          <Link
+            key={crumb.id}
+            href={`/category/${crumb.slug}`}
+            className={clsx(classes?.link)}
+          >
+            <Breadcrumb
+              className={clsx(styles.breadcrumb, classes?.breadcrumb)}
+              label={crumb.name ?? ''}
+            />
+          </Link>
+        )
+      })}
+    </Wrapper>
   )
 }
 
@@ -120,3 +107,18 @@ Breadcrumbs.useData = (): ServerSideData | undefined => {
   const pageProps = usePagePropsContext<GetStaticPropsData>();
   return pageProps.pageProps?.ccom_breadcrumbs;
 }
+
+
+const DefaultBreadcrumb = ((props) => (
+  <div style={props.style}
+    className={clsx(props.className, styles.defaultBreadcrumb)}
+    id={props.id}
+  >{props.icon} {props.label}</div>
+));
+
+const DefaultWrapper = ((props) => (
+  <div style={{ display: 'flex', ...(props.style ?? {}) }}
+    className={props.className}
+    id={props.id}
+  >{props.children}</div>
+));

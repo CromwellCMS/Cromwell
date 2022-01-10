@@ -1,9 +1,10 @@
 import { TFrontendBundle } from '@cromwell/core';
-import { getLogger, getPluginSettings, JwtAuthGuard, Roles, savePluginSettings } from '@cromwell/core-backend';
+import { getLogger, getPluginSettings, findPlugin, JwtAuthGuard, Roles, savePluginSettings } from '@cromwell/core-backend';
 import { Body, Controller, Get, HttpException, HttpStatus, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { FrontendBundleDto } from '../dto/frontend-bundle.dto';
+import { PluginEntityDto } from '../dto/plugin-entity.dto';
 import { UpdateInfoDto } from '../dto/update-info.dto';
 import { PluginService } from '../services/plugin.service';
 
@@ -56,6 +57,28 @@ export class PluginController {
             throw new HttpException(`Invalid plugin name: ${pluginName}`, HttpStatus.NOT_ACCEPTABLE);
 
         return savePluginSettings(pluginName, input);
+    }
+
+
+    @Get('entity')
+    @UseGuards(JwtAuthGuard)
+    @Roles('administrator', 'guest')
+    @ApiOperation({
+        description: 'Returns DB record of a plugin by pluginName.',
+        parameters: [{ name: 'pluginName', in: 'query', required: true }]
+    })
+    @ApiResponse({
+        status: 200,
+        type: PluginEntityDto
+    })
+    @ApiForbiddenResponse({ description: 'Forbidden.' })
+    async getPluginEntity(@Query('pluginName') pluginName: string): Promise<PluginEntityDto | undefined> {
+        logger.log('PluginController::getPluginEntity ' + pluginName);
+
+        if (!pluginName)
+            throw new HttpException(`Invalid plugin name: ${pluginName}`, HttpStatus.NOT_ACCEPTABLE);
+
+        return new PluginEntityDto().parse(await findPlugin(pluginName));
     }
 
 
