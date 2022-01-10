@@ -20,7 +20,7 @@ export const sleep = (time: number) => new Promise(done => setTimeout(done, time
  * - `slug` - Page slug (URL) to resolve inputs in form of: `product/[slug]`
  */
 export const resolvePageRoute = (pageName: string | TDefaultPageName, routeOptions?: {
-    slug?: string;
+    slug?: string | number;
     id?: string;
 }) => {
     let pageRoute: string = pageName;
@@ -34,7 +34,7 @@ export const resolvePageRoute = (pageName: string | TDefaultPageName, routeOptio
         }
 
         // 2. Resolved default page -> Target page name
-        if (slug) pageRoute = pageRoute.replace('[slug]', slug);
+        if (slug) pageRoute = pageRoute.replace('[slug]', String(slug));
         if (id) pageRoute = pageRoute.replace('[id]', id);
     }
 

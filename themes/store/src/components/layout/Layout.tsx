@@ -12,28 +12,28 @@ import styles from './Layout.module.scss';
 
 // import { CompareModal } from '../modals/compare/CompareModal';
 type TProps = {
-    children: React.ReactNode;
+  children: React.ReactNode;
 }
 
 export default function Layout(props: TProps | undefined) {
-    const router = useRouter?.();
+  const router = useRouter?.();
 
-    useEffect(() => {
-        appState.closeAllModals();
-    }, [router?.asPath]);
+  useEffect(() => {
+    appState.closeAllModals();
+  }, [router?.asPath]);
 
-    return (
-        <div className={styles.Layout}>
-            <Header />
-            <CartModal />
-            <WishlistModal />
-            {/* <CompareModal /> */}
-            <ViewedModal />
-            <ProductQuickView />
-            <div className={styles.main}>
-                {props?.children}
-            </div>
-            <Footer />
-        </div>
-    )
+  return (
+    <div className={styles.Layout}>
+      <Header />
+      <CartModal />
+      <WishlistModal />
+      {/* <CompareModal /> */}
+      <ViewedModal />
+      <ProductQuickView />
+      <div className={styles.main}>
+        {props?.children}
+      </div>
+      <Footer />
+    </div>
+  )
 }

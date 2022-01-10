@@ -117,6 +117,11 @@ export const MuiViewedItems = withElements(ViewedItems, {
 } as ViewedItemsProps['elements']);
 
 export const MuiCurrencySwitch = withElements(CurrencySwitch, {
-  Select: Select,
+  Select: (props) => React.createElement(Select, {
+    variant: 'standard',
+    color: 'primary',
+    onChange: props.onChange as any,
+    ...props,
+  }),
 } as CurrencySwitchProps['elements']);
 

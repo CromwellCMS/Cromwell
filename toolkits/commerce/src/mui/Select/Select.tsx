@@ -11,9 +11,11 @@ export function Select(props: TSelectProps & MuiSelectProps<string | number>) {
       style={props.style}
       className={props.className}
     >
-      <InputLabel style={{
-        marginTop: '8px',
-      }}>{props.label}</InputLabel>
+      {props.label && (
+        <InputLabel style={{
+          marginTop: '8px',
+        }}>{props.label}</InputLabel>
+      )}
       <MuiSelect
         {...props}
         variant={variant}

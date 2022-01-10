@@ -11,6 +11,8 @@ export { TCList, TCListProps, TItemComponentProps, TPaginationProps } from './co
 export { Link } from './components/Link/Link';
 export { LoadBox } from './components/loadBox/Loadbox';
 export { EntityHead } from './components/EntityHead/EntityHead';
+export { SignIn, SignInProps } from './components/SignIn/SignIn';
+export { SignUp, SignUpProps } from './components/SignUp/SignUp';
 export * from './components/AdminPanelWidget/AdminPanelWidgetPlace';
 export {
     getBlockHtmlId,
@@ -35,6 +37,9 @@ export {
 export { getGraphQLClient, TCGraphQLClient, TGraphQLErrorInfo, getGraphQLErrorInfo } from './api/CGraphQLClient';
 export { getRestApiClient, TCRestApiClient, TErrorInfo, TRequestOptions } from './api/CRestApiClient';
 export * from './api/CentralServerClient';
+export * from './helpers/hooks';
+export * from './helpers/forceUpdate';
+export * from './helpers/AuthClient';
 export { getWebSocketClient } from './api/CWebSocketClient';
 export { getCStore, TCStoreOperationResult } from './helpers/CStore';
 export { iconFromPath } from './helpers/iconFromPath';
@@ -46,4 +51,3 @@ export * from './helpers/registerWidget';
 export * from './helpers/contentGetters';
 export * from './widget-types';
 export { throbber } from './components/throbber';
-

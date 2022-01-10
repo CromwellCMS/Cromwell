@@ -36,7 +36,9 @@ export const setStoreItem = <K extends keyof TCromwellStore>(itemName: K, item: 
     const storeChangeCallbacks = getStoreItem('storeChangeCallbacks');
     if (storeChangeCallbacks?.[itemName]) {
         for (const callback of storeChangeCallbacks?.[itemName]) {
-            callback(item);
+            try {
+                callback(item);
+            } catch (e) { console.error(e) }
         }
     }
 }
