@@ -8,9 +8,9 @@ import { CartModal } from '../modals/cart/CartModal';
 import ProductQuickView from '../modals/productQuickView/ProductQuickView';
 import { ViewedModal } from '../modals/viewed/ViewedModal';
 import { WishlistModal } from '../modals/wishlist/WishlistModal';
+import { SignInModal } from '../modals/signIn/SignIn';
 import styles from './Layout.module.scss';
 
-// import { CompareModal } from '../modals/compare/CompareModal';
 type TProps = {
   children: React.ReactNode;
 }
@@ -27,9 +27,9 @@ export default function Layout(props: TProps | undefined) {
       <Header />
       <CartModal />
       <WishlistModal />
-      {/* <CompareModal /> */}
       <ViewedModal />
       <ProductQuickView />
+      <SignInModal />
       <div className={styles.main}>
         {props?.children}
       </div>

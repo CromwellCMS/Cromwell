@@ -15,14 +15,12 @@ import {
   FavoriteIcon,
   VisibilityIcon,
 } from '../icons';
-import SignInModal from '../modals/signIn/SignIn';
 import styles from './Header.module.scss';
 import { MobileHeader } from './MobileHeader';
 
 export const Header = () => {
   const cmsConfig = getCmsSettings();
   const cart = useCart();
-  const [singInOpen, setSingInOpen] = useState(false);
   const userInfo = useUserInfo();
   const [userOptionsOpen, setUserOptionsOpen] = useState<boolean>(false);
   const popperAnchorEl = useRef<HTMLDivElement | null>(null);
@@ -30,10 +28,6 @@ export const Header = () => {
 
   const handleCartClick = () => {
     appState.isCartOpen = true;
-  }
-
-  const handleSignClose = () => {
-    setSingInOpen(false);
   }
 
   const handleLogout = async () => {
@@ -47,6 +41,10 @@ export const Header = () => {
 
   const handleOpenWatched = () => {
     appState.isWatchedOpen = true;
+  }
+
+  const handleOpenSignIn = () => {
+    appState.isSignInOpen = true;
   }
 
   return (
@@ -86,7 +84,7 @@ export const Header = () => {
             <CContainer id="header_04" className={styles.topPanelLinks}>
               <CText id="header_31" href="/pages/contact-us" className={clsx(commonStyles.link, styles.topPanelLink)}>Contact us</CText>
               {!userInfo && (
-                <CText id="header_32" onClick={() => setSingInOpen(true)} className={clsx(commonStyles.link, styles.topPanelLink)}>Sign in</CText>
+                <CText id="header_32" onClick={handleOpenSignIn} className={clsx(commonStyles.link, styles.topPanelLink)}>Sign in</CText>
               )}
               {userInfo && (
                 <>
@@ -97,10 +95,9 @@ export const Header = () => {
                       <div className={styles.avatar} style={{ backgroundImage: `url(${userInfo.avatar})` }}></div>
                     ) : <AccountCircleIcon className={styles.avatar} />}
                     <p className={clsx(styles.userName)}>{userInfo.fullName ?? ''}</p>
-
-                    {/* <p className={clsx(commonStyles.link, styles.topPanelLink)}>Sign out</p> */}
                   </div>
-                  <Popover open={userOptionsOpen} anchorEl={popperAnchorEl.current}
+                  <Popover open={userOptionsOpen}
+                    anchorEl={popperAnchorEl.current}
                     style={{ zIndex: 9999 }}
                     onClose={() => setUserOptionsOpen(false)}
                     anchorOrigin={{
@@ -130,12 +127,6 @@ export const Header = () => {
             </CContainer>
           </CContainer>
         </CContainer>
-        <SignInModal
-          type="sign-in"
-          open={singInOpen}
-          onClose={handleSignClose}
-          onSignIn={handleSignClose}
-        />
       </CContainer>
 
       <CContainer id="header_23" className={styles.mainPanel}>

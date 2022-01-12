@@ -1,13 +1,5 @@
-import {
-  ECommonComponentNames,
-  getStoreItem,
-  isServer,
-  saveCommonComponent,
-  setStoreItem,
-  TCromwellPage,
-  TPageCmsProps,
-} from '@cromwell/core';
-import { getRestApiClient } from '@cromwell/core-frontend';
+import { ECommonComponentNames, isServer, saveCommonComponent, TCromwellPage } from '@cromwell/core';
+import { getRestApiClient, usePagePropsContext } from '@cromwell/core-frontend';
 import { CacheProvider, EmotionCache } from '@emotion/react';
 import { ThemeProvider } from '@mui/material/styles';
 import { AppProps } from 'next/app';
@@ -43,18 +35,10 @@ type AppPropsWithLayout = AppProps & {
 }
 
 function App(props: AppPropsWithLayout) {
-
-  const getUser = async () => {
-    const userInfo = getStoreItem('userInfo');
-    if (!userInfo) {
-      try {
-        const user = await getRestApiClient()?.getUserInfo({ disableLog: true });
-        if (user) {
-          setStoreItem('userInfo', user);
-        }
-      } catch (e) { }
-    }
-  }
+  const pageContext = usePagePropsContext();
+  const { Component, emotionCache = clientSideEmotionCache } = props;
+  const getLayout = Component.getLayout ?? ((page) => page);
+  const theme = getTheme(pageContext.pageProps?.cmsProps?.palette);
 
   React.useEffect(() => {
     if (!isServer()) {
@@ -63,16 +47,8 @@ function App(props: AppPropsWithLayout) {
           toast.error('Too many requests. Try again later');
         }
       }, '_app');
-
-      getUser();
     }
   }, []);
-
-  const { Component, emotionCache = clientSideEmotionCache } = props;
-  const getLayout = Component.getLayout ?? ((page) => page);
-
-  const cmsProps: TPageCmsProps | undefined = props.pageProps?.cmsProps;
-  const theme = getTheme(cmsProps?.palette);
 
   return (
     <CacheProvider value={emotionCache}>

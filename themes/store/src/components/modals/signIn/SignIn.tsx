@@ -1,30 +1,25 @@
 import { TUser } from '@cromwell/core';
 import { SignIn, SignInProps, SignUp, useAuthClient } from '@cromwell/core-frontend';
 import { Button, Tab, Tabs, TextField } from '@mui/material';
-import React, { useState } from 'react';
+import { observer } from 'mobx-react';
+import React from 'react';
 
+import { appState } from '../../../helpers/AppState';
 import commonStyles from '../../../styles/common.module.scss';
 import { toast } from '../../toast/toast';
 import Modal from '../baseModal/Modal';
 import { PasswordField } from './PasswordField';
 import styles from './SignIn.module.scss';
 
-export type TFromType = 'sign-in' | 'sign-up';
 
-export default function SignInModal(props: {
-  open: boolean;
-  type: TFromType;
-  onClose: () => any;
-  onSignIn: (user: TUser) => any;
-}) {
-  const [activeTab, setActiveTab] = useState<number | null>(props.type === 'sign-up' ? 1 : 0);
-  const [formType, setFormType] = useState<TFromType>(props.type);
+export const SignInModal = observer(() => {
   const authClient = useAuthClient();
+  const formType = appState.signInFormType;
+  const activeTab = formType === 'sign-up' ? 1 : 0;
 
   const handleTabChange = (event: React.ChangeEvent<unknown>, newValue: number) => {
-    setActiveTab(newValue);
-    if (newValue === 1) setFormType('sign-up');
-    if (newValue === 0) setFormType('sign-in');
+    if (newValue === 1) appState.signInFormType = 'sign-up';
+    if (newValue === 0) appState.signInFormType = 'sign-in';
   };
 
   const onSignUpSuccess = async (user: TUser, password: string) => {
@@ -32,11 +27,16 @@ export default function SignInModal(props: {
     // Automatic sign-in after sign-up 
     const result = await authClient.signIn(user.email, password);
     if (result.success) {
-      props.onSignIn?.(user);
       toast.success('You have been registered')
+      handleClose();
     } else {
       toast.error(result.message);
     }
+  }
+
+  const handleClose = () => {
+    appState.isSignInOpen = false;
+    appState.signInFormType = 'sign-in';
   }
 
   const signInElements: SignInProps['elements'] = {
@@ -57,8 +57,8 @@ export default function SignInModal(props: {
   return (
     <Modal
       className={commonStyles.center}
-      open={props.open}
-      onClose={props.onClose}
+      open={appState.isSignInOpen}
+      onClose={handleClose}
       blurSelector={"#CB_root"}
     >
       <div className={styles.SingIn}>
@@ -85,7 +85,7 @@ export default function SignInModal(props: {
               resetPassInstructions: styles.resetPassInstructions,
             }}
             elements={signInElements}
-            onSignInSuccess={props.onSignIn}
+            onSignInSuccess={handleClose}
             onSignInError={(result) => toast.error(result.message)}
             onForgotPasswordFailure={(result) => toast.error(result.message)}
             onResetPasswordFailure={(result) => toast.error(result.message)}
@@ -104,6 +104,4 @@ export default function SignInModal(props: {
       </div>
     </Modal >
   )
-}
-
-
+});

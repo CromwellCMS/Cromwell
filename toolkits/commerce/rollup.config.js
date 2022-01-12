@@ -35,7 +35,7 @@ const getPlugins = () => {
             modules: {
                 generateScopedName: function (name, filename) {
                     const hash = stringHash(`@cromwell/commerce_${basename(filename)}`).toString(36).substr(0, 5);
-                    return `ccom_${name}_${hash}`;
+                    return `ccom_${hash}_${name}`;
                 },
             },
             writeDefinitions: false,

@@ -499,6 +499,17 @@ ${content}
             }
         }
 
+        // Prevent metadata spam
+        let customMeta;
+        if (typeof input.customMeta === 'object'
+            && Object.keys(input.customMeta).length < 100) {
+            for (const [key, value] of Object.entries(input.customMeta)) {
+                if (key.length < 100 && String(value).length < 10000) {
+                    customMeta[key] = value;
+                }
+            }
+        }
+
         const createOrder: TOrderInput = {
             cartOldTotalPrice: orderTotal.cartOldTotalPrice,
             cartTotalPrice: orderTotal.cartTotalPrice,
@@ -518,6 +529,7 @@ ${content}
             paymentMethod: input.paymentMethod,
             fromUrl: input.fromUrl,
             currency: input.currency,
+            customMeta,
         }
 
         const fromUrl = input.fromUrl;

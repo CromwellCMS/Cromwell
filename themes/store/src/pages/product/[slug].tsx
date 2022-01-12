@@ -14,7 +14,7 @@ import type { TPageWithLayout } from '../_app';
 
 export interface ProductProps {
   product?: TProduct | null;
-  attributes?: TAttribute[];
+  attributes?: TAttribute[] | null;
 }
 
 const Product: TPageWithLayout<ProductProps> = (props) => {
@@ -65,16 +65,10 @@ const getProps: TGetStaticProps<ProductProps> = async (context) => {
   const slug = context?.params?.slug ?? null;
   const client = getGraphQLClient();
 
-  let product: TProduct | undefined = undefined;
-  if (slug && typeof slug === 'string') {
-    try {
-      product = await client.getProductBySlug(slug);
-    } catch (e) {
-      console.error('Product::getStaticProps', getGraphQLErrorInfo(e))
-    }
-  } else {
-    console.error('Product::getStaticProps: slug is invalid')
-  }
+  const product = ((slug && typeof slug === 'string') &&
+    await client.getProductBySlug(slug).catch(error => {
+      console.error('Product::getStaticProps', getGraphQLErrorInfo(error));
+    })) || null;
 
   if (!product) {
     return {
@@ -82,13 +76,9 @@ const getProps: TGetStaticProps<ProductProps> = async (context) => {
     }
   }
 
-  let attributes: TAttribute[] | undefined;
-
-  try {
-    attributes = await client?.getAttributes();
-  } catch (e) {
-    console.error('Product::getStaticProps', getGraphQLErrorInfo(e))
-  }
+  const attributes = (await client.getAttributes().catch(error => {
+    console.error('Product::getStaticProps', getGraphQLErrorInfo(error));
+  })) || null;
 
   return {
     props: removeUndefined({

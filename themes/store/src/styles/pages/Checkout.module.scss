@@ -30,7 +30,7 @@
         display: flex;
         margin: 20px 0 20px 0;
 
-        .singinBtn {
+        .signInBtn {
             margin-right: 15px;
         }
     }
@@ -114,6 +114,13 @@
     bottom: 0;
     z-index: 9;
     background-color: rgba(0, 0, 0, 0.4);
+}
+
+.cartListItem {
+    .actionsBlock {
+        position: absolute;
+        right: 0;
+    }
 }
 
 @media screen and (max-width: $mobileBreakpoint) {

@@ -33,8 +33,8 @@ type GetStaticPropsData = {
 export type CategoryListProps = {
   data?: ServerSideData;
   listId?: string;
-  classes?: Partial<Record<'root' | 'list', string>>;
   style?: React.CSSProperties;
+  classes?: Partial<Record<'root' | 'list', string>>;
   elements?: {
     ProductCard?: React.ComponentType<ProductCardProps>;
     Pagination?: React.ComponentType<TPaginationProps>;

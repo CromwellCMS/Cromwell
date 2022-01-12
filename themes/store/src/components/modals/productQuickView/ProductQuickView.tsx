@@ -21,7 +21,7 @@ const ProductQuickView = observer(() => {
     appState.isQuickViewOpen = false;
   }
 
-  const updateAttributes = async () => {
+  const getData = async () => {
     setIsLoading(true);
     try {
       if (!appState.quickViewProductId) return;
@@ -40,7 +40,7 @@ const ProductQuickView = observer(() => {
 
   useEffect(() => {
     if (appState.isQuickViewOpen) {
-      updateAttributes();
+      getData();
     }
   }, [appState.isQuickViewOpen]);
 
@@ -51,7 +51,6 @@ const ProductQuickView = observer(() => {
       onClose={handleClose}
       blurSelector={"#CB_root"}
     >
-
       <div className={styles.ProductQuickView}>
         <IconButton
           aria-label="Open product quick view"
@@ -63,14 +62,11 @@ const ProductQuickView = observer(() => {
             <LoadBox />
           )}
           {!isLoading && (
-            <>
-
-              <ProductDetails
-                compact={true}
-                product={product}
-                attributes={attributes}
-              />
-            </>
+            <ProductDetails
+              compact={true}
+              product={product}
+              attributes={attributes}
+            />
           )}
         </div>
       </div>

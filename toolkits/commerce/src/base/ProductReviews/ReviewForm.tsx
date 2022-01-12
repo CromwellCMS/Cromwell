@@ -1,4 +1,4 @@
-import { getStoreItem, onStoreChange, removeOnStoreChange, TCromwellNotify, TProductReview, TUser } from '@cromwell/core';
+import { onStoreChange, removeOnStoreChange, TCromwellNotify, TProductReview, TUser, useUserInfo } from '@cromwell/core';
 import { CContainer, CText, getRestApiClient } from '@cromwell/core-frontend';
 import React, { useEffect, useState } from 'react';
 
@@ -17,7 +17,7 @@ export type ReviewFormProps = {
 }
 
 export const ReviewForm = ({ productId, notifier, parentProps = {} }: ReviewFormProps) => {
-  const userInfo = getStoreItem('userInfo');
+  const userInfo = useUserInfo();
   const [name, setName] = useState(userInfo?.fullName ?? '');
   const [rating, setRating] = useState<number | null>(0);
   const [title, setTitle] = useState('');
@@ -29,14 +29,13 @@ export const ReviewForm = ({ productId, notifier, parentProps = {} }: ReviewForm
   const { Alert = BaseAlert, Button = BaseButton, Rating = BaseRating,
     TextField = BaseTextField, Tooltip = BaseTooltip } = elements ?? {};
 
-  const userInfoChange = (userInfo: TUser | undefined) => {
-    setName(userInfo?.fullName ?? '');
-  }
-
   useEffect(() => {
-    onStoreChange('userInfo', userInfoChange);
+    const userInfoChange = (userInfo: TUser | undefined) => {
+      setName(userInfo?.fullName ?? '');
+    }
+    const infoCbId = onStoreChange('userInfo', userInfoChange);
     return () => {
-      removeOnStoreChange('userInfo', userInfoChange);
+      removeOnStoreChange('userInfo', infoCbId);
     }
   }, []);
 

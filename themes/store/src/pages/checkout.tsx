@@ -1,14 +1,14 @@
+import { MuiCartList } from '@cromwell/commerce';
 import {
   getRandStr,
-  getStoreItem,
   isServer,
   onStoreChange,
   removeOnStoreChange,
-  setStoreItem,
   TOrder,
   TPaymentSession,
   TStoreListItem,
   TUser,
+  useUserInfo,
 } from '@cromwell/core';
 import { CContainer, getCStore, getRestApiClient, LoadBox } from '@cromwell/core-frontend';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
@@ -30,9 +30,8 @@ import queryString from 'query-string';
 import React, { useEffect, useRef, useState } from 'react';
 
 import Layout from '../components/layout/Layout';
-import SignInModal, { TFromType } from '../components/modals/signIn/SignIn';
-import { CartProductList } from '../components/productList/CartProductList';
 import { toast } from '../components/toast/toast';
+import { appState } from '../helpers/AppState';
 import { useForceUpdate } from '../helpers/forceUpdate';
 import commonStyles from '../styles/common.module.scss';
 import styles from '../styles/pages/Checkout.module.scss';
@@ -43,7 +42,13 @@ type PaymentStatus = 'cancelled' | 'success';
 
 const CheckoutPage: TPageWithLayout = () => {
   if (!isServer()) {
-    // For pop-up payment window after transaction end and redirect with query param
+    // For pop-up payment window after transaction end and redirect with query param.
+    // ***
+    // When we call `client.createPaymentSession` we pass `successUrl` and `cancelUrl`.
+    // Customer will be redirected on these URLs when transaction is finished.
+    // In this case we point `successUrl` to the same (this) page with a query param;
+    // So if URL has params, then we can communicate with parent page (where transaction started)
+    // and tell transaction status:
     const parsedUrl = queryString.parseUrl(window.location.href);
     const paymentStatus = parsedUrl.query?.paymentStatus as PaymentStatus;
     if (paymentStatus === 'success') {
@@ -56,7 +61,7 @@ const CheckoutPage: TPageWithLayout = () => {
     }
   }
 
-  const userInfo = getStoreItem('userInfo');
+  const userInfo = useUserInfo();
   const [form, setForm] = useState<{
     email?: string | null;
     name?: string | null;
@@ -75,14 +80,12 @@ const CheckoutPage: TPageWithLayout = () => {
   });
   const cstore = getCStore();
   const forceUpdate = useForceUpdate();
-  const [singInOpen, setSingInOpen] = useState(false);
   const coupons = useRef<Record<string, {
     value: string;
     applied?: boolean;
   }>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [canValidate, setCanValidate] = useState(false);
-  const [singInType, setSingInType] = useState<TFromType>('sign-in');
   const [placedOrder, setPlacedOrder] = useState<TOrder | null>(null);
   const [orderTotal, setOrderTotal] = useState<TPaymentSession | null>(null);
 
@@ -100,12 +103,12 @@ const CheckoutPage: TPageWithLayout = () => {
     getOrderTotal();
 
     cstore.onCartUpdate(getOrderTotal, 'checkout');
-    onStoreChange('userInfo', onUserChange);
-    onStoreChange('currency', getOrderTotal);
+    const userInfoCbId = onStoreChange('userInfo', onUserChange);
+    const currencyCbId = onStoreChange('currency', getOrderTotal);
 
     return () => {
-      removeOnStoreChange('userInfo', onUserChange);
-      removeOnStoreChange('currency', getOrderTotal);
+      removeOnStoreChange('userInfo', userInfoCbId);
+      removeOnStoreChange('currency', currencyCbId);
       cstore.removeOnCartUpdate('checkout');
     }
   }, []);
@@ -151,20 +154,14 @@ const CheckoutPage: TPageWithLayout = () => {
     changeForm(name as any, value);
   }
 
-  const handleSignIn = (user: TUser) => {
-    if (user) {
-      setStoreItem('userInfo', user);
-    }
-  }
-
   const handleSignInOpen = () => {
-    setSingInType('sign-in');
-    setSingInOpen(true);
+    appState.signInFormType = 'sign-in';
+    appState.isSignInOpen = true;
   }
 
   const handleSignUpOpen = () => {
-    setSingInType('sign-up');
-    setSingInOpen(true);
+    appState.signInFormType = 'sign-up'
+    appState.isSignInOpen = true;
   }
 
   const validateOrder = () => {
@@ -290,23 +287,15 @@ const CheckoutPage: TPageWithLayout = () => {
           <Button variant="outlined"
             color="primary"
             size="small"
-            className={styles.singinBtn}
-            onClick={handleSignInOpen}>
-            Sign in</Button>
+            className={styles.signInBtn}
+            onClick={handleSignInOpen}
+          >Sign in</Button>
           <Button variant="outlined"
             color="primary"
             size="small"
-            className={styles.singinBtn}
-            onClick={handleSignUpOpen}>
-            Sign up</Button>
-          {singInOpen && (
-            <SignInModal
-              type={singInType}
-              open={singInOpen}
-              onClose={() => setSingInOpen(false)}
-              onSignIn={handleSignIn}
-            />
-          )}
+            className={styles.signInBtn}
+            onClick={handleSignUpOpen}
+          >Sign up</Button>
         </div>
       )}
       <p></p>
@@ -482,7 +471,6 @@ const CheckoutPage: TPageWithLayout = () => {
         <div className={styles.orderBtnWrapper}>
           <Button variant="contained"
             color="primary"
-            className={styles.singinBtn}
             size="large"
             onClick={handlePlaceOrder}
             disabled={isLoading}
@@ -493,7 +481,6 @@ const CheckoutPage: TPageWithLayout = () => {
         <div className={styles.orderBtnWrapper}>
           <Button variant="contained"
             color="primary"
-            className={styles.singinBtn}
             size="large"
             onClick={handlePay}
             disabled={isLoading}
@@ -502,7 +489,13 @@ const CheckoutPage: TPageWithLayout = () => {
       )}
     </CContainer>
     <CContainer className={styles.cartZone} id="checkout-5">
-      <CartProductList collapsedByDefault={false} cart={orderTotal?.cart as TStoreListItem[]} />
+      <MuiCartList cart={orderTotal?.cart as TStoreListItem[]}
+        totalPosition="none"
+        classes={{
+          listItem: styles.cartListItem,
+          actionsBlock: styles.actionsBlock,
+        }}
+      />
     </CContainer>
   </>);
 }

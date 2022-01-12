@@ -113,9 +113,11 @@ async function bootstrap(): Promise<void> {
         SwaggerModule.setup(`/${apiPrefix}/api-docs`, app, document);
     }
 
-    const port = await getPort({ port: getPort.makeRange(4032, 4063) });
+    const port = parseInt(((await getPort({
+        port: getPort.makeRange(4032, 4063),
+    })) + '').replace(/[^0-9]/g, ''));
 
-    await app.listen(port, '::');
+    await app.listen(isNaN(port) ? 4032 : port, '::');
     logger.info(`API Server is running on: ${await app.getUrl()}`);
     childRegister(port);
 }

@@ -46,4 +46,7 @@ export class CreateOrderDto implements TPaymentSession {
 
     @ApiProperty({ type: [String] })
     couponCodes?: string[] | null;
+
+    @ApiProperty({ type: Object })
+    customMeta?: Record<string, string>;
 }

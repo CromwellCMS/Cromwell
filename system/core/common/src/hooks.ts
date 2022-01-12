@@ -1,20 +1,27 @@
 import { useEffect, useState } from 'react';
 
 import { getStoreItem, onStoreChange, removeOnStoreChange } from './global-store';
+import { TCromwellStore } from './types/data';
 
-export const useUserInfo = () => {
-    const [userInfo, setUserInfo] = useState(getStoreItem('userInfo'));
+const createStoreItemHook = <K extends keyof TCromwellStore>(key: K): (() => TCromwellStore[K]) => {
+    return () => {
+        const [item, setItem] = useState(getStoreItem(key));
 
-    useEffect(() => {
-        const onUserChange = (info) => {
-            setUserInfo(info);
-        }
-        onStoreChange('userInfo', onUserChange);
+        useEffect(() => {
+            const onChange = (changed) => {
+                setItem(changed)
+            }
+            const cbId = onStoreChange(key, onChange);
 
-        return () => {
-            removeOnStoreChange('userInfo', onUserChange);
-        }
-    }, []);
+            return () => {
+                removeOnStoreChange(key, cbId);
+            }
+        }, []);
 
-    return userInfo;
+        return item;
+    }
 }
+
+export const useUserInfo = createStoreItemHook('userInfo');
+export const useCurrency = createStoreItemHook('currency');
+export const useCmsSettings = createStoreItemHook('cmsSettings');

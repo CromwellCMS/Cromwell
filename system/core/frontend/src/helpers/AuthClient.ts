@@ -1,8 +1,8 @@
-import { getRandStr, setStoreItem, TUser, onStoreChange, getStoreItem } from '@cromwell/core';
-import { useForceUpdate } from './forceUpdate';
+import { getRandStr, getStoreItem, isServer, onStoreChange, setStoreItem, TUser } from '@cromwell/core';
 import { useEffect } from 'react';
 
 import { getRestApiClient } from '../api/CRestApiClient';
+import { useForceUpdate } from './forceUpdate';
 
 /**
  * Common object with info about result of used operation. 
@@ -51,7 +51,13 @@ class AuthClient {
 
     /** @internal */
     constructor() {
-        onStoreChange('userInfo', () => this?.triggerUpdateListeners());
+        onStoreChange('userInfo', (info) => {
+            this?.triggerUpdateListeners();
+
+            if (!isServer() && info?.id) {
+                window.localStorage.setItem(this.userEverLoggedStorageKey, 'true');
+            }
+        });
     }
 
     /** 
@@ -71,6 +77,9 @@ class AuthClient {
     public get isPending() {
         return this._isLoading;
     }
+
+    /** @internal */
+    private userEverLoggedStorageKey = 'crw_user_was_logged';
 
     /** @internal */
     private set isLoading(loading) {
@@ -98,6 +107,24 @@ class AuthClient {
     /** @internal */
     public removeOnUpdateListener(cbId: string) {
         delete this.updateListeners[cbId];
+    }
+
+    /**
+     * Check if a user is logged in and re-store user info in global store.
+     */
+    public async reviveAuth() {
+        if (!(!isServer() && !getStoreItem('userInfo')
+            && window.localStorage.getItem(this.userEverLoggedStorageKey))) {
+            return false;
+        }
+        const user = await getRestApiClient().getUserInfo({ disableLog: true }).catch(() => null);
+        if (getStoreItem('userInfo')) return true;
+        if (!user?.id) {
+            window.localStorage.removeItem(this.userEverLoggedStorageKey);
+            return false;
+        }
+        setStoreItem('userInfo', user);
+        return true;
     }
 
     /**
@@ -174,8 +201,13 @@ class AuthClient {
             message: 'Already processing another request',
             success: false,
         };
+
         try {
             await getRestApiClient()?.logOut();
+
+            if (!isServer() && window.localStorage.getItem(this.userEverLoggedStorageKey)) {
+                window.localStorage.removeItem(this.userEverLoggedStorageKey);
+            }
         } catch (error) {
             console.error(error);
             return {

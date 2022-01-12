@@ -1,20 +1,12 @@
-import {
-  onStoreChange,
-  removeOnStoreChange,
-  TAttribute,
-  TCromwellNotify,
-  TDefaultPageName,
-  TProduct,
-  TStoreListItem,
-  resolvePageRoute
-} from '@cromwell/core';
-import { getCStore, Link, TCStoreOperationResult, usePagePropsContext } from '@cromwell/core-frontend';
+import { TAttribute, TCromwellNotify, TProduct, TStoreListItem, useCurrency } from '@cromwell/core';
+import { getCStore, Link, TCStoreOperationResult, useCart, useForceUpdate, useWishlist } from '@cromwell/core-frontend';
 import clsx from 'clsx';
 import Image, { ImageProps } from 'next/image';
-import React, { useEffect } from 'react';
+import React from 'react';
 
-import { useForceUpdate } from '../../helpers/forceUpdate';
 import { notifier as baseNotifier, NotifierActionOptions } from '../../helpers/notifier';
+import { useImageLoader } from '../../helpers/useImageLoader';
+import { useProductLink } from '../../helpers/useProductLink';
 import { AddShoppingCartIcon, FavoriteBorderIcon, FavoriteIcon, ShoppingCartIcon } from '../icons';
 import { BaseButton, TBaseButtonProps } from '../shared/Button';
 import { BaseRating, TBaseRatingProps } from '../shared/Rating';
@@ -72,21 +64,18 @@ export type ProductCardProps = {
 
 export const ProductCard = (props: ProductCardProps) => {
   const { data: product, onOpenCart, notifier = baseNotifier, notifierOptions = {},
-    elements = {}, imageProps, getProductLink, classes, text } = props ?? {};
+    elements = {}, imageProps, classes, text } = props ?? {};
   const { OtherActions = Empty, Rating = BaseRating,
     AddCartButton = BaseButton, AddWishlistButton = BaseButton,
     Tooltip = BaseTooltip } = elements;
-  const forceUpdate = useForceUpdate();
-  const pageContext = usePagePropsContext();
-  const productBaseRoute = pageContext.pageProps?.cmsProps?.defaultPages?.['product' as TDefaultPageName];
-  if (!productBaseRoute && !getProductLink) {
-    console.error('ProductCard: cannot define product link. Configure `defaultPages` in cromwell.config.js ' +
-      'https://cromwellcms.com/docs/development/theme-development/#default-pages' +
-      ' or provide `getProductLink` prop');
-  }
-  const productLink = product && (getProductLink ? getProductLink(product) :
-    productBaseRoute && resolvePageRoute(productBaseRoute, { slug: product?.slug ?? product?.id }));
   const cstore = getCStore();
+
+  const forceUpdate = useForceUpdate();
+  const imageLoader = useImageLoader();
+  const productLink = useProductLink(product, props.getProductLink);
+  useCart();
+  useWishlist();
+  useCurrency();
 
   const item: TStoreListItem = {
     product: product ?? undefined,
@@ -95,38 +84,6 @@ export const ProductCard = (props: ProductCardProps) => {
   }
   const inCart = cstore.isInCart(item);
   const inWishlist = cstore.isInWishlist({ product });
-
-  const imageLoader = ({ src }: {
-    src: string;
-    width: number;
-    quality?: number;
-  }) => {
-    const origin = pageContext.routeInfo?.origin;
-    if (src.startsWith('/') && origin) {
-      src = origin + src;
-    }
-    return src;
-  }
-
-  useEffect(() => {
-    if (product?.id) {
-      const cbId = 'ccom_product_card' + product.id;
-      const onDataChange = () => {
-        forceUpdate();
-      }
-
-      cstore.onCartUpdate(onDataChange, cbId);
-      cstore.onWishlistUpdate(onDataChange, cbId);
-      onStoreChange('currency', onDataChange);
-
-      return () => {
-        cstore.removeOnCartUpdate(cbId);
-        cstore.removeOnWishlistUpdate(cbId);
-        removeOnStoreChange('currency', onDataChange);
-      }
-    }
-  }, []);
-
 
   const handleAddToCart = () => {
     if (inCart) {

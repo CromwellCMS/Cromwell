@@ -1,5 +1,5 @@
-import { getStoreItem, TPost, TTag } from '@cromwell/core';
-import { Link } from '@cromwell/core-frontend';
+import { TPost, TTag } from '@cromwell/core';
+import { Link, usePagePropsContext } from '@cromwell/core-frontend';
 import clsx from 'clsx';
 import { format } from 'date-fns';
 import * as NextImage from 'next/image';
@@ -20,13 +20,14 @@ export const PostCard = (props?: {
   const data = props?.data;
   const postLink = `/blog/${data?.slug ?? data?.id}`;
   const mainImage = (data?.mainImage ?? '/themes/@cromwell/theme-store/no-photos.png');
+  const pageContext = usePagePropsContext();
 
   const imageLoader = ({ src }: {
     src: string;
     width: number;
     quality?: number;
   }) => {
-    const origin = getStoreItem('routeInfo')?.origin;
+    const origin = pageContext.routeInfo?.origin;
     if (src.startsWith('/') && origin) src = origin + src;
     return src;
   }

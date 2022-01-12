@@ -1,0 +1,37 @@
+@import "../common.module.scss";
+
+.CartList {
+    position: relative;
+    height: 100%;
+}
+
+.productList {
+    height: 100%;
+    overflow: auto;
+    @include styledScrollBar;
+
+}
+
+.cartHeader {
+    display: flex;
+    justify-content: space-between;
+}
+
+.cartTotal {
+    display: flex;
+}
+
+.cartTotalText {
+    font-weight: 500;
+    margin-right: 10px;
+}
+
+.price {
+    font-weight: 400;
+}
+
+.oldPrice {
+    text-decoration: line-through;
+    opacity: 0.7;
+    margin-right: 10px;
+}

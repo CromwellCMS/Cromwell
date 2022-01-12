@@ -11,6 +11,7 @@ export { ProductSearch, ProductSearchProps } from './base/ProductSearch/ProductS
 export { Wishlist, WishlistProps } from './base/Wishlist/Wishlist';
 export { ViewedItems, ViewedItemsProps } from './base/ViewedItems/ViewedItems';
 export { CurrencySwitch, CurrencySwitchProps } from './base/CurrencySwitch/CurrencySwitch';
+export { CartList, CartListProps } from './base/CartList/CartList';
 
 export {
     MuiPagination,
@@ -25,6 +26,7 @@ export {
     MuiViewedItems,
     MuiWishlist,
     MuiCurrencySwitch,
+    MuiCartList,
 } from './mui/index';
 
 export { moduleState, useModuleState } from './helpers/state';

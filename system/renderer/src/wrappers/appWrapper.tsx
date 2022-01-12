@@ -13,6 +13,7 @@ import {
   CContainer,
   cleanParseContext,
   getModuleImporter,
+  getAuthClient,
   getParserTransform,
   getRestApiClient,
   PagePropsContext,
@@ -96,7 +97,6 @@ export const withCromwellApp = (App: ((props: TAppProps) => JSX.Element | null))
       origin: documentContext?.origin,
       fullUrl: documentContext?.fullUrl,
     }
-    setStoreItem('routeInfo', routeInfo);
 
     const forceUpdate = useForceUpdate();
     const forceUpdatePage = () => {
@@ -151,7 +151,9 @@ export const withCromwellApp = (App: ((props: TAppProps) => JSX.Element | null))
           entityType,
           slug: Array.isArray(slug) ? JSON.stringify(slug) : slug,
         }
-        apiClient?.post(`v1/cms/view-page`, pageStats, { disableLog: true }).catch(() => null);
+        apiClient.post(`v1/cms/view-page`, pageStats, { disableLog: true }).catch(() => null);
+
+        getAuthClient().reviveAuth();
       }
     }, [props.router?.asPath]);
 

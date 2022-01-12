@@ -112,6 +112,7 @@
     .descriptionGradient {
         display: block;
         position: absolute;
+        pointer-events: none;
         width: 100%;
         bottom: 0;
         height: 50px;

@@ -3,10 +3,11 @@ import React from 'react';
 import { toast as toastify } from 'react-toastify';
 
 import { BreadcrumbElements, Breadcrumbs as BaseBreadcrumbs } from '../base/Breadcrumbs/Breadcrumbs';
+import { CartList, CartListProps } from '../base/CartList/CartList';
 import { CategoryList as BaseCategoryList, CategoryListProps } from '../base/CategoryList/CategoryList';
 import { CategorySort as BaseCategorySort } from '../base/CategorySort/CategorySort';
-import { ProductActions as BaseProductActions, ProductActionsProps } from '../base/ProductActions/ProductActions';
 import { CurrencySwitch, CurrencySwitchProps } from '../base/CurrencySwitch/CurrencySwitch';
+import { ProductActions as BaseProductActions, ProductActionsProps } from '../base/ProductActions/ProductActions';
 import {
   ProductAttributes as BaseProductAttributes,
   ProductAttributesProps,
@@ -125,3 +126,7 @@ export const MuiCurrencySwitch = withElements(CurrencySwitch, {
   }),
 } as CurrencySwitchProps['elements']);
 
+export const MuiCartList = withElements(CartList, {
+  Loadbox,
+  Button: IconButton,
+} as CartListProps['elements']);

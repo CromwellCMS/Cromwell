@@ -35,7 +35,7 @@ export const setStoreItem = <K extends keyof TCromwellStore>(itemName: K, item: 
 
     const storeChangeCallbacks = getStoreItem('storeChangeCallbacks');
     if (storeChangeCallbacks?.[itemName]) {
-        for (const callback of storeChangeCallbacks?.[itemName]) {
+        for (const callback of Object.values(storeChangeCallbacks?.[itemName] ?? {})) {
             try {
                 callback(item);
             } catch (e) { console.error(e) }
@@ -44,7 +44,7 @@ export const setStoreItem = <K extends keyof TCromwellStore>(itemName: K, item: 
 }
 
 export const onStoreChange = <K extends keyof TCromwellStore>(itemName: K,
-    callback: (itemValue: TCromwellStore[K]) => any) => {
+    callback: (itemValue: TCromwellStore[K]) => any, callbackId?: string): string => {
 
     let storeChangeCallbacks = getStoreItem('storeChangeCallbacks')
 
@@ -52,16 +52,17 @@ export const onStoreChange = <K extends keyof TCromwellStore>(itemName: K,
         storeChangeCallbacks = {};
         setStoreItem('storeChangeCallbacks', storeChangeCallbacks);
     }
+    if (!storeChangeCallbacks[itemName]) storeChangeCallbacks[itemName] = {};
 
-    if (!storeChangeCallbacks[itemName]) storeChangeCallbacks[itemName] = [];
-    storeChangeCallbacks[itemName].push(callback);
+    const cbId = callbackId ?? Object.keys(storeChangeCallbacks[itemName]).length + '';
+    storeChangeCallbacks[itemName][cbId] = callback;
+    return cbId;
 }
 
-export const removeOnStoreChange = <K extends keyof TCromwellStore>(itemName: K,
-    callback: (itemValue: TCromwellStore[K]) => any) => {
+export const removeOnStoreChange = <K extends keyof TCromwellStore>(itemName: K, callbackId: string) => {
     const storeChangeCallbacks = getStoreItem('storeChangeCallbacks');
     if (storeChangeCallbacks?.[itemName]) {
-        storeChangeCallbacks[itemName] = storeChangeCallbacks[itemName].filter(item => item !== callback);
+        delete storeChangeCallbacks[itemName][callbackId];
     }
 }
 

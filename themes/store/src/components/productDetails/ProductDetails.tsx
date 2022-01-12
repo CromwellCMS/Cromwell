@@ -77,12 +77,12 @@ export default function ProductDetails(props: {
           </CContainer>
           <CContainer id="productActionsBlock">
             <MuiProductAttributes
-              attributes={attributes}
+              attributes={attributes || undefined}
               product={originalProduct}
             />
             <CContainer id="product_41" className={styles.delimiter}></CContainer>
             <MuiProductActions
-              attributes={attributes}
+              attributes={attributes || undefined}
               product={originalProduct}
               onCartOpen={() => appState.isCartOpen = true}
               onWishlistOpen={() => appState.isWishlistOpen = true}

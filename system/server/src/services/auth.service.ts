@@ -113,6 +113,7 @@ export class AuthService {
             if (!initiator?.id || initiator.role !== 'administrator')
                 throw new UnauthorizedException('Denied. You have no permissions to create this type of user');
         }
+        if (!data.role) data.role = 'customer';
         return this.createUser(data);
     }
 
