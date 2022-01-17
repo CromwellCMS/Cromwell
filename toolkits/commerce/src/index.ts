@@ -12,6 +12,7 @@ export { Wishlist, WishlistProps } from './base/Wishlist/Wishlist';
 export { ViewedItems, ViewedItemsProps } from './base/ViewedItems/ViewedItems';
 export { CurrencySwitch, CurrencySwitchProps } from './base/CurrencySwitch/CurrencySwitch';
 export { CartList, CartListProps } from './base/CartList/CartList';
+export { Checkout, CheckoutProps, DefaultCheckoutFields, TCheckoutField } from './base/Checkout/Checkout';
 
 export {
     MuiPagination,
@@ -27,6 +28,7 @@ export {
     MuiWishlist,
     MuiCurrencySwitch,
     MuiCartList,
+    MuiCheckout,
 } from './mui/index';
 
 export { moduleState, useModuleState } from './helpers/state';

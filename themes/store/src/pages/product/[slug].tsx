@@ -19,7 +19,6 @@ export interface ProductProps {
 
 const Product: TPageWithLayout<ProductProps> = (props) => {
   const { product } = props ?? {};
-
   return (
     <CContainer className={clsx(commonStyles.content, styles.ProductPage)} id="product-1">
       <EntityHead

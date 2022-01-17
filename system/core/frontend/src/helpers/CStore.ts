@@ -1,4 +1,14 @@
-import { getStoreItem, isServer, setStoreItem, TAttribute, TCoupon, TProduct, TProductVariant, TStoreListItem } from '@cromwell/core';
+import {
+    getStoreItem,
+    isServer,
+    setStoreItem,
+    TAttribute,
+    TCoupon,
+    TProduct,
+    TProductVariant,
+    TStoreListItem,
+} from '@cromwell/core';
+import deepEqual from 'fast-deep-equal/es6';
 
 import { getGraphQLClient } from '../api/CGraphQLClient';
 
@@ -368,54 +378,54 @@ export class CStore {
         }
 
         const updatedProducts: (TProduct | undefined)[] = await Promise.all(Object.values(promises));
-
-        // let attributes: TAttribute[] | undefined = undefined;
-        // try {
-        //     attributes = await this.apiClient?.getAttributes();
-        // } catch (e) { console.error(e) }
-
         const updatedList: TStoreListItem[] = [];
 
         list.forEach(listItem => {
-            const updated = updatedProducts.find(u => (u && listItem.product && (u.id + '' === listItem.product.id + '')))
-            if (updated) {
-                let hasAllAttrs = true;
-                if (listItem.pickedAttributes && updated.attributes) {
-                    for (const key of Object.keys(listItem.pickedAttributes)) {
-                        let hasAttr = false;
-                        for (const updatedAttr of updated.attributes) {
-                            if (updatedAttr.key === key) {
-                                hasAttr = true;
-                                const vals = listItem.pickedAttributes[key];
-                                const updatedVals: string[] = updatedAttr.values.map(v => v.value);
-                                if (!vals.every(v => updatedVals.includes(v))) {
-                                    hasAttr = false;
-                                }
-                            }
-                        }
-                        if (!hasAttr) {
-                            hasAllAttrs = false;
-                        }
-                    }
-                }
-                if (hasAllAttrs) {
-                    listItem.product = this.applyProductVariants(updated,
-                        listItem.pickedAttributes);
+            if (!listItem.product?.id) return;
+            const updated = updatedProducts.find(u => u?.id === listItem.product?.id)
+            if (!updated) return;
+            const updatedListItem: TStoreListItem = {
+                ...listItem,
+                pickedAttributes: listItem.pickedAttributes && { ...listItem.pickedAttributes },
+                product: updated,
+            }
 
-                    if (listItem.pickedAttributes) {
-                        for (const key of Object.keys(listItem.pickedAttributes)) {
+            let hasAllAttrs = true;
+            if (listItem.pickedAttributes && updated.attributes) {
+                for (const key of Object.keys(listItem.pickedAttributes)) {
+                    let hasAttr = false;
+                    for (const updatedAttr of updated.attributes) {
+                        if (updatedAttr.key === key) {
+                            hasAttr = true;
                             const vals = listItem.pickedAttributes[key];
-                            if (!vals || !Array.isArray(vals) || vals.length === 0) {
-                                delete listItem.pickedAttributes[key];
+                            const updatedVals: string[] = updatedAttr.values.map(v => v.value);
+                            if (!vals.every(v => updatedVals.includes(v))) {
+                                hasAttr = false;
                             }
                         }
                     }
-                    updatedList.push(listItem);
+                    if (!hasAttr) {
+                        hasAllAttrs = false;
+                    }
                 }
+            }
+            if (hasAllAttrs) {
+                updatedListItem.product = this.applyProductVariants(updated,
+                    updatedListItem.pickedAttributes);
+
+                if (updatedListItem.pickedAttributes) {
+                    for (const key of Object.keys(updatedListItem.pickedAttributes)) {
+                        const vals = updatedListItem.pickedAttributes[key];
+                        if (!vals || !Array.isArray(vals) || vals.length === 0) {
+                            delete updatedListItem.pickedAttributes[key];
+                        }
+                    }
+                }
+                updatedList.push(updatedListItem);
             }
         })
 
-        return this.saveList(listKey, updatedList);
+        if (!deepEqual(list, updatedList)) this.saveList(listKey, updatedList);
     }
 
     public updateCart = async () => {
@@ -478,7 +488,8 @@ export class CStore {
 
             // Apply coupons per product
             for (const coupon of coupons) {
-                if (current.product && coupon.value && (coupon.productIds?.length || coupon.categoryIds?.length)) {
+                if (current.product && coupon.value && (coupon.productIds?.length
+                    || coupon.categoryIds?.length)) {
                     if (coupon.productIds?.includes(current.product.id)) {
                         if (coupon.discountType === 'fixed') {
                             price -= coupon.value;
@@ -539,48 +550,57 @@ export class CStore {
 
     // < HELPERS > 
 
+    /**
+     * What properties of a product variant can overwrite on apply. 
+     */
+    public allowedVariantKeysToOverwrite: (keyof TProduct)[] = ['description', 'descriptionDelta',
+        'images', 'mainImage', 'manageStock', 'name', 'oldPrice', 'price', 'sku', 'stockAmount',
+        'stockStatus',
+    ]
+
     /** Applies all ProductVariants from values of checked attributes */
     public applyProductVariants = (product: TProduct, checkedAttrs?: Record<string, (string | number)[]>): TProduct => {
-        if (checkedAttrs && Object.keys(checkedAttrs).length && product.variants?.length) {
-            const newProd = Object.assign({}, product);
-            const matchedVariants: {
-                variant: TProductVariant;
-                matches: number;
-            }[] = [];
-
-            for (const variant of product.variants) {
-                if (!variant.attributes) continue;
-                const filteredAttributes: Record<string, string | number> = {};
-                Object.entries(variant.attributes).forEach(([key, value]) => {
-                    if (value) filteredAttributes[key] = value;
-                });
-                if (!Object.keys(filteredAttributes).length) continue;
-
-                let matches = 0;
-                Object.entries(filteredAttributes).forEach(([key, value]) => {
-                    if (checkedAttrs[key] && checkedAttrs[key].includes(value)) {
-                        matches++;
-                    }
-                });
-                if (matches && Object.keys(filteredAttributes).length === matches) {
-                    matchedVariants.push({
-                        matches,
-                        variant: variant,
-                    })
-                }
-            }
-            matchedVariants.sort((a, b) => a.matches - b.matches);
-
-            for (const variant of matchedVariants) {
-                Object.entries(variant.variant).forEach(([key, value]) => {
-                    if (!key || key === 'id' || key === 'attributes') return;
-                    if (value === null || value === undefined) return;
-                    newProd[key] = value;
-                });
-            }
-            return newProd;
+        if (!checkedAttrs || !Object.keys(checkedAttrs).length || !product.variants?.length) {
+            return product;
         }
-        return product;
+
+        const newProd = Object.assign({}, product);
+        const matchedVariants: {
+            variant: TProductVariant;
+            matches: number;
+        }[] = [];
+
+        for (const variant of product.variants) {
+            if (!variant.attributes) continue;
+            const filteredAttributes: Record<string, string | number> = {};
+            Object.entries(variant.attributes).forEach(([key, value]) => {
+                if (value) filteredAttributes[key] = value;
+            });
+            if (!Object.keys(filteredAttributes).length) continue;
+
+            let matches = 0;
+            Object.entries(filteredAttributes).forEach(([key, value]) => {
+                if (checkedAttrs[key] && checkedAttrs[key].includes(value)) {
+                    matches++;
+                }
+            });
+            if (matches && Object.keys(filteredAttributes).length === matches) {
+                matchedVariants.push({
+                    matches,
+                    variant: variant,
+                })
+            }
+        }
+        matchedVariants.sort((a, b) => a.matches - b.matches);
+
+        for (const match of matchedVariants) {
+            Object.entries(match.variant).forEach(([key, value]) => {
+                if (!key || !this.allowedVariantKeysToOverwrite.includes(key as any)) return;
+                if (value === null || value === undefined) return;
+                newProd[key] = value;
+            });
+        }
+        return newProd;
     }
 
     // Validate and save coupons in the cart

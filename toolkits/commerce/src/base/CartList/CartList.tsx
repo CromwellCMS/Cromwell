@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { TBaseButton } from '../shared/Button';
 import styles from './CartList.module.scss';
 import { CartListItem, CartListItemProps } from './CartListItem';
+import { useModuleState } from '../../helpers/state';
 import clsx from 'clsx';
 
 export type CartListProps = {
@@ -18,24 +19,37 @@ export type CartListProps = {
     ListItem?: React.ComponentType<CartListItemProps>;
     HeaderActions?: React.ComponentType;
   }
+  text?: {
+    total?: string;
+  }
   onProductClick?: (event: React.MouseEvent, product: TProduct) => void;
   collapsedByDefault?: boolean;
   cart?: TStoreListItem[];
   hideDelete?: boolean;
   getProductLink?: (product: TProduct) => string;
-  totalPosition?: 'top' | 'bottom' | 'none';
+  sumPosition?: 'top' | 'bottom' | 'none';
 }
 
 export const CartList = (props: CartListProps) => {
-  const { elements, classes, totalPosition = 'top' } = props;
+  const { elements, classes, text, sumPosition = 'top' } = props;
   const { Loadbox = BaseLoadBox,
     ListItem = CartListItem, HeaderActions } = elements ?? {};
   const cstore = getCStore();
+  const moduleState = useModuleState();
 
   const cart = useCart();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const viewCart = props.cart ?? cart;
+  let viewCart = (props.cart ?? moduleState.paymentSession?.cart ?? cart) as TStoreListItem[] | undefined;
+  if (typeof viewCart === 'string') {
+    try {
+      viewCart = JSON.parse(viewCart);
+    } catch (error) {
+      console.error(error);
+      viewCart = undefined;
+    }
+  }
+
   const cartInfo = cstore.getCartTotal(viewCart);
   const cartTotal = cartInfo.total;
   const cartTotalOldPrice = cartInfo.totalOld;
@@ -60,7 +74,7 @@ export const CartList = (props: CartListProps) => {
       {isLoading && (
         <Loadbox />
       )}
-      {!isLoading && viewCart.map((item, i) => (
+      {!isLoading && viewCart?.map((item, i) => (
         <ListItem item={item}
           key={item?.product?.id ?? i}
           cartProps={props}
@@ -72,7 +86,7 @@ export const CartList = (props: CartListProps) => {
   const headerJsx = (
     <div className={clsx(styles.cartHeader, classes?.cartHeader)}>
       <div className={clsx(styles.cartTotal, classes?.cartTotal)}>
-        <p className={clsx(styles.cartTotalText, classes?.cartTotalText)}>Total</p>
+        <p className={clsx(styles.cartTotalText, classes?.cartTotalText)}>{text?.total ?? 'Total: '}</p>
         {(cartTotalOldPrice !== cartTotal) && (
           <p className={clsx(styles.oldPrice, classes?.oldPrice)}>{cstore.getPriceWithCurrency(cartTotalOldPrice)}</p>
         )}
@@ -84,9 +98,9 @@ export const CartList = (props: CartListProps) => {
 
   return (
     <div className={clsx(styles.CartList, classes?.root)} >
-      {totalPosition === 'top' && headerJsx}
+      {sumPosition === 'top' && headerJsx}
       {listJsx}
-      {totalPosition === 'bottom' && headerJsx}
+      {sumPosition === 'bottom' && headerJsx}
     </div>
   )
 }

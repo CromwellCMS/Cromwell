@@ -44,15 +44,6 @@ let fs = require('fs');
         spawnSync(`yarn`, spawnOpts);
 
         fs = require('fs-extra');
-        // For some reason npm duplicates @nestjs packages which leads to
-        // multiple instances in one app, so Server unable to compile and run.
-        // Clean them manually
-        try {
-            fs.removeSync(resolve(projectRootDir, 'system/core/backend/node_modules'));
-            fs.removeSync(resolve(projectRootDir, 'system/server/node_modules'));
-        } catch (error) {
-            console.error(error);
-        }
     } else {
         fs = require('fs-extra');
     }
@@ -89,37 +80,29 @@ let fs = require('fs');
         spawnSync(`node ${adminStartupPath} build`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
     }
 
-    // Check themes
-    const themesDir = resolve(projectRootDir, 'themes');
-    if (!onlySystem && fs.existsSync(themesDir)) {
-        const themes = fs.readdirSync(themesDir);
-        for (let i = 0; i < themes.length; i++) {
-            const theme = themes[i];
-            const themeDir = resolve(themesDir, theme);
-            if (fs.existsSync(resolve(themeDir, 'package.json'))) {
-                if (!fs.existsSync(resolve(themeDir, 'build')) || scriptName === 'build') {
-                    console.log('\x1b[36m%s\x1b[0m', `Building ${theme} theme...`);
-                    spawnSync('npm run build', { shell: true, cwd: themeDir, stdio: 'inherit' });
+    const buildAllPackagesInDir = (dir, buildDirName = 'build', pckgType) => {
+        if (onlySystem || !fs.existsSync(dir)) return;
+        const packages = fs.readdirSync(dir);
+        for (let i = 0; i < packages.length; i++) {
+            const pckg = packages[i];
+            const pckgDir = resolve(dir, pckg);
+            if (fs.existsSync(resolve(pckgDir, 'package.json'))) {
+                if (!fs.existsSync(resolve(pckgDir, buildDirName)) || scriptName === 'build') {
+                    console.log('\x1b[36m%s\x1b[0m', `Building ${pckg} ${pckgType ?? ''}...`);
+                    spawnSync('npm run build', { shell: true, cwd: pckgDir, stdio: 'inherit' });
                 }
             }
         }
     }
 
+    // Check toolkits
+    buildAllPackagesInDir(resolve(projectRootDir, 'toolkits'), 'dist', 'toolkit');
+
+    // Check themes
+    buildAllPackagesInDir(resolve(projectRootDir, 'themes'), 'build', 'theme');
+
     // Check plugins
-    const pluginsDir = resolve(projectRootDir, 'plugins');
-    if (!onlySystem && fs.existsSync(pluginsDir)) {
-        const plugins = fs.readdirSync(pluginsDir);
-        for (let i = 0; i < plugins.length; i++) {
-            const plugin = plugins[i];
-            const pluginDir = resolve(pluginsDir, plugin);
-            if (fs.existsSync(resolve(pluginDir, 'package.json'))) {
-                if (!fs.existsSync(resolve(pluginDir, 'build')) || scriptName === 'build') {
-                    console.log('\x1b[36m%s\x1b[0m', `Building ${plugin} plugin...`);
-                    spawnSync('npm run build', { shell: true, cwd: pluginDir, stdio: 'inherit' });
-                }
-            }
-        }
-    }
+    buildAllPackagesInDir(resolve(projectRootDir, 'plugins'), 'build', 'plugin');
 
     // Start system
     if (scriptName !== 'build') {

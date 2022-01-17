@@ -34,5 +34,5 @@ Workflow:
 Follow these guidelines while working:
 
 - Follow the existing coding style
-- Write a [good commit message](https://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html)
+- Write a [conventional commit message](https://www.conventionalcommits.org/en/v1.0.0/)
 - When you have a lot of commits in your PR, it's good practice to squash all your commits in one single commit. ([Learn how to squash here](https://davidwalsh.name/squash-commits-git))

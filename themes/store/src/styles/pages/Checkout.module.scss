@@ -123,6 +123,10 @@
     }
 }
 
+.checkout {
+    margin: 40px 0;
+}
+
 @media screen and (max-width: $mobileBreakpoint) {
     .CheckoutPage {
         flex-direction: column;

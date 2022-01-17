@@ -44,6 +44,7 @@ type TGetProductOptions = {
     withRating?: boolean;
     withAttributes?: boolean;
     withCategories?: boolean;
+    withVariants?: boolean;
 }
 
 @EntityRepository(Product)
@@ -120,6 +121,9 @@ export class ProductRepository extends BaseRepository<Product> {
         if (options.withCategories) {
             product.categories = await getCustomRepository(ProductCategoryRepository)
                 .getCategoriesOfProduct(product.id, { pageSize: 1000 });
+        }
+        if (options.withVariants) {
+            product.variants = await this.getProductVariantsOfProduct(product.id);
         }
     }
 

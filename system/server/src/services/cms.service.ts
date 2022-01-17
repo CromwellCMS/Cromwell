@@ -599,7 +599,7 @@ ${content}
 
         const cstore = getCStore(true, {
             getProductById: (id) => getCustomRepository(ProductRepository).getProductById(id,
-                { withAttributes: true, withCategories: true, }),
+                { withAttributes: true, withCategories: true, withVariants: true }),
             getAttributes: () => getCustomRepository(AttributeRepository).getAttributes(),
             getCouponsByCodes: (codes) => getCustomRepository(CouponRepository)
                 .getCouponsByCodes(codes)

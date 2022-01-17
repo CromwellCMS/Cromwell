@@ -33,6 +33,20 @@ const OrderPage = () => {
     const updatedOrderTotalPrice = parseFloat((updatedCartTotal +
         (data?.shippingPrice ?? 0)).toFixed(2));
 
+    // Support old and new address format
+    let addressString;
+    let addressJson;
+    if (data?.customerAddress) {
+        try {
+            addressJson = JSON.parse(data.customerAddress);
+        } catch (error) { }
+        if (!addressJson) addressString = data.customerAddress;
+        if (addressJson && typeof addressJson !== 'object') {
+            addressString = addressJson;
+            addressJson = undefined;
+        }
+    }
+
     useEffect(() => {
         getOrderData();
     }, []);
@@ -218,15 +232,37 @@ const OrderPage = () => {
                                     onChange={(e) => { handleInputChange('customerEmail', e.target.value) }}
                                 />
                             </Grid>
-                            <Grid item xs={12} sm={12}>
-                                <TextField label="Address"
-                                    value={data?.customerAddress || ''}
-                                    fullWidth
-                                    variant="standard"
-                                    className={styles.textField}
-                                    onChange={(e) => { handleInputChange('customerAddress', e.target.value) }}
-                                />
-                            </Grid>
+                            {!addressJson && (
+                                <Grid item xs={12} sm={12}>
+                                    <TextField label="Address"
+                                        value={addressString || ''}
+                                        fullWidth
+                                        variant="standard"
+                                        className={styles.textField}
+                                        onChange={(e) => { handleInputChange('customerAddress', e.target.value) }}
+                                    />
+                                </Grid>
+                            )}
+                            {addressJson && (
+                                Object.entries<any>(addressJson).map(([fieldKey, value]) => {
+                                    return (
+                                        <Grid item xs={12} sm={12} key={fieldKey}>
+                                            <TextField label={fieldKey}
+                                                value={value || ''}
+                                                fullWidth
+                                                variant="standard"
+                                                className={styles.textField}
+                                                onChange={(e) => {
+                                                    const newVal = e.target.value;
+                                                    handleInputChange('customerAddress', JSON.stringify({
+                                                        ...addressJson,
+                                                        [fieldKey]: newVal,
+                                                    }))
+                                                }}
+                                            />
+                                        </Grid>
+                                    )
+                                }))}
                             <Grid item xs={12} sm={12}>
                                 <TextField label="Comment"
                                     value={data?.customerComment || ''}

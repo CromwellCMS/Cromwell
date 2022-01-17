@@ -1,0 +1,72 @@
+.Checkout {
+    position: relative;
+}
+
+.blockTitle {
+    font-size: 20px;
+    font-weight: 400;
+    margin: 20px 0px;
+    text-transform: uppercase;
+    color: #888;
+}
+
+.delimiter {
+    width: 100%;
+    border-bottom: 2px solid #eee;
+    margin: 40px 0px;
+}
+
+.detailsRow {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dashed #bbb;
+    margin: 15px 0;
+}
+
+.detailsRowName {
+    font-size: 1em;
+}
+
+.detailsRowValue {
+    font-size: 1em;
+    font-weight: 500;
+}
+
+.withoutDiscountText {
+    color: #999;
+}
+
+.withoutDiscountValue {
+    color: #999;
+    text-decoration: line-through;
+
+}
+
+.totalText {
+    font-size: 24px;
+    font-weight: 500;
+}
+
+.totalValue {
+    font-size: 24px;
+    font-weight: 500;
+}
+
+.loadBoxCover {
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    z-index: 10;
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+}
+
+.actionsBlock {
+    margin-top: 20px;
+}
+
+.placedOrderText {
+    font-size: 18px;
+}

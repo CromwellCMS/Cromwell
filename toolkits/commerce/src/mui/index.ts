@@ -1,3 +1,6 @@
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import CloseIcon from '@mui/icons-material/Close';
+import GppBadIcon from '@mui/icons-material/GppBad';
 import { Alert, Breadcrumbs as MuiLibBreadcrumbs, Button, IconButton, Rating, TextField, Tooltip } from '@mui/material';
 import React from 'react';
 import { toast as toastify } from 'react-toastify';
@@ -6,6 +9,7 @@ import { BreadcrumbElements, Breadcrumbs as BaseBreadcrumbs } from '../base/Brea
 import { CartList, CartListProps } from '../base/CartList/CartList';
 import { CategoryList as BaseCategoryList, CategoryListProps } from '../base/CategoryList/CategoryList';
 import { CategorySort as BaseCategorySort } from '../base/CategorySort/CategorySort';
+import { Checkout, CheckoutProps } from '../base/Checkout/Checkout';
 import { CurrencySwitch, CurrencySwitchProps } from '../base/CurrencySwitch/CurrencySwitch';
 import { ProductActions as BaseProductActions, ProductActionsProps } from '../base/ProductActions/ProductActions';
 import {
@@ -28,6 +32,7 @@ import { ActionButton } from './ProductActions/ProductActions';
 import { AttributeTitle } from './ProductAttributes/AttributeTitle';
 import { AttributeValue } from './ProductAttributes/AttributeValue';
 import { QuantityField } from './QuantityField/QuantityField';
+import { RadioGroup } from './RadioGroup/RadioGroup';
 import { Select } from './Select/Select';
 
 export const MuiPagination = Pagination;
@@ -130,3 +135,38 @@ export const MuiCartList = withElements(CartList, {
   Loadbox,
   Button: IconButton,
 } as CartListProps['elements']);
+
+
+export const MuiCheckout = withElements(Checkout, {
+  Loadbox,
+  PlacedOrder: (props) => React.createElement(Alert, { severity: "success" }, props.children),
+  RadioGroup: RadioGroup,
+  Button: Button,
+  AddCouponButton: (props) => React.createElement(Button, { style: { marginRight: '15px' }, ...props }),
+  RemoveCouponButton: (props) => React.createElement(IconButton, { style: { marginLeft: '10px' }, ...props }),
+  CouponAppliedIcon: () => React.createElement(CheckCircleOutlineIcon, {
+    style: {
+      color: '#357a38',
+      marginRight: '15px',
+    }
+  }),
+  CouponProblemIcon: () => React.createElement(GppBadIcon, {
+    style: {
+      color: '#b2102f',
+      marginRight: '15px',
+    }
+  }),
+  RemoveCouponIcon: CloseIcon,
+  TextField: (props) => React.createElement(TextField, {
+    size: 'small',
+    fullWidth: true,
+    style: { margin: '10px 0' },
+    ...props,
+  }),
+} as CheckoutProps['elements'], {
+  notifierOptions: {
+    position: toastify.POSITION.TOP_RIGHT,
+    className: notifierStyles.muiToast,
+    Wrapper: NotifierWrapper,
+  }
+} as CheckoutProps);

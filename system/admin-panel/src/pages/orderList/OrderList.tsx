@@ -74,6 +74,36 @@ export default function OrderTable() {
                     label: 'Address',
                     type: 'Simple text',
                     visible: true,
+                    getValueView: (value) => {
+                        if (!value) return '';
+                        // Support old and new address format
+                        let addressJson
+                        try {
+                            addressJson = JSON.parse(value);
+                        } catch (error) { }
+                        if (!addressJson) return value;
+                        let addressStr = ''
+                        for (const [key, value] of Object.entries(addressJson)) {
+                            if (!value || !key) continue;
+                            addressStr += value + ', ';
+                        }
+                        return addressStr;
+                    },
+                    getTooltipValueView: (value) => {
+                        if (!value) return '';
+                        // Support old and new address format
+                        let addressJson
+                        try {
+                            addressJson = JSON.parse(value);
+                        } catch (error) { }
+                        if (!addressJson) return value;
+                        let addressStr = ''
+                        for (const [key, value] of Object.entries(addressJson)) {
+                            if (!value || !key) continue;
+                            addressStr += `${key}: ${value}\n`;
+                        }
+                        return addressStr;
+                    }
                 },
                 {
                     name: 'customerPhone',

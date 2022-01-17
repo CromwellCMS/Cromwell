@@ -1,4 +1,4 @@
-import { getRandStr, TAttribute, TProduct } from '@cromwell/core';
+import { getRandStr, TAttribute, TPaymentSession, TProduct } from '@cromwell/core';
 import { useEffect } from 'react';
 import { useForceUpdate } from './forceUpdate';
 
@@ -103,6 +103,12 @@ class ModuleState {
         for (const listener of Object.values(this.updateHooks)) {
             listener();
         }
+    }
+
+    public paymentSession?: TPaymentSession | null | undefined;
+    public setPaymentSession(session: TPaymentSession | null | undefined) {
+        this.paymentSession = session;
+        this.triggerUpdateHooks();
     }
 }
 
