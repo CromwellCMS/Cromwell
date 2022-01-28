@@ -9,35 +9,26 @@ import {
   TItemComponentProps,
   TPaginationProps,
 } from '@cromwell/core-frontend';
+import clsx from 'clsx';
 import { useRouter } from 'next/router';
 import React, { useEffect, useRef } from 'react';
 
-import { TBaseTextField } from '../shared/TextField';
 import { TBaseAlert } from '../shared/Alert';
 import { TBaseButton } from '../shared/Button';
-import { TBaseTooltip } from '../shared/Tooltip';
 import { TBaseRating } from '../shared/Rating';
+import { TBaseTextField } from '../shared/TextField';
+import { TBaseTooltip } from '../shared/Tooltip';
 import styles from './ProductReviews.module.scss';
 import { ReviewForm, ReviewFormProps } from './ReviewForm';
 import { ReviewItem, ReviewItemProps } from './ReviewItem';
 
 export type ProductReviewsProps = {
-  /**
-   * Target product's ID. Required
-   */
-  productId?: number | null;
-  /**
-   * Override props to CList
-   */
-  listProps?: TCListProps<TProductReview, TListItemProps>;
-  /**
-   * Notifier tool
-   */
-  notifier?: TCromwellNotify;
+  classes?: Partial<Record<'root' | 'ReviewForm' | 'reviewFormTitle' | 'reviewInput'
+    | 'submitBtnWrapper' | 'ReviewItem' | 'itemHeader' | 'itemUsername' | 'itemCreateDate'
+    | 'itemTitle' | 'itemDescription', string>>;
 
   elements?: {
     Title?: React.ComponentType;
-
     /**
      * Replace ReviewForm component by custom
      */
@@ -53,6 +44,7 @@ export type ProductReviewsProps = {
     TextField?: TBaseTextField;
     Tooltip?: TBaseTooltip
   }
+
   text?: {
     writeReview?: string;
     fieldRequired?: string;
@@ -63,6 +55,24 @@ export type ProductReviewsProps = {
     failedToSubmit?: string;
     submitSuccess?: string;
   }
+
+  /**
+   * Target product's ID. Required
+   */
+  productId: number;
+  /**
+   * Override props to CList
+   */
+  listProps?: TCListProps<TProductReview, TListItemProps>;
+  /**
+   * Notifier tool
+   */
+  notifier?: TCromwellNotify;
+
+  /**
+  * Disable editing of inner blocks in Theme editor 
+  */
+  disableEdit?: boolean
 }
 
 type TListItemProps = TItemComponentProps<TProductReview, ProductReviewsProps>;
@@ -73,13 +83,16 @@ const ListItem = (props: TListItemProps) => {
 }
 
 export function ProductReviews(props: ProductReviewsProps) {
-  const { productId, listProps, notifier, elements } = props;
+  const { productId, listProps, notifier, elements, classes, disableEdit } = props;
   const reviewsInst = useRef<TCromwellBlock<TCList> | undefined>();
   const client = getGraphQLClient();
   const router = useRouter();
   const Form = elements?.ReviewForm ?? ReviewForm;
   const Title = elements?.Title ?? (() => (
-    <CText id="ccom_product_reviews_title" className={styles.reviewsTitle}>Customer reviews</CText>
+    <CText id="ccom_product_reviews_title"
+      className={styles.reviewsTitle}
+      editorHidden={disableEdit}
+    >Customer reviews</CText>
   ));
 
   useEffect(() => {
@@ -89,12 +102,18 @@ export function ProductReviews(props: ProductReviewsProps) {
     }
   }, [router?.asPath]);
 
-  if (!productId) return null;
+  if (!productId) {
+    console.error('ccom_ProductReviews: you must provide productId prop')
+    return null;
+  }
 
   return (
-    <CContainer id="ccom_product_reviews_block" className={styles.ProductReviews}>
+    <CContainer id="ccom_product_reviews_block"
+      className={clsx(styles.ProductReviews, classes?.root)}
+      editorHidden={disableEdit}
+    >
       <Title />
-      <CContainer id="ccom_product_reviews_list_container">
+      <CContainer id="ccom_product_reviews_list_container" editorHidden={disableEdit}>
         <CList<TProductReview>
           id={"ccom_product_reviews_list"}
           ListItem={ListItem}

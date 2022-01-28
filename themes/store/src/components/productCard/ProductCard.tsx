@@ -1,4 +1,4 @@
-import { MuiProductCard, ProductCardProps } from '@cromwell/commerce';
+import { MuiProductCard, ProductCardProps } from '@cromwell/toolkit-commerce';
 import SearchIcon from '@mui/icons-material/Search';
 import { IconButton, Theme, Tooltip, useMediaQuery } from '@mui/material';
 import clsx from 'clsx';
@@ -12,7 +12,7 @@ import styles from './ProductCard.module.scss';
 export const ProductCard = (props?: ProductCardProps & {
   className?: string;
 }) => {
-  const { data: product } = props ?? {};
+  const { product } = props ?? {};
   const router = useRouter();
   const isMobile = useMediaQuery<Theme>((theme) => theme.breakpoints.down('sm'));
   const variant = (props?.variant === 'horizontal' && !isMobile) ? 'horizontal' : 'vertical';
@@ -23,9 +23,11 @@ export const ProductCard = (props?: ProductCardProps & {
     appState.quickViewProductId = product?.id;
   }
 
+  if (!product) return null;
+
   return (
     <MuiProductCard
-      data={product}
+      product={product}
       attributes={props?.attributes}
       classes={{
         root: clsx(props?.className, commonStyles.onHoverLinkContainer, styles.Product),
@@ -33,7 +35,7 @@ export const ProductCard = (props?: ProductCardProps & {
       }}
       onOpenCart={() => appState.isCartOpen = true}
       onOpenWishlist={() => appState.isWishlistOpen = true}
-      noImagePlaceholder={'/themes/@cromwell/theme-store/no-photos.png'}
+      noImagePlaceholderUrl={'/themes/@cromwell/theme-store/no-photos.png'}
       variant={variant}
       onFailedAddToCart={(item, result) => {
         if (result.code === 4) {

@@ -1,4 +1,4 @@
-import { TPaymentSession, TStoreListItem } from '@cromwell/core';
+import { TOrderPaymentSession, TStoreListItem } from '@cromwell/core';
 import { getLogger, getPluginSettings } from '@cromwell/core-backend';
 import { getCStore } from '@cromwell/core-frontend';
 import paypal, { PaymentResponse, Payment } from 'paypal-rest-sdk';
@@ -8,7 +8,7 @@ import { SettingsType } from '../../types';
 
 const logger = getLogger();
 
-export const createPayment = async (input: TPaymentSession) => {
+export const createPayment = async (input: TOrderPaymentSession) => {
     const settings: SettingsType = await getPluginSettings(pluginName);
     const { client_id, client_secret, mode } = settings ?? {};
     const cart = input.cart as TStoreListItem[] ?? [];
@@ -42,7 +42,7 @@ export const createPayment = async (input: TPaymentSession) => {
         client_secret,
     });
 
-    const store = getCStore(true);
+    const store = getCStore({ local: true });
     const defaultCurrency = store.getDefaultCurrencyTag() ?? 'usd';
     const currency = (input.currency ?? defaultCurrency).toUpperCase();
 

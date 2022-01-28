@@ -1,6 +1,6 @@
-import { getRandStr, TAttribute, TPaymentSession, TProduct } from '@cromwell/core';
+import { getRandStr, TAttribute, TOrderPaymentSession, TProduct } from '@cromwell/core';
+import { useForceUpdate } from '@cromwell/core-frontend';
 import { useEffect } from 'react';
-import { useForceUpdate } from './forceUpdate';
 
 class ModuleState {
     /**
@@ -105,8 +105,8 @@ class ModuleState {
         }
     }
 
-    public paymentSession?: TPaymentSession | null | undefined;
-    public setPaymentSession(session: TPaymentSession | null | undefined) {
+    public paymentSession?: TOrderPaymentSession | null | undefined;
+    public setPaymentSession(session: TOrderPaymentSession | null | undefined) {
         this.paymentSession = session;
         this.triggerUpdateHooks();
     }

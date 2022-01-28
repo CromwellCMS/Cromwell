@@ -16,7 +16,7 @@ import {
   getAuthClient,
   getParserTransform,
   getRestApiClient,
-  PagePropsContext,
+  AppPropsContext,
   pageRootContainerId,
 } from '@cromwell/core-frontend';
 import { AppProps } from 'next/app';
@@ -90,7 +90,7 @@ export const withCromwellApp = (App: ((props: TAppProps) => JSX.Element | null))
         documentContext.origin = window.location.origin;
 
       if (documentContext.origin.endsWith('/'))
-        documentContext.origin = documentContext.origin.slice(0, documentContext.origin.length - 1);
+        documentContext.origin = documentContext.origin.slice(0, documentContext.origin.length - 2);
     }
 
     const routeInfo = {
@@ -163,7 +163,7 @@ export const withCromwellApp = (App: ((props: TAppProps) => JSX.Element | null))
           {documentContext => {
             const appProps = getChildAppProps(documentContext);
             return (
-              <PagePropsContext.Provider
+              <AppPropsContext.Provider
                 value={{
                   pageProps: appProps.pageProps as TCromwellPageCoreProps,
                   router: appProps.router,
@@ -208,7 +208,7 @@ export const withCromwellApp = (App: ((props: TAppProps) => JSX.Element | null))
                     {pageConfig?.headHtml && ReactHtmlParser(pageConfig?.headHtml, { transform: parserTransformHead })}
                   </Head>
                 </RootComp >
-              </PagePropsContext.Provider>
+              </AppPropsContext.Provider>
             )
           }}
         </CrwDocumentContext.Consumer>

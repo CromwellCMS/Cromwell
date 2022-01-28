@@ -1,7 +1,7 @@
-import { usePagePropsContext } from '@cromwell/core-frontend';
+import { useAppPropsContext } from '@cromwell/core-frontend';
 
 export const useImageLoader = () => {
-    const pageContext = usePagePropsContext();
+    const pageContext = useAppPropsContext();
 
     const imageLoader = ({ src }: {
         src: string;

@@ -1,4 +1,4 @@
-import { MuiViewedItems } from '@cromwell/commerce';
+import { MuiViewedItems } from '@cromwell/toolkit-commerce';
 import { IconButton } from '@mui/material';
 import clsx from 'clsx';
 import { observer } from 'mobx-react';

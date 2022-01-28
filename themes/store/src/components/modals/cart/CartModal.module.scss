@@ -35,6 +35,10 @@
         right: 5px;
         z-index: 5;
     }
+
+    .cartTotal {
+        font-size: 20px;
+    }
 }
 
 @media screen and (max-width: $mobileBreakpoint) {

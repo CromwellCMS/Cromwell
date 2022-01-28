@@ -13,7 +13,8 @@
     "cromwell.config.js"
   ],
   "scripts": {
-    "build": "npx --no-install cromwell b",
+    "build": "npx --no-install cromwell build",
+    "typecheck": "npx tsc --noEmit",
     "test": "cd tests && npx --no-install jest",
     "watch": "npx --no-install cromwell b -w"
   },
@@ -31,10 +32,10 @@
   "devDependencies": {
     "@apollo/client": "3.2.1",
     "@cromwell/cli": "2.0.15",
-    "@cromwell/commerce": "^1.0.0",
     "@cromwell/core": "2.0.10",
     "@cromwell/core-frontend": "2.0.11",
     "@cromwell/renderer": "2.0.16",
+    "@cromwell/toolkit-commerce": "^1.0.0",
     "@cromwell/utils": "2.0.12",
     "@rollup/plugin-alias": "3.1.5",
     "@rollup/plugin-commonjs": "20.0.0",

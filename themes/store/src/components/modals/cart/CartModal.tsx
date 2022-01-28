@@ -1,4 +1,4 @@
-import { MuiCartList } from '@cromwell/commerce';
+import { MuiCartList } from '@cromwell/toolkit-commerce';
 import { Link } from '@cromwell/core-frontend';
 import { Button, IconButton } from '@mui/material';
 import { observer } from 'mobx-react';
@@ -28,7 +28,7 @@ export const CartModal = observer(() => {
           <CloseIcon />
         </IconButton>
         <div className={styles.cartList}>
-          <MuiCartList onProductClick={handleCartClose} />
+          <MuiCartList onProductClick={handleCartClose} classes={{ cartTotal: styles.cartTotal }} />
         </div>
         <Link href="/checkout" onClick={handleCartClose} style={{ display: 'flex' }}>
           <Button

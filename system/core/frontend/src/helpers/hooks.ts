@@ -1,9 +1,14 @@
 import { useEffect, useState } from 'react';
 
-import { getCStore } from './CStore';
+import { getCStore, TGetCStoreOptions } from './CStore';
 
-export const useCart = () => {
-    const cstore = getCStore();
+type TUseCStorePropertyOptions = {
+    cstoreOptions?: TGetCStoreOptions;
+    cstore?: ReturnType<typeof getCStore>;
+}
+
+export const useCart = (options?: TUseCStorePropertyOptions) => {
+    const cstore = options?.cstore ?? getCStore(options?.cstoreOptions);
     const [cart, setCart] = useState(cstore.getCart());
 
     useEffect(() => {
@@ -18,8 +23,8 @@ export const useCart = () => {
     return cart;
 }
 
-export const useWishlist = () => {
-    const cstore = getCStore();
+export const useWishlist = (options?: TUseCStorePropertyOptions) => {
+    const cstore = options?.cstore ?? getCStore(options?.cstoreOptions);
     const [list, setList] = useState(cstore.getWishlist());
 
     useEffect(() => {
@@ -34,8 +39,8 @@ export const useWishlist = () => {
     return list;
 }
 
-export const useViewedItems = () => {
-    const cstore = getCStore();
+export const useViewedItems = (options?: TUseCStorePropertyOptions) => {
+    const cstore = options?.cstore ?? getCStore(options?.cstoreOptions);
     const [list, setList] = useState(cstore.getViewedItems());
 
     useEffect(() => {

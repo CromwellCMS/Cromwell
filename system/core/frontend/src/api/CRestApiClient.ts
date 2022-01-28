@@ -16,7 +16,7 @@ import {
     TPageConfig,
     TPageInfo,
     TPalette,
-    TPaymentSession,
+    TOrderPaymentSession,
     TPluginEntity,
     TProductReview,
     TProductReviewInput,
@@ -72,7 +72,10 @@ export class CRestApiClient {
     }
 
     /** @internal */
-    private serviceSecret;
+    private serviceSecret?: string;
+
+    /** @internal */
+    private initializePromise?: Promise<void>;
 
     /** @internal */
     constructor() {
@@ -81,6 +84,9 @@ export class CRestApiClient {
 
     /** @internal */
     private async init() {
+        let doneInit: (() => void) | undefined;
+        this.initializePromise = new Promise<void>(done => doneInit = done);
+
         // Set API URL from cookie
         if (!isServer() && !getStoreItem('cmsSettings')?.apiUrl) {
             try {
@@ -106,6 +112,8 @@ export class CRestApiClient {
             // authorized requests to the API server.
             this.serviceSecret = await getServiceSecret();
         }
+        doneInit?.();
+        this.initializePromise = undefined;
     }
 
     /** @internal */
@@ -153,6 +161,7 @@ export class CRestApiClient {
      * @auth no
      */
     public fetch = async <T = any>(route: string, options?: TRequestOptions): Promise<T> => {
+        if (this.initializePromise) await this.initializePromise;
         const baseUrl = this.getBaseUrl();
         const input = options?.input;
         let data;
@@ -472,7 +481,7 @@ export class CRestApiClient {
      * Calculate total price of a cart and creates a payment session via service provider
      * @auth no
      */
-    public createPaymentSession = async (input: TPaymentSession, options?: TRequestOptions): Promise<TPaymentSession | undefined> => {
+    public createPaymentSession = async (input: TOrderPaymentSession, options?: TRequestOptions): Promise<TOrderPaymentSession | undefined> => {
         return this.post(`v1/cms/create-payment-session`, input, options);
     }
 

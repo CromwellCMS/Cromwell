@@ -491,12 +491,13 @@ export type TShippingOption = {
     label?: string;
 }
 
-export type TPaymentSession = TOrderInput & {
+export type TOrderPaymentSession = TOrderInput & {
     paymentOptions?: TPaymentOption[];
-    shippingOptions?: TPaymentOption[];
+    shippingOptions?: TShippingOption[];
     successUrl?: string;
     cancelUrl?: string;
     appliedCoupons?: string[];
+    paymentSessionId?: string;
 }
 
 

@@ -1,6 +1,7 @@
 import {
     findRedirect,
     getRandStr,
+    payLaterOption,
     resolvePageRoute,
     setStoreItem,
     sleep,
@@ -11,6 +12,7 @@ import {
     TPackageCromwellConfig,
     TProductReview,
     TStoreListItem,
+    standardShipping,
     TUser,
     TUserRole,
 } from '@cromwell/core';
@@ -533,7 +535,7 @@ ${content}
         }
 
         const fromUrl = input.fromUrl;
-        const cstore = getCStore(true);
+        const cstore = getCStore({ local: true });
         if (createOrder.currency) {
             cstore.setActiveCurrency(createOrder.currency);
         }
@@ -597,12 +599,14 @@ ${content}
 
         const settings = await getCmsSettings();
 
-        const cstore = getCStore(true, {
-            getProductById: (id) => getCustomRepository(ProductRepository).getProductById(id,
-                { withAttributes: true, withCategories: true, withVariants: true }),
-            getAttributes: () => getCustomRepository(AttributeRepository).getAttributes(),
-            getCouponsByCodes: (codes) => getCustomRepository(CouponRepository)
-                .getCouponsByCodes(codes)
+        const cstore = getCStore({
+            local: true, apiClient: {
+                getProductById: (id) => getCustomRepository(ProductRepository).getProductById(id,
+                    { withAttributes: true, withCategories: true, withVariants: true }),
+                getAttributes: () => getCustomRepository(AttributeRepository).getAttributes(),
+                getCouponsByCodes: (codes) => getCustomRepository(CouponRepository)
+                    .getCouponsByCodes(codes)
+            }
         });
 
         if (input.currency) {
@@ -626,6 +630,12 @@ ${content}
 
         orderTotal.orderTotalPrice = (orderTotal?.cartTotalPrice ?? 0) + (orderTotal?.shippingPrice ?? 0);
         orderTotal.orderTotalPrice = parseFloat(orderTotal.orderTotalPrice.toFixed(2));
+
+        orderTotal.shippingOptions = [{
+            ...standardShipping,
+            price: settings?.defaultShippingPrice
+        }]
+
         return orderTotal;
     }
 
@@ -634,9 +644,14 @@ ${content}
         total.cart = total.cart?.filter(item => item?.product);
 
         if (!total.cart?.length) throw new HttpException('Cart is invalid or empty', HttpStatus.BAD_REQUEST);
+        const settings = await getCmsSettings();
 
         const payments = await serverFireAction('create_payment', total);
-        total.paymentOptions = Object.values(payments ?? {});
+        total.paymentOptions = [...Object.values(payments ?? {}),
+        ...(!settings?.disablePayLater ? [
+            payLaterOption,
+        ] : []),];
+
         return total;
     }
 

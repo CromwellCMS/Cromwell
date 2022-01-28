@@ -1,4 +1,4 @@
-import { MuiCurrencySwitch, MuiProductSearch } from '@cromwell/commerce';
+import { MuiCurrencySwitch, MuiProductSearch } from '@cromwell/toolkit-commerce';
 import { getCmsSettings, useUserInfo } from '@cromwell/core';
 import { CContainer, CHTML, CPlugin, CText, Link, useAuthClient, useCart } from '@cromwell/core-frontend';
 import { IconButton, ListItem, MenuItem, Popover, Tooltip } from '@mui/material';

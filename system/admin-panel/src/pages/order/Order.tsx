@@ -24,7 +24,7 @@ const OrderPage = () => {
     const [isCartUpdated, setIsCartUpdated] = useState(false);
     const [orderLoading, setOrderLoading] = useState<boolean>(false);
     const forceUpdate = useForceUpdate();
-    const cstoreRef = useRef(getCStore(true));
+    const cstoreRef = useRef(getCStore({ local: true }));
     const cstore = cstoreRef.current;
     const cart = cstore.getCart();
 
@@ -246,7 +246,7 @@ const OrderPage = () => {
                             {addressJson && (
                                 Object.entries<any>(addressJson).map(([fieldKey, value]) => {
                                     return (
-                                        <Grid item xs={12} sm={12} key={fieldKey}>
+                                        <Grid item xs={12} sm={6} key={fieldKey}>
                                             <TextField label={fieldKey}
                                                 value={value || ''}
                                                 fullWidth

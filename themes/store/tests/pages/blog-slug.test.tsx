@@ -8,8 +8,9 @@ describe('/blog/[slug]', () => {
 
     it("renders posts", async () => {
         render(<BlogPage
+            cmsProps={{}}
             post={{
-                id: '_test_',
+                id: 1,
                 title: '_test_',
             }}
         />);

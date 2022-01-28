@@ -7,13 +7,16 @@ import { BaseSelect, TBaseSelect } from '../shared/Select';
 import styles from './CategorySort.module.scss';
 
 export type TSortOption = {
-  value: keyof TProduct;
+  key: keyof TProduct;
   label: string;
   direction?: 'ASC' | 'DESC'
 };
 
 export type CategorySortProps = {
-  listId?: string;
+  classes?: Partial<Record<'root' | 'list', string>>;
+  elements?: {
+    Select?: TBaseSelect;
+  }
   text?: {
     default?: string;
     highestRated?: string;
@@ -22,33 +25,68 @@ export type CategorySortProps = {
     priceHighest?: string;
     sort?: string;
   }
-  elements?: {
-    Select?: TBaseSelect;
-  }
+
+  /**
+   * Provide another target CList id. Usually it is not needed, since this
+   * component can "detect" id of `CategoryList` on the same page. 
+   */
+  listId?: string;
+
+  /**
+   * Override sort options
+   */
+  overrideOptions?: TSortOption[]
 }
 
+/**
+ * A component for picking sorting of products in `CategoryList`. 
+ */
 export const CategorySort = (props: CategorySortProps) => {
-  const [sortValue, setSortValue] = useState<string>('id');
-  const { text } = props;
+  const { text, overrideOptions } = props;
   const { Select = BaseSelect } = props?.elements ?? {};
+
+  const sortOptions: TSortOption[] = overrideOptions ?? [
+    {
+      label: text?.default ?? 'Default',
+      key: 'id',
+    },
+    {
+      key: 'rating',
+      direction: 'DESC',
+      label: text?.highestRated ?? 'Highest rated',
+    },
+    {
+      key: 'views',
+      direction: 'DESC',
+      label: text?.mostPopular ?? 'Most popular',
+    },
+    {
+      key: 'price',
+      direction: 'ASC',
+      label: text?.priceLowest ?? 'Price - Lowest',
+    },
+    {
+      key: 'price',
+      direction: 'DESC',
+      label: text?.priceHighest ?? 'Price - Highest',
+    },
+  ];
+
+  const [sortValue, setSortValue] = useState<string>(text?.default ?? 'Default');
   const moduleState = useModuleState();
+  const { listId = moduleState.categoryListId } = props;
 
   const handleValueChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value;
     setSortValue(value);
     setTimeout(() => {
-      const { listId = moduleState.categoryListId } = props;
-      const option: TSortOption | undefined = sortOptions.find(o => o.value === value);
+      const option: TSortOption | undefined = sortOptions.find(opt => (opt.label || opt.key) === value);
       if (option && listId) {
-        if (!option.value) {
-          option.value = 'id';
-        }
-
         const list = getBlockInstance<TCList>(listId)?.getContentInstance();
         if (list) {
           const params = Object.assign({}, list.getPagedParams());
           params.order = option.direction;
-          params.orderBy = option.value;
+          params.orderBy = option.key || 'id';
           list.setPagedParams(params);
           list.updateData();
         }
@@ -56,38 +94,14 @@ export const CategorySort = (props: CategorySortProps) => {
     }, 100);
   }
 
-  const sortOptions: TSortOption[] = [
-    {
-      label: text?.default ?? 'Default',
-      value: 'id',
-    },
-    {
-      value: 'rating',
-      direction: 'DESC',
-      label: text?.highestRated ?? 'Highest rated',
-    },
-    {
-      value: 'views',
-      direction: 'DESC',
-      label: text?.mostPopular ?? 'Most popular',
-    },
-    {
-      value: 'price',
-      direction: 'ASC',
-      label: text?.priceLowest ?? 'Price - Lowest',
-    },
-    {
-      value: 'price',
-      direction: 'DESC',
-      label: text?.priceHighest ?? 'Price - Highest',
-    },
-  ];
-
   return (
     <Select
       className={styles.CategorySort}
       label={text?.sort ?? 'Sort'}
-      options={sortOptions}
+      options={sortOptions.map(opt => ({
+        value: opt.label || opt.key,
+        label: opt.label,
+      }))}
       onChange={e => handleValueChange(e)}
       value={sortValue}
     />

@@ -1,11 +1,12 @@
 import { TGetStaticProps, TProductCategory } from '@cromwell/core';
-import { Link, usePagePropsContext } from '@cromwell/core-frontend';
+import { useAppPropsContext } from '@cromwell/core-frontend';
 import clsx from 'clsx';
 import React from 'react';
 
 import { removeUndefined } from '../../helpers/removeUndefined';
-import { HomeIcon } from '../icons';
 import styles from './Breadcrumbs.module.scss';
+import { Crumb } from './Crumb';
+import { DefaultHomeIcon, DefaultWrapper } from './DefaultElements';
 import { getData } from './getData';
 
 export type ServerSideData = {
@@ -16,15 +17,33 @@ type GetStaticPropsData = {
   'ccom_breadcrumbs'?: ServerSideData;
 }
 
-export type BreadcrumbProps = {
+export type BreadcrumbsProps = {
+  classes?: Partial<Record<'root' | 'wrapper' | 'breadcrumb' | 'link', string>>;
+  elements?: BreadcrumbElements;
+  text?: {
+    home?: string;
+  }
+
   /**
    * Override data by manually calling `getData` function and passing its result 
    */
   data?: ServerSideData;
-  classes?: Partial<Record<'root' | 'wrapper' | 'breadcrumb' | 'link', string>>;
-  style?: React.CSSProperties;
+
+  /**
+   * Max breadcrumb items. Currently is not implemented by base component. Can be implemented
+   * by wrappers. Implemented by MuiBreadcrumbs.
+   */
   maxItems?: number;
-  elements?: BreadcrumbElements;
+
+  /**
+   * Show first breadcrumb as a link to home page `/`
+   */
+  showHome?: boolean;
+
+  /**
+   * Custom link resolver for each breadcrumb to category page.
+   */
+  getBreadcrumbLink?: (crumb: TProductCategory) => string | undefined;
 }
 
 export type BreadcrumbElements = {
@@ -42,43 +61,45 @@ export type BreadcrumbElements = {
     icon?: React.ReactNode | null;
     children?: React.ReactNode | null;
   }>;
+  HomeIcon?: React.ComponentType;
 }
 
-export function Breadcrumbs(props: BreadcrumbProps) {
-  const { maxItems, classes, style, elements } = props;
-  const pageProps = usePagePropsContext<GetStaticPropsData>();
-  const data: ServerSideData = Object.assign({}, pageProps.pageProps?.ccom_breadcrumbs, props.data);
-
+/**
+ * Represents breadcrumbs of categories on a product page.
+ * 
+ * - `withGetProps` - optional or use getData
+ * - `getData` - available
+ */
+export function Breadcrumbs(props: BreadcrumbsProps) {
+  const { maxItems, classes, elements, text, showHome } = props;
+  const appProps = useAppPropsContext<GetStaticPropsData>();
+  const data: ServerSideData = Object.assign({}, appProps.pageProps?.ccom_breadcrumbs, props.data);
   const Wrapper = elements?.Wrapper ?? DefaultWrapper;
-  const Breadcrumb = elements?.Breadcrumb ?? DefaultBreadcrumb;
+  const HomeIcon = elements?.HomeIcon ?? DefaultHomeIcon;
 
   return (
     <Wrapper maxItems={maxItems ?? 5}
-      style={style}
       className={clsx(styles.Breadcrumbs, classes?.root)}
     >
-      <Link href="/">
-        <Breadcrumb
-          label="Home"
-          key="/"
-          className={clsx(styles.breadcrumb, classes?.breadcrumb)}
-          icon={<HomeIcon style={{ width: '17px', height: '17px' }} fontSize="small" />}
+      {showHome && (
+        <Crumb
+          key="home"
+          link={'/'}
+          breadcrumbsProps={props}
+          icon={<HomeIcon />}
+          crumb={{
+            id: 0,
+            name: text?.home ?? "Home"
+          }}
         />
-      </Link>
-      {data?.categories?.map(crumb => {
-        return (
-          <Link
-            key={crumb.id}
-            href={`/category/${crumb.slug}`}
-            className={clsx(classes?.link)}
-          >
-            <Breadcrumb
-              className={clsx(styles.breadcrumb, classes?.breadcrumb)}
-              label={crumb.name ?? ''}
-            />
-          </Link>
-        )
-      })}
+      )}
+      {data?.categories?.map(crumb => (
+        <Crumb
+          key={crumb.id}
+          breadcrumbsProps={props}
+          crumb={crumb}
+        />
+      ))}
     </Wrapper>
   )
 }
@@ -104,21 +125,6 @@ Breadcrumbs.withGetProps = (originalGetProps?: TGetStaticProps) => {
 Breadcrumbs.getData = getData;
 
 Breadcrumbs.useData = (): ServerSideData | undefined => {
-  const pageProps = usePagePropsContext<GetStaticPropsData>();
-  return pageProps.pageProps?.ccom_breadcrumbs;
+  const appProps = useAppPropsContext<GetStaticPropsData>();
+  return appProps.pageProps?.ccom_breadcrumbs;
 }
-
-
-const DefaultBreadcrumb = ((props) => (
-  <div style={props.style}
-    className={clsx(props.className, styles.defaultBreadcrumb)}
-    id={props.id}
-  >{props.icon} {props.label}</div>
-));
-
-const DefaultWrapper = ((props) => (
-  <div style={{ display: 'flex', ...(props.style ?? {}) }}
-    className={props.className}
-    id={props.id}
-  >{props.children}</div>
-));

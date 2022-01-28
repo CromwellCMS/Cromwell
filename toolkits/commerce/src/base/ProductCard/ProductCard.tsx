@@ -6,35 +6,20 @@ import React from 'react';
 
 import { notifier as baseNotifier, NotifierActionOptions } from '../../helpers/notifier';
 import { useImageLoader } from '../../helpers/useImageLoader';
-import { useProductLink } from '../../helpers/useProductLink';
+import { useProductLink } from '../../helpers/useLinks';
 import { AddShoppingCartIcon, FavoriteBorderIcon, FavoriteIcon, ShoppingCartIcon } from '../icons';
 import { BaseButton, TBaseButtonProps } from '../shared/Button';
 import { BaseRating, TBaseRatingProps } from '../shared/Rating';
 import { BaseTooltip, TBaseTooltipProps } from '../shared/Tooltip';
 import styles from './ProductCard.module.scss';
+import { useStoreAttributes } from '../../helpers/useStoreAttributes';
 
 const Empty = (props) => props?.children ?? null;
 
 export type ProductCardProps = {
-  data?: TProduct;
-  attributes?: TAttribute[];
   classes?: Partial<Record<'root' | 'horizontal_variant' | 'image' | 'image_container' | 'actions' | 'action_button'
     | 'title' | 'price_block' | 'description' | 'rating', string>>;
-  style?: React.CSSProperties;
-  variant?: 'vertical' | 'horizontal';
-  onOpenCart?: () => void;
-  onOpenWishlist?: () => void;
-  onAddedToCart?: (item: TStoreListItem, result: TCStoreOperationResult) => void;
-  onFailedAddToCart?: (item: TStoreListItem, result: TCStoreOperationResult) => void;
-  /**
-   * Notifier tool. Will show notifications when user adds a product to the cart or
-   * wishlist. To disable pass an empty object
-   */
-  notifier?: TCromwellNotify<NotifierActionOptions>;
-  /**
-   * Notifier options
-   */
-  notifierOptions?: NotifierActionOptions;
+
   elements?: {
     OtherActions?: React.ComponentType<{ cardProps: ProductCardProps }>;
     Rating?: React.ComponentType<TBaseRatingProps & { cardProps: ProductCardProps }>;
@@ -48,9 +33,7 @@ export type ProductCardProps = {
       cardProps: ProductCardProps;
     }>;
   }
-  imageProps?: Partial<ImageProps>;
-  noImagePlaceholder?: string;
-  getProductLink?: (product: TProduct) => string;
+
   text?: {
     addToCart?: string;
     addToWishlist?: string;
@@ -58,18 +41,76 @@ export type ProductCardProps = {
     inWishlist?: string;
     openCart?: string;
     reviews?: string;
+    clickToOpenCart?: string;
   }
+
+  /** Product data. Required */
+  product: TProduct;
+
+  /**
+   * All available attributes in DB. If not passed will be fetched and cached automatically.
+   */
+  attributes?: TAttribute[];
+
+  /**
+   * In `vertical` variant image at top and text at bottom (takes more vertical space).
+   * In `horizontal` variant image at left and text at right (takes more horizontal space).
+   */
+  variant?: 'vertical' | 'horizontal';
+
+  /**
+   * Action button events
+   */
+  onOpenCart?: () => void;
+  onOpenWishlist?: () => void;
+  onAddedToCart?: (item: TStoreListItem, result: TCStoreOperationResult) => void;
+  onFailedAddToCart?: (item: TStoreListItem, result: TCStoreOperationResult) => void;
+
+  /**
+   * Notifier tool. Will show notifications when user adds a product to the cart or
+   * wishlist. To disable notifications pass an empty object
+   */
+  notifier?: TCromwellNotify<NotifierActionOptions>;
+
+  /**
+   * Notifier options
+   */
+  notifierOptions?: NotifierActionOptions;
+
+  /**
+   * Override props to underlying CImage
+   */
+  imageProps?: Partial<ImageProps>;
+
+  /**
+   * URL to a placeholder image to use if a product has no primary image set.
+   */
+  noImagePlaceholderUrl?: string;
+
+  /**
+   * Custom link resolver onto product page.
+   */
+  getProductLink?: (product: TProduct) => string | undefined;
+
+  /**
+   * Product link click (image or title). You can prevent navigation event.
+   */
   onProductLinkClick?: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, link: string) => any;
 }
 
+/**
+ * Displays product cart with short product info. Used to display in product list
+ * of a product category 
+ */
 export const ProductCard = (props: ProductCardProps) => {
-  const { data: product, onOpenCart, notifier = baseNotifier, notifierOptions = {},
+  const { product, onOpenCart, notifier = baseNotifier, notifierOptions = {},
     elements = {}, imageProps, classes, text } = props ?? {};
   const { OtherActions = Empty, Rating = BaseRating,
     AddCartButton = BaseButton, AddWishlistButton = BaseButton,
     Tooltip = BaseTooltip } = elements;
   const cstore = getCStore();
 
+  const attributes = useStoreAttributes(props.attributes);
   const forceUpdate = useForceUpdate();
   const imageLoader = useImageLoader();
   const productLink = useProductLink(product, props.getProductLink);
@@ -89,7 +130,7 @@ export const ProductCard = (props: ProductCardProps) => {
     if (inCart) {
       onOpenCart?.();
     } else {
-      const result = cstore.addToCart(item, props?.attributes);
+      const result = cstore.addToCart(item, attributes);
       if (result.success) {
         props?.onAddedToCart?.(item, result);
         notifier?.success?.("Added! Click here to open cart", {
@@ -143,31 +184,33 @@ export const ProductCard = (props: ProductCardProps) => {
     forceUpdate();
   }
 
-  const mainImage = product?.mainImage ?? product?.images?.[0] ?? props?.noImagePlaceholder;
+  const mainImage = imageProps?.src !== undefined ? imageProps?.src :
+    (product?.mainImage ?? product?.images?.[0] ?? props?.noImagePlaceholderUrl);
 
   return (
     <div className={clsx(styles.ProductCard, classes?.root,
       props?.variant === 'horizontal' && styles.horizontalVariant,
       props?.variant === 'horizontal' && classes?.horizontal_variant,
     )}
-      style={props.style}
     >
-      <div className={clsx(styles.imageBlock, classes?.image_container)}>
-        <Link href={productLink}
-          style={{ position: 'relative' }}
-          onClick={e => productLink && props.onProductLinkClick?.(e, productLink)}
-        >
-          <Image
-            alt={product?.name ?? undefined}
-            loader={imageLoader}
-            objectFit="contain"
-            layout="fill"
-            {...(imageProps ?? {})}
-            className={clsx(classes?.image, imageProps?.className)}
-            src={imageProps?.src !== undefined ? imageProps?.src : mainImage}
-          />
-        </Link>
-      </div>
+      {mainImage !== undefined && mainImage !== null && (
+        <div className={clsx(styles.imageBlock, classes?.image_container)}>
+          <Link href={productLink}
+            style={{ position: 'relative' }}
+            onClick={e => productLink && props.onProductLinkClick?.(e, productLink)}
+          >
+            <Image
+              alt={product?.name ?? undefined}
+              loader={imageLoader}
+              objectFit="contain"
+              layout="fill"
+              {...(imageProps ?? {})}
+              className={clsx(classes?.image, imageProps?.className)}
+              src={mainImage}
+            />
+          </Link>
+        </div>
+      )}
       <div className={styles.caption}>
         <div className={styles.productNameContainer}>
           <Link href={productLink}

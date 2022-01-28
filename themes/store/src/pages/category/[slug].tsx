@@ -1,4 +1,4 @@
-import { CategoryFilter, MuiCategoryList, MuiCategorySort } from '@cromwell/commerce';
+import { CategoryFilter, MuiCategoryList, MuiCategorySort } from '@cromwell/toolkit-commerce';
 import { CContainer, EntityHead } from '@cromwell/core-frontend';
 import clsx from 'clsx';
 import React, { ReactElement } from 'react';

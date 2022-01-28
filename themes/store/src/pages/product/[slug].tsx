@@ -1,4 +1,4 @@
-import { MuiBreadcrumbs, MuiProductReviews } from '@cromwell/commerce';
+import { MuiBreadcrumbs, MuiProductReviews } from '@cromwell/toolkit-commerce';
 import { TAttribute, TGetStaticProps, TProduct } from '@cromwell/core';
 import { CContainer, CPlugin, CText, EntityHead, getGraphQLClient, getGraphQLErrorInfo } from '@cromwell/core-frontend';
 import clsx from 'clsx';
@@ -25,7 +25,7 @@ const Product: TPageWithLayout<ProductProps> = (props) => {
         entity={product}
         useFallback
       />
-      <MuiBreadcrumbs classes={{ root: styles.breadcrumbs }} />
+      <MuiBreadcrumbs classes={{ root: styles.breadcrumbs }} showHome />
       <ProductDetails {...props} />
       <CContainer id="Product_ProductShowcase_container" >
         <CText id="product_showcase-title"
@@ -43,7 +43,9 @@ const Product: TPageWithLayout<ProductProps> = (props) => {
         />
       </CContainer>
       <CContainer id="product_reviewsBlock" className={styles.reviewsBlock}>
-        <MuiProductReviews productId={product?.id} />
+        {product?.id && (
+          <MuiProductReviews productId={product?.id} />
+        )}
       </CContainer>
     </CContainer>
   );

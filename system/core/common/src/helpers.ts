@@ -3,9 +3,10 @@ import { TDefaultPageName } from './types/data';
 
 export const isServer = (): boolean => (typeof window === 'undefined');
 
-export const getRandStr = (lenght: number = 12) =>
-    Math.random().toString(36).substring(2, Math.floor(lenght / 2) + 2) +
-    Math.random().toString(36).substring(2, Math.ceil(lenght / 2) + 2);
+// 24 length max
+export const getRandStr = (length: number = 12) =>
+    Math.random().toString(36).substring(2, Math.floor(length / 2) + 2) +
+    Math.random().toString(36).substring(2, Math.ceil(length / 2) + 2);
 
 export const sleep = (time: number) => new Promise(done => setTimeout(done, time * 1000));
 

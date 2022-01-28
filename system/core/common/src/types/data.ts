@@ -1,14 +1,15 @@
 import React from 'react';
 import { ConnectionOptions } from 'typeorm';
 
-import { systemPackages } from '../constants';
-import { TCommonComponentProps, TCromwellBlock, TCromwellBlockData } from './blocks';
+import { ESharedComponentNames, systemPackages } from '../constants';
+import { TCromwellBlock, TCromwellBlockData } from './blocks';
 import {
     TCmsAdminSettings,
     TCmsEntityCore,
     TCmsInternalSettings,
     TCmsPublicSettings,
     TCmsRedirect,
+    TPost,
     TProduct,
     TServiceVersions,
     TUser,
@@ -40,13 +41,13 @@ export type TCromwellStore = {
     /** 
      * See `defaultPages` in TThemeConfig
      */
-    defaultPages?: Record<TDefaultPageName, string>;
+    defaultPages?: Partial<Record<TDefaultPageName, string>>;
 
     /**
-     * Internal. Common component storage. E.g. product cards to be reused by Plugins
+     * Internal. Shared component storage. E.g. product cards to be reused by Plugins
      *  { [ComponentName]: (Class/function) }
      *  */
-    components?: Record<string, React.ComponentType<TCommonComponentProps & { [x: string]: any }>>;
+    components?: TSharedComponents;
 
     /**
      * Internal. References to all instances of Cromwell Blocks at the page
@@ -611,3 +612,12 @@ export type TSystemUsage = {
         total: number
     }
 }
+
+export type TSharedComponents = Partial<{
+    [ESharedComponentNames.ProductCard]: React.ComponentType<{
+        product: TPost;
+    }>;
+    [ESharedComponentNames.PostCard]: React.ComponentType<{
+        post: TProduct;
+    }>;
+}>

@@ -1,5 +1,5 @@
 import { TPost, TTag } from '@cromwell/core';
-import { Link, usePagePropsContext } from '@cromwell/core-frontend';
+import { Link, useAppPropsContext } from '@cromwell/core-frontend';
 import clsx from 'clsx';
 import { format } from 'date-fns';
 import * as NextImage from 'next/image';
@@ -11,16 +11,16 @@ import styles from './PostCard.module.scss';
 const Image = NextImage.default;
 
 export const PostCard = (props?: {
-  data?: TPost;
+  post?: TPost;
   className?: string;
   onTagClick?: (tag?: TTag) => void;
   coverImage?: boolean;
   imageHeight?: string;
 }) => {
-  const data = props?.data;
+  const data = props?.post;
   const postLink = `/blog/${data?.slug ?? data?.id}`;
   const mainImage = (data?.mainImage ?? '/themes/@cromwell/theme-store/no-photos.png');
-  const pageContext = usePagePropsContext();
+  const pageContext = useAppPropsContext();
 
   const imageLoader = ({ src }: {
     src: string;

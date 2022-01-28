@@ -1,4 +1,4 @@
-import { MuiCartList } from '@cromwell/commerce';
+import { MuiCartList } from '@cromwell/toolkit-commerce';
 import { TOrder, TStoreListItem, TUpdateUser, TUser, useUserInfo } from '@cromwell/core';
 import {
   CContainer,
@@ -27,16 +27,10 @@ const Account: TPageWithLayout = () => {
   const [userData, setUserData] = useState<TUser | undefined | null>(null);
   const [orders, setOrders] = useState<TOrder[] | undefined | null>(null);
   const [loading, setLoading] = useState(false);
-  const userInfo = useUserInfo();
-  const userInfoRef = useRef(userInfo);
 
   useEffect(() => {
     getUserData();
   }, []);
-
-  const handleSignIn = () => {
-    getUserData();
-  }
 
   const handleSignInOpen = () => {
     appState.signInFormType = 'sign-in';
@@ -127,9 +121,14 @@ const Account: TPageWithLayout = () => {
     }
   }
 
+  const userInfo = useUserInfo();
+  const userInfoRef = useRef(userInfo);
+
+  // User info will change if a user has logged in any other component
+  // Check that info is new and update user data
   if (userInfo?.id !== userInfoRef.current?.id) {
     userInfoRef.current = userInfo;
-    handleSignIn();
+    getUserData();
   }
 
   return (

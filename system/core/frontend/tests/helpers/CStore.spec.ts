@@ -4,9 +4,11 @@ import { getCStore } from '../../src/helpers/CStore';
 import { mockWorkingDirectory } from '../helpers';
 
 mockWorkingDirectory('CStore');
-const getLocalCStore = () => getCStore(true, {
-    getProductById: async () => undefined,
-    getAttributes: async () => [],
+const getLocalCStore = () => getCStore({
+    local: true, apiClient: {
+        getProductById: async () => undefined,
+        getAttributes: async () => [],
+    }
 });
 
 describe('CStore', () => {
@@ -154,12 +156,14 @@ describe('CStore', () => {
 
 
     it("updates cart", async () => {
-        const store = getCStore(true, {
-            getProductById: async () => ({
-                id: 1,
-                name: '_test2_',
-            }),
-            getAttributes: async () => [],
+        const store = getCStore({
+            local: true, apiClient: {
+                getProductById: async () => ({
+                    id: 1,
+                    name: '_test2_',
+                }),
+                getAttributes: async () => [],
+            }
         });
 
         const item1: TStoreListItem = {

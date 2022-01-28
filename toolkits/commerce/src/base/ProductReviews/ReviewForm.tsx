@@ -1,5 +1,6 @@
 import { onStoreChange, removeOnStoreChange, TCromwellNotify, TProductReview, TUser, useUserInfo } from '@cromwell/core';
 import { CContainer, CText, getRestApiClient } from '@cromwell/core-frontend';
+import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
 
 import { BaseAlert } from '../shared/Alert';
@@ -16,7 +17,7 @@ export type ReviewFormProps = {
   parentProps: ProductReviewsProps;
 }
 
-export const ReviewForm = ({ productId, notifier, parentProps = {} }: ReviewFormProps) => {
+export const ReviewForm = ({ productId, notifier, parentProps }: ReviewFormProps) => {
   const userInfo = useUserInfo();
   const [name, setName] = useState(userInfo?.fullName ?? '');
   const [rating, setRating] = useState<number | null>(0);
@@ -25,7 +26,7 @@ export const ReviewForm = ({ productId, notifier, parentProps = {} }: ReviewForm
   const [isLoading, setIsLoading] = useState(false);
   const [canValidate, setCanValidate] = useState(false);
   const [placedReview, setPlacedReview] = useState<TProductReview | null>(null);
-  const { text = {}, elements } = parentProps;
+  const { text = {}, elements, classes, disableEdit } = parentProps;
   const { Alert = BaseAlert, Button = BaseButton, Rating = BaseRating,
     TextField = BaseTextField, Tooltip = BaseTooltip } = elements ?? {};
 
@@ -72,7 +73,7 @@ export const ReviewForm = ({ productId, notifier, parentProps = {} }: ReviewForm
 
   if (placedReview) {
     return (
-      <div className={styles.ReviewForm}>
+      <div className={clsx(styles.ReviewForm, classes?.ReviewForm)}>
         <Alert severity="success">{text.submitSuccess ?? 'Thank you! Your review will appear on this page after approval by the website moderator'}</Alert>
       </div>
     )
@@ -81,15 +82,21 @@ export const ReviewForm = ({ productId, notifier, parentProps = {} }: ReviewForm
   const fieldRequired = text.fieldRequired ?? 'This field is required';
 
   return (
-    <CContainer id="ccom_product_reviews_form" className={styles.ReviewForm}>
-      <CText id="ccom_product_reviews_write_review_title" className={styles.reviewFormTitle}>{text.writeReview ?? 'Write a review'}</CText>
+    <CContainer id="ccom_product_reviews_form"
+      className={clsx(styles.ReviewForm, classes?.ReviewForm)}
+      editorHidden={disableEdit}
+    >
+      <CText id="ccom_product_reviews_write_review_title"
+        className={clsx(styles.reviewFormTitle, classes?.reviewFormTitle)}
+        editorHidden={disableEdit}
+      >{text.writeReview ?? 'Write a review'}</CText>
       <Tooltip open={canValidate && (!name || name == '')} title={fieldRequired} arrow>
         <TextField label={text.fieldNameLabel ?? 'Name'}
           name="Name"
           variant="outlined"
           size="small"
           fullWidth
-          className={styles.reviewInput}
+          className={clsx(styles.reviewInput, classes?.reviewInput)}
           value={name}
           onChange={e => setName(e.target.value)}
         />
@@ -97,7 +104,7 @@ export const ReviewForm = ({ productId, notifier, parentProps = {} }: ReviewForm
       <Tooltip open={canValidate && (!rating)} title={fieldRequired} arrow>
         <Rating name="read-only"
           value={rating}
-          className={styles.reviewInput}
+          className={clsx(styles.reviewInput, classes?.reviewInput)}
           onChange={(e, value) => setRating(value)}
           precision={0.5}
         />
@@ -107,7 +114,7 @@ export const ReviewForm = ({ productId, notifier, parentProps = {} }: ReviewForm
         variant="outlined"
         size="small"
         fullWidth
-        className={styles.reviewInput}
+        className={clsx(styles.reviewInput, classes?.reviewInput)}
         value={title}
         onChange={e => setTitle(e.target.value)}
       />
@@ -120,11 +127,11 @@ export const ReviewForm = ({ productId, notifier, parentProps = {} }: ReviewForm
         multiline
         minRows={4}
         maxRows={20}
-        className={styles.reviewInput}
+        className={clsx(styles.reviewInput, classes?.reviewInput)}
         value={description}
         onChange={e => setDescription(e.target.value)}
       />
-      <div className={styles.submitBtnWrapper}>
+      <div className={clsx(styles.submitBtnWrapper, classes?.submitBtnWrapper)}>
         <Button variant="contained"
           color="primary"
           size="large"

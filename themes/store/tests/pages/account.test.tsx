@@ -38,7 +38,9 @@ import AccountPage from '../../src/pages/account';
 describe('/account', () => {
 
     it("renders orders of user", async () => {
-        render(<AccountPage />);
+        render(<AccountPage
+            cmsProps={{}}
+        />);
 
         await screen.findByText(testData.name);
     });

@@ -1,5 +1,5 @@
-import { ECommonComponentNames, isServer, saveCommonComponent, TCromwellPage } from '@cromwell/core';
-import { getRestApiClient, usePagePropsContext } from '@cromwell/core-frontend';
+import { ESharedComponentNames, isServer, saveSharedComponent, TCromwellPage } from '@cromwell/core';
+import { getRestApiClient, useAppPropsContext } from '@cromwell/core-frontend';
 import { CacheProvider, EmotionCache } from '@emotion/react';
 import { ThemeProvider } from '@mui/material/styles';
 import { AppProps } from 'next/app';
@@ -22,8 +22,8 @@ if (isServer()) {
   (React as any).useLayoutEffect = React.useEffect;
 }
 
-saveCommonComponent(ECommonComponentNames.ProductCard, ProductCard);
-saveCommonComponent(ECommonComponentNames.PostCard, PostCard);
+saveSharedComponent(ESharedComponentNames.ProductCard, ProductCard);
+saveSharedComponent(ESharedComponentNames.PostCard, PostCard);
 
 export type TPageWithLayout<TProps = any> = TCromwellPage<TProps> & {
   getLayout?: (page: ReactElement) => JSX.Element;
@@ -35,7 +35,7 @@ type AppPropsWithLayout = AppProps & {
 }
 
 function App(props: AppPropsWithLayout) {
-  const pageContext = usePagePropsContext();
+  const pageContext = useAppPropsContext();
   const { Component, emotionCache = clientSideEmotionCache } = props;
   const getLayout = Component.getLayout ?? ((page) => page);
   const theme = getTheme(pageContext.pageProps?.cmsProps?.palette);

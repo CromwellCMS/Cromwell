@@ -7,6 +7,7 @@ describe('/tag/[slug]', () => {
 
     it("renders posts", async () => {
         render(<TagPage
+            cmsProps={{}}
             posts={{
                 pagedMeta: {
                     pageNumber: 1,
@@ -14,7 +15,7 @@ describe('/tag/[slug]', () => {
                     totalElements: 1,
                 },
                 elements: [{
-                    id: '_test_',
+                    id: 1,
                     title: '_test_',
                 }]
             }}

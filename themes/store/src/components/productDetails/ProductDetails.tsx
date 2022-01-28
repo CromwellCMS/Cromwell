@@ -1,4 +1,4 @@
-import { MuiProductActions, MuiProductAttributes, ProductGallery, useProductVariants } from '@cromwell/commerce';
+import { MuiProductActions, MuiProductAttributes, ProductGallery, useProductVariants } from '@cromwell/toolkit-commerce';
 import { CContainer, CImage, CText, getBlockHtmlId, getCStore } from '@cromwell/core-frontend';
 import { Rating } from '@mui/material';
 import { useRouter } from 'next/router';
@@ -34,7 +34,7 @@ export default function ProductDetails(props: {
     }
   }
 
-  if (!productVariant) {
+  if (!originalProduct || !productVariant) {
     return (
       <div className={styles.productNotFound}>
         <h3>Product not found</h3>

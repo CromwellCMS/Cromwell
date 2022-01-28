@@ -11,7 +11,7 @@ import {
 import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import { useRouter } from 'next/router';
 import React, { useRef } from 'react';
-import { MuiPagination } from '@cromwell/commerce';
+import { MuiPagination } from '@cromwell/toolkit-commerce';
 
 import Layout from '../../components/layout/Layout';
 import layoutStyles from '../../components/layout/Layout.module.scss';
@@ -95,7 +95,7 @@ const TagPage: TPageWithLayout<TagPageProps> = (props) => {
                 id={listId}
                 ListItem={(props) => (
                   <div className={styles.postWrapper}>
-                    <PostCard data={props.data} key={props.data?.id} />
+                    <PostCard post={props.data} key={props.data?.id} />
                   </div>
                 )}
                 editorHidden

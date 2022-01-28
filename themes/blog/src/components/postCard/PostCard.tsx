@@ -1,5 +1,5 @@
 import { TPost, TTag } from '@cromwell/core';
-import { Link, usePagePropsContext } from '@cromwell/core-frontend';
+import { Link, useAppPropsContext } from '@cromwell/core-frontend';
 import clsx from 'clsx';
 import { format } from 'date-fns';
 import Image from 'next/image';
@@ -18,7 +18,7 @@ export const PostCard = (props?: {
     const data = props?.data;
     const postLink = `/post/${data?.slug ?? data?.id}`;
     const mainImage = data?.mainImage ?? '/themes/@cromwell/theme-blog/no-photos.png';
-    const pageContext = usePagePropsContext();
+    const pageContext = useAppPropsContext();
 
     const imageLoader = ({ src }: {
         src: string;

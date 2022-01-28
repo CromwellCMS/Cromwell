@@ -6,7 +6,7 @@ import React from 'react';
 import { BaseButton } from '../shared/Button';
 import { BaseTextField } from '../shared/TextField';
 import { usuCheckoutActions } from './actions';
-import { DefaultCouponAppliedIcon, DefaultCouponProblemIcon, DefaultRemoveCouponIcon } from './Base';
+import { DefaultCouponAppliedIcon, DefaultCouponProblemIcon, DefaultRemoveCouponIcon } from './DefaultElements';
 import { CheckoutProps } from './Checkout';
 import styles from './Coupons.module.scss';
 

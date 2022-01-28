@@ -2,7 +2,14 @@ import React from 'react';
 
 import { BaseTextField, TBaseTextFieldProps } from '../shared/TextField';
 import { usuCheckoutActions } from './actions';
-import { CheckoutProps, DefaultCheckoutFields, TCheckoutField } from './Checkout';
+import { CheckoutProps, TCheckoutField } from './Checkout';
+
+export const DefaultCheckoutFields = {
+  customerName: 'customerName',
+  customerPhone: 'customerPhone',
+  customerEmail: 'customerEmail',
+  customerComment: 'customerComment',
+}
 
 export const DefaultPlacedOrder = (props) => <p>{props.children}</p>;
 export const DefaultEmptyCartAlert = (props) => <p>{props.children}</p>;

@@ -13,19 +13,23 @@ import styles from './ProductSearch.module.scss';
 export type ProductSearchProps = {
   classes?: Partial<Record<'root' | 'content' | 'notFoundText' | 'item' | 'itemImage' |
     'itemTitle' | 'priceBlock' | 'oldPrice' | 'price', string>>;
+
   elements?: {
     TextField?: TBaseTextField;
     Popper?: React.ComponentType<BasePopperProps>;
     ListItem?: React.ComponentType<ListItemProps>;
   };
+
   text?: {
     notFound?: string;
     searchLabel?: string;
   };
+
   /**
    * Custom GraphQL fragment on Product
    */
   customFragment?: DocumentNode;
+
   /**
    * Name of custom fragment
    */
@@ -104,10 +108,8 @@ export class ProductSearch extends React.Component<ProductSearchProps, {
   });
 
   private handleSearchInput = (productName: string) => {
-
     if (!this.state.isLoading)
       this.setState({ isLoading: true });
-
 
     if (!this.state.searchOpen) {
       this.setState({ searchOpen: true });

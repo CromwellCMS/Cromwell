@@ -1,23 +1,15 @@
-jest.mock('next/link', () => {
-  return {
-    __esModule: true,
-    default: undefined,
-  }
-});
+import { render, screen } from '@testing-library/react';
+import React from 'react';
 
-jest.mock('../../helpers/CStore', () => {
+jest.mock('@cromwell/core-frontend', () => {
+  const originalModule = jest.requireActual('@cromwell/core-frontend');
   return {
+    ...originalModule,
     getCStore: () => {
-      return {
-        applyProductVariants: () => null,
-      }
+      return originalModule.getCStore({ local: true, apiClient: {} });
     },
   }
 });
-
-
-import { render, screen } from '@testing-library/react';
-import React from 'react';
 
 import { ProductAttributes } from './ProductAttributes';
 

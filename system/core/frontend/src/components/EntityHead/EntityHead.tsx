@@ -1,7 +1,7 @@
 import { getStore, TBasePageEntity } from '@cromwell/core';
 import React from 'react';
 
-import { usePagePropsContext } from '../../constants';
+import { useAppPropsContext } from '../../constants';
 
 /**
  * Creates a default head (SEO meta tags) for any BaseEntity (e.g. Post, Product, etc. See EDBEntity)
@@ -17,7 +17,7 @@ export function EntityHead({ entity, image, useFallback }: {
 }) {
   const NextHead = getStore().nodeModules?.modules?.['next/head']?.default;
   if (!NextHead) return null;
-  const pageContext = usePagePropsContext();
+  const pageContext = useAppPropsContext();
   const documentContext = pageContext?.pageProps?.cmsProps?.documentContext;
   const keywords = entity?.meta?.keywords;
 

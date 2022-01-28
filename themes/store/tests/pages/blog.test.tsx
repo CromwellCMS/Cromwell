@@ -8,6 +8,7 @@ describe('/blog', () => {
 
     it("renders posts", async () => {
         render(<BlogPage
+            cmsProps={{}}
             posts={{
                 pagedMeta: {
                     pageNumber: 1,
@@ -15,7 +16,7 @@ describe('/blog', () => {
                     totalElements: 1,
                 },
                 elements: [{
-                    id: '_test_',
+                    id: 1,
                     title: '_test_',
                 }]
             }}

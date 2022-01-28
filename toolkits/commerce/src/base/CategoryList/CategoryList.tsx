@@ -1,14 +1,13 @@
 import { DocumentNode, gql } from '@apollo/client';
-import { TAttribute, TCromwellBlock, TGetStaticProps, TPagedList, TProduct, TProductCategory } from '@cromwell/core';
+import { TCromwellBlock, TGetStaticProps, TPagedList, TProduct, TProductCategory } from '@cromwell/core';
 import {
-  CContainer,
   CList,
   getGraphQLClient,
   getGraphQLErrorInfo,
   TCList,
   TCListProps,
   TPaginationProps,
-  usePagePropsContext,
+  useAppPropsContext,
 } from '@cromwell/core-frontend';
 import clsx from 'clsx';
 import { useRouter } from 'next/router';
@@ -22,8 +21,7 @@ import styles from './CategoryList.module.scss';
 
 type ServerSideData = {
   firstPage?: TPagedList<TProduct> | null;
-  category?: TProductCategory | null;
-  attributes?: TAttribute[];
+  category: TProductCategory | null;
 }
 
 type GetStaticPropsData = {
@@ -31,24 +29,36 @@ type GetStaticPropsData = {
 }
 
 export type CategoryListProps = {
-  data?: ServerSideData;
-  listId?: string;
-  style?: React.CSSProperties;
   classes?: Partial<Record<'root' | 'list', string>>;
   elements?: {
     ProductCard?: React.ComponentType<ProductCardProps>;
     Pagination?: React.ComponentType<TPaginationProps>;
   }
+  data?: ServerSideData;
+
+  /**
+   * Provide custom CBlock id to use for underlying CList 
+   */
+  listId?: string;
+
+  /**
+   * CList props to pass, such as `pageSize`, etc.
+   */
   listProps?: TCListProps<TProduct, any>;
 }
 
+/**
+ * Renders product list on category page
+ * 
+ * - `withGetProps` - required. Data can be overridden
+ */
 export function CategoryList(props: CategoryListProps) {
   const { listProps } = props;
-  const pageProps = usePagePropsContext<GetStaticPropsData>();
-  const data: ServerSideData = Object.assign({}, pageProps.pageProps?.ccom_category_list, props.data);
+  const appProps = useAppPropsContext<GetStaticPropsData>();
+  const data: ServerSideData = Object.assign({}, appProps.pageProps?.ccom_category_list, props.data);
   const { category } = data;
   const { ProductCard = BaseProductCard, Pagination } = props?.elements ?? {};
-  const attributes = useStoreAttributes(data.attributes);
+  const attributes = useStoreAttributes();
   const moduleState = useModuleState();
 
   const listInst = useRef<TCromwellBlock<TCList> | undefined>();
@@ -70,9 +80,8 @@ export function CategoryList(props: CategoryListProps) {
   }, [router?.asPath]);
 
   return (
-    <CContainer id="ccom_category"
+    <div
       className={clsx(styles.CategoryList, props.classes?.root)}
-      style={props.style}
     >
       {category && (
         <CList<TProduct>
@@ -81,14 +90,15 @@ export function CategoryList(props: CategoryListProps) {
           id={listId.current}
           blockRef={(block) => listInst.current = block}
           ListItem={(p) => {
+            if (!p.data) return null;
             return (
               <div className={styles.productWrapper} key={p.data?.id}>
                 <ProductCard
-                  data={p.data}
+                  product={p.data}
                   attributes={attributes}
                 />
               </div>
-            )
+            );
           }}
           usePagination
           useShowMoreButton
@@ -108,7 +118,7 @@ export function CategoryList(props: CategoryListProps) {
           {...(listProps ?? {})}
         />
       )}
-    </CContainer>
+    </div>
   )
 }
 
@@ -154,10 +164,6 @@ CategoryList.withGetProps = (originalGetProps?: TGetStaticProps, options?: {
       console.error(`CategoryList::getProps for slug ${slug} get firstPage error: `, getGraphQLErrorInfo(e));
     })) || null;
 
-    const attributes = (await client.getAttributes().catch(e => {
-      console.error(`CategoryList::getProps for slug ${slug} get attributes error: `, getGraphQLErrorInfo(e));
-    })) || null;
-
     return {
       ...originProps,
       props: {
@@ -165,7 +171,6 @@ CategoryList.withGetProps = (originalGetProps?: TGetStaticProps, options?: {
         ccom_category_list: removeUndefined({
           category,
           firstPage,
-          attributes,
           slug,
         })
       }
@@ -176,6 +181,6 @@ CategoryList.withGetProps = (originalGetProps?: TGetStaticProps, options?: {
 }
 
 CategoryList.useData = (): ServerSideData | undefined => {
-  const pageProps = usePagePropsContext<GetStaticPropsData>();
-  return pageProps.pageProps?.ccom_category_list;
+  const appProps = useAppPropsContext<GetStaticPropsData>();
+  return appProps.pageProps?.ccom_category_list;
 }

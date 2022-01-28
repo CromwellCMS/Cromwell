@@ -70,6 +70,10 @@ export class CStore {
         this.apiClient = apiClient ?? getGraphQLClient();
     }
 
+    public setApiClient(client: TApiClient) {
+        this.apiClient = client;
+    }
+
     private onListUpdatedCallbacks: Record<string, Record<string, (cart: TStoreListItem[]) => void>> = {};
 
     private getList = (key: string): TStoreListItem[] => {
@@ -105,8 +109,8 @@ export class CStore {
                 // filter empty attribute sets
                 const filter = (picked: Record<string, string[]>) => {
                     for (const key of Object.keys(picked)) {
-                        const vals = picked[key];
-                        if (!vals || !Array.isArray(vals) || vals.length === 0) {
+                        const values = picked[key];
+                        if (!values || !Array.isArray(values) || values.length === 0) {
                             delete picked[key];
                         }
                     }
@@ -124,10 +128,10 @@ export class CStore {
                 if (!itemKeys.every(key => productKeys.includes(key))) return false;
 
                 return itemKeys.every(attrKey => {
-                    const vals = itPickedAttributes[attrKey] || [];
-                    const pickedVals = productPickedAttributes[attrKey] || [];
-                    if (vals.length !== pickedVals.length) return false;
-                    return vals.every(key => pickedVals.includes(key))
+                    const values = itPickedAttributes[attrKey] || [];
+                    const pickedValues = productPickedAttributes[attrKey] || [];
+                    if (values.length !== pickedValues.length) return false;
+                    return values.every(key => pickedValues.includes(key))
                 })
             }
             return false;
@@ -397,9 +401,9 @@ export class CStore {
                     for (const updatedAttr of updated.attributes) {
                         if (updatedAttr.key === key) {
                             hasAttr = true;
-                            const vals = listItem.pickedAttributes[key];
-                            const updatedVals: string[] = updatedAttr.values.map(v => v.value);
-                            if (!vals.every(v => updatedVals.includes(v))) {
+                            const values = listItem.pickedAttributes[key];
+                            const updatedValues: string[] = updatedAttr.values.map(v => v.value);
+                            if (!values.every(v => updatedValues.includes(v))) {
                                 hasAttr = false;
                             }
                         }
@@ -415,8 +419,8 @@ export class CStore {
 
                 if (updatedListItem.pickedAttributes) {
                     for (const key of Object.keys(updatedListItem.pickedAttributes)) {
-                        const vals = updatedListItem.pickedAttributes[key];
-                        if (!vals || !Array.isArray(vals) || vals.length === 0) {
+                        const values = updatedListItem.pickedAttributes[key];
+                        if (!values || !Array.isArray(values) || values.length === 0) {
                             delete updatedListItem.pickedAttributes[key];
                         }
                     }
@@ -757,20 +761,35 @@ export class CStore {
 
 }
 
+export type TGetCStoreOptions = {
+    /**
+     * If true, create and return a new CStore instance instead of returning one (singleton)
+     * from the global store. False by default.
+     */
+    local?: boolean;
+
+    /**
+     * Provide custom apiClient instance. CGraphQLClient by default. Be careful, if
+     * `local: true` is not provided, then this client will be saved globally and used
+     * for all subsequent calls.
+     */
+    apiClient?: TApiClient
+}
+
 /**
- * Get CStore instance from global store (singleton)
- * @param local if true, create and return a new instance, false by default
- * @param apiClient provide custom apiClient instance
- * @returns 
+ * Get CStore instance 
  */
-export const getCStore = (local?: boolean, apiClient?: TApiClient): CStore => {
+export const getCStore = (options?: TGetCStoreOptions): CStore => {
+    const { local, apiClient } = options ?? {};
     if (local) return new CStore(local, apiClient);
 
     let cstore = getStoreItem('cstore');
     if (!cstore) {
-        cstore = new CStore();
+        cstore = new CStore(false, apiClient);
         setStoreItem('cstore', cstore);
-        return cstore;
+    }
+    if (apiClient) {
+        cstore.setApiClient(apiClient);
     }
     return cstore;
 }

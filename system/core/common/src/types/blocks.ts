@@ -1,9 +1,8 @@
-import { NextPage, GetStaticPropsResult } from 'next';
+import { GetStaticPropsResult, NextPage } from 'next';
 import { DocumentContext } from 'next/document';
 import React from 'react';
 
 import { TCmsConfig, TCmsSettings, TDefaultPageName, TPageConfig, TPageInfo, TPalette, TThemeConfig } from './data';
-import { TPost, TProduct } from './entities';
 
 type ParsedUrlQuery = NodeJS.Dict<string | string[]>;
 
@@ -63,7 +62,7 @@ export type TPageCmsProps = {
     themeHeadHtml?: string | null;
     themeFooterHtml?: string | null;
     palette?: TPalette | null;
-    defaultPages?: Record<TDefaultPageName, string>;
+    defaultPages?: Partial<Record<TDefaultPageName, string>>;
     pageConfigName?: string;
     slug?: string | string[] | null;
     resolvedPageRoute?: string;
@@ -126,10 +125,6 @@ export type TContentComponentProps = {
     id: string;
     config?: TCromwellBlockData;
     children?: React.ReactNode;
-}
-
-export type TCommonComponentProps = {
-    data?: TProduct | TPost | any;
 }
 
 export type TCromwellBlockType =

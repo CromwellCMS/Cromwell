@@ -1,5 +1,5 @@
 export { ProductAttributes, ProductAttributesProps } from './base/ProductAttributes/ProductAttributes';
-export { Breadcrumbs, BreadcrumbProps } from './base/Breadcrumbs/Breadcrumbs';
+export { Breadcrumbs, BreadcrumbsProps } from './base/Breadcrumbs/Breadcrumbs';
 export { ProductReviews, ProductReviewsProps } from './base/ProductReviews/ProductReviews';
 export { ProductActions, ProductActionsProps } from './base/ProductActions/ProductActions';
 export { ProductGallery, ProductGalleryProps } from './base/ProductGallery/ProductGallery';

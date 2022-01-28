@@ -8,9 +8,9 @@ export type BasePopperProps = {
 }
 
 export function BasePopper(props: BasePopperProps) {
+  if (!props?.open) return null;
   return (
     <div style={{
-      display: props?.open ? 'block' : 'none',
       position: 'absolute',
       zIndex: 100
     }}>

@@ -8,15 +8,14 @@ describe('SignIn', () => {
     it("renders SignIn", async () => {
         render(<SignIn />);
         await screen.findByText('Login');
-        await screen.findByText('Forgot your password');
     });
 
 
     it("switches to forgot password", async () => {
         render(<SignIn />);
-        await screen.findByText('Forgot your password');
+        await screen.findByText('Forgot your password?');
 
-        screen.getByText('Forgot your password').click();
+        screen.getByText('Forgot your password?').click();
         // "Reset password" button
         await screen.findByText('Reset password');
     });

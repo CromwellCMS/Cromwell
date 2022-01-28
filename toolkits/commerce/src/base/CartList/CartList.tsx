@@ -22,14 +22,37 @@ export type CartListProps = {
   text?: {
     total?: string;
   }
+
+  /**
+   * Fires when clicked link for a product page.
+   */
   onProductClick?: (event: React.MouseEvent, product: TProduct) => void;
-  collapsedByDefault?: boolean;
+
+  /**
+   * Pass custom cart to override retrieved cart from CStore
+   */
   cart?: TStoreListItem[];
+
+  /**
+   * Hide delete button for products from the list?
+   */
   hideDelete?: boolean;
-  getProductLink?: (product: TProduct) => string;
+
+  /**
+   * Custom resolver of a link to product page
+   */
+  getProductLink?: (product: TProduct) => string | undefined;
+
+  /**
+   * Position of cart header with sums (cart total)
+   */
   sumPosition?: 'top' | 'bottom' | 'none';
 }
 
+/**
+ * Displays product list of user cart. Use CStore API from `@cromwell/core-frontend`
+ * package to add products in the list
+ */
 export const CartList = (props: CartListProps) => {
   const { elements, classes, text, sumPosition = 'top' } = props;
   const { Loadbox = BaseLoadBox,

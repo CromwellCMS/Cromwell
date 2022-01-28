@@ -1,5 +1,5 @@
 import { TGetStaticProps } from '@cromwell/core';
-import { CContainer, CPlugin } from '@cromwell/core-frontend';
+import { CPlugin } from '@cromwell/core-frontend';
 import clsx from 'clsx';
 import React from 'react';
 
@@ -10,16 +10,18 @@ const filterPluginName = '@cromwell/plugin-product-filter';
 
 export type CategoryFilterProps = {
   classes?: Partial<Record<'root' | 'plugin', string>>;
-  style?: React.CSSProperties;
 }
 
+/**
+ * Renders product filter on a category page. A wrapper for plugin from 
+ * `@cromwell/plugin-product-filter`
+ * 
+ * - `withGetProps` - required
+ */
 export function CategoryFilter(props: CategoryFilterProps) {
   const moduleState = useModuleState();
   return (
-    <CContainer id="ccom_category_filter"
-      className={clsx(styles.CategoryFilter, props.classes?.root)}
-      style={props.style}
-    >
+    <div className={clsx(styles.CategoryFilter, props.classes?.root)}>
       <CPlugin
         id="ccom_category_filter_plugin"
         className={clsx(props.classes?.plugin)}
@@ -30,7 +32,7 @@ export function CategoryFilter(props: CategoryFilterProps) {
           }
         }}
       />
-    </CContainer>
+    </div>
   )
 }
 

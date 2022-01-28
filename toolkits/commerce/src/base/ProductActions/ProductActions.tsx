@@ -1,11 +1,11 @@
 import { TAttribute, TCromwellNotify, TProduct, TStoreListItem } from '@cromwell/core';
-import { CContainer, getCStore } from '@cromwell/core-frontend';
+import { CContainer, getCStore, useForceUpdate } from '@cromwell/core-frontend';
 import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
 
-import { useForceUpdate } from '../../helpers/forceUpdate';
 import { notifier as baseNotifier, NotifierActionOptions } from '../../helpers/notifier';
 import { useModuleState } from '../../helpers/state';
+import { useStoreAttributes } from '../../helpers/useStoreAttributes';
 import {
   AddShoppingCartIcon as BaseAddShoppingCartIcon,
   FavoriteIcon as BaseFavoriteIcon,
@@ -16,14 +16,8 @@ import { BaseButton, TBaseButton } from '../shared/Button';
 import styles from './ProductActions.module.scss';
 
 export type ProductActionsProps = {
-  /** Product data. Required */
-  product?: TProduct | null;
-  className?: string;
-  style?: React.CSSProperties;
-  /**
-   * All available attributes in the store
-   */
-  attributes?: TAttribute[];
+  classes?: Partial<Record<'root' | 'actionsCartBlock' | 'actionButton'
+    | 'actionsWishlistBlock', string>>;
 
   elements?: {
     Button?: TBaseButton;
@@ -38,32 +32,70 @@ export type ProductActionsProps = {
       style?: React.CSSProperties;
     }>;
   }
+
+  text?: {
+    addedClickToOpenCart?: string;
+    productIsInCart?: string;
+    productIsInWishlist?: string;
+    pickFollowingAttributes?: string;
+    addedClickToOpenWishlist?: string;
+    addToCart?: string;
+    addToWishlist?: string;
+    outOfStock?: string;
+    onBackorder?: string;
+    updateQuantity?: string;
+    openCart?: string;
+    openWishlist?: string;
+  }
+
+  /** Product data. Required */
+  product: TProduct;
+
+  /**
+   * All available attributes in DB. If not passed will be fetched and cached automatically.
+   */
+  attributes?: TAttribute[];
+
+  /**
+   * Action events
+   */
   onCartOpen?: () => any;
   onWishlistOpen?: () => any;
+
   /**
    * Notifier tool. Will show notifications when user adds a product to the cart or
-   * wishlist. To disable pass an empty object
+   * wishlist. To disable notifications pass an empty object
    */
   notifier?: TCromwellNotify<NotifierActionOptions>;
+
   /**
    * Notifier options
    */
   notifierOptions?: NotifierActionOptions;
+
   /**
    * Override modified product by `onChange` of `ProductAttributes` component.
    * (not recommended since modifications already stored in the `moduleState`) 
    */
   modifiedProduct?: TProduct | null;
+
+  /**
+   * Disable editing of inner blocks in Theme editor 
+   */
+  disableEdit?: boolean;
 }
 
+/**
+ * Displays actions (buttons) on product page such as: add to cart/wishlist,
+ * amount picker. Handles cart and shows notifications.
+ */
 export const ProductActions = (props: ProductActionsProps) => {
-  // Props
   const moduleState = useModuleState();
-  const { product, attributes, onCartOpen,
+  const { product, onCartOpen,
     modifiedProduct = (product?.id ? moduleState.products[product?.id]?.modifiedProduct
       : undefined) ?? product,
     onWishlistOpen, notifier = baseNotifier, notifierOptions = {},
-    elements = {}
+    elements = {}, disableEdit, classes, text
   } = props;
 
   // Custom / default elements
@@ -75,6 +107,7 @@ export const ProductActions = (props: ProductActionsProps) => {
   } = elements;
 
   const forceUpdate = useForceUpdate();
+  const attributes = useStoreAttributes(props.attributes);
   const cstore = getCStore();
   const [amount, setAmount] = useState(1);
   const pickedAttributes = product?.id ? moduleState.products[product?.id]?.pickedAttributes : undefined;
@@ -117,7 +150,7 @@ export const ProductActions = (props: ProductActionsProps) => {
     } else {
       const result = cstore.addToCart(item, attributes);
       if (result.success) {
-        notifier?.success?.("Added! Click here to open cart", {
+        notifier?.success?.(text?.addedClickToOpenCart ?? "Added! Click here to open cart", {
           onClick: () => {
             onCartOpen?.();
           },
@@ -125,12 +158,14 @@ export const ProductActions = (props: ProductActionsProps) => {
         });
       }
       if (result.code === 1) {
-        notifier?.warning?.("Product is already in your cart!", {
+        notifier?.warning?.(text?.productIsInCart ?? "Product is already in your cart!", {
           ...notifierOptions,
         });
       }
       if (result.missingAttributes?.length) {
-        notifier?.error?.(`Please pick following attributes: ${result.missingAttributes.map(attr => attr.key).join(', ')}`, {
+        notifier?.error?.(`${text?.pickFollowingAttributes ??
+          'Please pick following attributes:'} ${result
+            .missingAttributes.map(attr => attr.key).join(', ')}`, {
           ...notifierOptions,
         });
         if (product?.id) moduleState.setCanValidate(product?.id, true);
@@ -146,14 +181,14 @@ export const ProductActions = (props: ProductActionsProps) => {
     } else {
       const hasBeenAdded = cstore.addToWishlist({ product });
       if (hasBeenAdded) {
-        notifier?.success?.("Added! Click here to open wishlist", {
+        notifier?.success?.(text?.addedClickToOpenWishlist ?? "Added! Click here to open wishlist", {
           onClick: () => {
             onWishlistOpen?.();
           },
           ...notifierOptions,
         });
       } else {
-        notifier?.warning?.("Product is already in your wishlist!", {
+        notifier?.warning?.(text?.productIsInWishlist ?? "Product is already in your wishlist!", {
           ...notifierOptions,
         });
       }
@@ -182,14 +217,15 @@ export const ProductActions = (props: ProductActionsProps) => {
   //     }
   // }
 
-  const outOfStock = (modifiedProduct?.stockStatus === 'Out of stock' || modifiedProduct?.stockStatus === 'On backorder');
+  const outOfStock = (modifiedProduct?.stockStatus === 'Out of stock' ||
+    modifiedProduct?.stockStatus === 'On backorder');
 
-  let cartButtonText = 'Add to cart';
+  let cartButtonText = text?.addToCart ?? 'Add to cart';
   if (inCart) {
     if (sameQntInCart) {
-      cartButtonText = 'Open cart';
+      cartButtonText = text?.openCart ?? 'Open cart';
     } else {
-      cartButtonText = 'Update qty';
+      cartButtonText = text?.updateQuantity ?? 'Update qty';
     }
   }
 
@@ -198,22 +234,25 @@ export const ProductActions = (props: ProductActionsProps) => {
   }
 
   return (
-    <CContainer className={clsx(styles.ProductActions, props.className)}
+    <CContainer className={clsx(styles.ProductActions, classes?.root)}
       id="ccom_product_actions"
-      style={props.style}
+      editorHidden={disableEdit}
     >
-      <CContainer className={styles.actionsCartBlock} id="ccom_product_actions_cart">
+      <CContainer className={clsx(styles.actionsCartBlock, classes?.actionsCartBlock)}
+        id="ccom_product_actions_cart"
+        editorHidden={disableEdit}
+      >
         <Button
           onClick={handleAddToCart}
           variant="contained"
           color="primary"
           size="large"
-          className={styles.actionButton}
+          className={clsx(styles.actionButton, classes?.actionButton)}
           disabled={outOfStock}
           startIcon={inCart ? <ShoppingCartIcon /> : <AddShoppingCartIcon />}
         >{cartButtonText}</Button>
         <QuantityField
-          className={styles.actionButton}
+          className={clsx(styles.actionButton, classes?.actionButton)}
           value={amount}
           onChange={(value) => {
             const valNum = Number(value);
@@ -221,15 +260,19 @@ export const ProductActions = (props: ProductActionsProps) => {
           }}
         />
       </CContainer>
-      <CContainer className={styles.actionsWishlistBlock} id="ccom_product_actions_wishlist">
+      <CContainer className={clsx(styles.actionsWishlistBlock, classes?.actionsWishlistBlock)}
+        id="ccom_product_actions_wishlist"
+        editorHidden={disableEdit}
+      >
         <Button
           onClick={handleAddToWishlist}
           variant="outlined"
           color="primary"
           size="large"
-          className={styles.actionButton}
+          className={clsx(styles.actionButton, classes?.actionButton)}
           startIcon={<FavoriteIcon />}
-        >{inWishlist ? 'Open Wishlist' : 'Save'}</Button>
+        >{inWishlist ? (text?.openWishlist ?? 'Open Wishlist') :
+          (text?.addToWishlist ?? 'Add to wishlist')}</Button>
         {/* <Button
           onClick={handleAddToCompare}
           variant="outlined"

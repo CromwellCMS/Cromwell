@@ -99,6 +99,8 @@ export class CGraphQLClient {
     private lastBaseUrl: string | undefined;
     /** @internal */
     private serviceSecret;
+    /** @internal */
+    private initializePromise?: Promise<void>;
 
     /** @internal */
     public getBaseUrl = () => {
@@ -114,19 +116,23 @@ export class CGraphQLClient {
         this.fetch = fetch;
         this.checkUrl();
     }
-    
+
     /** @internal */
-    private checkUrl() {
+    private async checkUrl() {
+        if (this.initializePromise) await this.initializePromise;
         const baseUrl = this.getBaseUrl();
         if (!baseUrl) return;
         if (this.lastBaseUrl === baseUrl) return;
 
         this.lastBaseUrl = baseUrl;
-        this.createClient();
+        await this.createClient();
     }
 
     /** @internal */
     private async createClient() {
+        let doneInit: (() => void) | undefined;
+        this.initializePromise = new Promise<void>(done => doneInit = done);
+
         if (isServer()) {
             // If backend, try to find service secret key to make 
             // authorized requests to the API server.
@@ -155,6 +161,9 @@ export class CGraphQLClient {
                 },
             },
         });
+
+        doneInit?.();
+        this.initializePromise = undefined;
     }
 
     public async query<T = any>(options: QueryOptions, path: string): Promise<T>;
@@ -166,7 +175,7 @@ export class CGraphQLClient {
      * ApolloQueryResult will be returned
      */
     public async query(options: QueryOptions, path?: string) {
-        this.checkUrl();
+        await this.checkUrl();
 
         const res = await this.handleError(() => this.apolloClient.query(options))
         if (path) return this.returnData(res, path);
@@ -183,7 +192,7 @@ export class CGraphQLClient {
      * ApolloQueryResult will be returned
      */
     public async mutate(options: MutationOptions, path?: string) {
-        this.checkUrl();
+        await this.checkUrl();
 
         const res = await this.handleError(() => this.apolloClient.mutate(options))
         if (path) return this.returnData(res, path);

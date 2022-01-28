@@ -84,6 +84,7 @@
     "typedi": "0.10.0",
     "typeorm": "0.2.37",
     "xlsx-populate": "1.21.0",
+    "uuid": "8.3.2",
     "yargs-parser": "20.2.9"
   },
   "optionalDependencies": {

@@ -4,10 +4,11 @@ import {
     removeOnStoreChange,
     TOrder,
     TOrderInput,
-    TPaymentSession,
+    TOrderPaymentSession,
     TPaymentOption,
     TShippingOption,
-    useCmsSettings,
+    standardShipping as defaultStandardShipping,
+    payLaterOption as defaultPayLaterOption,
     TUser,
     useUserInfo,
 } from '@cromwell/core';
@@ -17,7 +18,7 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import { notifier as baseNotifier } from '../../helpers/notifier';
 import { moduleState } from '../../helpers/state';
-import { getDefaultCheckoutFields } from './Base';
+import { getDefaultCheckoutFields } from './DefaultElements';
 import { CheckoutProps, DefaultCheckoutFields } from './Checkout';
 
 export type PaymentStatus = 'cancelled' | 'success';
@@ -29,26 +30,23 @@ export const usuCheckoutActions = (config: {
     const cstore = getCStore();
     const { notifier = baseNotifier, notifierOptions = {},
         fields = getDefaultCheckoutFields(config.checkoutProps),
-        text, getPaymentOptions, getShippingOptions } = config.checkoutProps;
+        text, getPaymentOptions } = config.checkoutProps;
 
     const [isLoading, setIsLoading] = useState(false);
     const [isAwaitingPayment, setIsAwaitingPayment] = useState(false);
     const userInfo = useUserInfo();
     const [canShowValidation, setCanShowValidation] = useState(false);
     const [placedOrder, setPlacedOrder] = useState<TOrder | null>(null);
-    const [paymentSession, setPaymentSession] = useState<TPaymentSession | null | undefined>(null);
-    const cmsSettings = useCmsSettings();
+    const [paymentSession, setPaymentSession] = useState<TOrderPaymentSession | null | undefined>(null);
     const [additionalPaymentOptions, setAdditionalPaymentOptions] = useState<TPaymentOption[] | null>(null);
-    const [additionalShippingOptions, setAdditionalShippingOptions] = useState<TShippingOption[] | null>(null);
 
     const standardShipping: TShippingOption = {
-        key: 'Standard shipping',
-        name: text?.standardShipping ?? 'Standard shipping',
-        price: cmsSettings?.defaultShippingPrice,
+        key: defaultStandardShipping.key,
+        name: text?.standardShipping ?? defaultStandardShipping.name,
     }
     const payLaterOption: TPaymentOption = {
-        key: 'Pay later',
-        name: text?.payLater ?? 'Pay later',
+        key: defaultPayLaterOption.key,
+        name: text?.payLater ?? defaultPayLaterOption.name,
     }
 
     const [order, setOrder] = useState<TOrderInput>({
@@ -120,7 +118,6 @@ export const usuCheckoutActions = (config: {
         coupons: coupons.current,
         canShowValidation,
         additionalPaymentOptions,
-        additionalShippingOptions,
         payLaterOption,
         standardShipping,
         setCoupons: (newCoupons) => {
@@ -143,6 +140,7 @@ export const usuCheckoutActions = (config: {
                     cancelUrl: queryString.stringifyUrl(cancelUrl),
                     couponCodes: Object.values(coupons.current).map(c => c.value).filter(Boolean),
                     shippingMethod: order.shippingMethod,
+                    paymentSessionId: paymentSession?.paymentSessionId,
                 });
 
                 for (const couponId of Object.keys(coupons.current)) {
@@ -165,14 +163,6 @@ export const usuCheckoutActions = (config: {
                         console.error(error);
                     }
                 }
-                if (getShippingOptions) {
-                    try {
-                        const additional = await getShippingOptions(session);
-                        if (additional) setAdditionalShippingOptions(additional.filter(Boolean));
-                    } catch (error) {
-                        console.error(error);
-                    }
-                }
 
             } catch (error) {
                 console.error(error);
@@ -183,7 +173,8 @@ export const usuCheckoutActions = (config: {
         placeOrder: async () => {
             if (!canShowValidation) setCanShowValidation(true);
             if (!checkout.isOrderValid()) {
-                notifier?.warning?.(text?.fillOrderInformation ?? 'Please fill order information', { ...notifierOptions, });
+                notifier?.warning?.(text?.fillOrderInformation ?? 'Please fill order information',
+                    { ...notifierOptions, });
                 config.rootRef?.current?.scrollIntoView?.({ behavior: 'smooth' });
                 return;
             }
@@ -200,7 +191,8 @@ export const usuCheckoutActions = (config: {
                 }));
             } catch (e) {
                 console.error(e);
-                notifier?.error?.(text?.failedCreateOrder ?? 'Failed to create order', { ...notifierOptions, });
+                notifier?.error?.(text?.failedCreateOrder ?? 'Failed to create order',
+                    { ...notifierOptions, });
             }
             setIsLoading(false);
             config.checkoutProps.onPlaceOrder?.(placedOrder);
@@ -305,7 +297,8 @@ export const usuCheckoutActions = (config: {
         pay: async () => {
             if (!canShowValidation) setCanShowValidation(true);
             if (!checkout.isOrderValid()) {
-                notifier?.warning?.(text?.fillOrderInformation ?? 'Please fill order information', { ...notifierOptions, });
+                notifier?.warning?.(text?.fillOrderInformation ?? 'Please fill order information',
+                    { ...notifierOptions, });
                 config.rootRef?.current?.scrollIntoView?.({ behavior: 'smooth' });
                 return;
             }
@@ -319,9 +312,10 @@ export const usuCheckoutActions = (config: {
                     { ...notifierOptions, });
                 return;
             }
-            const paymentMethod = paymentSession.paymentOptions.find(option => option.name === order.paymentMethod);
+            const paymentMethod = paymentSession.paymentOptions
+                .find(option => option.name === order.paymentMethod);
             if (!paymentMethod?.link) {
-                console.error('Cannot proceed payment. paymentMethod.link is not set: ' + paymentMethod)
+                console.error('Cannot proceed payment. paymentMethod.link is not set: ' + paymentMethod);
                 notifier?.warning?.(text?.somethingWrongWithPayment ??
                     'Something is wrong with payment method', { ...notifierOptions, });
                 return;
@@ -329,7 +323,8 @@ export const usuCheckoutActions = (config: {
 
             setIsAwaitingPayment(true);
 
-            const popup = window.open(paymentMethod.link, 'payment', `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=0,height=0,left=-1000,top=-1000`);
+            const popup = window.open(paymentMethod.link, 'payment',
+                `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=0,height=0,left=-1000,top=-1000`);
 
             const success = await new Promise<boolean>(done => {
                 (window as any).paySuccess = () => done(true);

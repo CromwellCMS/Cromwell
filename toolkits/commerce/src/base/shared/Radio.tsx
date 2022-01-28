@@ -21,24 +21,22 @@ export const BaseRadio = (props: TRadioProps) => {
 
   return (
     <div style={style} className={className}>
-      <div>
-        {options?.map((option) => {
-          const label = typeof option === 'object' ? option.label : option;
-          const value = typeof option === 'object' ? option.value : option;
-          const optionId = getRandStr(10);
-          return (
-            <div key={value}>
-              <input type="radio"
-                id={optionId}
-                name={name ?? id.current}
-                checked={props.value === value}
-                onChange={(e) => onChange?.(e, value)}
-              />
-              <label htmlFor={optionId}>{label}</label>
-            </div>
-          )
-        })}
-      </div>
+      {options?.map((option) => {
+        const label = typeof option === 'object' ? option.label : option;
+        const value = typeof option === 'object' ? option.value : option;
+        const optionId = getRandStr(10);
+        return (
+          <div key={value}>
+            <input type="radio"
+              id={optionId}
+              name={name ?? id.current}
+              checked={props.value === value}
+              onChange={(e) => onChange?.(e, value)}
+            />
+            <label htmlFor={optionId}>{label}</label>
+          </div>
+        )
+      })}
     </div>
   )
 }

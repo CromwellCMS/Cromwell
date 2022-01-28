@@ -1,21 +1,34 @@
 import { TCromwellBlockProps, TGallerySettings, TImageSettings, TProduct } from '@cromwell/core';
-import { CContainer, CGallery } from '@cromwell/core-frontend';
+import { CGallery } from '@cromwell/core-frontend';
 import clsx from 'clsx';
 import React from 'react';
 
 import styles from './ProductGallery.module.scss';
 
 export type ProductGalleryProps = {
+  classes?: Partial<Record<'root', string>>;
+
+  /** Product data. Required */
   product?: TProduct | null;
-  className?: string;
-  style?: React.CSSProperties;
+
+  /**
+   * URL to a placeholder image to use if a product has no primary image set.
+   */
   noImagePlaceholder?: string;
+
+  /**
+   * Gallery settings to pass to underlying CGallery block
+   */
   gallerySettings?: TGallerySettings;
+
+  /**
+   * Settings to pass to underlying CGallery block
+   */
   blockProps?: TCromwellBlockProps;
 }
 
 export function ProductGallery(props: ProductGalleryProps) {
-  const { product, noImagePlaceholder, gallerySettings, blockProps } = props;
+  const { product, noImagePlaceholder, gallerySettings, blockProps, classes } = props;
   const hasImages = !!product?.images?.length;
 
   const images: TImageSettings[] = (hasImages && product?.images?.map(i => {
@@ -25,10 +38,7 @@ export function ProductGallery(props: ProductGalleryProps) {
   })) || (noImagePlaceholder ? [{ src: '/themes/@cromwell/theme-store/no-photos.png' }] : []);
 
   return (
-    <CContainer className={clsx(styles.ProductImages, props.className)}
-      id="ccom_product_images"
-      style={props.style}
-    >
+    <div className={clsx(styles.ProductGallery, classes?.root)}>
       <CGallery id="ccom_product_images_gallery"
         isConstant
         editorHidden
@@ -58,6 +68,6 @@ export function ProductGallery(props: ProductGalleryProps) {
         }}
         {...(blockProps ?? {})}
       />
-    </CContainer>
+    </div>
   )
 }

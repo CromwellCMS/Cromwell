@@ -3,7 +3,7 @@ import { getCStore, Link } from '@cromwell/core-frontend';
 import clsx from 'clsx';
 import React from 'react';
 
-import { useProductLink } from '../../helpers/useProductLink';
+import { useProductLink } from '../../helpers/useLinks';
 import { DeleteForeverIcon as BaseDeleteForeverIcon } from '../icons';
 import { BaseButton } from '../shared/Button';
 import { CartListProps } from './CartList';

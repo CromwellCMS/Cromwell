@@ -1,4 +1,4 @@
-import { TCromwellNotify, TOrder, TPaymentOption, TPaymentSession, TShippingOption, useCmsSettings } from '@cromwell/core';
+import { TCromwellNotify, TOrder, TOrderPaymentSession, TPaymentOption, TShippingOption } from '@cromwell/core';
 import { getCStore, LoadBox, useCart } from '@cromwell/core-frontend';
 import clsx from 'clsx';
 import React, { useRef } from 'react';
@@ -8,24 +8,16 @@ import { BaseButton, TBaseButton } from '../shared/Button';
 import { BaseRadio, TBaseRadio } from '../shared/Radio';
 import { TBaseTextField } from '../shared/TextField';
 import { usuCheckoutActions } from './actions';
+import styles from './Checkout.module.scss';
+import { Coupons } from './Coupons';
 import {
+  DefaultCheckoutFields,
   DefaultEmptyCartAlert,
   DefaultField,
   DefaultPlacedOrder,
   getDefaultCheckoutFields,
   TCheckoutFieldProps,
-} from './Base';
-import styles from './Checkout.module.scss';
-import { Coupons } from './Coupons';
-
-export { TCheckoutFieldProps } from './Base';
-
-export const DefaultCheckoutFields = {
-  customerName: 'customerName',
-  customerPhone: 'customerPhone',
-  customerEmail: 'customerEmail',
-  customerComment: 'customerComment',
-}
+} from './DefaultElements';
 
 export type TCheckoutField = {
   key: keyof typeof DefaultCheckoutFields | string;
@@ -37,24 +29,6 @@ export type TCheckoutField = {
 }
 
 export type CheckoutProps = {
-  /**
-   * Orders fields to display. Key can be one of enum `EDefaultCheckoutFields` or any string. 
-   * If key is not part of enum, then it will be treated as part 
-   * of JSON `customerAddress`. If flag `meta` is provided then key will
-   * be treated as part of `customMeta`.
-   */
-  fields?: TCheckoutField[];
-
-  /**
-   * Additional payment options
-   */
-  getPaymentOptions?: (session?: TPaymentSession | null) => Promise<TPaymentOption[]>;
-
-  /**
-   * Additional delivery options
-   */
-  getShippingOptions?: (session?: TPaymentSession | null) => Promise<TShippingOption[]>;
-
   classes?: Partial<Record<'root' | 'blockTitle' | 'delimiter' | 'detailsRow' | 'withoutDiscountText'
     | 'withoutDiscountValue' | 'detailsRowName' | 'detailsRowValue' | 'totalText' | 'totalValue'
     | 'Coupons' | 'couponList' | 'coupon' | 'couponActions' | 'placedOrder' | 'loadBoxCover'
@@ -101,9 +75,22 @@ export type CheckoutProps = {
     choosePaymentMethod?: string;
     somethingWrongWithPayment?: string;
   }
+
   /**
-   * Notifier tool. Will show notifications when user adds a product to the cart or
-   * wishlist. To disable pass an empty object
+   * Orders fields to display. Key can be one of enum `EDefaultCheckoutFields` or any string. 
+   * If key is not part of enum, then it will be treated as part 
+   * of JSON `customerAddress`. If flag `meta` is provided then key will
+   * be treated as part of `customMeta`.
+   */
+  fields?: TCheckoutField[];
+
+  /**
+   * Additional payment options
+   */
+  getPaymentOptions?: (session?: TOrderPaymentSession | null) => Promise<TPaymentOption[]> | TPaymentOption[];
+
+  /**
+   * Notifier tool. To disable notifications pass an empty object
    */
   notifier?: TCromwellNotify<NotifierActionOptions>;
   /**
@@ -111,11 +98,19 @@ export type CheckoutProps = {
    */
   notifierOptions?: NotifierActionOptions;
 
-  onGetOrderTotal?: (data: TPaymentSession | undefined) => void;
+  /**
+   * Order action events
+   */
+  onGetOrderTotal?: (data: TOrderPaymentSession | undefined) => void;
   onPlaceOrder?: (placedOrder: TOrder | undefined) => void;
   onPay?: (success: boolean) => void;
 }
 
+/**
+ * Displays checkout session
+ * Handles order calculations, coupons, payments and order placement.
+ * Provide prop `fields` to display any input field, such as: email, phone, etc.
+ */
 export function Checkout(props: CheckoutProps) {
   const { fields = getDefaultCheckoutFields(props), classes, text } = props;
   const { PlacedOrder = DefaultPlacedOrder, RadioGroup = BaseRadio,
@@ -127,26 +122,28 @@ export function Checkout(props: CheckoutProps) {
     checkoutProps: props,
     rootRef
   });
-  const cmsSettings = useCmsSettings();
   const cart = useCart();
 
   const { order, paymentSession, changeOrder, standardShipping, payLaterOption } = checkout;
 
-
   const shippingOptions: TShippingOption[] = [
-    ...(checkout?.additionalShippingOptions ?? []),
-    ...(typeof cmsSettings?.defaultShippingPrice === 'number' ? [
-      standardShipping
-    ] : [])
-  ].filter(Boolean);
+    ...(checkout.paymentSession?.shippingOptions ?? []),
+  ].filter(Boolean).map(option => {
+    if (option.key === standardShipping.key) {
+      option.name = standardShipping.name;
+    }
+    return option;
+  });
 
   const paymentOptions: TPaymentOption[] = [
     ...(checkout?.additionalPaymentOptions ?? []),
     ...(checkout.paymentSession?.paymentOptions ?? []),
-    ...(!cmsSettings?.disablePayLater ? [
-      payLaterOption,
-    ] : []),
-  ].filter(Boolean);
+  ].filter(Boolean).map(option => {
+    if (option.key === payLaterOption.key) {
+      option.name = payLaterOption.name;
+    }
+    return option;
+  });
 
   const wrapContent = (content: JSX.Element) => {
     return (
@@ -284,3 +281,5 @@ export function Checkout(props: CheckoutProps) {
     </>
   );
 }
+
+export { TCheckoutFieldProps, DefaultCheckoutFields } from './DefaultElements';

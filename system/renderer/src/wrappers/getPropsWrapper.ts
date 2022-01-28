@@ -23,7 +23,7 @@ const wrapGetProps = (pageName: TDefaultPageName | string,
     getType: 'getServerSideProps' | 'getInitialProps' | 'getStaticProps'
 ): TGetStaticProps<TCromwellPageCoreProps> => {
     if (pageName === '/') pageName = 'index';
-    if (pageName.startsWith('/')) pageName = pageName.slice(1, pageName.length);
+    if (pageName.startsWith('/')) pageName = pageName.slice(1, pageName.length - 1);
 
     const getStaticWrapper: TGetStaticProps<TCromwellPageCoreProps> = async (context) => {
         // Name to request a page config. Config will be the same for different slugs

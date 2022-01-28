@@ -1,9 +1,7 @@
-import { TStoreListItem } from '@cromwell/core';
-import { getCStore, LoadBox as BaseLoadBox } from '@cromwell/core-frontend';
+import { getCStore, LoadBox as BaseLoadBox, useWishlist } from '@cromwell/core-frontend';
 import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
 
-import { useForceUpdate } from '../../helpers/forceUpdate';
 import { useStoreAttributes } from '../../helpers/useStoreAttributes';
 import { ProductCard as BaseProductCard, ProductCardProps } from '../ProductCard/ProductCard';
 import styles from './Wishlist.module.scss';
@@ -17,13 +15,13 @@ export type WishlistProps = {
 }
 
 export const Wishlist = (props: WishlistProps) => {
-  const forceUpdate = useForceUpdate();
-  const attributes = useStoreAttributes();
-  const [wishlist, setWishlist] = useState<TStoreListItem[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const cstore = getCStore();
   const { classes } = props;
   const { ProductCard = BaseProductCard, Loadbox = BaseLoadBox } = props.elements ?? {};
+
+  const attributes = useStoreAttributes();
+  const list = useWishlist();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     /**
@@ -32,21 +30,9 @@ export const Wishlist = (props: WishlistProps) => {
      */
     (async () => {
       setIsLoading(true);
-      await cstore.updateWishlist()
-      const wishlist = cstore.getWishlist();
-      setWishlist(wishlist);
+      await cstore.updateWishlist();
       setIsLoading(false);
     })();
-
-    const updateId = cstore.onWishlistUpdate(() => {
-      const wishlist = cstore.getWishlist();
-      setWishlist(wishlist);
-      forceUpdate();
-    });
-
-    return () => {
-      cstore.removeOnWishlistUpdate(updateId);
-    }
   }, []);
 
   return (
@@ -54,20 +40,19 @@ export const Wishlist = (props: WishlistProps) => {
       {isLoading && (
         <Loadbox />
       )}
-      {!isLoading && (
-        [...wishlist].reverse().map((it, i) => {
-          return (
-            <div key={i}
-              className={clsx(styles.wishlistProduct, classes?.product)}
-            ><ProductCard
-                attributes={attributes}
-                data={it.product}
-                variant='horizontal'
-              />
-            </div>
-          )
-        })
-      )}
+      {!isLoading && ([...list].reverse().map((it, i) => {
+        if (!it.product) return null;
+        return (
+          <div key={i}
+            className={clsx(styles.wishlistProduct, classes?.product)}
+          ><ProductCard
+              attributes={attributes}
+              product={it.product}
+              variant='horizontal'
+            />
+          </div>
+        )
+      }))}
     </div>
   )
 };

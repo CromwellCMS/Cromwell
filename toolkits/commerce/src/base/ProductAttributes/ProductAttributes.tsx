@@ -1,9 +1,8 @@
 import { TAttribute, TAttributeInstance, TAttributeInstanceValue, TProduct } from '@cromwell/core';
-import { CContainer, getCStore } from '@cromwell/core-frontend';
+import { getCStore, useForceUpdate } from '@cromwell/core-frontend';
 import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
 
-import { useForceUpdate } from '../../helpers/forceUpdate';
 import { useModuleState } from '../../helpers/state';
 import { useStoreAttributes } from '../../helpers/useStoreAttributes';
 import styles from './ProductAttributes.module.scss';
@@ -96,9 +95,8 @@ export const ProductAttributes = (props: ProductAttributesProps): JSX.Element =>
   };
 
   return (
-    <CContainer className={clsx(styles.ProductAttributes,
+    <div className={clsx(styles.ProductAttributes,
       !!canValidate && styles.productAttributesValidate)}
-      id="ccom_product_attributes"
     >
       {productAttributes?.map(attr => {
         const checked: string[] | undefined = checkedAttrs[attr.key];
@@ -182,6 +180,6 @@ export const ProductAttributes = (props: ProductAttributesProps): JSX.Element =>
           )
         }
       })}
-    </CContainer>
+    </div>
   )
 }

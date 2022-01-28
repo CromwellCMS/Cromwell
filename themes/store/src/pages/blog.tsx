@@ -1,4 +1,4 @@
-import { MuiPagination } from '@cromwell/commerce';
+import { MuiPagination } from '@cromwell/toolkit-commerce';
 import { getBlockInstance, TGetStaticProps, TPagedList, TPagedParams, TPost, TPostFilter, TTag } from '@cromwell/core';
 import { CContainer, CList, getGraphQLClient, getGraphQLErrorInfo, TCList } from '@cromwell/core-frontend';
 import { Autocomplete, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from '@mui/material';
@@ -99,7 +99,7 @@ const BlogPage: TPageWithLayout<BlogProps> = (props) => {
           editorHidden
           ListItem={(props) => (
             <div className={styles.postWrapper}>
-              <PostCard onTagClick={handleTagClick} data={props.data} key={props.data?.id} />
+              <PostCard onTagClick={handleTagClick} post={props.data} key={props.data?.id} />
             </div>
           )}
           usePagination

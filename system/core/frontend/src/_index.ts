@@ -30,9 +30,9 @@ export {
     pageRootContainerId,
     awaitImporter,
     blockCssClass,
-    TPagePropsContext,
-    PagePropsContext,
-    usePagePropsContext,
+    TAppPropsContext,
+    AppPropsContext,
+    useAppPropsContext,
 } from './constants';
 export { getGraphQLClient, TCGraphQLClient, TGraphQLErrorInfo, getGraphQLErrorInfo } from './api/CGraphQLClient';
 export { getRestApiClient, TCRestApiClient, TErrorInfo, TRequestOptions } from './api/CRestApiClient';
@@ -41,7 +41,7 @@ export * from './helpers/hooks';
 export * from './helpers/forceUpdate';
 export * from './helpers/AuthClient';
 export { getWebSocketClient } from './api/CWebSocketClient';
-export { getCStore, TCStoreOperationResult } from './helpers/CStore';
+export { getCStore, TCStoreOperationResult, TGetCStoreOptions } from './helpers/CStore';
 export { iconFromPath } from './helpers/iconFromPath';
 export { loadFrontendBundle, getLoadableFrontendBundle } from './helpers/loadFrontendBundle';
 export { getModuleImporter } from './helpers/importer';

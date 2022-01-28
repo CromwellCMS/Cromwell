@@ -78,7 +78,7 @@ export const awaitImporter = async () => {
     }
 }
 
-export type TPagePropsContext<TProps = unknown> = {
+export type TAppPropsContext<TProps = unknown> = {
     pageProps?: TCromwellPageCoreProps & TProps;
     router?: NextRouter;
     routeInfo?: {
@@ -88,8 +88,8 @@ export type TPagePropsContext<TProps = unknown> = {
     forceUpdatePage?: () => void;
 }
 
-export const PagePropsContext = React.createContext<TPagePropsContext>({});
+export const AppPropsContext = React.createContext<TAppPropsContext>({});
 
-export const usePagePropsContext = <TProps = unknown>(): TPagePropsContext<TProps> => {
-    return React.useContext<TPagePropsContext<TProps>>(PagePropsContext as any);
+export const useAppPropsContext = <TProps = unknown>(): TAppPropsContext<TProps> => {
+    return React.useContext<TAppPropsContext<TProps>>(AppPropsContext as any);
 }
