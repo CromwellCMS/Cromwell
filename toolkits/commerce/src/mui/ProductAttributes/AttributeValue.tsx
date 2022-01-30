@@ -5,9 +5,10 @@ import React from 'react';
 import { ProductAttributesProps } from '../../base/ProductAttributes/ProductAttributes';
 import styles from './MuiProductAttributes.module.scss';
 
-
+/** @internal */
 type CompType = Required<Required<ProductAttributesProps>['elements']>['AttributeValue'];
 
+/** @internal */
 export const AttributeValue: CompType = (props) => {
   const { checked, valid } = props;
   return (

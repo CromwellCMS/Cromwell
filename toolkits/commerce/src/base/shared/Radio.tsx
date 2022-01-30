@@ -1,6 +1,7 @@
 import { getRandStr } from '@cromwell/core';
 import React, { useRef } from 'react';
 
+/** @internal */
 export type TRadioProps = {
   options?: ({
     value: string | number | undefined;
@@ -13,8 +14,10 @@ export type TRadioProps = {
   value?: string;
   id?: string;
 }
+/** @internal */
 export type TBaseRadio = React.ComponentType<TRadioProps>;
 
+/** @internal */
 export const BaseRadio = (props: TRadioProps) => {
   const { name, style, className, options, onChange } = props;
   const id = useRef(props.id || getRandStr(8));

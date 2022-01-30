@@ -2,7 +2,6 @@ import { TCromwellNotify } from '@cromwell/core';
 import React from 'react';
 import { toast as toastify, ToastOptions } from 'react-toastify';
 
-
 export type NotifierActionOptions = ToastOptions & {
     Wrapper?: React.ComponentType<{
         className?: string;
@@ -11,10 +10,12 @@ export type NotifierActionOptions = ToastOptions & {
     }>;
 }
 
+/** @internal */
 const DefaultWrapper = (props) => {
     return <div className={props.className}>{props.children}</div>
 };
 
+/** @internal */
 class Notifier implements TCromwellNotify {
     public success(text: string, options?: NotifierActionOptions) {
         const Wrapper = options?.Wrapper ?? DefaultWrapper;
@@ -48,4 +49,5 @@ class Notifier implements TCromwellNotify {
     public warn = this.warning;
 }
 
+/** @internal */
 export const notifier = new Notifier();

@@ -8,6 +8,8 @@ import { BreadcrumbsProps } from './Breadcrumbs';
 import styles from './Breadcrumbs.module.scss';
 import { DefaultBreadcrumb } from './DefaultElements';
 
+
+/** @internal */
 export const Crumb = (props: {
   crumb: TProductCategory;
   breadcrumbsProps: BreadcrumbsProps;

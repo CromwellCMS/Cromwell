@@ -10,6 +10,7 @@ import { DefaultCouponAppliedIcon, DefaultCouponProblemIcon, DefaultRemoveCoupon
 import { CheckoutProps } from './Checkout';
 import styles from './Coupons.module.scss';
 
+/** @internal */
 export function Coupons(props: {
   checkoutProps: CheckoutProps;
   checkout: ReturnType<typeof usuCheckoutActions>;

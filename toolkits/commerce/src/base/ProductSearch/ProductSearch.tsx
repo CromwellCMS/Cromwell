@@ -2,7 +2,7 @@ import { DocumentNode, gql } from '@apollo/client';
 import { TPagedParams, TProduct } from '@cromwell/core';
 import { getGraphQLClient, getGraphQLErrorInfo, LoadBox } from '@cromwell/core-frontend';
 import clsx from 'clsx';
-import React from 'react';
+import React, { useRef, useState, useCallback } from 'react';
 import { debounce } from 'throttle-debounce';
 
 import { BasePopper, BasePopperProps } from '../shared/Popper';
@@ -36,24 +36,20 @@ export type ProductSearchProps = {
   customFragmentName?: string;
 }
 
-export class ProductSearch extends React.Component<ProductSearchProps, {
-  searchOpen: boolean;
-  isLoading: boolean;
-  searchItems: TProduct[];
-}>  {
-  private searchAnchorRef = React.createRef<HTMLDivElement>();
+/**
+ * Search input field. Queries products in the store. Results are shown in pop-up window on user input.
+ */
+export function ProductSearch(props: ProductSearchProps) {
+  const { text, classes } = props;
+  const { TextField = BaseTextField, Popper = BasePopper,
+    ListItem = DefaultListItem } = props.elements ?? {};
 
-  constructor(props: any) {
-    super(props);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [searchItems, setSearchItems] = useState<TProduct[]>([]);
+  const searchAnchorRef = useRef<HTMLDivElement | null>(null);
 
-    this.state = {
-      searchOpen: false,
-      isLoading: false,
-      searchItems: []
-    }
-  }
-
-  private searchRequest = debounce(500, async (productName: string) => {
+  const searchRequest = useCallback(debounce(500, async (productName: string) => {
     const pagedParams: TPagedParams<TProduct> = {
       pageNumber: 1,
       pageSize: 10,
@@ -63,9 +59,9 @@ export class ProductSearch extends React.Component<ProductSearchProps, {
     }
 
     const client = getGraphQLClient();
-    if (!this.state.isLoading) this.setState({ isLoading: true });
+    if (!isLoading) setIsLoading(true);
 
-    const fragment = this.props.customFragment ?? gql`
+    const fragment = props.customFragment ?? gql`
       fragment ProductSearchFragment on Product {
         id
         isEnabled
@@ -76,7 +72,7 @@ export class ProductSearch extends React.Component<ProductSearchProps, {
         oldPrice
         mainImage
       }`;
-    const fragmentName = this.props.customFragmentName ?? 'ProductSearchFragment';
+    const fragmentName = props.customFragmentName ?? 'ProductSearchFragment';
 
     try {
       const data = await client?.query({
@@ -99,64 +95,57 @@ export class ProductSearch extends React.Component<ProductSearchProps, {
         }
       });
       const products = data?.data?.getFilteredProducts?.elements;
-      if (products) this.setState({ searchItems: products });
+      if (products) setSearchItems(products);
 
     } catch (e) {
       console.error(getGraphQLErrorInfo(e));
     }
-    this.setState({ isLoading: false });
-  });
 
-  private handleSearchInput = (productName: string) => {
-    if (!this.state.isLoading)
-      this.setState({ isLoading: true });
+    setIsLoading(false);
+  }), []);
 
-    if (!this.state.searchOpen) {
-      this.setState({ searchOpen: true });
+  const handleSearchInput = (productName: string) => {
+    if (!isLoading) setIsLoading(true);
+
+    if (!searchOpen) {
+      setSearchOpen(true);
     }
-    this.searchRequest(productName);
+    searchRequest(productName);
   }
 
-  private handleSearchClose = () => {
-    this.setState({ searchOpen: false });
+  const handleSearchClose = () => {
+    setSearchOpen(false);
   }
 
-  render() {
-    const { isLoading, searchItems, searchOpen } = this.state;
-    const { text, classes } = this.props;
-    const { TextField = BaseTextField, Popper = BasePopper,
-      ListItem = DefaultListItem } = this.props.elements ?? {};
-
-    return (
-      <div className={clsx(styles.ProductSearch, classes?.root)} ref={this.searchAnchorRef}>
-        <TextField
-          label={text?.searchLabel ?? "Search..."}
-          onChange={(event) => this.handleSearchInput(event.currentTarget.value)}
-        />
-        <Popper open={searchOpen}
-          anchorEl={this.searchAnchorRef.current}
-          onClose={this.handleSearchClose}
+  return (
+    <div className={clsx(styles.ProductSearch, classes?.root)} ref={searchAnchorRef}>
+      <TextField
+        label={text?.searchLabel ?? "Search..."}
+        onChange={(event) => handleSearchInput(event.currentTarget.value)}
+      />
+      <Popper open={searchOpen}
+        anchorEl={searchAnchorRef.current}
+        onClose={handleSearchClose}
+      >
+        <div className={clsx(styles.searchContent, classes?.content)}
+          onClick={handleSearchClose}
         >
-          <div className={clsx(styles.searchContent, classes?.content)}
-            onClick={this.handleSearchClose}
-          >
-            {isLoading && (
-              <LoadBox size={100} />
-            )}
-            {!isLoading && searchItems.length === 0 && (
-              <p className={clsx(styles.searchNotFoundText, classes?.notFoundText)}
-              >{text?.notFound ?? 'No items found'}</p>
-            )}
-            {!isLoading && searchItems?.map(product => (
-              <ListItem
-                key={product.id}
-                product={product}
-                searchProps={this.props}
-              />
-            ))}
-          </div>
-        </Popper>
-      </div>
-    );
-  }
+          {isLoading && (
+            <LoadBox size={100} />
+          )}
+          {!isLoading && searchItems.length === 0 && (
+            <p className={clsx(styles.searchNotFoundText, classes?.notFoundText)}
+            >{text?.notFound ?? 'No items found'}</p>
+          )}
+          {!isLoading && searchItems?.map(product => (
+            <ListItem
+              key={product.id}
+              product={product}
+              searchProps={props}
+            />
+          ))}
+        </div>
+      </Popper>
+    </div>
+  );
 }

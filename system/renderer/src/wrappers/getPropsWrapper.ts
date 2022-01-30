@@ -1,4 +1,5 @@
 import {
+    removeUndefined,
     resolvePageRoute,
     setStoreItem,
     TCmsConfig,
@@ -16,7 +17,6 @@ import { GetStaticPropsResult } from 'next';
 
 import { getThemeStaticProps } from '../helpers/getThemeStaticProps';
 import { pluginsDataFetcher, TPluginsSettings } from '../helpers/pluginsDataFetcher';
-import { removeUndefined } from '../helpers/removeUndefined';
 
 const wrapGetProps = (pageName: TDefaultPageName | string,
     originalGet: ((context: TStaticPageContext) => any) | null,

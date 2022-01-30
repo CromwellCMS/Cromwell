@@ -1,5 +1,5 @@
 import { DocumentNode, gql } from '@apollo/client';
-import { TCromwellBlock, TGetStaticProps, TPagedList, TProduct, TProductCategory } from '@cromwell/core';
+import { removeUndefined, TCromwellBlock, TGetStaticProps, TPagedList, TProduct, TProductCategory } from '@cromwell/core';
 import {
   CList,
   getGraphQLClient,
@@ -13,28 +13,30 @@ import clsx from 'clsx';
 import { useRouter } from 'next/router';
 import React, { useEffect, useRef } from 'react';
 
-import { removeUndefined } from '../../helpers/removeUndefined';
 import { useModuleState } from '../../helpers/state';
 import { useStoreAttributes } from '../../helpers/useStoreAttributes';
 import { ProductCard as BaseProductCard, ProductCardProps } from '../ProductCard/ProductCard';
 import styles from './CategoryList.module.scss';
 
-type ServerSideData = {
+export type CategoryListData = {
   firstPage?: TPagedList<TProduct> | null;
   category: TProductCategory | null;
 }
 
+/** @internal */
 type GetStaticPropsData = {
-  'ccom_category_list'?: ServerSideData;
+  'ccom_category_list'?: CategoryListData;
 }
 
 export type CategoryListProps = {
   classes?: Partial<Record<'root' | 'list', string>>;
+
   elements?: {
     ProductCard?: React.ComponentType<ProductCardProps>;
     Pagination?: React.ComponentType<TPaginationProps>;
   }
-  data?: ServerSideData;
+
+  data?: CategoryListData;
 
   /**
    * Provide custom CBlock id to use for underlying CList 
@@ -48,14 +50,15 @@ export type CategoryListProps = {
 }
 
 /**
- * Renders product list on category page
+ * Renders product list on category page  
  * 
- * - `withGetProps` - required. Data can be overridden
+ * - `withGetProps` - required. Data on the frontend can be overridden  
+ * - `useData` - available
  */
 export function CategoryList(props: CategoryListProps) {
   const { listProps } = props;
   const appProps = useAppPropsContext<GetStaticPropsData>();
-  const data: ServerSideData = Object.assign({}, appProps.pageProps?.ccom_category_list, props.data);
+  const data: CategoryListData = Object.assign({}, appProps.pageProps?.ccom_category_list, props.data);
   const { category } = data;
   const { ProductCard = BaseProductCard, Pagination } = props?.elements ?? {};
   const attributes = useStoreAttributes();
@@ -180,7 +183,7 @@ CategoryList.withGetProps = (originalGetProps?: TGetStaticProps, options?: {
   return getProps;
 }
 
-CategoryList.useData = (): ServerSideData | undefined => {
+CategoryList.useData = (): CategoryListData | undefined => {
   const appProps = useAppPropsContext<GetStaticPropsData>();
   return appProps.pageProps?.ccom_category_list;
 }

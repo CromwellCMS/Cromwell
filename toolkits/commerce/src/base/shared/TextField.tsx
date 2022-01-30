@@ -1,5 +1,6 @@
 import React from 'react';
 
+/** @internal */
 export type TBaseTextFieldProps = {
     disabled?: boolean;
     error?: boolean;
@@ -20,8 +21,10 @@ export type TBaseTextFieldProps = {
     name?: string;
     style?: React.CSSProperties;
 }
+/** @internal */
 export type TBaseTextField = React.ComponentType<TBaseTextFieldProps>;
 
+/** @internal */
 export const BaseTextField: TBaseTextField = (props) => {
     return <input onChange={props.onChange}
         value={props.value}

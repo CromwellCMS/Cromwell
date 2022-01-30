@@ -105,6 +105,10 @@ export type TProductCategoryCore = {
      * Qnt of page requests
      */
     views?: number | null;
+    /**
+     * Level in category tree counting from top (root category)
+     */
+    nestedLevel?: number | null;
 }
 
 export type TProductCategory = TProductCategoryCore & TBasePageEntity;

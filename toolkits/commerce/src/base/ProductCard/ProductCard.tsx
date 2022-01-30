@@ -14,6 +14,7 @@ import { BaseTooltip, TBaseTooltipProps } from '../shared/Tooltip';
 import styles from './ProductCard.module.scss';
 import { useStoreAttributes } from '../../helpers/useStoreAttributes';
 
+/** @internal */
 const Empty = (props) => props?.children ?? null;
 
 export type ProductCardProps = {
@@ -102,7 +103,7 @@ export type ProductCardProps = {
  * Displays product cart with short product info. Used to display in product list
  * of a product category 
  */
-export const ProductCard = (props: ProductCardProps) => {
+export function ProductCard(props: ProductCardProps) {
   const { product, onOpenCart, notifier = baseNotifier, notifierOptions = {},
     elements = {}, imageProps, classes, text } = props ?? {};
   const { OtherActions = Empty, Rating = BaseRating,

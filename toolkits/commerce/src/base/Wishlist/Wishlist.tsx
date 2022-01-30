@@ -14,7 +14,10 @@ export type WishlistProps = {
   }
 }
 
-export const Wishlist = (props: WishlistProps) => {
+/**
+ * List of products that have been added into `Wishlist` of `CStore`
+ */
+export function Wishlist(props: WishlistProps) {
   const cstore = getCStore();
   const { classes } = props;
   const { ProductCard = BaseProductCard, Loadbox = BaseLoadBox } = props.elements ?? {};
@@ -55,4 +58,4 @@ export const Wishlist = (props: WishlistProps) => {
       }))}
     </div>
   )
-};
+}

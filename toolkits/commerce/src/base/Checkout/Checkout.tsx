@@ -16,15 +16,15 @@ import {
   DefaultField,
   DefaultPlacedOrder,
   getDefaultCheckoutFields,
-  TCheckoutFieldProps,
+  CheckoutFieldProps,
 } from './DefaultElements';
 
-export type TCheckoutField = {
+export type CheckoutFieldConfig = {
   key: keyof typeof DefaultCheckoutFields | string;
   label?: string;
   validate?: (value?: string | null) => { valid: boolean; message: string };
   required?: boolean;
-  Component?: React.ComponentType<TCheckoutFieldProps>;
+  Component?: React.ComponentType<CheckoutFieldProps>;
   meta?: boolean;
 }
 
@@ -77,12 +77,12 @@ export type CheckoutProps = {
   }
 
   /**
-   * Orders fields to display. Key can be one of enum `EDefaultCheckoutFields` or any string. 
-   * If key is not part of enum, then it will be treated as part 
+   * Order fields to display. Key can be one of enum `EDefaultCheckoutFields` or any string.  
+   * If key is not part of enum, then it will be treated as part
    * of JSON `customerAddress`. If flag `meta` is provided then key will
-   * be treated as part of `customMeta`.
+   * be treated as part of `customMeta`.  
    */
-  fields?: TCheckoutField[];
+  fields?: CheckoutFieldConfig[];
 
   /**
    * Additional payment options
@@ -107,9 +107,9 @@ export type CheckoutProps = {
 }
 
 /**
- * Displays checkout session
- * Handles order calculations, coupons, payments and order placement.
- * Provide prop `fields` to display any input field, such as: email, phone, etc.
+ * Displays checkout session.  
+ * Handles order calculations, coupons, payments and order placement.  
+ * Provide prop `fields` to display any input field, such as: email, phone, etc.  
  */
 export function Checkout(props: CheckoutProps) {
   const { fields = getDefaultCheckoutFields(props), classes, text } = props;
@@ -178,7 +178,7 @@ export function Checkout(props: CheckoutProps) {
       <h2 className={clsx(styles.blockTitle, classes?.blockTitle)}>
         {text?.shippingAddress ?? 'Shipping Address'}</h2>
       {fields?.map(field => {
-        const Component: React.ComponentType<TCheckoutFieldProps> = field.Component ?? DefaultField;
+        const Component: React.ComponentType<CheckoutFieldProps> = field.Component ?? DefaultField;
         const value = checkout.getFieldValue(field.key) ?? '';
         const validation = checkout.isFieldValid(field.key);
 
@@ -281,5 +281,3 @@ export function Checkout(props: CheckoutProps) {
     </>
   );
 }
-
-export { TCheckoutFieldProps, DefaultCheckoutFields } from './DefaultElements';

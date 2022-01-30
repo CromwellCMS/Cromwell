@@ -1,6 +1,7 @@
 import { getRandStr } from '@cromwell/core';
 import React, { useRef } from 'react';
 
+/** @internal */
 export type TSelectProps = {
   options?: ({
     value: string | number | undefined;
@@ -14,8 +15,10 @@ export type TSelectProps = {
   value?: string;
   id?: string;
 }
+/** @internal */
 export type TBaseSelect = React.ComponentType<TSelectProps>;
 
+/** @internal */
 export const BaseSelect = (props: TSelectProps) => {
   const { name, label, style, className, options, onChange } = props;
   const id = useRef(props.id || getRandStr(8));

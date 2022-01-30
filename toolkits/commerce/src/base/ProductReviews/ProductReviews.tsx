@@ -6,7 +6,7 @@ import {
   getGraphQLClient,
   TCList,
   TCListProps,
-  TItemComponentProps,
+  TListItemProps,
   TPaginationProps,
 } from '@cromwell/core-frontend';
 import clsx from 'clsx';
@@ -63,7 +63,7 @@ export type ProductReviewsProps = {
   /**
    * Override props to CList
    */
-  listProps?: TCListProps<TProductReview, TListItemProps>;
+  listProps?: TCListProps<TProductReview, TReviewListItemProps>;
   /**
    * Notifier tool
    */
@@ -75,13 +75,18 @@ export type ProductReviewsProps = {
   disableEdit?: boolean
 }
 
-type TListItemProps = TItemComponentProps<TProductReview, ProductReviewsProps>;
+/** @internal */
+type TReviewListItemProps = TListItemProps<TProductReview, ProductReviewsProps>;
 
-const ListItem = (props: TListItemProps) => {
+/** @internal */
+const ListItem = (props: TReviewListItemProps) => {
   const Comp = props.listItemProps?.elements?.ReviewItem ?? ReviewItem;
   return <Comp data={props.data} key={props.data?.id} parentProps={props.listItemProps!} />
 }
 
+/**
+ * Displays customer reviews of a product. Fetches data client-side
+ */
 export function ProductReviews(props: ProductReviewsProps) {
   const { productId, listProps, notifier, elements, classes, disableEdit } = props;
   const reviewsInst = useRef<TCromwellBlock<TCList> | undefined>();

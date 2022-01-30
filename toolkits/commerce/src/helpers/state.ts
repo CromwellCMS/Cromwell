@@ -114,6 +114,10 @@ class ModuleState {
 
 export const moduleState = new ModuleState();
 
+/**
+ * A hook that gives an access to the `store` of this toolkit.
+ * It will also re-render component on store updates.
+ */
 export const useModuleState = (): ModuleState => {
     const update = useForceUpdate();
     useEffect(() => {

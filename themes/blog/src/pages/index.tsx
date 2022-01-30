@@ -1,4 +1,4 @@
-import { TGetStaticProps, TPagedList, TPost } from '@cromwell/core';
+import { removeUndefined, TGetStaticProps, TPagedList, TPost } from '@cromwell/core';
 import { CContainer, CImage, CText, getGraphQLErrorInfo } from '@cromwell/core-frontend';
 import React from 'react';
 
@@ -8,7 +8,6 @@ import { handleGetFilteredPosts } from '../helpers/getPosts';
 import commonStyles from '../styles/common.module.scss';
 import blogStyles from '../styles/pages/Blog.module.scss';
 import styles from '../styles/pages/Index.module.scss';
-import { removeUndefined } from '../helpers/removeUndefined';
 
 import type { TPageWithLayout } from './_app';
 

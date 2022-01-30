@@ -45,3 +45,14 @@ export const resolvePageRoute = (pageName: string | TDefaultPageName, routeOptio
 
     return pageRoute;
 }
+
+/** @internal */
+export const removeUndefined = <T>(obj: T): T => {
+    if (!obj || typeof obj !== 'object') return obj;
+    for (const [key, val] of Object.entries(obj)) {
+        if (typeof val === 'undefined') delete obj[key];
+        if (val !== null && typeof val === 'object' && !Array.isArray(val))
+            removeUndefined(val);
+    }
+    return obj;
+}

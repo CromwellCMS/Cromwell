@@ -63,7 +63,7 @@ export type ProductActionsProps = {
   onWishlistOpen?: () => any;
 
   /**
-   * Notifier tool. Will show notifications when user adds a product to the cart or
+   * Notifier tool. Will show notifications when user adds a product to the cart or  
    * wishlist. To disable notifications pass an empty object
    */
   notifier?: TCromwellNotify<NotifierActionOptions>;
@@ -74,7 +74,7 @@ export type ProductActionsProps = {
   notifierOptions?: NotifierActionOptions;
 
   /**
-   * Override modified product by `onChange` of `ProductAttributes` component.
+   * Override modified product by `onChange` of `ProductAttributes` component.  
    * (not recommended since modifications already stored in the `moduleState`) 
    */
   modifiedProduct?: TProduct | null;
@@ -89,7 +89,7 @@ export type ProductActionsProps = {
  * Displays actions (buttons) on product page such as: add to cart/wishlist,
  * amount picker. Handles cart and shows notifications.
  */
-export const ProductActions = (props: ProductActionsProps) => {
+export function ProductActions(props: ProductActionsProps) {
   const moduleState = useModuleState();
   const { product, onCartOpen,
     modifiedProduct = (product?.id ? moduleState.products[product?.id]?.modifiedProduct
@@ -286,6 +286,7 @@ export const ProductActions = (props: ProductActionsProps) => {
   )
 }
 
+/** @internal */
 const DefaultQuantityField = (props) => {
   return <input value={props.value + ''}
     type="number"

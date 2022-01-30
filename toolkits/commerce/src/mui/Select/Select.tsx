@@ -3,6 +3,7 @@ import React from 'react';
 
 import { TSelectProps } from '../../base/shared/Select';
 
+/** @internal */
 export function Select(props: TSelectProps & MuiSelectProps<string | number>) {
   const { className, style, variant = 'filled' } = props;
   return (

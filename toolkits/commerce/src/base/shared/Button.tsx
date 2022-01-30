@@ -1,5 +1,6 @@
 import React from 'react';
 
+/** @internal */
 export type TBaseButtonProps = {
     disabled?: boolean;
     className?: string;
@@ -12,8 +13,10 @@ export type TBaseButtonProps = {
     startIcon?: React.ReactNode;
     'aria-label'?: string;
 }
+/** @internal */
 export type TBaseButton = React.ComponentType<TBaseButtonProps>;
 
+/** @internal */
 export const BaseButton: TBaseButton = (props) => {
     return <button
         onClick={props.onClick}

@@ -14,7 +14,10 @@ export type ViewedItemsProps = {
   }
 }
 
-export const ViewedItems = (props: ViewedItemsProps) => {
+/**
+ * List of products that have been added into `ViewedItems` of `CStore`
+ */
+export function ViewedItems(props: ViewedItemsProps) {
   const cstore = getCStore();
   const { classes } = props;
   const { ProductCard = BaseProductCard, Loadbox = BaseLoadBox } = props.elements ?? {};
@@ -55,4 +58,4 @@ export const ViewedItems = (props: ViewedItemsProps) => {
       }))}
     </div>
   )
-};
+}

@@ -2,6 +2,7 @@ import { CircularProgress } from '@mui/material';
 import { createStyles, makeStyles } from '@mui/styles';
 import React from 'react';
 
+/** @internal */
 const useStylesLoadBox = makeStyles(() =>
   createStyles({
     loadBox: {
@@ -15,6 +16,7 @@ const useStylesLoadBox = makeStyles(() =>
   }),
 );
 
+/** @internal */
 export const Loadbox = (props: { size?: number }) => {
   const classes = useStylesLoadBox();
   return (

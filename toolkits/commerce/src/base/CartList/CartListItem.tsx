@@ -9,11 +9,13 @@ import { BaseButton } from '../shared/Button';
 import { CartListProps } from './CartList';
 import styles from './CartListItem.module.scss';
 
+/** @internal */
 export type CartListItemProps = {
   item: TStoreListItem;
   cartProps: CartListProps
 }
 
+/** @internal */
 export function CartListItem(props: CartListItemProps) {
   const { item, cartProps } = props;
   const product = item.product;

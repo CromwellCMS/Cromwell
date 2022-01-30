@@ -13,8 +13,8 @@ export type CategoryFilterProps = {
 }
 
 /**
- * Renders product filter on a category page. A wrapper for plugin from 
- * `@cromwell/plugin-product-filter`
+ * Renders product filter on a category page. A wrapper for plugin from   
+ * `@cromwell/plugin-product-filter`  
  * 
  * - `withGetProps` - required
  */

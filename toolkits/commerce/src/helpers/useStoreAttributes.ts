@@ -5,6 +5,7 @@ import { useModuleState } from './state';
 
 let isFetchingAttributes = false;
 
+/** @internal */
 export const useStoreAttributes = (attributes?: TAttribute[] | null) => {
     const forceUpdate = useForceUpdate();
     const moduleState = useModuleState();

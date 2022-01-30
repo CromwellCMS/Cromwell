@@ -7,8 +7,8 @@ import { BaseSelect, TBaseSelect } from '../shared/Select';
 import styles from './CurrencySwitch.module.scss';
 
 /**
- * Displays select component of all available currencies in the store.
- * Configure currencies in admin panel settings.
+ * Displays select component of all available currencies in the store.  
+ * Configure currencies in admin panel settings.  
  */
 export type CurrencySwitchProps = {
   classes?: Partial<Record<'root' | 'select', string>>;
@@ -17,6 +17,7 @@ export type CurrencySwitchProps = {
     Select?: TBaseSelect;
   }
 }
+
 export function CurrencySwitch(props: CurrencySwitchProps) {
   const cmsConfig = getCmsSettings();
   const currencies: TCurrency[] | undefined = cmsConfig?.currencies;

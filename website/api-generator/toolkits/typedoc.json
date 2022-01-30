@@ -1,5 +1,5 @@
 {
-    "out": "../docs/api",
+    "out": "../../.generated-docs/toolkits",
     "exclude": [
         "*.(spec|test).ts",
         "*.(spec|test).tsx",
@@ -8,16 +8,16 @@
         "**/node_modules/*",
         "**/build/*",
         "**/.cromwell/*",
-        "**/frontend/src/declarations"
+        "**/src/declarations"
     ],
     "gitRevision": "master",
     "externalPattern": "**/node_modules/**",
     "excludePrivate": true,
     "excludeInternal": true,
     "excludeExternals": true,
-    "external-modulemap": ".*system\/core\/([^\/]+)\/.*",
+    "external-modulemap": ".*toolkits\/([^\/]+)\/.*",
     "entryPoints": [
-        "../../system/core"
+        "../../../toolkits"
     ],
     "tsconfig": "./apiTsconfig.json"
 }

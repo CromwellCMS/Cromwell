@@ -1,5 +1,6 @@
 import React from 'react';
 
+/** @internal */
 export const withElements = <T>(Component: T, elements: any, otherProps?: any): T => {
     const hoc = (props) => {
         return React.createElement(Component as any, {

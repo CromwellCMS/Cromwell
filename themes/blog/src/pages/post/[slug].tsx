@@ -1,4 +1,4 @@
-import { TGetStaticProps, TPost } from '@cromwell/core';
+import { removeUndefined, TGetStaticProps, TPost } from '@cromwell/core';
 import { CContainer, EntityHead, getGraphQLClient, getGraphQLErrorInfo, Link, LoadBox } from '@cromwell/core-frontend';
 import { useRouter } from 'next/router';
 import React from 'react';
@@ -6,7 +6,6 @@ import React from 'react';
 import Layout from '../../components/layout/Layout';
 import { PostInfo } from '../../components/postCard/PostCard';
 import postStyles from '../../components/postCard/PostCard.module.scss';
-import { removeUndefined } from '../../helpers/removeUndefined';
 import commonStyles from '../../styles/common.module.scss';
 import styles from '../../styles/pages/BlogPost.module.scss';
 

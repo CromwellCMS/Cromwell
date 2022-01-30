@@ -23,20 +23,20 @@
         "moduleResolution": "node"
     },
     "include": [
-        "../../system/core/frontend/src/**/*.ts",
-        "../../system/core/frontend/src/**/*.tsx",
-        "../../system/core/common/src/**/*.ts",
-        "../../system/core/common/src/**/*.tsx",
-        "../../system/core/backend/src/**/*.ts",
-        "../../system/core/backend/src/**/*.tsx"
+        "../../../system/core/frontend/src/**/*.ts",
+        "../../../system/core/frontend/src/**/*.tsx",
+        "../../../system/core/common/src/**/*.ts",
+        "../../../system/core/common/src/**/*.tsx",
+        "../../../system/core/backend/src/**/*.ts",
+        "../../../system/core/backend/src/**/*.tsx"
     ],
     "exclude": [
-        "../../system/core/frontend/src/**/*test.ts",
-        "../../system/core/frontend/src/**/*test.tsx",
-        "../../system/core/common/src/**/*test.ts",
-        "../../system/core/common/src/**/*test.tsx",
-        "../../system/core/backend/src/**/*test.ts",
-        "../../system/core/backend/src/**/*test.tsx",
+        "../../../system/core/frontend/src/**/*test.ts",
+        "../../../system/core/frontend/src/**/*test.tsx",
+        "../../../system/core/common/src/**/*test.ts",
+        "../../../system/core/common/src/**/*test.tsx",
+        "../../../system/core/backend/src/**/*test.ts",
+        "../../../system/core/backend/src/**/*test.tsx",
         "frontend/src/declarations",
         "node_modules",
         "dist",

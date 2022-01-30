@@ -183,7 +183,7 @@ export class MigrationService {
             await this.importProducts({ workbook, removeSurplus });
             await this.importProductVariants({ workbook, removeSurplus });
             await this.importReviews({ workbook, removeSurplus });
-            
+
             await this.importOrders({ workbook, removeSurplus });
             await this.importPlugins({ workbook, removeSurplus });
             await this.importThemes({ workbook, removeSurplus });
@@ -434,6 +434,7 @@ export class MigrationService {
             parentId: (await categoryRepo.getParentCategory(ent))?.id,
             customMeta: this.stringifyValue(await entityMetaRepository.getEntityMetaByKeys(EDBEntity.ProductCategory, ent.id, metaKeys)),
             views: undefined,
+            nestedLevel: undefined,
         })));
 
         this.fillSheet(workbook, ESheetNames.ProductCategory, categoriesSheet);
@@ -914,6 +915,7 @@ export class MigrationService {
                 description: input.description || null,
                 descriptionDelta: input.descriptionDelta || null,
                 views: null,
+                nestedLevel: null,
             }),
             update: async (input) => input.id && getCustomRepository(ProductCategoryRepository).updateProductCategory(input.id, input),
             create: (input) => getCustomRepository(ProductCategoryRepository).createProductCategory(input, input.id),

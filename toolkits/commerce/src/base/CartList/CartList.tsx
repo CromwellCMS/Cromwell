@@ -50,10 +50,10 @@ export type CartListProps = {
 }
 
 /**
- * Displays product list of user cart. Use CStore API from `@cromwell/core-frontend`
+ * Displays product list of user cart. Use CStore API from `@cromwell/core-frontend`  
  * package to add products in the list
  */
-export const CartList = (props: CartListProps) => {
+export function CartList(props: CartListProps) {
   const { elements, classes, text, sumPosition = 'top' } = props;
   const { Loadbox = BaseLoadBox,
     ListItem = CartListItem, HeaderActions } = elements ?? {};

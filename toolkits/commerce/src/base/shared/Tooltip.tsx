@@ -1,5 +1,6 @@
 import React from 'react';
 
+/** @internal */
 export type TBaseTooltipProps = {
     open?: boolean;
     onOpen?: (event: React.SyntheticEvent) => void;
@@ -12,8 +13,10 @@ export type TBaseTooltipProps = {
     style?: React.CSSProperties;
     arrow?: boolean;
 }
+/** @internal */
 export type TBaseTooltip = React.ComponentType<TBaseTooltipProps>;
 
+/** @internal */
 export const BaseTooltip: TBaseTooltip = (props) => {
     return <>{props.children}</>;
 }

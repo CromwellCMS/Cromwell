@@ -2,7 +2,7 @@ import React from 'react';
 
 import { BaseTextField, TBaseTextFieldProps } from '../shared/TextField';
 import { usuCheckoutActions } from './actions';
-import { CheckoutProps, TCheckoutField } from './Checkout';
+import { CheckoutProps, CheckoutFieldConfig } from './Checkout';
 
 export const DefaultCheckoutFields = {
   customerName: 'customerName',
@@ -11,16 +11,19 @@ export const DefaultCheckoutFields = {
   customerComment: 'customerComment',
 }
 
+/** @internal */
 export const DefaultPlacedOrder = (props) => <p>{props.children}</p>;
+/** @internal */
 export const DefaultEmptyCartAlert = (props) => <p>{props.children}</p>;
 
-export type TCheckoutFieldProps = Omit<TBaseTextFieldProps, 'onChange'> & {
+export type CheckoutFieldProps = Omit<TBaseTextFieldProps, 'onChange'> & {
   onChange: (value: any) => any;
   checkoutProps: CheckoutProps;
   checkout: ReturnType<typeof usuCheckoutActions>;
 }
 
-export const DefaultField = (props: TCheckoutFieldProps) => {
+/** @internal */
+export const DefaultField = (props: CheckoutFieldProps) => {
   const { checkout, checkoutProps, ...rest } = props;
   const { TextField = BaseTextField } = checkoutProps.elements ?? {};
   return (
@@ -28,12 +31,16 @@ export const DefaultField = (props: TCheckoutFieldProps) => {
   );
 }
 
+/** @internal */
 export const DefaultCouponProblemIcon = () => <span style={{ color: '#b2102f', marginRight: '10px' }}>✖</span>;
+/** @internal */
 export const DefaultCouponAppliedIcon = () => <span style={{ color: '#357a38', marginRight: '10px' }}>✔</span>;
+/** @internal */
 export const DefaultRemoveCouponIcon = () => <span style={{ color: '#555' }}>✕</span>;
 
 
-export const getDefaultCheckoutFields = (props: CheckoutProps): TCheckoutField[] => [
+/** @internal */
+export const getDefaultCheckoutFields = (props: CheckoutProps): CheckoutFieldConfig[] => [
   {
     key: DefaultCheckoutFields.customerName,
     required: true,

@@ -5,6 +5,7 @@ import { AddIcon, RemoveIcon } from '../../base/icons';
 
 import styles from './QuantityField.module.scss';
 
+/** @internal */
 export function QuantityField(props: {
   value: number;
   onChange: (value: number, event?: any) => any;

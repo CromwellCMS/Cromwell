@@ -3,6 +3,7 @@ import React from 'react';
 
 import { BasePopperProps } from '../../base/shared/Popper';
 
+/** @internal */
 export function Popper(props: BasePopperProps) {
   const onClose = () => {
     props.onClose?.();

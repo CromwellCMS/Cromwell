@@ -1,25 +1,43 @@
-import { TGetStaticProps, TProductCategory } from '@cromwell/core';
-import { useAppPropsContext } from '@cromwell/core-frontend';
+import { removeUndefined, TGetStaticProps, TProductCategory } from '@cromwell/core';
+import { getGraphQLErrorInfo, useAppPropsContext } from '@cromwell/core-frontend';
 import clsx from 'clsx';
 import React from 'react';
 
-import { removeUndefined } from '../../helpers/removeUndefined';
 import styles from './Breadcrumbs.module.scss';
 import { Crumb } from './Crumb';
 import { DefaultHomeIcon, DefaultWrapper } from './DefaultElements';
-import { getData } from './getData';
+import { breadcrumbsGetData } from './getData';
 
-export type ServerSideData = {
+export type BreadcrumbsData = {
   categories?: TProductCategory[] | undefined;
 } | undefined | null;
 
+/** @internal */
 type GetStaticPropsData = {
-  'ccom_breadcrumbs'?: ServerSideData;
+  'ccom_breadcrumbs'?: BreadcrumbsData;
 }
 
 export type BreadcrumbsProps = {
-  classes?: Partial<Record<'root' | 'wrapper' | 'breadcrumb' | 'link', string>>;
-  elements?: BreadcrumbElements;
+  classes?: Partial<Record<'root' | 'breadcrumb' | 'link', string>>;
+
+  elements?: {
+    Wrapper?: React.ComponentType<{
+      id?: string;
+      className?: string;
+      style?: React.CSSProperties;
+      maxItems?: number;
+    }>;
+    Breadcrumb?: React.ComponentType<{
+      className?: string;
+      id?: string;
+      label?: string;
+      style?: React.CSSProperties;
+      icon?: React.ReactNode | null;
+      children?: React.ReactNode | null;
+    }>;
+    HomeIcon?: React.ComponentType;
+  };
+
   text?: {
     home?: string;
   }
@@ -27,7 +45,7 @@ export type BreadcrumbsProps = {
   /**
    * Override data by manually calling `getData` function and passing its result 
    */
-  data?: ServerSideData;
+  data?: BreadcrumbsData;
 
   /**
    * Max breadcrumb items. Currently is not implemented by base component. Can be implemented
@@ -46,34 +64,18 @@ export type BreadcrumbsProps = {
   getBreadcrumbLink?: (crumb: TProductCategory) => string | undefined;
 }
 
-export type BreadcrumbElements = {
-  Wrapper?: React.ComponentType<{
-    id?: string;
-    className?: string;
-    style?: React.CSSProperties;
-    maxItems?: number;
-  }>;
-  Breadcrumb?: React.ComponentType<{
-    className?: string;
-    id?: string;
-    label?: string;
-    style?: React.CSSProperties;
-    icon?: React.ReactNode | null;
-    children?: React.ReactNode | null;
-  }>;
-  HomeIcon?: React.ComponentType;
-}
 
 /**
- * Represents breadcrumbs of categories on a product page.
+ * Represents breadcrumbs of categories on a product page.  
  * 
- * - `withGetProps` - optional or use getData
- * - `getData` - available
+ * - `withGetProps` - optional or use getData  
+ * - `getData` - available  
+ * - `useData` - available  
  */
 export function Breadcrumbs(props: BreadcrumbsProps) {
   const { maxItems, classes, elements, text, showHome } = props;
   const appProps = useAppPropsContext<GetStaticPropsData>();
-  const data: ServerSideData = Object.assign({}, appProps.pageProps?.ccom_breadcrumbs, props.data);
+  const data: BreadcrumbsData = Object.assign({}, appProps.pageProps?.ccom_breadcrumbs, props.data);
   const Wrapper = elements?.Wrapper ?? DefaultWrapper;
   const HomeIcon = elements?.HomeIcon ?? DefaultHomeIcon;
 
@@ -104,6 +106,7 @@ export function Breadcrumbs(props: BreadcrumbsProps) {
   )
 }
 
+/** @internal */
 Breadcrumbs.withGetProps = (originalGetProps?: TGetStaticProps) => {
   const getProps: TGetStaticProps<GetStaticPropsData> = async (context) => {
     const originProps = (await originalGetProps?.(context)) ?? {};
@@ -114,7 +117,11 @@ Breadcrumbs.withGetProps = (originalGetProps?: TGetStaticProps) => {
       ...originProps,
       props: {
         ...(((originProps as any).props ?? {}) as Record<string, any>),
-        ccom_breadcrumbs: removeUndefined(slug && await getData({ productSlug: slug })) || null,
+        ccom_breadcrumbs: removeUndefined(slug && await breadcrumbsGetData({ productSlug: slug })
+          .catch(e => {
+            console.error('Breadcrumbs getData error: ', getGraphQLErrorInfo(e));
+            return null;
+          })) || null,
       }
     }
   }
@@ -122,9 +129,11 @@ Breadcrumbs.withGetProps = (originalGetProps?: TGetStaticProps) => {
   return getProps;
 }
 
-Breadcrumbs.getData = getData;
+/** @internal */
+Breadcrumbs.getData = (opts) => breadcrumbsGetData(opts);
 
-Breadcrumbs.useData = (): ServerSideData | undefined => {
+/** @internal */
+Breadcrumbs.useData = (): BreadcrumbsData => {
   const appProps = useAppPropsContext<GetStaticPropsData>();
   return appProps.pageProps?.ccom_breadcrumbs;
 }

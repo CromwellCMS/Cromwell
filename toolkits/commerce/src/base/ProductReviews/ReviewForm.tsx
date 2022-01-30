@@ -17,6 +17,7 @@ export type ReviewFormProps = {
   parentProps: ProductReviewsProps;
 }
 
+/** @internal */
 export const ReviewForm = ({ productId, notifier, parentProps }: ReviewFormProps) => {
   const userInfo = useUserInfo();
   const [name, setName] = useState(userInfo?.fullName ?? '');

@@ -2,6 +2,7 @@ import { Alert } from '@mui/material';
 import styles from './Notifier.module.scss';
 import React from 'react';
 
+/** @internal */
 export const NotifierWrapper = (props) => {
   return (
     <div className={styles.notifierContainer}>

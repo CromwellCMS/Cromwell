@@ -5,7 +5,7 @@ import { Alert, Breadcrumbs as MuiLibBreadcrumbs, Button, IconButton, Rating, Te
 import React from 'react';
 import { toast as toastify } from 'react-toastify';
 
-import { BreadcrumbElements, Breadcrumbs as BaseBreadcrumbs } from '../base/Breadcrumbs/Breadcrumbs';
+import { Breadcrumbs as BaseBreadcrumbs, BreadcrumbsProps } from '../base/Breadcrumbs/Breadcrumbs';
 import { CartList, CartListProps } from '../base/CartList/CartList';
 import { CategoryList as BaseCategoryList, CategoryListProps } from '../base/CategoryList/CategoryList';
 import { CategorySort as BaseCategorySort } from '../base/CategorySort/CategorySort';
@@ -40,7 +40,7 @@ export const MuiPagination = Pagination;
 export const MuiBreadcrumbs = withElements(BaseBreadcrumbs, {
   Wrapper: MuiLibBreadcrumbs,
   Breadcrumb: (props) => React.createElement(StyledBreadcrumb, { onClick: () => '', component: "div", ...props, } as any),
-} as BreadcrumbElements);
+} as BreadcrumbsProps['elements']);
 
 export const MuiProductAttributes = withElements(BaseProductAttributes, {
   AttributeValue,

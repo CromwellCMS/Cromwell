@@ -2,6 +2,7 @@ import { FormControl, FormControlLabel, Radio, RadioGroup as MuiRadioGroup } fro
 import React from 'react';
 import { TRadioProps } from '../../base/shared/Radio';
 
+/** @internal */
 export function RadioGroup(props: TRadioProps) {
   return (
     <FormControl component="fieldset"

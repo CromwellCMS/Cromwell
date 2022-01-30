@@ -256,4 +256,8 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
     async getEntityViews(entityId: number, entityType: EDBEntity) {
         return getCustomRepository(ProductRepository).getEntityViews.call(this, entityId, entityType);
     }
+
+    async getNestedLevel(category: ProductCategory) {
+        return ((await this.countAncestors(category)) ?? 0);
+    }
 }

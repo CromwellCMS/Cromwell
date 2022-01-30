@@ -51,7 +51,7 @@ export type ProductAttributesProps = {
  * When user picks an attribute applies product variant and returns modified
  * product from `onChange` function prop
  */
-export const ProductAttributes = (props: ProductAttributesProps): JSX.Element => {
+export function ProductAttributes(props: ProductAttributesProps): JSX.Element {
   const moduleState = useModuleState();
   const { product, onChange,
     canValidate = product?.id ? moduleState.products[product.id]?.canValidate : undefined } = props;

@@ -6,11 +6,13 @@ import React from 'react';
 import { ProductSearchProps } from './ProductSearch';
 import styles from './ProductSearch.module.scss';
 
+/** @internal */
 export type ListItemProps = {
   product: TProduct;
   searchProps: ProductSearchProps;
 }
 
+/** @internal */
 export const DefaultListItem = (props: ListItemProps) => {
   const { product, searchProps } = props;
   const { classes } = searchProps;

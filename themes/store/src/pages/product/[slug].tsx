@@ -1,12 +1,11 @@
-import { MuiBreadcrumbs, MuiProductReviews } from '@cromwell/toolkit-commerce';
-import { TAttribute, TGetStaticProps, TProduct } from '@cromwell/core';
+import { removeUndefined, TAttribute, TGetStaticProps, TProduct } from '@cromwell/core';
 import { CContainer, CPlugin, CText, EntityHead, getGraphQLClient, getGraphQLErrorInfo } from '@cromwell/core-frontend';
+import { MuiBreadcrumbs, MuiProductReviews } from '@cromwell/toolkit-commerce';
 import clsx from 'clsx';
 import React, { ReactElement } from 'react';
 
 import Layout from '../../components/layout/Layout';
 import ProductDetails from '../../components/productDetails/ProductDetails';
-import { removeUndefined } from '../../helpers/removeUndefined';
 import commonStyles from '../../styles/common.module.scss';
 import styles from '../../styles/pages/Product.module.scss';
 
@@ -19,6 +18,7 @@ export interface ProductProps {
 
 const Product: TPageWithLayout<ProductProps> = (props) => {
   const { product } = props ?? {};
+
   return (
     <CContainer className={clsx(commonStyles.content, styles.ProductPage)} id="product-1">
       <EntityHead

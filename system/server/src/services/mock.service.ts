@@ -180,6 +180,7 @@ export class MockService {
             this.shuffleArray(cats);
             const catsNum = Math.floor(Math.random() * cats.length)
             const categoryIds: number[] = cats.slice(0, catsNum).map(c => c.id);
+            const mainCategoryId = categoryIds[Math.floor(Math.random() * categoryIds.length)];
 
             const condition = Math.random() > 0.3 ? 'New' : 'Used';
             const sizes = sizeVals ? this.shuffleArray(sizeVals).slice(0, Math.floor(Math.random() * 4) + 3) : [];
@@ -187,6 +188,7 @@ export class MockService {
             promises.push(this.productRepo.createProduct({
                 name: this.getRandomName(),
                 categoryIds,
+                mainCategoryId,
                 price: price,
                 oldPrice: oldPrice,
                 mainImage: mainImage,

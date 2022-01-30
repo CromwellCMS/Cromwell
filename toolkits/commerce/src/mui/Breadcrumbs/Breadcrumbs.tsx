@@ -1,6 +1,7 @@
 import { Chip } from '@mui/material';
 import { withStyles } from '@mui/styles';
 
+/** @internal */
 export const StyledBreadcrumb = withStyles(() => ({
   root: {
     cursor: 'pointer',

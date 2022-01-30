@@ -1,5 +1,6 @@
 import React from 'react';
 
+/** @internal */
 export type BasePopperProps = {
   open?: boolean;
   onClose?: () => void;
@@ -7,6 +8,7 @@ export type BasePopperProps = {
   anchorEl?: Element | null;
 }
 
+/** @internal */
 export function BasePopper(props: BasePopperProps) {
   if (!props?.open) return null;
   return (

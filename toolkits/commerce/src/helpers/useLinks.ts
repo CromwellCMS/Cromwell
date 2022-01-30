@@ -1,6 +1,7 @@
 import { resolvePageRoute, TDefaultPageName, TProduct, TProductCategory } from '@cromwell/core';
 import { useAppPropsContext } from '@cromwell/core-frontend';
 
+/** @internal */
 export const useProductLink = (product?: TProduct, getProductLink?: (product: TProduct) => string | undefined) => {
   const pageContext = useAppPropsContext();
 
@@ -16,6 +17,7 @@ export const useProductLink = (product?: TProduct, getProductLink?: (product: TP
   return productLink;
 }
 
+/** @internal */
 export const useCategoryLink = (category?: TProductCategory, getCategoryLink?: (category: TProductCategory) => string | undefined) => {
   const pageContext = useAppPropsContext();
 

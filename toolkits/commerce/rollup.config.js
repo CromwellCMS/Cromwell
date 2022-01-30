@@ -8,7 +8,7 @@ const external = id => {
     return !id.startsWith('\0') && !id.startsWith('.') && !id.startsWith('/') && !isAbsolute(id);
 }
 
-const input = resolve(__dirname, 'src/index.ts');
+const input = resolve(__dirname, 'src/_index.ts');
 
 const getOutput = (format = 'esm') => {
     if (format === 'esm') {

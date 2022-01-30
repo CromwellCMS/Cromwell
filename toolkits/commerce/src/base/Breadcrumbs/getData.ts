@@ -2,88 +2,112 @@ import { DocumentNode, gql } from '@apollo/client';
 import { TProductCategory } from '@cromwell/core';
 import { getGraphQLClient, getGraphQLErrorInfo } from '@cromwell/core-frontend';
 
-import { ServerSideData } from './Breadcrumbs';
+import { BreadcrumbsData } from './Breadcrumbs';
 
-export const getData = async ({ productId, productSlug, productFragment, productFragmentName }: {
+/** @internal */
+export type BreadcrumbsGetDataOptions = {
     productId?: number | null;
     productSlug?: string | null;
-    productFragment?: DocumentNode;
-    productFragmentName?: string;
-}):
-    Promise<ServerSideData> => {
+    categoryFragment?: DocumentNode;
+    categoryFragmentName?: string;
+    maxLevel?: number;
+}
+
+/**
+ * Fetches data for `Breadcrumbs` component.
+ * @param options configuring object. You must specify `productId` OR `productSlug` for method to work.
+ * @internal
+ */
+export const breadcrumbsGetData = async (options: BreadcrumbsGetDataOptions): Promise<BreadcrumbsData> => {
+    const { productId, productSlug, maxLevel } = options;
+    let { categoryFragment, categoryFragmentName } = options;
     const client = getGraphQLClient();
     if (!productId && !productSlug) return;
 
-    if (!productFragment) productFragment = gql`
-    ${client.ProductFragment}
-    fragment ProductListFragment on Product {
-        ...ProductFragment
-        categories(pagedParams: {
-          pageSize: 30
-        }) {
-          id
-          name
-          parent {
-              id
-          }
-        }
-    }`;
-    if (!productFragmentName) productFragmentName = 'ProductListFragment';
+    const productFragment = gql`
+        fragment ProductListFragment on Product {
+            id
+            slug
+            mainCategoryId
+        }`;
 
-    const product = await (productId ? client.getProductById(productId, productFragment, productFragmentName) :
-        productSlug && client.getProductBySlug(productSlug, productFragment, productFragmentName)) || undefined;
+    const productShort = await (productId ? client.getProductById(productId, productFragment,
+        'ProductListFragment') : productSlug && client.getProductBySlug(productSlug, productFragment,
+            'ProductListFragment')) || undefined;
 
-    if (!product?.categories?.length) return;
-    const categories = product.categories;
-    let targetCategoryId: number | undefined | null = product?.mainCategoryId;
+    if (!productShort) return;
 
-    if (!targetCategoryId) {
-        const getNestedLevel = (category: TProductCategory, level = 0) => {
-            if (!category.parent?.id) return level;
-            for (const cat of categories) {
-                if (cat.id === category.parent.id) {
-                    level++;
-                    return getNestedLevel(cat, level);
-                }
+    // We'll fetch breadcrumbs starting from target category
+    let targetCategoryId: number | undefined | null;
+
+    if (productShort?.mainCategoryId) {
+        // if `mainCategoryId` is set, use it as target
+        targetCategoryId = productShort.mainCategoryId;
+
+    } else {
+        // Otherwise fetch all categories of a product and use most nested category as target
+        const productWithCategoriesFragment = gql`
+        fragment ProductWithCategoriesFragment on Product {
+            mainCategoryId
+            categories(pagedParams: {
+                pageSize: 30
+            }) {
+                id
+                name
+                nestedLevel
             }
-            return level;
-        }
+        }`;
+
+        const productWithCategories = await (productId ? client.getProductById(productId,
+            productWithCategoriesFragment, 'ProductWithCategoriesFragment') :
+            productSlug && client.getProductBySlug(productSlug, productWithCategoriesFragment,
+                'ProductWithCategoriesFragment')) || undefined;
 
         let mostNestedLevel = 0;
-        let mostNested = product.categories[0];
+        let mostNested = productWithCategories?.categories?.[0];
 
-        product.categories.forEach(cat => {
-            if (cat.parent?.id) {
-                const level = getNestedLevel(cat);
-                if (level > mostNestedLevel) {
-                    mostNestedLevel = level;
-                    mostNested = cat;
-                }
+        for (const category of (productWithCategories?.categories ?? [])) {
+            if (category.nestedLevel && category.nestedLevel > mostNestedLevel) {
+                mostNested = category;
+                mostNestedLevel = category.nestedLevel;
             }
-        });
+        }
+
         targetCategoryId = mostNested?.id;
+    }
+
+    if (!targetCategoryId) return;
+
+    if (!categoryFragmentName) categoryFragmentName = 'PCategory';
+    if (!categoryFragment) categoryFragment = gql`
+        fragment PCategory on ProductCategory {
+            name
+            slug
+            id
+        }`;
+
+    let nestedGraph = `
+    parent {
+        ...${categoryFragmentName}
+    }`;
+
+    // Fetch parents of target category. 8 max by default
+    for (let i = 0; i < (maxLevel || 8); i++) {
+        nestedGraph = `
+        parent {
+            ...${categoryFragmentName}
+            ${nestedGraph}
+        }`;
     }
 
     try {
         const parentCategories = await client.query({
             query: gql`
-                fragment PCategory on ProductCategory {
-                    name
-                    slug
-                    id
-                }
+                ${categoryFragment}
                 query Query($id: Int!) {
                   getProductCategoryById(id: $id) {
-                    ...PCategory
-                    parent {
-                      ...PCategory
-                      parent {
-                        ...PCategory
-                        parent {
-                          ...PCategory
-                        }
-                      }
-                    }
+                    ...${categoryFragmentName}
+                    ${nestedGraph}
                   }
                 }
             `,

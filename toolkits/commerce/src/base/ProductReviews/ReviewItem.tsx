@@ -12,6 +12,7 @@ export type ReviewItemProps = {
   parentProps: ProductReviewsProps;
 }
 
+/** @internal */
 export const ReviewItem = (props: ReviewItemProps) => {
   const data = props.data;
   const { classes, elements } = props.parentProps;

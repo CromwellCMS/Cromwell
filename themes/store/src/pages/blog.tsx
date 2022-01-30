@@ -1,6 +1,15 @@
-import { MuiPagination } from '@cromwell/toolkit-commerce';
-import { getBlockInstance, TGetStaticProps, TPagedList, TPagedParams, TPost, TPostFilter, TTag } from '@cromwell/core';
+import {
+  getBlockInstance,
+  removeUndefined,
+  TGetStaticProps,
+  TPagedList,
+  TPagedParams,
+  TPost,
+  TPostFilter,
+  TTag,
+} from '@cromwell/core';
 import { CContainer, CList, getGraphQLClient, getGraphQLErrorInfo, TCList } from '@cromwell/core-frontend';
+import { MuiPagination } from '@cromwell/toolkit-commerce';
 import { Autocomplete, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 
@@ -8,7 +17,6 @@ import Layout from '../components/layout/Layout';
 import layoutStyles from '../components/layout/Layout.module.scss';
 import { PostCard } from '../components/postCard/PostCard';
 import { handleGetFilteredPosts } from '../helpers/getPosts';
-import { removeUndefined } from '../helpers/removeUndefined';
 import commonStyles from '../styles/common.module.scss';
 import styles from '../styles/pages/Blog.module.scss';
 

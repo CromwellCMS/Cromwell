@@ -27,6 +27,9 @@ export type ProductGalleryProps = {
   blockProps?: TCromwellBlockProps;
 }
 
+/**
+ * Displays a gallery of product images. 
+ */
 export function ProductGallery(props: ProductGalleryProps) {
   const { product, noImagePlaceholder, gallerySettings, blockProps, classes } = props;
   const hasImages = !!product?.images?.length;

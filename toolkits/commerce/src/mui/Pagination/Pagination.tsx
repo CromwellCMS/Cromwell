@@ -3,6 +3,7 @@ import React from 'react';
 
 import styles from './Pagination.module.scss';
 
+/** @internal */
 export const Pagination = (props: {
   count: number;
   page: number;

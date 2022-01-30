@@ -18,11 +18,13 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import { notifier as baseNotifier } from '../../helpers/notifier';
 import { moduleState } from '../../helpers/state';
-import { getDefaultCheckoutFields } from './DefaultElements';
-import { CheckoutProps, DefaultCheckoutFields } from './Checkout';
+import { getDefaultCheckoutFields, DefaultCheckoutFields } from './DefaultElements';
+import { CheckoutProps } from './Checkout';
 
+/** @internal */
 export type PaymentStatus = 'cancelled' | 'success';
 
+/** @internal */
 export const usuCheckoutActions = (config: {
     checkoutProps: CheckoutProps;
     rootRef: React.MutableRefObject<HTMLDivElement | null>;

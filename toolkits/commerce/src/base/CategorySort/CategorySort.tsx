@@ -27,7 +27,7 @@ export type CategorySortProps = {
   }
 
   /**
-   * Provide another target CList id. Usually it is not needed, since this
+   * Provide another target CList id. Usually it is not needed, since this  
    * component can "detect" id of `CategoryList` on the same page. 
    */
   listId?: string;
@@ -39,9 +39,9 @@ export type CategorySortProps = {
 }
 
 /**
- * A component for picking sorting of products in `CategoryList`. 
+ * A component for picking method of sorting for products in `CategoryList`. 
  */
-export const CategorySort = (props: CategorySortProps) => {
+export function CategorySort(props: CategorySortProps) {
   const { text, overrideOptions } = props;
   const { Select = BaseSelect } = props?.elements ?? {};
 
