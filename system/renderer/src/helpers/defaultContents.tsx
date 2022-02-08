@@ -2,27 +2,27 @@ export const defaultGenericPageContent = `
 import React from 'react';
 
 const GenericPage = () => {
-    return (
-        <div></div>
-    );
+  return (
+    <div></div>
+  );
 }
 
 export default GenericPage;
 
 export const getStaticProps = async (context) => {
-    if (!context.pageConfig?.id || !context.pageConfig.route) return {
-        notFound: true,
-    }
-    return {
-        props: {}
-    }
+  if (!context.pageConfig?.id || !context.pageConfig.route) return {
+    notFound: true,
+  }
+  return {
+    props: {}
+  }
 }
 
 export const getStaticPaths = () => {
-    return {
-        paths: [],
-        fallback: 'blocking',
-    };
+  return {
+    paths: [],
+    fallback: 'blocking',
+  };
 }
 `;
 
@@ -56,3 +56,9 @@ export const tsConfigContent = `{
     "node_modules"
   ]
 }`;
+
+export const defaultCss = `
+import '@cromwell/core-frontend/dist/_index.css';
+import '@cromwell/renderer/build/editor-styles.css';
+import 'pure-react-carousel/dist/react-carousel.es.css';
+import 'react-image-lightbox/style.css';`

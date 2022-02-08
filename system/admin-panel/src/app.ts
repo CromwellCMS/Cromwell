@@ -36,12 +36,12 @@ import { store } from './redux/store';
     const [
         settings,
         userInfo,
-        themeConfig
     ] = await Promise.all([
         request(restClient?.getCmsSettings({ disableLog: true })),
         request(restClient?.getUserInfo({ disableLog: true })),
-        request(restClient?.getThemeConfig({ disableLog: true })),
     ]);
+
+    const themeConfig = settings?.themeName && await request(restClient?.getThemeConfig(settings?.themeName, { disableLog: true }));
 
     if (settings) {
         setStoreItem('cmsSettings', settings);

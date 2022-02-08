@@ -1,12 +1,14 @@
 .CategoryList {
-    position: relative;
+    box-sizing: border-box;
+
+    * {
+        box-sizing: border-box;
+    }
 }
 
 .productList {
     display: flex;
     flex-wrap: wrap;
-    padding: 20px;
-    padding-right: 0;
 }
 
 .productWrapper {
@@ -14,6 +16,7 @@
     margin: 0;
     margin-bottom: 15px;
     padding: 5px;
+    box-sizing: border-box;
 }
 
 @media (max-width: 985px) {
@@ -25,13 +28,5 @@
 @media (max-width: 725px) {
     .productWrapper {
         width: 50%;
-    }
-}
-
-@media screen and (max-width: 600px) {
-    .productList {
-        padding: 20px;
-        padding-right: 5px;
-        padding-left: 5px;
     }
 }

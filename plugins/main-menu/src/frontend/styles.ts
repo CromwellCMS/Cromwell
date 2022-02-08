@@ -45,9 +45,11 @@ export const useStyles = makeStyles(() =>
             width: '100%',
         },
         linkTitle: {
+            margin: 0,
             color: '#111'
         },
         sublinkTitle: {
+            margin: 0,
             color: '#111'
         }
     }),

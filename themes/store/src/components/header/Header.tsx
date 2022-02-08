@@ -19,7 +19,7 @@ import styles from './Header.module.scss';
 import { MobileHeader } from './MobileHeader';
 
 export const Header = () => {
-  const cmsConfig = getCmsSettings();
+  const cmsSettings = getCmsSettings();
   const cart = useCart();
   const userInfo = useUserInfo();
   const [userOptionsOpen, setUserOptionsOpen] = useState<boolean>(false);
@@ -133,7 +133,7 @@ export const Header = () => {
         <CContainer id="header_41" className={`${commonStyles.content} ${styles.mainPanelContent}`}>
           <CContainer id="header_36" className={styles.logo}>
             <Link href="/">
-              <img className={styles.logo} src={cmsConfig?.logo} alt="logo" />
+              <img className={styles.logo} src={cmsSettings?.logo} alt="logo" />
             </Link>
           </CContainer>
           <CContainer id="header_37" className={styles.search}>

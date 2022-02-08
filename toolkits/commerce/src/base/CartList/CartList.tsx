@@ -11,7 +11,7 @@ import clsx from 'clsx';
 export type CartListProps = {
   classes?: Partial<Record<'root' | 'list' | 'listItem' | 'cartHeader' | 'cartTotal' | 'cartTotalText'
     | 'productList' | 'imageBlock' | 'imageLink' | 'image' | 'captionBlock' | 'productName'
-    | 'priceBlock' | 'oldPrice' | 'price' | 'attributesBlock' | 'actionsBlock', string>>;
+    | 'priceBlock' | 'oldPrice' | 'price' | 'attributesBlock' | 'actionsBlock' | 'attributeValue', string>>;
   elements?: {
     Loadbox?: React.ComponentType;
     Button?: TBaseButton;

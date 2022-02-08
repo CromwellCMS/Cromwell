@@ -44,8 +44,12 @@ const wrapGetProps = (pageName: TDefaultPageName | string,
             pagesInfo?: TPageInfo[];
         } = {};
 
+        if (!process.env.THEME_NAME) {
+            throw new Error('Cromwell:getPropsWrapper: `THEME_NAME` was not found in process.env')
+        }
         try {
-            rendererData = (await getRestApiClient().getRendererRage(pageConfigName)) ?? {};
+            rendererData = (await getRestApiClient().getRendererRage(pageConfigName,
+                process.env.THEME_NAME)) ?? {};
         } catch (e) {
             console.error(e);
         }

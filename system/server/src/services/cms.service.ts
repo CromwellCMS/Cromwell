@@ -236,7 +236,8 @@ export class CmsService {
     public async buildSitemap() {
         const settings = await getCmsSettings();
         if (!settings?.url) throw new HttpException("CmsService::buildSitemap: could not find website's URL", HttpStatus.INTERNAL_SERVER_ERROR);
-        const configs = await getThemeConfigs();
+        if (!settings.themeName) throw new HttpException("CmsService::buildSitemap: could not find website's themeName", HttpStatus.INTERNAL_SERVER_ERROR);
+        const configs = await getThemeConfigs(settings.themeName);
         setStoreItem('defaultPages', configs.themeConfig?.defaultPages);
 
         const urls: string[] = [];
@@ -441,7 +442,7 @@ ${content}
     async placeOrder(input: CreateOrderDto): Promise<TOrder | undefined> {
         const orderTotal = await this.calcOrderTotal(input);
         const settings = await getCmsSettings();
-        const { themeConfig } = await getThemeConfigs();
+        const { themeConfig } = (settings?.themeName && await getThemeConfigs(settings?.themeName)) || {};
 
         // Clean up products
         if (orderTotal.cart?.length) {

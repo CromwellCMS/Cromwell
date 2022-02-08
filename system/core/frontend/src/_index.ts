@@ -40,6 +40,7 @@ export * from './api/CentralServerClient';
 export * from './helpers/hooks';
 export * from './helpers/forceUpdate';
 export * from './helpers/AuthClient';
+export * from './helpers/registerPlugin';
 export { getWebSocketClient } from './api/CWebSocketClient';
 export { getCStore, TCStoreOperationResult, TGetCStoreOptions } from './helpers/CStore';
 export { iconFromPath } from './helpers/iconFromPath';

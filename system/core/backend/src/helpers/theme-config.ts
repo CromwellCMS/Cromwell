@@ -1,7 +1,6 @@
-import { TCmsSettings, TPackageCromwellConfig, TThemeConfig, TThemeEntity } from '@cromwell/core';
+import { TPackageCromwellConfig, TThemeConfig, TThemeEntity } from '@cromwell/core';
 import { getCustomRepository } from 'typeorm';
 
-import { getCmsSettings } from './cms-settings';
 import { GenericTheme } from './generic-entities';
 import { getLogger } from './logger';
 
@@ -18,32 +17,31 @@ export const findTheme = (themeName: string): Promise<TThemeEntity | undefined> 
 export type TAllThemeConfigs = {
     themeConfig: TThemeConfig | null;
     userConfig: TThemeConfig | null;
-    cmsSettings: TCmsSettings | undefined;
     themeInfo: TPackageCromwellConfig | null;
 }
 
 /**
  * Get currently active Theme's configs from DB
+ * @param themeName specify Theme to get config from, otherwise it will return from an active theme
  */
-export const getThemeConfigs = async (): Promise<TAllThemeConfigs> => {
+export const getThemeConfigs = async (themeName: string): Promise<TAllThemeConfigs> => {
     let themeConfig: TThemeConfig | null = null,
         userConfig: TThemeConfig | null = null,
         themeInfo: TPackageCromwellConfig | null = null;
 
-    const cmsSettings = await getCmsSettings();
-    if (!cmsSettings?.themeName) {
+    if (!themeName) {
         throw new Error('getThemeConfigs: !cmsSettings?.themeName')
     }
 
     let theme;
     try {
-        theme = await findTheme(cmsSettings.themeName);
+        theme = await findTheme(themeName);
     } catch (error) {
         getLogger().error(error);
     }
 
     if (!theme) {
-        getLogger().error(`Current theme ${cmsSettings?.themeName} was not registered in DB`);
+        getLogger().error(`Current theme ${themeName} was not registered in DB`);
     }
 
     try {
@@ -66,7 +64,6 @@ export const getThemeConfigs = async (): Promise<TAllThemeConfigs> => {
     return {
         themeConfig,
         userConfig,
-        cmsSettings,
         themeInfo
     }
 }

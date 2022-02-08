@@ -25,12 +25,13 @@ import { MuiBreadcrumbs } from '@cromwell/toolkit-commerce';
 
 ## Customization
 
-All components follow the same rules for customization of design via props. There are 3 common props
+All components follow the same rules for customization via props. There are 3 common props
 (though not all components have all 3):
 
 ### 1. `classes`
-Object with your CSS classes: `{ [target_class]: 'your_class' }`
-You can use any styling solution to create your CSS classes and assign them to inner elements of a component:
+Object with custom CSS classes to assign on inner elements of a component:   
+`{ [target_class]: 'your_class' }`  
+You can use any styling solution to create your CSS classes:
 ```tsx
 <MuiBreadcrumbs classes={{ link: 'breadcrumbLink' }} />
 ```
@@ -70,8 +71,8 @@ setup data fetching, so they could be pre-rendered on the backend.
 
 ### `withGetProps`
 `withGetProps` is a wrapper for any of your Next.js data fetching methods such as: `getStaticProps`,
-`getServerSideProps`. `withGetProps` is available as a property of a component.  
-For example, for `Breadcrumbs`:
+`getServerSideProps`.   
+`withGetProps` can be available as a property on a component. For example, for `Breadcrumbs`:
 
 ```tsx title="product/[slug].tsx"
 import { MuiBreadcrumbs } from '@cromwell/toolkit-commerce';
@@ -116,10 +117,8 @@ const ProductPage: TCromwellPage = () => {
   const [breadcrumbsData, setBreadcrumbsData] = useState();
 
   useEffect(() => {
-    (async () => {
-      const data = await MuiBreadcrumbs.getData({ productId: 1 });
-      setBreadcrumbsData(data);
-    })();
+    MuiBreadcrumbs.getData({ productId: 1 }).then(data => 
+      setBreadcrumbsData(data));
   }, []);
 
   return (
@@ -144,11 +143,10 @@ import React from 'react';
 
 const CategoryPage: TCromwellPage = () => { 
   const categoryData = MuiCategoryList.useData();
-  const { category } = categoryData ?? {};
 
   return (
     <div>
-      <h1>{category?.name ?? ''}</h1>
+      <h1>{categoryData?.category?.name ?? ''}</h1>
       <MuiCategoryList />
     </div>
   )

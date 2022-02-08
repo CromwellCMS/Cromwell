@@ -1,20 +1,53 @@
-# Toolkit for building e-commerce websites with Cromwell CMS
+# Commerce toolkit
+ 
+> A toolkit for building e-commerce websites with Cromwell CMS
+
+### Links
 
 - Read about Cromwell CMS toolkits in general: [https://cromwellcms.com/docs/toolkits/intro](https://cromwellcms.com/docs/toolkits/intro).
 - [Live demo](https://demo-store.cromwellcms.com/category/2)
 - See examples of usage in [theme-store](https://github.com/CromwellCMS/Cromwell/tree/master/themes/store).
 
-## Use
+### Install
 
 ```sh
 npm i @cromwell/toolkit-commerce
 ```
 
+Some components of this package use `react-toastify`. If you need notifications add `ToastContainer` into your custom app:
+```tsx title="_app.tsx"
+import React from 'react';
+import { ToastContainer } from 'react-toastify';
+
+export default function App() {
+  return (
+    <div>
+      /* ... */
+      <ToastContainer />
+    </div>
+  );
+}
+```
+
+Add global CSS in `cromwell.config.js`:
+```js title="cromwell.config.js"
+module.exports = {
+  globalCss: [
+    '@cromwell/toolkit-commerce/dist/_index.css',
+    'react-toastify/dist/ReactToastify.css'
+  ],
+}
+```
+
+### Use
+
+Example of usage of a component for product category:  
+
 ```tsx title="category/[slug].tsx"
 import { MuiCategoryList } from '@cromwell/toolkit-commerce';
 import React from 'react';
 
-export default function CategoryPage() { 
+export default function CategoryPage() {
   return (
       <MuiCategoryList />
   )
@@ -23,7 +56,7 @@ export default function CategoryPage() {
 export const getStaticProps = MuiCategoryList.withGetProps();
 ```
 
-## List of components
+### List of components
 
 - [Breadcrumbs](https://cromwellcms.com/docs/toolkits/commerce#breadcrumbs)
 - [CartList](https://cromwellcms.com/docs/toolkits/commerce#cartlist)
@@ -40,3 +73,24 @@ export const getStaticProps = MuiCategoryList.withGetProps();
 - [ProductSearch](https://cromwellcms.com/docs/toolkits/commerce#productsearch)
 - [ViewedItems](https://cromwellcms.com/docs/toolkits/commerce#vieweditems)
 - [Wishlist](https://cromwellcms.com/docs/toolkits/commerce#wishlist)
+
+### HOCs
+
+- [Material UI](https://mui.com/)
+
+### Material UI HOCs
+
+- [MuiBreadcrumbs](https://cromwellcms.com/docs/toolkits/commerce#muibreadcrumbs)
+- [MuiCartList](https://cromwellcms.com/docs/toolkits/commerce#muicartlist)
+- [MuiCategoryList](https://cromwellcms.com/docs/toolkits/commerce#muicategorylist)
+- [MuiCategorySort](https://cromwellcms.com/docs/toolkits/commerce#muicategorysort)
+- [MuiCheckout](https://cromwellcms.com/docs/toolkits/commerce#muicheckout)
+- [MuiCurrencySwitch](https://cromwellcms.com/docs/toolkits/commerce#muicurrencyswitch)
+- [MuiProductActions](https://cromwellcms.com/docs/toolkits/commerce#muiproductactions)
+- [MuiProductAttributes](https://cromwellcms.com/docs/toolkits/commerce#muiproductattributes)
+- [MuiProductCard](https://cromwellcms.com/docs/toolkits/commerce#muiproductcard)
+- [MuiProductGallery](https://cromwellcms.com/docs/toolkits/commerce#muiproductgallery)
+- [MuiProductReviews](https://cromwellcms.com/docs/toolkits/commerce#muiproductreviews)
+- [MuiProductSearch](https://cromwellcms.com/docs/toolkits/commerce#muiproductsearch)
+- [MuiViewedItems](https://cromwellcms.com/docs/toolkits/commerce#muivieweditems)
+- [MuiWishlist](https://cromwellcms.com/docs/toolkits/commerce#muiwishlist)

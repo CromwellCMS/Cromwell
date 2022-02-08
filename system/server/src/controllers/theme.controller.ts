@@ -27,20 +27,23 @@ export class ThemeController {
 
     @Get('page')
     @ApiOperation({
-        description: `Returns merged page config for specified Page by pageRoute in query param. Output contains theme's original modifications overwritten by user's modifications.`,
-        parameters: [{ name: 'pageRoute', in: 'query', required: true }]
+        description: `Returns merged page config for specified Page by pageRoute in query param. 
+            Output contains theme's original modifications overwritten by user's modifications.`,
+        parameters: [
+            { name: 'themeName', in: 'query', required: true },
+        ],
     })
     @ApiResponse({
         status: 200,
         type: PageConfigDto
     })
-    async getPageConfig(@Query('pageRoute') pageRoute: string): Promise<TPageConfig | null> {
+    async getPageConfig(@Query('pageRoute') pageRoute: string, @Query('themeName') themeName: string): Promise<TPageConfig | null> {
         logger.log('ThemeController::getPageConfig');
 
         if (!pageRoute)
             throw new HttpException('Page route is not valid: ' + pageRoute, HttpStatus.NOT_ACCEPTABLE);
 
-        return this.themeService.getPageConfig(pageRoute)
+        return this.themeService.getPageConfig(pageRoute, themeName)
     }
 
 
@@ -48,7 +51,13 @@ export class ThemeController {
     @UseGuards(JwtAuthGuard)
     @Roles('administrator')
     @ApiOperation({
-        description: `Saves page config for specified Page by pageRoute in query param. Modifications (TCromwellBlockData) must contain only newly added mods or an empty array. It is not allowed to send all mods from /theme/page route because they contain mods from theme's config and we don't need to copy them into user's config that way.`,
+        description: `Saves page config for specified Page by pageRoute in query param. 
+            Modifications (TCromwellBlockData) must contain only newly added mods or an empty array. 
+            It is not allowed to send all mods from /theme/page route because they contain mods from 
+            theme's config and we don't need to copy them into user's config that way.`,
+        parameters: [
+            { name: 'themeName', in: 'query', required: true },
+        ],
     })
     @ApiResponse({
         status: 200,
@@ -56,10 +65,10 @@ export class ThemeController {
     })
     @ApiBody({ type: PageConfigDto })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
-    async savePageConfig(@Body() input: PageConfigDto): Promise<boolean> {
+    async savePageConfig(@Body() input: PageConfigDto, @Query('themeName') themeName: string): Promise<boolean> {
         logger.log('ThemeController::savePageConfig');
         if (input && typeof input === 'object') {
-            return await this.themeService.saveUserPageConfig(input);
+            return await this.themeService.saveUserPageConfig(input, themeName);
         }
         return false;
     }
@@ -70,19 +79,22 @@ export class ThemeController {
     @Roles('administrator')
     @ApiOperation({
         description: `Deletes virtual page in both configs`,
-        parameters: [{ name: 'pageRoute', in: 'query', required: true }]
+        parameters: [
+            { name: 'pageRoute', in: 'query', required: true },
+            { name: 'themeName', in: 'query', required: true },
+        ],
     })
     @ApiResponse({
         status: 200,
         type: PageConfigDto
     })
-    async deletePage(@Query('pageRoute') pageRoute: string): Promise<boolean | null> {
+    async deletePage(@Query('pageRoute') pageRoute: string, @Query('themeName') themeName: string): Promise<boolean | null> {
         logger.log('ThemeController::deletePage');
 
         if (!pageRoute)
             throw new HttpException('Page route is not valid: ' + pageRoute, HttpStatus.NOT_ACCEPTABLE);
 
-        return await this.themeService.deletePage(pageRoute);
+        return await this.themeService.deletePage(pageRoute, themeName);
     }
 
 
@@ -91,33 +103,39 @@ export class ThemeController {
     @Roles('administrator')
     @ApiOperation({
         description: `Deletes user config of a page`,
-        parameters: [{ name: 'pageRoute', in: 'query', required: true }]
+        parameters: [
+            { name: 'pageRoute', in: 'query', required: true },
+            { name: 'themeName', in: 'query', required: true },
+        ],
     })
     @ApiResponse({
         status: 200,
         type: PageConfigDto
     })
-    async resetPage(@Query('pageRoute') pageRoute: string): Promise<boolean | null> {
+    async resetPage(@Query('pageRoute') pageRoute: string, @Query('themeName') themeName: string): Promise<boolean | null> {
         logger.log('ThemeController::resetPage');
 
         if (!pageRoute)
             throw new HttpException('Page route is not valid: ' + pageRoute, HttpStatus.NOT_ACCEPTABLE);
 
-        return await this.themeService.resetPage(pageRoute);
+        return await this.themeService.resetPage(pageRoute, themeName);
     }
 
 
     @Get('palette')
     @ApiOperation({
         description: `Get palette of an active theme`,
+        parameters: [
+            { name: 'themeName', in: 'query', required: true },
+        ],
     })
     @ApiResponse({
         status: 200,
         type: ThemePaletteDto
     })
-    async getThemePalette(): Promise<ThemePaletteDto> {
+    async getThemePalette(@Query('themeName') themeName: string): Promise<ThemePaletteDto> {
         logger.log('ThemeController::getThemePalette');
-        return await this.themeService.getThemePalette();
+        return await this.themeService.getThemePalette(themeName);
     }
 
 
@@ -126,6 +144,9 @@ export class ThemeController {
     @Roles('administrator')
     @ApiOperation({
         description: `Update palette of an active theme`,
+        parameters: [
+            { name: 'themeName', in: 'query', required: true },
+        ],
     })
     @ApiResponse({
         status: 201,
@@ -133,10 +154,10 @@ export class ThemeController {
     })
     @ApiBody({ type: ThemePaletteDto })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
-    async saveThemePalette(@Body() input: ThemePaletteDto): Promise<boolean> {
+    async saveThemePalette(@Body() input: ThemePaletteDto, @Query('themeName') themeName: string): Promise<boolean> {
         logger.log('ThemeController::saveThemePalette');
         if (input && typeof input === 'object') {
-            return await this.themeService.saveThemePalette(input);
+            return await this.themeService.saveThemePalette(input, themeName);
         }
         return false;
     }
@@ -147,35 +168,41 @@ export class ThemeController {
     @Roles('administrator')
     @ApiOperation({
         description: `Returns plugins' configs at specified Page by pageRoute in query param. Output contains theme's original modifications overwritten by user's modifications.`,
-        parameters: [{ name: 'pageRoute', in: 'query', required: true }]
+        parameters: [
+            { name: 'pageRoute', in: 'query', required: true },
+            { name: 'themeName', in: 'query', required: true },
+        ],
     })
     @ApiResponse({
-        status: 200,
+    status: 200,
     })
-    async getPluginsAtPage(@Query('pageRoute') pageRoute: string) {
+    async getPluginsAtPage(@Query('pageRoute') pageRoute: string, @Query('themeName') themeName: string) {
         logger.log('ThemeController::getPluginsAtPage');
 
         if (!pageRoute)
             throw new HttpException('Page route is not valid: ' + pageRoute, HttpStatus.NOT_ACCEPTABLE);
 
-        return this.themeService.getPluginsAtPage(pageRoute)
+        return this.themeService.getPluginsAtPage(pageRoute, themeName)
     }
 
 
     @Get('plugin-names')
     @ApiOperation({
         description: `Returns array of plugin names at all pages.`,
+        parameters: [
+            { name: 'themeName', in: 'query', required: true },
+        ],
     })
     @ApiResponse({
         status: 200,
         type: [String]
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
-    async getAllPluginNames(): Promise<string[]> {
+    async getAllPluginNames(@Query('themeName') themeName: string): Promise<string[]> {
         logger.log('ThemeController::getAllPluginNames');
         const out: string[] = [];
 
-        const pages = await this.themeService.readAllPageConfigs();
+        const pages = await this.themeService.readAllPageConfigs(themeName);
         pages.forEach(p => {
             p.modifications.forEach(mod => {
                 if (mod.type === 'plugin' && mod.plugin && mod.plugin.pluginName && !out.includes(mod.plugin.pluginName)) {
@@ -190,46 +217,55 @@ export class ThemeController {
     @Get('pages/info')
     @ApiOperation({
         description: `Returns all pages' info without modifications.`,
+        parameters: [
+            { name: 'themeName', in: 'query', required: true },
+        ],
     })
     @ApiResponse({
         status: 200,
         type: PageInfoDto
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
-    async getPagesInfo(): Promise<TPageInfo[]> {
+    async getPagesInfo(@Query('themeName') themeName: string): Promise<TPageInfo[]> {
         logger.log('ThemeController::getPagesInfo');
-        return this.themeService.getPagesInfo();
+        return this.themeService.getPagesInfo(themeName);
     }
 
 
     @Get('pages/configs')
     @ApiOperation({
         description: `Returns all pages with merged modifications.`,
+        parameters: [
+            { name: 'themeName', in: 'query', required: true },
+        ],
     })
     @ApiResponse({
         status: 200,
         type: [PageConfigDto]
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
-    async getAllPageConfigs(): Promise<TPageConfig[]> {
+    async getAllPageConfigs(@Query('themeName') themeName: string): Promise<TPageConfig[]> {
 
         logger.log('ThemeController::getAllPageConfigs');
-        return this.themeService.readAllPageConfigs();
+        return this.themeService.readAllPageConfigs(themeName);
     }
 
 
     @Get('config')
     @ApiOperation({
         description: `Returns theme's module config from module.config.js.`,
+        parameters: [
+            { name: 'themeName', in: 'query', required: true },
+        ],
     })
     @ApiResponse({
         status: 200,
         type: ThemeConfigDto
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
-    async getThemeConfig(): Promise<TThemeConfig | null> {
+    async getThemeConfig(@Query('themeName') themeName: string): Promise<TThemeConfig | null> {
         logger.log('ThemeController::getThemeConfig');
-        const { themeConfig } = await getThemeConfigs();
+        const { themeConfig } = await getThemeConfigs(themeName);
         return new ThemeConfigDto().parse(themeConfig);
     }
 
@@ -237,15 +273,18 @@ export class ThemeController {
     @Get('info')
     @ApiOperation({
         description: `Returns theme's info from package.json.`,
+        parameters: [
+            { name: 'themeName', in: 'query', required: true },
+        ],
     })
     @ApiResponse({
         status: 200,
         type: ModuleInfoDto
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
-    async getThemeInfo(): Promise<TPackageCromwellConfig | null> {
+    async getThemeInfo(@Query('themeName') themeName: string): Promise<TPackageCromwellConfig | null> {
         logger.log('ThemeController::getThemeInfo');
-        const { themeInfo } = await getThemeConfigs();
+        const { themeInfo } = await getThemeConfigs(themeName);
 
         return themeInfo;
     }
@@ -254,14 +293,17 @@ export class ThemeController {
     @Get('custom-config')
     @ApiOperation({
         description: `Returns merged custom app configs.`,
+        parameters: [
+            { name: 'themeName', in: 'query', required: true },
+        ],
     })
     @ApiResponse({
         status: 200,
     })
-    async getCustomConfig(): Promise<Record<string, any>> {
+    async getCustomConfig(@Query('themeName') themeName: string): Promise<Record<string, any>> {
         logger.log('ThemeController::getCustomConfig');
         let out: Record<string, any> = {};
-        const { themeConfig, userConfig } = await getThemeConfigs();
+        const { themeConfig, userConfig } = await getThemeConfigs(themeName);
         out = Object.assign(out, themeConfig?.themeCustomConfig, userConfig?.themeCustomConfig);
         return out;
     }

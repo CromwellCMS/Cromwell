@@ -21,17 +21,22 @@ export class RendererController {
     @Roles('administrator')
     @ApiOperation({
         description: `Gather all data for Renderer service required to render a page`,
-        parameters: [{ name: 'pageRoute', in: 'query', required: true }]
+        parameters: [
+            { name: 'pageRoute', in: 'query', required: true },
+            { name: 'themeName', in: 'query', required: true },
+        ],
     })
     @ApiResponse({
         status: 200,
     })
-    async getRendererData(@Query('pageRoute') pageRoute: string) {
-        logger.log('RendererController::getRendererData');
-        if (!pageRoute)
-            throw new HttpException('Page route is not valid: ' + pageRoute, HttpStatus.NOT_ACCEPTABLE);
+    async getRendererData(@Query('pageRoute') pageRoute: string, @Query('themeName') themeName: string) {
+        logger.log('RendererController::getRendererData', pageRoute, themeName);
+        if (!pageRoute) throw new HttpException('Page route is not valid: ' + pageRoute,
+            HttpStatus.NOT_ACCEPTABLE);
+        if (!themeName) throw new HttpException('Theme name is not valid: ' + themeName,
+            HttpStatus.NOT_ACCEPTABLE);
 
-        return await this.rendererService.getRendererData(pageRoute);
+        return await this.rendererService.getRendererData(pageRoute, themeName);
     }
 
 

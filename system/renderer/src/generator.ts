@@ -13,6 +13,7 @@ import {
     getRendererTempDir,
     getThemeBuildDir,
 } from '@cromwell/core-backend/dist/helpers/paths';
+import { getRestApiClient } from '@cromwell/core-frontend/dist/api/CRestApiClient';
 import { interopDefaultContent } from '@cromwell/utils/build/shared';
 import chokidar from 'chokidar';
 import fs from 'fs-extra';
@@ -21,7 +22,7 @@ import normalizePath from 'normalize-path';
 import { dirname, join, resolve } from 'path';
 import symlinkDir from 'symlink-dir';
 
-import { defaultGenericPageContent, tsConfigContent } from './helpers/defaultContents';
+import { defaultGenericPageContent, defaultCss, tsConfigContent } from './helpers/defaultContents';
 import { jsOperators } from './helpers/helpers';
 
 const logger = getLogger();
@@ -201,6 +202,7 @@ const devGenerate = async (themeName: string, options: TOptions) => {
     if (!hasApp) {
         const pageContent = `
         ${await getGlobalCssImports()}
+        ${defaultCss}
         import React from 'react';
         import { withCromwellApp } from '@cromwell/renderer';
         import '../generated-imports';
@@ -269,6 +271,7 @@ const devGenerate = async (themeName: string, options: TOptions) => {
     if (options.watch) {
         startPagesWatcher(pagesGlobStr);
         startStaticWatcher(themeName);
+        startConfigWatcher(themeName);
     }
 }
 
@@ -312,11 +315,7 @@ export const devGeneratePageWrapper = async (pagePath: string) => {
 
         pageContent = `
             ${await getGlobalCssImports()}
-            import '@cromwell/core-frontend/dist/_index.css';
-            import '@cromwell/renderer/build/editor-styles.css';
-            import 'pure-react-carousel/dist/react-carousel.es.css';
-            import 'react-image-lightbox/style.css';
-
+            ${defaultCss}
             import App from '${resolvePagePath(pageName)}';
             import '../generated-imports';
             import { withCromwellApp } from '@cromwell/renderer';
@@ -434,11 +433,11 @@ const linkFiles = async (tempDir: string, themeName: string, options) => {
     }
 
     // Output .env file
-    let envContent = '';
+    let envContent = `THEME_NAME=${themeName}`;
     if (options.serverUrl) {
         envContent += `API_URL=${options.serverUrl}`;
-        await fs.outputFile(resolve(tempDir, '.env.local'), envContent);
     }
+    await fs.outputFile(resolve(tempDir, '.env.local'), envContent);
 }
 
 
@@ -497,4 +496,32 @@ const startStaticWatcher = async (moduleName: string) => {
     watcher
         .on('change', copyFile)
         .on('add', copyFile);
+}
+
+
+let configWatcherActive = false;
+const startConfigWatcher = async (packageName: string) => {
+    if (configWatcherActive) return;
+    configWatcherActive = true;
+
+    const rootDir = normalizePath(process.cwd());
+    const globStr = `${rootDir}/cromwell.config.js`;
+
+    const configChange = async () => {
+        // Re-install theme to update config in the DB
+        try {
+            await getRestApiClient().activateTheme(packageName);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    const watcher = chokidar.watch(globStr, {
+        persistent: true
+    });
+
+    watcher
+        .on('change', configChange)
+        .on('add', configChange)
+        .on('unlink', configChange);
 }

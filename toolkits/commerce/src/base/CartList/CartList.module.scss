@@ -1,8 +1,12 @@
 @import "../common.module.scss";
 
 .CartList {
-    position: relative;
+    box-sizing: border-box;
     height: 100%;
+
+    * {
+        box-sizing: border-box;
+    }
 }
 
 .productList {
@@ -23,15 +27,21 @@
 
 .cartTotalText {
     font-weight: 500;
+    margin: 0;
+    line-height: 1.5;
     margin-right: 10px;
 }
 
 .price {
+    margin: 0;
+    line-height: 1.5;
     font-weight: 400;
 }
 
 .oldPrice {
     text-decoration: line-through;
     opacity: 0.7;
+    margin: 0;
+    line-height: 1.5;
     margin-right: 10px;
 }

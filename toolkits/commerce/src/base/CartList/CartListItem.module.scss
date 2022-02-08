@@ -39,6 +39,8 @@
 
 .productName {
     font-size: 1em;
+    margin: 0;
+    line-height: 1.5;
 }
 
 .priceBlock {
@@ -50,12 +52,14 @@
 }
 
 .price {
+    margin: 0;
     font-weight: 400;
 }
 
 .oldPrice {
     text-decoration: line-through;
     opacity: 0.7;
+    margin: 0;
     margin-right: 10px;
 }
 
@@ -71,4 +75,8 @@
     display: flex;
     flex-wrap: wrap;
     padding: 0 0 0 5px;
+}
+
+.attributeValue {
+    margin: 0;
 }

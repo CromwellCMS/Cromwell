@@ -57,8 +57,8 @@ export function ProductSearch(props: ProductSearchProps) {
     const filterParams = {
       nameSearch: productName
     }
-
     const client = getGraphQLClient();
+    
     if (!isLoading) setIsLoading(true);
 
     const fragment = props.customFragment ?? gql`

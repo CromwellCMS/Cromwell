@@ -2,10 +2,15 @@
     display: flex;
     flex-direction: column;
     position: relative;
+    box-sizing: border-box;
     z-index: 3;
     width: 100%;
     max-width: 300px;
     min-width: 170px;
+
+    * {
+        box-sizing: border-box;
+    }
 }
 
 .imageBlock {
@@ -40,6 +45,8 @@
 .productName {
     font-size: 18px;
     text-align: center;
+    margin: 0;
+    line-height: 1.5;
 }
 
 .productNameContainer {
@@ -68,12 +75,16 @@
 }
 
 .price {
+    margin: 0;
+    line-height: 1.5;
     font-weight: 500;
 }
 
 .oldPrice {
     text-decoration: line-through;
     opacity: 0.7;
+    margin: 0;
+    line-height: 1.5;
     margin-right: 10px;
 }
 

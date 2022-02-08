@@ -1,5 +1,5 @@
-import { getStoreItem, resolvePageRoute, setStoreItem } from '@cromwell/core';
-import { getLogger, getThemeConfigs } from '@cromwell/core-backend';
+import { resolvePageRoute, setStoreItem } from '@cromwell/core';
+import { getCmsSettings, getLogger, getThemeConfigs } from '@cromwell/core-backend';
 import { Container } from 'typedi';
 
 import { RendererService } from '../services/renderer.service';
@@ -15,9 +15,11 @@ export const resetPageCache = async (pageName: string, routeOptions?: {
     id?: string;
 }) => {
     // Update/load defaultPages first 
-    const cmsSettings = getStoreItem('cmsSettings');
-    if (lastUsedTheme !== cmsSettings?.themeName) {
-        const defaultPages = (await getThemeConfigs())?.themeConfig?.defaultPages;
+    const cmsSettings = await getCmsSettings();
+
+    if (cmsSettings?.themeName && lastUsedTheme !== cmsSettings.themeName) {
+        lastUsedTheme = cmsSettings.themeName;
+        const defaultPages = (await getThemeConfigs(cmsSettings.themeName))?.themeConfig?.defaultPages;
         setStoreItem('defaultPages', defaultPages);
     }
 

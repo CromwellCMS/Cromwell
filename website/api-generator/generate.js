@@ -10,8 +10,14 @@ const generate = async () => {
     spawnSync(`cd ${normalizePath(resolve(__dirname, '../../'))} && npx typedoc --options website/api-generator/core/typedoc.json`,
         { shell: true, stdio: 'inherit' });
 
-    const apiDir = resolve(__dirname, '../docs/api');
-    await processFiles({ apiDir });
+    const coreConfig = fs.readJsonSync(resolve(__dirname, './core/typedoc.json'));
+    const coreDir = resolve(__dirname, './core', coreConfig.out);
+    await processFiles({ apiDir: coreDir });
+
+    fs.outputJSONSync(resolve(coreDir, './_category_.json'), {
+        "label": "API",
+        "position": 4
+    });
 
     // Toolkits
     spawnSync(`cd ${normalizePath(resolve(__dirname, '../../'))} && npx typedoc --options website/api-generator/toolkits/typedoc.json`,
@@ -27,14 +33,20 @@ const generate = async () => {
         commerce: '---\n' + 'title: Commerce\n' + 'sidebar_position: 2\n' + '---\n\n'
     }
 
+
     for (const toolkitName of toolkitNames) {
         const toolkitPath = resolve(toolkitsDir, './modules', `${toolkitName}.md`);
         if (fs.pathExistsSync(toolkitPath)) {
             const appendText = appendTexts[toolkitName];
+            let content = fs.readFileSync(toolkitPath);
             if (appendText) {
-                fs.outputFileSync(toolkitPath, appendText + fs.readFileSync(toolkitPath));
+                content = appendText + content
             }
-            fs.copyFileSync(toolkitPath, resolve(__dirname, `../docs/toolkits/${toolkitName}.md`))
+
+            content = content.replace(new RegExp(`\\# Module\\:.*\n`, 'g'), '');
+
+            fs.outputFileSync(toolkitPath, content);
+            fs.copyFileSync(toolkitPath, resolve(__dirname, `../docs/toolkits/${toolkitName}.md`));
         }
     }
 }

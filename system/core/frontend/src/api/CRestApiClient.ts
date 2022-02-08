@@ -635,16 +635,16 @@ export class CRestApiClient {
      * Get page config by page route of currently active Theme
      * @auth no
      */
-    public getPageConfig = async (pageRoute: string, options?: TRequestOptions): Promise<TPageConfig | undefined> => {
-        return this.get(`v1/theme/page?pageRoute=${pageRoute}`, options);
+    public getPageConfig = async (pageRoute: string, themeName: string, options?: TRequestOptions): Promise<TPageConfig | undefined> => {
+        return this.get(`v1/theme/page?pageRoute=${pageRoute}&themeName=${themeName}`, options);
     }
 
     /**
      * Update page config by page route of currently active Theme
      * @auth admin
      */
-    public savePageConfig = async (config: TPageConfig, options?: TRequestOptions): Promise<boolean> => {
-        const data = await this.post<boolean>(`v1/theme/page`, config, options);
+    public savePageConfig = async (config: TPageConfig, themeName: string, options?: TRequestOptions): Promise<boolean> => {
+        const data = await this.post<boolean>(`v1/theme/page?themeName=${themeName}`, config, options);
         return data ?? false;
     }
 
@@ -652,89 +652,89 @@ export class CRestApiClient {
      * Delete generic page of currently active Theme
      * @auth admin
      */
-    public deletePage = async (pageRoute: string, options?: TRequestOptions): Promise<boolean | undefined> => {
-        return this.delete(`v1/theme/page?pageRoute=${pageRoute}`, {}, options);
+    public deletePage = async (pageRoute: string, themeName: string, options?: TRequestOptions): Promise<boolean | undefined> => {
+        return this.delete(`v1/theme/page?pageRoute=${pageRoute}&themeName=${themeName}`, {}, options);
     }
 
     /**
      * Remove all user's modifications for specified page of currently active Theme
      * @auth admin
      */
-    public resetPage = async (pageRoute: string, options?: TRequestOptions): Promise<boolean | undefined> => {
-        return this.get(`v1/theme/page/reset?pageRoute=${pageRoute}`, options);
+    public resetPage = async (pageRoute: string, themeName: string, options?: TRequestOptions): Promise<boolean | undefined> => {
+        return this.get(`v1/theme/page/reset?pageRoute=${pageRoute}&themeName=${themeName}`, options);
     }
 
     /**
      * Get all used Plugins at specified page of currently active Theme
      * @auth admin
      */
-    public getPluginsAtPage = async (pageRoute: string, options?: TRequestOptions): Promise<{
+    public getPluginsAtPage = async (pageRoute: string, themeName: string, options?: TRequestOptions): Promise<{
         pluginName: string;
         version?: string;
         pluginInstances?: any;
     }[] | undefined> => {
-        return this.get(`v1/theme/plugins?pageRoute=${pageRoute}`, options);
+        return this.get(`v1/theme/plugins?pageRoute=${pageRoute}&themeName=${themeName}`, options);
     }
 
     /**
      * Get all used Plugins in currently active Theme
      * @auth no
      */
-    public getPluginNames = async (options?: TRequestOptions): Promise<string[] | undefined> => {
-        return this.get(`v1/theme/plugin-names`, options);
+    public getPluginNames = async (themeName: string, options?: TRequestOptions): Promise<string[] | undefined> => {
+        return this.get(`v1/theme/plugin-names?themeName=${themeName}`, options);
     }
 
     /**
      * Get all pages info of currently active Theme
      * @auth no
      */
-    public getPagesInfo = async (options?: TRequestOptions): Promise<TPageInfo[] | undefined> => {
-        return this.get(`v1/theme/pages/info`, options);
+    public getPagesInfo = async (themeName: string, options?: TRequestOptions): Promise<TPageInfo[] | undefined> => {
+        return this.get(`v1/theme/pages/info?themeName=${themeName}`, options);
     }
 
     /**
      * Get all page config of currently active Theme
      * @auth no
      */
-    public getPageConfigs = async (options?: TRequestOptions): Promise<TPageConfig[] | undefined> => {
-        return this.get(`v1/theme/pages/configs`, options);
+    public getPageConfigs = async (themeName: string, options?: TRequestOptions): Promise<TPageConfig[] | undefined> => {
+        return this.get(`v1/theme/pages/configs?themeName=${themeName}`, options);
     }
 
     /**
      * Get theme info of currently active Theme
      * @auth no
      */
-    public getThemeInfo = async (options?: TRequestOptions): Promise<TPackageCromwellConfig | undefined> => {
-        return this.get(`v1/theme/info`, options);
+    public getThemeInfo = async (themeName: string, options?: TRequestOptions): Promise<TPackageCromwellConfig | undefined> => {
+        return this.get(`v1/theme/info?themeName=${themeName}`, options);
     }
 
     /**
      * Get theme config of currently active Theme
      * @auth no
      */
-    public getThemeConfig = async (options?: TRequestOptions): Promise<TThemeConfig | undefined> => {
-        return this.get(`v1/theme/config`, options);
+    public getThemeConfig = async (themeName: string, options?: TRequestOptions): Promise<TThemeConfig | undefined> => {
+        return this.get(`v1/theme/config?themeName=${themeName}`, options);
     }
 
     /** @internal */
-    public getThemeCustomConfig = async (options?: TRequestOptions): Promise<Record<string, any> | undefined> => {
-        return this.get(`v1/theme/custom-config`, options);
+    public getThemeCustomConfig = async (themeName: string, options?: TRequestOptions): Promise<Record<string, any> | undefined> => {
+        return this.get(`v1/theme/custom-config?themeName=${themeName}`, options);
     }
 
     /**
      * Update page config by page route of currently active Theme
      * @auth admin
      */
-    public getThemePalette = async (options?: TRequestOptions): Promise<TPalette> => {
-        return this.get(`v1/theme/palette`, options);
+    public getThemePalette = async (themeName: string, options?: TRequestOptions): Promise<TPalette> => {
+        return this.get(`v1/theme/palette?themeName=${themeName}`, options);
     }
 
     /**
      * Update page config by page route of currently active Theme
      * @auth admin
      */
-    public saveThemePalette = async (palette: TPalette, options?: TRequestOptions): Promise<boolean> => {
-        const data = await this.post<boolean>(`v1/theme/palette`, palette, options);
+    public saveThemePalette = async (themeName: string, palette: TPalette, options?: TRequestOptions): Promise<boolean> => {
+        const data = await this.post<boolean>(`v1/theme/palette?themeName=${themeName}`, palette, options);
         return data ?? false;
     }
 
@@ -747,8 +747,8 @@ export class CRestApiClient {
      * @internal 
      * @auth admin
      */
-    public getRendererRage = async (pageRoute: string, options?: TRequestOptions): Promise<any> => {
-        return this.get(`v1/renderer/page?pageRoute=${pageRoute}`, options);
+    public getRendererRage = async (pageRoute: string, themeName: string, options?: TRequestOptions): Promise<any> => {
+        return this.get(`v1/renderer/page?pageRoute=${pageRoute}&themeName=${themeName}`, options);
     }
 
     /** 

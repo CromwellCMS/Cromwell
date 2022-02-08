@@ -31,6 +31,7 @@ const ProductCategory: TPageWithLayout = () => {
           useFallback
         />
         <MuiCategoryList
+          listProps={{ useShowMoreButton: true }}
           elements={{
             ProductCard: ProductCard,
           }}

@@ -10,6 +10,7 @@ We do not promote any payments service provider, and new providers will be added
 Right now we have integrations with the following services: 
 
 - [Stripe](https://stripe.com/)
+- [Paypal](https://developer.paypal.com/)
 
 
 ## Stripe

@@ -46,7 +46,7 @@ export type CategoryListProps = {
   /**
    * CList props to pass, such as `pageSize`, etc.
    */
-  listProps?: TCListProps<TProduct, any>;
+  listProps?: Partial<TCListProps<TProduct, any>>;
 }
 
 /**
@@ -104,7 +104,6 @@ export function CategoryList(props: CategoryListProps) {
             );
           }}
           usePagination
-          useShowMoreButton
           useQueryPagination
           disableCaching
           pageSize={20}

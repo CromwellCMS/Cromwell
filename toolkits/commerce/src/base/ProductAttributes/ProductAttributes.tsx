@@ -8,18 +8,9 @@ import { useStoreAttributes } from '../../helpers/useStoreAttributes';
 import styles from './ProductAttributes.module.scss';
 
 export type ProductAttributesProps = {
-  /** Product data. Required */
-  product?: TProduct | null;
-
-  /** All available attributes */
-  attributes?: TAttribute[];
-
-  /** 
-   * Called when user picks any attribute. If picked value of an attribute has assigned
-   * product variant, it applies modifications of variant to original "product" prop
-   * and calls this method. *Prefer to use `useProductVariants` hook instead.*
-   */
-  onChange?: (checkedAttributes: Record<string, string[]>, modifiedProduct: TProduct) => void;
+  classes?: Partial<Record<'root' | 'attribute' | 'headerWrapper' | 'valuesWrapper'
+    | 'attributeValueIcon' | 'attributeValueText' | 'productAttributesValidate' | 'attributeValueChecked'
+    | 'invalidAttributeValue', string>>;
 
   /** UI elements to replace default ones */
   elements?: {
@@ -40,6 +31,19 @@ export type ProductAttributesProps = {
     }>;
   }
 
+  /** Product data. Required */
+  product?: TProduct | null;
+
+  /** All available attributes */
+  attributes?: TAttribute[];
+
+  /** 
+   * Called when user picks any attribute. If picked value of an attribute has assigned
+   * product variant, it applies modifications of variant to original "product" prop
+   * and calls this method. *Prefer to use `useProductVariants` hook instead.*
+   */
+  onChange?: (checkedAttributes: Record<string, string[]>, modifiedProduct: TProduct) => void;
+
   /**
    * Show error if some required attributes weren't selected?
    */
@@ -53,16 +57,14 @@ export type ProductAttributesProps = {
  */
 export function ProductAttributes(props: ProductAttributesProps): JSX.Element {
   const moduleState = useModuleState();
-  const { product, onChange,
+  const { product, onChange, classes,
     canValidate = product?.id ? moduleState.products[product.id]?.canValidate : undefined } = props;
   const attributes = useStoreAttributes(props.attributes);
   const productAttributes = product?.attributes;
   const [checkedAttrs, setCheckedAttrs] = useState<Record<string, string[]>>({});
   const cstore = getCStore();
   const ValueComp = props.elements?.AttributeValue;
-  const TitleComp = props.elements?.AttributeTitle ?? (
-    (props) => <p>{props.attribute?.key}</p>
-  );
+  const TitleComp = props.elements?.AttributeTitle ?? DefaultTitleComp;
   const forceUpdate = useForceUpdate();
 
   useEffect(() => {
@@ -95,8 +97,9 @@ export function ProductAttributes(props: ProductAttributesProps): JSX.Element {
   };
 
   return (
-    <div className={clsx(styles.ProductAttributes,
-      !!canValidate && styles.productAttributesValidate)}
+    <div className={clsx(styles.ProductAttributes, classes?.root,
+      !!canValidate && styles.productAttributesValidate,
+      !!canValidate && classes?.productAttributesValidate)}
     >
       {productAttributes?.map(attr => {
         const checked: string[] | undefined = checkedAttrs[attr.key];
@@ -111,14 +114,14 @@ export function ProductAttributes(props: ProductAttributesProps): JSX.Element {
 
         if (origAttribute) {
           return (
-            <div key={attr.key} className={styles.attribute}>
-              <div className={styles.headerWrapper}>
+            <div key={attr.key} className={clsx(styles.attribute, classes?.attribute)}>
+              <div className={clsx(styles.headerWrapper, classes?.headerWrapper)}>
                 <TitleComp
                   attribute={origAttribute}
                   valid={isValid}
                 />
               </div>
-              <div className={styles.valuesWrapper}>
+              <div className={clsx(styles.valuesWrapper, classes?.valuesWrapper)}>
                 {attr.values.map((attrValue: TAttributeInstanceValue) => {
                   const value = attrValue.value
                   const origValue = origAttribute?.values?.find(v => v.value === value);
@@ -161,16 +164,20 @@ export function ProductAttributes(props: ProductAttributesProps): JSX.Element {
                     return (
                       <div key={value}
                         className={clsx(styles.attributeValue,
-                          isChecked && styles.attributeValue_checked,
-                          !isValid && styles.invalidAttributeValue)}
+                          isChecked && styles.attributeValueChecked,
+                          isChecked && classes?.attributeValueChecked,
+                          !isValid && styles.invalidAttributeValue,
+                          !isValid && classes?.invalidAttributeValue,
+                        )}
                         onClick={handleClick}
                       >
                         {origValue && origValue.icon && (
                           <div
                             style={{ backgroundImage: `url(${origValue.icon}` }}
-                            className={styles.attributeValueIcon}></div>
+                            className={clsx(styles.attributeValueIcon, classes?.attributeValueIcon)}></div>
                         )}
-                        <p className={styles.attributeValueText} style={{ textTransform: 'none' }}>{value}</p>
+                        <p className={clsx(styles.attributeValueText, classes?.attributeValueText)}
+                          style={{ textTransform: 'none' }}>{value}</p>
                       </div>
                     );
                   }
@@ -183,3 +190,6 @@ export function ProductAttributes(props: ProductAttributesProps): JSX.Element {
     </div>
   )
 }
+
+const DefaultTitleComp: Required<Required<ProductAttributesProps>['elements']>['AttributeTitle']
+  = (props) => <p style={{ margin: 0 }}>{props.attribute?.key}</p>

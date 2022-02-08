@@ -2,9 +2,14 @@
 
 .ViewedItems {
     position: relative;
+    box-sizing: border-box;
     height: 100%;
     overflow: auto;
     @include styledScrollBar;
+
+    * {
+        box-sizing: border-box;
+    }
 }
 
 .viewedItemsProduct {

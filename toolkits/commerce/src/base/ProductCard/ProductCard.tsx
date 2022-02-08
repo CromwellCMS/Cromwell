@@ -205,6 +205,7 @@ export function ProductCard(props: ProductCardProps) {
               loader={imageLoader}
               objectFit="contain"
               layout="fill"
+              unoptimized={!imageProps ? true : undefined}
               {...(imageProps ?? {})}
               className={clsx(classes?.image, imageProps?.className)}
               src={mainImage}

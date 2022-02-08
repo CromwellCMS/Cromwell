@@ -27,6 +27,8 @@ async function sidebarItemsGenerator({
                 continue;
             }
 
+            item.label[0] = item.label[0].toUpperCase();
+
             if (item.label.startsWith('backend.')) {
                 item.label = item.label.replace('backend.', '');
                 backendItems.push(item);
@@ -44,25 +46,28 @@ async function sidebarItemsGenerator({
     parseItems(sidebarItems);
 
     return sidebarItems.map(item => {
-        if (item.label === 'api') {
-            item.label = 'API'
+        if (item.label === 'api' || item.label === 'API') {
+            item.label = 'Core API'
             item.items = [
                 {
                     "type": "category",
                     "label": "Backend",
+                    collapsible: true,
                     collapsed: true,
                     items: [
                         {
                             "type": "doc",
-                            "label": "summary",
+                            "label": "Summary",
                             "id": "api/modules/backend",
                             items: backendItems,
+                            collapsible: true,
                             collapsed: true,
                         },
                         {
                             "type": "category",
-                            "label": "classes",
+                            "label": "Classes",
                             items: backendItems,
+                            collapsible: true,
                             collapsed: true,
                         }
                     ],
@@ -70,17 +75,19 @@ async function sidebarItemsGenerator({
                 {
                     "type": "category",
                     "label": "Common",
+                    collapsible: true,
                     collapsed: true,
                     items: [
                         {
                             "type": "doc",
-                            "label": "summary",
+                            "label": "Summary",
                             "id": "api/modules/common",
                         },
                         {
                             "type": "category",
-                            "label": "classes",
+                            "label": "Classes",
                             items: commonItems,
+                            collapsible: true,
                             collapsed: true,
                         }
                     ],
@@ -88,17 +95,19 @@ async function sidebarItemsGenerator({
                 {
                     "type": "category",
                     "label": "Frontend",
+                    collapsible: true,
                     collapsed: true,
                     items: [
                         {
                             "type": "doc",
-                            "label": "summary",
+                            "label": "Summary",
                             "id": "api/modules/frontend",
                         },
                         {
                             "type": "category",
-                            "label": "classes",
+                            "label": "Classes",
                             items: frontendItems,
+                            collapsible: true,
                             collapsed: true,
                         }
                     ],

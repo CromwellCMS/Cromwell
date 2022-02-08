@@ -1,5 +1,9 @@
 .Checkout {
-    position: relative;
+    box-sizing: border-box;
+
+    * {
+        box-sizing: border-box;
+    }
 }
 
 .blockTitle {
@@ -24,30 +28,41 @@
 }
 
 .detailsRowName {
+    margin: 0;
+    line-height: 1.5;
     font-size: 1em;
 }
 
 .detailsRowValue {
+    margin: 0;
+    line-height: 1.5;
     font-size: 1em;
     font-weight: 500;
 }
 
 .withoutDiscountText {
+    margin: 0;
+    line-height: 1.5;
     color: #999;
 }
 
 .withoutDiscountValue {
+    margin: 0;
+    line-height: 1.5;
     color: #999;
     text-decoration: line-through;
-
 }
 
 .totalText {
+    margin: 0;
+    line-height: 1.5;
     font-size: 24px;
     font-weight: 500;
 }
 
 .totalValue {
+    margin: 0;
+    line-height: 1.5;
     font-size: 24px;
     font-weight: 500;
 }
@@ -68,5 +83,7 @@
 }
 
 .placedOrderText {
+    margin: 0;
+    line-height: 1.5;
     font-size: 18px;
 }

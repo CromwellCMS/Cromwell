@@ -1,4 +1,4 @@
-import { ESharedComponentNames, isServer, saveSharedComponent, TCromwellPage } from '@cromwell/core';
+import { ESharedComponentNames, isServer, registerSharedComponent, TCromwellPage } from '@cromwell/core';
 import { getRestApiClient, useAppPropsContext } from '@cromwell/core-frontend';
 import { CacheProvider, EmotionCache } from '@emotion/react';
 import { ThemeProvider } from '@mui/material/styles';
@@ -22,8 +22,8 @@ if (isServer()) {
   (React as any).useLayoutEffect = React.useEffect;
 }
 
-saveSharedComponent(ESharedComponentNames.ProductCard, ProductCard);
-saveSharedComponent(ESharedComponentNames.PostCard, PostCard);
+registerSharedComponent(ESharedComponentNames.ProductCard, ProductCard);
+registerSharedComponent(ESharedComponentNames.PostCard, PostCard);
 
 export type TPageWithLayout<TProps = any> = TCromwellPage<TProps> & {
   getLayout?: (page: ReactElement) => JSX.Element;

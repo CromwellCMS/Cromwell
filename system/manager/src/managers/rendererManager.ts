@@ -110,7 +110,7 @@ export const startRenderer = async (command?: TRendererCommands, options?: {
                 logger.error(e);
             }
 
-            await pollPages(port);
+            await pollPages(port, themeName);
 
             if (success) logger.info(`Renderer has successfully started`);
             else logger.error(`Failed to start renderer`);
@@ -187,10 +187,10 @@ const isThemeBuilt = async (dir: string): Promise<boolean> => {
 }
 
 /** Poll all routes to make Next.js server generate and cache pages */
-const pollPages = async (port: string | number) => {
+const pollPages = async (port: string | number, themeName: string) => {
     let infos: TPageInfo[] | undefined;
     try {
-        infos = await getRestApiClient().getPagesInfo();
+        infos = await getRestApiClient().getPagesInfo(themeName);
     } catch (error) {
         logger.error(error);
     }

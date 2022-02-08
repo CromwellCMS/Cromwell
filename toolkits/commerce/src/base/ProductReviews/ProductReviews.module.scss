@@ -1,5 +1,10 @@
 .ProductReviews {
   position: relative;
+  box-sizing: border-box;
+
+  * {
+    box-sizing: border-box;
+  }
 }
 
 .reviewsTitle {

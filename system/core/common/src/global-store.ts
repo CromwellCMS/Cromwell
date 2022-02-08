@@ -100,7 +100,7 @@ export const getSharedComponent = <K extends keyof TSharedComponents>(componentN
     return components ? components[componentName] : undefined;
 }
 
-export const saveSharedComponent = <K extends keyof TSharedComponents>(componentName: K,
+export const registerSharedComponent = <K extends keyof TSharedComponents>(componentName: K,
     component: TSharedComponents[K]): void => {
     let components = getStore().components;
     if (!components) {

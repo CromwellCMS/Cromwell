@@ -63,7 +63,7 @@ const MainMenu = (props: TFrontendPluginProps<TMainMenuSettings, TInstanceSettin
                     // width: i.sublinkCols ? `${100 / i.sublinkCols}px` : '100%'
                   }}
                   key={subIndex}
-                ><Link href={sub.href + ''}>
+                ><Link href={sub.href + ''} style={{ textDecoration: 'none' }}>
                     <p className={classes.sublinkTitle}>{sub?.title ?? ''}</p>
                   </Link>
                 </MenuItem>
@@ -121,7 +121,7 @@ const MainMenu = (props: TFrontendPluginProps<TMainMenuSettings, TInstanceSettin
           </MenuItem>
         )
         if (i.href) {
-          return <Link href={i.href} key={index}>{menuItem}</Link>
+          return <Link href={i.href} key={index} style={{ textDecoration: 'none' }}>{menuItem}</Link>
         }
         return menuItem;
       })}

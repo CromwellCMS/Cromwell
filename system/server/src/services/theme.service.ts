@@ -95,15 +95,12 @@ export class ThemeService {
     * @param cmsConfig 
     * @param cb 
     */
-    public async saveThemeUserConfig(themeConfig: TThemeConfig): Promise<boolean> {
-        const cmsSettings = await getCmsSettings();
-        if (cmsSettings?.themeName) {
-            const theme = await this.findOne(cmsSettings.themeName)
-            if (theme) {
-                theme.settings = JSON.stringify(themeConfig, null, 4);
-                await this.saveEntity(theme);
-                return true;
-            }
+    public async saveThemeUserConfig(themeConfig: TThemeConfig, themeName: string): Promise<boolean> {
+        const theme = await this.findOne(themeName)
+        if (theme) {
+            theme.settings = JSON.stringify(themeConfig, null, 4);
+            await this.saveEntity(theme);
+            return true;
         }
         return false;
     }
@@ -113,15 +110,12 @@ export class ThemeService {
     * @param cmsConfig 
     * @param cb 
     */
-    public async saveThemeOriginalConfig(themeConfig: TThemeConfig): Promise<boolean> {
-        const cmsSettings = await getCmsSettings();
-        if (cmsSettings?.themeName) {
-            const theme = await this.findOne(cmsSettings.themeName)
-            if (theme) {
-                theme.defaultSettings = JSON.stringify(themeConfig, null, 4);
-                await this.saveEntity(theme);
-                return true;
-            }
+    public async saveThemeOriginalConfig(themeConfig: TThemeConfig, themeName: string): Promise<boolean> {
+        const theme = await this.findOne(themeName)
+        if (theme) {
+            theme.defaultSettings = JSON.stringify(themeConfig, null, 4);
+            await this.saveEntity(theme);
+            return true;
         }
         return false;
     }
@@ -188,9 +182,10 @@ export class ThemeService {
      * @param pageRoute original route of the page in theme dir
      * @param cb callback to return modifications
      */
-    public async getPageConfig(pageRoute: string, allConfigs?: TAllThemeConfigs): Promise<TPageConfig> {
-        if (!allConfigs) allConfigs = await getThemeConfigs();
+    public async getPageConfig(pageRoute: string, themeName: string, allConfigs?: TAllThemeConfigs): Promise<TPageConfig> {
+        if (!allConfigs) allConfigs = await getThemeConfigs(themeName);
         const { themeConfig, userConfig } = allConfigs;
+
         // Read user's page config 
         const userPageConfig: TPageConfig | undefined = this.getPageConfigFromThemeConfig(userConfig, pageRoute);
 
@@ -223,7 +218,7 @@ export class ThemeService {
      * 
      * @param userConfig Page config with modifications to APPLY.
      */
-    public async saveUserPageConfig(userPageConfig: TPageConfig): Promise<boolean> {
+    public async saveUserPageConfig(userPageConfig: TPageConfig, themeName: string): Promise<boolean> {
         if (!userPageConfig) {
             logger.error('Server::saveUserPageConfig: Invalid userPageConfig')
             return false;
@@ -241,7 +236,7 @@ export class ThemeService {
             throw new HttpException("Invalid page config, no modifications", HttpStatus.NOT_ACCEPTABLE);
         }
 
-        const config = await getThemeConfigs();
+        const config = await getThemeConfigs(themeName);
         let userConfig = config.userConfig;
         const themeConfig = config.themeConfig;
 
@@ -252,8 +247,6 @@ export class ThemeService {
                 throw new HttpException("Page with this route already exists", HttpStatus.NOT_ACCEPTABLE);
             }
         })
-
-        const cmsSettings = config.cmsSettings;
 
         // If userConfig is null, then theme is probably new and user has never saved mods. Create a new userConfig
         if (!userConfig) {
@@ -323,43 +316,39 @@ export class ThemeService {
         }
 
         // Save config
-        if (cmsSettings) {
-            const success = await this.saveThemeUserConfig(userConfig);
+        const success = await this.saveThemeUserConfig(userConfig, themeName);
 
-            // Reset Next.js cached pages
-            if (success) resetAllPagesCache();
-            return success;
-        }
-
-        return false;
+        // Reset Next.js cached pages
+        if (success) resetAllPagesCache();
+        return success;
     }
 
 
-    public async getThemePalette(): Promise<TPalette> {
-        const configs = await getThemeConfigs();
+    public async getThemePalette(themeName: string): Promise<TPalette> {
+        const configs = await getThemeConfigs(themeName);
         return Object.assign({}, configs.themeConfig?.palette,
             configs.userConfig?.palette);
     }
 
-    public async saveThemePalette(palette: TPalette) {
+    public async saveThemePalette(palette: TPalette, themeName: string) {
         if (!palette) {
             logger.error('Server::saveThemePalette: Invalid palette')
             return false;
         }
 
-        const userConfig = (await getThemeConfigs()).userConfig ?? {};
+        const userConfig = (await getThemeConfigs(themeName)).userConfig ?? {};
         if (!userConfig.palette) userConfig.palette = {};
         userConfig.palette = Object.assign({}, userConfig.palette, palette);
-        return await this.saveThemeUserConfig(userConfig);
+        return await this.saveThemeUserConfig(userConfig, themeName);
     }
 
     /**
      * Asynchronously reads theme's and user's configs and merge all pages info with modifications 
      * @param cb cb to return pages info
      */
-    public async readAllPageConfigs(allConfigs?: TAllThemeConfigs): Promise<TPageConfig[]> {
+    public async readAllPageConfigs(themeName: string, allConfigs?: TAllThemeConfigs): Promise<TPageConfig[]> {
         logger.log('ThemeController::readAllPageConfigs');
-        if (!allConfigs) allConfigs = await getThemeConfigs();
+        if (!allConfigs) allConfigs = await getThemeConfigs(themeName);
         const { themeConfig, userConfig } = allConfigs;
 
         let pages: TPageConfig[] = [];
@@ -390,10 +379,10 @@ export class ThemeService {
         return pages;
     }
 
-    public async getPagesInfo(allConfigs?: TAllThemeConfigs): Promise<TPageInfo[]> {
+    public async getPagesInfo(themeName: string, allConfigs?: TAllThemeConfigs): Promise<TPageInfo[]> {
         const out: TPageInfo[] = [];
 
-        const pages = await this.readAllPageConfigs(allConfigs);
+        const pages = await this.readAllPageConfigs(themeName, allConfigs);
 
         pages.forEach(p => {
             const info: TPageInfo = {
@@ -409,9 +398,9 @@ export class ThemeService {
         return out;
     }
 
-    public async deletePage(pageRoute: string): Promise<boolean> {
+    public async deletePage(pageRoute: string, themeName: string): Promise<boolean> {
         let page: TPageConfig | null = null;
-        page = await this.getPageConfig(pageRoute);
+        page = await this.getPageConfig(pageRoute, themeName);
 
         if (!page)
             throw new HttpException("Page was not found by pageRoute", HttpStatus.NOT_ACCEPTABLE);
@@ -419,14 +408,14 @@ export class ThemeService {
         if (!page.isVirtual)
             throw new HttpException("Page cannot be deleted", HttpStatus.NOT_ACCEPTABLE);
 
-        const configs = await getThemeConfigs();
+        const configs = await getThemeConfigs(themeName);
 
         if (configs.themeConfig?.pages) {
             configs.themeConfig.pages = configs.themeConfig.pages.filter(p => {
                 if (p.isVirtual && p.route === page?.route && p.id === page?.id) return false;
                 return true;
             });
-            await this.saveThemeOriginalConfig(configs.themeConfig);
+            await this.saveThemeOriginalConfig(configs.themeConfig, themeName);
         }
 
         if (configs.userConfig?.pages) {
@@ -434,19 +423,19 @@ export class ThemeService {
                 if (p.isVirtual && p.route === page?.route && p.id === page?.id) return false;
                 return true;
             });
-            await this.saveThemeUserConfig(configs.userConfig);
+            await this.saveThemeUserConfig(configs.userConfig, themeName);
         }
         return true;
     }
 
-    public async resetPage(pageRoute: string): Promise<boolean> {
+    public async resetPage(pageRoute: string, themeName: string): Promise<boolean> {
         let page: TPageConfig | null = null;
-        page = await this.getPageConfig(pageRoute);
+        page = await this.getPageConfig(pageRoute, themeName);
 
         if (!page)
             throw new HttpException("Page was not found by pageRoute", HttpStatus.NOT_ACCEPTABLE);
 
-        const configs = await getThemeConfigs();
+        const configs = await getThemeConfigs(themeName);
 
         if (configs.userConfig?.pages) {
             configs.userConfig.pages = configs.userConfig.pages.map(userPage => {
@@ -455,7 +444,7 @@ export class ThemeService {
                 }
                 return userPage;
             })
-            await this.saveThemeUserConfig(configs.userConfig);
+            await this.saveThemeUserConfig(configs.userConfig, themeName);
         }
 
         // Reset Next.js cached pages
@@ -464,7 +453,7 @@ export class ThemeService {
         return true;
     }
 
-    public async getPluginsAtPage(pageRoute: string, pageConfig?: TPageConfig) {
+    public async getPluginsAtPage(pageRoute: string, themeName: string, pageConfig?: TPageConfig) {
         const out: Record<string, {
             pluginName: string;
             version?: string | null;
@@ -473,7 +462,7 @@ export class ThemeService {
             globalSettings: any;
         }> = {};
 
-        if (!pageConfig) pageConfig = await this.getPageConfig(pageRoute);
+        if (!pageConfig) pageConfig = await this.getPageConfig(pageRoute, themeName);
 
         if (pageConfig && pageConfig.modifications && Array.isArray(pageConfig.modifications)) {
 

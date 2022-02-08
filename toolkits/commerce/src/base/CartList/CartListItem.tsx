@@ -64,7 +64,7 @@ export function CartListItem(props: CartListItemProps) {
           const values = item.pickedAttributes?.[key];
           if (!values?.length || !key) return null;
           const valuesStr = values.join(', ');
-          return <p key={key}>{key}: {valuesStr}</p>
+          return <p key={key} className={clsx(styles.attributeValue, classes?.attributeValue)}>{key}: {valuesStr}</p>
         })}
       </div>
       <div className={clsx(styles.actionsBlock, classes?.actionsBlock)}>

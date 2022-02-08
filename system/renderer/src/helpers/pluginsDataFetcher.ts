@@ -1,5 +1,5 @@
 import { TDefaultPageName, TRegisteredPluginInfo, TStaticPageContext, TStaticPagePluginContext } from '@cromwell/core';
-import { getModuleImporter, getRestApiClient } from '@cromwell/core-frontend';
+import { getModuleImporter, getRestApiClient, getRegisteredPluginsAtPage } from '@cromwell/core-frontend';
 
 import { fsRequire, getPluginCjsPath } from './initRenderer';
 
@@ -24,9 +24,9 @@ export const pluginsDataFetcher = async (pageName: TDefaultPageName | string, co
     }> = {};
 
     if (!pluginsData) return plugins;
-
     const configPlugins = Object.values(pluginsData);
-    for (const extra of (extraPlugins ?? [])) {
+
+    for (const extra of [...(extraPlugins ?? []), ...getRegisteredPluginsAtPage(pageName)]) {
         const extraName = typeof extra === 'object' ? extra.pluginName : extra;
 
         if (!configPlugins.find(p => {
@@ -50,7 +50,6 @@ export const pluginsDataFetcher = async (pageName: TDefaultPageName | string, co
                 }
                 configPlugins.push({
                     pluginName: extra,
-                    // It's better to pass `version` in `extraPlugins` to allow caching
                     version: entity?.version || null,
                     globalSettings: pluginSettings,
                 });

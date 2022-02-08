@@ -2,6 +2,7 @@
 
 .ProductSearch {
     position: relative;
+    box-sizing: border-box;
     width: 100%;
 }
 
@@ -43,6 +44,8 @@
 }
 
 .searchItemTitle {
+    margin: 0;
+    line-height: 1.5;
     margin-right: 15px;
 }
 
@@ -56,12 +59,16 @@
 }
 
 .searchItemPrice {
+    margin: 0;
+    line-height: 1.5;
     font-weight: 500;
 }
 
 .searchItemOldPrice {
     text-decoration: line-through;
     opacity: 0.7;
+    margin: 0;
+    line-height: 1.5;
     margin-right: 10px;
 }
 

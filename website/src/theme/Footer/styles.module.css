@@ -23,7 +23,8 @@
 .logo {
   width: 7rem;
   height: 7rem;
-  background-image: url('../../../static/img/logo_big2_1.png');
+  /* background-image: url('../../../static/img/logo_big2_1.png'); */
+  background-image: url('../../../static/img/logo_small_white.svg');
   background-position: center;
   background-size: contain;
   background-repeat: no-repeat;
