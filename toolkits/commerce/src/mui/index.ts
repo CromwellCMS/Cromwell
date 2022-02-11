@@ -69,8 +69,6 @@ export const MuiProductActions = withElements(BaseProductActions, {
 } as ProductActionsProps);
 
 
-// To avoid passing `cardProps` prop by ProductCard to IconButton which results 
-// in passing `cardProps` to a base DOM element and React showing warning.
 const CustomIconButton = (props) => React.createElement(IconButton, {
   onClick: props.onClick,
   'aria-label': props['aria-label'],

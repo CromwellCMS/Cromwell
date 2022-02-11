@@ -63,10 +63,12 @@ export class UserRepository extends BaseRepository<User> {
         await handleCustomMetaInput(user, userInput);
     }
 
-    async createUser(createUser: TCreateUser, id?: number | null): Promise<User> {
+    async createUser(createUser: TCreateUser, id?: number | null,
+        passwordType?: 'hash' | 'plain'): Promise<User> {
         logger.log('UserRepository::createUser');
         if (!createUser.password || !createUser.email) throw new Error('No credentials provided')
-        if (createUser.password.length > 50) throw new Error('Password length is too long');
+        if (passwordType !== 'hash' && createUser.password.length > 50)
+            throw new Error('Password length is too long');
 
         const user = new User();
         if (id) {
@@ -79,8 +81,12 @@ export class UserRepository extends BaseRepository<User> {
         }
 
         if (createUser.password) {
-            user.password = await this.hashPassword(createUser.password);
+            if (passwordType !== 'hash') {
+                createUser.password = await this.hashPassword(createUser.password);
+            }
+            user.password = createUser.password;
         }
+
         if (!user.role) user.role = 'customer';
 
         await this.handleUserInput(user, createUser, 'create');

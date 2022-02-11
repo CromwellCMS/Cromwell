@@ -4,6 +4,7 @@ import {
     TBasePageEntity,
     TCoupon,
     TCouponInput,
+    TCreateUser,
     TCustomEntityInput,
     TDBEntity,
     TOrderInput,
@@ -368,7 +369,7 @@ export class MigrationService {
                 .attributeRecordsToProductAttributeInstances(ent.attributeValues)),
             customMeta: this.stringifyValue(await entityMetaRepository.getEntityMetaByKeys(EDBEntity.Product, ent.id, metaKeys)),
             views: undefined,
-            variants: this.stringifyValue(ent.variants),
+            variants: undefined,
         })));
 
         this.fillSheet(workbook, ESheetNames.Product, productsSheet);
@@ -586,6 +587,7 @@ export class MigrationService {
             phone: ent.phone,
             address: ent.address,
             role: ent.role,
+            password: ent.password,
             customMeta: await entityMetaRepository.getEntityMetaByKeys(EDBEntity.User, ent.id, metaKeys),
             views: undefined,
         })));
@@ -1006,7 +1008,7 @@ export class MigrationService {
                 manageStock: this.parseBoolean(input.manageStock),
                 stockStatus: input.stockStatus as TStockStatus || null,
                 views: null,
-                variants: this.parseJson(input.variants),
+                variants: undefined as any,
             }),
             update: async (input) => input.id && getCustomRepository(ProductRepository).updateProduct(input.id, input),
             create: (input) => getCustomRepository(ProductRepository).createProduct(input, input.id),
@@ -1095,7 +1097,8 @@ export class MigrationService {
     }
 
     private async importUsers(options: TImportOptions) {
-        await this.importBase<TUpdateUser>({
+        const userRepo = getCustomRepository(UserRepository);
+        await this.importBase<TCreateUser>({
             ...options,
             sheetName: ESheetNames.User,
             EntityClass: User,
@@ -1108,13 +1111,15 @@ export class MigrationService {
                 phone: input.phone || null,
                 address: input.address || null,
                 role: input.role as any || null,
+                password: input.password as any || undefined,
             }),
-            update: async (input) => input.id && getCustomRepository(UserRepository).updateUser(input.id, input),
-            create: (input) => getCustomRepository(UserRepository).createUser({
+            update: async (input) => input.id && userRepo.updateUser(input.id, input),
+            create: async (input) => userRepo.createUser({
                 ...input,
-                password: cryptoRandomString({ length: 14, type: 'url-safe' }),
-            }, input.id),
-        })
+                password: input.password || (await userRepo.hashPassword(
+                    cryptoRandomString({ length: 14, type: 'url-safe' }))),
+            }, input.id, 'hash'),
+        });
     }
 
     private async importPlugins(options: TImportOptions) {

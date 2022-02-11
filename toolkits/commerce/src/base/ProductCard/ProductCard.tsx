@@ -23,16 +23,10 @@ export type ProductCardProps = {
 
   elements?: {
     OtherActions?: React.ComponentType<{ cardProps: ProductCardProps }>;
-    Rating?: React.ComponentType<TBaseRatingProps & { cardProps: ProductCardProps }>;
-    AddCartButton?: React.ComponentType<TBaseButtonProps & {
-      cardProps: ProductCardProps;
-    }>;
-    AddWishlistButton?: React.ComponentType<TBaseButtonProps & {
-      cardProps: ProductCardProps;
-    }>;
-    Tooltip?: React.ComponentType<TBaseTooltipProps & {
-      cardProps: ProductCardProps;
-    }>;
+    Rating?: React.ComponentType<TBaseRatingProps>;
+    AddCartButton?: React.ComponentType<TBaseButtonProps>;
+    AddWishlistButton?: React.ComponentType<TBaseButtonProps>;
+    Tooltip?: React.ComponentType<TBaseTooltipProps>;
   }
 
   text?: {
@@ -233,10 +227,9 @@ export function ProductCard(props: ProductCardProps) {
           <p className={styles.price}>{cstore.getPriceWithCurrency(product?.price)}</p>
         </div>
         <div className={clsx(styles.actions, classes?.actions)}>
-          <Tooltip cardProps={props}
+          <Tooltip
             title={inCart ? (text?.openCart ?? 'Open cart') : (text?.addToCart ?? 'Add to cart')}>
             <AddCartButton
-              cardProps={props}
               onClick={handleAddToCart}
               aria-label={text?.addToCart ?? "Add product to cart"}
               className={clsx(styles.actionBtn, classes?.action_button)}
@@ -244,10 +237,9 @@ export function ProductCard(props: ProductCardProps) {
               {inCart ? <ShoppingCartIcon /> : <AddShoppingCartIcon />}
             </AddCartButton>
           </Tooltip>
-          <Tooltip cardProps={props}
+          <Tooltip
             title={text?.addToWishlist ?? "Add to wishlist"}>
             <AddWishlistButton
-              cardProps={props}
               onClick={handleAddToWishlist}
               aria-label={text?.addToWishlist ?? "Add product to wishlist"}
               className={clsx(styles.actionBtn, classes?.action_button)}
@@ -260,7 +252,6 @@ export function ProductCard(props: ProductCardProps) {
         <div className={clsx(styles.ratingBlock, classes?.rating)}>
           <Rating name="read-only"
             value={product?.rating?.average}
-            cardProps={props}
             precision={0.5}
             readOnly
           />

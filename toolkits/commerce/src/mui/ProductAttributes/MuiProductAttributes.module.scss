@@ -23,18 +23,20 @@ body .attributeValueChecked {
     font-weight: 500;
 }
 
-.productAttributesValidate {
-    .invalidAttributeTitle {
+.attributeValueText {
+    margin: 0;
+}
+
+.invalidAttributeTitle {
+    color: #aa2e25;
+    font-weight: 500;
+}
+
+.invalidAttributeValue {
+    background-color: #ff000021;
+    border: 2px solid #d9443a;
+
+    .attributeValueText {
         color: #aa2e25;
-        font-weight: 500;
-    }
-
-    .invalidAttributeValue {
-        background-color: #ff000021;
-        border: 2px solid #d9443a;
-
-        .attributeValueText {
-            color: #aa2e25;
-        }
     }
 }

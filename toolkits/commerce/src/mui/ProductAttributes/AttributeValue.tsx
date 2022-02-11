@@ -10,14 +10,14 @@ type CompType = Required<Required<ProductAttributesProps>['elements']>['Attribut
 
 /** @internal */
 export const AttributeValue: CompType = (props) => {
-  const { checked, valid } = props;
+  const { checked, valid, canValidate } = props;
   return (
     <Button
       color="inherit"
       onClick={props.onClick}
       aria-label={`Attribute ${props?.attribute?.key} - value: ${props?.value}`}
       variant={checked ? 'contained' : 'outlined'}
-      className={clsx(styles.attributeValue, !valid && styles.invalidAttributeValue,
+      className={clsx(styles.attributeValue, canValidate && !valid && styles.invalidAttributeValue,
         checked && styles.attributeValueChecked)}
     >
       {props.icon && (

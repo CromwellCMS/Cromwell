@@ -45,9 +45,9 @@ export const launchServerManager = async (proxyPort?: number, init?: boolean) =>
 }
 
 const makeServer = async (init?: boolean): Promise<ServerInfo> => {
-    logger.info('Proxy manager: Launching new API server...');
     const info: ServerInfo = {};
     const env = loadEnv();
+    if (env.envMode === 'dev') logger.info('Proxy manager: Launching new API server...');
     const serverId = getRandStr(8);
     info.id = serverId;
 
@@ -88,7 +88,6 @@ const makeServer = async (init?: boolean): Promise<ServerInfo> => {
             if (msg.message === restartMessage) {
                 restartServer();
             }
-
             if (msg.message === serverMessages.onStartMessage) {
                 if (process.send) process.send(serverMessages.onStartMessage);
                 info.port = msg.port
@@ -116,7 +115,9 @@ const makeServer = async (init?: boolean): Promise<ServerInfo> => {
 }
 
 const closeServer = async (info: ServerInfo) => {
-    logger.info(`Proxy manager: killing API server at port: ${info.port}...`);
+    const env = loadEnv();
+    if (env.envMode === 'dev')
+        logger.info(`Proxy manager: killing API server at port: ${info.port}...`);
     info.childInst?.kill();
 }
 
@@ -126,7 +127,9 @@ const restartServer = async () => {
         isPendingRestart = true;
         return;
     }
-    logger.info('Proxy manager: restarting API server...');
+    const env = loadEnv();
+    if (env.envMode === 'dev')
+        logger.info('Proxy manager: restarting API server...');
 
     isRestarting = true;
 

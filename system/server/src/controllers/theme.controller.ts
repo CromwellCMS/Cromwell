@@ -43,6 +43,9 @@ export class ThemeController {
         if (!pageRoute)
             throw new HttpException('Page route is not valid: ' + pageRoute, HttpStatus.NOT_ACCEPTABLE);
 
+        if (!themeName)
+            throw new HttpException('You must provide `themeName` query parameter', HttpStatus.BAD_REQUEST);
+
         return this.themeService.getPageConfig(pageRoute, themeName)
     }
 
@@ -67,6 +70,9 @@ export class ThemeController {
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async savePageConfig(@Body() input: PageConfigDto, @Query('themeName') themeName: string): Promise<boolean> {
         logger.log('ThemeController::savePageConfig');
+        if (!themeName)
+            throw new HttpException('You must provide `themeName` query parameter', HttpStatus.BAD_REQUEST);
+
         if (input && typeof input === 'object') {
             return await this.themeService.saveUserPageConfig(input, themeName);
         }
@@ -174,13 +180,16 @@ export class ThemeController {
         ],
     })
     @ApiResponse({
-    status: 200,
+        status: 200,
     })
     async getPluginsAtPage(@Query('pageRoute') pageRoute: string, @Query('themeName') themeName: string) {
         logger.log('ThemeController::getPluginsAtPage');
 
         if (!pageRoute)
             throw new HttpException('Page route is not valid: ' + pageRoute, HttpStatus.NOT_ACCEPTABLE);
+
+        if (!themeName)
+            throw new HttpException('You must provide `themeName` query parameter', HttpStatus.BAD_REQUEST);
 
         return this.themeService.getPluginsAtPage(pageRoute, themeName)
     }
@@ -200,6 +209,9 @@ export class ThemeController {
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async getAllPluginNames(@Query('themeName') themeName: string): Promise<string[]> {
         logger.log('ThemeController::getAllPluginNames');
+        if (!themeName)
+            throw new HttpException('You must provide `themeName` query parameter', HttpStatus.BAD_REQUEST);
+
         const out: string[] = [];
 
         const pages = await this.themeService.readAllPageConfigs(themeName);
@@ -228,6 +240,9 @@ export class ThemeController {
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async getPagesInfo(@Query('themeName') themeName: string): Promise<TPageInfo[]> {
         logger.log('ThemeController::getPagesInfo');
+        if (!themeName)
+            throw new HttpException('You must provide `themeName` query parameter', HttpStatus.BAD_REQUEST);
+
         return this.themeService.getPagesInfo(themeName);
     }
 
@@ -245,8 +260,10 @@ export class ThemeController {
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async getAllPageConfigs(@Query('themeName') themeName: string): Promise<TPageConfig[]> {
-
         logger.log('ThemeController::getAllPageConfigs');
+        if (!themeName)
+            throw new HttpException('You must provide `themeName` query parameter', HttpStatus.BAD_REQUEST);
+
         return this.themeService.readAllPageConfigs(themeName);
     }
 
@@ -265,6 +282,9 @@ export class ThemeController {
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async getThemeConfig(@Query('themeName') themeName: string): Promise<TThemeConfig | null> {
         logger.log('ThemeController::getThemeConfig');
+        if (!themeName)
+            throw new HttpException('You must provide `themeName` query parameter', HttpStatus.BAD_REQUEST);
+
         const { themeConfig } = await getThemeConfigs(themeName);
         return new ThemeConfigDto().parse(themeConfig);
     }
@@ -284,8 +304,10 @@ export class ThemeController {
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async getThemeInfo(@Query('themeName') themeName: string): Promise<TPackageCromwellConfig | null> {
         logger.log('ThemeController::getThemeInfo');
-        const { themeInfo } = await getThemeConfigs(themeName);
+        if (!themeName)
+            throw new HttpException('You must provide `themeName` query parameter', HttpStatus.BAD_REQUEST);
 
+        const { themeInfo } = await getThemeConfigs(themeName);
         return themeInfo;
     }
 
@@ -302,6 +324,9 @@ export class ThemeController {
     })
     async getCustomConfig(@Query('themeName') themeName: string): Promise<Record<string, any>> {
         logger.log('ThemeController::getCustomConfig');
+        if (!themeName)
+            throw new HttpException('You must provide `themeName` query parameter', HttpStatus.BAD_REQUEST);
+
         let out: Record<string, any> = {};
         const { themeConfig, userConfig } = await getThemeConfigs(themeName);
         out = Object.assign(out, themeConfig?.themeCustomConfig, userConfig?.themeCustomConfig);
@@ -321,6 +346,10 @@ export class ThemeController {
         type: UpdateInfoDto,
     })
     async checkUpdate(@Query('themeName') themeName: string): Promise<UpdateInfoDto | boolean | undefined> {
+        logger.log('ThemeController::checkUpdate');
+        if (!themeName)
+            throw new HttpException('You must provide `themeName` query parameter', HttpStatus.BAD_REQUEST);
+
         const update = await this.themeService.checkThemeUpdate(themeName);
         if (update) return new UpdateInfoDto()?.parseVersion?.(update);
         return false;
@@ -339,6 +368,10 @@ export class ThemeController {
         type: Boolean,
     })
     async updateTheme(@Query('themeName') themeName: string): Promise<boolean | undefined> {
+        logger.log('ThemeController::updateTheme');
+        if (!themeName)
+            throw new HttpException('You must provide `themeName` query parameter', HttpStatus.BAD_REQUEST);
+
         return this.themeService.handleThemeUpdate(themeName);
     }
 
@@ -355,6 +388,10 @@ export class ThemeController {
         type: Boolean,
     })
     async installTheme(@Query('themeName') themeName: string): Promise<boolean | undefined> {
+        logger.log('ThemeController::installTheme');
+        if (!themeName)
+            throw new HttpException('You must provide `themeName` query parameter', HttpStatus.BAD_REQUEST);
+
         return this.themeService.handleInstallTheme(themeName);
     }
 
@@ -371,7 +408,10 @@ export class ThemeController {
         type: Boolean,
     })
     async deleteTheme(@Query('themeName') themeName: string): Promise<boolean | undefined> {
+        logger.log('ThemeController::deleteTheme');
+        if (!themeName)
+            throw new HttpException('You must provide `themeName` query parameter', HttpStatus.BAD_REQUEST);
+
         return this.themeService.handleDeleteTheme(themeName);
     }
-
 }

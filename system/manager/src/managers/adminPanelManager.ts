@@ -33,6 +33,7 @@ export const startAdminPanel = async (command?: TAdminPanelCommands, options?: {
                 env,
                 `--port=${port}`,
             ],
+            command: env,
             sync: command === 'build' ? true : false,
             watchName: command !== 'build' ? 'admin' : undefined,
             onVersionChange: async () => {

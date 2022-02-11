@@ -81,11 +81,11 @@ const start = async () => {
         compiler = webpack(webpackConfig);
 
         compiler.hooks.watchRun.tap('adminPanelStart', () => {
-            console.log(chalk.cyan('\r\nBegin admin panel compile at ' + new Date() + '\r\n'));
+            console.log(chalk.cyan('\r\nBegin admin panel compile at ' + new Date() + '\r\n'));// eslint-disable-line
         });
         compiler.hooks.done.tap('adminPanelDone', () => {
             setTimeout(() => {
-                console.log(chalk.cyan('\r\nEnd admin panel compile at ' + new Date() + '\r\n'));
+                console.log(chalk.cyan('\r\nEnd admin panel compile at ' + new Date() + '\r\n'));// eslint-disable-line
             }, 100)
         });
 
@@ -155,14 +155,13 @@ const start = async () => {
             console.error(err);
             if (process.send) process.send(adminPanelMessages.onStartErrorMessage);
         } else {
-            console.log(`Admin Panel server has started at http://localhost:${port}/admin/`);
             if (process.send) process.send(adminPanelMessages.onStartMessage);
         }
     });
 
     if (isDevelopment) {
         compiler.watch({}, (err, stats) => {
-            console.log(stats?.toString({
+            console.log(stats?.toString({ // eslint-disable-line
                 chunks: false,
                 colors: true
             }));

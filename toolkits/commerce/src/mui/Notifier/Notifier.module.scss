@@ -3,11 +3,10 @@
     align-items: center;
 }
 
-
 div.notifierAlert {
     width: 100%;
     font-size: 16px;
-    min-height: 50px;
+    min-height: 30px;
     display: flex;
     align-items: center;
     padding: 10px 15px;
@@ -21,7 +20,7 @@ div.notifierAlert {
     }
 }
 
-.muiToast {
+div.muiToast {
     background-color: transparent;
     padding: 0;
     min-height: 30px;

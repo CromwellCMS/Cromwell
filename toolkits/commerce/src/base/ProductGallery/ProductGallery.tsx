@@ -9,7 +9,7 @@ export type ProductGalleryProps = {
   classes?: Partial<Record<'root', string>>;
 
   /** Product data. Required */
-  product?: TProduct | null;
+  product: TProduct;
 
   /**
    * URL to a placeholder image to use if a product has no primary image set.

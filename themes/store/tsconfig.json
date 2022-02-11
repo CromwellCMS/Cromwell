@@ -21,7 +21,6 @@
     "strictPropertyInitialization": false,
     "resolveJsonModule": true,
     "noImplicitAny": false,
-    "importHelpers": true,
     "moduleResolution": "node",
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,

@@ -66,7 +66,7 @@ const getProps: TGetStaticProps<ProductProps> = async (context) => {
   const slug = context?.params?.slug ?? null;
   const client = getGraphQLClient();
 
-  const product = ((slug && typeof slug === 'string') &&
+  const product = (typeof slug === 'string' &&
     await client.getProductBySlug(slug).catch(error => {
       console.error('Product::getStaticProps', getGraphQLErrorInfo(error));
     })) || null;

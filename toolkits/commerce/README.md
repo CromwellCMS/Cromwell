@@ -89,7 +89,6 @@ export const getStaticProps = MuiCategoryList.withGetProps();
 - [MuiProductActions](https://cromwellcms.com/docs/toolkits/commerce#muiproductactions)
 - [MuiProductAttributes](https://cromwellcms.com/docs/toolkits/commerce#muiproductattributes)
 - [MuiProductCard](https://cromwellcms.com/docs/toolkits/commerce#muiproductcard)
-- [MuiProductGallery](https://cromwellcms.com/docs/toolkits/commerce#muiproductgallery)
 - [MuiProductReviews](https://cromwellcms.com/docs/toolkits/commerce#muiproductreviews)
 - [MuiProductSearch](https://cromwellcms.com/docs/toolkits/commerce#muiproductsearch)
 - [MuiViewedItems](https://cromwellcms.com/docs/toolkits/commerce#muivieweditems)

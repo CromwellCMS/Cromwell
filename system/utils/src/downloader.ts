@@ -70,13 +70,13 @@ export const downloader = async (options?: {
         if (!await fs.pathExists(depDir)) {
             readline.clearLine(process.stdout, -1);
             readline.clearLine(process.stdout, 0);
-            process.stdout.write(colors.cyan(`Cromwell:: Downloading frontend module: ${colors.brightCyan(depName)}`));
+            process.stdout.write(colors.cyan(`Downloading frontend module: ${colors.brightCyan(depName)}`));
             readline.cursorTo(process.stdout, 0);
 
             downloads++;
             const success = await downloadBundleZipped(depName, bundledModulesDir);
             if (!success) {
-                colors.cyan(`Cromwell:: Downloading frontend module, second attempt: ${colors.brightCyan(depName)}`)
+                colors.cyan(`Downloading frontend module, second attempt: ${colors.brightCyan(depName)}`)
                 const success2 = await downloadBundleZipped(depName, bundledModulesDir);
                 if (!success2) return;
             }
@@ -120,7 +120,7 @@ export const downloader = async (options?: {
         readline.clearLine(process.stdout, -1);
         readline.clearLine(process.stdout, 0);
         console.log('\n')
-        console.log(colors.cyan(`Cromwell:: Downloaded ${successfulDownloads}/${downloads} modules`));
+        console.log(colors.cyan(`Downloaded ${successfulDownloads}/${downloads} modules`));
     }
 }
 

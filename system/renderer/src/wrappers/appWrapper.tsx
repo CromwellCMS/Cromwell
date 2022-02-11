@@ -9,21 +9,20 @@ import {
   TPageStats,
 } from '@cromwell/core';
 import {
+  AppPropsContext,
   BlockStoreProvider,
   CContainer,
   cleanParseContext,
-  getModuleImporter,
   getAuthClient,
-  getParserTransform,
+  getModuleImporter,
   getRestApiClient,
-  AppPropsContext,
   pageRootContainerId,
+  parseHtml,
 } from '@cromwell/core-frontend';
 import { AppProps } from 'next/app';
 import { NextRouter } from 'next/router';
 import React, { useRef } from 'react';
 import { ReactNode, useEffect } from 'react';
-import ReactHtmlParser from 'react-html-parser';
 
 import { CrwDocumentContext, patchDocument } from '../helpers/document';
 import { useForceUpdate } from '../helpers/helpers';
@@ -62,8 +61,6 @@ export const withCromwellApp = (App: ((props: TAppProps) => JSX.Element | null))
 
     const Head = getModuleImporter()?.modules?.['next/head']?.default;
     const pageId = documentContext?.fullUrl ?? resolvedPageRoute as string;
-    const parserTransformHead = getParserTransform(pageId);
-    const parserTransformBody = getParserTransform(pageId, { executeScripts: true });
 
     const RootComp: React.ComponentType = getStoreItem('rendererComponents')?.root ?? DefaultRootComp;
 
@@ -105,7 +102,7 @@ export const withCromwellApp = (App: ((props: TAppProps) => JSX.Element | null))
     setStoreItem('forceUpdatePage', forceUpdatePage);
 
     let favicon = cmsSettings?.favicon;
-    if (favicon && favicon !== '') {
+    if (favicon) {
       if (!favicon.startsWith('http')) {
         if (!favicon.startsWith('/')) favicon = '/' + favicon;
         if (documentContext?.origin) {
@@ -181,13 +178,13 @@ export const withCromwellApp = (App: ((props: TAppProps) => JSX.Element | null))
                   </Head>
                   <CContainer id={pageRootContainerId} isConstant={true}>
                     <App {...appProps} Component={Page} />
-                    {cmsSettings?.footerHtml && ReactHtmlParser(cmsSettings.footerHtml, { transform: parserTransformBody })}
-                    {themeFooterHtml && ReactHtmlParser(themeFooterHtml, { transform: parserTransformBody })}
-                    {pageConfig?.footerHtml && ReactHtmlParser(pageConfig?.footerHtml, { transform: parserTransformBody })}
+                    {cmsSettings?.footerHtml && parseHtml(cmsSettings.footerHtml, { executeScripts: true })}
+                    {themeFooterHtml && parseHtml(themeFooterHtml, { executeScripts: true })}
+                    {pageConfig?.footerHtml && parseHtml(pageConfig.footerHtml, { executeScripts: true })}
                   </CContainer>
                   <Head>
-                    {themeHeadHtml && ReactHtmlParser(themeHeadHtml, { transform: parserTransformHead })}
-                    {cmsSettings?.headHtml && ReactHtmlParser(cmsSettings.headHtml, { transform: parserTransformHead })}
+                    {themeHeadHtml && parseHtml(themeHeadHtml)}
+                    {cmsSettings?.headHtml && parseHtml(cmsSettings.headHtml)}
                     {title && (
                       <>
                         <title>{title}</title>
@@ -201,11 +198,9 @@ export const withCromwellApp = (App: ((props: TAppProps) => JSX.Element | null))
                       </>
                     )}
                     {keywords && (
-                      <>
-                        <meta name="keywords" content={keywords.join(',')} />
-                      </>
+                      <meta name="keywords" content={keywords.join(',')} />
                     )}
-                    {pageConfig?.headHtml && ReactHtmlParser(pageConfig?.headHtml, { transform: parserTransformHead })}
+                    {pageConfig?.headHtml && parseHtml(pageConfig?.headHtml)}
                   </Head>
                 </RootComp >
               </AppPropsContext.Provider>

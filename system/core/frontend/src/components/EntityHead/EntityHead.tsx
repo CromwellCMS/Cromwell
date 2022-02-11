@@ -13,7 +13,7 @@ export function EntityHead({ entity, image, useFallback }: {
    * If `pageTitle` is not defined, try to lookup for other known properties
    * to use as `pageTitle`. For example, `name` in `Product` entity.
    */
-   useFallback?: boolean;
+  useFallback?: boolean;
 }) {
   const NextHead = getStore().nodeModules?.modules?.['next/head']?.default;
   if (!NextHead) return null;
@@ -31,7 +31,7 @@ export function EntityHead({ entity, image, useFallback }: {
   }
   return (
     <NextHead>
-      {entity?.pageTitle && entity.pageTitle !== '' && (
+      {entity?.pageTitle && (
         <>
           <title>{entity.pageTitle}</title>
           <meta property="og:title" content={entity.pageTitle} />
@@ -40,7 +40,7 @@ export function EntityHead({ entity, image, useFallback }: {
       {documentContext?.fullUrl && (
         <meta property="og:url" content={documentContext?.fullUrl} />
       )}
-      {entity?.pageDescription && entity.pageDescription !== '' && (
+      {entity?.pageDescription && (
         <>
           <meta name="description" content={entity.pageDescription} />
           <meta property="og:description" content={entity.pageDescription} />
@@ -49,7 +49,7 @@ export function EntityHead({ entity, image, useFallback }: {
       {image && documentContext?.origin && (
         <meta property="og:image" content={documentContext.origin + image} />
       )}
-      {keywords && keywords?.length && (
+      {keywords?.length && (
         <meta name="keywords" content={keywords.join(',')} />
       )}
     </NextHead>

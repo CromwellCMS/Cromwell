@@ -63,6 +63,7 @@ export const startRenderer = async (command?: TRendererCommands, options?: {
                 `--theme-name=${themeName}`,
                 `--port=${port}`,
             ],
+            command: rendererEnv,
             sync: command === 'build' ? true : false,
             watchName: !isBuild ? 'renderer' : undefined,
             onVersionChange: async () => {
@@ -112,7 +113,7 @@ export const startRenderer = async (command?: TRendererCommands, options?: {
 
             await pollPages(port, themeName);
 
-            if (success) logger.info(`Renderer has successfully started`);
+            if (success) logger.log(`Renderer has successfully started`);
             else logger.error(`Failed to start renderer`);
 
             startRendererAliveWatcher(command ?? 'prod', { port });
@@ -143,6 +144,7 @@ export const rendererRunBuild = async (themeName: string): Promise<boolean> => {
         path: rendererStartupPath,
         name: cacheKeys.rendererBuilder,
         args: [command, `--theme-name=${themeName}`],
+        command,
     });
 
     await new Promise(done => {
@@ -175,6 +177,7 @@ export const rendererStartWatchDev = async (themeName: string, port?: string) =>
         path: rendererStartupPath,
         name: cacheKeys.rendererBuilder,
         args: [command, `--theme-name=${themeName}`, port ? '--port=' + port : ''],
+        command: 'build',
     });
 }
 

@@ -1,13 +1,11 @@
 export const defaultGenericPageContent = `
 import React from 'react';
 
-const GenericPage = () => {
+export default function GenericPage() {
   return (
     <div></div>
   );
 }
-
-export default GenericPage;
 
 export const getStaticProps = async (context) => {
   if (!context.pageConfig?.id || !context.pageConfig.route) return {

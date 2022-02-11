@@ -24,7 +24,7 @@ export const PageSettings = (props: {
     return (
         <div className={styles.pageSettings}>
             <TextField label="Route" variant="outlined"
-                disabled={!pageConfig.isVirtual}
+                disabled={!pageConfig?.isVirtual}
                 value={pageConfig.route ?? ''}
                 className={styles.textField}
                 onChange={(e) => { handlePageSettingsChange('route', e.target.value) }}

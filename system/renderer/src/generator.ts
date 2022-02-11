@@ -10,6 +10,7 @@ import {
     getPublicDir,
     getPublicThemesDir,
     getRendererTempDevDir,
+    configFileName,
     getRendererTempDir,
     getThemeBuildDir,
 } from '@cromwell/core-backend/dist/helpers/paths';
@@ -21,6 +22,7 @@ import glob from 'glob';
 import normalizePath from 'normalize-path';
 import { dirname, join, resolve } from 'path';
 import symlinkDir from 'symlink-dir';
+import decache from 'decache';
 
 import { defaultGenericPageContent, defaultCss, tsConfigContent } from './helpers/defaultContents';
 import { jsOperators } from './helpers/helpers';
@@ -32,6 +34,10 @@ type TOptions = {
     targetThemeName?: string;
     watch?: boolean;
 }
+
+const pagesStore: Record<string, {
+    path: string;
+}> = {}
 
 export const generator = async (options: TOptions) => {
     const { scriptName, targetThemeName } = options;
@@ -196,24 +202,12 @@ const devGenerate = async (themeName: string, options: TOptions) => {
         if (pageName === '_app') {
             hasApp = true;
         }
+        pagesStore[pageName] = { path: pagePath }
         await devGeneratePageWrapper(pagePath);
     }
 
     if (!hasApp) {
-        const pageContent = `
-        ${await getGlobalCssImports()}
-        ${defaultCss}
-        import React from 'react';
-        import { withCromwellApp } from '@cromwell/renderer';
-        import '../generated-imports';
-
-        function App(props) {
-            return React.createElement(props.Component, props.pageProps);
-        }
-
-        export default withCromwellApp(App);
-        `;
-        await fs.outputFile(resolve(tempDir, 'pages', '_app.js'), pageContent);
+        generateDefaultApp();
     }
 
     const nextConfigPath = normalizePath(resolve(tempDir, 'next.config.js'));
@@ -275,7 +269,30 @@ const devGenerate = async (themeName: string, options: TOptions) => {
     }
 }
 
+const generateDefaultApp = async () => {
+    const tempDir = normalizePath(getRendererTempDevDir());
+    const pageContent = `
+    ${await getGlobalCssImports()}
+    ${defaultCss}
+    import React from 'react';
+    import { withCromwellApp } from '@cromwell/renderer';
+    import '../generated-imports';
+
+    function App(props) {
+        return React.createElement(props.Component, props.pageProps);
+    }
+
+    export default withCromwellApp(App);
+    `;
+    const appPath = resolve(tempDir, 'pages', '_app.js');
+    await fs.outputFile(appPath, pageContent);
+}
+
 const getGlobalCssImports = async () => {
+    try {
+        decache(resolve((await getNodeModuleDir(process.cwd()))!, configFileName));
+    } catch (error) { }
+
     const themeConfig = await getCmsModuleConfig(process.cwd());
     const tempDir = normalizePath(getRendererTempDevDir());
     let globalCssImports = '';
@@ -513,6 +530,11 @@ const startConfigWatcher = async (packageName: string) => {
             await getRestApiClient().activateTheme(packageName);
         } catch (error) {
             console.error(error);
+        }
+        if (pagesStore['_app']?.path) {
+            await devGeneratePageWrapper(pagesStore['_app']?.path);
+        } else {
+            await generateDefaultApp();
         }
     }
 

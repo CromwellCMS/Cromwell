@@ -42,6 +42,8 @@ export const PageListItem = (props: {
         setPreviewUrl(val);
     }
 
+    if (!page) return null;
+
     return (
         <div ref={changeUrlBtn} onClick={e => e.stopPropagation()}>
             <MenuItem

@@ -1,5 +1,6 @@
 import { getStoreItem, setStoreItem, TServiceVersions } from '@cromwell/core';
 import { readCMSConfig } from '@cromwell/core-backend/dist/helpers/cms-settings';
+import { cmsPackageName } from '@cromwell/core-backend/dist/helpers/constants';
 import { getLogger } from '@cromwell/core-backend/dist/helpers/logger';
 import {
     getCoreBackendDir,
@@ -10,13 +11,14 @@ import {
 import { extractServiceVersion } from '@cromwell/core-backend/dist/helpers/service-versions';
 import { getRestApiClient } from '@cromwell/core-frontend/dist/api/CRestApiClient';
 import { ChildProcess, fork, spawn } from 'child_process';
+import colorsdef from 'colors/safe';
 import fs from 'fs-extra';
 import isRunning from 'is-running';
+import logSymbols from 'log-symbols';
 import nodeCleanup from 'node-cleanup';
 import { resolve } from 'path';
 import tcpPortUsed from 'tcp-port-used';
 import treeKill from 'tree-kill';
-import colorsdef from 'colors/safe';
 
 import managerConfig from '../config';
 import { serviceNames, TScriptName, TServiceNames } from '../constants';
@@ -66,26 +68,18 @@ export const closeServiceManager = async (name: string): Promise<boolean> => {
     return closeService(`${name}_manager`);
 }
 
-export const startService = async ({ path, name, args, dir, sync, watchName, onVersionChange }: {
+export const startService = async ({ path, name, args, dir, sync, command, watchName, onVersionChange }: {
     path: string;
     name: string;
     args?: string[];
     dir?: string;
     sync?: boolean;
+    command?: string;
     watchName?: keyof TServiceVersions;
     onVersionChange?: () => Promise<void>;
 }): Promise<ChildProcess> => {
     if (! await fs.pathExists(path)) {
         logger.error('Base manager::startService: could not find startup script at: ', path);
-        throw new Error();
-    }
-
-    if (name !== cacheKeys.rendererBuilder && await isServiceRunning(name)) {
-        let serviceName: TServiceNames | undefined;
-        if (name === cacheKeys.adminPanel) serviceName = 'adminPanel';
-        if (name === cacheKeys.serverMain) serviceName = 'server';
-        if (name === cacheKeys.renderer) serviceName = 'renderer';
-        logger.error(`Base manager:: Service ${serviceName ?? name} is already running. You may want to run stop command: npx cromwell stop --sv ${serviceName}`);
         throw new Error();
     }
 
@@ -96,7 +90,9 @@ export const startService = async ({ path, name, args, dir, sync, watchName, onV
     await saveProcessPid(name, process.pid, child.pid);
     serviceProcesses[name] = child;
 
-    child?.stdout?.on('data', buff => console.log(buff?.toString?.() ?? buff)); // eslint-disable-line
+    if (getStoreItem('environment')?.mode === 'dev' || command === 'build')
+        child?.stdout?.on('data', buff => console.log(buff?.toString?.() ?? buff)); // eslint-disable-line
+
     child?.stderr?.on('data', buff => console.error(buff?.toString?.() ?? buff));
 
     if (watchName && onVersionChange) {
@@ -123,6 +119,7 @@ type TStartOptions = {
     serviceName?: TServiceNames;
     init?: boolean;
     startAll?: boolean;
+    noLogInfo?: boolean;
 }
 
 export const startSystem = async (options: TStartOptions) => {
@@ -130,11 +127,20 @@ export const startSystem = async (options: TStartOptions) => {
     const isDevelopment = scriptName === 'development';
 
     const cmsconfig = await readCMSConfig();
+    const cmsPckg = await getModulePackage(cmsPackageName);
     await new Promise(resolve => loadCache(resolve));
 
     setStoreItem('environment', {
         mode: cmsconfig.env ?? isDevelopment ? 'dev' : 'prod',
     });
+
+
+    console.log( // eslint-disable-line
+        colors.brightBlue('Starting Cromwell CMS...') + '\n\n' +
+        colors.blue('● Start time:') + '....' + new Date(Date.now()).toISOString() + '\n' +
+        colors.blue('● Environment:') + '...' + (getStoreItem('environment')?.mode === 'dev' ? 'development' : 'production') + '\n' +
+        colors.blue('● CMS version:') + '...' + cmsPckg?.version + '\n\n'
+    );
 
     await checkConfigs();
 
@@ -146,7 +152,6 @@ export const startSystem = async (options: TStartOptions) => {
     }
 
     if (isDevelopment) {
-
         spawn(`npx rollup -cw`, [],
             { shell: true, stdio: 'inherit', cwd: getCoreCommonDir() });
         spawn(`npx rollup -cw`, [],
@@ -162,21 +167,31 @@ export const startSystem = async (options: TStartOptions) => {
         });
     }
 
-    await startServiceByName({
+    const serverSuccess = await startServiceByName({
         ...options,
         serviceName: 'server',
         startAll: true,
     });
-    await startServiceByName({
+    const adminSuccess = await startServiceByName({
         ...options,
         serviceName: 'adminPanel',
         startAll: true,
     });
-    await startServiceByName({
+    const rendererSuccess = await startServiceByName({
         ...options,
         serviceName: 'renderer',
         startAll: true,
     });
+
+    if (serverSuccess && adminSuccess && rendererSuccess) {
+        console.log( // eslint-disable-line
+            '\n' + logSymbols.success + colors.brightGreen(` CMS is running.\n\n`) +
+            'To see frontend open:\n' +
+            colors.brightBlue('http://localhost:4016') + '\n\n' +
+            'To see admin panel open:\n' +
+            colors.brightBlue('http://localhost:4016/admin') + '\n\n'
+        );
+    }
 }
 
 
@@ -198,27 +213,39 @@ export const startServiceByName = async (options: TStartOptions) => {
     await checkConfigs();
 
     if (serviceName === 'adminPanel' || serviceName === 'a') {
-        const pckg = await getModulePackage('@cromwell/admin-panel')
-        await startAdminPanel(isDevelopment ? 'dev' : 'prod', {
+        await getModulePackage('@cromwell/admin-panel')
+        const success = await startAdminPanel(isDevelopment ? 'dev' : 'prod', {
             port: !startAll ? port : undefined,
         });
+        if (!startAll) {
+            logger.info(`Admin Panel has started at http://localhost:${port ?? 4064}/admin/`)
+        }
+        return success;
     }
 
     if (serviceName === 'renderer' || serviceName === 'r') {
         await checkModules(isDevelopment);
-        await startRenderer(isDevelopment ? 'dev' : 'prod', {
+        const success = await startRenderer(isDevelopment ? 'dev' : 'prod', {
             port: !startAll ? port : undefined,
         });
+        if (!startAll) {
+            logger.info(`Renderer has started at http://localhost:${port ?? 4128}`)
+        }
+        return success;
+
     }
 
     if (serviceName === 'server' || serviceName === 's') {
-        await startServer(isDevelopment ? 'dev' : 'prod', port, init);
+        const success = await startServer(isDevelopment ? 'dev' : 'prod', port, init);
+        if (!startAll) {
+            logger.info(`API server has started at http://localhost:${port ?? 4016}`)
+        }
+        return success;
     }
 
     if (serviceName === 'nginx' || serviceName === 'n') {
-        await startNginx(isDevelopment);
+        return startNginx(isDevelopment);
     }
-
 }
 
 export const closeServiceByName = async (serviceName: TServiceNames) => {

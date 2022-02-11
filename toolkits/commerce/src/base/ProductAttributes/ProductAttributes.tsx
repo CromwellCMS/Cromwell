@@ -20,6 +20,7 @@ export type ProductAttributesProps = {
       value: string;
       checked: boolean;
       valid?: boolean;
+      canValidate?: boolean;
       icon?: string;
       attribute?: TAttribute;
       attributeInstance?: TAttributeInstance;
@@ -28,11 +29,12 @@ export type ProductAttributesProps = {
     AttributeTitle?: React.ComponentType<{
       attribute?: TAttribute;
       valid?: boolean;
+      canValidate?: boolean;
     }>;
   }
 
   /** Product data. Required */
-  product?: TProduct | null;
+  product: TProduct;
 
   /** All available attributes */
   attributes?: TAttribute[];
@@ -119,6 +121,7 @@ export function ProductAttributes(props: ProductAttributesProps): JSX.Element {
                 <TitleComp
                   attribute={origAttribute}
                   valid={isValid}
+                  canValidate={canValidate}
                 />
               </div>
               <div className={clsx(styles.valuesWrapper, classes?.valuesWrapper)}>
@@ -158,6 +161,7 @@ export function ProductAttributes(props: ProductAttributesProps): JSX.Element {
                         valid={isValid}
                         attribute={origAttribute}
                         attributeInstance={attr}
+                        canValidate={canValidate}
                       />
                     }
 

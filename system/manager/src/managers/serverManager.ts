@@ -40,6 +40,7 @@ export const startServer = async (command?: TServerCommands, argsPort?: string |
                 `--port=${port}`,
                 init ? '--init' : ''
             ],
+            command: env,
             sync: command === 'build' ? true : false,
             watchName: command !== 'build' ? 'server' : undefined,
             onVersionChange: async () => {

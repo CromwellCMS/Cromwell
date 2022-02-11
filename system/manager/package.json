@@ -36,6 +36,7 @@
     "fs-extra": "10.0.0",
     "glob": "7.1.7",
     "is-running": "2.1.0",
+    "log-symbols": "4.1.0",
     "node-cleanup": "2.1.2",
     "node-fetch": "2.6.1",
     "normalize-path": "3.0.0",
