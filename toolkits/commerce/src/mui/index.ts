@@ -68,17 +68,10 @@ export const MuiProductActions = withElements(BaseProductActions, {
   }
 } as ProductActionsProps);
 
-
-const CustomIconButton = (props) => React.createElement(IconButton, {
-  onClick: props.onClick,
-  'aria-label': props['aria-label'],
-  className: props.className,
-}, props.children);
-
 export const MuiProductCard = withElements(BaseProductCard, {
-  Button: CustomIconButton,
-  AddCartButton: CustomIconButton,
-  AddWishlistButton: CustomIconButton,
+  Button: IconButton,
+  AddCartButton: IconButton,
+  AddWishlistButton: IconButton,
   Alert,
   Rating,
   QuantityField,

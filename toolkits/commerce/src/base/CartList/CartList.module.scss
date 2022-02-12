@@ -3,26 +3,24 @@
 .CartList {
     box-sizing: border-box;
     height: 100%;
-
-    * {
-        box-sizing: border-box;
-    }
 }
 
 .productList {
     height: 100%;
     overflow: auto;
     @include styledScrollBar;
-
+    box-sizing: border-box;
 }
 
 .cartHeader {
     display: flex;
     justify-content: space-between;
+    box-sizing: border-box;
 }
 
 .cartTotal {
     display: flex;
+    box-sizing: border-box;
 }
 
 .cartTotalText {

@@ -120,6 +120,7 @@ export const withCromwellApp = (App: ((props: TAppProps) => JSX.Element | null))
           cmsProps: {
             ...(props.pageProps?.cmsProps ?? {}),
             documentContext,
+            router: props.router,
           }
         }
       }

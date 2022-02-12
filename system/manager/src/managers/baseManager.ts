@@ -139,7 +139,7 @@ export const startSystem = async (options: TStartOptions) => {
         colors.brightBlue('Starting Cromwell CMS...') + '\n\n' +
         colors.blue('● Start time:') + '....' + new Date(Date.now()).toISOString() + '\n' +
         colors.blue('● Environment:') + '...' + (getStoreItem('environment')?.mode === 'dev' ? 'development' : 'production') + '\n' +
-        colors.blue('● CMS version:') + '...' + cmsPckg?.version + '\n\n'
+        colors.blue('● CMS version:') + '...' + cmsPckg?.version + '\n'
     );
 
     await checkConfigs();

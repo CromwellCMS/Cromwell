@@ -43,11 +43,11 @@
     "typescript": "4.3.5"
   },
   "peerDependencies": {
-    "@cromwell/admin-panel": "^2.0.0",
-    "@cromwell/cli": "^2.0.0",
+    "@cromwell/admin-panel": "^2.1.0",
+    "@cromwell/cli": "^2.1.0",
     "@cromwell/core": "^2.0.0",
     "@cromwell/core-backend": "^2.0.0",
-    "@cromwell/core-frontend": "^2.0.0",
+    "@cromwell/core-frontend": "^2.1.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
   },

@@ -11,9 +11,11 @@
 .sidebar {
     width: 25%;
 }
+
 .main {
     width: 75%;
     padding-bottom: 30px;
+    padding-left: 20px;
 }
 
 .productList {
@@ -34,7 +36,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin: 20px 0 20px 20px;
+    margin: 20px 0;
 }
 
 .title {
@@ -80,6 +82,7 @@
 
     .main {
         width: 100%;
+        padding-left: 0;
     }
 
     .productList {

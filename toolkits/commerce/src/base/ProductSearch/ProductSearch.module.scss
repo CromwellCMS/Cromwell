@@ -19,6 +19,7 @@
     min-height: 140px;
     overflow: auto;
     z-index: 10;
+    box-sizing: border-box;
 }
 
 .searchItem {
@@ -29,6 +30,7 @@
     border-bottom: 1px solid #ddd;
     cursor: pointer;
     transition: 0.3s;
+    box-sizing: border-box;
 }
 
 .searchItem:hover {

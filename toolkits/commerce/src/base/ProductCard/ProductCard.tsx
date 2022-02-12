@@ -1,5 +1,13 @@
-import { TAttribute, TCromwellNotify, TProduct, TStoreListItem, useCurrency } from '@cromwell/core';
-import { getCStore, Link, TCStoreOperationResult, useCart, useForceUpdate, useWishlist } from '@cromwell/core-frontend';
+import { isServer, TAttribute, TCromwellNotify, TProduct, TStoreListItem } from '@cromwell/core';
+import {
+  getCStore,
+  Link,
+  TCStoreOperationResult,
+  useCart,
+  useCurrency,
+  useForceUpdate,
+  useWishlist,
+} from '@cromwell/core-frontend';
 import clsx from 'clsx';
 import Image, { ImageProps } from 'next/image';
 import React from 'react';
@@ -7,12 +15,12 @@ import React from 'react';
 import { notifier as baseNotifier, NotifierActionOptions } from '../../helpers/notifier';
 import { useImageLoader } from '../../helpers/useImageLoader';
 import { useProductLink } from '../../helpers/useLinks';
-import { AddShoppingCartIcon, FavoriteBorderIcon, FavoriteIcon, ShoppingCartIcon } from '../icons';
+import { useStoreAttributes } from '../../helpers/useStoreAttributes';
+import { AddShoppingCartIcon, FavoriteActiveIcon, FavoriteHollowIcon, ShoppingCartIcon } from '../icons';
 import { BaseButton, TBaseButtonProps } from '../shared/Button';
 import { BaseRating, TBaseRatingProps } from '../shared/Rating';
 import { BaseTooltip, TBaseTooltipProps } from '../shared/Tooltip';
 import styles from './ProductCard.module.scss';
-import { useStoreAttributes } from '../../helpers/useStoreAttributes';
 
 /** @internal */
 const Empty = (props) => props?.children ?? null;
@@ -182,6 +190,8 @@ export function ProductCard(props: ProductCardProps) {
   const mainImage = imageProps?.src !== undefined ? imageProps?.src :
     (product?.mainImage ?? product?.images?.[0] ?? props?.noImagePlaceholderUrl);
 
+  const WishlistIcon = inWishlist ? FavoriteActiveIcon : FavoriteHollowIcon;
+
   return (
     <div className={clsx(styles.ProductCard, classes?.root,
       props?.variant === 'horizontal' && styles.horizontalVariant,
@@ -237,14 +247,15 @@ export function ProductCard(props: ProductCardProps) {
               {inCart ? <ShoppingCartIcon /> : <AddShoppingCartIcon />}
             </AddCartButton>
           </Tooltip>
-          <Tooltip
-            title={text?.addToWishlist ?? "Add to wishlist"}>
+          <Tooltip title={text?.addToWishlist ?? "Add to wishlist"}>
             <AddWishlistButton
               onClick={handleAddToWishlist}
               aria-label={text?.addToWishlist ?? "Add product to wishlist"}
               className={clsx(styles.actionBtn, classes?.action_button)}
             >
-              {inWishlist ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+              {!isServer() && (
+                <WishlistIcon />
+              )}
             </AddWishlistButton>
           </Tooltip>
           <OtherActions cardProps={props} />

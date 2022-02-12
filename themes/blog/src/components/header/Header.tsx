@@ -1,5 +1,4 @@
-import { useCmsSettings } from '@cromwell/core';
-import { CContainer, CPlugin, Link } from '@cromwell/core-frontend';
+import { CContainer, CPlugin, Link, useCmsSettings } from '@cromwell/core-frontend';
 import { AppBar, IconButton, Slide, SwipeableDrawer, Toolbar, useScrollTrigger } from '@mui/material';
 import React, { useState } from 'react';
 

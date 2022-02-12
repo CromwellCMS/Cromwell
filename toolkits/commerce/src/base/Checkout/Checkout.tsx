@@ -101,8 +101,8 @@ export type CheckoutProps = {
   /**
    * Order action events
    */
-  onGetOrderTotal?: (data: TOrderPaymentSession | undefined) => void;
-  onPlaceOrder?: (placedOrder: TOrder | undefined) => void;
+  onGetOrderTotal?: (data: TOrderPaymentSession | undefined | null) => void;
+  onPlaceOrder?: (placedOrder: TOrder | undefined | null) => void;
   onPay?: (success: boolean) => void;
 }
 

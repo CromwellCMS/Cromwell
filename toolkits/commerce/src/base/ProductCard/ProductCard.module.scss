@@ -7,10 +7,6 @@
     width: 100%;
     max-width: 300px;
     min-width: 170px;
-
-    * {
-        box-sizing: border-box;
-    }
 }
 
 .imageBlock {
@@ -22,6 +18,7 @@
     height: 200px;
     width: 100%;
     margin-bottom: 15px;
+    box-sizing: border-box;
 
     a {
         height: 100%;
@@ -32,6 +29,7 @@
 .image {
     width: 100%;
     object-fit: contain;
+    box-sizing: border-box;
 }
 
 .caption {
@@ -40,6 +38,7 @@
     align-items: center;
     width: 100%;
     padding: 0 15px 20px 15px;
+    box-sizing: border-box;
 }
 
 .productName {
@@ -52,6 +51,7 @@
 .productNameContainer {
     display: flex;
     justify-content: center;
+    box-sizing: border-box;
 }
 
 .priceCartBlock {
@@ -59,6 +59,7 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    box-sizing: border-box;
 }
 
 .priceBlock {
@@ -67,11 +68,14 @@
     justify-content: center;
     font-size: 18px;
     margin: 3px 0;
+    box-sizing: border-box;
 }
 
 .actions {
     display: flex;
     flex-wrap: wrap;
+    box-sizing: border-box;
+    color: #111;
 }
 
 .price {
@@ -107,6 +111,7 @@
 .ProductCard.horizontalVariant {
     flex-direction: row;
     max-width: 100%;
+    box-sizing: border-box;
 
     .caption {
         align-items: flex-start;
@@ -163,4 +168,5 @@
 
 .actionBtn {
     padding: 10px;
+    color: #111;
 }

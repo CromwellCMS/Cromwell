@@ -1,76 +1,48 @@
 import {
     findRedirect,
     getRandStr,
-    payLaterOption,
     resolvePageRoute,
     setStoreItem,
     sleep,
     TCCSVersion,
     TDefaultPageName,
-    TOrder,
-    TOrderInput,
     TPackageCromwellConfig,
-    TProductReview,
-    TStoreListItem,
-    standardShipping,
-    TUser,
-    TUserRole,
 } from '@cromwell/core';
 import {
-    applyGetPaged,
-    AttributeRepository,
     BasePageEntity,
     cmsPackageName,
-    CouponRepository,
     getCmsEntity,
     getCmsInfo,
     getCmsModuleInfo,
     getCmsSettings,
-    getEmailTemplate,
     getLogger,
     getModulePackage,
     getNodeModuleDir,
     getPublicDir,
     getServerDir,
     getThemeConfigs,
-    Order,
-    OrderRepository,
-    PageStats,
-    PageStatsRepository,
     PostRepository,
-    Product,
     ProductCategoryRepository,
     ProductRepository,
-    ProductReview,
-    ProductReviewRepository,
     readCmsModules,
     runShellCommand,
-    sendEmail,
     TagRepository,
-    User,
-    UserRepository,
 } from '@cromwell/core-backend';
-import { getCentralServerClient, getCStore } from '@cromwell/core-frontend';
+import { getCentralServerClient } from '@cromwell/core-frontend';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import archiver from 'archiver';
 import { format } from 'date-fns';
+import { FastifyReply } from 'fastify';
 import fs from 'fs-extra';
 import { join, resolve } from 'path';
 import { pipeline } from 'stream';
 import { Container, Service } from 'typedi';
-import { getConnection, getCustomRepository, getManager, Repository } from 'typeorm';
-import { DateUtils } from 'typeorm/util/DateUtils';
+import { getConnection, getCustomRepository, Repository } from 'typeorm';
 import * as util from 'util';
 
 import { AdminCmsConfigDto } from '../dto/admin-cms-config.dto';
-import { CmsStatsDto, SalePerDayDto } from '../dto/cms-stats.dto';
 import { CmsStatusDto } from '../dto/cms-status.dto';
-import { CreateOrderDto } from '../dto/create-order.dto';
-import { OrderTotalDto } from '../dto/order-total.dto';
-import { PageStatsDto } from '../dto/page-stats.dto';
 import { SetupDto } from '../dto/setup.dto';
-import { SystemUsageDto } from '../dto/system-usage.dto';
-import { getSysInfo, getSysUsageInfo } from '../helpers/monitor-client';
-import { serverFireAction } from '../helpers/server-fire-action';
 import { childSendMessage } from '../helpers/server-manager';
 import { endTransaction, restartService, setPendingKill, startTransaction } from '../helpers/state-manager';
 import { MockService } from './mock.service';
@@ -96,15 +68,12 @@ export class CmsService {
         return Container.get(MockService);
     }
 
+    private isRunningNpm = false;
+    private checkedYarn = false;
+
     constructor() {
         this.init();
     }
-
-    private isRunningNpm = false;
-    private cpuLoads: {
-        time: Date;
-        load: number;
-    }[] = [];
 
     private async init() {
         await sleep(1);
@@ -121,8 +90,6 @@ export class CmsService {
     public async setIsRunningNpm(isRunning) {
         this.isRunningNpm = isRunning;
     }
-
-    private checkedYarn = false;
 
     public async checkYarn() {
         if (this.checkedYarn) return;
@@ -155,6 +122,35 @@ export class CmsService {
         for await (const part of parts) {
             const fullPath = join(`${dirName}/${part.filename}`);
             await pump(part.file, fs.createWriteStream(fullPath));
+        }
+    }
+
+    async downloadFile(response: FastifyReply, inPath: string, fileName: string) {
+        const fullPath = join(getPublicDir(), inPath ?? '', fileName);
+
+        if (! await fs.pathExists(fullPath)) {
+            response.code(404).send({ message: 'File not found' });
+            return;
+        }
+
+        if ((await fs.lstat(fullPath)).isFile()) {
+            response.header('Content-Disposition', `attachment; filename=${fileName}`);
+            try {
+                const readStream = fs.createReadStream(fullPath);
+                response.type('text/html').send(readStream);
+            } catch (error) {
+                logger.error(error);
+                response.code(500).send({ message: error + '' });
+            }
+        } else {
+            response.header('Content-Disposition', `attachment; filename=${fileName}.zip`);
+            // zip the directory
+            const archive = archiver('zip', {
+                zlib: { level: 9 }
+            });
+            archive.directory(fullPath, '/' + fileName);
+            response.type('text/html').send(archive);
+            await archive.finalize();
         }
     }
 
@@ -409,400 +405,6 @@ ${content}
         const config = await getCmsSettings();
         if (!config) throw new HttpException('!config', HttpStatus.INTERNAL_SERVER_ERROR);
         return new AdminCmsConfigDto().parseConfig(config);
-    }
-
-    async viewPage(input: PageStatsDto) {
-        if (!input?.pageRoute) return;
-
-        let page: PageStats | undefined;
-        try {
-            page = await getManager().findOne(PageStats, {
-                where: {
-                    pageRoute: input.pageRoute
-                }
-            });
-        } catch (error) { }
-
-        if (page) {
-            if (!page.views) page.views = 0;
-            page.views++;
-            await page.save();
-
-        } else {
-            const newPage = new PageStats();
-            newPage.pageRoute = input.pageRoute;
-            newPage.pageName = input.pageName;
-            newPage.slug = input.slug;
-            newPage.entityType = input.entityType;
-            newPage.views = 1;
-            await newPage.save();
-        }
-    }
-
-    async placeOrder(input: CreateOrderDto): Promise<TOrder | undefined> {
-        const orderTotal = await this.calcOrderTotal(input);
-        const settings = await getCmsSettings();
-        const { themeConfig } = (settings?.themeName && await getThemeConfigs(settings?.themeName)) || {};
-
-        // Clean up products
-        if (orderTotal.cart?.length) {
-            orderTotal.cart = orderTotal.cart.map(item => {
-                if (item.pickedAttributes) {
-                    if (Object.keys(item.pickedAttributes).length > 1000) item.pickedAttributes = undefined;
-                }
-                if (item.pickedAttributes) {
-                    Object.keys(item.pickedAttributes).forEach(key => {
-                        if (!item.pickedAttributes![key]?.length) {
-                            delete item.pickedAttributes![key];
-                        }
-                        if (item.pickedAttributes![key].length > 1000) {
-                            delete item.pickedAttributes![key];
-                        }
-                    })
-                }
-                if (item.product) item.product = {
-                    id: item.product.id,
-                    createDate: item.product.createDate,
-                    updateDate: item.product.updateDate,
-                    name: item.product.name,
-                    mainCategoryId: item.product.mainCategoryId,
-                    price: item.product.price,
-                    oldPrice: item.product.oldPrice,
-                    sku: item.product.sku,
-                    mainImage: item.product.mainImage,
-                    images: item.product.images,
-                    attributes: item.product.attributes,
-                    stockAmount: item.product.stockAmount,
-                    stockStatus: item.product.stockStatus,
-                    categories: item.product.categories?.map(cat => ({
-                        id: cat.id,
-                        name: cat.name,
-                    })),
-                }
-                return {
-                    amount: item.amount,
-                    pickedAttributes: item.pickedAttributes,
-                    product: item.product,
-                }
-            });
-        }
-
-        if (orderTotal.appliedCoupons?.length) {
-            try {
-                const coupons = await getCustomRepository(CouponRepository)
-                    .getCouponsByCodes(orderTotal.appliedCoupons);
-
-                for (const coupon of (coupons ?? [])) {
-                    if (!coupon.usedTimes) coupon.usedTimes = 1;
-                    else coupon.usedTimes++;
-                    await coupon.save();
-                }
-            } catch (error) {
-                logger.error(error);
-            }
-        }
-
-        // Prevent metadata spam
-        let customMeta;
-        if (typeof input.customMeta === 'object'
-            && Object.keys(input.customMeta).length < 100) {
-            for (const [key, value] of Object.entries(input.customMeta)) {
-                if (key.length < 100 && String(value).length < 10000) {
-                    customMeta[key] = value;
-                }
-            }
-        }
-
-        const createOrder: TOrderInput = {
-            cartOldTotalPrice: orderTotal.cartOldTotalPrice,
-            cartTotalPrice: orderTotal.cartTotalPrice,
-            totalQnt: orderTotal.totalQnt,
-            shippingPrice: orderTotal.shippingPrice,
-            orderTotalPrice: orderTotal.orderTotalPrice,
-            couponCodes: orderTotal.appliedCoupons,
-            cart: orderTotal.cart,
-            status: 'Pending',
-            userId: input.userId,
-            customerName: input.customerName,
-            customerPhone: input.customerPhone,
-            customerEmail: input.customerEmail,
-            customerAddress: input.customerAddress,
-            customerComment: input.customerComment,
-            shippingMethod: input.shippingMethod,
-            paymentMethod: input.paymentMethod,
-            fromUrl: input.fromUrl,
-            currency: input.currency,
-            customMeta,
-        }
-
-        const fromUrl = input.fromUrl;
-        const cstore = getCStore({ local: true });
-        if (createOrder.currency) {
-            cstore.setActiveCurrency(createOrder.currency);
-        }
-
-        // < Send e-mail >
-        setStoreItem('defaultPages', themeConfig?.defaultPages);
-        try {
-            if (input.customerEmail && fromUrl) {
-                const mailProps = {
-                    createDate: format(new Date(Date.now()), 'd MMMM yyyy'),
-                    logoUrl: (settings?.logo) && fromUrl + '/' + settings.logo,
-                    orderLink: (themeConfig?.defaultPages?.account) && fromUrl + '/' + themeConfig.defaultPages.account,
-                    totalPrice: cstore.getPriceWithCurrency((orderTotal.orderTotalPrice ?? 0).toFixed(2)),
-                    unsubscribeUrl: fromUrl,
-                    products: (orderTotal.cart ?? []).map(item => {
-                        return {
-                            link: (themeConfig?.defaultPages?.product && item?.product?.slug) ?
-                                resolvePageRoute('product', { slug: item.product.slug }) : '/',
-                            title: `${item?.amount ? item.amount + ' x ' : ''}${item?.product?.name ?? ''}`,
-                            price: cstore.getPriceWithCurrency(((item.product?.price ?? 0) * (item.amount ?? 1)).toFixed(2)),
-                        }
-                    }),
-                    shippingPrice: cstore.getPriceWithCurrency((orderTotal.shippingPrice ?? 0).toFixed(2)),
-                }
-
-                const compiledEmail = await getEmailTemplate('order.hbs', mailProps);
-                if (!compiledEmail) {
-                    logger.error('order.hbs template was not found');
-                    throw new HttpException('order.hbs template was not found', HttpStatus.INTERNAL_SERVER_ERROR);
-                }
-
-                await sendEmail([input.customerEmail], 'Order', compiledEmail);
-            }
-
-        } catch (error) {
-            logger.error(error);
-        }
-        // < / Send e-mail >
-
-        return getCustomRepository(OrderRepository).createOrder(createOrder);
-    }
-
-    async calcOrderTotal(input: CreateOrderDto): Promise<OrderTotalDto> {
-        const orderTotal = new OrderTotalDto();
-        orderTotal.successUrl = input.successUrl;
-        orderTotal.cancelUrl = input.cancelUrl;
-        orderTotal.fromUrl = input.fromUrl;
-        orderTotal.currency = input.currency;
-
-        let cart: TStoreListItem[] | undefined;
-        try {
-            if (typeof input.cart === 'string') {
-                cart = JSON.parse(input.cart);
-            } else if (typeof input.cart === 'object') {
-                cart = input.cart;
-            }
-        } catch (error) {
-            logger.error('placeOrder: Failed to parse cart', error);
-        }
-        if (typeof cart !== 'object') return orderTotal;
-
-        const settings = await getCmsSettings();
-
-        const cstore = getCStore({
-            local: true, apiClient: {
-                getProductById: (id) => getCustomRepository(ProductRepository).getProductById(id,
-                    { withAttributes: true, withCategories: true, withVariants: true }),
-                getAttributes: () => getCustomRepository(AttributeRepository).getAttributes(),
-                getCouponsByCodes: (codes) => getCustomRepository(CouponRepository)
-                    .getCouponsByCodes(codes)
-            }
-        });
-
-        if (input.currency) {
-            cstore.setActiveCurrency(input.currency);
-        }
-
-        cstore.saveCart(cart);
-        await cstore.applyCouponCodes(input.couponCodes);
-        await cstore.updateCart();
-        const total = cstore.getCartTotal();
-
-        orderTotal.cart = cstore.getCart();
-        orderTotal.cartOldTotalPrice = total.totalOld;
-        orderTotal.cartTotalPrice = total.total ?? 0;
-        orderTotal.totalQnt = total.amount;
-        orderTotal.appliedCoupons = total.coupons.map(coupon => coupon.code!);
-
-        orderTotal.shippingPrice = settings?.defaultShippingPrice ?
-            parseFloat(settings?.defaultShippingPrice + '') : 0;
-        orderTotal.shippingPrice = parseFloat(orderTotal.shippingPrice.toFixed(2));
-
-        orderTotal.orderTotalPrice = (orderTotal?.cartTotalPrice ?? 0) + (orderTotal?.shippingPrice ?? 0);
-        orderTotal.orderTotalPrice = parseFloat(orderTotal.orderTotalPrice.toFixed(2));
-
-        orderTotal.shippingOptions = [{
-            ...standardShipping,
-            price: settings?.defaultShippingPrice
-        }]
-
-        return orderTotal;
-    }
-
-    async createPaymentSession(input: CreateOrderDto): Promise<OrderTotalDto> {
-        const total = await this.calcOrderTotal(input);
-        total.cart = total.cart?.filter(item => item?.product);
-
-        if (!total.cart?.length) throw new HttpException('Cart is invalid or empty', HttpStatus.BAD_REQUEST);
-        const settings = await getCmsSettings();
-
-        const payments = await serverFireAction('create_payment', total);
-        total.paymentOptions = [...Object.values(payments ?? {}),
-        ...(!settings?.disablePayLater ? [
-            payLaterOption,
-        ] : []),];
-
-        return total;
-    }
-
-    async getCmsStats(): Promise<CmsStatsDto> {
-        const stats = new CmsStatsDto();
-
-        // Reviews
-        const reviewsCountKey: keyof Product = 'reviewsCount';
-        const averageKey: keyof Product = 'averageRating';
-        const ratingKey: keyof TProductReview = 'rating';
-        const reviewTable = getCustomRepository(ProductReviewRepository).metadata.tablePath;
-
-        // Orders
-        const orderTable = getCustomRepository(OrderRepository).metadata.tablePath;
-        const totalPriceKey: keyof TOrder = 'orderTotalPrice';
-        const orderCountKey = 'orderCount';
-        const days = 7;
-
-        // Page stats 
-        const pageStatsTable = getCustomRepository(PageStatsRepository).metadata.tablePath;
-        const viewsPagesCountKey = 'viewsPagesCount';
-        const viewsSumKey: keyof PageStats = 'views';
-
-        // Customers
-        const userCountKey = 'userCount';
-        const userRoleKey: keyof TUser = 'role';
-        const userTable = getCustomRepository(UserRepository).metadata.tablePath;
-
-
-        const getReviews = async () => {
-            const reviewsStats = await getManager().createQueryBuilder(ProductReview, reviewTable)
-                .select([])
-                .addSelect(`AVG(${reviewTable}.${ratingKey})`, averageKey)
-                .addSelect(`COUNT(${reviewTable}.id)`, reviewsCountKey).execute();
-
-            stats.averageRating = reviewsStats?.[0]?.[averageKey];
-            stats.reviews = parseInt((reviewsStats?.[0]?.[reviewsCountKey] ?? 0) + '');
-        }
-
-        const getOrders = async () => {
-            const ordersStats = await getManager().createQueryBuilder(Order, orderTable)
-                .select([])
-                .addSelect(`SUM(${orderTable}.${totalPriceKey})`, totalPriceKey)
-                .addSelect(`COUNT(${orderTable}.id)`, orderCountKey).execute();
-
-            stats.orders = parseInt((ordersStats?.[0]?.[orderCountKey] ?? 0) + '');
-            stats.salesValue = ordersStats?.[0]?.[totalPriceKey];
-        }
-
-        const getSalesPerDay = async () => {
-            stats.salesPerDay = [];
-
-            for (let i = 0; i < days; i++) {
-                const dateFrom = new Date(Date.now());
-                dateFrom.setUTCDate(dateFrom.getUTCDate() - i);
-                dateFrom.setUTCHours(0);
-                dateFrom.setUTCMinutes(0);
-
-                const dateTo = new Date(dateFrom);
-                dateTo.setDate(dateTo.getDate() + 1);
-
-                const ordersStats = await getManager().createQueryBuilder(Order, orderTable)
-                    .select([])
-                    .addSelect(`SUM(${orderTable}.${totalPriceKey})`, totalPriceKey)
-                    .addSelect(`COUNT(${orderTable}.id)`, orderCountKey)
-                    .where(`${orderTable}.createDate BETWEEN :dateFrom AND :dateTo`, {
-                        dateFrom: DateUtils.mixedDateToDatetimeString(dateFrom),
-                        dateTo: DateUtils.mixedDateToDatetimeString(dateTo),
-                    })
-                    .execute();
-
-                const sales = new SalePerDayDto();
-                sales.orders = parseInt((ordersStats?.[0]?.[orderCountKey] ?? 0) + '');
-                sales.salesValue = ordersStats?.[0]?.[totalPriceKey] ?? 0;
-                sales.date = dateFrom;
-
-                stats.salesPerDay.push(sales);
-            }
-        }
-
-        const getPageViews = async () => {
-            const viewsStats = await getManager().createQueryBuilder(PageStats, pageStatsTable)
-                .select([])
-                .addSelect(`SUM(${pageStatsTable}.${viewsSumKey})`, viewsSumKey)
-                .addSelect(`COUNT(${pageStatsTable}.id)`, viewsPagesCountKey).execute();
-
-            stats.pages = parseInt((viewsStats?.[0]?.[viewsPagesCountKey] ?? 0) + '');
-            stats.pageViews = viewsStats?.[0]?.[viewsSumKey];
-        }
-
-        const getTopPageViews = async () => {
-            const viewsStats = await applyGetPaged(
-                getManager().createQueryBuilder(PageStats, pageStatsTable).select(), pageStatsTable, {
-                order: 'DESC',
-                orderBy: 'views',
-                pageSize: 15
-            }).getMany();
-
-            stats.topPageViews = await Promise.all(viewsStats.map(async stat => {
-                stat.pageRoute = await resolvePageRoute(stat.pageRoute);
-                return {
-                    pageRoute: stat.pageRoute,
-                    views: stat.views,
-                }
-            }))
-        }
-
-        const getCustomers = async () => {
-            const customersStats = await getManager().createQueryBuilder(User, userTable)
-                .select([])
-                .addSelect(`COUNT(${userTable}.id)`, userCountKey)
-                .where(`${userTable}.${userRoleKey} = :role`, { role: 'customer' as TUserRole })
-                .execute();
-
-            stats.customers = parseInt((customersStats?.[0]?.[userCountKey] ?? 0) + '');
-        }
-
-        await Promise.all([
-            getReviews(),
-            getOrders(),
-            getPageViews(),
-            getCustomers(),
-            getSalesPerDay(),
-            getTopPageViews(),
-        ]);
-
-        return stats;
-    }
-
-    async getSystemUsage(): Promise<SystemUsageDto> {
-        const [info, usage] = await Promise.all([
-            getSysInfo(),
-            getSysUsageInfo()
-        ]);
-
-        const dto = new SystemUsageDto().parseSysInfo(info).parseSysUsage(usage);
-
-        if (dto.cpuUsage?.currentLoad !== undefined) {
-            this.cpuLoads.push({
-                load: dto.cpuUsage.currentLoad,
-                time: new Date(Date.now()),
-            });
-
-            if (this.cpuLoads.length > 30) this.cpuLoads = this.cpuLoads.slice(this.cpuLoads.length - 30, this.cpuLoads.length)
-        }
-
-        if (dto.cpuUsage) {
-            dto.cpuUsage.previousLoads = this.cpuLoads;
-        }
-        return dto;
     }
 
     async checkCmsUpdate(): Promise<TCCSVersion | undefined> {

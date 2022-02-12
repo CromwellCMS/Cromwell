@@ -1,8 +1,10 @@
-import { GetStaticPropsResult, NextPage } from 'next';
-import { DocumentContext } from 'next/document';
 import React from 'react';
 
 import { TCmsConfig, TCmsSettings, TDefaultPageName, TPageConfig, TPageInfo, TPalette, TThemeConfig } from './data';
+
+import type { GetStaticPropsResult, NextPage } from 'next';
+import type { DocumentContext } from 'next/document';
+import type { NextRouter } from 'next/router';
 
 type ParsedUrlQuery = NodeJS.Dict<string | string[]>;
 
@@ -52,6 +54,7 @@ export type TRegisteredPluginInfo = {
 
 export type TPageCmsProps = {
     documentContext?: TNextDocumentContext;
+    router?: NextRouter;
     plugins?: Record<string, {
         data?: any;
         code?: string;
@@ -70,7 +73,7 @@ export type TPageCmsProps = {
 
 export type TCromwellPageCoreProps = { cmsProps: TPageCmsProps };
 
-export type TCromwellPage<Props = any | undefined> = NextPage<Props & TCromwellPageCoreProps>;
+export type TCromwellPage<Props = Record<string, unknown> | undefined> = NextPage<Props & TCromwellPageCoreProps>;
 
 export type TNextDocumentContext = Partial<DocumentContext> & {
     fullUrl?: string;

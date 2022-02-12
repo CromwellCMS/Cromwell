@@ -1,6 +1,9 @@
 import { Alert } from '@mui/material';
-import styles from './Notifier.module.scss';
 import React from 'react';
+import { toast as toastify } from 'react-toastify';
+
+import styles from './Notifier.module.scss';
+import { Notifier } from '../../helpers/notifier';
 
 /** @internal */
 export const NotifierWrapper = (props) => {
@@ -10,3 +13,9 @@ export const NotifierWrapper = (props) => {
     </div>
   )
 }
+
+export const muiNotifier = new Notifier({
+  position: toastify.POSITION.TOP_RIGHT,
+  className: styles.muiToast,
+  Wrapper: NotifierWrapper,
+})

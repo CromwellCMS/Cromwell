@@ -52,7 +52,7 @@ export class ThemeEditActions extends Component<{
     private unregisterBlock;
     private unsavedPrompt = 'Your unsaved changes will be lost. Do you want to discard and leave this page?';
     private changedPalette = false;
-    private themeName = getStoreItem('cmsSettings').themeName;
+    private themeName = getStoreItem('cmsSettings')?.themeName;
 
     public undoBtnRef = React.createRef<HTMLButtonElement>();
     public redoBtnRef = React.createRef<HTMLButtonElement>();

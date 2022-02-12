@@ -5,6 +5,7 @@ import React, { useState } from 'react';
 import { TAuthClientOperationResult, useAuthClient } from '../../helpers/AuthClient';
 import { BaseButton, TBaseButton } from '../BaseElements/BaseButton';
 import { BaseTextField, TBaseTextField } from '../BaseElements/BaseTextField';
+import styles from './SignUp.module.scss';
 
 type TSubmitEvent = React.FormEvent<HTMLFormElement> | React.MouseEvent<Element, MouseEvent>;
 
@@ -73,7 +74,7 @@ export function SignUp(props: SignUpProps) {
     const fieldRequiredText = text?.fieldRequired ?? "This field is required";
 
     return (
-        <form className={clsx(classes?.root)} onSubmit={handleSignUp}>
+        <form className={clsx(styles.SignUp, classes?.root)} onSubmit={handleSignUp}>
             <EmailField
                 label="E-mail"
                 value={emailInput}
@@ -82,6 +83,7 @@ export function SignUp(props: SignUpProps) {
                 variant="standard"
                 error={!emailInput && submitPressed}
                 helperText={!emailInput && submitPressed ? fieldRequiredText : undefined}
+                className={styles.signUpField}
             />
             <NameField
                 label="Name"
@@ -91,6 +93,7 @@ export function SignUp(props: SignUpProps) {
                 variant="standard"
                 error={nameInput === '' && submitPressed}
                 helperText={nameInput === '' && submitPressed ? "This field is required" : undefined}
+                className={styles.signUpField}
             />
             <PasswordField
                 label="Password"
@@ -100,10 +103,12 @@ export function SignUp(props: SignUpProps) {
                 variant="standard"
                 error={!passwordInput && submitPressed}
                 helperText={!passwordInput && submitPressed ? fieldRequiredText : undefined}
+                className={styles.signUpField}
             />
             <Button type="submit"
                 onClick={handleSignUp}
                 disabled={authClient.isPending}
+                className={styles.signUpSubmitBtn}
             >{text?.signUpButton ?? 'Sign up'}</Button>
         </form>
     )

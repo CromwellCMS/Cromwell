@@ -47,6 +47,11 @@ export type CategoryListProps = {
    * CList props to pass, such as `pageSize`, etc.
    */
   listProps?: Partial<TCListProps<TProduct, any>>;
+
+  /**
+   * Override product card props
+   */
+  cardProps?: Partial<ProductCardProps>;
 }
 
 /**
@@ -56,7 +61,7 @@ export type CategoryListProps = {
  * - `useData` - available
  */
 export function CategoryList(props: CategoryListProps) {
-  const { listProps } = props;
+  const { listProps, cardProps } = props;
   const appProps = useAppPropsContext<GetStaticPropsData>();
   const data: CategoryListData = Object.assign({}, appProps.pageProps?.ccom_category_list, props.data);
   const { category } = data;
@@ -99,6 +104,7 @@ export function CategoryList(props: CategoryListProps) {
                 <ProductCard
                   product={p.data}
                   attributes={attributes}
+                  {...cardProps}
                 />
               </div>
             );

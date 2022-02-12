@@ -1,25 +1,24 @@
 import {
     isServer,
     onStoreChange,
+    payLaterOption as defaultPayLaterOption,
     removeOnStoreChange,
+    standardShipping as defaultStandardShipping,
     TOrder,
     TOrderInput,
     TOrderPaymentSession,
     TPaymentOption,
     TShippingOption,
-    standardShipping as defaultStandardShipping,
-    payLaterOption as defaultPayLaterOption,
     TUser,
-    useUserInfo,
 } from '@cromwell/core';
-import { getCStore, getRestApiClient } from '@cromwell/core-frontend';
+import { getCStore, getRestApiClient, useUserInfo } from '@cromwell/core-frontend';
 import queryString from 'query-string';
 import React, { useEffect, useRef, useState } from 'react';
 
 import { notifier as baseNotifier } from '../../helpers/notifier';
 import { moduleState } from '../../helpers/state';
-import { getDefaultCheckoutFields, DefaultCheckoutFields } from './DefaultElements';
 import { CheckoutProps } from './Checkout';
+import { DefaultCheckoutFields, getDefaultCheckoutFields } from './DefaultElements';
 
 /** @internal */
 export type PaymentStatus = 'cancelled' | 'success';
@@ -134,7 +133,7 @@ export const usuCheckoutActions = (config: {
                 const cancelUrl = queryString.parseUrl(window.location.href);
                 cancelUrl.query.paymentStatus = 'cancelled';
 
-                const session = await getRestApiClient()?.createPaymentSession({
+                const session = await getRestApiClient().createPaymentSession({
                     cart: JSON.stringify(cstore.getCart()),
                     currency: cstore.getActiveCurrencyTag(),
                     fromUrl: window.location.origin,
@@ -143,7 +142,7 @@ export const usuCheckoutActions = (config: {
                     couponCodes: Object.values(coupons.current).map(c => c.value).filter(Boolean),
                     shippingMethod: order.shippingMethod,
                     paymentSessionId: paymentSession?.paymentSessionId,
-                });
+                })?.catch(e => console.error(e)) || null;
 
                 for (const couponId of Object.keys(coupons.current)) {
                     if (session?.appliedCoupons?.includes(coupons.current[couponId].value)) {
@@ -181,21 +180,19 @@ export const usuCheckoutActions = (config: {
                 return;
             }
 
-            let placedOrder;
             setIsLoading(true);
-            try {
-                placedOrder = await getRestApiClient()?.placeOrder(Object.assign({}, order, {
-                    userId: userInfo?.id,
-                    cart: JSON.stringify(cstore.getCart()),
-                    fromUrl: window.location.origin,
-                    currency: cstore.getActiveCurrencyTag(),
-                    couponCodes: Object.values(coupons.current).map(c => c.value).filter(Boolean),
-                }));
-            } catch (e) {
+            const placedOrder = await getRestApiClient()?.placeOrder(Object.assign({}, order, {
+                userId: userInfo?.id,
+                cart: JSON.stringify(cstore.getCart()),
+                fromUrl: window.location.origin,
+                currency: cstore.getActiveCurrencyTag(),
+                couponCodes: Object.values(coupons.current).map(c => c.value).filter(Boolean),
+            })).catch(e => {
                 console.error(e);
                 notifier?.error?.(text?.failedCreateOrder ?? 'Failed to create order',
                     { ...notifierOptions, });
-            }
+            }) || null;
+
             setIsLoading(false);
             config.checkoutProps.onPlaceOrder?.(placedOrder);
 

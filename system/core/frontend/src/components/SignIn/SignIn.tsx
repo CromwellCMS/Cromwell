@@ -5,6 +5,7 @@ import React, { useState } from 'react';
 import { TAuthClientOperationResult, useAuthClient } from '../../helpers/AuthClient';
 import { BaseButton, TBaseButton } from '../BaseElements/BaseButton';
 import { BaseTextField, TBaseTextField } from '../BaseElements/BaseTextField';
+import styles from './SignIn.module.scss';
 
 export type TSignInFromType = 'sign-in' | 'forgot-pass' | 'reset-pass';
 
@@ -163,7 +164,7 @@ export function SignIn(props: SignInProps) {
     }
 
     return (
-        <form className={clsx(classes?.root)} onSubmit={onSubmit}>
+        <form className={clsx(styles.SignIn, classes?.root)} onSubmit={onSubmit}>
             {(formType === 'reset-pass') && (
                 <p className={clsx(classes?.resetPassInstructions)}>{text?.resetPassInstructions ??
                     'We sent you an e-mail with reset code. Copy the code below and create a new password'}</p>
@@ -176,6 +177,7 @@ export function SignIn(props: SignInProps) {
                 variant="standard"
                 error={!emailInput && submitPressed}
                 helperText={!emailInput && submitPressed ? fieldRequiredText : undefined}
+                className={styles.signInField}
             />
             {formType === 'reset-pass' && (
                 <CodeField
@@ -186,6 +188,7 @@ export function SignIn(props: SignInProps) {
                     variant="standard"
                     error={!codeInput && submitPressed}
                     helperText={!codeInput && submitPressed ? fieldRequiredText : undefined}
+                    className={styles.signInField}
                 />
             )}
             {(formType == 'sign-in' || formType === 'reset-pass') && (
@@ -197,20 +200,24 @@ export function SignIn(props: SignInProps) {
                     variant="standard"
                     error={!passwordInput && submitPressed}
                     helperText={!passwordInput && submitPressed ? fieldRequiredText : undefined}
+                    className={styles.signInField}
                 />
             )}
             {formType === 'sign-in' ? (
-                <p className={classes?.forgotPassButton} onClick={() => {
-                    setFormType('forgot-pass')
-                }}>{text?.forgotPass ?? 'Forgot your password?'}</p>
+                <p className={clsx(classes?.forgotPassButton, styles.forgotPassButton)}
+                    onClick={() => {
+                        setFormType('forgot-pass')
+                    }}>{text?.forgotPass ?? 'Forgot your password?'}</p>
             ) : (
-                <p className={classes?.backToSignInButton} onClick={() => {
-                    setFormType('sign-in')
-                }}>{text?.backToSignIn ?? 'Back to sign in'}</p>
+                <p className={clsx(classes?.backToSignInButton, styles.backToSignInButton)}
+                    onClick={() => {
+                        setFormType('sign-in')
+                    }}>{text?.backToSignIn ?? 'Back to sign in'}</p>
             )}
             <Button type="submit"
                 onClick={onSubmit}
                 disabled={authClient.isPending}
+                className={styles.signInSubmitBtn}
             >{buttonText}</Button>
         </form>
     )

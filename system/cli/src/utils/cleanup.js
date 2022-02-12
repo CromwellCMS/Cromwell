@@ -7,8 +7,10 @@ const { resolve, join } = require("path");
 const projectRootDir = process.cwd();
 const systemDir = resolve(projectRootDir, 'system');
 
+const folders = [];
+const addFolder = (folderName) => fs.pathExistsSync(folderName) && folders.push(folderName);
 
-const folders = [
+for (const folder of [
     join(systemDir, 'core/backend/node_modules'),
     join(systemDir, 'core/common/node_modules'),
     join(systemDir, 'core/frontend/node_modules'),
@@ -79,37 +81,58 @@ const folders = [
     join(projectRootDir, '.cromwell/renderer'),
     join(projectRootDir, '.cromwell/manager'),
     join(projectRootDir, '.cromwell/admin-panel'),
-]
+
+]) addFolder(folder);
 
 // Add themes
-var themesDir = resolve(projectRootDir, 'themes');
+
+const themesDir = resolve(projectRootDir, 'themes');
 if (fs.existsSync(themesDir)) {
-    var themes = fs.readdirSync(themesDir);
-    for (var i = 0; i < themes.length; i++) {
-        var theme = themes[i];
-        var themeDir = resolve(themesDir, theme);
-        folders.push(resolve(themeDir, 'node_modules'));
-        folders.push(resolve(themeDir, 'package-lock.json'));
-        folders.push(resolve(themeDir, '.cromwell'));
-        folders.push(resolve(themeDir, 'build'));
-        folders.push(resolve(themeDir, '.tsbuildinfo'));
+    const themes = fs.readdirSync(themesDir);
+    for (let i = 0; i < themes.length; i++) {
+        const theme = themes[i];
+        const themeDir = resolve(themesDir, theme);
+        addFolder(resolve(themeDir, 'node_modules'));
+        addFolder(resolve(themeDir, 'package-lock.json'));
+        addFolder(resolve(themeDir, '.cromwell'));
+        addFolder(resolve(themeDir, 'build'));
+        addFolder(resolve(themeDir, '.tsbuildinfo'));
     }
 }
 
 // Check plugins
-var pluginsDir = resolve(projectRootDir, 'plugins');
+const pluginsDir = resolve(projectRootDir, 'plugins');
 if (fs.existsSync(pluginsDir)) {
-    var plugins = fs.readdirSync(pluginsDir);
-    for (var i = 0; i < plugins.length; i++) {
-        var plugin = plugins[i];
-        var pluginDir = resolve(pluginsDir, plugin);
-        folders.push(resolve(pluginDir, 'node_modules'));
-        folders.push(resolve(pluginDir, 'package-lock.json'));
-        folders.push(resolve(pluginDir, '.cromwell'));
-        folders.push(resolve(pluginDir, 'build'));
-        folders.push(resolve(pluginDir, '.tsbuildinfo'));
+    const plugins = fs.readdirSync(pluginsDir);
+    for (let i = 0; i < plugins.length; i++) {
+        const plugin = plugins[i];
+        const pluginDir = resolve(pluginsDir, plugin);
+        addFolder(resolve(pluginDir, 'node_modules'));
+        addFolder(resolve(pluginDir, 'package-lock.json'));
+        addFolder(resolve(pluginDir, '.cromwell'));
+        addFolder(resolve(pluginDir, 'build'));
+        addFolder(resolve(pluginDir, '.tsbuildinfo'));
     }
 }
+
+
+// Check toolkits
+const toolkitsDir = resolve(projectRootDir, 'toolkits');
+if (fs.existsSync(toolkitsDir)) {
+    const toolkits = fs.readdirSync(toolkitsDir);
+    for (let i = 0; i < toolkits.length; i++) {
+        const toolkit = toolkits[i];
+        const toolkitDir = resolve(toolkitsDir, toolkit);
+        addFolder(resolve(toolkitDir, 'node_modules'));
+        addFolder(resolve(toolkitDir, 'package-lock.json'));
+        addFolder(resolve(toolkitDir, '.cromwell'));
+        addFolder(resolve(toolkitDir, 'build'));
+        addFolder(resolve(toolkitDir, '.tsbuildinfo'));
+        addFolder(resolve(toolkitDir, 'es'));
+        addFolder(resolve(toolkitDir, 'dist'));
+    }
+}
+
 
 // console.log(folders);
 // console.log(files);

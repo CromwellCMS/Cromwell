@@ -45,7 +45,7 @@ export type TAuthClientOperationResult = {
  * 
  * If you only need to track account of logged user you can use 
  * `useUserInfo` core hook which will your keep component updated:
- * import { useUserInfo } from '@cromwell/core';
+ * import { useUserInfo } from '@cromwell/core-frontend';
  */
 class AuthClient {
 

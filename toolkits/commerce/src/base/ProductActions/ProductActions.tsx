@@ -8,7 +8,7 @@ import { useModuleState } from '../../helpers/state';
 import { useStoreAttributes } from '../../helpers/useStoreAttributes';
 import {
   AddShoppingCartIcon as BaseAddShoppingCartIcon,
-  FavoriteIcon as BaseFavoriteIcon,
+  FavoriteActiveIcon as BaseFavoriteIcon,
   ShoppingCartIcon as BaseShoppingCartIcon,
 } from '../icons';
 import { TBaseAlert } from '../shared/Alert';

@@ -1,7 +1,8 @@
 import commonjs from '@rollup/plugin-commonjs';
-import { isAbsolute, resolve } from 'path';
+import { isAbsolute, resolve, basename } from 'path';
 import postcss from 'rollup-plugin-postcss';
 import typescript from 'rollup-plugin-ts-compiler';
+import stringHash from "string-hash";
 // import { terser } from 'rollup-plugin-terser';
 
 const external = id => {
@@ -34,7 +35,12 @@ const getPlugins = () => {
         commonjs(),
         postcss({
             extract: true,
-            modules: true,
+            modules: {
+                generateScopedName: function (name, filename) {
+                    const hash = stringHash(`@cromwell/core-frontend_${basename(filename)}`).toString(36).substr(0, 5);
+                    return `ccf_${hash}_${name}`;
+                },
+            },
             writeDefinitions: false,
             inject: false,
             use: ['sass'],
