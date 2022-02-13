@@ -11,6 +11,7 @@ import {
     UserFilterInput,
     UserRepository,
 } from '@cromwell/core-backend';
+import { HttpException, HttpStatus } from '@nestjs/common';
 import { GraphQLJSONObject } from 'graphql-type-json';
 import { Arg, Authorized, Ctx, FieldResolver, Int, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
@@ -63,9 +64,10 @@ export class UserResolver {
     @Mutation(() => User)
     async [updatePath](@Arg("id", () => Int) id: number, @Arg("data") data: UpdateUser, @Ctx() ctx: TGraphQLContext): Promise<User> {
         const message = "Access denied! You don't have permission for this action!";
-        if (!ctx?.user?.role) throw new Error(message);
-        if (data.role && data.role !== ctx.user.role && ctx.user.role !== 'administrator') throw new Error(message);
-        if (ctx.user.role === 'guest') throw new Error(message);
+        if (!ctx?.user?.role) throw new HttpException(message, HttpStatus.UNAUTHORIZED);
+        if (data.role && data.role !== ctx.user.role && ctx.user.role !== 'administrator')
+            throw new HttpException(message, HttpStatus.FORBIDDEN);
+        if (ctx.user.role === 'guest') throw new HttpException(message, HttpStatus.FORBIDDEN);
 
         const user = await this.repository.updateUser(id, data);
         serverFireAction('update_user', user);

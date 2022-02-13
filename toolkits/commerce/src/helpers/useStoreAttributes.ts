@@ -1,5 +1,5 @@
 import { TAttribute } from '@cromwell/core';
-import { getGraphQLClient, getGraphQLErrorInfo, useForceUpdate } from '@cromwell/core-frontend';
+import { getGraphQLClient, useForceUpdate } from '@cromwell/core-frontend';
 
 import { useModuleState } from './state';
 
@@ -19,7 +19,7 @@ export const useStoreAttributes = (attributes?: TAttribute[] | null) => {
                     moduleState.setAttributes(await client.getAttributes());
                     forceUpdate();
                 } catch (e) {
-                    console.error('ccom_ModuleState::checkAttributesData', getGraphQLErrorInfo(e))
+                    console.error('ccom_ModuleState::checkAttributesData', e)
                 }
                 isFetchingAttributes = false;
             }

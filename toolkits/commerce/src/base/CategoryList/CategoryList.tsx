@@ -3,7 +3,7 @@ import { removeUndefined, TCromwellBlock, TGetStaticProps, TPagedList, TProduct,
 import {
   CList,
   getGraphQLClient,
-  getGraphQLErrorInfo,
+  TGraphQLErrorInfo,
   TCList,
   TCListProps,
   TPaginationProps,
@@ -140,8 +140,9 @@ CategoryList.withGetProps = (originalGetProps?: TGetStaticProps, options?: {
     const slug = (contextSlug && typeof contextSlug === 'string') && contextSlug;
     const client = getGraphQLClient();
 
-    const category = slug && (await client?.getProductCategoryBySlug(slug).catch(e => {
-      console.error(`CategoryList::getProps for slug ${slug} get category error: `, getGraphQLErrorInfo(e))
+    const category = slug && (await client?.getProductCategoryBySlug(slug).catch((e: TGraphQLErrorInfo) => {
+      if (e.statusCode !== 404)
+        console.error(`CategoryList::getProps for slug ${slug} get category error: `, e);
     })) || null;
 
     if (!category) {
@@ -169,7 +170,7 @@ CategoryList.withGetProps = (originalGetProps?: TGetStaticProps, options?: {
         }`,
       options?.customFragmentName ?? 'ProductShortFragment'
     ).catch(e => {
-      console.error(`CategoryList::getProps for slug ${slug} get firstPage error: `, getGraphQLErrorInfo(e));
+      console.error(`CategoryList::getProps for slug ${slug} get firstPage error: `, e);
     })) || null;
 
     return {

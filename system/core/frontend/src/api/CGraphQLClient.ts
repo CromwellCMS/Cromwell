@@ -56,12 +56,11 @@ import { getServiceSecret } from '../helpers/getServiceSecret';
 import { fetch as isomorphicFetch } from '../helpers/isomorphicFetch';
 
 export type TGraphQLErrorInfo = {
-    graphQLErrors: any;
-    networkError: any;
-    resultErrors: any;
-    message: string;
-    extraInfo: any;
-    stack: any;
+    message?: string;
+    status?: string;
+    statusCode?: number;
+    path?: string;
+    stacktrace?: string;
 }
 
 export type TGetFilteredOptions<TEntity, TFilter> = {
@@ -71,14 +70,13 @@ export type TGetFilteredOptions<TEntity, TFilter> = {
     customFragmentName?: string;
 }
 
-export const getGraphQLErrorInfo = (error: any): TGraphQLErrorInfo => {
+const getGraphQLErrorInfo = (error: any): TGraphQLErrorInfo => {
     return {
-        graphQLErrors: error?.graphQLErrors ? JSON.stringify(error?.graphQLErrors, null, 2) : undefined,
-        networkError: error?.networkError,
         message: error?.message,
-        extraInfo: error?.extraInfo,
-        resultErrors: error?.networkError?.result ? JSON.stringify(error?.networkError?.result, null, 2) : undefined,
-        stack: error?.stack,
+        status: error?.status,
+        statusCode: error?.statusCode,
+        path: error?.path,
+        stacktrace: error?.stacktrace,
     }
 }
 
@@ -201,17 +199,27 @@ export class CGraphQLClient {
 
     /** @internal */
     private async handleError<T>(func: () => Promise<T>): Promise<T> {
-        try {
-            return await func();
-        } catch (e: any) {
-            Object.values(this.onErrorCallbacks).forEach(cb => cb(getGraphQLErrorInfo(e)));
+        let error;
+        let data;
 
-            if (e?.message?.includes?.('Access denied') && !isServer()) {
+        try {
+            data = await func();
+            error = (data as any).errors?.[0];
+        } catch (e: any) {
+            error = e?.graphQLErrors?.[0];
+        }
+
+        if (error) {
+            const errInfo = getGraphQLErrorInfo(error);
+            Object.values(this.onErrorCallbacks).forEach(cb => cb(errInfo));
+
+            if (errInfo.statusCode === 401 || errInfo.statusCode === 403) {
                 Object.values(this.onUnauthorizedCallbacks).forEach(cb => cb?.());
             }
-
-            throw e;
+            throw error;
         }
+
+        return data;
     }
 
     /** @internal */
@@ -223,8 +231,7 @@ export class CGraphQLClient {
             // Just to make sure all object references inside are new:
             return clone({ proto: true })(data);
         }
-        const errors = res?.errors;
-        return errors ?? null;
+        return null;
     }
 
     /**

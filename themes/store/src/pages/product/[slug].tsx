@@ -1,5 +1,5 @@
 import { removeUndefined, TAttribute, TGetStaticProps, TProduct } from '@cromwell/core';
-import { CContainer, CPlugin, CText, EntityHead, getGraphQLClient, getGraphQLErrorInfo } from '@cromwell/core-frontend';
+import { CContainer, CPlugin, CText, EntityHead, getGraphQLClient, TGraphQLErrorInfo } from '@cromwell/core-frontend';
 import { MuiBreadcrumbs, MuiProductReviews } from '@cromwell/toolkit-commerce';
 import clsx from 'clsx';
 import React, { ReactElement } from 'react';
@@ -67,8 +67,9 @@ const getProps: TGetStaticProps<ProductProps> = async (context) => {
   const client = getGraphQLClient();
 
   const product = (typeof slug === 'string' &&
-    await client.getProductBySlug(slug).catch(error => {
-      console.error('Product::getStaticProps', getGraphQLErrorInfo(error));
+    await client.getProductBySlug(slug).catch((error: TGraphQLErrorInfo) => {
+      if (error.statusCode !== 404)
+        console.error('Product::getStaticProps', error);
     })) || null;
 
   if (!product) {
@@ -77,8 +78,8 @@ const getProps: TGetStaticProps<ProductProps> = async (context) => {
     }
   }
 
-  const attributes = (await client.getAttributes().catch(error => {
-    console.error('Product::getStaticProps', getGraphQLErrorInfo(error));
+  const attributes = (await client.getAttributes().catch((error: TGraphQLErrorInfo) => {
+    console.error('Product::getStaticProps', error);
   })) || null;
 
   return {

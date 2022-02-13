@@ -4,7 +4,6 @@ import {
   CText,
   getCStore,
   getGraphQLClient,
-  getGraphQLErrorInfo,
   getRestApiClient,
   useUserInfo,
 } from '@cromwell/core-frontend';
@@ -118,7 +117,7 @@ const Account: TPageWithLayout = () => {
       toast.success('Saved!');
     } catch (e) {
       toast.error('Failed to save');
-      console.error(getGraphQLErrorInfo(e))
+      console.error(e)
     }
   }
 

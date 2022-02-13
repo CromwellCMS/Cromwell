@@ -15,6 +15,7 @@ import {
     User,
     UserRepository,
 } from '@cromwell/core-backend';
+import { HttpException, HttpStatus } from '@nestjs/common';
 import { GraphQLJSONObject } from 'graphql-type-json';
 import { Arg, Authorized, Ctx, FieldResolver, Int, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
@@ -82,14 +83,14 @@ export class PostResolver {
     @Query(() => Post)
     async [getOneBySlugPath](@Arg("slug") slug: string, @Ctx() ctx: TGraphQLContext): Promise<Post | undefined> {
         const post = this.filterDrafts([await this.repository.getPostBySlug(slug)], ctx)[0];
-        if (!post) throw new Error(`Post ${slug} not found!`);
+        if (!post) throw new HttpException(`Post ${slug} not found!`, HttpStatus.NOT_FOUND);
         return post;
     }
 
     @Query(() => Post)
     async [getOneByIdPath](@Arg("id", () => Int) id: number, @Ctx() ctx: TGraphQLContext): Promise<Post | undefined> {
         const post = this.filterDrafts([await this.repository.getPostById(id)], ctx)[0];
-        if (!post) throw new Error(`Post ${id} not found!`);
+        if (!post) throw new HttpException(`Post ${id} not found!`, HttpStatus.NOT_FOUND);
         return post;
     }
 

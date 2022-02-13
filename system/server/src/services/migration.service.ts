@@ -54,7 +54,7 @@ import {
     User,
     UserRepository,
 } from '@cromwell/core-backend';
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import cryptoRandomString from 'crypto-random-string';
 import { Container, Service } from 'typedi';
 import { getCustomRepository } from 'typeorm';
@@ -1213,7 +1213,7 @@ export class MigrationService {
         if (!inputs?.[0]) return;
         try {
             const entity = await getCmsEntity();
-            if (!entity) throw new Error('importCmsSettings: !entity');
+            if (!entity) throw new HttpException('CMS settings not found', HttpStatus.INTERNAL_SERVER_ERROR);
             entity.publicSettings = this.parseJson(inputs[0].publicSettings);
             entity.adminSettings = this.parseJson(inputs[0].adminSettings);
             entity.internalSettings = this.parseJson(inputs[0].internalSettings);

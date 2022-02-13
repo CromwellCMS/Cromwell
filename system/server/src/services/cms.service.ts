@@ -363,7 +363,7 @@ ${content}
 
     public async updateCmsSettings(input: AdminCmsConfigDto): Promise<AdminCmsConfigDto> {
         const entity = await getCmsEntity();
-        if (!entity) throw new Error('!entity');
+        if (!entity) throw new HttpException('CMS settings not found', HttpStatus.INTERNAL_SERVER_ERROR);
 
         if (typeof input.currencies === 'string') {
             try {

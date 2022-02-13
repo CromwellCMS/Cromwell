@@ -1,4 +1,5 @@
 import { TPackageCromwellConfig, TThemeConfig, TThemeEntity } from '@cromwell/core';
+import { HttpException, HttpStatus } from '@nestjs/common';
 import { getCustomRepository } from 'typeorm';
 
 import { GenericTheme } from './generic-entities';
@@ -30,7 +31,7 @@ export const getThemeConfigs = async (themeName: string): Promise<TAllThemeConfi
         themeInfo: TPackageCromwellConfig | null = null;
 
     if (!themeName) {
-        throw new Error('getThemeConfigs: !cmsSettings?.themeName')
+        throw new HttpException(`getThemeConfigs: you must provide themeName`, HttpStatus.BAD_REQUEST);
     }
 
     let theme;

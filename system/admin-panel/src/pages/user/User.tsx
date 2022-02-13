@@ -16,7 +16,6 @@ import { toast } from '../../components/toast/toast';
 import { userPageInfo } from '../../constants/PageInfos';
 import { userRoles } from '../../constants/roles';
 import { getCustomMetaFor, getCustomMetaKeysFor, RenderCustomFields } from '../../helpers/customFields';
-import { handleOnSaveError } from '../../helpers/handleErrors';
 import commonStyles from '../../styles/common.module.scss';
 import styles from './User.module.scss';
 
@@ -132,7 +131,6 @@ export default function UserPage() {
                 setUserData(newData);
             } catch (e) {
                 toast.error('Failed to create user');
-                handleOnSaveError(e);
                 console.error(e);
             }
 
@@ -150,7 +148,6 @@ export default function UserPage() {
 
             } catch (e) {
                 toast.error('Failed to save');
-                handleOnSaveError(e);
                 console.error(e);
             }
         }

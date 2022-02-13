@@ -1,4 +1,5 @@
 import { EDBEntity, getRandStr, getStoreItem, TBasePageEntityInput, TPagedList, TPagedParams } from '@cromwell/core';
+import { HttpException, HttpStatus } from '@nestjs/common';
 import { BaseEntity, ConnectionOptions, getManager, SelectQueryBuilder } from 'typeorm';
 
 import { entityMetaRepository } from '../helpers/entity-meta';
@@ -115,7 +116,7 @@ export const checkEntitySlug = async <T extends BasePageEntity>(entity: T, Entit
                 }
             } else {
                 if (match.id !== entity.id) {
-                    throw new Error('Slug is not unique');
+                    throw new HttpException('Slug is not unique', HttpStatus.BAD_REQUEST);
                 }
             }
         }

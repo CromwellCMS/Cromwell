@@ -2,7 +2,7 @@ import { Catch, ExceptionFilter as NestExceptionFilter, HttpException, Arguments
 import { FastifyReply } from "fastify";
 
 @Catch(HttpException)
-export class ExceptionFilter implements NestExceptionFilter {
+export class RestExceptionFilter implements NestExceptionFilter {
     public async catch(exception: HttpException, host: ArgumentsHost) {
         const ctx = host.switchToHttp();
         const response = ctx.getResponse<FastifyReply>();

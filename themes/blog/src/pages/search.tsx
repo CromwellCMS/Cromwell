@@ -8,7 +8,7 @@ import {
     TPostFilter,
     TTag,
 } from '@cromwell/core';
-import { CContainer, CList, getGraphQLClient, getGraphQLErrorInfo, TCList } from '@cromwell/core-frontend';
+import { CContainer, CList, getGraphQLClient, TCList } from '@cromwell/core-frontend';
 import { Autocomplete, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from '@mui/material';
 import React, { useRef, useState } from 'react';
 import { debounce } from 'throttle-debounce';
@@ -161,14 +161,14 @@ export const getStaticProps: TGetStaticProps<SearchPageProps> = async () => {
     try {
         posts = await handleGetFilteredPosts({ pageSize: 20, order: 'DESC', orderBy: 'publishDate' });
     } catch (e) {
-        console.error('SearchPage::getStaticProps', getGraphQLErrorInfo(e))
+        console.error('SearchPage::getStaticProps', e)
     }
 
     let tags: TTag[] | undefined;
     try {
         tags = (await client?.getTags({ pageSize: 99999 }))?.elements;
     } catch (e) {
-        console.error('SearchPage::getStaticProps', getGraphQLErrorInfo(e))
+        console.error('SearchPage::getStaticProps', e)
     }
     return {
         props: removeUndefined({

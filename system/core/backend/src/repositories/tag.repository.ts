@@ -64,7 +64,6 @@ export class TagRepository extends BaseRepository<Tag> {
     async updateTag(id: number, inputData: TTagInput): Promise<Tag> {
         logger.log('TagRepository::updateTag id: ' + id);
         const tag = await this.getById(id);
-        if (!tag) throw new Error(`Tag ${id} not found!`);
 
         await this.handleBaseTagInput(tag, inputData, 'update');
         await this.save(tag);

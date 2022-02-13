@@ -10,6 +10,7 @@ import {
     TProductRating,
     TProductReview,
 } from '@cromwell/core';
+import { HttpException, HttpStatus } from '@nestjs/common';
 import { Brackets, EntityRepository, getCustomRepository, SelectQueryBuilder } from 'typeorm';
 
 import {
@@ -95,6 +96,7 @@ export class ProductRepository extends BaseRepository<Product> {
         }
         qb.where(`${this.metadata.tablePath}.id = :id`, { id });
         const product = await qb.getOne();
+        if (!product) throw new HttpException(`Product ${id} not found!`, HttpStatus.NOT_FOUND);
 
         await this.applyGetProductOptions(product, options);
         return product;
@@ -108,6 +110,7 @@ export class ProductRepository extends BaseRepository<Product> {
             this.applyGetProductRating(qb);
         }
         const product = await qb.where(`${this.metadata.tablePath}.slug = :slug`, { slug }).getOne();
+        if (!product) throw new HttpException(`Product ${slug} not found!`, HttpStatus.NOT_FOUND);
 
         await this.applyGetProductOptions(product, options);
         return product;
@@ -245,7 +248,7 @@ export class ProductRepository extends BaseRepository<Product> {
             where: { id },
             relations: ['categories', 'attributeValues']
         });
-        if (!product) throw new Error(`Product ${id} not found!`);
+        if (!product) throw new HttpException(`Product ${id} not found!`, HttpStatus.NOT_FOUND);
 
         await this.handleProductInput(product, updateProduct, 'update');
         await this.save(product);

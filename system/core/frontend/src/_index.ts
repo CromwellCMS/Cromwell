@@ -34,7 +34,7 @@ export {
     AppPropsContext,
     useAppPropsContext,
 } from './constants';
-export { getGraphQLClient, TCGraphQLClient, TGraphQLErrorInfo, getGraphQLErrorInfo } from './api/CGraphQLClient';
+export { getGraphQLClient, TCGraphQLClient, TGraphQLErrorInfo } from './api/CGraphQLClient';
 export { getRestApiClient, TCRestApiClient, TErrorInfo, TRequestOptions } from './api/CRestApiClient';
 export * from './api/CentralServerClient';
 export * from './helpers/hooks';

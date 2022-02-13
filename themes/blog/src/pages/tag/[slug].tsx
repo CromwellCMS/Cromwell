@@ -14,9 +14,9 @@ import {
     CList,
     EntityHead,
     getGraphQLClient,
-    getGraphQLErrorInfo,
     LoadBox,
     TCList,
+    TGraphQLErrorInfo,
 } from '@cromwell/core-frontend';
 import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import { useRouter } from 'next/router';
@@ -163,14 +163,11 @@ export const getStaticProps: TGetStaticProps<TagPageProps> = async (context) => 
     const slug = context?.params?.slug ?? null;
     const client = getGraphQLClient();
 
-    let tag: TTag | undefined;
-    try {
-        if (slug && typeof slug === 'string') {
-            tag = await client?.getTagBySlug(slug);
-        }
-    } catch (e) {
-        console.error(getGraphQLErrorInfo(e))
-    }
+    const tag = (typeof slug === 'string' &&
+        await client.getTagBySlug(slug).catch((error: TGraphQLErrorInfo) => {
+            if (error.statusCode !== 404)
+                console.error('TagPage::getStaticProps', error);
+        })) || null;
 
     if (!tag) {
         return {
@@ -184,7 +181,7 @@ export const getStaticProps: TGetStaticProps<TagPageProps> = async (context) => 
             tagIds: [tag.id]
         }) : {};
     } catch (e) {
-        console.error('TagPage::getStaticProps', getGraphQLErrorInfo(e))
+        console.error('TagPage::getStaticProps', e);
     }
 
     return {

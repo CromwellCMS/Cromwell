@@ -1,6 +1,6 @@
 import { DocumentNode, gql } from '@apollo/client';
 import { TPagedParams, TProduct } from '@cromwell/core';
-import { getGraphQLClient, getGraphQLErrorInfo, LoadBox } from '@cromwell/core-frontend';
+import { getGraphQLClient, LoadBox } from '@cromwell/core-frontend';
 import clsx from 'clsx';
 import React, { useRef, useState, useCallback } from 'react';
 import { debounce } from 'throttle-debounce';
@@ -58,7 +58,7 @@ export function ProductSearch(props: ProductSearchProps) {
       nameSearch: productName
     }
     const client = getGraphQLClient();
-    
+
     if (!isLoading) setIsLoading(true);
 
     const fragment = props.customFragment ?? gql`
@@ -98,7 +98,7 @@ export function ProductSearch(props: ProductSearchProps) {
       if (products) setSearchItems(products);
 
     } catch (e) {
-      console.error(getGraphQLErrorInfo(e));
+      console.error(e);
     }
 
     setIsLoading(false);

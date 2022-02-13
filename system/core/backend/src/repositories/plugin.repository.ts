@@ -1,9 +1,10 @@
 import { TPagedList, TPagedParams, TPluginEntityInput } from '@cromwell/core';
+import { HttpException, HttpStatus } from '@nestjs/common';
 import { EntityRepository } from 'typeorm';
 
-import { PluginEntity } from '../models/entities/plugin.entity';
-import { getLogger } from '../helpers/logger';
 import { checkEntitySlug, handleBaseInput } from '../helpers/base-queries';
+import { getLogger } from '../helpers/logger';
+import { PluginEntity } from '../models/entities/plugin.entity';
 import { BaseRepository } from './base.repository';
 
 const logger = getLogger();
@@ -56,7 +57,7 @@ export class PluginRepository extends BaseRepository<PluginEntity> {
     async updatePlugin(id: number, updatePlugin: TPluginEntityInput): Promise<PluginEntity> {
         logger.log('PluginRepository::updatePlugin id: ' + id);
         const plugin = await this.getById(id);
-        if (!plugin) throw new Error(`Plugin ${id} not found!`);
+        if (!plugin) throw new HttpException(`Plugin ${id} not found!`, HttpStatus.NOT_FOUND);
 
         await this.handleBasePluginInput(plugin, updatePlugin, 'update');
         await this.save(plugin);

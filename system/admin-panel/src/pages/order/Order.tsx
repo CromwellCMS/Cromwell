@@ -9,7 +9,6 @@ import { Link, useParams } from 'react-router-dom';
 import { toast } from '../../components/toast/toast';
 import { orderStatuses } from '../../constants/order';
 import { couponPageInfo, productPageInfo } from '../../constants/PageInfos';
-import { handleOnSaveError } from '../../helpers/handleErrors';
 import { useForceUpdate } from '../../helpers/forceUpdate';
 import { NumberFormatCustom } from '../../helpers/NumberFormatCustom';
 import { toLocaleDateTimeString } from '../../helpers/time';
@@ -133,7 +132,6 @@ const OrderPage = () => {
                 toast.success('Saved!');
             } catch (e) {
                 toast.error('Failed to save');
-                handleOnSaveError(e);
                 console.error(e)
             }
         }

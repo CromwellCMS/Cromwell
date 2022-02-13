@@ -19,7 +19,8 @@ import fastify from 'fastify';
 import getPort from 'get-port';
 import { buildSchema } from 'type-graphql';
 
-import { ExceptionFilter } from './filters/exception.filter';
+import { getErrorFormatter } from './filters/apollo-exception.filter';
+import { RestExceptionFilter } from './filters/rest-exception.filter';
 import { connectDatabase } from './helpers/connect-database';
 import { corsHandler } from './helpers/cors-handler';
 import { getResolvers } from './helpers/get-resolvers';
@@ -65,8 +66,10 @@ async function bootstrap(): Promise<void> {
             envMode.envMode === 'dev' ?
                 ApolloServerPluginLandingPageLocalDefault({ footer: false }) :
                 ApolloServerPluginLandingPageDisabled()
-        ]
+        ],
+        formatError: getErrorFormatter(envMode),
     });
+
     await apolloServer.start();
 
     fastifyInstance.register(apolloServer.createHandler({
@@ -86,7 +89,7 @@ async function bootstrap(): Promise<void> {
     );
 
     app.setGlobalPrefix(apiPrefix);
-    app.useGlobalFilters(new ExceptionFilter());
+    app.useGlobalFilters(new RestExceptionFilter());
 
     // Plugins, extensions, etc.
     fastifyInstance.register(require('fastify-cookie'), {

@@ -31,7 +31,6 @@ jest.mock('@cromwell/core-frontend', () => {
     getCStore: () => {
       return originalModule.getCStore({ local: true, apiClient: {} });
     },
-    getGraphQLErrorInfo: (err) => err,
     LoadBox: () => null,
   }
 });

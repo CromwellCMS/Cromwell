@@ -80,7 +80,6 @@ export class CouponRepository extends BaseRepository<Coupon> {
     async updateCoupon(id: number, inputData: TCouponInput): Promise<Coupon> {
         logger.log('CouponRepository::updateCoupon id: ' + id);
         const coupon = await this.getById(id);
-        if (!coupon) throw new Error(`Coupon ${id} not found!`);
 
         await this.handleBaseCouponInput(coupon, inputData, 'update');
         await this.save(coupon);

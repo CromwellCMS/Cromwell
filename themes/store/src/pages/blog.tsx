@@ -8,7 +8,7 @@ import {
   TPostFilter,
   TTag,
 } from '@cromwell/core';
-import { CContainer, CList, getGraphQLClient, getGraphQLErrorInfo, TCList } from '@cromwell/core-frontend';
+import { CContainer, CList, getGraphQLClient, TCList } from '@cromwell/core-frontend';
 import { MuiPagination } from '@cromwell/toolkit-commerce';
 import { Autocomplete, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
@@ -147,14 +147,14 @@ export const getStaticProps: TGetStaticProps<BlogProps> = async () => {
   try {
     posts = await handleGetFilteredPosts({ pageSize: 20, order: 'DESC', orderBy: 'publishDate' });
   } catch (e) {
-    console.error('BlogPage::getStaticProps', getGraphQLErrorInfo(e))
+    console.error('BlogPage::getStaticProps', e)
   }
 
   let tags: TTag[] | undefined;
   try {
-    tags = (await client?.getTags({ pageSize: 99999 }))?.elements;
+    tags = (await client?.getTags({ pageSize: 10000 }))?.elements;
   } catch (e) {
-    console.error('BlogPage::getStaticProps', getGraphQLErrorInfo(e))
+    console.error('BlogPage::getStaticProps', e)
   }
   return {
     props: removeUndefined({

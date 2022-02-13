@@ -10,7 +10,6 @@ import { toast } from '../../components/toast/toast';
 import { productPageInfo } from '../../constants/PageInfos';
 import { getCustomMetaFor, getCustomMetaKeysFor, RenderCustomFields } from '../../helpers/customFields';
 import { useForceUpdate } from '../../helpers/forceUpdate';
-import { handleOnSaveError } from '../../helpers/handleErrors';
 import { resetSelected } from '../../redux/helpers';
 import { store } from '../../redux/store';
 import commonStyles from '../../styles/common.module.scss';
@@ -235,7 +234,6 @@ const ProductPage = () => {
                     }
                 } catch (e) {
                     toast.error('Failed to create');
-                    handleOnSaveError(e);
                     console.error(e);
                 }
                 setIsLoading(false);
@@ -247,7 +245,6 @@ const ProductPage = () => {
                     toast.success('Updated product');
                 } catch (e) {
                     toast.error('Failed to update');
-                    handleOnSaveError(e);
                     console.error(e);
                 }
             }

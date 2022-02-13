@@ -92,7 +92,6 @@ export class PostRepository extends BaseRepository<Post> {
     async updatePost(id: number, updatePost: TPostInput): Promise<Post> {
         logger.log('PostRepository::updatePost id: ' + id);
         const post = await this.getById(id);
-        if (!post) throw new Error(`Post ${id} not found!`);
 
         await this.handleBasePostInput(post, updatePost, 'update');
         await this.save(post);

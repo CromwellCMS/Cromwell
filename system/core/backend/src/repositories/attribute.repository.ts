@@ -1,13 +1,14 @@
 import { TAttribute, TAttributeInput } from '@cromwell/core';
+import { HttpException, HttpStatus } from '@nestjs/common';
 import { EntityRepository } from 'typeorm';
 
 import { checkEntitySlug, handleBaseInput, handleCustomMetaInput } from '../helpers/base-queries';
 import { getLogger } from '../helpers/logger';
-import { Attribute } from '../models/entities/attribute.entity';
 import { AttributeToProduct } from '../models/entities/attribute-product.entity';
 import { AttributeValue } from '../models/entities/attribute-value.entity';
-import { BaseRepository } from './base.repository';
+import { Attribute } from '../models/entities/attribute.entity';
 import { Product } from '../models/entities/product.entity';
+import { BaseRepository } from './base.repository';
 
 const logger = getLogger();
 
@@ -25,10 +26,7 @@ export class AttributeRepository extends BaseRepository<Attribute> {
 
     async getAttribute(id: number): Promise<Attribute | undefined> {
         logger.log('AttributeRepository::getAttribute; id: ' + id);
-        return this.findOne({
-            where: { id },
-            relations: ['values']
-        });
+        return this.getById(id, ['values']);
     }
 
     async getAttributeByKey(key: string): Promise<Attribute | undefined> {
@@ -116,7 +114,7 @@ export class AttributeRepository extends BaseRepository<Attribute> {
         logger.log('AttributeRepository::updateAttribute; id: ' + id);
 
         const attribute = await this.getById(id, ['values']);
-        if (!attribute) throw new Error(`Attribute ${id} not found!`);
+        if (!attribute) throw new HttpException(`Attribute ${id} not found!`, HttpStatus.NOT_FOUND);
 
         await this.handleAttributeInput(attribute, updateAttribute, 'update');
         await this.save(attribute);

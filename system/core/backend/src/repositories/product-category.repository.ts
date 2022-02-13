@@ -8,10 +8,10 @@ import {
     TProductCategory,
     TProductCategoryInput,
 } from '@cromwell/core';
+import { HttpException, HttpStatus } from '@nestjs/common';
 import {
     Brackets,
     ConnectionOptions,
-    DeleteQueryBuilder,
     EntityRepository,
     getConnection,
     getCustomRepository,
@@ -20,6 +20,7 @@ import {
 } from 'typeorm';
 
 import {
+    applyBaseFilter,
     applyGetManyFromOne,
     applyGetPaged,
     checkEntitySlug,
@@ -29,17 +30,16 @@ import {
     handleBaseInput,
     handleCustomMetaInput,
     wrapInQuotes,
-    applyBaseFilter,
 } from '../helpers/base-queries';
 import { entityMetaRepository } from '../helpers/entity-meta';
 import { getLogger } from '../helpers/logger';
 import { ProductCategory } from '../models/entities/product-category.entity';
+import { BaseFilterInput } from '../models/filters/base-filter.filter';
 import { ProductCategoryFilterInput } from '../models/filters/product-category.filter';
 import { PagedParamsInput } from '../models/inputs/paged-params.input';
 import { CreateProductCategory } from '../models/inputs/product-category.create';
 import { UpdateProductCategory } from '../models/inputs/product-category.update';
 import { ProductRepository } from './product.repository';
-import { BaseFilterInput } from '../models/filters/base-filter.filter';
 
 const logger = getLogger();
 
@@ -72,20 +72,20 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
 
     async getProductCategoryById(id: number): Promise<ProductCategory> {
         logger.log('ProductCategoryRepository::getProductCategoryById id: ' + id);
-        const product = await this.findOne({
+        const category = await this.findOne({
             where: { id }
         });
-        if (!product) throw new Error(`ProductCategory ${id} not found!`);
-        return product;
+        if (!category) throw new HttpException(`ProductCategory ${id} not found!`, HttpStatus.NOT_FOUND);
+        return category;
     }
 
     async getProductCategoryBySlug(slug: string): Promise<ProductCategory> {
         logger.log('ProductCategoryRepository::getProductCategoryBySlug slug: ' + slug);
-        const product = await this.findOne({
+        const category = await this.findOne({
             where: { slug }
         });
-        if (!product) throw new Error(`ProductCategory ${slug} not found!`);
-        return product;
+        if (!category) throw new HttpException(`ProductCategory ${slug} not found!`, HttpStatus.NOT_FOUND);
+        return category;
     }
 
     async handleProductCategoryInput(productCategory: ProductCategory, input: TProductCategoryInput, action: 'update' | 'create') {
@@ -125,7 +125,7 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
     async updateProductCategory(id: number, updateProductCategory: UpdateProductCategory): Promise<ProductCategory> {
         logger.log('ProductCategoryRepository::updateProductCategory id: ' + id);
         const productCategory = await this.getProductCategoryById(id);
-        if (!productCategory) throw new Error(`ProductCategory ${id} not found!`);
+        if (!productCategory) throw new HttpException(`ProductCategory ${id} not found!`, HttpStatus.NOT_FOUND);
 
         await this.handleProductCategoryInput(productCategory, updateProductCategory, 'create');
         await this.save(productCategory);
@@ -135,7 +135,7 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
     async deleteProductCategory(id: number): Promise<boolean> {
         logger.log('ProductCategoryRepository::deleteProductCategory id: ' + id);
         const productCategory = await this.getProductCategoryById(id);
-        if (!productCategory) throw new Error('Product category not found');
+        if (!productCategory) throw new HttpException(`ProductCategory ${id} not found!`, HttpStatus.NOT_FOUND);
 
         const children = await this.getChildCategories(productCategory);
         if (children?.length) {
@@ -164,7 +164,7 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
             if (input.ids?.length) {
                 qb.andWhere(`${this.metadata.tablePath}.id IN (:...ids)`, { ids: input.ids ?? [] })
             } else {
-                throw new Error(`applyDeleteMany: You have to specify ids to delete for ${this.metadata.tablePath}`);
+                throw new HttpException(`applyDeleteMany: You have to specify ids to delete for ${this.metadata.tablePath}`, HttpStatus.BAD_REQUEST);
             }
         }
 

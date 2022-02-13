@@ -1,5 +1,5 @@
 import { removeUndefined, TGetStaticProps, TPost } from '@cromwell/core';
-import { CContainer, EntityHead, getGraphQLClient, getGraphQLErrorInfo, Link, LoadBox } from '@cromwell/core-frontend';
+import { CContainer, EntityHead, getGraphQLClient, Link, LoadBox, TGraphQLErrorInfo } from '@cromwell/core-frontend';
 import { useRouter } from 'next/router';
 import React from 'react';
 
@@ -89,18 +89,12 @@ export default BlogPostPage;
 export const getStaticProps: TGetStaticProps<BlogPostProps> = async (context) => {
     const slug = context?.params?.slug ?? null;
     const client = getGraphQLClient();
-    let post: TPost | undefined = undefined;
-
-
-    if (slug && typeof slug === 'string') {
-        try {
-            post = await client?.getPostBySlug(slug);
-        } catch (e) {
-            console.error('BlogPostPage::getStaticProps', getGraphQLErrorInfo(e))
-        }
-    } else {
-        console.error('BlogPostPage::getStaticProps: !pid')
-    }
+    
+    const post = (typeof slug === 'string' &&
+        await client.getPostBySlug(slug).catch((error: TGraphQLErrorInfo) => {
+            if (error.statusCode !== 404)
+                console.error('BlogPostPage::getStaticProps', error);
+        })) || null;
 
     if (!post) {
         return {

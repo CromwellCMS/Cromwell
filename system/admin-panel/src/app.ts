@@ -98,11 +98,11 @@ import { store } from './redux/store';
 
     restClient?.onError(onRestApiError, 'app');
 
-    // const onGraphQlError = (info) => {
-    //     if (info?.message)
-    //         toast.error(info.message);
-    // }
-    // graphClient?.onError(onGraphQlError, 'app');
+    const onGraphQlError = (info) => {
+        if (info?.message)
+            toast.error(info.message);
+    }
+    graphClient?.onError(onGraphQlError, 'app');
 
     if (isInstalled) {
         if (window.location.pathname.includes(welcomePageInfo.route)) {

@@ -1,5 +1,5 @@
 import { removeUndefined, TGetStaticProps, TProductCategory } from '@cromwell/core';
-import { getGraphQLErrorInfo, useAppPropsContext } from '@cromwell/core-frontend';
+import { useAppPropsContext } from '@cromwell/core-frontend';
 import clsx from 'clsx';
 import React from 'react';
 
@@ -119,7 +119,7 @@ Breadcrumbs.withGetProps = (originalGetProps?: TGetStaticProps) => {
         ...(((originProps as any).props ?? {}) as Record<string, any>),
         ccom_breadcrumbs: removeUndefined(slug && await breadcrumbsGetData({ productSlug: slug })
           .catch(e => {
-            console.error('Breadcrumbs getData error: ', getGraphQLErrorInfo(e));
+            console.error('Breadcrumbs getData error: ', e);
             return null;
           })) || null,
       }

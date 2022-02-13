@@ -1,4 +1,4 @@
-import { TCustomEntity, TDeleteManyInput, TPagedList, TPagedParams, TCustomEntityInput } from '@cromwell/core';
+import { TCustomEntity, TCustomEntityInput, TDeleteManyInput, TPagedList, TPagedParams } from '@cromwell/core';
 import { EntityRepository, SelectQueryBuilder } from 'typeorm';
 
 import { checkEntitySlug, getPaged, handleBaseInput, handleCustomMetaInput } from '../helpers/base-queries';
@@ -61,7 +61,6 @@ export class CustomEntityRepository extends BaseRepository<CustomEntity> {
     async updateCustomEntity(id: number, inputData: TCustomEntityInput): Promise<CustomEntity> {
         logger.log('CustomEntityRepository::updateCustomEntity id: ' + id);
         const customEntity = await this.getById(id);
-        if (!customEntity) throw new Error(`CustomEntity ${id} not found!`);
 
         await this.handleBaseCustomEntityInput(customEntity, inputData, 'update');
         await this.save(customEntity);

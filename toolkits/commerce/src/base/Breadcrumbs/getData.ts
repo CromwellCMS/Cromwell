@@ -1,6 +1,6 @@
 import { DocumentNode, gql } from '@apollo/client';
 import { TProductCategory } from '@cromwell/core';
-import { getGraphQLClient, getGraphQLErrorInfo } from '@cromwell/core-frontend';
+import { getGraphQLClient, TGraphQLErrorInfo } from '@cromwell/core-frontend';
 
 import { BreadcrumbsData } from './Breadcrumbs';
 
@@ -31,9 +31,15 @@ export const breadcrumbsGetData = async (options: BreadcrumbsGetDataOptions): Pr
             mainCategoryId
         }`;
 
-    const productShort = await (productId ? client.getProductById(productId, productFragment,
-        'ProductListFragment') : productSlug && client.getProductBySlug(productSlug, productFragment,
-            'ProductListFragment')) || undefined;
+    const getter = productId ? () => client.getProductById(productId, productFragment,
+        'ProductListFragment') : productSlug ?
+        () => client.getProductBySlug(productSlug, productFragment,
+            'ProductListFragment') : undefined;
+
+    const productShort = await getter?.().catch((error: TGraphQLErrorInfo) => {
+        if (error.statusCode !== 404)
+            console.error('breadcrumbsGetData:', error);
+    }) || undefined;
 
     if (!productShort) return;
 
@@ -130,6 +136,6 @@ export const breadcrumbsGetData = async (options: BreadcrumbsGetDataOptions): Pr
             categories: breadCrumbs.reverse(),
         }
     } catch (error) {
-        console.error(getGraphQLErrorInfo(error));
+        console.error(error);
     }
 }
