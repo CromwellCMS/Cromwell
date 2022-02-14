@@ -1,9 +1,8 @@
 import { gql } from '@apollo/client';
 import {
-    ECommonComponentNames,
-    getCommonComponent,
+    ESharedComponentNames,
     getRandStr,
-    TAttribute,
+    getSharedComponent,
     TFrontendPluginProps,
     TGetPluginStaticProps,
     TPagedList,
@@ -22,7 +21,6 @@ const ProductShowcase = (props: TFrontendPluginProps<ProductShowcaseProps>): JSX
     const galleryId = useRef(`ProductShowcase_${getRandStr(5)}`);
     const classes = useStyles();
     const [products, setProducts] = useState<TPagedList<TProduct> | undefined>();
-    const [attributes, setAttributes] = useState<TAttribute[] | undefined>();
 
     const getData = async () => {
         const slug = props.data?.slug;
@@ -59,13 +57,6 @@ const ProductShowcase = (props: TFrontendPluginProps<ProductShowcaseProps>): JSX
         } catch (e: any) {
             console.error('ProductShowcase::getStaticProps', e, JSON.stringify(e?.result?.errors ?? null), null, 2)
         }
-
-        try {
-            const attributes: TAttribute[] | undefined = await client?.getAttributes();
-            setAttributes(attributes)
-        } catch (e) {
-            console.error('Product::getStaticProps', e)
-        }
     }
 
     useEffect(() => {
@@ -73,11 +64,11 @@ const ProductShowcase = (props: TFrontendPluginProps<ProductShowcaseProps>): JSX
     }, []);
 
     // Try to load component if a Theme has already defined common Product view
-    let ProductComp = getCommonComponent(ECommonComponentNames.ProductCard);
+    let ProductComp = getSharedComponent(ESharedComponentNames.ProductCard);
     if (!ProductComp) {
         // Default view otherwise
-        ProductComp = (props: { data?: TProduct | undefined }): JSX.Element => {
-            const p = props.data;
+        ProductComp = (props: { product?: TProduct | undefined }): JSX.Element => {
+            const p = props.product;
             if (p) return (
                 <div key={p.id}>
                     <img src={p?.mainImage ?? undefined} width="300px" />
@@ -99,8 +90,8 @@ const ProductShowcase = (props: TFrontendPluginProps<ProductShowcaseProps>): JSX
                     slides: products?.elements?.map(product => {
                         return (
                             <div className={classes.listItem}>
-                                {ProductComp && <ProductComp data={product}
-                                    attributes={attributes} key={product.id} />}
+                                {ProductComp && <ProductComp product={product}
+                                    key={product.id} />}
                             </div>
                         )
                     }) ?? [],

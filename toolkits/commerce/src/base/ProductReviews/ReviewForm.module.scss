@@ -1,0 +1,26 @@
+@import "../common.module.scss";
+
+.ReviewForm {
+  @include paper;
+  margin: 20px auto;
+  padding: 15px;
+  max-width: 600px;
+  box-sizing: border-box;
+
+  .reviewInput {
+    margin-bottom: 20px;
+  }
+}
+
+.reviewFormTitle {
+  font-size: 24px;
+  margin-bottom: 25px;
+}
+
+.submitBtnWrapper {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+}

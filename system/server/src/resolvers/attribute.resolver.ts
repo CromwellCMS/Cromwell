@@ -58,5 +58,4 @@ export class AttributeResolver {
     async customMeta(@Root() entity: Attribute, @Arg("keys", () => [String]) fields: string[]): Promise<any> {
         return entityMetaRepository.getEntityMetaByKeys(EDBEntity.Attribute, entity.id, fields);
     }
-
 }

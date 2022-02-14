@@ -46,7 +46,7 @@ describe('theme-config', () => {
     });
 
     it('getThemeConfigs', async () => {
-        const config = await getThemeConfigs()
+        const config = await getThemeConfigs(themeName)
         expect(config?.themeConfig?.footerHtml).toEqual('_test_');
     });
 });

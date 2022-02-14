@@ -9,7 +9,7 @@ import {
     TProductFilter,
     TProductFilterMeta,
 } from '@cromwell/core';
-import { TCGraphQLClient, TCList, getGraphQLClient, getGraphQLErrorInfo } from '@cromwell/core-frontend';
+import { getGraphQLClient, TCGraphQLClient, TCList } from '@cromwell/core-frontend';
 
 import { TProductFilterSettings } from '../types';
 
@@ -54,8 +54,7 @@ export const getInitialData = async (slug?: string): Promise<TInitialData> => {
                 'PCategory'
             )
         } catch (error) {
-            console.error('ProductFilter::getStaticProps', error);
-            console.error(JSON.stringify(getGraphQLErrorInfo(error), null, 2));
+            console.error(JSON.stringify(error, null, 2));
         }
     }
     const productCategory = await getCategory();

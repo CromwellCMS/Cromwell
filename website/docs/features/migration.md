@@ -15,7 +15,3 @@ You don't have to use all columns, empty columns will result in empty (null) pro
 
 Sheet names should be exactly the same, but you don't have to add all sheets. If your import file has only one sheet named "Products", then only products will be imported. Also, you can have many files. One, for example, with products, another with posts. 
 To import data go to Admin panel > Settings > Migration > Import from Excel. You can pick one or many .xlsx files.  
-
-:::note
-All imported new users will have different random secure passwords, so you will have to go through "reset password" procedure to gain access to these accounts.  
-:::

@@ -39,7 +39,7 @@ export type TCListProps<DataType, ListItemProps> = {
     className?: string;
 
     /** Component that will display items */
-    ListItem: React.ComponentType<TItemComponentProps<DataType, ListItemProps>>;
+    ListItem: React.ComponentType<TListItemProps<DataType, ListItemProps>>;
 
     /** Prop object to pass for each component in a list */
     listItemProps?: ListItemProps;
@@ -128,7 +128,7 @@ export type TCList<DataType = any, ListItemProps = any> = {
 
 export type TListenerType = 'componentDidUpdate';
 
-export type TItemComponentProps<DataType, ListItemProps> = {
+export type TListItemProps<DataType, ListItemProps> = {
     data?: DataType;
     listItemProps?: ListItemProps;
 }

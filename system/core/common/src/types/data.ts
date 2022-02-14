@@ -1,14 +1,15 @@
 import React from 'react';
 import { ConnectionOptions } from 'typeorm';
 
-import { systemPackages } from '../constants';
-import { TCommonComponentProps, TCromwellBlock, TCromwellBlockData } from './blocks';
+import { ESharedComponentNames, systemPackages } from '../constants';
+import { TCromwellBlock, TCromwellBlockData } from './blocks';
 import {
     TCmsAdminSettings,
     TCmsEntityCore,
     TCmsInternalSettings,
     TCmsPublicSettings,
     TCmsRedirect,
+    TPost,
     TProduct,
     TServiceVersions,
     TUser,
@@ -40,13 +41,13 @@ export type TCromwellStore = {
     /** 
      * See `defaultPages` in TThemeConfig
      */
-    defaultPages?: Record<TDefaultPageName, string>;
+    defaultPages?: Partial<Record<TDefaultPageName, string>>;
 
     /**
-     * Internal. Common component storage. E.g. product cards to be reused by Plugins
+     * Internal. Shared component storage. E.g. product cards to be reused by Plugins
      *  { [ComponentName]: (Class/function) }
      *  */
-    components?: Record<string, React.ComponentType<TCommonComponentProps & { [x: string]: any }>>;
+    components?: TSharedComponents;
 
     /**
      * Internal. References to all instances of Cromwell Blocks at the page
@@ -89,7 +90,7 @@ export type TCromwellStore = {
     notifier?: TCromwellNotify;
     theme?: TCmsTheme;
     userInfo?: TUser;
-    storeChangeCallbacks?: Record<string, ((prop) => any)[]>;
+    storeChangeCallbacks?: Record<string, Record<string, ((prop) => any)>>;
     /**
      * HTTP Redirects for Next.js server 
      */
@@ -104,11 +105,6 @@ export type TCromwellStore = {
      * Custom components to inject by renderer into Theme
      */
     rendererComponents?: Partial<Record<'root' | 'pageWrapper', React.ComponentType>>;
-
-    routeInfo?: {
-        fullUrl?: string;
-        origin?: string;
-    }
 }
 
 
@@ -374,11 +370,11 @@ export type TPluginInfo = {
 /**
  * UI Notification service. In Admin panel it's react-toastify, for example.
  */
-export type TCromwellNotify = {
-    success?: (message: string, options?) => void;
-    warning?: (message: string, options?) => void;
-    error?: (message: string, options?) => void;
-    info?: (message: string, options?) => void;
+export type TCromwellNotify<TOptions = any> = {
+    success?: (message: string, options?: TOptions) => void;
+    warning?: (message: string, options?: TOptions) => void;
+    error?: (message: string, options?: TOptions) => void;
+    info?: (message: string, options?: TOptions) => void;
 }
 
 /**
@@ -616,3 +612,12 @@ export type TSystemUsage = {
         total: number
     }
 }
+
+export type TSharedComponents = Partial<{
+    [ESharedComponentNames.ProductCard]: React.ComponentType<{
+        product: TPost;
+    }>;
+    [ESharedComponentNames.PostCard]: React.ComponentType<{
+        post: TProduct;
+    }>;
+}>

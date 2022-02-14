@@ -1,11 +1,21 @@
-import { getStoreItem, isServer, setStoreItem, TAttribute, TCoupon, TProduct, TProductVariant, TStoreListItem } from '@cromwell/core';
+import {
+    getStoreItem,
+    isServer,
+    setStoreItem,
+    TAttribute,
+    TCoupon,
+    TProduct,
+    TProductVariant,
+    TStoreListItem,
+} from '@cromwell/core';
+import deepEqual from 'fast-deep-equal/es6';
 
 import { getGraphQLClient } from '../api/CGraphQLClient';
 
 const cartKey = 'crw_shop_cart_list';
 const wishlistKey = 'crw_shop_wish_list';
 const compareKey = 'crw_shop_compare_list';
-const watchedKey = 'crw_shop_watched_items';
+const viewedKey = 'crw_shop_viewed_items';
 
 const currencyKey = 'crw_shop_currency';
 
@@ -20,7 +30,18 @@ export type TApiClient = {
     getCouponsByCodes?: (codes: string[]) => Promise<TCoupon[] | undefined>;
 };
 
-export type OperationResult = {
+/**
+ * Result of cstore operation with lists. E.g. "add to cart", 
+ * "remove from wishlist", etc.
+ * Codes:
+ * 0 - add success
+ * 1 - add failed, already in the list
+ * 3 - add failed, invalid product
+ * 4 - add failed, missing required attributes
+ * 6 - remove failed, no such item in the list
+ * 7 - remove success
+ */
+export type TCStoreOperationResult = {
     success: boolean;
     message?: string;
     code: number;
@@ -31,7 +52,7 @@ export type OperationResult = {
  */
 export class CStore {
 
-    // < LISTS >    cart / wishlist / comparison list / watched items
+    // < LISTS >    cart / wishlist / comparison list / viewed items
     private localStorage: TLocalStorage & { internalStore: Record<string, any> } = {
         internalStore: {},
         getItem: (key: string) => this.localStorage.internalStore[key],
@@ -47,6 +68,10 @@ export class CStore {
         else this.store = window.localStorage;
 
         this.apiClient = apiClient ?? getGraphQLClient();
+    }
+
+    public setApiClient(client: TApiClient) {
+        this.apiClient = client;
     }
 
     private onListUpdatedCallbacks: Record<string, Record<string, (cart: TStoreListItem[]) => void>> = {};
@@ -84,8 +109,8 @@ export class CStore {
                 // filter empty attribute sets
                 const filter = (picked: Record<string, string[]>) => {
                     for (const key of Object.keys(picked)) {
-                        const vals = picked[key];
-                        if (!vals || !Array.isArray(vals) || vals.length === 0) {
+                        const values = picked[key];
+                        if (!values || !Array.isArray(values) || values.length === 0) {
                             delete picked[key];
                         }
                     }
@@ -103,10 +128,10 @@ export class CStore {
                 if (!itemKeys.every(key => productKeys.includes(key))) return false;
 
                 return itemKeys.every(attrKey => {
-                    const vals = itPickedAttributes[attrKey] || [];
-                    const pickedVals = productPickedAttributes[attrKey] || [];
-                    if (vals.length !== pickedVals.length) return false;
-                    return vals.every(key => pickedVals.includes(key))
+                    const values = itPickedAttributes[attrKey] || [];
+                    const pickedValues = productPickedAttributes[attrKey] || [];
+                    if (values.length !== pickedValues.length) return false;
+                    return values.every(key => pickedValues.includes(key))
                 })
             }
             return false;
@@ -125,7 +150,7 @@ export class CStore {
         return index;
     }
 
-    private addToList = (key: string, product: TStoreListItem): OperationResult => {
+    private addToList = (key: string, product: TStoreListItem): TCStoreOperationResult => {
         const list = this.getList(key);
         if (this.getIndexInList(key, product) === -1) {
             list.push(product);
@@ -156,7 +181,7 @@ export class CStore {
         delete this.onListUpdatedCallbacks[key][id];
     }
 
-    private removeFromList = (key: string, product: TStoreListItem): OperationResult => {
+    private removeFromList = (key: string, product: TStoreListItem): TCStoreOperationResult => {
         const list = this.getList(key);
         const index = this.getIndexInList(key, product);
         if (index > -1) {
@@ -200,7 +225,7 @@ export class CStore {
         return false;
     }
 
-    public addToCart = (product: TStoreListItem, attributes?: TAttribute[]): OperationResult & {
+    public addToCart = (product: TStoreListItem, attributes?: TAttribute[]): TCStoreOperationResult & {
         missingAttributes?: TAttribute[];
     } => {
         if (!product?.product) return {
@@ -268,7 +293,7 @@ export class CStore {
         return false;
     }
 
-    public addToWishlist = (product: TStoreListItem): OperationResult => {
+    public addToWishlist = (product: TStoreListItem): TCStoreOperationResult => {
         return this.addToList(wishlistKey, product);
     }
 
@@ -294,7 +319,7 @@ export class CStore {
         return false;
     }
 
-    public addToCompare = (product: TStoreListItem): OperationResult => {
+    public addToCompare = (product: TStoreListItem): TCStoreOperationResult => {
         return this.addToList(compareKey, product);
     }
 
@@ -311,29 +336,29 @@ export class CStore {
     }
 
 
-    public getWatchedItems = () => {
-        return this.getList(watchedKey);
+    public getViewedItems = () => {
+        return this.getList(viewedKey);
     }
 
-    public saveWatchedItems = (items: TStoreListItem[]) => {
-        return this.saveList(watchedKey, items);
+    public saveViewedItems = (items: TStoreListItem[]) => {
+        return this.saveList(viewedKey, items);
     }
 
-    public isInWatchedItems = (item: TStoreListItem): boolean => {
-        if (this.getIndexInList(watchedKey, item) > -1) return true;
+    public isInViewedItems = (item: TStoreListItem): boolean => {
+        if (this.getIndexInList(viewedKey, item) > -1) return true;
         return false;
     }
 
-    public addToWatchedItems = (item: TStoreListItem) => {
-        return this.addToList(watchedKey, item);
+    public addToViewedItems = (item: TStoreListItem) => {
+        return this.addToList(viewedKey, item);
     }
 
-    public onWatchedItemsUpdate = (cb: (cart: TStoreListItem[]) => any, id?: string): string => {
-        return this.addOnListUpdated(watchedKey, cb, id);
+    public onViewedItemsUpdate = (cb: (cart: TStoreListItem[]) => any, id?: string): string => {
+        return this.addOnListUpdated(viewedKey, cb, id);
     }
 
-    public removeOnWatchedItemsUpdate = (id: string) => {
-        return this.removeOnListUpdated(watchedKey, id);
+    public removeOnViewedItemsUpdate = (id: string) => {
+        return this.removeOnListUpdated(viewedKey, id);
     }
 
     /**
@@ -357,54 +382,54 @@ export class CStore {
         }
 
         const updatedProducts: (TProduct | undefined)[] = await Promise.all(Object.values(promises));
-
-        // let attributes: TAttribute[] | undefined = undefined;
-        // try {
-        //     attributes = await this.apiClient?.getAttributes();
-        // } catch (e) { console.error(e) }
-
         const updatedList: TStoreListItem[] = [];
 
         list.forEach(listItem => {
-            const updated = updatedProducts.find(u => (u && listItem.product && (u.id + '' === listItem.product.id + '')))
-            if (updated) {
-                let hasAllAttrs = true;
-                if (listItem.pickedAttributes && updated.attributes) {
-                    for (const key of Object.keys(listItem.pickedAttributes)) {
-                        let hasAttr = false;
-                        for (const updatedAttr of updated.attributes) {
-                            if (updatedAttr.key === key) {
-                                hasAttr = true;
-                                const vals = listItem.pickedAttributes[key];
-                                const updatedVals: string[] = updatedAttr.values.map(v => v.value);
-                                if (!vals.every(v => updatedVals.includes(v))) {
-                                    hasAttr = false;
-                                }
-                            }
-                        }
-                        if (!hasAttr) {
-                            hasAllAttrs = false;
-                        }
-                    }
-                }
-                if (hasAllAttrs) {
-                    listItem.product = this.applyProductVariants(updated,
-                        listItem.pickedAttributes);
+            if (!listItem.product?.id) return;
+            const updated = updatedProducts.find(u => u?.id === listItem.product?.id)
+            if (!updated) return;
+            const updatedListItem: TStoreListItem = {
+                ...listItem,
+                pickedAttributes: listItem.pickedAttributes && { ...listItem.pickedAttributes },
+                product: updated,
+            }
 
-                    if (listItem.pickedAttributes) {
-                        for (const key of Object.keys(listItem.pickedAttributes)) {
-                            const vals = listItem.pickedAttributes[key];
-                            if (!vals || !Array.isArray(vals) || vals.length === 0) {
-                                delete listItem.pickedAttributes[key];
+            let hasAllAttrs = true;
+            if (listItem.pickedAttributes && updated.attributes) {
+                for (const key of Object.keys(listItem.pickedAttributes)) {
+                    let hasAttr = false;
+                    for (const updatedAttr of updated.attributes) {
+                        if (updatedAttr.key === key) {
+                            hasAttr = true;
+                            const values = listItem.pickedAttributes[key];
+                            const updatedValues: string[] = updatedAttr.values.map(v => v.value);
+                            if (!values.every(v => updatedValues.includes(v))) {
+                                hasAttr = false;
                             }
                         }
                     }
-                    updatedList.push(listItem);
+                    if (!hasAttr) {
+                        hasAllAttrs = false;
+                    }
                 }
+            }
+            if (hasAllAttrs) {
+                updatedListItem.product = this.applyProductVariants(updated,
+                    updatedListItem.pickedAttributes);
+
+                if (updatedListItem.pickedAttributes) {
+                    for (const key of Object.keys(updatedListItem.pickedAttributes)) {
+                        const values = updatedListItem.pickedAttributes[key];
+                        if (!values || !Array.isArray(values) || values.length === 0) {
+                            delete updatedListItem.pickedAttributes[key];
+                        }
+                    }
+                }
+                updatedList.push(updatedListItem);
             }
         })
 
-        return this.saveList(listKey, updatedList);
+        if (!deepEqual(list, updatedList)) this.saveList(listKey, updatedList);
     }
 
     public updateCart = async () => {
@@ -419,8 +444,8 @@ export class CStore {
         await this.updateList(compareKey);
     }
 
-    public updateWatchedItems = async () => {
-        await this.updateList(watchedKey);
+    public updateViewedItems = async () => {
+        await this.updateList(viewedKey);
     }
 
 
@@ -432,12 +457,12 @@ export class CStore {
         this.saveList(wishlistKey, []);
     }
 
-    public clearComparisionList = () => {
+    public clearComparisonList = () => {
         this.saveList(compareKey, []);
     }
 
-    public clearWatchedItems = () => {
-        this.saveList(watchedKey, []);
+    public clearViewedItems = () => {
+        this.saveList(viewedKey, []);
     }
 
 
@@ -467,7 +492,8 @@ export class CStore {
 
             // Apply coupons per product
             for (const coupon of coupons) {
-                if (current.product && coupon.value && (coupon.productIds?.length || coupon.categoryIds?.length)) {
+                if (current.product && coupon.value && (coupon.productIds?.length
+                    || coupon.categoryIds?.length)) {
                     if (coupon.productIds?.includes(current.product.id)) {
                         if (coupon.discountType === 'fixed') {
                             price -= coupon.value;
@@ -528,48 +554,57 @@ export class CStore {
 
     // < HELPERS > 
 
+    /**
+     * What properties of a product variant can overwrite on apply. 
+     */
+    public allowedVariantKeysToOverwrite: (keyof TProduct)[] = ['description', 'descriptionDelta',
+        'images', 'mainImage', 'manageStock', 'name', 'oldPrice', 'price', 'sku', 'stockAmount',
+        'stockStatus',
+    ]
+
     /** Applies all ProductVariants from values of checked attributes */
     public applyProductVariants = (product: TProduct, checkedAttrs?: Record<string, (string | number)[]>): TProduct => {
-        if (checkedAttrs && Object.keys(checkedAttrs).length && product.variants?.length) {
-            const newProd = Object.assign({}, product);
-            const matchedVariants: {
-                variant: TProductVariant;
-                matches: number;
-            }[] = [];
-
-            for (const variant of product.variants) {
-                if (!variant.attributes) continue;
-                const filteredAttributes: Record<string, string | number> = {};
-                Object.entries(variant.attributes).forEach(([key, value]) => {
-                    if (value) filteredAttributes[key] = value;
-                });
-                if (!Object.keys(filteredAttributes).length) continue;
-
-                let matches = 0;
-                Object.entries(filteredAttributes).forEach(([key, value]) => {
-                    if (checkedAttrs[key] && checkedAttrs[key].includes(value)) {
-                        matches++;
-                    }
-                });
-                if (matches && Object.keys(filteredAttributes).length === matches) {
-                    matchedVariants.push({
-                        matches,
-                        variant: variant,
-                    })
-                }
-            }
-            matchedVariants.sort((a, b) => a.matches - b.matches);
-
-            for (const variant of matchedVariants) {
-                Object.entries(variant.variant).forEach(([key, value]) => {
-                    if (!key || key === 'id') return;
-                    if (value === null || value === undefined) return;
-                    newProd[key] = value;
-                });
-            }
-            return newProd;
+        if (!checkedAttrs || !Object.keys(checkedAttrs).length || !product.variants?.length) {
+            return product;
         }
-        return product;
+
+        const newProd = Object.assign({}, product);
+        const matchedVariants: {
+            variant: TProductVariant;
+            matches: number;
+        }[] = [];
+
+        for (const variant of product.variants) {
+            if (!variant.attributes) continue;
+            const filteredAttributes: Record<string, string | number> = {};
+            Object.entries(variant.attributes).forEach(([key, value]) => {
+                if (value) filteredAttributes[key] = value;
+            });
+            if (!Object.keys(filteredAttributes).length) continue;
+
+            let matches = 0;
+            Object.entries(filteredAttributes).forEach(([key, value]) => {
+                if (checkedAttrs[key] && checkedAttrs[key].includes(value)) {
+                    matches++;
+                }
+            });
+            if (matches && Object.keys(filteredAttributes).length === matches) {
+                matchedVariants.push({
+                    matches,
+                    variant: variant,
+                })
+            }
+        }
+        matchedVariants.sort((a, b) => a.matches - b.matches);
+
+        for (const match of matchedVariants) {
+            Object.entries(match.variant).forEach(([key, value]) => {
+                if (!key || !this.allowedVariantKeysToOverwrite.includes(key as any)) return;
+                if (value === null || value === undefined) return;
+                newProd[key] = value;
+            });
+        }
+        return newProd;
     }
 
     // Validate and save coupons in the cart
@@ -648,10 +683,14 @@ export class CStore {
         return priceStr;
     }
 
-    /** Returns merged price with sign of active (picked by user or default) currency */
-    public getPriceWithCurrency = (price: any): string => {
+    /** 
+     * Returns price converted to an active currency (picked by user or default) 
+     * with a symbol of this active currency. Expects input price to be in 
+     * default currency of the store  
+     */
+    public getPriceWithCurrency = (price: any, position?: 'before' | 'after'): string => {
         let priceStr = this.getPrice(price);
-        if (!priceStr || priceStr === '') return '';
+        if (!priceStr) return '';
 
         const cmsSettings = getStoreItem('cmsSettings');
         const currency = this.getActiveCurrencyTag();
@@ -659,7 +698,13 @@ export class CStore {
 
         if (currency && defaultCurrency) {
             const currencySymbol = cmsSettings?.currencies?.find(curr => curr.tag === currency)?.symbol;
-            if (currencySymbol) priceStr = currencySymbol + priceStr;
+            if (currencySymbol) {
+                if (position === 'after') {
+                    priceStr = priceStr + currencySymbol;
+                } else {
+                    priceStr = currencySymbol + priceStr;
+                }
+            }
         }
         return priceStr;
     }
@@ -716,20 +761,35 @@ export class CStore {
 
 }
 
+export type TGetCStoreOptions = {
+    /**
+     * If true, create and return a new CStore instance instead of returning one (singleton)
+     * from the global store. False by default.
+     */
+    local?: boolean;
+
+    /**
+     * Provide custom apiClient instance. CGraphQLClient by default. Be careful, if
+     * `local: true` is not provided, then this client will be saved globally and used
+     * for all subsequent calls.
+     */
+    apiClient?: TApiClient
+}
+
 /**
- * Get CStore instance from global store (singleton)
- * @param local if true, create and return a new instance, false by default
- * @param apiClient provide custom apiClient instance
- * @returns 
+ * Get CStore instance 
  */
-export const getCStore = (local?: boolean, apiClient?: TApiClient): CStore => {
+export const getCStore = (options?: TGetCStoreOptions): CStore => {
+    const { local, apiClient } = options ?? {};
     if (local) return new CStore(local, apiClient);
 
     let cstore = getStoreItem('cstore');
     if (!cstore) {
-        cstore = new CStore();
+        cstore = new CStore(false, apiClient);
         setStoreItem('cstore', cstore);
-        return cstore;
+    }
+    if (apiClient) {
+        cstore.setApiClient(apiClient);
     }
     return cstore;
 }

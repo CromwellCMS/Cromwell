@@ -1,4 +1,5 @@
 import {
+    removeUndefined,
     resolvePageRoute,
     setStoreItem,
     TCmsConfig,
@@ -16,14 +17,13 @@ import { GetStaticPropsResult } from 'next';
 
 import { getThemeStaticProps } from '../helpers/getThemeStaticProps';
 import { pluginsDataFetcher, TPluginsSettings } from '../helpers/pluginsDataFetcher';
-import { removeUndefined } from '../helpers/removeUndefined';
 
 const wrapGetProps = (pageName: TDefaultPageName | string,
     originalGet: ((context: TStaticPageContext) => any) | null,
     getType: 'getServerSideProps' | 'getInitialProps' | 'getStaticProps'
 ): TGetStaticProps<TCromwellPageCoreProps> => {
     if (pageName === '/') pageName = 'index';
-    if (pageName.startsWith('/')) pageName = pageName.slice(1, pageName.length);
+    if (pageName.startsWith('/')) pageName = pageName.slice(1, pageName.length - 1);
 
     const getStaticWrapper: TGetStaticProps<TCromwellPageCoreProps> = async (context) => {
         // Name to request a page config. Config will be the same for different slugs
@@ -44,8 +44,12 @@ const wrapGetProps = (pageName: TDefaultPageName | string,
             pagesInfo?: TPageInfo[];
         } = {};
 
+        if (!process.env.THEME_NAME) {
+            throw new Error('Cromwell:getPropsWrapper: `THEME_NAME` was not found in process.env')
+        }
         try {
-            rendererData = (await getRestApiClient().getRendererRage(pageConfigName)) ?? {};
+            rendererData = (await getRestApiClient().getRendererRage(pageConfigName,
+                process.env.THEME_NAME)) ?? {};
         } catch (e) {
             console.error(e);
         }
@@ -67,10 +71,13 @@ const wrapGetProps = (pageName: TDefaultPageName | string,
         context.cmsSettings = rendererData.cmsSettings;
         context.themeCustomConfig = rendererData.themeCustomConfig;
         context.pagesInfo = rendererData.pagesInfo;
-        const [childStaticProps, plugins] = await Promise.all([
-            getThemeStaticProps(pageName, originalGet, context),
-            pluginsDataFetcher(pageConfigName, context, pluginsSettings),
-        ]);
+
+        const childStaticProps = await getThemeStaticProps(pageName, originalGet, context);
+        const extraPlugins = childStaticProps?.extraPlugins;
+        if (childStaticProps?.extraPlugins) delete childStaticProps?.extraPlugins;
+
+        const plugins = await pluginsDataFetcher(pageConfigName, context, pluginsSettings,
+            extraPlugins);
 
         const pluginsNextProps = Object.assign({}, ...Object.values(plugins)
             .map(plugin => plugin.nextProps).filter(Boolean));

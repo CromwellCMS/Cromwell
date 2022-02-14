@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 import { TPagedParams, TPost, TPostFilter } from '@cromwell/core';
-import { getGraphQLClient, getGraphQLErrorInfo, Link, LoadBox } from '@cromwell/core-frontend';
+import { getGraphQLClient, Link, LoadBox } from '@cromwell/core-frontend';
 import { ClickAwayListener, Fade, Grid, Popper, TextField as MuiTextField } from '@mui/material';
 import { withStyles } from '@mui/styles';
 import React from 'react';
@@ -75,7 +75,7 @@ export class HeaderSearch extends React.Component<unknown, {
             if (elements) this.setState({ searchItems: elements });
 
         } catch (e) {
-            console.error(getGraphQLErrorInfo(e));
+            console.error(e);
         }
         this.setState({ isLoading: false });
     });

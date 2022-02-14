@@ -1,5 +1,5 @@
 import { getStoreItem, TAuthRole, TUserRole } from '@cromwell/core';
-import { CanActivate, ExecutionContext, Injectable, SetMetadata } from '@nestjs/common';
+import { CanActivate, ExecutionContext, HttpException, HttpStatus, Injectable, SetMetadata } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { FastifyRequest } from 'fastify';
 
@@ -58,10 +58,17 @@ export const graphQlAuthChecker = (
     roles?: TAuthRole[] | null,
 ) => {
     const { root, args, context, info } = options ?? {};
+    if (!roles || roles.length === 0) return true;
     if (getStoreItem('cmsSettings')?.installed === false) return true;
 
     const userInfo: TAuthUserInfo | undefined = (context as TGraphQLContext)?.user;
-    return matchRoles(userInfo, roles, args?.id);
+
+    if (!userInfo?.id || !userInfo?.role)
+        throw new HttpException('Access denied', HttpStatus.UNAUTHORIZED);
+
+    if (!matchRoles(userInfo, roles, args?.id)) throw new HttpException('Access denied', HttpStatus.FORBIDDEN);
+
+    return true;
 };
 
 const matchRoles = (user?: TAuthUserInfo, roles?: TAuthRole[] | null, entityId?: string): boolean => {

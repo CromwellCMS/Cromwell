@@ -6,6 +6,7 @@ import EntityTable from '../../components/entity/entityTable/EntityTable';
 import { TEntityPageProps } from '../../components/entity/types';
 import { userListPageInfo, userPageInfo } from '../../constants/PageInfos';
 import { userRoles } from '../../constants/roles';
+import { getTooltipValueView, getValueView } from '../../helpers/addressParser';
 import { baseEntityColumns } from '../../helpers/customEntities';
 
 
@@ -81,6 +82,8 @@ export default function UserTable() {
                     label: 'Address',
                     type: 'Simple text',
                     visible: false,
+                    getValueView: getValueView,
+                    getTooltipValueView: getTooltipValueView,
                 },
             ]}
         />

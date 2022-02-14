@@ -1,7 +1,6 @@
 import { findRedirect, setStoreItem, TCmsSettings } from '@cromwell/core';
 import { getAuthSettings } from '@cromwell/core-backend/dist/helpers/auth-settings';
 import { readCMSConfig } from '@cromwell/core-backend/dist/helpers/cms-settings';
-import { connectDatabase } from '@cromwell/core-backend/dist/helpers/connect-database';
 import { getLogger } from '@cromwell/core-backend/dist/helpers/logger';
 import cookie from 'cookie';
 import fs from 'fs-extra';
@@ -41,14 +40,17 @@ export const startNextServer = async (options?: {
 
     if (config.monolith) {
         try {
-            await connectDatabase({
+            const dbConnector: typeof import('@cromwell/core-backend/dist/helpers/connect-database')
+                = require('@cromwell/core-backend/dist/helpers/connect-database');
+
+            await dbConnector.connectDatabase({
                 development: config.env === 'dev',
             });
         } catch (error) {
             logger.error(error);
         }
     }
-    
+
     const handle = app.getRequestHandler();
     await app.prepare();
 
@@ -58,7 +60,7 @@ export const startNextServer = async (options?: {
 
         // Static file serving
         try {
-            if (req.url && req.url !== '') {
+            if (req.url) {
                 const filePath = join(process.cwd(), 'public', req.url);
                 if ((await fs.lstat(filePath)).isFile()) {
                     send(req, filePath).pipe(res);
@@ -117,7 +119,7 @@ export const startNextServer = async (options?: {
 
         server.listen(port, () => {
             done(true);
-            logger.info(`> Next.js server ready on http://localhost:${port}`)
+            logger.log(`> Next.js server ready on http://localhost:${port}`)
         })
 
         setTimeout(() => done(false), 15000);

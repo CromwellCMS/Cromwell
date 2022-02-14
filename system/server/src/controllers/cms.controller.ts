@@ -23,7 +23,6 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
-import archiver from 'archiver';
 import { FastifyReply } from 'fastify';
 import fs from 'fs-extra';
 import { join } from 'path';
@@ -42,12 +41,14 @@ import { PageStatsDto } from '../dto/page-stats.dto';
 import { SetupDto } from '../dto/setup.dto';
 import { SystemUsageDto } from '../dto/system-usage.dto';
 import { publicSystemDirs } from '../helpers/constants';
+import { resetAllPagesCache } from '../helpers/reset-page';
 import { serverFireAction } from '../helpers/server-fire-action';
 import { CmsService } from '../services/cms.service';
 import { MigrationService } from '../services/migration.service';
 import { PluginService } from '../services/plugin.service';
+import { StatsService } from '../services/stats.service';
+import { StoreService } from '../services/store.service';
 import { ThemeService } from '../services/theme.service';
-import { resetAllPagesCache } from '../helpers/reset-page';
 
 const logger = getLogger();
 
@@ -64,6 +65,8 @@ export class CmsController {
         private readonly cmsService: CmsService,
         private readonly themeService: ThemeService,
         private readonly migrationService: MigrationService,
+        private readonly storeService: StoreService,
+        private readonly statsService: StatsService,
     ) { }
 
     @Get('settings')
@@ -254,36 +257,9 @@ export class CmsController {
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async downloadFile(@Query('inPath') inPath: string, @Query('fileName') fileName: string,
-        @Req() req: any, @Response() response: FastifyReply) {
+        @Response() response: FastifyReply) {
         logger.log('CmsController::downloadFile');
-        const fullPath = join(getPublicDir(), inPath ?? '', fileName);
-
-        if (! await fs.pathExists(fullPath)) {
-            response.code(404).send({ message: 'File not found' });
-            return;
-        }
-
-
-        if ((await fs.lstat(fullPath)).isFile()) {
-            response.header('Content-Disposition', `attachment; filename=${fileName}`);
-            try {
-                const readStream = fs.createReadStream(fullPath);
-                response.type('text/html').send(readStream);
-            } catch (error) {
-                logger.error(error);
-                response.code(500).send({ message: error + '' });
-            }
-        } else {
-            response.header('Content-Disposition', `attachment; filename=${fileName}.zip`);
-            // zip the directory
-            const archive = archiver('zip', {
-                zlib: { level: 9 }
-            });
-            archive.directory(fullPath, '/' + fileName);
-            response.type('text/html').send(archive);
-            await archive.finalize();
-        }
-
+        return this.cmsService.downloadFile(response, inPath, fileName);
     }
 
 
@@ -386,7 +362,7 @@ export class CmsController {
     async getOrderTotal(@Body() input: CreateOrderDto): Promise<OrderTotalDto | undefined> {
         if (!input) throw new HttpException('Order form is incomplete', HttpStatus.NOT_ACCEPTABLE);
 
-        return this.cmsService.calcOrderTotal(input);
+        return this.storeService.calcOrderTotal(input);
     }
 
 
@@ -403,7 +379,7 @@ export class CmsController {
     })
     async createPaymentSession(@Body() input: CreateOrderDto): Promise<OrderTotalDto> {
         if (!input) throw new HttpException('Order form is incomplete', HttpStatus.NOT_ACCEPTABLE);
-        return this.cmsService.createPaymentSession(input);
+        return this.storeService.createPaymentSession(input);
     }
 
 
@@ -421,7 +397,7 @@ export class CmsController {
         if (!input || !input.customerEmail
             || !input.customerPhone) throw new HttpException('Order form is incomplete', HttpStatus.NOT_ACCEPTABLE);
 
-        const order = await this.cmsService.placeOrder(input);
+        const order = await this.storeService.placeOrder(input);
         serverFireAction('create_order', order);
         return order;
     }
@@ -462,7 +438,7 @@ export class CmsController {
         if (!input?.pageRoute)
             throw new HttpException("pageRoute is not valid", HttpStatus.NOT_ACCEPTABLE);
 
-        await this.cmsService.viewPage(input);
+        await this.statsService.viewPage(input);
         return true;
     }
 
@@ -478,7 +454,7 @@ export class CmsController {
         type: CmsStatsDto,
     })
     async getStats(): Promise<CmsStatsDto> {
-        return this.cmsService.getCmsStats();
+        return this.statsService.getCmsStats();
     }
 
 
@@ -493,7 +469,7 @@ export class CmsController {
         type: SystemUsageDto,
     })
     async getSystemUsage(): Promise<SystemUsageDto> {
-        return this.cmsService.getSystemUsage();
+        return this.statsService.getSystemUsage();
     }
 
 

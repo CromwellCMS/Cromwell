@@ -62,8 +62,8 @@ html[data-theme="dark"] .menu__link--active {
 }
 
 .footer {
-  /* background: linear-gradient(144deg, #1b004b, #34002e); */
-  background: linear-gradient(144deg, #240063, #4b0042);
+  /* background: linear-gradient(144deg, #240063, #4b0042); */
+  background: linear-gradient(144deg, #170040, #34002e);
 }
 
 

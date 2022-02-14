@@ -1,13 +1,5 @@
-import {
-    ECommonComponentNames,
-    getStoreItem,
-    isServer,
-    saveCommonComponent,
-    setStoreItem,
-    TCromwellPage,
-    TPageCmsProps,
-} from '@cromwell/core';
-import { getRestApiClient } from '@cromwell/core-frontend';
+import { ESharedComponentNames, isServer, registerSharedComponent, TCromwellPage } from '@cromwell/core';
+import { getRestApiClient, useAppPropsContext } from '@cromwell/core-frontend';
 import { CacheProvider, EmotionCache } from '@emotion/react';
 import { ThemeProvider } from '@mui/material/styles';
 import { AppProps } from 'next/app';
@@ -26,65 +18,49 @@ import { getTheme } from '../helpers/theme';
 const clientSideEmotionCache = createEmotionCache();
 
 if (isServer()) {
-    // Disable SSR useLayoutEffect warnings
-    (React as any).useLayoutEffect = React.useEffect;
+  // Disable SSR useLayoutEffect warnings
+  (React as any).useLayoutEffect = React.useEffect;
 }
 
-saveCommonComponent(ECommonComponentNames.ProductCard, ProductCard);
-saveCommonComponent(ECommonComponentNames.PostCard, PostCard);
+registerSharedComponent(ESharedComponentNames.ProductCard, ProductCard);
+registerSharedComponent(ESharedComponentNames.PostCard, PostCard);
 
 export type TPageWithLayout<TProps = any> = TCromwellPage<TProps> & {
-    getLayout?: (page: ReactElement) => JSX.Element;
+  getLayout?: (page: ReactElement) => JSX.Element;
 }
 
 type AppPropsWithLayout = AppProps & {
-    Component: TPageWithLayout;
-    emotionCache?: EmotionCache;
+  Component: TPageWithLayout;
+  emotionCache?: EmotionCache;
 }
 
 function App(props: AppPropsWithLayout) {
+  const pageContext = useAppPropsContext();
+  const { Component, emotionCache = clientSideEmotionCache } = props;
+  const getLayout = Component.getLayout ?? ((page) => page);
+  const theme = getTheme(pageContext.pageProps?.cmsProps?.palette);
 
-    const getUser = async () => {
-        const userInfo = getStoreItem('userInfo');
-        if (!userInfo) {
-            try {
-                const user = await getRestApiClient()?.getUserInfo({ disableLog: true });
-                if (user) {
-                    setStoreItem('userInfo', user);
-                }
-            } catch (e) { }
+  React.useEffect(() => {
+    if (!isServer()) {
+      getRestApiClient()?.onError((info) => {
+        if (info.statusCode === 429) {
+          toast.error('Too many requests. Try again later');
         }
+      }, '_app');
     }
+  }, []);
 
-    React.useEffect(() => {
-        if (!isServer()) {
-            getRestApiClient()?.onError((info) => {
-                if (info.statusCode === 429) {
-                    toast.error('Too many requests. Try again later');
-                }
-            }, '_app');
-
-            getUser();
-        }
-    }, []);
-
-    const { Component, emotionCache = clientSideEmotionCache } = props;
-    const getLayout = Component.getLayout ?? ((page) => page);
-
-    const cmsProps: TPageCmsProps | undefined = props.pageProps?.cmsProps;
-    const theme = getTheme(cmsProps?.palette);
-
-    return (
-        <CacheProvider value={emotionCache}>
-            <ThemeProvider theme={theme}>
-                {getLayout(<>
-                    {Component && <Component {...(props.pageProps ?? {})} />}
-                    {!isServer() && document?.body && ReactDOM.createPortal(
-                        <div className={"global-toast"} ><ToastContainer /></div>, document.body)}
-                </>)}
-            </ThemeProvider>
-        </CacheProvider>
-    );
+  return (
+    <CacheProvider value={emotionCache}>
+      <ThemeProvider theme={theme}>
+        {getLayout(<>
+          {Component && <Component {...(props.pageProps ?? {})} />}
+          {!isServer() && document?.body && ReactDOM.createPortal(
+            <div className={"global-toast"} ><ToastContainer /></div>, document.body)}
+        </>)}
+      </ThemeProvider>
+    </CacheProvider>
+  );
 }
 
 export default App;

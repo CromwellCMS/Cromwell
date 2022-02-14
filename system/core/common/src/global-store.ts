@@ -1,9 +1,8 @@
 import React from 'react';
 
-import { ECommonComponentNames } from './constants';
 import { isServer } from './helpers';
-import { TCommonComponentProps, TCromwellBlock } from './types/blocks';
-import { TCmsSettings, TCromwellStore } from './types/data';
+import { TCromwellBlock } from './types/blocks';
+import { TCmsSettings, TCromwellStore, TSharedComponents } from './types/data';
 import { TCmsRedirect } from './types/entities';
 
 const initialStore: TCromwellStore = {}
@@ -35,14 +34,16 @@ export const setStoreItem = <K extends keyof TCromwellStore>(itemName: K, item: 
 
     const storeChangeCallbacks = getStoreItem('storeChangeCallbacks');
     if (storeChangeCallbacks?.[itemName]) {
-        for (const callback of storeChangeCallbacks?.[itemName]) {
-            callback(item);
+        for (const callback of Object.values(storeChangeCallbacks?.[itemName] ?? {})) {
+            try {
+                callback(item);
+            } catch (e) { console.error(e) }
         }
     }
 }
 
 export const onStoreChange = <K extends keyof TCromwellStore>(itemName: K,
-    callback: (itemValue: TCromwellStore[K]) => any) => {
+    callback: (itemValue: TCromwellStore[K]) => any, callbackId?: string): string => {
 
     let storeChangeCallbacks = getStoreItem('storeChangeCallbacks')
 
@@ -50,16 +51,17 @@ export const onStoreChange = <K extends keyof TCromwellStore>(itemName: K,
         storeChangeCallbacks = {};
         setStoreItem('storeChangeCallbacks', storeChangeCallbacks);
     }
+    if (!storeChangeCallbacks[itemName]) storeChangeCallbacks[itemName] = {};
 
-    if (!storeChangeCallbacks[itemName]) storeChangeCallbacks[itemName] = [];
-    storeChangeCallbacks[itemName].push(callback);
+    const cbId = callbackId ?? Object.keys(storeChangeCallbacks[itemName]).length + '';
+    storeChangeCallbacks[itemName][cbId] = callback;
+    return cbId;
 }
 
-export const removeOnStoreChange = <K extends keyof TCromwellStore>(itemName: K,
-    callback: (itemValue: TCromwellStore[K]) => any) => {
+export const removeOnStoreChange = <K extends keyof TCromwellStore>(itemName: K, callbackId: string) => {
     const storeChangeCallbacks = getStoreItem('storeChangeCallbacks');
     if (storeChangeCallbacks?.[itemName]) {
-        storeChangeCallbacks[itemName] = storeChangeCallbacks[itemName].filter(item => item !== callback);
+        delete storeChangeCallbacks[itemName][callbackId];
     }
 }
 
@@ -92,13 +94,14 @@ export const getThemeCustomConfigProp = (propPath: string): any => {
     return getProp(getThemeCustomConfig(), propPath.split('/'));
 }
 
-export const getCommonComponent = (componentName: ECommonComponentNames | string):
-    React.ComponentType<TCommonComponentProps & Record<string, any>> | undefined => {
+export const getSharedComponent = <K extends keyof TSharedComponents>(componentName: K):
+    TSharedComponents[K] => {
     const components = getStore().components;
     return components ? components[componentName] : undefined;
 }
 
-export const saveCommonComponent = (componentName: ECommonComponentNames | string, component: React.ComponentType<TCommonComponentProps>): void => {
+export const registerSharedComponent = <K extends keyof TSharedComponents>(componentName: K,
+    component: TSharedComponents[K]): void => {
     let components = getStore().components;
     if (!components) {
         components = {};

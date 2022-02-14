@@ -118,7 +118,11 @@ class EntityTableItem<TEntityType extends TBasePageEntity, TFilterType extends T
                         }
 
                         if (col.getValueView) {
-                            content = col.getValueView(value);
+                            content = <div className={styles.ellipsis}
+                                ref={this.columnRefs[col.name]}>{col.getValueView(value)}</div>;
+                        }
+                        if (col.getTooltipValueView) {
+                            tooltipValue = <div style={{ whiteSpace: 'pre-line' }}>{col.getTooltipValueView(value)}</div>;
                         }
 
                         const TooltipContent = (props: { title: string }): any => {
@@ -138,7 +142,7 @@ class EntityTableItem<TEntityType extends TBasePageEntity, TFilterType extends T
                             >
                                 <Tooltip
                                     classes={{ popper: styles.cellTooltipPaper }}
-                                    title={<TooltipContent title={(tooltipValue ?? '') + ''} />} enterDelay={1500}
+                                    title={<TooltipContent title={(tooltipValue ?? '')} />} enterDelay={1500}
                                 >{content ?? <></>}</Tooltip>
                             </div>
                         )
@@ -164,7 +168,7 @@ class EntityTableItem<TEntityType extends TBasePageEntity, TFilterType extends T
                         </IconButton>
                     )}
                 </div>
-            </div>
+            </div >
         );
     }
 }

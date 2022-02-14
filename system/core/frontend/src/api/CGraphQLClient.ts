@@ -15,17 +15,17 @@ import {
     isServer,
     serviceLocator,
     setStoreItem,
-    TCouponInput,
     TAttribute,
     TAttributeInput,
     TBaseFilter,
+    TCoupon,
+    TCouponInput,
     TCreateUser,
     TCustomEntity,
     TCustomEntityFilter,
     TCustomEntityInput,
     TDBEntity,
     TDeleteManyInput,
-    TCoupon,
     TFilteredProductList,
     TOrder,
     TOrderFilter,
@@ -52,25 +52,31 @@ import {
 } from '@cromwell/core';
 import clone from 'rfdc';
 
+import { getServiceSecret } from '../helpers/getServiceSecret';
 import { fetch as isomorphicFetch } from '../helpers/isomorphicFetch';
 
 export type TGraphQLErrorInfo = {
-    graphQLErrors: any;
-    networkError: any;
-    resultErrors: any;
-    message: string;
-    extraInfo: any;
-    stack: any;
+    message?: string;
+    status?: string;
+    statusCode?: number;
+    path?: string;
+    stacktrace?: string;
 }
 
-export const getGraphQLErrorInfo = (error: any): TGraphQLErrorInfo => {
+export type TGetFilteredOptions<TEntity, TFilter> = {
+    pagedParams?: TPagedParams<TEntity>;
+    filterParams?: TFilter;
+    customFragment?: DocumentNode;
+    customFragmentName?: string;
+}
+
+const getGraphQLErrorInfo = (error: any): TGraphQLErrorInfo => {
     return {
-        graphQLErrors: error?.graphQLErrors ? JSON.stringify(error?.graphQLErrors, null, 2) : undefined,
-        networkError: error?.networkError,
         message: error?.message,
-        extraInfo: error?.extraInfo,
-        resultErrors: error?.networkError?.result ? JSON.stringify(error?.networkError?.result, null, 2) : undefined,
-        stack: error?.stack,
+        status: error?.status,
+        statusCode: error?.statusCode,
+        path: error?.path,
+        stacktrace: error?.stacktrace,
     }
 }
 
@@ -89,6 +95,10 @@ export class CGraphQLClient {
     private fetch;
     /** @internal */
     private lastBaseUrl: string | undefined;
+    /** @internal */
+    private serviceSecret;
+    /** @internal */
+    private initializePromise?: Promise<void>;
 
     /** @internal */
     public getBaseUrl = () => {
@@ -106,12 +116,33 @@ export class CGraphQLClient {
     }
 
     /** @internal */
-    private createClient() {
+    private async checkUrl() {
+        if (this.initializePromise) await this.initializePromise;
+        const baseUrl = this.getBaseUrl();
+        if (!baseUrl) return;
+        if (this.lastBaseUrl === baseUrl) return;
+
+        this.lastBaseUrl = baseUrl;
+        await this.createClient();
+    }
+
+    /** @internal */
+    private async createClient() {
+        let doneInit: (() => void) | undefined;
+        this.initializePromise = new Promise<void>(done => doneInit = done);
+
+        if (isServer()) {
+            // If backend, try to find service secret key to make 
+            // authorized requests to the API server.
+            this.serviceSecret = await getServiceSecret();
+        }
+
         const cache = new InMemoryCache();
         const link = createHttpLink({
             uri: this.getBaseUrl(),
             credentials: 'include',
             fetch: this.fetch,
+            headers: this.serviceSecret && { 'Authorization': `Service ${this.serviceSecret}` },
         });
 
         this.apolloClient = new ApolloClient({
@@ -128,16 +159,9 @@ export class CGraphQLClient {
                 },
             },
         });
-    }
 
-    /** @internal */
-    private checkUrl() {
-        const baseUrl = this.getBaseUrl();
-        if (!baseUrl) return;
-        if (this.lastBaseUrl === baseUrl) return;
-
-        this.lastBaseUrl = baseUrl;
-        this.createClient();
+        doneInit?.();
+        this.initializePromise = undefined;
     }
 
     public async query<T = any>(options: QueryOptions, path: string): Promise<T>;
@@ -149,7 +173,7 @@ export class CGraphQLClient {
      * ApolloQueryResult will be returned
      */
     public async query(options: QueryOptions, path?: string) {
-        this.checkUrl();
+        await this.checkUrl();
 
         const res = await this.handleError(() => this.apolloClient.query(options))
         if (path) return this.returnData(res, path);
@@ -166,7 +190,7 @@ export class CGraphQLClient {
      * ApolloQueryResult will be returned
      */
     public async mutate(options: MutationOptions, path?: string) {
-        this.checkUrl();
+        await this.checkUrl();
 
         const res = await this.handleError(() => this.apolloClient.mutate(options))
         if (path) return this.returnData(res, path);
@@ -175,17 +199,27 @@ export class CGraphQLClient {
 
     /** @internal */
     private async handleError<T>(func: () => Promise<T>): Promise<T> {
-        try {
-            return await func();
-        } catch (e: any) {
-            Object.values(this.onErrorCallbacks).forEach(cb => cb(getGraphQLErrorInfo(e)));
+        let error;
+        let data;
 
-            if (e?.message?.includes?.('Access denied') && !isServer()) {
+        try {
+            data = await func();
+            error = (data as any).errors?.[0];
+        } catch (e: any) {
+            error = e?.graphQLErrors?.[0];
+        }
+
+        if (error) {
+            const errInfo = getGraphQLErrorInfo(error);
+            Object.values(this.onErrorCallbacks).forEach(cb => cb(errInfo));
+
+            if (errInfo.statusCode === 401 || errInfo.statusCode === 403) {
                 Object.values(this.onUnauthorizedCallbacks).forEach(cb => cb?.());
             }
-
-            throw e;
+            throw error;
         }
+
+        return data;
     }
 
     /** @internal */
@@ -197,8 +231,7 @@ export class CGraphQLClient {
             // Just to make sure all object references inside are new:
             return clone({ proto: true })(data);
         }
-        const errors = res?.errors;
-        return errors ?? null;
+        return null;
     }
 
     /**
@@ -427,13 +460,8 @@ export class CGraphQLClient {
 
     /** @internal */
     public createGetFiltered<TEntity, TFilter>(entityName: TDBEntity, nativeFragment: DocumentNode,
-        nativeFragmentName: string, filterName: string): ((options: {
-            pagedParams?: TPagedParams<TEntity>;
-            filterParams?: TFilter;
-            customFragment?: DocumentNode;
-            customFragmentName?: string;
-        }) => Promise<TPagedList<TEntity>>) {
-        const path = GraphQLPaths[entityName].getFiltered;
+        nativeFragmentName: string, filterName: string, path?: string): ((options: TGetFilteredOptions<TEntity, TFilter>) => Promise<TPagedList<TEntity>>) {
+        path = path ?? GraphQLPaths[entityName].getFiltered;
 
         return ({ pagedParams, filterParams, customFragment, customFragmentName }) => {
             const fragment = customFragment ?? nativeFragment;
@@ -458,7 +486,7 @@ export class CGraphQLClient {
                     pagedParams: pagedParams ?? {},
                     filterParams,
                 }
-            }, path);
+            }, path as string);
         }
     }
 
@@ -548,6 +576,17 @@ export class CGraphQLClient {
                 data,
             }
         }, path);
+    }
+
+    /** 
+    * Get filtered records of a generic entity 
+    * @auth admin
+    */
+    public getFilteredEntities<TEntity, TFilter>(entityName: string, fragment: DocumentNode,
+        fragmentName: string, options: TGetFilteredOptions<TEntity, TFilter>) {
+        const path = GraphQLPaths.Generic.getFiltered + entityName;
+        return this.createGetFiltered<TEntity, TBaseFilter>('Generic',
+            fragment, fragmentName, 'BaseFilterInput', path)(options);
     }
 
     // < Generic CRUD >
@@ -1043,11 +1082,13 @@ export class CGraphQLClient {
             isEnabled
             name
             title
+            version
             isInstalled
             isUpdating
             hasAdminBundle
             settings
             defaultSettings
+            moduleInfo
         }
     `;
     // </Plugin>
@@ -1064,11 +1105,13 @@ export class CGraphQLClient {
             updateDate
             isEnabled
             name
+            version
             isInstalled
             isUpdating
             hasAdminBundle
             settings
             defaultSettings
+            moduleInfo
         }
     `;
     // </Theme>

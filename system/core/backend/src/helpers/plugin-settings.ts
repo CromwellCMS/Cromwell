@@ -1,4 +1,5 @@
-import { TPluginEntity, TThemeEntity } from '@cromwell/core';
+import { TPluginEntity } from '@cromwell/core';
+import { HttpException, HttpStatus } from '@nestjs/common';
 import { getCustomRepository } from 'typeorm';
 
 import { GenericPlugin } from './generic-entities';
@@ -50,7 +51,7 @@ export const savePluginSettings = async (pluginName: string, input: any) => {
     const plugin = await findPlugin(pluginName);
 
     if (!plugin) {
-        throw new Error(`Plugin ${pluginName} was not found`);
+        throw new HttpException(`Plugin ${pluginName} was not found`, HttpStatus.NOT_FOUND);
     }
 
     plugin.settings = typeof input === 'string' ? input : JSON.stringify(input);

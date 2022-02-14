@@ -1,4 +1,5 @@
 import { TDeleteManyInput, TPagedList, TPagedParams, TProductVariant, TProductVariantInput } from '@cromwell/core';
+import { HttpException, HttpStatus } from '@nestjs/common';
 import { EntityRepository, getCustomRepository, SelectQueryBuilder } from 'typeorm';
 
 import { checkEntitySlug, getPaged, handleBaseInput, handleCustomMetaInput } from '../helpers/base-queries';
@@ -27,11 +28,7 @@ export class ProductVariantRepository extends BaseRepository<ProductVariant> {
 
     async getProductVariant(id: number): Promise<ProductVariant> {
         logger.log('ProductVariantRepository::getProductVariant id: ' + id);
-        const productVariant = await this.findOne({
-            where: { id }
-        });
-        if (!productVariant) throw new Error(`ProductVariant ${id} not found!`);
-        return productVariant;
+        return this.getById(id);
     }
 
     async handleProductVariantInput(productVariant: ProductVariant, input: TProductVariantInput,
@@ -39,7 +36,7 @@ export class ProductVariantRepository extends BaseRepository<ProductVariant> {
         await handleBaseInput(productVariant, input);
 
         if (!product) product = input.productId ? await this.productRepo.getProductById(input.productId) : null;
-        if (!product) throw new Error(`ProductVariantRepository:handleProductVariantInput productId ${input.productId} not found!`);
+        if (!product) throw new HttpException(`ProductVariantRepository: productId ${input.productId} not found!`, HttpStatus.NOT_FOUND);
         productVariant.product = product;
         productVariant.name = input.name;
         productVariant.price = input.price;
@@ -73,7 +70,6 @@ export class ProductVariantRepository extends BaseRepository<ProductVariant> {
     async updateProductVariant(id: number, updateProductVariant: TProductVariantInput, product?: Product): Promise<ProductVariant> {
         logger.log('ProductVariantRepository::updateProductVariant; id: ' + id);
         const productVariant = await this.getById(id)
-        if (!productVariant) throw new Error(`ProductVariant ${id} not found!`);
 
         await this.handleProductVariantInput(productVariant, updateProductVariant, 'update', product);
         await this.save(productVariant);

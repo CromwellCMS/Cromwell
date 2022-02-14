@@ -25,7 +25,6 @@ import { Select } from '../../components/select/Select';
 import { toast } from '../../components/toast/toast';
 import { couponPageInfo } from '../../constants/PageInfos';
 import { getCustomMetaFor, getCustomMetaKeysFor, RenderCustomFields } from '../../helpers/customFields';
-import { handleOnSaveError } from '../../helpers/handleErrors';
 import { NumberFormatCustom } from '../../helpers/NumberFormatCustom';
 import commonStyles from '../../styles/common.module.scss';
 import styles from './Coupon.module.scss';
@@ -163,7 +162,6 @@ const CouponPage = () => {
                 await getCouponData(newData.id);
             } catch (e) {
                 toast.error('Failed to create coupon');
-                handleOnSaveError(e);
                 console.error(e);
             }
         } else {
@@ -173,7 +171,6 @@ const CouponPage = () => {
                 toast.success('Saved!');
             } catch (e) {
                 toast.error('Failed to save');
-                handleOnSaveError(e);
                 console.error(e)
             }
         }

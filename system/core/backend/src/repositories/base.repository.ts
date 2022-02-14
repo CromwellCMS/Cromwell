@@ -1,11 +1,21 @@
-import { EDBEntity, getRandStr, getStoreItem, TBasePageEntity, TDeleteManyInput, TPagedList, TPagedParams } from '@cromwell/core';
+import {
+    EDBEntity,
+    getRandStr,
+    getStoreItem,
+    TBasePageEntity,
+    TDeleteManyInput,
+    TPagedList,
+    TPagedParams,
+} from '@cromwell/core';
+import { HttpException, HttpStatus } from '@nestjs/common';
 import { ConnectionOptions, DeleteQueryBuilder, getConnection, Repository, SelectQueryBuilder } from 'typeorm';
 
-import { getPaged, getSqlBoolStr, getSqlLike, wrapInQuotes, applyBaseFilter } from '../helpers/base-queries';
-import { getLogger } from '../helpers/logger';
+import { applyBaseFilter, getPaged, getSqlBoolStr, getSqlLike, wrapInQuotes } from '../helpers/base-queries';
 import { entityMetaRepository } from '../helpers/entity-meta';
+import { getLogger } from '../helpers/logger';
 import { PageStats } from '../models/entities/page-stats.entity';
 import { BaseFilterInput } from '../models/filters/base-filter.filter';
+import { PagedParamsInput } from '../models/inputs/paged-params.input';
 
 const logger = getLogger();
 
@@ -14,7 +24,7 @@ export class BaseRepository<EntityType, EntityInputType = EntityType> extends Re
     public dbType: ConnectionOptions['type'];
 
     constructor(
-        private EntityClass: new (...args: any[]) => EntityType & { id?: number }
+        private EntityClass: (new (...args: any[]) => EntityType & { id?: number }),
     ) {
         super();
         this.dbType = getStoreItem('dbInfo')?.dbType as ConnectionOptions['type']
@@ -36,23 +46,24 @@ export class BaseRepository<EntityType, EntityInputType = EntityType> extends Re
         return this.find()
     }
 
-    async getById(id: number, relations?: string[]): Promise<EntityType | undefined> {
+    async getById(id: number, relations?: string[]): Promise<EntityType> {
         logger.log('BaseRepository::getById');
         const entity = await this.findOne({
             where: { id },
             relations
         });
-        if (!entity) throw new Error(`${this.metadata.tablePath} ${id} not found!`);
+
+        if (!entity) throw new HttpException(`${this.metadata.tablePath} ${id} not found!`, HttpStatus.NOT_FOUND);
         return entity;
     }
 
-    async getBySlug(slug: string, relations?: string[]): Promise<EntityType | undefined> {
+    async getBySlug(slug: string, relations?: string[]): Promise<EntityType> {
         logger.log('BaseRepository::getBySlug');
         const entity = await this.findOne({
             where: { slug },
             relations
         });
-        if (!entity) throw new Error(`${this.metadata.tablePath} ${slug} not found!`);
+        if (!entity) throw new HttpException(`${this.metadata.tablePath} ${slug} not found!`, HttpStatus.NOT_FOUND);
         return entity;
     }
 
@@ -64,7 +75,7 @@ export class BaseRepository<EntityType, EntityInputType = EntityType> extends Re
         for (const key of Object.keys(input)) {
             entity[key] = input[key];
         }
-        entity = await this.save<EntityType>(entity);
+        entity = await this.save(entity);
         return entity;
     }
 
@@ -73,7 +84,7 @@ export class BaseRepository<EntityType, EntityInputType = EntityType> extends Re
         let entity = await this.findOne({
             where: { id }
         });
-        if (!entity) throw new Error(`${this.metadata.tablePath} ${id} not found!`);
+        if (!entity) throw new HttpException(`${this.metadata.tablePath} ${id} not found!`, HttpStatus.NOT_FOUND);
 
         for (const key of Object.keys(input)) {
             entity[key] = input[key];
@@ -106,7 +117,7 @@ export class BaseRepository<EntityType, EntityInputType = EntityType> extends Re
                 input.ids = input.ids.filter(Boolean).filter(id => typeof id === 'number');
                 qb.andWhere(`${this.metadata.tablePath}.id IN (:...ids)`, { ids: input.ids ?? [] })
             } else {
-                throw new Error(`applyDeleteMany: You have to specify ids to delete for ${this.metadata.tablePath}`);
+                throw new HttpException(`applyDeleteMany: You have to specify ids to delete for ${this.metadata.tablePath}`, HttpStatus.BAD_REQUEST);
             }
         }
     }
@@ -141,11 +152,19 @@ export class BaseRepository<EntityType, EntityInputType = EntityType> extends Re
         return entity?.[this.metadata.tablePath + '_' + 'views'];
     }
 
-    applyBaseFilter(qb: SelectQueryBuilder<TBasePageEntity>, filter?: BaseFilterInput): SelectQueryBuilder<TBasePageEntity> {
+    applyBaseFilter<EntityType = TBasePageEntity>(qb: SelectQueryBuilder<EntityType>, filter?: BaseFilterInput): SelectQueryBuilder<EntityType> {
         if (!filter) return qb;
         const entityType = entityMetaRepository.getEntityType(this.EntityClass);
-        if (!entityType) return qb;
-        return applyBaseFilter({ qb, filter, entityType, dbType: this.dbType });
+        return applyBaseFilter({
+            qb, filter, dbType: this.dbType, entityType,
+            EntityClass: this.EntityClass as any,
+        });
     }
 
+    async getFilteredEntities(pagedParams?: PagedParamsInput<EntityType>, filterParams?: BaseFilterInput) {
+        logger.log('BaseRepository::getFilteredEntities ' + this.metadata.tablePath, pagedParams, filterParams);
+        const qb = this.createQueryBuilder(this.metadata.tablePath).select();
+        this.applyBaseFilter(qb, filterParams);
+        return await getPaged<EntityType>(qb, this.metadata.tablePath, pagedParams);
+    }
 }

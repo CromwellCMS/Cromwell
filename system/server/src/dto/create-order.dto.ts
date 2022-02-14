@@ -1,7 +1,7 @@
-import { TOrderStatus, TPaymentSession } from '@cromwell/core';
+import { TOrderStatus, TOrderPaymentSession } from '@cromwell/core';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateOrderDto implements TPaymentSession {
+export class CreateOrderDto implements TOrderPaymentSession {
     @ApiProperty()
     status?: TOrderStatus;
 
@@ -46,4 +46,10 @@ export class CreateOrderDto implements TPaymentSession {
 
     @ApiProperty({ type: [String] })
     couponCodes?: string[] | null;
+
+    @ApiProperty({ type: Object })
+    customMeta?: Record<string, string>;
+
+    @ApiProperty()
+    paymentSessionId?: string;
 }

@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 import { TOrder, TOrderInput, TStoreListItem } from '@cromwell/core';
 import { getCStore, getGraphQLClient } from '@cromwell/core-frontend';
-import { ArrowBack as ArrowBackIcon, DeleteForever as DeleteForeverIcon, Close as CloseIcon } from '@mui/icons-material';
+import { ArrowBack as ArrowBackIcon, Close as CloseIcon, DeleteForever as DeleteForeverIcon } from '@mui/icons-material';
 import { Autocomplete, Box, Button, Grid, IconButton, Skeleton, TextField } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
@@ -9,7 +9,7 @@ import { Link, useParams } from 'react-router-dom';
 import { toast } from '../../components/toast/toast';
 import { orderStatuses } from '../../constants/order';
 import { couponPageInfo, productPageInfo } from '../../constants/PageInfos';
-import { handleOnSaveError } from '../../helpers/handleErrors';
+import { parseAddress } from '../../helpers/addressParser';
 import { useForceUpdate } from '../../helpers/forceUpdate';
 import { NumberFormatCustom } from '../../helpers/NumberFormatCustom';
 import { toLocaleDateTimeString } from '../../helpers/time';
@@ -24,7 +24,7 @@ const OrderPage = () => {
     const [isCartUpdated, setIsCartUpdated] = useState(false);
     const [orderLoading, setOrderLoading] = useState<boolean>(false);
     const forceUpdate = useForceUpdate();
-    const cstoreRef = useRef(getCStore(true));
+    const cstoreRef = useRef(getCStore({ local: true }));
     const cstore = cstoreRef.current;
     const cart = cstore.getCart();
 
@@ -32,6 +32,9 @@ const OrderPage = () => {
     const updatedCartTotal = cartInfo.total ?? 0;
     const updatedOrderTotalPrice = parseFloat((updatedCartTotal +
         (data?.shippingPrice ?? 0)).toFixed(2));
+
+    // Support old and new address format
+    const { addressString, addressJson } = parseAddress(data?.customerAddress);
 
     useEffect(() => {
         getOrderData();
@@ -119,7 +122,6 @@ const OrderPage = () => {
                 toast.success('Saved!');
             } catch (e) {
                 toast.error('Failed to save');
-                handleOnSaveError(e);
                 console.error(e)
             }
         }
@@ -218,15 +220,37 @@ const OrderPage = () => {
                                     onChange={(e) => { handleInputChange('customerEmail', e.target.value) }}
                                 />
                             </Grid>
-                            <Grid item xs={12} sm={12}>
-                                <TextField label="Address"
-                                    value={data?.customerAddress || ''}
-                                    fullWidth
-                                    variant="standard"
-                                    className={styles.textField}
-                                    onChange={(e) => { handleInputChange('customerAddress', e.target.value) }}
-                                />
-                            </Grid>
+                            {!addressJson && (
+                                <Grid item xs={12} sm={12}>
+                                    <TextField label="Address"
+                                        value={addressString || ''}
+                                        fullWidth
+                                        variant="standard"
+                                        className={styles.textField}
+                                        onChange={(e) => { handleInputChange('customerAddress', e.target.value) }}
+                                    />
+                                </Grid>
+                            )}
+                            {addressJson && (
+                                Object.entries<any>(addressJson).map(([fieldKey, value]) => {
+                                    return (
+                                        <Grid item xs={12} sm={6} key={fieldKey}>
+                                            <TextField label={fieldKey}
+                                                value={value || ''}
+                                                fullWidth
+                                                variant="standard"
+                                                className={styles.textField}
+                                                onChange={(e) => {
+                                                    const newVal = e.target.value;
+                                                    handleInputChange('customerAddress', JSON.stringify({
+                                                        ...addressJson,
+                                                        [fieldKey]: newVal,
+                                                    }))
+                                                }}
+                                            />
+                                        </Grid>
+                                    )
+                                }))}
                             <Grid item xs={12} sm={12}>
                                 <TextField label="Comment"
                                     value={data?.customerComment || ''}

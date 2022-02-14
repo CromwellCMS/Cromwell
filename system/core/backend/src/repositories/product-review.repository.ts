@@ -1,4 +1,5 @@
 import { TDeleteManyInput, TPagedList, TPagedParams, TProductReview, TProductReviewInput } from '@cromwell/core';
+import { HttpException, HttpStatus } from '@nestjs/common';
 import sanitizeHtml from 'sanitize-html';
 import { Brackets, EntityRepository, getCustomRepository, SelectQueryBuilder } from 'typeorm';
 
@@ -27,18 +28,14 @@ export class ProductReviewRepository extends BaseRepository<ProductReview> {
 
     async getProductReview(id: number): Promise<ProductReview> {
         logger.log('ProductReviewRepository::getProductReview id: ' + id);
-        const productReview = await this.findOne({
-            where: { id }
-        });
-        if (!productReview) throw new Error(`ProductReview ${id} not found!`);
-        return productReview;
+        return this.getById(id);
     }
 
     async handleProductReviewInput(productReview: ProductReview, input: TProductReviewInput, action: 'update' | 'create') {
         await handleBaseInput(productReview, input);
 
         const product = input.productId && await this.productRepo.getProductById(input.productId);
-        if (!product) throw new Error(`ProductReviewRepository:handleProductReviewInput productId ${input.productId} not found!`);
+        if (!product) throw new HttpException(`ProductReview ${input.productId} not found!`, HttpStatus.NOT_FOUND);
         productReview.product = product;
 
 
@@ -74,7 +71,6 @@ export class ProductReviewRepository extends BaseRepository<ProductReview> {
     async updateProductReview(id: number, updateProductReview: TProductReviewInput): Promise<ProductReview> {
         logger.log('ProductReviewRepository::updateProductReview; id: ' + id);
         const productReview = await this.getById(id)
-        if (!productReview) throw new Error(`ProductReview ${id} not found!`);
 
         await this.handleProductReviewInput(productReview, updateProductReview, 'update');
         await this.save(productReview);

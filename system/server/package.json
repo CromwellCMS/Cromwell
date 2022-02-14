@@ -1,6 +1,6 @@
 {
   "name": "@cromwell/server",
-  "version": "2.0.15",
+  "version": "2.1.0",
   "description": "",
   "keywords": [],
   "license": "MIT",
@@ -32,7 +32,7 @@
   "dependencies": {
     "@cromwell/core": "2.0.10",
     "@cromwell/core-backend": "2.0.11",
-    "@cromwell/core-frontend": "2.0.11",
+    "@cromwell/core-frontend": "2.1.0",
     "@nestjs/common": "8.0.6",
     "@nestjs/core": "8.0.6",
     "@nestjs/graphql": "8.0.2",
@@ -84,6 +84,7 @@
     "typedi": "0.10.0",
     "typeorm": "0.2.37",
     "xlsx-populate": "1.21.0",
+    "uuid": "8.3.2",
     "yargs-parser": "20.2.9"
   },
   "optionalDependencies": {

@@ -14,6 +14,7 @@ import {
 import { GraphQLJSONObject } from 'graphql-type-json';
 import { Arg, Authorized, Ctx, FieldResolver, Int, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
+import { HttpException, HttpStatus } from '@nestjs/common';
 
 import { serverFireAction } from '../helpers/server-fire-action';
 
@@ -49,14 +50,14 @@ export class OrderResolver {
         @Arg("userId", () => Int) userId: number,
         @Arg("pagedParams", { nullable: true }) pagedParams?: PagedParamsInput<TOrder>
     ): Promise<TPagedList<TOrder> | undefined> {
-        if (!ctx?.user?.role) throw new Error('Access denied.');
+        if (!ctx?.user?.role) throw new HttpException('Access denied.', HttpStatus.UNAUTHORIZED);
 
-        if (ctx.user.role === 'guest' || ctx.user.role === 'administrator' ||
-            ctx.user.id + '' === userId + '') {
-            const orders = await this.repository.getOrdersOfUser(userId, pagedParams);
-            return orders;
+        if (!(ctx.user.role === 'guest' || ctx.user.role === 'administrator' ||
+            ctx.user.id + '' === userId + '')) {
+            throw new HttpException('Access denied.', HttpStatus.FORBIDDEN);
         }
-        throw new Error('Access denied.');
+        const orders = await this.repository.getOrdersOfUser(userId, pagedParams);
+        return orders;
     }
 
     @Authorized<TAuthRole>("administrator", "guest")
@@ -71,7 +72,7 @@ export class OrderResolver {
         @Ctx() ctx: TGraphQLContext,
         @Arg("id", () => Int) id: number
     ): Promise<Order | undefined> {
-        if (!ctx?.user?.role) throw new Error('Access denied.');
+        if (!ctx?.user?.role) throw new HttpException('Access denied.', HttpStatus.UNAUTHORIZED);
 
         const order = await this.repository.getOrderById(id);
         if (ctx.user.role === 'guest' || ctx.user.role === 'administrator' ||

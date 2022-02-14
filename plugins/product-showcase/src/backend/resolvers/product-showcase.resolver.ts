@@ -1,5 +1,6 @@
 import { TPagedList, TProduct } from '@cromwell/core';
 import { getLogger, PagedProduct, PluginRepository, ProductCategory, ProductRepository } from '@cromwell/core-backend';
+import { HttpException, HttpStatus } from '@nestjs/common';
 import { Arg, Query, Resolver } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
@@ -25,7 +26,7 @@ export default class PluginProductShowcaseResolver {
 
         if (slug) {
             const product = await this.productRepo.getBySlug(slug, ['categories']);
-            if (!product?.id) throw new Error('Product with slug ' + slug + ' was not found!');
+            if (!product?.id) throw new HttpException('Product with slug ' + slug + ' was not found!', HttpStatus.NOT_FOUND);
 
             // Gather products from all related categories until reach limit (maxSize)
             for (const category of product.categories ?? []) {

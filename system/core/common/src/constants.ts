@@ -1,4 +1,5 @@
 import { TDBEntity, TGraphQLNode } from './types/data';
+import { TShippingOption, TPaymentOption } from './types/entities';
 
 export const GraphQLPaths: { [K in Exclude<TDBEntity, 'Theme' | 'Plugin' | 'PostComment' | 'CMS'>]: TGraphQLNode } = {
     Generic: {
@@ -140,7 +141,7 @@ export const GraphQLPaths: { [K in Exclude<TDBEntity, 'Theme' | 'Plugin' | 'Post
     },
 }
 
-export enum ECommonComponentNames {
+export enum ESharedComponentNames {
     ProductCard = 'ProductCard',
     PostCard = 'PostCard',
 }
@@ -173,3 +174,13 @@ export const systemPackages = [
 ] as const;
 
 export const nodeRequire = ((name: string) => eval(`require('${name}');`)) as NodeRequire;
+
+export const standardShipping: TShippingOption = {
+    key: 'Standard shipping',
+    name: 'Standard shipping',
+}
+
+export const payLaterOption: TPaymentOption = {
+    key: 'Pay later',
+    name: 'Pay later',
+}

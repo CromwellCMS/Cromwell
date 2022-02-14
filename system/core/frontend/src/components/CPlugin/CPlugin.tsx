@@ -21,13 +21,13 @@ type CPluginProps = {
 export class CPlugin extends React.Component<CPluginProps> {
     render() {
         const props = this.props;
-        const { pluginName, component, ...rest } = props;
+        const { pluginName, plugin, component, ...rest } = props;
         return (
             <CBlock {...rest} type='plugin'
-                plugin={{ pluginName: pluginName }}
+                plugin={{ pluginName: pluginName ?? plugin?.pluginName }}
                 content={(data, blockRef, setContentInstance) => {
                     setContentInstance(this);
-                    const name = data?.plugin?.pluginName ?? pluginName;
+                    const name = data?.plugin?.pluginName ?? pluginName ?? plugin?.pluginName;
                     if (!name) return <></>;
 
                     const pluginConf = getStoreItem('plugins')?.[name];

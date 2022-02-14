@@ -77,7 +77,7 @@ export class Order extends BaseEntity implements TOrder {
     customerEmail?: string | null;
 
     @Field(() => String, { nullable: true })
-    @Column({ type: "varchar", length: 255, nullable: true })
+    @Column({ type: "varchar", length: 6000, nullable: true })
     customerAddress?: string | null;
 
     @Field(() => String, { nullable: true })

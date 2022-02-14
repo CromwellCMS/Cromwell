@@ -1,14 +1,9 @@
-import { TDefaultPageName, TStaticPageContext, TStaticPagePluginContext } from '@cromwell/core';
-import { getModuleImporter } from '@cromwell/core-frontend';
+import { TDefaultPageName, TRegisteredPluginInfo, TStaticPageContext, TStaticPagePluginContext } from '@cromwell/core';
+import { getModuleImporter, getRestApiClient, getRegisteredPluginsAtPage } from '@cromwell/core-frontend';
 
 import { fsRequire, getPluginCjsPath } from './initRenderer';
 
-export type TPluginsSettings = Record<string, {
-    pluginName: string;
-    version?: string;
-    globalSettings?: any;
-    pluginInstances?: any;
-}>;
+export type TPluginsSettings = Record<string, TRegisteredPluginInfo>;
 
 const cachedPlugins: Record<string, {
     pluginName: string;
@@ -22,15 +17,50 @@ const cachedPlugins: Record<string, {
  * @param context - StaticPageContext of Page
  */
 export const pluginsDataFetcher = async (pageName: TDefaultPageName | string, context: TStaticPageContext,
-    pluginsData?: TPluginsSettings) => {
+    pluginsData?: TPluginsSettings, extraPlugins?: (TRegisteredPluginInfo | string)[]) => {
     const plugins: Record<string, {
         data?: any;
         nextProps?: any;
     }> = {};
 
     if (!pluginsData) return plugins;
+    const configPlugins = Object.values(pluginsData);
 
-    const promises = Object.values(pluginsData).map(async data => {
+    for (const extra of [...(extraPlugins ?? []), ...getRegisteredPluginsAtPage(pageName)]) {
+        const extraName = typeof extra === 'object' ? extra.pluginName : extra;
+
+        if (!configPlugins.find(p => {
+            const name = typeof p === 'object' ? p.pluginName : p;
+            return name === extraName;
+        })) {
+            if (typeof extra === 'string') {
+                const client = getRestApiClient();
+                // Register plugin dynamically. Usually Plugins registered in the cromwell.config.js 
+                // file or in the DB (by Theme editor). But it's also possible to register
+                // plugins by theme authors in `getStaticProps` function. In this case
+                // we don't get Plugin's info and settings from `client.getRendererRage` so 
+                // we need fetch settings here
+                const entity = await client.getPluginEntity(extra);
+
+                let pluginSettings = null;
+                try {
+                    pluginSettings = entity?.settings && JSON.parse(entity?.settings) || null;
+                } catch (error) {
+                    console.error('Failed to parse JSON settings of ' + extra, error);
+                }
+                configPlugins.push({
+                    pluginName: extra,
+                    version: entity?.version || null,
+                    globalSettings: pluginSettings,
+                });
+            }
+            if (typeof extra === 'object') {
+                configPlugins.push(extra);
+            }
+        }
+    }
+
+    const promises = configPlugins.map(async data => {
         const { pluginName, globalSettings, version, pluginInstances } = data;
         const pluginContext: TStaticPagePluginContext = Object.assign({}, context);
         pluginContext.pluginSettings = globalSettings;

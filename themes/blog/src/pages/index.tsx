@@ -1,5 +1,5 @@
-import { TGetStaticProps, TPagedList, TPost } from '@cromwell/core';
-import { CContainer, CImage, CText, getGraphQLErrorInfo } from '@cromwell/core-frontend';
+import { removeUndefined, TGetStaticProps, TPagedList, TPost } from '@cromwell/core';
+import { CContainer, CImage, CText } from '@cromwell/core-frontend';
 import React from 'react';
 
 import Layout from '../components/layout/Layout';
@@ -8,7 +8,6 @@ import { handleGetFilteredPosts } from '../helpers/getPosts';
 import commonStyles from '../styles/common.module.scss';
 import blogStyles from '../styles/pages/Blog.module.scss';
 import styles from '../styles/pages/Index.module.scss';
-import { removeUndefined } from '../helpers/removeUndefined';
 
 import type { TPageWithLayout } from './_app';
 
@@ -91,7 +90,7 @@ export const getStaticProps: TGetStaticProps<IndexPageProps> = async () => {
     try {
         posts = await handleGetFilteredPosts({ pageSize: 20, order: 'DESC', orderBy: 'publishDate' });
     } catch (e) {
-        console.error('IndexPage::getStaticProps', getGraphQLErrorInfo(e))
+        console.error('IndexPage::getStaticProps', e)
     }
 
     let featuredPosts: TPagedList<TPost> | undefined;
@@ -104,7 +103,7 @@ export const getStaticProps: TGetStaticProps<IndexPageProps> = async () => {
             featured: true
         });
     } catch (e) {
-        console.error('IndexPage::getStaticProps', getGraphQLErrorInfo(e))
+        console.error('IndexPage::getStaticProps', e)
     }
 
     return {

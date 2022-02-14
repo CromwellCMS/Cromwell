@@ -14,7 +14,7 @@ const logger = getLogger();
 
 let sEnv: TEnv | undefined = undefined;
 
-type TEnv = {
+export type TEnv = {
     envMode: 'dev' | 'prod';
     scriptName: TServerCommands;
     cmsConfig: TCmsConfig;

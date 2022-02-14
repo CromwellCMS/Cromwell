@@ -1,4 +1,8 @@
+# Generated docs
 /docs/api
+/docs/toolkits/commerce.md
+
+.generated-docs
 
 # Dependencies
 /node_modules

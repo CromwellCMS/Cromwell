@@ -1,0 +1,19 @@
+.Breadcrumbs {
+    box-sizing: border-box;
+}
+
+.breadcrumb {
+    position: relative;
+    box-sizing: border-box;
+}
+
+.defaultBreadcrumb {
+    margin-right: 14px;
+    display: flex;
+    align-items: center;
+    border: 1px solid #333;
+    border-radius: 30px;
+    padding: 2px 8px;
+    font-size: 14px;
+    box-sizing: border-box;
+}

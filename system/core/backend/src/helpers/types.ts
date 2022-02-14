@@ -4,7 +4,7 @@ import {
     TCoupon,
     TCustomEntity,
     TOrder,
-    TPaymentSession,
+    TOrderPaymentSession,
     TPost,
     TPostComment,
     TProduct,
@@ -82,7 +82,7 @@ export type ActionTypes = {
 
     update_settings: Action<TCmsSettings>;
 
-    create_payment: Action<TPaymentSession, {
+    create_payment: Action<TOrderPaymentSession, {
         link: string;
         name: string;
     }>;

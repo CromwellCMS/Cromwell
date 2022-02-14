@@ -1,8 +1,7 @@
 import { TCromwellBlockProps } from '@cromwell/core';
 import React from 'react';
-import ReactHtmlParser from 'react-html-parser';
 
-import { cleanParseContext, getParserTransform } from '../../helpers/parserTransform';
+import { parseHtml } from '../../helpers/parserTransform';
 import { CBlock } from '../CBlock/CBlock';
 
 export class CEditor extends React.Component<TCromwellBlockProps> {
@@ -15,10 +14,7 @@ export class CEditor extends React.Component<TCromwellBlockProps> {
                     let content = children;
                     const editorData = Object.assign({}, data?.editor, editor);
                     if (editorData?.html && data) {
-                        content = ReactHtmlParser(editorData.html, {
-                            transform: getParserTransform(data.id)
-                        });
-                        cleanParseContext(data.id);
+                        content = parseHtml(editorData.html);
                     }
                     return content;
                 }}

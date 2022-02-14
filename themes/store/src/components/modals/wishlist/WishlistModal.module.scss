@@ -16,9 +16,7 @@
     border-radius: 10px;
     outline: none;
 
-    .wishList {
-        @include styledScrollBar;
-        border-radius: 10px;
+    .list {
         width: 100%;
         height: 100%;
         overflow: auto;

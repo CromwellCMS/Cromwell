@@ -38,10 +38,14 @@ export class Pagination extends React.Component<{
         if (scrollBoxEl !== this.scrollBoxEl) {
             if (this.scrollBoxEl) {
                 this.scrollBoxEl.removeEventListener('scroll', this.onScroll);
+            } else {
+                window.removeEventListener('scroll', this.onScroll);
             }
 
             if (scrollBoxEl) {
-                scrollBoxEl.addEventListener('scroll', this.onScroll)
+                scrollBoxEl.addEventListener('scroll', this.onScroll);
+            } else {
+                window.addEventListener('scroll', this.onScroll);
             }
             this.scrollBoxEl = scrollBoxEl;
         }

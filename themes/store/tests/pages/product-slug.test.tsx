@@ -14,8 +14,9 @@ describe('/product/[slug]', () => {
 
     it("renders products", async () => {
         render(<Page
+            cmsProps={{}}
             product={{
-                id: '_test_',
+                id: 1,
                 name: '_test_',
             }}
         />);

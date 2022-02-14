@@ -64,7 +64,6 @@ export const readCmsModules = async (dir?: string) => {
 
     await readPackageCmsModules(cmsPackageName);
     await readPackageCmsModules(resolve(dir ?? process.cwd(), 'package.json'), true);
-
     return {
         themes,
         plugins

@@ -1,9 +1,10 @@
-import { NextPage, GetStaticPropsResult } from 'next';
-import { DocumentContext } from 'next/document';
 import React from 'react';
 
 import { TCmsConfig, TCmsSettings, TDefaultPageName, TPageConfig, TPageInfo, TPalette, TThemeConfig } from './data';
-import { TPost, TProduct } from './entities';
+
+import type { GetStaticPropsResult, NextPage } from 'next';
+import type { DocumentContext } from 'next/document';
+import type { NextRouter } from 'next/router';
 
 type ParsedUrlQuery = NodeJS.Dict<string | string[]>;
 
@@ -19,8 +20,16 @@ export type TStaticPageContext<Q extends ParsedUrlQuery = ParsedUrlQuery> = {
     pagesInfo?: TPageInfo[];
 }
 
+export type TGetStaticPropsResult<P> = GetStaticPropsResult<P> & {
+    /**
+     * Register extra plugins on a page without configuring them in `cromwell.config.js`
+     * Note: every plugin on the page must be registered to get its settings server-side.
+     */
+    extraPlugins?: (TRegisteredPluginInfo | string)[];
+}
+
 export type TGetStaticProps<P = any, Q extends ParsedUrlQuery = ParsedUrlQuery> = (ctx: TStaticPageContext<Q>) =>
-    Promise<GetStaticPropsResult<P>> | GetStaticPropsResult<P>;
+    Promise<TGetStaticPropsResult<P>> | TGetStaticPropsResult<P>;
 
 export type TStaticPagePluginContext<TPluginSettings = any, Q extends ParsedUrlQuery = ParsedUrlQuery> =
     TStaticPageContext<Q> & {
@@ -34,10 +43,18 @@ export type TGetPluginStaticProps<
     TResult = any,
     TPluginSettings = any,
     Q extends ParsedUrlQuery = ParsedUrlQuery> = (ctx: TStaticPagePluginContext<TPluginSettings, Q>) =>
-        Promise<GetStaticPropsResult<TResult>> | GetStaticPropsResult<TResult>;
+        Promise<TGetStaticPropsResult<TResult>> | TGetStaticPropsResult<TResult>;
+
+export type TRegisteredPluginInfo = {
+    pluginName: string;
+    version?: string | null;
+    globalSettings?: any | null;
+    pluginInstances?: any | null;
+}
 
 export type TPageCmsProps = {
     documentContext?: TNextDocumentContext;
+    router?: NextRouter;
     plugins?: Record<string, {
         data?: any;
         code?: string;
@@ -48,7 +65,7 @@ export type TPageCmsProps = {
     themeHeadHtml?: string | null;
     themeFooterHtml?: string | null;
     palette?: TPalette | null;
-    defaultPages?: Record<TDefaultPageName, string>;
+    defaultPages?: Partial<Record<TDefaultPageName, string>>;
     pageConfigName?: string;
     slug?: string | string[] | null;
     resolvedPageRoute?: string;
@@ -56,7 +73,7 @@ export type TPageCmsProps = {
 
 export type TCromwellPageCoreProps = { cmsProps: TPageCmsProps };
 
-export type TCromwellPage<Props = any | undefined> = NextPage<Props & TCromwellPageCoreProps>;
+export type TCromwellPage<Props = Record<string, unknown> | undefined> = NextPage<Props & TCromwellPageCoreProps>;
 
 export type TNextDocumentContext = Partial<DocumentContext> & {
     fullUrl?: string;
@@ -111,10 +128,6 @@ export type TContentComponentProps = {
     id: string;
     config?: TCromwellBlockData;
     children?: React.ReactNode;
-}
-
-export type TCommonComponentProps = {
-    data?: TProduct | TPost | any;
 }
 
 export type TCromwellBlockType =

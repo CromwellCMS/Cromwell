@@ -1,15 +1,27 @@
-import { TStoreListItem, TPaymentSession } from '@cromwell/core';
+import { TStoreListItem, TOrderPaymentSession, TPaymentOption, TShippingOption } from '@cromwell/core';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class PaymentOptionDto {
+export class PaymentOptionDto implements TPaymentOption {
+    @ApiProperty()
+    key?: string | undefined;
     @ApiProperty()
     name?: string;
-
     @ApiProperty()
     link?: string;
 }
 
-export class OrderTotalDto implements TPaymentSession {
+export class ShippingOptionDto implements TShippingOption {
+    @ApiProperty()
+    key: string;
+    @ApiProperty()
+    name?: string | undefined;
+    @ApiProperty()
+    price?: number | undefined;
+    @ApiProperty()
+    label?: string | undefined;
+}
+
+export class OrderTotalDto implements TOrderPaymentSession {
     @ApiProperty()
     orderTotalPrice?: number = 0;
 
@@ -41,6 +53,9 @@ export class OrderTotalDto implements TPaymentSession {
     paymentOptions?: PaymentOptionDto[];
 
     @ApiProperty()
+    shippingOptions?: ShippingOptionDto[];
+
+    @ApiProperty()
     fromUrl?: string;
 
     @ApiProperty()
@@ -51,4 +66,7 @@ export class OrderTotalDto implements TPaymentSession {
 
     @ApiProperty()
     appliedCoupons?: string[];
+
+    @ApiProperty()
+    paymentSessionId?: string;
 }

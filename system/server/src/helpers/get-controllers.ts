@@ -12,6 +12,8 @@ import { MockService } from '../services/mock.service';
 import { PluginService } from '../services/plugin.service';
 import { RendererService } from '../services/renderer.service';
 import { ThemeService } from '../services/theme.service';
+import { StoreService } from '../services/store.service';
+import { StatsService } from '../services/stats.service';
 
 export const getControllers = async (dev?: boolean) => {
     const def: any[] = [
@@ -30,6 +32,7 @@ export const getServices = async (dev?: boolean) => {
     const def: any[] = [
         CmsService, PluginService, ThemeService,
         MigrationService, RendererService,
+        StoreService, StatsService,
         ...((await collectPlugins()).providers ?? [])
     ];
     if (dev) def.push(MockService);

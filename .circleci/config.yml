@@ -60,6 +60,12 @@ jobs:
             NODE_OPTIONS: --max_old_space_size=4096
 
       - run:
+          name: test commerce toolkit
+          command: npm run test:commerce
+          environment:
+            NODE_OPTIONS: --max_old_space_size=4096
+
+      - run:
           name: test cli
           command: npm run test:cli
           environment:

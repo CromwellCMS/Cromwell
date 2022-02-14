@@ -84,3 +84,4 @@ I’m not saying that my system is better than WordPress (since I haven’t spen
 For now, I’m asking for feedback on how to improve it. And the project is open-source, anyone can try it. In the end, it all depends on the community. How soon we’ll embrace a new most popular language at backend development? Will there be a day when Node.js is powering 78.9% of the internet? ;)
 
 Originally published in https://itnext.io/remaking-wordpress-in-js-stack-hello-to-a-new-cms-for-next-js-websites-63096bc5f98b
+https://app.daily.dev/posts/zyThWPCEq

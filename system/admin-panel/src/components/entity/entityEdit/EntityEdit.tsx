@@ -6,7 +6,6 @@ import React from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 
 import { getCustomMetaFor, getCustomMetaKeysFor, RenderCustomFields } from '../../../helpers/customFields';
-import { handleOnSaveError } from '../../../helpers/handleErrors';
 import commonStyles from '../../../styles/common.module.scss';
 import { toast } from '../../toast/toast';
 import { TBaseEntityFilter, TEntityPageProps } from '../types';
@@ -148,7 +147,6 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
             } catch (e) {
                 toast.error(`Failed to create ${(this.props.entityType
                     ?? this.props.entityCategory).toLocaleLowerCase()}`);
-                handleOnSaveError(e);
                 console.error(e);
             }
         } else {
@@ -159,7 +157,6 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
                 toast.success('Saved!');
             } catch (e) {
                 toast.error('Failed to save');
-                handleOnSaveError(e);
                 console.error(e);
             }
         }

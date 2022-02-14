@@ -33,6 +33,7 @@ const productsKey: keyof TProductCategory = 'products';
 const parentKey: keyof TProductCategory = 'parent';
 const childrenKey: keyof TProductCategory = 'children';
 const viewsKey: keyof TProductCategory = 'views';
+const nestedLevelKey: keyof TProductCategory = 'nestedLevel';
 
 @Resolver(ProductCategory)
 export class ProductCategoryResolver {
@@ -135,5 +136,10 @@ export class ProductCategoryResolver {
     @FieldResolver(() => Int, { nullable: true })
     async [viewsKey](@Root() entity: ProductCategory): Promise<number | undefined> {
         return this.repository.getEntityViews(entity.id, EDBEntity.ProductCategory);
+    }
+
+    @FieldResolver(() => Int, { nullable: true })
+    async [nestedLevelKey](@Root() entity: ProductCategory): Promise<number> {
+        return this.repository.getNestedLevel(entity);
     }
 }

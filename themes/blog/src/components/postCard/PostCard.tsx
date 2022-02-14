@@ -1,5 +1,5 @@
-import { getStoreItem, TPost, TTag } from '@cromwell/core';
-import { Link } from '@cromwell/core-frontend';
+import { TPost, TTag } from '@cromwell/core';
+import { Link, useAppPropsContext } from '@cromwell/core-frontend';
 import clsx from 'clsx';
 import { format } from 'date-fns';
 import Image from 'next/image';
@@ -17,13 +17,15 @@ export const PostCard = (props?: {
 }) => {
     const data = props?.data;
     const postLink = `/post/${data?.slug ?? data?.id}`;
-    const mainImage = data?.mainImage ?? '/themes/@cromwell/theme-store/no-photos.png';
+    const mainImage = data?.mainImage ?? '/themes/@cromwell/theme-blog/no-photos.png';
+    const pageContext = useAppPropsContext();
+
     const imageLoader = ({ src }: {
         src: string;
         width: number;
         quality?: number;
     }) => {
-        const origin = getStoreItem('routeInfo')?.origin;
+        const origin = pageContext.routeInfo?.origin;
         if (src.startsWith('/') && origin) src = origin + src;
         return src;
     }
@@ -33,25 +35,26 @@ export const PostCard = (props?: {
             <div className={styles.imageBlock}
                 style={{ height: props?.imageHeight }}
             >
-                <Link href={postLink}>
-                    <a aria-label={`Post ${data?.title}`}
-                        style={{ display: 'flex' }}>
-                        {Image && (
-                            <Image
-                                alt={data?.title ?? undefined}
-                                unoptimized
-                                loader={imageLoader}
-                                objectFit="cover"
-                                layout="fill"
-                                src={mainImage}
-                            />
-                        )}
-                    </a>
+                <Link href={postLink}
+                    aria-label={`Post ${data?.title}`}
+                    style={{ display: 'flex' }}
+                >{Image && (
+                    <Image
+                        alt={data?.title ?? undefined}
+                        unoptimized
+                        loader={imageLoader}
+                        objectFit="cover"
+                        layout="fill"
+                        src={mainImage}
+                    />
+                )}
                 </Link>
             </div>
-            {props?.coverImage && (
-                <div className={styles.overlay}></div>
-            )}
+            {
+                props?.coverImage && (
+                    <div className={styles.overlay}></div>
+                )
+            }
             <div className={styles.caption}>
                 <div className={styles.tagsBlock}>
                     {data?.tags?.map(tag => {
@@ -64,23 +67,23 @@ export const PostCard = (props?: {
                             )
                         }
                         return (
-                            <Link key={tag?.id} href={`/tag/${tag.slug}`}>
-                                <a className={styles.tag}>{tag?.name}</a>
+                            <Link key={tag?.id} href={`/tag/${tag.slug}`} className={styles.tag}
+                            >{tag?.name}
                             </Link>
                         )
                     })}
                 </div>
                 <div className={styles.titleBlock}>
-                    <Link href={postLink}>
-                        <a className={clsx(styles.title, styles._onHoverLink)}>{data?.title}</a>
-                    </Link>
+                    <Link href={postLink}
+                        className={clsx(styles.title, styles._onHoverLink)}
+                    >{data?.title}</Link>
                 </div>
                 {data?.excerpt && (
                     <p className={styles.excerpt}>{data?.excerpt}</p>
                 )}
                 <PostInfo data={data} />
             </div>
-        </div>
+        </div >
     )
 }
 

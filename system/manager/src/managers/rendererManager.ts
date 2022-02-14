@@ -63,6 +63,7 @@ export const startRenderer = async (command?: TRendererCommands, options?: {
                 `--theme-name=${themeName}`,
                 `--port=${port}`,
             ],
+            command: rendererEnv,
             sync: command === 'build' ? true : false,
             watchName: !isBuild ? 'renderer' : undefined,
             onVersionChange: async () => {
@@ -110,9 +111,9 @@ export const startRenderer = async (command?: TRendererCommands, options?: {
                 logger.error(e);
             }
 
-            await pollPages(port);
+            await pollPages(port, themeName);
 
-            if (success) logger.info(`Renderer has successfully started`);
+            if (success) logger.log(`Renderer has successfully started`);
             else logger.error(`Failed to start renderer`);
 
             startRendererAliveWatcher(command ?? 'prod', { port });
@@ -143,6 +144,7 @@ export const rendererRunBuild = async (themeName: string): Promise<boolean> => {
         path: rendererStartupPath,
         name: cacheKeys.rendererBuilder,
         args: [command, `--theme-name=${themeName}`],
+        command,
     });
 
     await new Promise(done => {
@@ -175,6 +177,7 @@ export const rendererStartWatchDev = async (themeName: string, port?: string) =>
         path: rendererStartupPath,
         name: cacheKeys.rendererBuilder,
         args: [command, `--theme-name=${themeName}`, port ? '--port=' + port : ''],
+        command: 'build',
     });
 }
 
@@ -187,10 +190,10 @@ const isThemeBuilt = async (dir: string): Promise<boolean> => {
 }
 
 /** Poll all routes to make Next.js server generate and cache pages */
-const pollPages = async (port: string | number) => {
+const pollPages = async (port: string | number, themeName: string) => {
     let infos: TPageInfo[] | undefined;
     try {
-        infos = await getRestApiClient().getPagesInfo();
+        infos = await getRestApiClient().getPagesInfo(themeName);
     } catch (error) {
         logger.error(error);
     }

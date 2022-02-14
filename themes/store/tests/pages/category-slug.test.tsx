@@ -21,24 +21,13 @@ describe('/category/[slug]', () => {
 
     it("renders products", async () => {
         render(<CategoryPage
+            cmsProps={{}}
             category={{
                 id: '_test1_',
                 name: '_test1_',
             }}
-            products={{
-                pagedMeta: {
-                    pageNumber: 1,
-                    pageSize: 1,
-                    totalElements: 1,
-                },
-                elements: [{
-                    id: '_test2_',
-                    name: '_test2_',
-                }]
-            }}
         />);
 
         await screen.findByText('_test1_');
-        await screen.findByText('_test2_');
     });
 })

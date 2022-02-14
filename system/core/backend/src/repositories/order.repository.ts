@@ -1,4 +1,5 @@
 import { TBasePageEntity, TDeleteManyInput, TOrder, TOrderInput, TPagedList, TPagedParams } from '@cromwell/core';
+import { HttpException, HttpStatus } from '@nestjs/common';
 import sanitizeHtml from 'sanitize-html';
 import { EntityRepository, getCustomRepository, SelectQueryBuilder } from 'typeorm';
 import { DateUtils } from 'typeorm/util/DateUtils';
@@ -39,7 +40,7 @@ export class OrderRepository extends BaseRepository<Order> {
 
     private async handleBaseOrderInput(order: Order, input: TOrderInput) {
         if (input.customerEmail && !validateEmail(input.customerEmail))
-            throw new Error('Provided e-mail is not valid');
+            throw new HttpException('Provided e-mail is not valid', HttpStatus.BAD_REQUEST);
 
         order.status = input.status;
         order.cart = Array.isArray(input.cart) ? JSON.stringify(input.cart) : input.cart;
@@ -83,11 +84,7 @@ export class OrderRepository extends BaseRepository<Order> {
 
     async updateOrder(id: number, inputData: TOrderInput): Promise<Order | undefined> {
         logger.log('OrderRepository::updateOrder id: ' + id);
-
-        let order = await this.findOne({
-            where: { id }
-        });
-        if (!order) throw new Error(`Order ${id} not found!`);
+        let order = await this.getById(id);
 
         await this.handleBaseOrderInput(order, inputData);
         order = await this.save(order);

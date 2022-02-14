@@ -6,34 +6,34 @@ import { Footer } from '../footer/Footer';
 import { Header } from '../header/Header';
 import { CartModal } from '../modals/cart/CartModal';
 import ProductQuickView from '../modals/productQuickView/ProductQuickView';
-import { WatchedModal } from '../modals/watched/WatchedModal';
+import { ViewedModal } from '../modals/viewed/ViewedModal';
 import { WishlistModal } from '../modals/wishlist/WishlistModal';
+import { SignInModal } from '../modals/signIn/SignIn';
 import styles from './Layout.module.scss';
 
-// import { CompareModal } from '../modals/compare/CompareModal';
 type TProps = {
-    children: React.ReactNode;
+  children: React.ReactNode;
 }
 
 export default function Layout(props: TProps | undefined) {
-    const router = useRouter?.();
+  const router = useRouter?.();
 
-    useEffect(() => {
-        appState.closeAllModals();
-    }, [router?.asPath]);
+  useEffect(() => {
+    appState.closeAllModals();
+  }, [router?.asPath]);
 
-    return (
-        <div className={styles.Layout}>
-            <Header />
-            <CartModal />
-            <WishlistModal />
-            {/* <CompareModal /> */}
-            <WatchedModal />
-            <ProductQuickView />
-            <div className={styles.main}>
-                {props?.children}
-            </div>
-            <Footer />
-        </div>
-    )
+  return (
+    <div className={styles.Layout}>
+      <Header />
+      <CartModal />
+      <WishlistModal />
+      <ViewedModal />
+      <ProductQuickView />
+      <SignInModal />
+      <div className={styles.main}>
+        {props?.children}
+      </div>
+      <Footer />
+    </div>
+  )
 }

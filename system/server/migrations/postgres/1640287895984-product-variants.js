@@ -17,7 +17,7 @@ module.exports = class productVariants1640287895984 {
         await queryRunner.query(`CREATE INDEX "IDX_421fcfb5bf7bf531646dcd52ab" ON "crw_product_variant" ("stockAmount") `);
         await queryRunner.query(`CREATE INDEX "IDX_e34d9eb5816f615f44218fe5c2" ON "crw_product_variant" ("stockStatus") `);
         try {
-            await queryRunner.query(`ALTER TABLE "public"."crw_product" ADD "manageStock" boolean`);
+            await queryRunner.query(`ALTER TABLE "crw_product" ADD "manageStock" boolean`);
         } catch (error) { console.error(error); }
         await queryRunner.query(`ALTER TABLE "crw_product_variant_meta" ADD CONSTRAINT "FK_f2833cc1e1bb9516471b126327e" FOREIGN KEY ("entityId") REFERENCES "crw_product_variant"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "crw_product_variant" ADD CONSTRAINT "FK_a787a73dfa5575dafeaab729bb5" FOREIGN KEY ("productId") REFERENCES "crw_product"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
@@ -26,7 +26,7 @@ module.exports = class productVariants1640287895984 {
     async down(queryRunner) {
         await queryRunner.query(`ALTER TABLE "crw_product_variant" DROP CONSTRAINT "FK_a787a73dfa5575dafeaab729bb5"`);
         await queryRunner.query(`ALTER TABLE "crw_product_variant_meta" DROP CONSTRAINT "FK_f2833cc1e1bb9516471b126327e"`);
-        await queryRunner.query(`ALTER TABLE "public"."crw_product" DROP COLUMN "manageStock"`);
+        await queryRunner.query(`ALTER TABLE "crw_product" DROP COLUMN "manageStock"`);
         await queryRunner.query(`DROP INDEX "IDX_e34d9eb5816f615f44218fe5c2"`);
         await queryRunner.query(`DROP INDEX "IDX_421fcfb5bf7bf531646dcd52ab"`);
         await queryRunner.query(`DROP INDEX "IDX_9ae265ee4eb7735d7f0f2eb84d"`);

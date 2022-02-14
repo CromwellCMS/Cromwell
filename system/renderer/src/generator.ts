@@ -5,21 +5,26 @@ import {
     getBundledModulesDir,
     getCmsModuleConfig,
     getCmsModuleInfo,
+    getModuleStaticDir,
     getNodeModuleDir,
     getPublicDir,
+    getPublicThemesDir,
     getRendererTempDevDir,
+    configFileName,
     getRendererTempDir,
     getThemeBuildDir,
 } from '@cromwell/core-backend/dist/helpers/paths';
+import { getRestApiClient } from '@cromwell/core-frontend/dist/api/CRestApiClient';
 import { interopDefaultContent } from '@cromwell/utils/build/shared';
 import chokidar from 'chokidar';
 import fs from 'fs-extra';
 import glob from 'glob';
 import normalizePath from 'normalize-path';
-import { join, resolve } from 'path';
+import { dirname, join, resolve } from 'path';
 import symlinkDir from 'symlink-dir';
+import decache from 'decache';
 
-import { defaultGenericPageContent, tsConfigContent } from './helpers/defaultContents';
+import { defaultGenericPageContent, defaultCss, tsConfigContent } from './helpers/defaultContents';
 import { jsOperators } from './helpers/helpers';
 
 const logger = getLogger();
@@ -29,6 +34,10 @@ type TOptions = {
     targetThemeName?: string;
     watch?: boolean;
 }
+
+const pagesStore: Record<string, {
+    path: string;
+}> = {}
 
 export const generator = async (options: TOptions) => {
     const { scriptName, targetThemeName } = options;
@@ -193,23 +202,12 @@ const devGenerate = async (themeName: string, options: TOptions) => {
         if (pageName === '_app') {
             hasApp = true;
         }
+        pagesStore[pageName] = { path: pagePath }
         await devGeneratePageWrapper(pagePath);
     }
 
     if (!hasApp) {
-        const pageContent = `
-        ${await getGlobalCssImports()}
-        import React from 'react';
-        import { withCromwellApp } from '@cromwell/renderer';
-        import '../generated-imports';
-
-        function App(props) {
-            return React.createElement(props.Component, props.pageProps);
-        }
-
-        export default withCromwellApp(App);
-        `;
-        await fs.outputFile(resolve(tempDir, 'pages', '_app.js'), pageContent);
+        generateDefaultApp();
     }
 
     const nextConfigPath = normalizePath(resolve(tempDir, 'next.config.js'));
@@ -264,11 +262,37 @@ const devGenerate = async (themeName: string, options: TOptions) => {
         await fs.outputFile(join(tempDir, 'tsconfig.json'), tsConfigContent);
     }
 
-    if (options.watch)
+    if (options.watch) {
         startPagesWatcher(pagesGlobStr);
+        startStaticWatcher(themeName);
+        startConfigWatcher(themeName);
+    }
+}
+
+const generateDefaultApp = async () => {
+    const tempDir = normalizePath(getRendererTempDevDir());
+    const pageContent = `
+    ${await getGlobalCssImports()}
+    ${defaultCss}
+    import React from 'react';
+    import { withCromwellApp } from '@cromwell/renderer';
+    import '../generated-imports';
+
+    function App(props) {
+        return React.createElement(props.Component, props.pageProps);
+    }
+
+    export default withCromwellApp(App);
+    `;
+    const appPath = resolve(tempDir, 'pages', '_app.js');
+    await fs.outputFile(appPath, pageContent);
 }
 
 const getGlobalCssImports = async () => {
+    try {
+        decache(resolve((await getNodeModuleDir(process.cwd()))!, configFileName));
+    } catch (error) { }
+
     const themeConfig = await getCmsModuleConfig(process.cwd());
     const tempDir = normalizePath(getRendererTempDevDir());
     let globalCssImports = '';
@@ -308,11 +332,7 @@ export const devGeneratePageWrapper = async (pagePath: string) => {
 
         pageContent = `
             ${await getGlobalCssImports()}
-            import '@cromwell/core-frontend/dist/_index.css';
-            import '@cromwell/renderer/build/editor-styles.css';
-            import 'pure-react-carousel/dist/react-carousel.es.css';
-            import 'react-image-lightbox/style.css';
-
+            ${defaultCss}
             import App from '${resolvePagePath(pageName)}';
             import '../generated-imports';
             import { withCromwellApp } from '@cromwell/renderer';
@@ -430,11 +450,11 @@ const linkFiles = async (tempDir: string, themeName: string, options) => {
     }
 
     // Output .env file
-    let envContent = '';
+    let envContent = `THEME_NAME=${themeName}`;
     if (options.serverUrl) {
         envContent += `API_URL=${options.serverUrl}`;
-        await fs.outputFile(resolve(tempDir, '.env.local'), envContent);
     }
+    await fs.outputFile(resolve(tempDir, '.env.local'), envContent);
 }
 
 
@@ -461,4 +481,69 @@ const startPagesWatcher = async (pagesGlobStr: string) => {
         .on('add', updatePageWrapper)
         .on('change', updatePageWrapper)
         .on('unlink', removePageWrapper);
+}
+
+
+let staticWatcherActive = false;
+const startStaticWatcher = async (moduleName: string) => {
+    if (staticWatcherActive) return;
+    staticWatcherActive = true;
+
+    const staticDir = normalizePath((await getModuleStaticDir(process.cwd())) ?? '');
+    await fs.ensureDir(staticDir);
+    const publicDir = getPublicThemesDir();
+
+    const globStr = `${staticDir}/**`;
+
+    const copyFile = async (filePath: string) => {
+        const pathChunk = normalizePath(filePath).replace(staticDir, '');
+        const publicPath = join(publicDir, moduleName, pathChunk);
+        try {
+            await fs.ensureDir(dirname(publicPath));
+            await fs.copyFile(filePath, publicPath);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    const watcher = chokidar.watch(globStr, {
+        persistent: true
+    });
+
+    watcher
+        .on('change', copyFile)
+        .on('add', copyFile);
+}
+
+
+let configWatcherActive = false;
+const startConfigWatcher = async (packageName: string) => {
+    if (configWatcherActive) return;
+    configWatcherActive = true;
+
+    const rootDir = normalizePath(process.cwd());
+    const globStr = `${rootDir}/cromwell.config.js`;
+
+    const configChange = async () => {
+        // Re-install theme to update config in the DB
+        try {
+            await getRestApiClient().activateTheme(packageName);
+        } catch (error) {
+            console.error(error);
+        }
+        if (pagesStore['_app']?.path) {
+            await devGeneratePageWrapper(pagesStore['_app']?.path);
+        } else {
+            await generateDefaultApp();
+        }
+    }
+
+    const watcher = chokidar.watch(globStr, {
+        persistent: true
+    });
+
+    watcher
+        .on('change', configChange)
+        .on('add', configChange)
+        .on('unlink', configChange);
 }

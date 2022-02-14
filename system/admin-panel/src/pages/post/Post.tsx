@@ -21,7 +21,6 @@ import { postListInfo, postPageInfo } from '../../constants/PageInfos';
 import { getCustomMetaKeysFor } from '../../helpers/customFields';
 import { getEditorData, getEditorHtml, initTextEditor } from '../../helpers/editor/editor';
 import { useForceUpdate } from '../../helpers/forceUpdate';
-import { handleOnSaveError } from '../../helpers/handleErrors';
 import styles from './Post.module.scss';
 import PostSettings from './PostSettings';
 
@@ -201,7 +200,6 @@ const Post = (props) => {
                 await getPostData(newPost.id);
             } catch (e) {
                 toast.error('Failed to create post');
-                handleOnSaveError(e);
                 console.error(e)
             }
         } else if (postData?.id) {
@@ -212,7 +210,6 @@ const Post = (props) => {
                 toast.success('Saved!');
             } catch (e) {
                 toast.error('Failed to save');
-                handleOnSaveError(e);
                 console.error(e)
             }
         }

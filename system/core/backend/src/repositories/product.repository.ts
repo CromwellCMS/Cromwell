@@ -10,6 +10,7 @@ import {
     TProductRating,
     TProductReview,
 } from '@cromwell/core';
+import { HttpException, HttpStatus } from '@nestjs/common';
 import { Brackets, EntityRepository, getCustomRepository, SelectQueryBuilder } from 'typeorm';
 
 import {
@@ -44,6 +45,7 @@ type TGetProductOptions = {
     withRating?: boolean;
     withAttributes?: boolean;
     withCategories?: boolean;
+    withVariants?: boolean;
 }
 
 @EntityRepository(Product)
@@ -58,7 +60,9 @@ export class ProductRepository extends BaseRepository<Product> {
         qb.addSelect(`AVG(${reviewTable}.${String(ratingKey)})`, this.metadata.tablePath + '_' + averageKey)
             .addSelect(`COUNT(${reviewTable}.id)`, this.metadata.tablePath + '_' + reviewsCountKey)
             .leftJoin(ProductReview, reviewTable,
-                `${reviewTable}.${this.quote('productId')} = ${this.metadata.tablePath}.id `)
+                `${reviewTable}.${this.quote('productId')} = ${this.metadata.tablePath}.id AND ` +
+                `${reviewTable}.${this.quote('approved')} = :approvedValue `)
+            .setParameter('approvedValue', true)
             .groupBy(`${this.metadata.tablePath}.id`);
     }
 
@@ -92,6 +96,7 @@ export class ProductRepository extends BaseRepository<Product> {
         }
         qb.where(`${this.metadata.tablePath}.id = :id`, { id });
         const product = await qb.getOne();
+        if (!product) throw new HttpException(`Product ${id} not found!`, HttpStatus.NOT_FOUND);
 
         await this.applyGetProductOptions(product, options);
         return product;
@@ -105,6 +110,7 @@ export class ProductRepository extends BaseRepository<Product> {
             this.applyGetProductRating(qb);
         }
         const product = await qb.where(`${this.metadata.tablePath}.slug = :slug`, { slug }).getOne();
+        if (!product) throw new HttpException(`Product ${slug} not found!`, HttpStatus.NOT_FOUND);
 
         await this.applyGetProductOptions(product, options);
         return product;
@@ -118,6 +124,9 @@ export class ProductRepository extends BaseRepository<Product> {
         if (options.withCategories) {
             product.categories = await getCustomRepository(ProductCategoryRepository)
                 .getCategoriesOfProduct(product.id, { pageSize: 1000 });
+        }
+        if (options.withVariants) {
+            product.variants = await this.getProductVariantsOfProduct(product.id);
         }
     }
 
@@ -239,7 +248,7 @@ export class ProductRepository extends BaseRepository<Product> {
             where: { id },
             relations: ['categories', 'attributeValues']
         });
-        if (!product) throw new Error(`Product ${id} not found!`);
+        if (!product) throw new HttpException(`Product ${id} not found!`, HttpStatus.NOT_FOUND);
 
         await this.handleProductInput(product, updateProduct, 'update');
         await this.save(product);

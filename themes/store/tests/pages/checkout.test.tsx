@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import React from 'react';
 
 const testData = {
-    id: '_test1_',
+    id: 1,
     name: '_test1_',
 }
 

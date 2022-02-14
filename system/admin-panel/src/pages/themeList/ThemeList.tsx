@@ -149,7 +149,7 @@ class ThemeList extends React.Component<Partial<RouteComponentProps>, {
         }
 
         try {
-            const themeConfig = await client.getThemeConfig();
+            const themeConfig = await client.getThemeConfig(info.name);
             if (themeConfig) {
                 store.setStateProp({
                     prop: 'activeTheme',

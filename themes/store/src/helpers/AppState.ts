@@ -1,17 +1,20 @@
 import { makeAutoObservable } from 'mobx';
 
+export type TSignInFormType = 'sign-in' | 'sign-up';
+
 class State {
     constructor() {
         makeAutoObservable(this)
     }
 
-    isSignInOpen: boolean = false;
     isCartOpen: boolean = false;
     isWishlistOpen: boolean = false;
     isCompareOpen: boolean = false;
     isWatchedOpen: boolean = false;
     isQuickViewOpen: boolean = false;
     quickViewProductId: number | undefined;
+    isSignInOpen: boolean = false;
+    signInFormType: TSignInFormType = 'sign-in';
 
     closeAllModals() {
         if (appState.isCartOpen) appState.isCartOpen = false;

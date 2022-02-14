@@ -1,4 +1,5 @@
 import { TCreateUser, TDeleteManyInput, TPagedList, TPagedParams, TUpdateUser, TUser } from '@cromwell/core';
+import { HttpException, HttpStatus } from '@nestjs/common';
 import bcrypt from '@node-rs/bcrypt';
 import { EntityRepository, SelectQueryBuilder } from 'typeorm';
 
@@ -46,8 +47,19 @@ export class UserRepository extends BaseRepository<User> {
     }
 
     async handleUserInput(user: User, userInput: TUpdateUser, action: 'update' | 'create') {
-        if (userInput.email && !validateEmail(userInput.email))
-            throw new Error('Provided e-mail is not valid');
+        if (!validateEmail(userInput.email))
+            throw new HttpException('Provided e-mail is not valid', HttpStatus.BAD_REQUEST);
+
+        const matches = await this.find({
+            where: {
+                email: userInput.email,
+            }
+        });
+        for (const match of matches) {
+            if (match?.id !== user.id) {
+                throw new HttpException('Email is already taken', HttpStatus.BAD_REQUEST);
+            }
+        }
 
         await handleBaseInput(user, userInput);
         user.fullName = userInput.fullName;
@@ -63,10 +75,14 @@ export class UserRepository extends BaseRepository<User> {
         await handleCustomMetaInput(user, userInput);
     }
 
-    async createUser(createUser: TCreateUser, id?: number | null): Promise<User> {
+    async createUser(createUser: TCreateUser, id?: number | null,
+        passwordType?: 'hash' | 'plain'): Promise<User> {
         logger.log('UserRepository::createUser');
-        if (!createUser.password || !createUser.email) throw new Error('No credentials provided')
-        if (createUser.password.length > 50) throw new Error('Password length is too long');
+        if (!createUser.password || !createUser.email)
+            throw new HttpException('No credentials provided', HttpStatus.BAD_REQUEST);
+
+        if (passwordType !== 'hash' && createUser.password.length > 50)
+            throw new HttpException('Password length is too long', HttpStatus.BAD_REQUEST);
 
         const user = new User();
         if (id) {
@@ -74,13 +90,17 @@ export class UserRepository extends BaseRepository<User> {
             try {
                 oldUser = await this.getUserById(id);
             } catch (error) { }
-            if (oldUser) throw new Error('User already exists for provided id: ' + id);
+            if (oldUser) throw new HttpException('User already exists for provided id: ' + id, HttpStatus.BAD_REQUEST);
             user.id = id;
         }
 
         if (createUser.password) {
-            user.password = await this.hashPassword(createUser.password);
+            if (passwordType !== 'hash') {
+                createUser.password = await this.hashPassword(createUser.password);
+            }
+            user.password = createUser.password;
         }
+
         if (!user.role) user.role = 'customer';
 
         await this.handleUserInput(user, createUser, 'create');
@@ -95,7 +115,6 @@ export class UserRepository extends BaseRepository<User> {
     async updateUser(id: number, updateUser: TUpdateUser): Promise<User> {
         logger.log('UserRepository::updateUser id: ' + id);
         const user = await this.getById(id);
-        if (!user) throw new Error(`User ${id} not found!`);
 
         await this.handleUserInput(user, updateUser, 'update');
         await this.save(user);

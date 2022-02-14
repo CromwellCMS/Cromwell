@@ -46,7 +46,7 @@ export class CImage extends React.Component<CImageProps> {
                     );
 
                     return _link ? (
-                        <Link href={_link}><a>{imgEl}</a></Link>
+                        <Link href={_link}>{imgEl}</Link>
                     ) : imgEl;
                 }}
             />

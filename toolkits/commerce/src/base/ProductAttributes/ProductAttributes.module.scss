@@ -1,0 +1,70 @@
+.ProductAttributes {
+  box-sizing: border-box;
+}
+
+.attribute {
+  margin: 10px 0;
+  width: 100%;
+}
+
+.productAttributesValidate {
+  position: relative;
+}
+
+.attributeValueText {
+  margin: 0;
+}
+
+.productAttributesValidate {
+  .invalidAttrTitle {
+    color: #aa2e25;
+    font-weight: 500;
+  }
+
+  .invalidAttributeValue {
+    background-color: #ff000021;
+    border: 2px solid #d9443a;
+
+    .attributeValueText {
+      color: #aa2e25;
+    }
+  }
+}
+
+.headerWrapper {
+  width: 100%;
+  margin-bottom: 5px;
+}
+
+.valuesWrapper {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.attributeValue {
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.23);
+  padding: 5px 15px;
+  border-radius: 4px;
+  transition: 0.2s;
+  cursor: pointer;
+}
+
+body .attributeValueChecked {
+  box-shadow: none;
+  border: 2px solid #333;
+  font-weight: 900;
+}
+
+.attributeValueIcon {
+  width: 20px;
+  height: 20px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  margin-right: 10px;
+}

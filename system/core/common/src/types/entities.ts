@@ -105,6 +105,10 @@ export type TProductCategoryCore = {
      * Qnt of page requests
      */
     views?: number | null;
+    /**
+     * Level in category tree counting from top (root category)
+     */
+    nestedLevel?: number | null;
 }
 
 export type TProductCategory = TProductCategoryCore & TBasePageEntity;
@@ -478,14 +482,26 @@ export type TOrderFilter = TBaseFilter & {
     dateTo?: string;
 }
 
-export type TPaymentSession = TOrderInput & {
-    paymentOptions?: {
-        name?: string;
-        link?: string;
-    }[];
+export type TPaymentOption = {
+    key?: string;
+    name?: string;
+    link?: string;
+}
+
+export type TShippingOption = {
+    key: string;
+    name?: string;
+    price?: number;
+    label?: string;
+}
+
+export type TOrderPaymentSession = TOrderInput & {
+    paymentOptions?: TPaymentOption[];
+    shippingOptions?: TShippingOption[];
     successUrl?: string;
     cancelUrl?: string;
     appliedCoupons?: string[];
+    paymentSessionId?: string;
 }
 
 
@@ -653,6 +669,11 @@ export type TCmsPublicSettings = {
      */
     defaultShippingPrice?: number;
     /**
+     * Enable "pay later" option (by default) or a customer must use one of payment services 
+     * to finish order checkout 
+     */
+    disablePayLater?: boolean
+    /**
      * Custom HTML code injection
      */
     headHtml?: string;
@@ -775,6 +796,7 @@ export type TCustomEntityColumn = {
     customGraphQlFragment?: string;
     disableSort?: boolean;
     getValueView?: (value: any) => React.ReactNode;
+    getTooltipValueView?: (value: any) => React.ReactNode;
     applyFilter?: <TFilter extends TBaseFilter>(value: any, filter: TFilter) => TFilter;
 }
 

@@ -377,7 +377,7 @@ export class CBlock<TContentBlock = React.Component> extends
                     ...stylesParsed,
                 }
             } catch (e) {
-                console.error(e);
+                console.error('CBlock: provided style prop is not JSON: ' + data.style, e);
             }
         }
 

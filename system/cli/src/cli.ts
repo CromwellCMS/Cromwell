@@ -133,23 +133,8 @@ const args = yargs(process.argv.slice(2))
                     });
 
                 } else {
-                    await startServiceByName({
+                    await startSystem({
                         scriptName: 'production',
-                        serviceName: 'server',
-                        port,
-                        init,
-                    });
-
-                    await startServiceByName({
-                        scriptName: 'production',
-                        serviceName: 'adminPanel',
-                        port,
-                        init,
-                    });
-
-                    await startServiceByName({
-                        scriptName: 'production',
-                        serviceName: 'renderer',
                         port,
                         init,
                     });

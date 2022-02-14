@@ -30,8 +30,8 @@ Below listed core services with default settings (ports at localhost address can
 ### 1. API Server and Proxy
 - Path - system/server
 - NPM Module - @cromwell/server
-- Url - http://localhost:4016
 - Run command - `npx crw s --sv s`
+- Available at - http://localhost:4016
 
 API server and Proxy. That's two servers in one service.  
 Proxy server handles all incoming requests and distributes them for other services. So all services of CMS will be available at http://localhost:4016 in development. In production it's recommended to setup Nginx config to proxy services instead. CMS goes with configured Nginx config for this purpose.
@@ -45,16 +45,16 @@ API Server Implements REST API for transactions or internal usage and GraphQL AP
 ### 2. Renderer 
 - Path - system/renderer
 - NPM Module - @cromwell/renderer
-- Url - http://localhost:4128
 - Run command - `npx crw s --sv r`
+- Available at - http://localhost:4128
 
 Next.js service, compiles (using Utils) and serves files of an active Theme and Plugins to end-users.
 
 ### 3. Admin Panel
 - Path - system/admin-panel
 - NPM Module - @cromwell/admin-panel
-- Url - http://localhost:4064
 - Run command - `npx crw s --sv a`
+- Available at - http://localhost:4064
 
 Uses dedicated Fastify server to serve Admin Panel files and public media files. 
 
@@ -71,8 +71,7 @@ Modules bundler / compiler / package manager
 
 Cromwell CMS main module. Starts and controls other services
 
-
-### 5. CLI
+### 6. CLI
 - Path - system/cli
 - NPM Module - @cromwell/cli
 
@@ -81,11 +80,11 @@ Provides "cromwell" CLI.
 
 ## Develop services
 
-After cloning and building the repo you can start services in development mode (with watchers) by adding --dev flag:
-`npx crw s --sv s --dev` - Will start API Server service with Nodemon and Rollup watching code changes.
-`npx crw s --sv a --dev` - Start Admin panel service with Webpack watcher and hot reloading.  
+After cloning and building the repo you can start services in development mode (with watchers) by adding --dev flag:  
+`npx crw s --sv s --dev` - Will start API Server service with Nodemon and Rollup watching code changes.  
+`npx crw s --sv a --dev` - Start Admin panel service with Webpack watcher and hot reloading.   
 
-For other services you can run scripts from their location:
+For other services you can run scripts from their location:  
 `cd system/core/common && npm run watch` - Will launch watcher on `@cromwell/core` package.  
 
 Same for Theme development:

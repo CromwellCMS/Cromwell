@@ -1,13 +1,11 @@
-import { TGetStaticProps, TPost } from '@cromwell/core';
-import { CContainer, getGraphQLClient, getGraphQLErrorInfo, Link, LoadBox } from '@cromwell/core-frontend';
+import { removeUndefined, TGetStaticProps, TPost } from '@cromwell/core';
+import { CContainer, EntityHead, getGraphQLClient, Link, LoadBox, TGraphQLErrorInfo } from '@cromwell/core-frontend';
 import { useRouter } from 'next/router';
 import React from 'react';
 
 import Layout from '../../components/layout/Layout';
 import { PostInfo } from '../../components/postCard/PostCard';
 import postStyles from '../../components/postCard/PostCard.module.scss';
-import { getHead } from '../../helpers/getHead';
-import { removeUndefined } from '../../helpers/removeUndefined';
 import commonStyles from '../../styles/common.module.scss';
 import styles from '../../styles/pages/BlogPost.module.scss';
 
@@ -29,11 +27,10 @@ const BlogPostPage: TPageWithLayout<BlogPostProps> = (props) => {
 
     return (
         <CContainer className={styles.BlogPost} id="post_01">
-            {getHead({
-                documentContext: props.cmsProps?.documentContext,
-                image: post?.mainImage,
-                data: post,
-            })}
+            <EntityHead
+                entity={post}
+                useFallback
+            />
             <CContainer className={commonStyles.content} id="post_02">
                 {post?.mainImage && (
                     <img className={styles.mainImage} src={post.mainImage} />
@@ -55,9 +52,10 @@ const BlogPostPage: TPageWithLayout<BlogPostProps> = (props) => {
                     <div className={postStyles.tagsBlock}>
                         {post?.tags?.map(tag => {
                             return (
-                                <Link href={`/tag/${tag.slug}`} key={tag.id}>
-                                    <a className={postStyles.tag}>{tag?.name}</a>
-                                </Link>
+                                <Link href={`/tag/${tag.slug}`}
+                                    key={tag.id}
+                                    className={postStyles.tag}
+                                >{tag?.name}</Link>
                             )
                         })}
                     </div>
@@ -91,18 +89,12 @@ export default BlogPostPage;
 export const getStaticProps: TGetStaticProps<BlogPostProps> = async (context) => {
     const slug = context?.params?.slug ?? null;
     const client = getGraphQLClient();
-    let post: TPost | undefined = undefined;
-
-
-    if (slug && typeof slug === 'string') {
-        try {
-            post = await client?.getPostBySlug(slug);
-        } catch (e) {
-            console.error('BlogPostPage::getStaticProps', getGraphQLErrorInfo(e))
-        }
-    } else {
-        console.error('BlogPostPage::getStaticProps: !pid')
-    }
+    
+    const post = (typeof slug === 'string' &&
+        await client.getPostBySlug(slug).catch((error: TGraphQLErrorInfo) => {
+            if (error.statusCode !== 404)
+                console.error('BlogPostPage::getStaticProps', error);
+        })) || null;
 
     if (!post) {
         return {

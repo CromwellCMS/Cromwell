@@ -1,5 +1,6 @@
 import {
     getBlockInstance,
+    removeUndefined,
     TCromwellBlock,
     TGetStaticProps,
     TPagedList,
@@ -8,7 +9,15 @@ import {
     TPostFilter,
     TTag,
 } from '@cromwell/core';
-import { CContainer, CList, getGraphQLClient, getGraphQLErrorInfo, LoadBox, TCList } from '@cromwell/core-frontend';
+import {
+    CContainer,
+    CList,
+    EntityHead,
+    getGraphQLClient,
+    LoadBox,
+    TCList,
+    TGraphQLErrorInfo,
+} from '@cromwell/core-frontend';
 import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import { useRouter } from 'next/router';
 import React, { useEffect, useRef } from 'react';
@@ -17,9 +26,7 @@ import Layout from '../../components/layout/Layout';
 import layoutStyles from '../../components/layout/Layout.module.scss';
 import { Pagination } from '../../components/pagination/Pagination';
 import { PostCard } from '../../components/postCard/PostCard';
-import { getHead } from '../../helpers/getHead';
 import { handleGetFilteredPosts } from '../../helpers/getPosts';
-import { removeUndefined } from '../../helpers/removeUndefined';
 import commonStyles from '../../styles/common.module.scss';
 import styles from '../../styles/pages/Blog.module.scss';
 
@@ -79,11 +86,10 @@ const TagPage: TPageWithLayout<TagPageProps> = (props) => {
 
     return (
         <CContainer className={commonStyles.content} id="tag_01">
-            {getHead({
-                documentContext: props.cmsProps?.documentContext,
-                image: props?.tag?.image,
-                data: props?.tag,
-            })}
+            <EntityHead
+                entity={tag}
+                useFallback
+            />
             <CContainer className={styles.filter} id="tag_02">
                 <div>
                     <h1 className={styles.title}>{tag?.name ?? ''}</h1>
@@ -157,18 +163,15 @@ export const getStaticProps: TGetStaticProps<TagPageProps> = async (context) => 
     const slug = context?.params?.slug ?? null;
     const client = getGraphQLClient();
 
-    let tag: TTag | undefined;
-    try {
-        if (slug && typeof slug === 'string') {
-            tag = await client?.getTagBySlug(slug);
-        }
-    } catch (e) {
-        console.error(getGraphQLErrorInfo(e))
-    }
+    const tag = (typeof slug === 'string' &&
+        await client.getTagBySlug(slug).catch((error: TGraphQLErrorInfo) => {
+            if (error.statusCode !== 404)
+                console.error('TagPage::getStaticProps', error);
+        })) || null;
 
     if (!tag) {
         return {
-            notFound: true
+            notFound: true,
         }
     }
 
@@ -178,7 +181,7 @@ export const getStaticProps: TGetStaticProps<TagPageProps> = async (context) => 
             tagIds: [tag.id]
         }) : {};
     } catch (e) {
-        console.error('TagPage::getStaticProps', getGraphQLErrorInfo(e))
+        console.error('TagPage::getStaticProps', e);
     }
 
     return {

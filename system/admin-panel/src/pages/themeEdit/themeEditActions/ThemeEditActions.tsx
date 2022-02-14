@@ -1,4 +1,4 @@
-import { getRandStr, TPageConfig, TPalette } from '@cromwell/core';
+import { getRandStr, getStoreItem, TPageConfig, TPalette } from '@cromwell/core';
 import { getRestApiClient } from '@cromwell/core-frontend';
 import {
     AddCircle as AddCircleIcon,
@@ -52,6 +52,7 @@ export class ThemeEditActions extends Component<{
     private unregisterBlock;
     private unsavedPrompt = 'Your unsaved changes will be lost. Do you want to discard and leave this page?';
     private changedPalette = false;
+    private themeName = getStoreItem('cmsSettings')?.themeName;
 
     public undoBtnRef = React.createRef<HTMLButtonElement>();
     public redoBtnRef = React.createRef<HTMLButtonElement>();
@@ -104,7 +105,7 @@ export class ThemeEditActions extends Component<{
 
     private getPageInfos = async () => {
         try {
-            let infos: TExtendedPageInfo[] = await getRestApiClient()?.getPagesInfo();
+            let infos: TExtendedPageInfo[] = await getRestApiClient()?.getPagesInfo(this.themeName);
             if (infos) {
                 // Set page preview for generic pages as a first id 
                 infos = infos.map(page => {
@@ -124,7 +125,7 @@ export class ThemeEditActions extends Component<{
 
     private getThemePalette = async () => {
         try {
-            const palette = await getRestApiClient().getThemePalette();
+            const palette = await getRestApiClient().getThemePalette(this.themeName);
             if (palette) {
                 this.setState({
                     themePalette: palette,
@@ -214,7 +215,7 @@ export class ThemeEditActions extends Component<{
             success = true;
         } else {
             try {
-                success = await getRestApiClient()?.deletePage(pageInfo.route);
+                success = await getRestApiClient()?.deletePage(pageInfo.route, this.themeName);
             } catch (error) {
                 console.error(error);
             }
@@ -246,7 +247,7 @@ export class ThemeEditActions extends Component<{
 
         let success;
         try {
-            success = await getRestApiClient()?.resetPage(editingPageConfig.route);
+            success = await getRestApiClient()?.resetPage(editingPageConfig.route, this.themeName);
         } catch (error) {
             console.error(error);
         }
@@ -273,7 +274,7 @@ export class ThemeEditActions extends Component<{
 
         if (this.changedPalette && this.state.themePalette) {
             try {
-                await getRestApiClient().saveThemePalette(this.state.themePalette);
+                await getRestApiClient().saveThemePalette(this.themeName, this.state.themePalette);
             } catch (error) {
                 console.error(error);
             }
@@ -294,7 +295,7 @@ export class ThemeEditActions extends Component<{
 
         let success;
         try {
-            success = await client?.savePageConfig(pageConfig);
+            success = await client?.savePageConfig(pageConfig, this.themeName);
         } catch (error) {
             console.error(error);
         }
@@ -346,7 +347,7 @@ export class ThemeEditActions extends Component<{
         if (pageInfo?.isSaved !== false) {
             try {
                 if (pageInfo.route && pageInfo.route !== '') {
-                    pageConfig = await getRestApiClient()?.getPageConfig(pageInfo.route);
+                    pageConfig = await getRestApiClient()?.getPageConfig(pageInfo.route, this.themeName);
                 }
 
                 pageInfo = Object.assign({}, pageInfo, pageConfig);

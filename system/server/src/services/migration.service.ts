@@ -4,6 +4,7 @@ import {
     TBasePageEntity,
     TCoupon,
     TCouponInput,
+    TCreateUser,
     TCustomEntityInput,
     TDBEntity,
     TOrderInput,
@@ -53,7 +54,7 @@ import {
     User,
     UserRepository,
 } from '@cromwell/core-backend';
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import cryptoRandomString from 'crypto-random-string';
 import { Container, Service } from 'typedi';
 import { getCustomRepository } from 'typeorm';
@@ -183,7 +184,7 @@ export class MigrationService {
             await this.importProducts({ workbook, removeSurplus });
             await this.importProductVariants({ workbook, removeSurplus });
             await this.importReviews({ workbook, removeSurplus });
-            
+
             await this.importOrders({ workbook, removeSurplus });
             await this.importPlugins({ workbook, removeSurplus });
             await this.importThemes({ workbook, removeSurplus });
@@ -368,7 +369,7 @@ export class MigrationService {
                 .attributeRecordsToProductAttributeInstances(ent.attributeValues)),
             customMeta: this.stringifyValue(await entityMetaRepository.getEntityMetaByKeys(EDBEntity.Product, ent.id, metaKeys)),
             views: undefined,
-            variants: this.stringifyValue(ent.variants),
+            variants: undefined,
         })));
 
         this.fillSheet(workbook, ESheetNames.Product, productsSheet);
@@ -434,6 +435,7 @@ export class MigrationService {
             parentId: (await categoryRepo.getParentCategory(ent))?.id,
             customMeta: this.stringifyValue(await entityMetaRepository.getEntityMetaByKeys(EDBEntity.ProductCategory, ent.id, metaKeys)),
             views: undefined,
+            nestedLevel: undefined,
         })));
 
         this.fillSheet(workbook, ESheetNames.ProductCategory, categoriesSheet);
@@ -585,6 +587,7 @@ export class MigrationService {
             phone: ent.phone,
             address: ent.address,
             role: ent.role,
+            password: ent.password,
             customMeta: await entityMetaRepository.getEntityMetaByKeys(EDBEntity.User, ent.id, metaKeys),
             views: undefined,
         })));
@@ -914,6 +917,7 @@ export class MigrationService {
                 description: input.description || null,
                 descriptionDelta: input.descriptionDelta || null,
                 views: null,
+                nestedLevel: null,
             }),
             update: async (input) => input.id && getCustomRepository(ProductCategoryRepository).updateProductCategory(input.id, input),
             create: (input) => getCustomRepository(ProductCategoryRepository).createProductCategory(input, input.id),
@@ -1004,7 +1008,7 @@ export class MigrationService {
                 manageStock: this.parseBoolean(input.manageStock),
                 stockStatus: input.stockStatus as TStockStatus || null,
                 views: null,
-                variants: this.parseJson(input.variants),
+                variants: undefined as any,
             }),
             update: async (input) => input.id && getCustomRepository(ProductRepository).updateProduct(input.id, input),
             create: (input) => getCustomRepository(ProductRepository).createProduct(input, input.id),
@@ -1093,7 +1097,8 @@ export class MigrationService {
     }
 
     private async importUsers(options: TImportOptions) {
-        await this.importBase<TUpdateUser>({
+        const userRepo = getCustomRepository(UserRepository);
+        await this.importBase<TCreateUser>({
             ...options,
             sheetName: ESheetNames.User,
             EntityClass: User,
@@ -1106,13 +1111,15 @@ export class MigrationService {
                 phone: input.phone || null,
                 address: input.address || null,
                 role: input.role as any || null,
+                password: input.password as any || undefined,
             }),
-            update: async (input) => input.id && getCustomRepository(UserRepository).updateUser(input.id, input),
-            create: (input) => getCustomRepository(UserRepository).createUser({
+            update: async (input) => input.id && userRepo.updateUser(input.id, input),
+            create: async (input) => userRepo.createUser({
                 ...input,
-                password: cryptoRandomString({ length: 14, type: 'url-safe' }),
-            }, input.id),
-        })
+                password: input.password || (await userRepo.hashPassword(
+                    cryptoRandomString({ length: 14, type: 'url-safe' }))),
+            }, input.id, 'hash'),
+        });
     }
 
     private async importPlugins(options: TImportOptions) {
@@ -1206,7 +1213,7 @@ export class MigrationService {
         if (!inputs?.[0]) return;
         try {
             const entity = await getCmsEntity();
-            if (!entity) throw new Error('importCmsSettings: !entity');
+            if (!entity) throw new HttpException('CMS settings not found', HttpStatus.INTERNAL_SERVER_ERROR);
             entity.publicSettings = this.parseJson(inputs[0].publicSettings);
             entity.adminSettings = this.parseJson(inputs[0].adminSettings);
             entity.internalSettings = this.parseJson(inputs[0].internalSettings);

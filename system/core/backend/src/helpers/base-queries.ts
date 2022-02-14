@@ -1,5 +1,6 @@
 import { EDBEntity, getRandStr, getStoreItem, TBasePageEntityInput, TPagedList, TPagedParams } from '@cromwell/core';
-import { ConnectionOptions, getManager, SelectQueryBuilder } from 'typeorm';
+import { HttpException, HttpStatus } from '@nestjs/common';
+import { BaseEntity, ConnectionOptions, getManager, SelectQueryBuilder } from 'typeorm';
 
 import { entityMetaRepository } from '../helpers/entity-meta';
 import { BasePageEntity } from '../models/entities/base-page.entity';
@@ -115,7 +116,7 @@ export const checkEntitySlug = async <T extends BasePageEntity>(entity: T, Entit
                 }
             } else {
                 if (match.id !== entity.id) {
-                    throw new Error('Slug is not unique');
+                    throw new HttpException('Slug is not unique', HttpStatus.BAD_REQUEST);
                 }
             }
         }
@@ -143,16 +144,17 @@ export const wrapInQuotes = (dbType: ConnectionOptions['type'], str: string) => 
     return '`' + str + '`';
 }
 
-export const applyBaseFilter = <TEntity>({ qb, filter, entityType, dbType }: {
+export const applyBaseFilter = <TEntity>({ qb, filter, entityType, dbType, EntityClass }: {
     qb: SelectQueryBuilder<TEntity>;
     filter: BaseFilterInput;
-    entityType: EDBEntity;
     dbType: ConnectionOptions['type'];
+    entityType?: EDBEntity;
+    EntityClass?: (new (...args: any[]) => BasePageEntity) & typeof BaseEntity;
 }): SelectQueryBuilder<TEntity> => {
 
-    const EntityMetaClass = entityMetaRepository.getMetaClass(entityType);
-    const EntityClass = entityMetaRepository.getEntityClass(entityType);
+    if (!EntityClass && entityType) EntityClass = entityMetaRepository.getEntityClass(entityType);
     if (!EntityClass) return qb;
+    const EntityMetaClass = entityType && entityMetaRepository.getMetaClass(entityType);
 
     const metaTablePath = EntityMetaClass?.getRepository()?.metadata?.tablePath;
     const entityTablePath = EntityClass.getRepository().metadata.tablePath;

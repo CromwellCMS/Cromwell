@@ -3,8 +3,7 @@ import { graphQlAuthChecker, TAuthUserInfo } from '../../src/helpers/auth-guards
 
 describe('auth-guards', () => {
 
-    it('verifies permissions', async () => {
-
+    it('allows for administrators', async () => {
         expect(graphQlAuthChecker({
             context: {
                 user: {
@@ -14,7 +13,9 @@ describe('auth-guards', () => {
                 } as TAuthUserInfo
             }
         }, ['administrator'])).toBeTruthy();
+    })
 
+    it('allows for administrators access other roles', async () => {
         expect(graphQlAuthChecker({
             context: {
                 user: {
@@ -24,30 +25,47 @@ describe('auth-guards', () => {
                 } as TAuthUserInfo
             }
         }, ['author'])).toBeTruthy();
+    });
 
-        expect(graphQlAuthChecker({
-            context: {
-                user: {
-                    id: 1,
-                    role: 'author',
-                    email: 'test',
-                } as TAuthUserInfo
-            }
-        }, ['administrator'])).toBeFalsy();
+    it('forbids author to access admin', async () => {
+        const test = () => {
+            graphQlAuthChecker({
+                context: {
+                    user: {
+                        id: 1,
+                        role: 'author',
+                        email: 'test',
+                    } as TAuthUserInfo
+                }
+            }, ['administrator'])
+        };
+        expect(test).toThrow();
+    })
 
-        expect(graphQlAuthChecker({
-            context: {
-                user: {
-                    id: 1,
-                    role: 'customer',
-                    email: 'test',
-                } as TAuthUserInfo
-            }
-        }, ['administrator'])).toBeFalsy();
+    it('forbids customer to access admin', async () => {
+        const test = () => {
+            graphQlAuthChecker({
+                context: {
+                    user: {
+                        id: 1,
+                        role: 'customer',
+                        email: 'test',
+                    } as TAuthUserInfo
+                }
+            }, ['administrator'])
+        }
+        expect(test).toThrow();
+    })
 
+    it('unauthorized access customer', async () => {
+        const test = () => {
+            graphQlAuthChecker(null, ['customer'])
+        }
+        expect(test).toThrow();
+    })
 
-        expect(graphQlAuthChecker(null, ['customer'])).toBeFalsy();
-
+    it('no auth access no auth', async () => {
         expect(graphQlAuthChecker(null, null)).toBeTruthy();
     })
+
 })
