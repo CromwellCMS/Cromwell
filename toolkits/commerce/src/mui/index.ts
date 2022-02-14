@@ -5,6 +5,8 @@ import { Alert, Breadcrumbs as MuiLibBreadcrumbs, Button, IconButton, Rating, Te
 import React from 'react';
 import { toast as toastify } from 'react-toastify';
 
+import { AccountInfo, AccountInfoProps } from '../base/AccountInfo/AccountInfo';
+import { AccountOrders } from '../base/AccountOrders/AccountOrders';
 import { Breadcrumbs as BaseBreadcrumbs, BreadcrumbsProps } from '../base/Breadcrumbs/Breadcrumbs';
 import { CartList, CartListProps } from '../base/CartList/CartList';
 import { CategoryList as BaseCategoryList, CategoryListProps } from '../base/CategoryList/CategoryList';
@@ -161,3 +163,23 @@ export const MuiCheckout = withElements(Checkout, {
     Wrapper: NotifierWrapper,
   }
 } as CheckoutProps);
+
+export const MuiAccountInfo = withElements(AccountInfo, {
+  Button: Button,
+  TextField: (props) => React.createElement(TextField, {
+    size: 'small',
+    fullWidth: true,
+    style: { margin: '10px 0' },
+    ...props,
+  }),
+}, {
+  notifierOptions: {
+    position: toastify.POSITION.TOP_RIGHT,
+    className: notifierStyles.muiToast,
+    Wrapper: NotifierWrapper,
+  }
+} as AccountInfoProps);
+
+export const MuiAccountOrders = withElements(AccountOrders, {
+  CartList: MuiCartList,
+});

@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 import { TOrder, TOrderInput, TStoreListItem } from '@cromwell/core';
 import { getCStore, getGraphQLClient } from '@cromwell/core-frontend';
-import { ArrowBack as ArrowBackIcon, DeleteForever as DeleteForeverIcon, Close as CloseIcon } from '@mui/icons-material';
+import { ArrowBack as ArrowBackIcon, Close as CloseIcon, DeleteForever as DeleteForeverIcon } from '@mui/icons-material';
 import { Autocomplete, Box, Button, Grid, IconButton, Skeleton, TextField } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
@@ -9,6 +9,7 @@ import { Link, useParams } from 'react-router-dom';
 import { toast } from '../../components/toast/toast';
 import { orderStatuses } from '../../constants/order';
 import { couponPageInfo, productPageInfo } from '../../constants/PageInfos';
+import { parseAddress } from '../../helpers/addressParser';
 import { useForceUpdate } from '../../helpers/forceUpdate';
 import { NumberFormatCustom } from '../../helpers/NumberFormatCustom';
 import { toLocaleDateTimeString } from '../../helpers/time';
@@ -33,18 +34,7 @@ const OrderPage = () => {
         (data?.shippingPrice ?? 0)).toFixed(2));
 
     // Support old and new address format
-    let addressString;
-    let addressJson;
-    if (data?.customerAddress) {
-        try {
-            addressJson = JSON.parse(data.customerAddress);
-        } catch (error) { }
-        if (!addressJson) addressString = data.customerAddress;
-        if (addressJson && typeof addressJson !== 'object') {
-            addressString = addressJson;
-            addressJson = undefined;
-        }
-    }
+    const { addressString, addressJson } = parseAddress(data?.customerAddress);
 
     useEffect(() => {
         getOrderData();

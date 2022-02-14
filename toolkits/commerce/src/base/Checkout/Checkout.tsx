@@ -1,5 +1,5 @@
 import { TCromwellNotify, TOrder, TOrderPaymentSession, TPaymentOption, TShippingOption } from '@cromwell/core';
-import { getCStore, LoadBox, useCart } from '@cromwell/core-frontend';
+import { getCStore, LoadBox as DefaultLoadBox, useCart } from '@cromwell/core-frontend';
 import clsx from 'clsx';
 import React, { useRef } from 'react';
 
@@ -77,7 +77,7 @@ export type CheckoutProps = {
   }
 
   /**
-   * Order fields to display. Key can be one of enum `EDefaultCheckoutFields` or any string.  
+   * Order fields to display. Key can be one of enum `DefaultCheckoutFields` or any string.  
    * If key is not part of enum, then it will be treated as part
    * of JSON `customerAddress`. If flag `meta` is provided then key will
    * be treated as part of `customMeta`.  
@@ -114,7 +114,8 @@ export type CheckoutProps = {
 export function Checkout(props: CheckoutProps) {
   const { fields = getDefaultCheckoutFields(props), classes, text } = props;
   const { PlacedOrder = DefaultPlacedOrder, RadioGroup = BaseRadio,
-    EmptyCartAlert = DefaultEmptyCartAlert, Button = BaseButton } = props.elements ?? {};
+    EmptyCartAlert = DefaultEmptyCartAlert, Button = BaseButton,
+    Loadbox = DefaultLoadBox } = props.elements ?? {};
   const cstore = getCStore();
 
   const rootRef = useRef<HTMLDivElement | null>(null);
@@ -151,7 +152,7 @@ export function Checkout(props: CheckoutProps) {
         {content}
         {checkout.isLoading && (
           <div className={clsx(styles.loadBoxCover, classes?.loadBoxCover)}>
-            <LoadBox />
+            <Loadbox />
           </div>
         )}
       </div>

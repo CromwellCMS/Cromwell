@@ -6,6 +6,7 @@ import EntityTable from '../../components/entity/entityTable/EntityTable';
 import { TEntityPageProps } from '../../components/entity/types';
 import { orderStatuses } from '../../constants/order';
 import { orderListPageInfo, orderPageInfo } from '../../constants/PageInfos';
+import { getTooltipValueView, getValueView } from '../../helpers/addressParser';
 
 type TOrderItem = TOrder & { id: number };
 const EntityTableComp = EntityTable as React.ComponentType<TEntityPageProps<TOrderItem, TOrderFilter>>;
@@ -74,36 +75,8 @@ export default function OrderTable() {
                     label: 'Address',
                     type: 'Simple text',
                     visible: true,
-                    getValueView: (value) => {
-                        if (!value) return '';
-                        // Support old and new address format
-                        let addressJson
-                        try {
-                            addressJson = JSON.parse(value);
-                        } catch (error) { }
-                        if (!addressJson) return value;
-                        let addressStr = ''
-                        for (const [key, value] of Object.entries(addressJson)) {
-                            if (!value || !key) continue;
-                            addressStr += value + ', ';
-                        }
-                        return addressStr;
-                    },
-                    getTooltipValueView: (value) => {
-                        if (!value) return '';
-                        // Support old and new address format
-                        let addressJson
-                        try {
-                            addressJson = JSON.parse(value);
-                        } catch (error) { }
-                        if (!addressJson) return value;
-                        let addressStr = ''
-                        for (const [key, value] of Object.entries(addressJson)) {
-                            if (!value || !key) continue;
-                            addressStr += `${key}: ${value}\n`;
-                        }
-                        return addressStr;
-                    }
+                    getValueView: getValueView,
+                    getTooltipValueView: getTooltipValueView,
                 },
                 {
                     name: 'customerPhone',

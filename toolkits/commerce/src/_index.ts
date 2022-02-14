@@ -14,6 +14,9 @@ export { CurrencySwitch, CurrencySwitchProps } from './base/CurrencySwitch/Curre
 export { CartList, CartListProps } from './base/CartList/CartList';
 export { Checkout, CheckoutProps, CheckoutFieldConfig } from './base/Checkout/Checkout';
 export { DefaultCheckoutFields, CheckoutFieldProps } from './base/Checkout/DefaultElements';
+export { AccountInfo, AccountInfoProps, AccountFieldConfig, AccountFieldProps } from './base/AccountInfo/AccountInfo';
+export { DefaultAccountFields } from './base/AccountInfo/DefaultElements';
+export { AccountOrders } from './base/AccountOrders/AccountOrders';
 
 export {
     MuiPagination,
@@ -30,6 +33,8 @@ export {
     MuiCurrencySwitch,
     MuiCartList,
     MuiCheckout,
+    MuiAccountInfo,
+    MuiAccountOrders,
 } from './mui/index';
 
 export { moduleState, useModuleState } from './helpers/state';

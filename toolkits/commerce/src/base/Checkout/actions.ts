@@ -285,14 +285,6 @@ export const usuCheckoutActions = (config: {
             return true;
         },
 
-        validateEmail: (email) => {
-            if (/\S+@\S+\.\S+/.test(email)) {
-                return true;
-            } else {
-                return false;
-            }
-        },
-
         pay: async () => {
             if (!canShowValidation) setCanShowValidation(true);
             if (!checkout.isOrderValid()) {

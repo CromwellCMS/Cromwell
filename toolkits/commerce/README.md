@@ -58,6 +58,8 @@ export const getStaticProps = MuiCategoryList.withGetProps();
 
 ### List of components
 
+- [AccountInfo](https://cromwellcms.com/docs/toolkits/commerce#accountinfo)
+- [AccountOrders](https://cromwellcms.com/docs/toolkits/commerce#accountorders)
 - [Breadcrumbs](https://cromwellcms.com/docs/toolkits/commerce#breadcrumbs)
 - [CartList](https://cromwellcms.com/docs/toolkits/commerce#cartlist)
 - [CategoryFilter](https://cromwellcms.com/docs/toolkits/commerce#categoryfilter)
@@ -80,6 +82,8 @@ export const getStaticProps = MuiCategoryList.withGetProps();
 
 ### Material UI HOCs
 
+- [MuiAccountInfo](https://cromwellcms.com/docs/toolkits/commerce#muiaccountinfo)
+- [MuiAccountOrders](https://cromwellcms.com/docs/toolkits/commerce#muiaccountorders)
 - [MuiBreadcrumbs](https://cromwellcms.com/docs/toolkits/commerce#muibreadcrumbs)
 - [MuiCartList](https://cromwellcms.com/docs/toolkits/commerce#muicartlist)
 - [MuiCategoryList](https://cromwellcms.com/docs/toolkits/commerce#muicategorylist)

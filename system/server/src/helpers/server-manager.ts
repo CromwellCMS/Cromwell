@@ -180,7 +180,7 @@ const updateActiveServer = (info: ServerInfo) => {
 }
 
 export const serverAliveWatcher = async () => {
-    await sleep(30);
+    await sleep(60);
 
     // Watch for the active server and if it's not alive for some reason, restart / make new
     let isAlive = true;
@@ -216,7 +216,7 @@ export const serverAliveWatcher = async () => {
                     } catch (error) {
                         logger.error(error);
                     }
-                }, 50000);
+                }, 60000);
             }
         }
     }

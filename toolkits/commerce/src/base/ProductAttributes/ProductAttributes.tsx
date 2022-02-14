@@ -53,9 +53,9 @@ export type ProductAttributesProps = {
 }
 
 /**
- * Displays product's attributes
+ * Displays product's attributes.  
  * When user picks an attribute applies product variant and returns modified
- * product from `onChange` function prop
+ * product from `onChange` function prop.
  */
 export function ProductAttributes(props: ProductAttributesProps): JSX.Element {
   const moduleState = useModuleState();

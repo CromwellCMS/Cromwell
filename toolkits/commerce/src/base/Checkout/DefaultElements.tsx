@@ -24,10 +24,10 @@ export type CheckoutFieldProps = Omit<TBaseTextFieldProps, 'onChange'> & {
 
 /** @internal */
 export const DefaultField = (props: CheckoutFieldProps) => {
-  const { checkout, checkoutProps, ...rest } = props;
+  const { checkoutProps, ...rest } = props;
   const { TextField = BaseTextField } = checkoutProps.elements ?? {};
   return (
-    <TextField {...rest} onChange={e => checkout && props.onChange(e.target.value)} />
+    <TextField {...rest} onChange={e => props.onChange(e.target.value)} />
   );
 }
 

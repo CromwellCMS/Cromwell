@@ -12,6 +12,7 @@ import { useHistory, useParams } from 'react-router-dom';
 
 import { ImagePicker } from '../../components/imagePicker/ImagePicker';
 import { Select } from '../../components/select/Select';
+import { parseAddress } from '../../helpers/addressParser';
 import { toast } from '../../components/toast/toast';
 import { userPageInfo } from '../../constants/PageInfos';
 import { userRoles } from '../../constants/roles';
@@ -29,6 +30,9 @@ export default function UserPage() {
     const [showPassword, setShowPassword] = useState(false);
     const isNew = userId === 'new';
     const [canValidate, setCanValidate] = useState(false);
+
+    // Support old and new address format
+    const { addressString, addressJson } = parseAddress(userData?.address);
 
     const handleClickShowPassword = () => {
         setShowPassword(!showPassword);
@@ -260,7 +264,7 @@ export default function UserPage() {
                             options={userRoles.map(role => ({ label: role, value: role }))}
                         />
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+                    <Grid item xs={12} sm={12}>
                         <TextField
                             label="Bio"
                             value={userData?.bio || ''}
@@ -271,16 +275,37 @@ export default function UserPage() {
                             onChange={(e) => { handleInputChange('bio', e.target.value) }}
                         />
                     </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <TextField
-                            label="Address"
-                            value={userData?.address || ''}
-                            fullWidth
-                            variant="standard"
-                            className={styles.field}
-                            onChange={(e) => { handleInputChange('address', e.target.value) }}
-                        />
-                    </Grid>
+                    {!addressJson && (
+                        <Grid item xs={12} sm={12}>
+                            <TextField label="Address"
+                                value={addressString || ''}
+                                fullWidth
+                                variant="standard"
+                                className={styles.field}
+                                onChange={(e) => { handleInputChange('address', e.target.value) }}
+                            />
+                        </Grid>
+                    )}
+                    {addressJson && (
+                        Object.entries<any>(addressJson).map(([fieldKey, value]) => {
+                            return (
+                                <Grid item xs={12} sm={6} key={fieldKey}>
+                                    <TextField label={fieldKey}
+                                        value={value || ''}
+                                        fullWidth
+                                        variant="standard"
+                                        className={styles.field}
+                                        onChange={(e) => {
+                                            const newVal = e.target.value;
+                                            handleInputChange('address', JSON.stringify({
+                                                ...addressJson,
+                                                [fieldKey]: newVal,
+                                            }))
+                                        }}
+                                    />
+                                </Grid>
+                            )
+                        }))}
                     <Grid item xs={12} sm={6}>
                         <TextField
                             label="Phone"
