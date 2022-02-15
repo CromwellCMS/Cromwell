@@ -12,7 +12,7 @@
     "write-translations": "docusaurus write-translations",
     "write-heading-ids": "docusaurus write-heading-ids",
     "generate:api": "node api-generator/generate.js",
-    "win:clean-api-docs": "rmdir /q /s docs\\api"
+    "win:clean-api-docs": "rmdir /q /s docs\\api && rmdir /q /s .generated-docs"
   },
   "dependencies": {
     "@docusaurus/core": "2.0.0-beta.6",
