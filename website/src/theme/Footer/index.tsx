@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-import React from 'react';
+import React, { useEffect } from 'react';
 import clsx from 'clsx';
 import Link from '@docusaurus/Link';
 import { useThemeConfig, FooterLinkItem } from '@docusaurus/theme-common';
@@ -53,6 +53,15 @@ function Footer() {
     light: useBaseUrl(logo.src),
     dark: useBaseUrl(logo.srcDark || logo.src),
   };
+
+  useEffect(() => {
+    const links = Array.from(document.getElementsByTagName('a'));
+    for (const link of links) {
+      if (link.getAttribute('href')?.includes('cromwellcms.com')) {
+        link.setAttribute('target', '_self');
+      }
+    }
+  });
 
   if (!footer) {
     return null;

@@ -355,7 +355,7 @@ It makes it possible to create a Theme using Theme Editor (which is not recommen
   - **index**`: number` - Desirable index (order) inside children array of parent element 
   - **style**`: React.CSSProperties` - CSS styles to apply to this block's wrapper. In a format of React CSS properties
   - **isDeleted**`: boolean` - Non-virtual blocks that exist in JSX cannot physically be deleted in Theme's source code by user, but user can set isDeleted flag that will tell this Block to render nothing instead of original content.
-  - **global**`: boolean`
+  - **global**`: boolean` - Apply this modification on all pages.
 
 :::note
 It is not necessary to add configs for your pages, and you can start development even without `cromwell.config.js` file, but if you want your page to work in Admin panel Theme Editor, you have to add a page config for it with at least `id` and `route` properties.
@@ -380,40 +380,76 @@ All available Default pages with route examples:
 
 ## Use Plugins
 
-For Theme authors Plugins can only be registered in the page config of `cromwell.config.js`. That's because in order to retrieve static props of Plugins on the server we need to know what Plugins are used on pages before executing JSX code.  
-So in most cases in your page you can add a container:
+You will learn about plugins in the [next tutorial](/docs/development/plugin-development).  
+As theme authors we are interested about plugin's frontend part which is basically React component. A plain usage will be importing `CPlugin` component and specifying package name. If a plugin supports settings we also can pass them via props:
 ```tsx
-<CContainer id="some-plugin-container"></CContainer>
+import { CPlugin } from '@cromwell/core-frontend';
+/* ... */
+<CPlugin id="main_menu"
+  plugin={{
+    pluginName: "@cromwell/plugin-main-menu",
+    instanceSettings: {
+      mobile: true
+    },
+}} />
 ```
-And add Plugin to the `modifications` of a [page config](#page-config-properties): 
-```json
-{
-  "type": "plugin",
-  "id": "some-plugin-id",
-  "parentId": "some-plugin-container",
-  "isVirtual": true,
-  "plugin": {
-    "pluginName": "some-plugin-package-name"
-  }
+
+Note that some plugins may depend on server-side data fetching. In order to perform it, a plugin should be registered. There are two methods:
+
+1. Via `registerPlugin`
+
+Call `registerPlugin` in global context (not inside yor component).
+
+```tsx
+import { registerPlugin } from '@cromwell/core-frontend';
+
+registerPlugin('@cromwell/plugin-main-menu', '*');
+
+export default function Header() {
+  return (
+    <CPlugin id="main_menu"
+      plugin={{
+        pluginName: "@cromwell/plugin-main-menu",
+        instanceSettings: {
+          mobile: true
+        },
+      }} />
+  )
 }
 ```
 
-If your plugin can accept props, then you can use CPlugin block, for example:
+First argument is package name, second is page route ([see `route`](https://cromwellcms.com/docs/development/theme-development#page-config-properties).). Use `*` to register on all pages.
 
+
+2. In `cromwell.config.js`
+
+For example, on your page you can add only container:
 ```tsx
-<CContainer id="wrapper">
-  <CPlugin id="main_menu"
-    plugin={{
-      instanceSettings: {
-        mobile: true
-      },
-      pluginName: "@cromwell/plugin-main-menu"
-    }} />
-</CContainer>
+import { CContainer } from '@cromwell/core-frontend';
+
+export default function Header() {
+  return (
+    <CContainer id="menu-container"></CContainer>
+  )
+}
 ```
 
-**Important!** Even if you placed `CPlugin` component on the page, you still need to register it in `cromwell.config.js` as in the example above.
+And add Plugin to the `modifications` of a [page config](#page-config-properties):
 
+```json
+{
+  "type": "plugin",
+  "id": "main_menu",
+  "parentId": "menu-container",
+  "isVirtual": true,
+  "plugin": {
+    "pluginName": "@cromwell/plugin-main-menu",
+    "instanceSettings": {
+      "mobile": true
+    }
+  }
+}
+```
 
 ## Generic pages
 
