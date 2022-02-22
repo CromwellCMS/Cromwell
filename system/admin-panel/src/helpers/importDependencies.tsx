@@ -91,7 +91,7 @@ import * as _material_ui_system from '@mui/system';
 importer.modules['@mui/system'] = interopDefault(_material_ui_system, 'default');
 importer.importStatuses['@mui/system'] = 'default';
 
-import emotionReact from '@emotion/react';
+import * as emotionReact from '@emotion/react';
 importer.modules['@emotion/react'] = interopDefault(emotionReact, 'default');
 importer.importStatuses['@emotion/react'] = 'default';
 
