@@ -15,7 +15,6 @@ import {
   UserIcon,
 } from "@heroicons/react/solid";
 import { toast } from "../../components/toast/toast";
-// import styles from './Welcome.module.scss';
 
 export default function WelcomePage() {
   const apiClient = getRestApiClient();
@@ -260,83 +259,5 @@ export default function WelcomePage() {
       </div>
       <LoadingStatus isActive={loading} />
     </div>
-    // <div className="">
-    //     <div className="">
-    //         <img src="/admin/static/logo_small_black.svg" width="100px" className="" />
-    //         <h1 className="">Welcome to Cromwell CMS!</h1>
-    //         <h3 className="">Let&apos;s create your account</h3>
-    //         <div className="">
-    //             <div className="">
-    //                 <ImagePicker
-    //                     toolTip="Pick avatar"
-    //                     onChange={setAvatarInput}
-    //                     value={avatarInput}
-    //                     className={styles.avatar}
-    //                     hideSrc
-    //                 />
-    //                 <CssTextField
-    //                     label="Name"
-    //                     value={nameInput}
-    //                     onChange={e => setNameInput(e.target.value)}
-    //                     fullWidth
-    //                     variant="standard"
-    //                     error={nameInput === '' && submitPressed}
-    //                     helperText={nameInput === '' && submitPressed ? "This field is required" : undefined}
-    //                     id="name-input"
-    //                 />
-    //             </div>
-
-    //             <CssTextField
-    //                 label="E-mail"
-    //                 value={emailInput}
-    //                 className={styles.textField}
-    //                 onChange={e => setEmailInput(e.target.value)}
-    //                 fullWidth
-    //                 variant="standard"
-    //                 error={emailInput === '' && submitPressed}
-    //                 helperText={emailInput === '' && submitPressed ? "This field is required" : undefined}
-    //                 id="email-input"
-    //             />
-    //             <CssTextField
-    //                 label="Password"
-    //                 type={showPassword ? 'text' : 'password'}
-    //                 value={passwordInput}
-    //                 onChange={e => setPasswordInput(e.target.value)}
-    //                 className={styles.textField}
-    //                 fullWidth
-    //                 variant="standard"
-    //                 error={passwordInput === '' && submitPressed}
-    //                 helperText={passwordInput === '' && submitPressed ? "This field is required" : undefined}
-    //                 id="password-input"
-    //                 InputProps={{
-    //                     endAdornment: (
-    //                         <InputAdornment position="end">
-    //                             <IconButton
-    //                                 aria-label="toggle password visibility"
-    //                                 onClick={handleClickShowPassword}
-    //                                 edge="end"
-    //                             >
-    //                                 {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
-    //                             </IconButton>
-    //                         </InputAdornment>
-    //                     ),
-    //                 }}
-    //             />
-    //             <Button
-    //                 onClick={handleSubmitClick}
-    //                 className={styles.createBtn}
-    //                 disabled={loading}
-    //                 color="primary"
-    //                 variant="contained"
-    //             >Create</Button>
-    //         </div>
-    //     </div>
-    //     <LoadingStatus isActive={loading} />
-    // </div>
   );
 }
-
-// const CssTextField = withStyles({
-//     root: {
-//     },
-// })(TextField);
