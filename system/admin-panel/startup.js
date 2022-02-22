@@ -12,10 +12,11 @@ const main = () => {
     const buildDir = getAdminPanelServiceBuildDir();
 
     const isServiceBuilt = () => {
-        return (fs.existsSync(buildDir)
-            && fs.existsSync(resolve(buildDir, 'server.js'))
-            && fs.existsSync(resolve(buildDir, 'webapp.js'))
-        )
+        if (fs.existsSync(buildDir)) {
+            const files = fs.readdirSync(buildDir);
+            const webapp = files.find(file => file.startsWith('webapp') && file.endsWith('.js'));
+            return webapp && fs.existsSync(resolve(buildDir, 'server.js'))
+        }
     }
 
     const buildService = (dev = false) => {

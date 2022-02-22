@@ -2,6 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 const resolveFrom = require('resolve-from');
 const { getAdminPanelDir } = require('@cromwell/core-backend/dist/helpers/paths');
+const normalizePath = require('normalize-path');
 
 const styleLoaderPath = resolveFrom(getAdminPanelDir(), 'style-loader');
 const cssLoaderPath = resolveFrom(getAdminPanelDir(), 'css-loader');
@@ -12,25 +13,25 @@ const styleLoaderOptions = {
     attributes: { 'data-meta': 'crw-admin-style' }
 }
 
-const entry = [path.resolve(__dirname, 'src/index.ts')];
-if (!isProduction) {
-    entry.unshift('webpack-hot-middleware/client');
-}
+const entry = [normalizePath(path.resolve(__dirname, 'src/index.ts'))];
+// if (!isProduction) {
+//     entry.unshift('webpack-hot-middleware/client');
+// }
 
-// console.log('Admin panel build mode:', buildMode)
+// console.log('Admin panel build mode:', buildMode);
 
 module.exports = {
     mode: buildMode,
     target: "web",
     devtool: isProduction ? false : "source-map",
     entry: {
-        webapp: entry
+        webapp: entry,
     },
     output: {
         path: path.resolve(__dirname, 'build'),
-        filename: 'webapp.js',
+        filename: isProduction ? 'webapp_[contenthash].js' : 'webapp.js',
         publicPath: '/admin/build/',
-        chunkFilename: 'chunks' + '/[id].js'
+        chunkFilename: 'chunks' + (isProduction ? '/[id]_[chunkhash].js' : '/[id].js'),
     },
     resolve: {
         extensions: ['.ts', '.tsx', '.js', 'jsx']
@@ -97,7 +98,7 @@ module.exports = {
         ]
     },
     plugins: isProduction ? [] : [
-        new webpack.HotModuleReplacementPlugin(),
+        // new webpack.HotModuleReplacementPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
     ],
 }
