@@ -2,10 +2,10 @@ const path = require('path');
 const webpack = require('webpack');
 const resolveFrom = require('resolve-from');
 const { getAdminPanelDir } = require('@cromwell/core-backend/dist/helpers/paths');
-
 const styleLoaderPath = resolveFrom(getAdminPanelDir(), 'style-loader');
 const cssLoaderPath = resolveFrom(getAdminPanelDir(), 'css-loader');
 const sassLoaderPath = resolveFrom(getAdminPanelDir(), 'sass-loader');
+const postCSSLoaderPath = resolveFrom(getAdminPanelDir(), 'postcss-loader');
 const buildMode = process.env.NODE_ENV || 'production';
 const isProduction = buildMode === 'production';
 const styleLoaderOptions = {
@@ -76,6 +76,9 @@ module.exports = {
                             sourceMap: isProduction ? false : true,
                         }
                     },
+                    {
+                        loader: postCSSLoaderPath
+                    }
                 ],
             },
             {
