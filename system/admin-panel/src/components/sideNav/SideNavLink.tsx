@@ -27,22 +27,13 @@ const SideNavLink = (props: {
     }
   }
 
-  const head = (
-    <div>
-      <div className="">
-        <div className="">{props.data.icon}</div>
-        <p>{props.data.title}</p>
-      </div>
-    </div>
-  );
-
   if (props.data.route) {
     return (
       <Link
         className={` ${
           props.activeId === props.data.id
-            ? "w-full font-thin text-indigo-500 flex items-center p-4 my-2 transition-colors duration-200 justify-start bg-gradient-to-r from-white to-indigo-100 border-r-4 border-indigo-500 dark:from-gray-700 dark:to-gray-800 border-r-4 border-indigo-500"
-            : "w-full font-thin text-gray-500 dark:text-gray-200 flex items-center p-4 my-2 transition-colors duration-200 justify-start hover:text-indigo-500"
+            ? "w-full font-thin text-indigo-500 flex items-center p-4 my-2 transition-colors duration-200 justify-start bg-gradient-to-r from-white to-indigo-100 border-r-4 border-indigo-500 dark:from-gray-700 dark:to-gray-800"
+            : "w-full font-thin text-gray-500 dark:text-gray-200 flex items-center p-4 my-2 transition-colors duration-200 justify-start hover:text-indigo-500 hover:border-r-4 hover:border-indigo-300"
         }`}
         onClick={(e) => e.stopPropagation()}
         to={props.data.route}>
@@ -58,13 +49,12 @@ const SideNavLink = (props: {
     return (
       <Disclosure defaultOpen={isExpanded}>
         {({ open }) => {
-          // console.log(props.data.title, isExpanded, open)
           return (
             <>
               <Disclosure.Button
                 onChange={() => props.toggleSubMenu(props.data.id)}
                 onClick={() => props.toggleSubMenu(props.data.id)}
-                className={`w-full font-thin text-gray-500 dark:text-gray-200 flex items-center p-4 my-2 transition-colors duration-200 justify-start hover:text-indigo-500`}>
+                className={`w-full font-thin text-gray-500 dark:text-gray-200 flex items-center p-4 my-2 transition-colors duration-200 justify-start hover:text-indigo-500 hover:border-r-4 hover:border-indigo-300`}>
                 <span className="text-left">
                   {props.data.icon}
                 </span>
@@ -111,8 +101,8 @@ const SideNavLink = (props: {
     <Link
       className={` ${
         props.activeId === props.data.id
-          ? "w-full font-thin text-indigo-500 flex items-center p-4 my-2 transition-colors duration-200 justify-start bg-gradient-to-r from-white to-indigo-100 border-r-4 border-indigo-500 dark:from-gray-700 dark:to-gray-800 border-r-4 border-indigo-500"
-          : "w-full font-thin text-gray-500 dark:text-gray-200 flex items-center p-4 my-2 transition-colors duration-200 justify-start hover:text-indigo-500"
+          ? "w-full font-thin text-indigo-500 flex items-center p-4 my-2 transition-colors duration-200 justify-start bg-gradient-to-r from-white to-indigo-100 border-r-4 border-indigo-500 dark:from-gray-700 dark:to-indigo-800 hover:bg-gradient-to-r hover:border-r-4 hover:border-indigo-300"
+          : "w-full font-thin text-gray-500 dark:text-gray-200 flex items-center p-4 my-2 transition-colors duration-200 justify-start hover:text-indigo-500 bg-gradient-to-r hover:border-r-4 hover:border-indigo-300"
       }`}
       to={props.data.route}>
       <span className="text-left">{props.data.icon}</span>
