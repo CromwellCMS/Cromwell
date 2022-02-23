@@ -230,10 +230,10 @@ body :global(.ct) {
     z-index: 99;
 }
 
-body,
-:global(#root) {
-    overflow: hidden;
-}
+// body,
+// :global(#root) {
+//     overflow: hidden;
+// }
 
 :global(div.MuiToolbar-regular) {
     min-height: 50px;

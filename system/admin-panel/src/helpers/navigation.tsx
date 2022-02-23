@@ -1,17 +1,5 @@
-import {
-    Dashboard as DashboardIcon,
-    FilterList as FilterListIcon,
-    FormatPaint as FormatPaintIcon,
-    LibraryBooks as LibraryBooksIcon,
-    LocalMall as LocalMallIcon,
-    LocalOfferOutlined as LocalOfferOutlinedIcon,
-    PeopleAlt as PeopleAltIcon,
-    Settings as SettingsIcon,
-    ShoppingBasket as ShoppingBasketIcon,
-    Stars as StarsIcon,
-    Storage as StorageIcon,
-    ConfirmationNumber as ConfirmationNumberIcon,
-} from '@mui/icons-material';
+
+import { BadgeCheckIcon, ClipboardListIcon, CogIcon, CollectionIcon, DocumentDuplicateIcon, HashtagIcon, HomeIcon, MailIcon, PencilAltIcon, ShoppingBagIcon, StarIcon, TagIcon, TemplateIcon, UsersIcon, ViewGridAddIcon } from "@heroicons/react/solid";
 import React from 'react';
 import sidebarStyles from '../components/sidebar/Sidebar.module.scss';
 import { CategoryIcon, PluginIcon } from '../constants/icons';
@@ -102,57 +90,55 @@ export const getSideBarLinks = (): TSidebarLink[] => {
             id: '1_homePage',
             title: homePageInfo.name,
             route: homePageInfo.route,
-            icon: React.createElement(DashboardIcon),
+            icon: <HomeIcon className="w-5 h-5" />,
             roles: ['administrator', 'guest'],
         },
         {
             id: '2_Store',
             title: 'Store',
-            icon: React.createElement(LocalMallIcon),
+            icon: <ShoppingBagIcon className="w-5 h-5" />,
             roles: ['administrator', 'guest'],
             subLinks: [
                 {
                     id: '3_productList',
                     title: 'Products',
                     route: productListInfo.route,
-                    icon: React.createElement(StorageIcon),
+                    icon: <CollectionIcon className="w-5 h-5" />,
                     roles: ['administrator', 'guest'],
                 },
                 {
                     id: '4_Attributes',
                     title: 'Attributes',
                     route: attributesInfo.route,
-                    icon: React.createElement(FilterListIcon),
+                    icon: <TagIcon className="w-5 h-5" />,
                     roles: ['administrator', 'guest'],
                 },
                 {
                     id: '5_Categories',
                     title: 'Categories',
                     route: categoryListPageInfo.route,
-                    icon: React.createElement(CategoryIcon, {
-                        viewBox: "-50 -50 400 400"
-                    }),
+                    icon: <HashtagIcon className="w-5 h-5" />,
                     roles: ['administrator', 'guest'],
                 },
                 {
                     id: '11_Order_list',
                     title: 'Orders',
                     route: orderListPageInfo.route,
-                    icon: React.createElement(ShoppingBasketIcon),
+                    icon: <ShoppingBagIcon className="w-5 h-5" />,
                     roles: ['administrator', 'guest'],
                 },
                 {
                     id: 'Coupon_list',
                     title: 'Coupons',
                     route: couponListPageInfo.route,
-                    icon: React.createElement(ConfirmationNumberIcon),
+                    icon: <BadgeCheckIcon className="w-5 h-5" />,
                     roles: ['administrator', 'guest'],
                 },
                 {
                     id: 'Review_list',
                     title: 'Reviews',
                     route: reviewListPageInfo.route,
-                    icon: React.createElement(StarsIcon),
+                    icon: <StarIcon className="w-5 h-5" />,
                     roles: ['administrator', 'guest'],
                 }
             ]
@@ -160,24 +146,21 @@ export const getSideBarLinks = (): TSidebarLink[] => {
         {
             id: '6_Blog',
             title: 'Blog',
-            icon: React.createElement('div', {
-                className: sidebarStyles.customIcon,
-                style: { backgroundImage: 'url(/admin/static/icon_blogging.png)' }
-            }),
+            icon: <PencilAltIcon className="w-5 h-5" />,
             roles: ['administrator', 'guest', 'author'],
             subLinks: [
                 {
                     id: '7_Posts',
                     title: 'Posts',
                     route: postListInfo.route,
-                    icon: React.createElement(LibraryBooksIcon),
+                    icon: <DocumentDuplicateIcon className="w-5 h-5" />,
                     roles: ['administrator', 'guest', 'author'],
                 },
                 {
                     id: 'tags_page',
                     title: 'Tags',
                     route: tagListPageInfo.route,
-                    icon: React.createElement(LocalOfferOutlinedIcon),
+                    icon: <TagIcon className="w-5 h-5" />,
                     roles: ['administrator', 'guest', 'author'],
                 },
             ]
@@ -187,33 +170,28 @@ export const getSideBarLinks = (): TSidebarLink[] => {
             id: '5_themeListPage',
             title: 'Themes',
             route: themeListPageInfo.route,
-            icon: React.createElement(FormatPaintIcon),
+            icon: <TemplateIcon className="w-5 h-5" />,
             roles: ['administrator', 'guest'],
         },
         {
             id: '6_pluginsPage',
             title: 'Plugins',
             route: pluginListPageInfo.route,
-            icon: React.createElement(PluginIcon, {
-                className: sidebarStyles.customIcon,
-                style: {
-                    filter: 'invert(1)',
-                }
-            }),
+            icon: <ViewGridAddIcon className="w-5 h-5" />,
             roles: ['administrator', 'guest'],
         },
         {
             id: 'users_page',
             title: 'Users',
             route: userListPageInfo.route,
-            icon: React.createElement(PeopleAltIcon),
+            icon: <UsersIcon className="w-5 h-5" />,
             roles: ['administrator', 'guest'],
         },
         {
             id: 'settings_page',
             title: 'Settings',
             route: settingsPageInfo.route,
-            icon: React.createElement(SettingsIcon),
+            icon: <CogIcon className="w-5 h-5" />,
             roles: ['administrator', 'guest'],
         }
     ];

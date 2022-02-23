@@ -18,6 +18,8 @@ import FileManager from '../fileManager/FileManager';
 import { ConfirmPrompt } from '../modal/Confirmation';
 import Sidebar from '../sidebar/Sidebar';
 import styles from './Layout.module.scss';
+import SideNav from "../sideNav/SideNav";
+import Topbar from "../topbar/Topbar";
 
 let userRole = getStoreItem('userInfo')?.role;
 
@@ -74,12 +76,12 @@ function Layout() {
 
   return (
     <ThemeProvider theme={theme}>
-      <div className={clsx(styles.Layout)}>
+      <div className="bg-gray-100 dark:bg-gray-800 min-h-screen relative">
+        <div className="flex items-start justify-between">
         <BrowserRouter basename={'admin'}>
-          <div className={styles.sidebar}>
-            <Sidebar />
-          </div>
-          <div className={styles.main}>
+          <SideNav />
+          <div className="flex flex-col w-full pl-0 md:p-4">
+            <Topbar />
             <Toolbar className={styles.dummyToolbar} />
             <Switch>
               {getPageInfos().map(page => {
@@ -112,6 +114,7 @@ function Layout() {
         <FileManager />
         <ConfirmPrompt />
         <LayoutPortal />
+        </div>
       </div>
     </ThemeProvider>
   );
