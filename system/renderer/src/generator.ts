@@ -223,8 +223,14 @@ const devGenerate = async (themeName: string, options: TOptions) => {
             }
         }
 
-        const cromwellConf = {
-            webpack: (config, { isServer }) => {
+        ${themeHasNextConf ? `
+        const themeConfig = require('${themeNextConfPath}');
+        ` : `
+        const themeConfig = {};
+        `}
+
+        const cromwellConfig = {
+            webpack: (config, options) => {
                 makeProperties(config, 'resolve');
                 config.resolve.symlinks = false;
 
@@ -233,15 +239,15 @@ const devGenerate = async (themeName: string, options: TOptions) => {
 
                 makeProperties(config, 'experiments');
                 config.experiments.topLevelAwait = true;
+
+                if (themeConfig.webpack) {
+                    config = themeConfig.webpack(config, options);
+                }
                 return config;
             }
         }
-        ${themeHasNextConf ? `
-        const themeConf = require('${themeNextConfPath}');
-        ` : `
-        const themeConf = {};
-        `}
-        module.exports = Object.assign({}, cromwellConf, themeConf);
+  
+        module.exports = Object.assign({}, themeConfig, cromwellConfig);
         `
     );
 
