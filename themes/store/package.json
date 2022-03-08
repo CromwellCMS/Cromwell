@@ -1,6 +1,6 @@
 {
   "name": "@cromwell/theme-store",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "license": "MIT",
   "repository": "https://github.com/CromwellCMS/Cromwell",
   "author": "Astrex LLC",
@@ -99,8 +99,8 @@
   },
   "devDependencies": {
     "@apollo/client": "3.2.1",
-    "@cromwell/cli": "2.1.3",
-    "@cromwell/cms": "2.1.3",
+    "@cromwell/cli": "2.1.4",
+    "@cromwell/cms": "2.1.4",
     "@cromwell/core": "^2.0.11",
     "@cromwell/core-frontend": "^2.1.2",
     "@cromwell/plugin-main-menu": "^1.0.33",
@@ -109,7 +109,7 @@
     "@cromwell/plugin-product-filter": "^1.0.33",
     "@cromwell/plugin-product-showcase": "^1.0.23",
     "@cromwell/plugin-stripe": "^1.0.12",
-    "@cromwell/renderer": "^2.1.2",
+    "@cromwell/renderer": "2.1.3",
     "@cromwell/toolkit-commerce": "^1.0.2",
     "@cromwell/utils": "^2.0.14",
     "@testing-library/dom": "8.1.0",
