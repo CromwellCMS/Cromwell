@@ -61,7 +61,8 @@ const MainMenu = (props: TFrontendPluginProps<TMainMenuSettings, TInstanceSettin
                 ><Link href={sub.href + ''} style={{ textDecoration: 'none' }}>
                     <p style={{
                       margin: 0,
-                      color: '#111'
+                      color: '#111',
+                      fontWeight: 400,
                     }}>{sub?.title ?? ''}</p>
                   </Link>
                 </MenuItem>
@@ -85,7 +86,8 @@ const MainMenu = (props: TFrontendPluginProps<TMainMenuSettings, TInstanceSettin
               }}>
                 <p style={{
                   margin: 0,
-                  color: '#111'
+                  color: '#111',
+                  fontWeight: 400,
                 }}>{i.title}</p>
                 {isMobile && (i.sublinks?.length || i.html) && (
                   <IconButton onClick={handleItemMobileClick(i)}>

@@ -19,6 +19,7 @@ export const DefaultMenuItem = (props) => {
 export const DefaultIconButton = (props) => <div {...props} style={{ display: 'flex', padding: '5px' }} />
 
 export const DefaultPopover = (props) => <div style={{
+  display: props.open ? 'block' : 'none',
   position: 'absolute',
   top: props.anchorEl?.clientHeight + 'px',
   left: 0,

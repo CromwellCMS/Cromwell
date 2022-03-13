@@ -110,7 +110,7 @@
     "npm-run-path": "4.0.1",
     "rollup": "2.56.2",
     "rollup-plugin-terser": "7.0.2",
-    "rollup-plugin-ts-compiler": "1.0.16",
+    "rollup-plugin-ts-compiler": "1.0.18",
     "supertest": "6.1.5",
     "ts-jest": "27.0.5",
     "ts-node": "10.2.0",
