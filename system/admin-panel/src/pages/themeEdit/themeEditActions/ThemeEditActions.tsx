@@ -1,4 +1,4 @@
-import { getRandStr, getStoreItem, TPageConfig, TPalette } from '@cromwell/core';
+import { getRandStr, getStoreItem, TPageConfig, TPalette, TThemeConfig } from '@cromwell/core';
 import { getRestApiClient } from '@cromwell/core-frontend';
 import {
     AddCircle as AddCircleIcon,
@@ -38,6 +38,7 @@ export class ThemeEditActions extends Component<{
     redoModification: () => void;
 }, {
     themePalette?: TPalette;
+    themeConfig?: TThemeConfig;
     pageOptionsOpen: boolean;
     pageMetaOpen: boolean;
     loadingStatus: boolean;
@@ -95,6 +96,7 @@ export class ThemeEditActions extends Component<{
     private init = async () => {
         const infos = await this.getPageInfos();
         this.getThemePalette();
+        this.getThemeConfig();
 
         const parsedUrl = queryString.parseUrl(window.location.href, { parseFragmentIdentifier: true });
         const route = parsedUrl.query['page'];
@@ -129,6 +131,19 @@ export class ThemeEditActions extends Component<{
             if (palette) {
                 this.setState({
                     themePalette: palette,
+                })
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    private getThemeConfig = async () => {
+        try {
+            const config = await getRestApiClient().getThemeConfig(this.themeName);
+            if (config) {
+                this.setState({
+                    themeConfig: config,
                 })
             }
         } catch (error) {
@@ -423,7 +438,7 @@ export class ThemeEditActions extends Component<{
     }
 
     render() {
-        const { isSidebarOpen } = this.state;
+        const { isSidebarOpen, themeConfig } = this.state;
         const editingPageConfig = this.getThemeEditor().getEditingPageConfig();
         const pageInfos = this.state.pageInfos?.map(p => {
             if (p.id === editingPageConfig?.id) {
@@ -433,6 +448,8 @@ export class ThemeEditActions extends Component<{
         });
         const defaultPages = pageInfos?.filter(p => !p.isVirtual);
         const customPages = pageInfos?.filter(p => p.isVirtual);
+
+        if (!themeConfig) return null;
 
         return (<>
             <div className={styles.ThemeEditActions} ref={this.wrapperRef}>
@@ -465,6 +482,7 @@ export class ThemeEditActions extends Component<{
                         }}
                     >
                         <PageSettings
+                            themeConfig={themeConfig}
                             pageConfig={editingPageConfig}
                             handlePageInfoChange={this.handlePageInfoChange}
                         />

@@ -47,7 +47,7 @@ When user visits "/about-us", even if there's no page defined by an active Theme
 }
 ```
 
-After adding configuration in the cmsconfig.json, you need to restart your CMS. That's often not something you want, so next option allows us to add the same setting without restart.
+After adding configuration in the cmsconfig.json, you need to restart your CMS. That's often is not something you want, so the next option allows us to add the same setting without restart.
 
 ## In CMS settings
 

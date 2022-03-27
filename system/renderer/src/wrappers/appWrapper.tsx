@@ -52,7 +52,7 @@ export const withCromwellApp = (App: ((props: TAppProps) => JSX.Element | null))
     const { plugins, pageConfig, themeCustomConfig,
       cmsSettings, themeHeadHtml,
       themeFooterHtml, documentContext,
-      palette, defaultPages, pageConfigName,
+      palette, defaultPages, pageConfigRoute,
       resolvedPageRoute, slug } = pageProps?.cmsProps ?? {};
 
     const title = pageConfig?.title;
@@ -132,7 +132,7 @@ export const withCromwellApp = (App: ((props: TAppProps) => JSX.Element | null))
         let pageDefaultName: TDefaultPageName | undefined;
         if (defaultPages) {
           Object.entries(defaultPages).forEach(entry => {
-            if (entry[1] === pageConfigName) pageDefaultName = entry[0] as TDefaultPageName;
+            if (entry[1] === pageConfigRoute) pageDefaultName = entry[0] as TDefaultPageName;
           });
         }
 
@@ -145,7 +145,7 @@ export const withCromwellApp = (App: ((props: TAppProps) => JSX.Element | null))
         const apiClient = getRestApiClient();
         const pageStats: TPageStats = {
           pageRoute: window.location.pathname + window.location.search,
-          pageName: pageConfigName,
+          pageName: pageConfigRoute,
           entityType,
           slug: Array.isArray(slug) ? JSON.stringify(slug) : slug,
         }

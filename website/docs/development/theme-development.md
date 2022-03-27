@@ -479,6 +479,31 @@ Theme authors also can create a generic page in the Theme config. Just add a pag
 
 The difference between generic pages and other pages is that they can have a different page config for a specified slug, while, for example, `/product/[slug]` page will have the same config for every provided slug.
 
+[Use rewrites](/docs/development/redirects/) if you want some generic page appear under your custom route (not under `/pages/`)
+
+### Multiple generic layouts
+
+Theme can define multiple layouts (Next.js pages) to use for generic pages. With that user will be able to pick needed layout in the admin panel.
+
+For example, you created two layouts: `pages-old/[slug]` and `pages-new/[slug]`. Now you need to define your generic pages in the config under `genericPages` property:
+
+ ```js title="cromwell.config.js"
+module.exports = {
+  /* ... */
+  genericPages: [
+    {
+      route: "pages-old/[slug]",
+      name: "default"
+    },
+    {
+      route: "pages-new/[slug]",
+      name: "pages new"
+    }
+  ],
+}
+```
+Note that it will override default route for generic pages at `pages/[slug]`.
+ 
 
 ## Publish
 

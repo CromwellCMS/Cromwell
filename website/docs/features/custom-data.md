@@ -223,7 +223,7 @@ registerAction({
   actionName: 'install_plugin',
   action: async (payload) => {
     if (payload.pluginName === 'your-plugin-name') {
-      const settings = await client.getCmsSettings();
+      const settings = await client.getAdminCmsSettings();
       if (!settings.customEntities) settings.customEntities = [];
       if (!settings.customFields) settings.customFields = [];
       

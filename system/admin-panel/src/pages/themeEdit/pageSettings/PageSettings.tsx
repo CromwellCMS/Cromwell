@@ -1,28 +1,47 @@
-import { TPageConfig } from '@cromwell/core';
+import { TPageConfig, TThemeConfig } from '@cromwell/core';
 import { Autocomplete, TextField, Tooltip } from '@mui/material';
-import React from 'react';
+import React, { useRef } from 'react';
+import { Select } from '../../../components/select/Select';
 
 import styles from './PageSettings.module.scss';
 
 export const PageSettings = (props: {
     pageConfig: TPageConfig;
     handlePageInfoChange: (page: TPageConfig) => void;
+    themeConfig?: TThemeConfig;
 }) => {
-    const { pageConfig } = props;
+    const { pageConfig, themeConfig } = props;
+    const genericPages = themeConfig?.genericPages ?? [{ route: "pages/[slug]", name: "default" }];
+    const pageLayout = useRef(pageConfig?.layoutRoute ?? genericPages[0].route);
 
     const handlePageSettingsChange = (prop: keyof TPageConfig, val: any) => {
         if (pageConfig?.isVirtual && prop === 'route') {
             if (!val) val = '';
-            val = val.replace('pages/', '');
+            const prefix = pageLayout.current.replace('[slug]', '');
+            val = val.replace(prefix, '');
             val = val.replace(/\W/g, '-');
-            val = 'pages/' + val;
+            val = prefix + val;
         }
-        const next = Object.assign({}, pageConfig, { [prop]: val });
+        const next = Object.assign({}, pageConfig, { [prop]: val, layoutRoute: pageLayout.current });
         props.handlePageInfoChange(next);
+    }
+
+    const changeLayout = (route: string) => {
+        pageLayout.current = route;
+        handlePageSettingsChange('route', pageConfig.route);
     }
 
     return (
         <div className={styles.pageSettings}>
+            {pageConfig?.isVirtual && !!genericPages?.length && genericPages.length > 1 && (
+                <Select
+                    label="Layout name"
+                    value={pageLayout.current}
+                    options={genericPages.map(p => ({ label: p.name, value: p.route }))}
+                    onChange={(event) => changeLayout(event.target.value as string)}
+                    className={styles.textField}
+                />
+            )}
             <TextField label="Route" variant="outlined"
                 disabled={!pageConfig?.isVirtual}
                 value={pageConfig.route ?? ''}

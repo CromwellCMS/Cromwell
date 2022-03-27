@@ -26,10 +26,20 @@ export class RendererService {
         }
     }
 
-    public async getRendererData(pageRoute: string, themeName: string) {
+    public async getRendererData(pageName: string, themeName: string, slug?: string) {
         await this.loadSettings();
 
         const allConfigs = await getThemeConfigs(themeName);
+        const genericPages = allConfigs.themeConfig?.genericPages ?? [{ route: "pages/[slug]", name: "default" }];
+
+        let pageRoute = pageName;
+        // Infer name to request a page config. Config will be the same for different slugs
+        // of a page. There's an exception: generic pages - such as `pages/[slug]`, 
+        // since they can be edited separately in Theme Editor
+        if (slug && genericPages.map(p => p.route).includes(pageName)) {
+            pageRoute = pageName.replace('[slug]', slug);
+        }
+
         const [pageConfig, pagesInfo, cmsSettings] = await Promise.all([
             this.themeService.getPageConfig(pageRoute, themeName, allConfigs),
             this.themeService.getPagesInfo(themeName, allConfigs),

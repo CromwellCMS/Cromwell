@@ -66,7 +66,7 @@ export type TPageCmsProps = {
     themeFooterHtml?: string | null;
     palette?: TPalette | null;
     defaultPages?: Partial<Record<TDefaultPageName, string>>;
-    pageConfigName?: string;
+    pageConfigRoute?: string;
     slug?: string | string[] | null;
     resolvedPageRoute?: string;
 }

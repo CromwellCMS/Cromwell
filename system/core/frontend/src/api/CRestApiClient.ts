@@ -747,8 +747,8 @@ export class CRestApiClient {
      * @internal 
      * @auth admin
      */
-    public getRendererRage = async (pageRoute: string, themeName: string, options?: TRequestOptions): Promise<any> => {
-        return this.get(`v1/renderer/page?pageRoute=${pageRoute}&themeName=${themeName}`, options);
+    public getRendererRage = async (pageName: string, themeName: string, slug?: string, options?: TRequestOptions): Promise<any> => {
+        return this.get(`v1/renderer/page?pageName=${pageName}&themeName=${themeName}&slug=${slug ?? ''}`, options);
     }
 
     /** 

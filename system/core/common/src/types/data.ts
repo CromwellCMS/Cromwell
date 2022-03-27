@@ -257,6 +257,11 @@ export type TThemeConfig = TBaseModuleConfig & {
     globalCss?: string[];
     /** Mapping of default CMS pages to theme's components. Such as { category: "category/[slug]" } */
     defaultPages?: Record<TDefaultPageName, string>;
+    /* Routes of generic pages. Default value: `[ { route: "pages/[slug]", name: "default" } ]` */
+    genericPages?: {
+        route: string;
+        name: string
+    }[];
     /** Pages' description and modifications */
     pages?: TPageConfig[];
     /** Custom config that will be available at every page in the Store inside pageConfig props */
@@ -309,6 +314,8 @@ export type TPageInfo = {
     keywords?: string[];
     /** If true, this page created in PageBuilder or manually in config and does not have a corresponding source file with React component */
     isVirtual?: boolean;
+    /** If page is generic and theme has multiple layouts specify route to responsible Next.js page */
+    layoutRoute?: string;
 }
 
 export type TPageConfig = TPageInfo & {

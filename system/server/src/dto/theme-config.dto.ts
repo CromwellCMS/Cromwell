@@ -25,16 +25,22 @@ export class ThemeConfigDto implements TThemeConfig {
     @ApiProperty()
     defaultPages?: Record<TDefaultPageName, string>;
 
+    @ApiProperty()
+    genericPages?: {
+        route: string;
+        name: string
+    }[];
+
     parse(config?: TThemeConfig | null) {
         if (!config) return null;
         this.palette = config.palette;
         this.headHtml = config.headHtml;
         this.globalCss = config.globalCss;
         this.defaultPages = config.defaultPages;
+        this.genericPages = config.genericPages;
         this.pages = config.pages;
         this.themeCustomConfig = config.themeCustomConfig;
         this.globalModifications = config.globalModifications;
         return this;
     }
-
 }
