@@ -1,4 +1,6 @@
+import { registerThemeEditorPluginBlock } from '@cromwell/admin-panel';
 import { registerWidget } from '@cromwell/core-frontend';
+
 import { SettingsPage } from './widgets/SettingsPage';
 import { ThemeEditor } from './widgets/ThemeEditor';
 
@@ -8,8 +10,8 @@ registerWidget({
     component: SettingsPage
 });
 
-registerWidget({
+registerThemeEditorPluginBlock({
     pluginName: '@cromwell/plugin-product-filter',
-    widgetName: 'ThemeEditor',
+    blockName: 'Product filter',
     component: ThemeEditor
 });

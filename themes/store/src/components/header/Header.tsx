@@ -1,5 +1,15 @@
 import { getCmsSettings } from '@cromwell/core';
-import { CContainer, CHTML, CPlugin, CText, Link, useAuthClient, useCart, useUserInfo } from '@cromwell/core-frontend';
+import {
+  CContainer,
+  CHTML,
+  CPlugin,
+  CText,
+  Link,
+  registerPluginSSR,
+  useAuthClient,
+  useCart,
+  useUserInfo,
+} from '@cromwell/core-frontend';
 import { MuiCurrencySwitch, MuiProductSearch } from '@cromwell/toolkit-commerce';
 import { IconButton, ListItem, MenuItem, Popover, Tooltip } from '@mui/material';
 import clsx from 'clsx';
@@ -17,6 +27,8 @@ import {
 } from '../icons';
 import styles from './Header.module.scss';
 import { MobileHeader } from './MobileHeader';
+
+registerPluginSSR('@cromwell/plugin-main-menu', '*');
 
 export const Header = () => {
   const cmsSettings = getCmsSettings();

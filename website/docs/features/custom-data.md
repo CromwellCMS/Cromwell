@@ -83,7 +83,26 @@ If the post has any meta data corresponding to provided keys it will return the 
   }
 }
 ```
-`customMeta` will have null value if all requested keys aren't set.  
+`customMeta` will have null value if all requested keys aren't set.
+
+And here's a basic example how to make a custom query to CMS API server in your code:
+```js
+import { gql } from '@apollo/client';
+import { getGraphQLClient } from '@cromwell/core-frontend';
+
+const client = getGraphQLClient();
+const result = await client.query({
+  query: gql`
+    query GetPostById {
+      getPostById(id: 15) {
+        title
+        customMeta(keys: ["key1", "key2"])
+      }
+    }
+  `,
+});
+const post = result.data?.getPostById;
+```
 
 Custom entities should be requested via filter method:
 
@@ -152,3 +171,72 @@ query GetFilteredCustomEntities {
 ```
 
 Note that we have `inMeta: true` to indicate that we want to work with data in meta. If `inMeta: false` or not specified, then CMS will consider `key` as a column name in entity table. For example, if you want to filter by post title, then provide `key: "title"`.
+
+
+## Register custom entity or field in the code
+
+If in your plugin you want to add a new custom entity there two options 
+(look into [Plugin development guide](/docs/development/plugin-development) 
+to understand where to put this code):
+
+- Register dynamically on the frontend, without saving into DB. Note that user won't be able to delete it.
+
+```js title="src/admin/index.tsx"
+import { registerCustomEntity, registerCustomFieldOfType } from '@cromwell/admin-panel';
+
+registerCustomEntity({
+  entityType: 'my_entity_name',
+  listLabel: 'My entities',
+  entityLabel: 'My entity',
+  columns: [
+    {
+      name: 'my_field',
+      label: 'My field',
+      type: 'Simple text'
+    }
+  ]
+});
+
+registerCustomFieldOfType({
+    entityType: 'my_entity_name';
+    fieldType: 'Simple text',
+    key: 'my_field2',
+    id: 'my_entity_name-my_field2',
+    label: 'My Field 2', // Label on entity edit page
+    column: {
+      name: 'my_field2',
+      label: 'My Field 2' // Column name on entity table page
+    }
+})
+```
+
+- Create and save into database on plugin install. User will be able to modify and delete it.
+
+```js title="src/backend/index.ts"
+import { registerAction } from '@cromwell/core-backend';
+import { getRestApiClient } from '@cromwell/core-frontend';
+
+const client = getGraphQLClient();
+
+registerAction({
+  pluginName: 'your-plugin-name',
+  actionName: 'install_plugin',
+  action: async (payload) => {
+    if (payload.pluginName === 'your-plugin-name') {
+      const settings = await client.getCmsSettings();
+      if (!settings.customEntities) settings.customEntities = [];
+      if (!settings.customFields) settings.customFields = [];
+      
+      settings.customEntities.push({
+          entityType: 'my_entity_name',
+          listLabel: 'My entities',
+          entityLabel: 'My entity',
+      });
+      settings.customFields.push({
+        /* ... */
+      })
+      await client.saveCmsSettings(settings);
+    }
+  }
+});
+```

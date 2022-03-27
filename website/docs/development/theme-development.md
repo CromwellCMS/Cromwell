@@ -381,13 +381,13 @@ All available Default pages with route examples:
 ## Use Plugins
 
 You will learn about plugins in the [next tutorial](/docs/development/plugin-development).  
-As theme authors we are interested about plugin's frontend part which is basically React component. A plain usage will be importing `CPlugin` component and specifying package name. If a plugin supports settings we also can pass them via props:
+As theme authors we are interested about plugin's frontend part which is basically a React component. A plain usage will be importing `CPlugin` component and specifying package name. If a plugin supports settings we also can pass them via props:
 ```tsx
 import { CPlugin } from '@cromwell/core-frontend';
 /* ... */
 <CPlugin id="main_menu"
+  pluginName="@cromwell/plugin-main-menu"
   plugin={{
-    pluginName: "@cromwell/plugin-main-menu",
     instanceSettings: {
       mobile: true
     },
@@ -396,14 +396,14 @@ import { CPlugin } from '@cromwell/core-frontend';
 
 Note that some plugins may depend on server-side data fetching. In order to perform it, a plugin should be registered. There are two methods:
 
-1. Via `registerPlugin`
+1. Via `registerPluginSSR`
 
-Call `registerPlugin` in global context (not inside yor component).
+Call `registerPluginSSR` in global context (not inside yor component).
 
 ```tsx
-import { registerPlugin } from '@cromwell/core-frontend';
+import { registerPluginSSR } from '@cromwell/core-frontend';
 
-registerPlugin('@cromwell/plugin-main-menu', '*');
+registerPluginSSR('@cromwell/plugin-main-menu', '*');
 
 export default function Header() {
   return (
@@ -450,6 +450,26 @@ And add Plugin to the `modifications` of a [page config](#page-config-properties
   }
 }
 ```
+
+### Ship Theme with Plugins
+
+You Theme can depend on many plugins, and as in any npm package you can include 
+plugins as `dependencies` in `package.json`. That will make install and activate plugins along with your Theme. They also will be available to see in the admin panel.   
+But one important thing to note is that when you specify plugins in `dependencies`, user will be unable 
+to uninstall plugins in the admin panel and keep your theme. If you want to make them separable then:
+1. Move Plugin into `devDependencies` or `peerDependencies` that way it won't be installed automatically 
+by package manager in production (when user installs it in the admin panel).
+2. In your package.json create property `cromwell.plugins` and list your plugins:
+ ```json title="package.json"
+{
+  /* ... */
+  "cromwell": {
+    "type": "theme",
+    "plugins": ["package-1", "package-2"],
+  }
+}
+```
+When user installs your theme from admin panel, after running `yarn add your-theme-name` the CMS will also run `yarn add` for each listed plugin.
 
 ## Generic pages
 

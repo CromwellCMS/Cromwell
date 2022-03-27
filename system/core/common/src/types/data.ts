@@ -565,8 +565,9 @@ export type TFrontendPluginProps<TData = any, TInstanceSettings = any> = {
     data?: TData;
     blockId?: string;
     pluginName: string;
+    blockName: string;
     instanceSettings?: TInstanceSettings;
-}
+} & Record<string, any>;
 
 export type TCmsTheme = {
     palette?: TPalette;

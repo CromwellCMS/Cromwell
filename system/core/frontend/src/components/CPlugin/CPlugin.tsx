@@ -15,19 +15,20 @@ type CPluginProps = {
     pluginName?: string;
     component?: React.ComponentType<TFrontendPluginProps>;
     adminPanel?: boolean;
-} & TCromwellBlockProps;
+} & TCromwellBlockProps & Record<string, any>;
 
 
 export class CPlugin extends React.Component<CPluginProps> {
     render() {
         const props = this.props;
-        const { pluginName, plugin, component, ...rest } = props;
+        const { pluginName, plugin, blockName, component, ...rest } = props;
         return (
             <CBlock {...rest} type='plugin'
                 plugin={{ pluginName: pluginName ?? plugin?.pluginName }}
                 content={(data, blockRef, setContentInstance) => {
                     setContentInstance(this);
                     const name = data?.plugin?.pluginName ?? pluginName ?? plugin?.pluginName;
+                    const inferredBlockName = data?.plugin?.blockName ?? blockName ?? plugin?.blockName;
                     if (!name) return <></>;
 
                     const pluginConf = getStoreItem('plugins')?.[name];
@@ -53,7 +54,9 @@ export class CPlugin extends React.Component<CPluginProps> {
                                 blockId={data?.id}
                                 data={pluginData}
                                 pluginName={name}
+                                blockName={inferredBlockName}
                                 instanceSettings={data?.plugin?.instanceSettings ?? props.plugin?.instanceSettings}
+                                {...props}
                             />
                         </ErrorBoundary>
                     );

@@ -6,7 +6,7 @@
  * @param pageRoute - see `route` in https://cromwellcms.com/docs/development/theme-development#page-config-properties
  * `pageRoute` also can have `*` value to register on all pages.
  */
-export const registerPlugin = (pluginName: string, pageRoute: string) => {
+export const registerPluginSSR = (pluginName: string, pageRoute: string) => {
     plugins.push({
         pluginName,
         pageName: pageRoute,

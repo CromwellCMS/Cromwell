@@ -1,33 +1,46 @@
-import { TPluginEntity } from '@cromwell/core';
-import { AdminPanelWidgetPlace } from '@cromwell/core-frontend';
 import { Public as PublicIcon } from '@mui/icons-material';
 import { Autocomplete, TextField, Tooltip } from '@mui/material';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { PluginIcon } from '../../../../constants/icons';
 import { useForceUpdate } from '../../../../helpers/forceUpdate';
+import {
+    getPluginBlockId,
+    getPluginBlocks,
+    onPluginBlockRegister,
+    TPluginBlockOptions,
+} from '../../../../helpers/registerThemeEditor';
 import { StylesEditor } from '../components/StylesEditor';
 import styles from './BaseBlock.module.scss';
 import { TBlockMenuProps } from './BlockMenu';
 
-
 export function PluginBlockSidebar(props: TBlockMenuProps) {
     const data = props.block?.getData();
-    const pluginInfo = props.plugins?.find(p => p.name === data?.plugin?.pluginName);
+    // const pluginInfo = props.plugins?.find(p => p.name === data?.plugin?.pluginName);
     const forceUpdate = useForceUpdate();
+    const pluginBlocks = getPluginBlocks();
 
-    const handleChange = (event: any, newValue: TPluginEntity | null) => {
-        if (newValue?.name) {
+    const currentId = getPluginBlockId(
+        data?.plugin?.pluginName ?? '',
+        data?.plugin?.blockName ?? '',
+    );
+    const currentBlock = pluginBlocks.find(b => getPluginBlockId(b.pluginName, b.blockName) === currentId);
+
+    useEffect(() => {
+        onPluginBlockRegister(() => {
+            forceUpdate();
+        });
+    }, []);
+
+    const handleChange = (event: any, newValue: TPluginBlockOptions | null) => {
+        if (newValue?.pluginName && newValue?.blockName) {
             const data = props.block?.getData();
             if (!data.plugin) data.plugin = {};
-            data.plugin.pluginName = newValue.name;
+            data.plugin.pluginName = newValue.pluginName;
+            data.plugin.blockName = newValue.blockName;
             props.modifyData?.(data);
             forceUpdate();
         }
-    }
-
-    const getPluginLabel = (entity: TPluginEntity) => {
-        return `${entity?.title} [${entity?.name}]`
     }
 
     const handleChangeInstanceSettings = (settings: any) => {
@@ -52,18 +65,16 @@ export function PluginBlockSidebar(props: TBlockMenuProps) {
             </div>
             <Autocomplete
                 onChange={handleChange}
-                options={props.plugins ?? []}
-                value={(props.plugins ?? []).find(p => p.name === pluginInfo?.name)}
-                getOptionLabel={(option) => getPluginLabel(option)}
+                options={pluginBlocks ?? []}
+                value={(pluginBlocks ?? []).find(p => getPluginBlockId(p.pluginName, p.blockName) === currentId)}
+                getOptionLabel={(option) => option.blockName}
                 renderInput={(params) => <TextField {...params}
                     placeholder="Plugin"
                 />}
             />
-            {pluginInfo?.name && (
-                <AdminPanelWidgetPlace
-                    widgetName="ThemeEditor"
-                    pluginName={pluginInfo?.name}
-                    widgetProps={{
+            {currentBlock?.component && (
+                <currentBlock.component
+                    {...{
                         ...props,
                         forceUpdate,
                         instanceSettings: data?.plugin?.instanceSettings ?? {},

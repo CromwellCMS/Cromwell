@@ -201,6 +201,9 @@ export type TCromwellBlockData = {
 
         /** Plugin's local settings */
         instanceSettings?: Record<string, any>;
+
+        /** Plugin's block name */
+        blockName?: string;
     };
 
     /** For "image" block */
