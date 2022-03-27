@@ -332,13 +332,4 @@ module.exports = {
       ]
     }
   ],
-  globalModifications: [
-    {
-      "type": "plugin",
-      "id": "header_main_menu",
-      "plugin": {
-        "pluginName": "@cromwell/plugin-main-menu"
-      }
-    }
-  ]
 };

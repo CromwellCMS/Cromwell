@@ -16,7 +16,7 @@ const cachedPlugins: Record<string, {
  * @param pageName 
  * @param context - StaticPageContext of Page
  */
-export const pluginsDataFetcher = async (pageName: TDefaultPageName | string, context: TStaticPageContext,
+export const pluginsDataFetcher = async (pageName?: TDefaultPageName | string, context?: TStaticPageContext,
     pluginsData?: TPluginsSettings, extraPlugins?: (TRegisteredPluginInfo | string)[]) => {
     const plugins: Record<string, {
         data?: any;
@@ -26,7 +26,7 @@ export const pluginsDataFetcher = async (pageName: TDefaultPageName | string, co
     if (!pluginsData) return plugins;
     const configPlugins = Object.values(pluginsData);
 
-    for (const extra of [...(extraPlugins ?? []), ...getRegisteredPluginsAtPage(pageName)]) {
+    for (const extra of [...(extraPlugins ?? []), ...(pageName ? getRegisteredPluginsAtPage(pageName) : [])]) {
         const extraName = typeof extra === 'object' ? extra.pluginName : extra;
 
         if (!configPlugins.find(p => {

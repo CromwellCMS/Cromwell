@@ -3,6 +3,7 @@
 ### Prerequisites
 - Node.js v12-16
 - Python
+- `npm install node-gyp -g`
 
 ### Install
 

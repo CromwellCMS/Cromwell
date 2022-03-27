@@ -40,6 +40,7 @@ const Product: TPageWithLayout<ProductProps> = (props) => {
           plugin={{
             pluginName: "@cromwell/plugin-product-showcase",
           }}
+          blockName="Product showcase"
         />
       </CContainer>
       <CContainer id="product_reviewsBlock" className={styles.reviewsBlock}>

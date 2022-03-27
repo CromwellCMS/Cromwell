@@ -381,13 +381,13 @@ All available Default pages with route examples:
 ## Use Plugins
 
 You will learn about plugins in the [next tutorial](/docs/development/plugin-development).  
-As theme authors we are interested about plugin's frontend part which is basically React component. A plain usage will be importing `CPlugin` component and specifying package name. If a plugin supports settings we also can pass them via props:
+As theme authors we are interested about plugin's frontend part which is basically a React component. A plain usage will be importing `CPlugin` component and specifying package name. If a plugin supports settings we also can pass them via props:
 ```tsx
 import { CPlugin } from '@cromwell/core-frontend';
 /* ... */
 <CPlugin id="main_menu"
+  pluginName="@cromwell/plugin-main-menu"
   plugin={{
-    pluginName: "@cromwell/plugin-main-menu",
     instanceSettings: {
       mobile: true
     },
@@ -396,14 +396,14 @@ import { CPlugin } from '@cromwell/core-frontend';
 
 Note that some plugins may depend on server-side data fetching. In order to perform it, a plugin should be registered. There are two methods:
 
-1. Via `registerPlugin`
+1. Via `registerPluginSSR`
 
-Call `registerPlugin` in global context (not inside yor component).
+Call `registerPluginSSR` in global context (not inside yor component).
 
 ```tsx
-import { registerPlugin } from '@cromwell/core-frontend';
+import { registerPluginSSR } from '@cromwell/core-frontend';
 
-registerPlugin('@cromwell/plugin-main-menu', '*');
+registerPluginSSR('@cromwell/plugin-main-menu', '*');
 
 export default function Header() {
   return (
@@ -451,6 +451,26 @@ And add Plugin to the `modifications` of a [page config](#page-config-properties
 }
 ```
 
+### Ship Theme with Plugins
+
+You Theme can depend on many plugins, and as in any npm package you can include 
+plugins as `dependencies` in `package.json`. That will make install and activate plugins along with your Theme. They also will be available to see in the admin panel.   
+But one important thing to note is that when you specify plugins in `dependencies`, user will be unable 
+to uninstall plugins in the admin panel and keep your theme. If you want to make them separable then:
+1. Move Plugin into `devDependencies` or `peerDependencies` that way it won't be installed automatically 
+by package manager in production (when user installs it in the admin panel).
+2. In your package.json create property `cromwell.plugins` and list your plugins:
+ ```json title="package.json"
+{
+  /* ... */
+  "cromwell": {
+    "type": "theme",
+    "plugins": ["package-1", "package-2"],
+  }
+}
+```
+When user installs your theme from admin panel, after running `yarn add your-theme-name` the CMS will also run `yarn add` for each listed plugin.
+
 ## Generic pages
 
 Users can create a new page in the Theme Editor. Since there's no way to add Next.js pages at runtime, this feature is achieved via adding a dynamic page at `pages/[slug]` route. If your Theme doesn't export component at `src/pages/pages/[slug].(jsx|tsx)`, then it will be generated internally at pre-build phase, but you're encouraged to create it yourself since probably you want to have it the same layout as in other pages.  
@@ -459,6 +479,31 @@ Theme authors also can create a generic page in the Theme config. Just add a pag
 
 The difference between generic pages and other pages is that they can have a different page config for a specified slug, while, for example, `/product/[slug]` page will have the same config for every provided slug.
 
+[Use rewrites](/docs/development/redirects/) if you want some generic page appear under your custom route (not under `/pages/`)
+
+### Multiple generic layouts
+
+Theme can define multiple layouts (Next.js pages) to use for generic pages. With that user will be able to pick needed layout in the admin panel.
+
+For example, you created two layouts: `pages-old/[slug]` and `pages-new/[slug]`. Now you need to define your generic pages in the config under `genericPages` property:
+
+ ```js title="cromwell.config.js"
+module.exports = {
+  /* ... */
+  genericPages: [
+    {
+      route: "pages-old/[slug]",
+      name: "default"
+    },
+    {
+      route: "pages-new/[slug]",
+      name: "pages new"
+    }
+  ],
+}
+```
+Note that it will override default route for generic pages at `pages/[slug]`.
+ 
 
 ## Publish
 

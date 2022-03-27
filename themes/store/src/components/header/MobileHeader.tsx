@@ -123,7 +123,9 @@ export const MobileHeader = () => {
                   mobile: true
                 },
                 pluginName: "@cromwell/plugin-main-menu"
-              }} />
+              }}
+              blockName="Main menu"
+            />
           </CContainer>
         </div>
       </SwipeableDrawer>

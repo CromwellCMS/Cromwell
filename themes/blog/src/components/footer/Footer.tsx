@@ -22,7 +22,7 @@ export default function Footer() {
                     <CContainer className={styles.linksBlock} id="footer_17">
                         <CText className={styles.blockHeader} id="footer_07">Join our newsletter!</CText>
                         <CContainer className={styles.subscribeInputContainer} id="footer_05">
-                            <CPlugin id="footer_06_Newsletter" pluginName={"@cromwell/plugin-newsletter"} />
+                            <CPlugin id="footer_06_Newsletter" pluginName={"@cromwell/plugin-newsletter"} blockName="Newsletter" />
                         </CContainer>
                     </CContainer>
                 </CContainer>

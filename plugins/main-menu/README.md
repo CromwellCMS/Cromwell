@@ -13,9 +13,9 @@ Example of usage:
 
 ```tsx
 import { IconButton, MenuItem, Popover } from '@mui/material';
-import { CPlugin, registerPlugin } from '@cromwell/core-frontend';
+import { CPlugin, registerPluginSSR } from '@cromwell/core-frontend';
 
-registerPlugin('@cromwell/plugin-main-menu', '*');
+registerPluginSSR('@cromwell/plugin-main-menu', '*');
 
 export default function MyPage() {
   return (

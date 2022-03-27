@@ -49,6 +49,9 @@ export function Select(props: {
                 {...props}
                 className={props.selectClassName}
                 style={props.selectStyle}
+                MenuProps={{
+                    style: { zIndex: 10001 }
+                }}
                 endAdornment={(
                     (props.tooltipText || props.tooltipLink) && (
                         <InputAdornment position="end" sx={{ mr: 1 }}>

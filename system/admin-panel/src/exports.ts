@@ -22,6 +22,7 @@ export * from './helpers/customEntities';
 export * from './helpers/navigation';
 export * from './helpers/LayoutPortal';
 export * from './helpers/editor/editor';
+export { registerThemeEditorPluginBlock, TPluginBlockOptions } from './helpers/registerThemeEditor';
 export * from './constants/PageInfos';
 
 import { store } from './redux/store';

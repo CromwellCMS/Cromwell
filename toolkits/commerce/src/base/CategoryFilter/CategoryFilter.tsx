@@ -31,6 +31,7 @@ export function CategoryFilter(props: CategoryFilterProps) {
             listId: moduleState.categoryListId,
           }
         }}
+        blockName="Product filter"
       />
     </div>
   )
