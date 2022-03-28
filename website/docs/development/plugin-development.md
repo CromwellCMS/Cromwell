@@ -262,14 +262,33 @@ export function SettingsPage(props: TPluginSettingsProps) {
 }
 ```
 
-### Instance settings editor
+### Theme editor
 
-When user creates Plugin block on a page in Admin Theme Editor, it's possible for user to modify specific configuration for this block. Configuration object and UI are defined by Plugin. As with global Plugin settings, you need to register a widget that will handle instance settings:
+Admin panel Theme Editor allow users to create on a Theme page frontend instance of your plugin. You need to register you plugin so it will appear in dropdown menu of all available plugins. Specify package name as `pluginName` and name to display for user as `blockName`:
+
+```tsx title="src/admin/index.tsx"
+import { registerThemeEditorPluginBlock } from '@cromwell/admin-panel';
+
+registerThemeEditorPluginBlock({
+    pluginName: '@cromwell/plugin-main-menu',
+    blockName: 'Main menu - desktop',
+});
+
+registerThemeEditorPluginBlock({
+    pluginName: '@cromwell/plugin-main-menu',
+    blockName: 'Main menu - mobile',
+});
+```
+You can register multiple blocks per your package. You will receive `blockName` as a prop to your plugin, so you will be able to render different UI depending on `blockName`.
+
+### Instance settings editor 
+
+When user creates Plugin block on a page in Admin Theme Editor, it's possible for user to modify specific configuration for this block. Configuration object and its UI are defined by Plugin. As with global Plugin settings, you need to register a widget that will handle instance settings via `registerThemeEditorPluginBlock`:
 
 
 ```tsx title="src/admin/index.tsx"
-import { registerWidget } from '@cromwell/core-frontend';
-import { registerWidget, WidgetTypes } from '@cromwell/core-frontend';
+import { WidgetTypes } from '@cromwell/core-frontend';
+import { registerThemeEditorPluginBlock } from '@cromwell/admin-panel';
 import React from 'react';
 
 function ThemeEditor(props: WidgetTypes['ThemeEditor']) {
@@ -280,9 +299,9 @@ function ThemeEditor(props: WidgetTypes['ThemeEditor']) {
   )
 }
 
-registerWidget({
+registerThemeEditorPluginBlock({
     pluginName: 'your-plugin-name',
-    widgetName: 'ThemeEditor',
+    blockName: 'Your plugin name',
     component: ThemeEditor
 });
 ```
@@ -297,7 +316,7 @@ Instance settings are loaded and saved via passed props. Your ThemeEditor widget
 
 With loading and saving settings example will be as follows:
 
-```tsx title="src/pages/index.tsx"
+```tsx title="src/admin/index.tsx"
 import { TextFieldWithTooltip } from '@cromwell/admin-panel';
 import { registerWidget, WidgetTypes } from '@cromwell/core-frontend';
 import React from 'react';
@@ -353,6 +372,7 @@ export default function YouPluginName(props: TFrontendPluginProps<PluginData, Pl
   return (
     <>
       <div>{props.data?.message}</div>
+      <div>{props.blockName}</div>
       <div>{props.data?.globalSettings?.someGlobalSettingsProp}</div>
       <div>{props.instanceSettings?.someLocalSettingsProp}</div>
     </>
@@ -427,6 +447,7 @@ import { CPlugin } from '@cromwell/core-frontend';
 export default function Index() {
   return <CPlugin id="my-plugin"
       pluginName="my-plugin-name"
+      blockName="My plugin block"
       myCustomProp="test2"
     >Test</CPlugin>
 }

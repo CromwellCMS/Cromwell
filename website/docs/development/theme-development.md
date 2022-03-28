@@ -459,8 +459,9 @@ But one important thing to note is that when you specify plugins in `dependencie
 to uninstall plugins in the admin panel and keep your theme. If you want to make them separable then:
 1. Move Plugin into `devDependencies` or `peerDependencies` that way it won't be installed automatically 
 by package manager in production (when user installs it in the admin panel).
-2. In your package.json create property `cromwell.plugins` and list your plugins:
- ```json title="package.json"
+2. In your package.json create property `cromwell.plugins` and list your plugins:  
+
+```json title="package.json"
 {
   /* ... */
   "cromwell": {
@@ -487,7 +488,7 @@ Theme can define multiple layouts (Next.js pages) to use for generic pages. With
 
 For example, you created two layouts: `pages-old/[slug]` and `pages-new/[slug]`. Now you need to define your generic pages in the config under `genericPages` property:
 
- ```js title="cromwell.config.js"
+```js title="cromwell.config.js"
 module.exports = {
   /* ... */
   genericPages: [

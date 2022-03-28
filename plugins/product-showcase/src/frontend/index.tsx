@@ -11,15 +11,12 @@ import {
 import { CGallery, getGraphQLClient, Link } from '@cromwell/core-frontend';
 import React, { useEffect, useRef, useState } from 'react';
 
-import { useStyles } from './styles';
-
 type ProductShowcaseProps = {
     slug?: string | null;
 }
 
 const ProductShowcase = (props: TFrontendPluginProps<ProductShowcaseProps>): JSX.Element => {
     const galleryId = useRef(`ProductShowcase_${getRandStr(5)}`);
-    const classes = useStyles();
     const [products, setProducts] = useState<TPagedList<TProduct> | undefined>();
 
     const getData = async () => {
@@ -81,7 +78,11 @@ const ProductShowcase = (props: TFrontendPluginProps<ProductShowcaseProps>): JSX
     }
 
     return (
-        <div className={classes.wrapper}>
+        <div style={{
+            width: '100%',
+            height: '100%',
+            padding: '10px 0'
+        }} >
             <CGallery
                 editorHidden
                 style={{ height: '100%' }}
@@ -89,9 +90,11 @@ const ProductShowcase = (props: TFrontendPluginProps<ProductShowcaseProps>): JSX
                 gallery={{
                     slides: products?.elements?.map(product => {
                         return (
-                            <div className={classes.listItem}>
-                                {ProductComp && <ProductComp product={product}
-                                    key={product.id} />}
+                            <div style={{ margin: '0 10px' }}>
+                                <div style={{ margin: '0 auto' }}>
+                                    {ProductComp && <ProductComp product={product}
+                                        key={product.id} />}
+                                </div>
                             </div>
                         )
                     }) ?? [],
