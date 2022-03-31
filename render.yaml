@@ -1,0 +1,12 @@
+previewsEnabled: true
+services:
+- type: web
+  name: crw
+  env: node
+  pullRequestPreviewsEnabled: true
+  buildCommand: npm run build
+  startCommand: npx crw s
+  envVars:
+  - key: PORT
+    value: 4016
+    previewValue: 4016

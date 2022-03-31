@@ -355,7 +355,7 @@ It makes it possible to create a Theme using Theme Editor (which is not recommen
   - **index**`: number` - Desirable index (order) inside children array of parent element 
   - **style**`: React.CSSProperties` - CSS styles to apply to this block's wrapper. In a format of React CSS properties
   - **isDeleted**`: boolean` - Non-virtual blocks that exist in JSX cannot physically be deleted in Theme's source code by user, but user can set isDeleted flag that will tell this Block to render nothing instead of original content.
-  - **global**`: boolean`
+  - **global**`: boolean` - Apply this modification on all pages.
 
 :::note
 It is not necessary to add configs for your pages, and you can start development even without `cromwell.config.js` file, but if you want your page to work in Admin panel Theme Editor, you have to add a page config for it with at least `id` and `route` properties.
@@ -380,40 +380,97 @@ All available Default pages with route examples:
 
 ## Use Plugins
 
-For Theme authors Plugins can only be registered in the page config of `cromwell.config.js`. That's because in order to retrieve static props of Plugins on the server we need to know what Plugins are used on pages before executing JSX code.  
-So in most cases in your page you can add a container:
+You will learn about plugins in the [next tutorial](/docs/development/plugin-development).  
+As theme authors we are interested about plugin's frontend part which is basically a React component. A plain usage will be importing `CPlugin` component and specifying package name. If a plugin supports settings we also can pass them via props:
 ```tsx
-<CContainer id="some-plugin-container"></CContainer>
+import { CPlugin } from '@cromwell/core-frontend';
+/* ... */
+<CPlugin id="main_menu"
+  pluginName="@cromwell/plugin-main-menu"
+  plugin={{
+    instanceSettings: {
+      mobile: true
+    },
+}} />
 ```
-And add Plugin to the `modifications` of a [page config](#page-config-properties): 
+
+Note that some plugins may depend on server-side data fetching. In order to perform it, a plugin should be registered. There are two methods:
+
+1. Via `registerPluginSSR`
+
+Call `registerPluginSSR` in global context (not inside yor component).
+
+```tsx
+import { registerPluginSSR } from '@cromwell/core-frontend';
+
+registerPluginSSR('@cromwell/plugin-main-menu', '*');
+
+export default function Header() {
+  return (
+    <CPlugin id="main_menu"
+      plugin={{
+        pluginName: "@cromwell/plugin-main-menu",
+        instanceSettings: {
+          mobile: true
+        },
+      }} />
+  )
+}
+```
+
+First argument is package name, second is page route ([see `route`](https://cromwellcms.com/docs/development/theme-development#page-config-properties).). Use `*` to register on all pages.
+
+
+2. In `cromwell.config.js`
+
+For example, on your page you can add only container:
+```tsx
+import { CContainer } from '@cromwell/core-frontend';
+
+export default function Header() {
+  return (
+    <CContainer id="menu-container"></CContainer>
+  )
+}
+```
+
+And add Plugin to the `modifications` of a [page config](#page-config-properties):
+
 ```json
 {
   "type": "plugin",
-  "id": "some-plugin-id",
-  "parentId": "some-plugin-container",
+  "id": "main_menu",
+  "parentId": "menu-container",
   "isVirtual": true,
   "plugin": {
-    "pluginName": "some-plugin-package-name"
+    "pluginName": "@cromwell/plugin-main-menu",
+    "instanceSettings": {
+      "mobile": true
+    }
   }
 }
 ```
 
-If your plugin can accept props, then you can use CPlugin block, for example:
+### Ship Theme with Plugins
 
-```tsx
-<CContainer id="wrapper">
-  <CPlugin id="main_menu"
-    plugin={{
-      instanceSettings: {
-        mobile: true
-      },
-      pluginName: "@cromwell/plugin-main-menu"
-    }} />
-</CContainer>
+You Theme can depend on many plugins, and as in any npm package you can include 
+plugins as `dependencies` in `package.json`. That will make install and activate plugins along with your Theme. They also will be available to see in the admin panel.   
+But one important thing to note is that when you specify plugins in `dependencies`, user will be unable 
+to uninstall plugins in the admin panel and keep your theme. If you want to make them separable then:
+1. Move Plugin into `devDependencies` or `peerDependencies` that way it won't be installed automatically 
+by package manager in production (when user installs it in the admin panel).
+2. In your package.json create property `cromwell.plugins` and list your plugins:  
+
+```json title="package.json"
+{
+  /* ... */
+  "cromwell": {
+    "type": "theme",
+    "plugins": ["package-1", "package-2"],
+  }
+}
 ```
-
-**Important!** Even if you placed `CPlugin` component on the page, you still need to register it in `cromwell.config.js` as in the example above.
-
+When user installs your theme from admin panel, after running `yarn add your-theme-name` the CMS will also run `yarn add` for each listed plugin.
 
 ## Generic pages
 
@@ -423,6 +480,31 @@ Theme authors also can create a generic page in the Theme config. Just add a pag
 
 The difference between generic pages and other pages is that they can have a different page config for a specified slug, while, for example, `/product/[slug]` page will have the same config for every provided slug.
 
+[Use rewrites](/docs/development/redirects/) if you want some generic page appear under your custom route (not under `/pages/`)
+
+### Multiple generic layouts
+
+Theme can define multiple layouts (Next.js pages) to use for generic pages. With that user will be able to pick needed layout in the admin panel.
+
+For example, you created two layouts: `pages-old/[slug]` and `pages-new/[slug]`. Now you need to define your generic pages in the config under `genericPages` property:
+
+```js title="cromwell.config.js"
+module.exports = {
+  /* ... */
+  genericPages: [
+    {
+      route: "pages-old/[slug]",
+      name: "default"
+    },
+    {
+      route: "pages-new/[slug]",
+      name: "pages new"
+    }
+  ],
+}
+```
+Note that it will override default route for generic pages at `pages/[slug]`.
+ 
 
 ## Publish
 

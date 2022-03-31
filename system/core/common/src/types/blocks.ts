@@ -66,7 +66,7 @@ export type TPageCmsProps = {
     themeFooterHtml?: string | null;
     palette?: TPalette | null;
     defaultPages?: Partial<Record<TDefaultPageName, string>>;
-    pageConfigName?: string;
+    pageConfigRoute?: string;
     slug?: string | string[] | null;
     resolvedPageRoute?: string;
 }
@@ -201,6 +201,9 @@ export type TCromwellBlockData = {
 
         /** Plugin's local settings */
         instanceSettings?: Record<string, any>;
+
+        /** Plugin's block name */
+        blockName?: string;
     };
 
     /** For "image" block */

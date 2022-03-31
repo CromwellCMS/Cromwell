@@ -1,32 +1,48 @@
+import { useForceUpdate } from '@cromwell/core-frontend';
 import { CardActionArea, CardActions, Collapse, IconButton, MenuItem, TextField } from '@mui/material';
 import clsx from 'clsx';
 import React from 'react';
 
-import { useForceUpdate } from '../../../helpers';
 import { TMainMenuItem } from '../../../types';
 import { AddIcon, ExpandMoreIcon, HighlightOffIcon } from '../../icons';
 import { useStyles } from '../../styles';
 
 
-
 export const Item = (props: {
-    i: number;
-    updateList: () => void;
-    items?: TMainMenuItem[];
-}
-) => {
+    data: TMainMenuItem;
+    itemProps?: {
+        items: TMainMenuItem[];
+        canReorder: boolean;
+        refreshList: () => void;
+    }
+}) => {
+    const { refreshList, items, canReorder } = props.itemProps ?? {};
+    const item = props.data;
+
     const forceUpdate = useForceUpdate();
     const classes = useStyles();
-    const [expanded, setExpanded] = React.useState(false);
+    const [_expanded, setExpanded] = React.useState(false);
+    const expanded = _expanded && !canReorder;
+
+    if (!item) return null;
+
     const handleExpandClick = () => {
-        setExpanded(!expanded);
+        if (canReorder) return;
+        setExpanded(!_expanded);
     };
-    const item = props.items?.[props.i];
+
     const handleChange = (prop: keyof TMainMenuItem, val: string) => {
         (item as any)[prop] = val;
         forceUpdate();
     }
-    if (!item) return null;
+
+    const handleRemove = (event) => {
+        event.stopPropagation();
+        if (items) {
+            items.splice(items.indexOf(item), 1);
+            refreshList?.();
+        }
+    }
 
     return (
         <div className={`${classes.card} PluginMainMenu-paper`}>
@@ -36,20 +52,18 @@ export const Item = (props: {
             >
                 <p className={classes.cardTitle}>{item.title}</p>
                 <CardActions disableSpacing className={classes.cardActions}>
-                    <IconButton
-                        className={clsx(classes.expand, {
-                            [classes.expandOpen]: expanded,
-                        })}
-                        aria-expanded={expanded}
-                        aria-label="show more"
-                    >
-                        <ExpandMoreIcon />
-                    </IconButton>
-                    <IconButton onClick={(e) => {
-                        e.stopPropagation();
-                        props.items?.splice(props.i, 1);
-                        props.updateList();
-                    }}>
+                    {!canReorder && (
+                        <IconButton
+                            className={clsx(classes.expand, {
+                                [classes.expandOpen]: expanded,
+                            })}
+                            aria-expanded={expanded}
+                            aria-label="show more"
+                        >
+                            <ExpandMoreIcon />
+                        </IconButton>
+                    )}
+                    <IconButton onClick={handleRemove}>
                         <HighlightOffIcon />
                     </IconButton>
                 </CardActions>
@@ -103,7 +117,7 @@ export const Item = (props: {
                                     <IconButton onClick={(e) => {
                                         e.stopPropagation();
                                         if (item.sublinks) item.sublinks.splice(slIndex, 1);
-                                        props.updateList();
+                                        refreshList?.();
                                     }}>
                                         <HighlightOffIcon />
                                     </IconButton>

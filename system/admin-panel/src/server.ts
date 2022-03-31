@@ -73,12 +73,11 @@ const start = async () => {
     const app = fastify();
     await app.register(middie);
 
-    let compiler;
     if (isDevelopment) {
         const webpack = require('webpack');
         const webpackConfig = require('../webpack.config');
         const chalk = require('react-dev-utils/chalk');
-        compiler = webpack(webpackConfig);
+        const compiler = webpack(webpackConfig);
 
         compiler.hooks.watchRun.tap('adminPanelStart', () => {
             console.log(chalk.cyan('\r\nBegin admin panel compile at ' + new Date() + '\r\n'));// eslint-disable-line
@@ -89,11 +88,18 @@ const start = async () => {
             }, 100)
         });
 
-        app.use(require("webpack-dev-middleware")(compiler, {
-            publicPath: webpackConfig.output.publicPath
-        }));
+        compiler.watch({}, (err, stats) => {
+            if (err) console.error(err);
+            console.log(stats?.toString({ // eslint-disable-line
+                chunks: false,
+                colors: true
+            }));
+        });
+        // app.use(require("webpack-dev-middleware")(compiler, {
+        //     publicPath: webpackConfig.output.publicPath
+        // }));
 
-        app.use(require("webpack-hot-middleware")(compiler));
+        // app.use(require("webpack-hot-middleware")(compiler));
     }
 
     app.use(compress());
@@ -118,7 +124,10 @@ const start = async () => {
     });
 
     const indexPageHandle = (req, res) => {
-        // route requested, send index.html 
+        // route requested, send index.html
+        const files = fs.readdirSync(webTempDir + '/build');
+        const webapp = files.find(file => file.startsWith('webapp') && file.endsWith('.js'));
+
         res.type('text/html').send(`
         <head>
             <meta charset="UTF-8">
@@ -140,7 +149,7 @@ const start = async () => {
         <body>
             <noscript>You need to enable JavaScript to run this app.</noscript>
             <div id="root"></div>
-            <script src="/admin/build/webapp.js"></script>
+            <script src="/admin/build/${webapp}"></script>
         </body>
         `);
     }
@@ -151,22 +160,12 @@ const start = async () => {
 
     await app.listen(port, '::', 1, (err) => {
         if (err) {
-
             console.error(err);
             if (process.send) process.send(adminPanelMessages.onStartErrorMessage);
         } else {
             if (process.send) process.send(adminPanelMessages.onStartMessage);
         }
     });
-
-    if (isDevelopment) {
-        compiler.watch({}, (err, stats) => {
-            console.log(stats?.toString({ // eslint-disable-line
-                chunks: false,
-                colors: true
-            }));
-        });
-    }
 
 }
 

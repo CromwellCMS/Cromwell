@@ -43,24 +43,4 @@ export default [
             commonjs(),
         ]
     },
-    {
-        // preserveModules: true,
-        input: resolve(__dirname, "src/compiler.ts"),
-        output: [
-            {
-                // file: resolve(__dirname, buildDir, 'server.js'),
-                dir: resolve(__dirname, buildDir),
-                format: "cjs",
-            }
-        ],
-        external: isExternalForm,
-        plugins: [
-            typescript(tsOptions),
-            json(),
-            nodeResolve({
-                preferBuiltins: false
-            }),
-            commonjs(),
-        ]
-    },
 ];

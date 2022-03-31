@@ -1,6 +1,6 @@
 {
   "name": "@cromwell/plugin-stripe",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "",
   "license": "MIT",
   "repository": "https://github.com/CromwellCMS/Cromwell",
@@ -37,7 +37,7 @@
     "jest": "27.0.6",
     "rollup-plugin-postcss": "4.0.1",
     "rollup-plugin-terser": "7.0.2",
-    "rollup-plugin-ts-compiler": "1.0.16",
+    "rollup-plugin-ts-compiler": "1.0.18",
     "ts-jest": "27.0.5",
     "ts-node": "10.2.0",
     "typescript": "4.3.5"

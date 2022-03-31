@@ -484,15 +484,15 @@ export const rollupPluginCromwellFrontend = async (settings?: {
 
     if (settings?.generateMeta !== false) {
         plugin.transform = function (code, id): string | null {
-            id = normalizePath(id);
+            id = normalizePath(id).replace('\x00', '');
             if (!/\.(m?jsx?|tsx?)$/.test(id)) return null;
-
             const ast = this.parse(code);
+            
             walk(ast, {
                 enter(node: any) {
                     if (node.type === 'ImportDeclaration') {
                         if (!node.specifiers || !node.source) return;
-                        const source = node.source.value;
+                        const source = node.source.value.replace('\x00', '');
 
                         if (!importsInfo[id]) importsInfo[id] = {
                             externals: {},

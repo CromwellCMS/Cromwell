@@ -60,7 +60,7 @@ const Index: TPageWithLayout = () => {
                 id="main_sub_banner_3" className={styles.mainSubBanner} />
             </CContainer>
             <CContainer id="main_24" className={styles.mainShowcaseWrapper}>
-              <CPlugin id="main_showcase" pluginName={"@cromwell/plugin-product-showcase"} style={{ height: '440px' }} />
+              <CPlugin id="main_showcase" pluginName={"@cromwell/plugin-product-showcase"} blockName="Product showcase" style={{ height: '440px' }} />
             </CContainer>
           </CContainer>
         </CContainer>

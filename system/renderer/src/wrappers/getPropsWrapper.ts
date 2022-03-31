@@ -26,14 +26,6 @@ const wrapGetProps = (pageName: TDefaultPageName | string,
     if (pageName.startsWith('/')) pageName = pageName.slice(1, pageName.length - 1);
 
     const getStaticWrapper: TGetStaticProps<TCromwellPageCoreProps> = async (context) => {
-        // Name to request a page config. Config will be the same for different slugs
-        // of a page. There's an exception: generic pages - `pages/[slug]`, 
-        // since they can be edited separately in Theme Editor
-        const pageConfigName = (pageName === 'pages/[slug]' && context?.params?.slug) ?
-            `pages/${context.params.slug}` : pageName;
-
-        // const pageRoute = resolvePageRoute(pageName, { slug: context?.params?.slug + '' });
-        // const timestamp = Date.now();
         let rendererData: {
             pageConfig?: TPageConfig;
             pluginsSettings?: TPluginsSettings;
@@ -48,8 +40,8 @@ const wrapGetProps = (pageName: TDefaultPageName | string,
             throw new Error('Cromwell:getPropsWrapper: `THEME_NAME` was not found in process.env')
         }
         try {
-            rendererData = (await getRestApiClient().getRendererRage(pageConfigName,
-                process.env.THEME_NAME)) ?? {};
+            rendererData = (await getRestApiClient().getRendererRage(pageName,
+                process.env.THEME_NAME, String(context?.params?.slug))) ?? {};
         } catch (e) {
             console.error(e);
         }
@@ -57,8 +49,10 @@ const wrapGetProps = (pageName: TDefaultPageName | string,
         const { pageConfig, themeConfig, cmsSettings,
             themeCustomConfig, pluginsSettings, userConfig } = rendererData;
 
+        const pageConfigRoute = pageConfig?.route;
+
         if (themeConfig?.defaultPages) setStoreItem('defaultPages', themeConfig?.defaultPages);
-        const resolvedPageRoute = resolvePageRoute(pageConfigName, { slug: context?.params?.slug as string })
+        const resolvedPageRoute = resolvePageRoute(pageName, { slug: context?.params?.slug as string })
 
         if (themeConfig) {
             themeConfig.palette = Object.assign({}, themeConfig.palette,
@@ -76,15 +70,11 @@ const wrapGetProps = (pageName: TDefaultPageName | string,
         const extraPlugins = childStaticProps?.extraPlugins;
         if (childStaticProps?.extraPlugins) delete childStaticProps?.extraPlugins;
 
-        const plugins = await pluginsDataFetcher(pageConfigName, context, pluginsSettings,
+        const plugins = await pluginsDataFetcher(pageConfigRoute, context, pluginsSettings,
             extraPlugins);
 
         const pluginsNextProps = Object.assign({}, ...Object.values(plugins)
             .map(plugin => plugin.nextProps).filter(Boolean));
-
-        // const timestamp2 = Date.now();
-        // console.log('getStaticProps for page: ' + pageName);
-        // console.log('time elapsed: ' + (timestamp2 - timestamp) + 'ms');
 
         if (childStaticProps && !childStaticProps.props) childStaticProps.props = {};
 
@@ -93,7 +83,7 @@ const wrapGetProps = (pageName: TDefaultPageName | string,
             pageConfig,
             cmsSettings,
             themeCustomConfig,
-            pageConfigName,
+            pageConfigRoute,
             resolvedPageRoute,
             slug: context?.params?.slug,
             defaultPages: themeConfig?.defaultPages,

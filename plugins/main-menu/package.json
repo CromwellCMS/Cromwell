@@ -1,6 +1,6 @@
 {
   "name": "@cromwell/plugin-main-menu",
-  "version": "1.0.32",
+  "version": "1.0.35",
   "description": "",
   "license": "MIT",
   "repository": "https://github.com/CromwellCMS/Cromwell",
@@ -40,7 +40,7 @@
     "@types/testing-library__react": "10.2.0",
     "jest": "27.0.6",
     "rollup": "2.56.2",
-    "rollup-plugin-ts-compiler": "1.0.16",
+    "rollup-plugin-ts-compiler": "1.0.18",
     "ts-jest": "27.0.5",
     "ts-node": "10.2.0",
     "typescript": "4.3.5"

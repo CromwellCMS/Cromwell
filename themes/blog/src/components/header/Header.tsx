@@ -36,7 +36,9 @@ const Header = () => {
                                 <CPlugin
                                     className={styles.mainMenu}
                                     id="header_main_menu"
-                                    pluginName={"@cromwell/plugin-main-menu"} />
+                                    pluginName={"@cromwell/plugin-main-menu"}
+                                    blockName="Main menu"
+                                />
                                 <CContainer className={styles.search} id="header-04">
                                     <HeaderSearch />
                                 </CContainer>
@@ -77,7 +79,9 @@ const Header = () => {
                                     mobile: true
                                 },
                                 pluginName: "@cromwell/plugin-main-menu"
-                            }} />
+                            }}
+                            blockName="Main menu"
+                        />
                     </div>
                 </div>
             </SwipeableDrawer>

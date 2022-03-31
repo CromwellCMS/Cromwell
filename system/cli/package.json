@@ -1,6 +1,6 @@
 {
   "name": "@cromwell/cli",
-  "version": "2.1.1",
+  "version": "2.1.8",
   "keywords": [],
   "license": "MIT",
   "repository": "https://github.com/CromwellCMS/Cromwell",
@@ -31,8 +31,8 @@
     "yargs": "17.1.1"
   },
   "devDependencies": {
-    "@cromwell/cms": "2.1.1",
-    "@cromwell/utils": "2.0.13",
+    "@cromwell/cms": "2.1.7",
+    "@cromwell/utils": "2.0.17",
     "@rollup/plugin-commonjs": "20.0.0",
     "@rollup/plugin-json": "4.1.0",
     "@rollup/plugin-node-resolve": "13.0.4",
@@ -43,7 +43,7 @@
     "jest": "27.0.6",
     "rollup": "2.56.2",
     "rollup-plugin-terser": "7.0.2",
-    "rollup-plugin-ts-compiler": "1.0.16",
+    "rollup-plugin-ts-compiler": "1.0.18",
     "ts-jest": "27.0.5",
     "ts-node": "10.2.0",
     "typescript": "4.3.5"

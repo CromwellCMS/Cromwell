@@ -80,6 +80,39 @@ All available places you can use in `widgetName`:
 For now, amount of available widgets is quite small, but we will add much more in future releases!
 
 
+### Some other admin features and helpers
+
+- Modify sidebar links
+
+```tsx
+import { registerSidebarLinkModifier } from '@cromwell/admin-panel';
+
+registerSidebarLinkModifier('my-modifier-id-or-plugin-name', (links) => {
+  // You can also change/re-order links here to anything you like
+  links.push({
+    id: 'link-id',
+    title: 'My new page',
+    route: 'my-new-page',
+    icon: '/icon.svg'
+  });
+})
+```
+
+- Modify admin panel pages
+
+```tsx
+import { registerPageInfoModifier } from '@cromwell/admin-panel';
+
+registerPageInfoModifier('my-modifier-id-or-plugin-name', (pages) => {
+  pages.push({
+    name: 'page-name',
+    route: 'my-new-page',
+    component: (props) => <div>Hello</div>
+  })
+})
+```
+
+
 ## Plugin settings
 
 Plugin settings are any valid JSON. There are two types of settings: `Plugin settings` and `Instance settings`
@@ -153,7 +186,7 @@ export default function HomePageOfSomeTheme() {
 [We'll show you below](#frontend) how to access instance settings.
 
 
-### Settings default interface
+### Settings page default GUI
 
 Admin panel has a set of components that can help you to build admin panel interface. Moreover standard interface can make an interface of all Plugins to be intuitively comprehensive for a user which results in better UX.  
 
@@ -171,7 +204,8 @@ type TSettings = {
 
 export function SettingsPage(props: TPluginSettingsProps<TSettings>) {
   const onSave = () => {
-      // Do something on Save button click
+      // Do something else on Save button click 
+      // (saving of settings will be handled for you in the background)
   }
   return (
     <PluginSettingsLayout<TSettings> {...props} onSave={onSave}>
@@ -228,14 +262,33 @@ export function SettingsPage(props: TPluginSettingsProps) {
 }
 ```
 
-### Instance settings editor
+### Theme editor
 
-When user creates Plugin block on a page in Admin Theme Editor, it's possible for user to modify specific configuration for this block. Configuration object and UI are defined by Plugin. As with global Plugin settings, you need to register a widget that will handle instance settings:
+Admin panel Theme Editor allow users to create on a Theme page frontend instance of your plugin. You need to register you plugin so it will appear in dropdown menu of all available plugins. Specify package name as `pluginName` and name to display for user as `blockName`:
+
+```tsx title="src/admin/index.tsx"
+import { registerThemeEditorPluginBlock } from '@cromwell/admin-panel';
+
+registerThemeEditorPluginBlock({
+    pluginName: '@cromwell/plugin-main-menu',
+    blockName: 'Main menu - desktop',
+});
+
+registerThemeEditorPluginBlock({
+    pluginName: '@cromwell/plugin-main-menu',
+    blockName: 'Main menu - mobile',
+});
+```
+You can register multiple blocks per your package. You will receive `blockName` as a prop to your plugin, so you will be able to render different UI depending on `blockName`.
+
+### Instance settings editor 
+
+When user creates Plugin block on a page in Admin Theme Editor, it's possible for user to modify specific configuration for this block. Configuration object and its UI are defined by Plugin. As with global Plugin settings, you need to register a widget that will handle instance settings via `registerThemeEditorPluginBlock`:
 
 
 ```tsx title="src/admin/index.tsx"
-import { registerWidget } from '@cromwell/core-frontend';
-import { registerWidget, WidgetTypes } from '@cromwell/core-frontend';
+import { WidgetTypes } from '@cromwell/core-frontend';
+import { registerThemeEditorPluginBlock } from '@cromwell/admin-panel';
 import React from 'react';
 
 function ThemeEditor(props: WidgetTypes['ThemeEditor']) {
@@ -246,16 +299,16 @@ function ThemeEditor(props: WidgetTypes['ThemeEditor']) {
   )
 }
 
-registerWidget({
+registerThemeEditorPluginBlock({
     pluginName: 'your-plugin-name',
-    widgetName: 'ThemeEditor',
+    blockName: 'Your plugin name',
     component: ThemeEditor
 });
 ```
 
 Instance settings are loaded and saved via passed props. Your ThemeEditor widget will receive following props:
 - instanceSettings`: any` - Instance settings
-- changeInstanceSettings`: (data: any) => void` - Call this function to modify instance settings. Note that settings will actually be saved when user will press "save" button at the top of Theme Editor.
+- changeInstanceSettings`: (data: any) => void` - Call this function to modify instance settings. Note that settings will actually be saved in DB when user will press "save" button at the top of Theme Editor.
 - block`: TCromwellBlock` - Block instance component on the page
 - modifyData`: (data: TCromwellBlockData) => void` - Method to modify block's data (TCromwellBlockData). Block's data can be retrieved from block instance via:  `block.getData()`. Note, that block is a generic definition, it can be text block, image block, etc. Configuration for plugin stored in: `block.getData().plugin`
 - deleteBlock`: () => void` - Call this method if you want to delete block from the page.
@@ -263,7 +316,7 @@ Instance settings are loaded and saved via passed props. Your ThemeEditor widget
 
 With loading and saving settings example will be as follows:
 
-```tsx title="src/pages/index.tsx"
+```tsx title="src/admin/index.tsx"
 import { TextFieldWithTooltip } from '@cromwell/admin-panel';
 import { registerWidget, WidgetTypes } from '@cromwell/core-frontend';
 import React from 'react';
@@ -296,7 +349,7 @@ registerWidget({
 
 Frontend bundle follows the principles of Next.js pages. You have to export a React component and optionally you can use `getStaticProps`.  
 
-```tsx
+```tsx title="src/frontend/index.tsx"
 import { TGetPluginStaticProps, TFrontendPluginProps } from '@cromwell/core';
 
 type PluginData = {
@@ -319,6 +372,7 @@ export default function YouPluginName(props: TFrontendPluginProps<PluginData, Pl
   return (
     <>
       <div>{props.data?.message}</div>
+      <div>{props.blockName}</div>
       <div>{props.data?.globalSettings?.someGlobalSettingsProp}</div>
       <div>{props.instanceSettings?.someLocalSettingsProp}</div>
     </>
@@ -346,7 +400,7 @@ Plugin's global settings will be passed to `getStaticProps` in the context. Sinc
 Note that a user can possibly drop your Plugin several times at one page. But `getStaticProps` will be called only once at the page! Therefore `props.data` passed to the React components will be the same for all instances.  
 If you have custom instance settings and you want to fetch different data for a specific Plugin instances in `getStaticProps`, you can access `context.pluginInstances`. This object contains settings for each Plugin instance (if these settings were passed) labelled by block id. Block id is a unique id of every Block on the page like CPlugin. You can access block id at the frontend via `props.blockId`. So your solution in this case will be like that:
 
-```tsx
+```tsx title="src/frontend/index.tsx"
 import { TGetPluginStaticProps, TFrontendPluginProps } from '@cromwell/core';
 
 type DataType = {
@@ -379,6 +433,34 @@ export const getStaticProps: TGetPluginStaticProps<DataType> = async (context) =
       }
     }
   }
+}
+```
+
+### Usage with Theme
+
+Your plugin can by used in Theme via CPlugin component. You can pass any additional props 
+to CPlugin including children, just make sure to specify two required props: `id` and `pluginName`.
+
+```tsx title="theme/src/pages/index.tsx"
+import { CPlugin } from '@cromwell/core-frontend';
+
+export default function Index() {
+  return <CPlugin id="my-plugin"
+      pluginName="my-plugin-name"
+      blockName="My plugin block"
+      myCustomProp="test2"
+    >Test</CPlugin>
+}
+```
+
+```tsx title="plugin/src/frontend/index.tsx"
+export default function YouPluginName(props) {
+  return (
+    <>
+      <p>{props.children}</p> /* 'Test' */
+      <p>{props.myCustomProp}</p> /* 'test2' */
+    </>
+  )
 }
 ```
 

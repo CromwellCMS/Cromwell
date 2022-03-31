@@ -207,6 +207,7 @@ function createPlugin(globals,
             if ((id[0] !== "\0" && !filter(id)) || (isGlobalsObj && Object.keys(globals).every(id => !code.includes(id)))) {
                 return;
             }
+            
             const ast = this.parse(code);
             const magicCode = new MagicString(code);
             const isTouched = importToGlobals({
