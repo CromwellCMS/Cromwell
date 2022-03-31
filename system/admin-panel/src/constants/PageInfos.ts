@@ -46,6 +46,7 @@ export type TPageInfo = {
     component: React.ComponentType<Partial<RouteComponentProps>>;
     disableSidebar?: boolean;
     roles?: TUserRole[];
+    minimizeSidebar?: boolean;
 }
 
 export const homePageInfo: TPageInfo = {
@@ -66,6 +67,8 @@ export const themeEditPageInfo: TPageInfo = {
     baseRoute: '/theme-editor',
     component: ThemeEditPage,
     roles: ['administrator', 'guest'],
+    minimizeSidebar: true,
+    disableSidebar: true,
 };
 export const productListInfo: TPageInfo = {
     name: 'ProductList',

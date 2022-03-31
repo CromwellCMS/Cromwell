@@ -13,6 +13,7 @@ import {
   getSideBarLinks,
 } from "../../helpers/navigation";
 import { store } from "../../redux/store";
+import Topbar from "../topbar/Topbar";
 
 export const SideNav = () => {
   const pageInfos = getPageInfos();
@@ -78,31 +79,42 @@ export const SideNav = () => {
   if (currentInfo?.disableSidebar) return <></>;
 
   return (
-    <div className="min-h-screen bg-white hidden lg:block my-4 mb-8 ml-4 shadow-lg rounded-2xl shadow-indigo-200 relative w-80">
-      <div className="h-full rounded-2xl dark:bg-gray-700">
-        <div className="flex items-center justify-center pt-6">
-          <Link to="/">
-            <img
+    <>
+      <div className="bg-white transform-gpu transition-all dark:bg-gray-700 hidden lg:block my-4 mb-8 ml-4 shadow-lg rounded-2xl shadow-indigo-200 w-80 z-[90] relative">
+        <div className="h-full rounded-2xl">
+          <div className="flex items-center justify-center py-2">
+            <Link to="/">
+              <img
                 src="/admin/static/logo_small_black.svg"
-                width="35px"
-                className="mx-auto mt-3"
+                width="30px"
+                className="mx-auto mt-0"
               />
-          </Link>
-        </div>
-        <nav className="mt-6">
-          <div>
-          {getSideBarLinks().map(link => <SideNavLink data={link}
-                    key={link.id}
-                    toggleSubMenu={toggleSubMenu}
-                    expanded={expanded}
-                    forceUpdate={forceUpdate}
-                    activeId={currentLink?.id}
-                    userInfo={userInfo}
-                />)}
+            </Link>
           </div>
-        </nav>
+          <nav className="mt-0">
+            {
+              (
+                <div className={`flex ${currentInfo.minimizeSidebar ? "flex-row" : "flex-col"}`}>
+                  {getSideBarLinks().map((link) => (
+                    <SideNavLink
+                      data={link}
+                      key={link.id}
+                      toggleSubMenu={toggleSubMenu}
+                      expanded={expanded}
+                      forceUpdate={forceUpdate}
+                      activeId={currentLink?.id}
+                      userInfo={userInfo}
+                      minimize={currentInfo.minimizeSidebar}
+                    />
+                  ))}
+                </div>
+              )
+            }
+          </nav>
+          <Topbar />
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

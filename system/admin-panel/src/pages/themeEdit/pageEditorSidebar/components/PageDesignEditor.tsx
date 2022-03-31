@@ -1,0 +1,87 @@
+import { TCromwellBlock } from "@cromwell/core";
+import React, {
+  CSSProperties,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
+import { usePageBuilder } from "../../hooks/usePageBuilder";
+import { useThemeEditor } from "../../hooks/useThemeEditor";
+import { DimensionsEditor } from "./DimensionsEditor";
+
+export const PageDesignEditor = ({
+  block,
+}: {
+  block?: TCromwellBlock;
+}) => {
+  const data = block?.getData();
+  const { createBlockProps, updateFramesPosition } =
+    usePageBuilder();
+  // const [data, setData] = useState(block?.getData());
+  const { forceUpdate } = useThemeEditor();
+  const [showHelp, setShowHelp] = useState(false);
+
+  const blockProps = createBlockProps(block);
+
+  const handleStyleChange = useCallback(
+    (name: keyof CSSProperties, value: any) => {
+      const newData = block.getData();
+      if (!newData.style) newData.style = {};
+      if (typeof newData.style === "string") {
+        newData.style = JSON.parse(newData.style);
+      }
+      if (value === null || value === "") {
+        delete newData.style[name];
+      } else {
+        newData.style[name] = value;
+      }
+
+      blockProps.modifyData?.(newData);
+      forceUpdate();
+      updateFramesPosition();
+    },
+    [block, updateFramesPosition, forceUpdate],
+  );
+
+  // useEffect(() => {
+    // const nextData = block?.getData()
+  if (!data?.style) data.style = {};
+  if (typeof data?.style === "string")
+    data.style = JSON.parse(data?.style);
+    
+  //   setData(nextData);
+  // }, [block]);
+
+  if (!data) return null;
+  if (!data?.style) return null;
+
+  const styles = data?.style as CSSProperties;
+
+  return (
+    <div className="text-xs w-full">
+      <div className="w-full p-2">
+        <div className="-mt-2 mb-2">
+          <p
+            onClick={() => setShowHelp((k) => !k)}
+            className="cursor-pointer font-bold text-gray-600">
+            How does it work?
+          </p>
+          {showHelp && (
+            <p className="text-xs text-gray-500">
+              This is the design editor for blocks and
+              plugins. Changing Settings here will override
+              the theme styling! If you want to reset the
+              style of a block to theme defaults, press the
+              X button on a field.
+            </p>
+          )}
+        </div>
+        <DimensionsEditor
+          block={block}
+          styles={styles}
+          handleStyleChange={handleStyleChange}
+        />
+      </div>
+    </div>
+  );
+};

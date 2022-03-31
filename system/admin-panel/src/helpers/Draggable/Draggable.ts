@@ -72,6 +72,24 @@ export type TDraggableOptions = {
     applyZIndex?: boolean;
 }
 
+export type TEventHandlerMap = {
+    onBlockInserted?: (container: HTMLElement, draggedBlock: HTMLElement, nextElement?: Element | null) => void;
+    onTryToInsert?: (container: HTMLElement, draggedBlock: HTMLElement, shadow?: HTMLElement | null, nextElement?: Element | null) => void;
+    canInsertBlock?: (container: HTMLElement, draggedBlock: HTMLElement, nextElement?: Element | null) => boolean;
+
+    onBlockSelected?: (draggedBlock: HTMLElement) => void;
+    onBlockDeSelected?: (draggedBlock: HTMLElement) => void;
+
+    onBlockHoverStart?: (draggedBlock: HTMLElement) => void;
+    onBlockHoverEnd?: (draggedBlock: HTMLElement) => void;
+
+    canDeselectBlock?: (draggedBlock: HTMLElement) => boolean;
+
+    canDragBlock?: (draggedBlock: HTMLElement) => boolean;
+
+    getFrameColor?: (block: HTMLElement) => string;
+}
+
 export class Draggable {
 
     // Block on which drag started
@@ -123,11 +141,33 @@ export class Draggable {
         const { draggableSelector, containerSelector } = options;
         this.setOptions(options);
 
+        // console.log("DRAGGABLESELECTOR", draggableSelector);
+
         this.draggableBlocks = Array.from(this.document.querySelectorAll(draggableSelector)) as HTMLElement[];
+
+        // console.log("DRAGGABLE BLOCKS", this.draggableBlocks);
+
         this.containers = Array.from(this.document.querySelectorAll(containerSelector)) as HTMLElement[];
         this.draggableBlocks.forEach(b => {
             if (b) this.setupBlock(b);
         });
+    }
+
+    public updateEventHandlers(handlers: TEventHandlerMap) {
+        this.options = {...this.options, ...handlers};
+        this.canInsertBlock = handlers.canInsertBlock
+        this.onBlockInserted = handlers.onBlockInserted
+
+        this.draggableBlocks.forEach(b => {
+            if (b) {
+                this.setupBlock(b);
+            }
+        })
+        // this.onBlockselected = handlers.onBlockselected
+        // this. = handlers.canInsertBlock
+        // this.onBlockho = handlers.canInsertBlock
+        // this.onTry = handlers.canInsertBlock
+        // this.canDragBlock = handlers.canDragBlock()
     }
 
     public setOptions(options: TDraggableOptions) {

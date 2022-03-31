@@ -20,6 +20,7 @@ import Sidebar from '../sidebar/Sidebar';
 import styles from './Layout.module.scss';
 import SideNav from "../sideNav/SideNav";
 import Topbar from "../topbar/Topbar";
+import { ContextualBarCtx } from "src/components/topbar/context";
 
 let userRole = getStoreItem('userInfo')?.role;
 
@@ -80,8 +81,7 @@ function Layout() {
         <div className="flex items-start justify-between">
         <BrowserRouter basename={'admin'}>
           <SideNav />
-          <div className="flex flex-col w-full pl-0 md:p-4">
-            <Topbar />
+          <div className="flex flex-col w-full">
             <Toolbar className={styles.dummyToolbar} />
             <Switch>
               {getPageInfos().map(page => {

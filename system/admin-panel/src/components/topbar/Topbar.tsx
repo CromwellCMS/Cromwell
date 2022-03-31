@@ -19,7 +19,7 @@ import {
   XCircleIcon,
 } from "@heroicons/react/solid";
 import { BellIcon } from "@heroicons/react/outline";
-import React, { Fragment, useState } from "react";
+import React, { createContext, Fragment, useRef, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import {
   loginPageInfo,
@@ -44,6 +44,7 @@ export const Topbar = () => {
       i.route ===
       window.location.pathname.replace("/admin", ""),
   );
+  
 
   const userInfo: TUser | undefined =
     getStoreItem("userInfo");
@@ -85,12 +86,10 @@ export const Topbar = () => {
   if (currentInfo?.disableSidebar) return <></>;
 
   return (
-    <header className="w-full shadow-lg shadow-indigo-200 bg-white dark:bg-gray-700 items-center h-16 rounded-2xl z-40 sticky top-1">
-      <div className="relative z-20 flex flex-col justify-center h-full px-3 mx-auto flex-center">
-        <div className="relative items-center pl-1 flex w-full lg:max-w-68 sm:pr-2 sm:ml-0">
-          <div className="container relative left-0 z-50 flex w-3/4 h-full"></div>
-          <div className="relative p-1 flex items-center justify-end w-1/4 ml-5 mr-4 sm:mr-0 sm:right-auto">
-            <NotificationMenu userInfo={userInfo} />
+    <header className="w-full lg:max-w-xs rounded-xl bg-white dark:bg-gray-700 items-center h-16 z-40 sticky top-0">
+      <div className="relative z-20 flex flex-col justify-center h-full px-3 mx-auto flex-center w-full">
+        <div className="relative items-center flex w-full lg:max-w-68 sm:pr-2 sm:ml-0">
+          <div className="relative p-1 flex items-center justify-start sm:right-auto w-full">
             <UserMenu
               userInfo={userInfo}
               openFileManager={openFileManager}
@@ -99,6 +98,7 @@ export const Topbar = () => {
               openCmsInfo={openCmsInfo}
               handleLogout={handleLogout}
             />
+            <NotificationMenu userInfo={userInfo} />
 
             <CmsInfo
                 open={cmsInfoOpen}
@@ -182,7 +182,7 @@ const NotificationMenu = connect(mapStateToProps)((props: TPropsType) => {
             leave="transition ease-in duration-150"
             leaveFrom="opacity-100 translate-y-0"
             leaveTo="opacity-0 translate-y-1">
-            <Menu.Items className="absolute right-0 top-8 z-10 w-72 origin-top-right max-w-sm px-2 mt-3 sm:px-0 lg:max-w-md">
+            <Menu.Items className="absolute left-0 bottom-8 z-10 w-72 origin-bottom-left max-w-sm px-2 mt-3 sm:px-0 lg:max-w-md">
               <div className="overflow-hidden rounded-lg shadow-lg shadow-indigo-300 ring-1 ring-black ring-opacity-5">
                 <div className="relative grid gap-0 bg-white p-2 lg:grid-cols-1">
 
@@ -322,7 +322,7 @@ const UserMenu = ({
             leave="transition ease-in duration-150"
             leaveFrom="opacity-100 translate-y-0"
             leaveTo="opacity-0 translate-y-1">
-            <Menu.Items className="absolute right-0 top-8 z-10 w-72 origin-top-right max-w-sm px-2 mt-3 sm:px-0 lg:max-w-md">
+            <Menu.Items className="absolute left-0 bottom-8 z-10 w-72 origin-bottom-left max-w-sm px-2 mt-3 sm:px-0 lg:max-w-md">
               <div className="overflow-hidden rounded-lg shadow-lg shadow-indigo-300 ring-1 ring-black ring-opacity-5">
                 <div className="relative grid gap-0 bg-white p-2 lg:grid-cols-1">
                   <Link
