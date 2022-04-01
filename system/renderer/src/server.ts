@@ -122,7 +122,7 @@ export const startNextServer = async (options?: {
             logger.log(`> Next.js server ready on http://localhost:${port}`)
         })
 
-        setTimeout(() => done(false), 15000);
+        setTimeout(() => done(false), 45000);
     })
 
     return success;

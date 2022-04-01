@@ -75,7 +75,7 @@ const makeServer = async (init?: boolean): Promise<ServerInfo> => {
     await new Promise(done => {
         setTimeout(() => {
             if (!hasReported) done(false);
-        }, 15000);
+        }, 90000);
 
         serverProc.on('message', (message) => {
             let msg;
