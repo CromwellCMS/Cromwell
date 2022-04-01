@@ -58,7 +58,7 @@ export const PageDesignEditor = ({
   const styles = data?.style as CSSProperties;
 
   return (
-    <div className="text-xs w-full">
+    <div className="text-xs w-full overflow-y-auto">
       <div className="w-full p-2">
         <div className="-mt-2 mb-2">
           <p

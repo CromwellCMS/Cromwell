@@ -24,6 +24,7 @@ export type TBlockMenuProps = {
     modifyData?: (data: TCromwellBlockData) => void;
     deleteBlock?: () => void;
     addNewBlockAfter?: (bType: TCromwellBlockType) => void;
+    createBlockAfter?: (bType: TCromwellBlockType, pluginInfo?: { pluginName?: string; blockName?: string }) => void;
     icon?: JSX.Element;
     menuItems?: JSX.Element | JSX.Element[];
     settingsContent?: React.ReactNode;

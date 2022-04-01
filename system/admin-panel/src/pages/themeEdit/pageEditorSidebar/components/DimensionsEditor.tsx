@@ -37,6 +37,15 @@ export const DimensionsEditor = ({
           handleStyleChange={handleStyleChange}
           dataType="px"
         />
+
+        <StyleNumberField
+          value={styles.borderRadius}
+          keyName="borderRadius"
+          label="⛶"
+          min={0}
+          handleStyleChange={handleStyleChange}
+          dataType="px"
+        />
       </div>
 
       <hr className="my-2" />

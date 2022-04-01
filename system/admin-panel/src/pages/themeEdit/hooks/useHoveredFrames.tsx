@@ -20,7 +20,8 @@ export const useEditorFrames = ({
   const invisibleSelectedFrames = useRef<
     Record<string, HTMLElement>
   >({});
-  const [draggable, setDraggable] = useState<Draggable>();
+  // const [draggable, setDraggable] = useState<Draggable>();
+  const draggable = useRef<Draggable>();
 
   const createBlockFrame = (block: HTMLElement) => {
     const selectableFrame =
@@ -29,6 +30,7 @@ export const useEditorFrames = ({
       );
     selectableFrame.style.zIndex = "10";
     selectableFrame.style.pointerEvents = "none";
+    selectableFrame.style.borderRadius = block?.style?.borderRadius;
 
     selectableFrame.style.border = `1px solid ${getFrameColor(
       block,
@@ -47,12 +49,13 @@ export const useEditorFrames = ({
     if (blockData.editorHidden) return;
 
     const frame = createBlockFrame(block);
-    frame.style.border = `1px solid ${getFrameColor(
+    // frame.style.border = `1px solid ${getFrameColor(
+    //   block,
+    // )}`;
+    frame.style.boxShadow = `0px 0px 3px 1px ${getFrameColor(
       block,
     )}`;
-    frame.style.boxShadow = `0px 0px 5px 1px ${getFrameColor(
-      block,
-    )}`;
+    frame.style.borderRadius = block?.style?.borderRadius;
     frame.style.userSelect = "none";
     frame.setAttribute("draggable", "false");
 
@@ -80,6 +83,7 @@ export const useEditorFrames = ({
       bounding.top + selectableFrameMargin + "px";
     frame.style.left =
       bounding.left + selectableFrameMargin + "px";
+    frame.style.borderRadius = block?.style?.borderRadius;
 
     frame.style.height = block.offsetHeight + "px";
     frame.style.width = block.offsetWidth + "px";
@@ -119,6 +123,5 @@ export const useEditorFrames = ({
     updateFramesPosition,
     onAnyElementScroll,
     draggable,
-    setDraggable,
   };
 };

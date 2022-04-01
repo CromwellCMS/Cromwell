@@ -109,12 +109,10 @@ export const InnerThemeEditor: React.FunctionComponent<
                   ? "max-w-full"
                   : "w-[765px] h-[800px] mt-20 p-6 bg-black rounded-xl pb-14"
                 : "w-[384px] h-[700px] mt-20 p-6 bg-black rounded-xl pb-14"
-            } transform transition-all relative h-screen mx-auto pt-14 bg-gray-200`}>
+            } transform transition-all relative h-screen mx-auto pt-14`}>
             {!isPageLoading && <PageFrame />}
           </div>
-          <div className="bg-white border-l h-screen border-gray-300 pt-14 pb-14 w-72">
-            <PageEditorSidebar />
-          </div>
+          <PageEditorSidebar />
         </PageBuilderProvider>
       </div>
     </div>

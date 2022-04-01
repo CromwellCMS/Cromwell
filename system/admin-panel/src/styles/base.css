@@ -5,3 +5,29 @@
 html, body {
   @apply bg-gray-100;
 }
+
+.scrollbar-slim::-webkit-scrollbar {
+  width: 5px;
+  height: 8px;
+  right: 2px;
+  @apply bg-gray-400 bg-opacity-40;
+}
+
+/* Add a thumb */
+.scrollbar-slim::-webkit-scrollbar-thumb {
+    @apply bg-gray-500;
+    border-radius: 10px;
+}
+
+.scrollbar-md::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  right: 2px;
+  @apply bg-gray-400 bg-opacity-40;
+}
+
+/* Add a thumb */
+.scrollbar-md::-webkit-scrollbar-thumb {
+    @apply bg-gray-500;
+    border-radius: 10px;
+}

@@ -23,10 +23,11 @@ export const useBlockEvents = ({
   modifyBlock,
   isGlobalElem,
   rerenderBlocks,
+  rerender,
 }) => {
 
   const onMouseUp = () => {
-    draggable?.onMouseUp();
+    draggable.current.onMouseUp();
   };
 
   const onTryToInsert = (
@@ -43,7 +44,7 @@ export const useBlockEvents = ({
       contentWindowRef.current.document.createElement(
         "div",
       );
-    shadowFrame.style.border = `2px solid aqua`;
+    shadowFrame.style.border = `2px solid #2AB7CA`;
     shadowFrame.style.zIndex = "10000";
     shadowFrame.style.position = "absolute";
     shadowFrame.style.top = "0";
@@ -125,10 +126,11 @@ export const useBlockEvents = ({
     );
 
     updateDraggable();
+    rerender()
   };
 
   const deselectBlock = (block: HTMLElement) => {
-    draggable?.deselectCurrentBlock();
+    draggable.current?.deselectCurrentBlock();
     onBlockDeSelected(block);
   };
 
@@ -139,7 +141,7 @@ export const useBlockEvents = ({
   };
 
   const selectBlock = (blockData: TCromwellBlockData) => {
-    draggable?.deselectCurrentBlock();
+    draggable.current?.deselectCurrentBlock();
     onBlockSelected(
       getBlockElementById.current(blockData.id),
     );
@@ -287,7 +289,7 @@ export const useBlockEvents = ({
 
     await rerenderBlocks();
 
-    draggable?.updateBlocks();
+    draggable.current?.updateBlocks();
 
     setTimeout(() => {
       getBlockElementById.current(blockData.id)?.click();

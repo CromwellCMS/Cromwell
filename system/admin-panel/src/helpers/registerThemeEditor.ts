@@ -9,6 +9,7 @@ export type TPluginBlockOptions = {
         modifyData?: (data: TCromwellBlockData) => void;
         deleteBlock?: () => void;
         addNewBlockAfter?: (bType: TCromwellBlockType) => void;
+        createBlockAfter?: (bType: TCromwellBlockType, pluginInfo?: { pluginName?: string; blockName?: string }) => void;
         updateFramesPosition?: () => any;
         forceUpdate?: () => void;
     }>;

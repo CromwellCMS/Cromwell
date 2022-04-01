@@ -193,6 +193,10 @@ export class Draggable {
         }
     }
 
+    public getOptions() {
+        return this.options;
+    }
+
     private setupBlock = (block: HTMLElement) => {
         if (!block || !this.options) return;
 

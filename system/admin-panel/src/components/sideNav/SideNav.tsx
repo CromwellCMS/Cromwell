@@ -80,9 +80,9 @@ export const SideNav = () => {
 
   return (
     <>
-      <div className="bg-white transform-gpu transition-all dark:bg-gray-700 hidden lg:block my-4 mb-8 ml-4 shadow-lg rounded-2xl shadow-indigo-200 w-80 z-[90] relative">
+      <div className="bg-white rounded-2xl shadow-lg my-4 mb-8 ml-4 transform-gpu transition-all shadow-indigo-200 w-80 z-[90] hidden relative lg:block dark:bg-gray-700">
         <div className="h-full rounded-2xl">
-          <div className="flex items-center justify-center py-2">
+          <div className="flex py-2 items-center justify-center">
             <Link to="/">
               <img
                 src="/admin/static/logo_small_black.svg"
@@ -94,7 +94,7 @@ export const SideNav = () => {
           <nav className="mt-0">
             {
               (
-                <div className={`flex ${currentInfo.minimizeSidebar ? "flex-row" : "flex-col"}`}>
+                <div className={`flex ${currentInfo?.minimizeSidebar ? "flex-row" : "flex-col"}`}>
                   {getSideBarLinks().map((link) => (
                     <SideNavLink
                       data={link}
@@ -104,7 +104,7 @@ export const SideNav = () => {
                       forceUpdate={forceUpdate}
                       activeId={currentLink?.id}
                       userInfo={userInfo}
-                      minimize={currentInfo.minimizeSidebar}
+                      minimize={!!currentInfo?.minimizeSidebar}
                     />
                   ))}
                 </div>

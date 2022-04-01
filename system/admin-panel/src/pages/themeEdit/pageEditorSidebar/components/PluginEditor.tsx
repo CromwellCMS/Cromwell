@@ -10,7 +10,7 @@ export const PluginEditor = ({
 }: {
   block?: TCromwellBlock;
 }) => {
-  console.log("BLOG RERENDER", block);
+  // console.log("BLOG RERENDER", block);
   const data = block?.getData();
   const { createBlockProps, updateFramesPosition } =
     usePageBuilder();

@@ -16,11 +16,8 @@ import {
 } from "@cromwell/core-frontend";
 import React, { useEffect, useRef, useState } from "react";
 import { Draggable } from "../../../helpers/Draggable/Draggable";
-import {
-  BlockMenu,
-  TBlockMenuProps,
-} from "../pageBuilder/blocks/BlockMenu";
 import { contentStyles } from "../pageBuilder/contentStyles";
+import { TBlockMenuProps } from "../pageEditor/components/BlockMenu";
 import { useBlockEvents } from "./useBlockEvents";
 import { useBlockFns } from "./useBlockFns";
 import { useEditorUtils } from "./useEditorUtils";
@@ -39,6 +36,7 @@ const usePageBuilderContext = () => {
     // editingPageConfig,
     rerender,
     plugins,
+    forceUpdate,
   } = useThemeEditor();
   const contentWindowRef = useRef<Window>();
   const editorWidgetWrapperRef = useRef<HTMLDivElement>();
@@ -54,7 +52,6 @@ const usePageBuilderContext = () => {
   const selectedBlock = useRef<HTMLElement>();
   const selectedEditableBlock = useRef<TCromwellBlock>();
 
-  // const blockMenu = useRef<BlockMenu>();
   const [history, setHistory] = useState<THistoryItem[]>(
     [],
   );
@@ -101,7 +98,6 @@ const usePageBuilderContext = () => {
     createBlockFrame,
     updateFramesPosition,
     draggable,
-    setDraggable,
     onAnyElementScroll,
     setFramePosition,
   } = useEditorFrames({
@@ -149,6 +145,7 @@ const usePageBuilderContext = () => {
     modifyBlock,
     isGlobalElem,
     rerenderBlocks,
+    rerender: forceUpdate,
   });
 
   const [changedModifications, __setChangedModifications] =
@@ -194,7 +191,7 @@ const usePageBuilderContext = () => {
 
   function updateDraggable() {
     // console.log("updatedrag", draggable);
-    draggable?.updateBlocks();
+    draggable.current?.updateBlocks();
     pageFrameRef.current?.addEventListener(
       "scroll",
       onAnyElementScroll,
@@ -327,13 +324,56 @@ const usePageBuilderContext = () => {
     );
     await rerenderBlocks();
 
-    draggable?.updateBlocks();
+    draggable.current?.updateBlocks();
+  }
+
+  async function createBlockV2(
+    blockData: TCromwellBlockData,
+    callerBlock: TCromwellBlockData,
+    containerData?: TCromwellBlockData,
+    position?: "top"|"bottom"
+  ) {
+    console.log("BLOCK CREATION", blockData, blockData.plugin)
+    const newBlock: TCromwellBlockData = {
+      id: `_${getRandStr()}`,
+      type: blockData.type,
+      isVirtual: true,
+      style: {
+        minWidth: "50px",
+        minHeight: "30px",
+      }
+    }
+
+    if (blockData.type === "plugin") {
+      newBlock.plugin = blockData.plugin;
+    }
+
+    if (containerData && containerData.type !== "container")
+      containerData = undefined;
+
+    addBlock({
+      blockData: newBlock,
+      targetBlockData: containerData
+        ? undefined
+        : callerBlock,
+      parentData: containerData,
+      position: position === "top" ? "before" : "after",
+    });
+
+    await rerenderBlocks();
+
+    // Select new block
+    setTimeout(() => {
+      getBlockElementById.current(newBlock.id)?.click();
+      selectBlock(newBlock);
+    }, 200);
   }
 
   async function createNewBlock(
     newBlockType: TCromwellBlockType,
     afterBlockData: TCromwellBlockData,
     containerData?: TCromwellBlockData,
+    pluginInfo?: { pluginName?: string; blockName?: string }
   ) {
     const newBlock: TCromwellBlockData = {
       id: `_${getRandStr()}`,
@@ -344,6 +384,13 @@ const usePageBuilderContext = () => {
         minHeight: "30px",
       },
     };
+
+    if (newBlockType === "plugin") {
+      newBlock.plugin = {
+        pluginName: pluginInfo.pluginName,
+      };
+    }
+
     if (containerData && containerData.type !== "container")
       containerData = undefined;
 
@@ -363,6 +410,8 @@ const usePageBuilderContext = () => {
       getBlockElementById.current(newBlock.id)?.click();
       selectBlock(newBlock);
     }, 200);
+
+    return 
   }
 
   function createBlockProps(
@@ -382,14 +431,28 @@ const usePageBuilderContext = () => {
     };
     const handleCreateNewBlock = (
       newBType: TCromwellBlockType,
-    ) =>
-      createNewBlock(
-        newBType,
-        data,
-        bType === "container" ? data : undefined,
-      );
+      pluginInfo?: { pluginName?: string; blockName?: string }
+      ) => {
+        console.log("Creating block")
+        return createNewBlock(
+          newBType,
+          data,
+          bType === "container" ? data : undefined,
+          pluginInfo,
+        );
+    }
 
-    // console.log("PLUGINS", plugins)
+    const handleAddBlock = async (
+      block: TCromwellBlockData,
+      position: "top"|"bottom"
+    ) => {
+      return createBlockV2(
+        block,
+        data,
+        block.type === "container" ? data : undefined,
+        position
+      )
+    }
 
     const blockProps: TBlockMenuProps = {
       block: block,
@@ -407,7 +470,9 @@ const usePageBuilderContext = () => {
         }
       },
       deleteBlock: privateDeleteBlock,
+      addBlock: handleAddBlock,
       addNewBlockAfter: handleCreateNewBlock,
+      createBlockAfter: handleCreateNewBlock,
       plugins: plugins,
       setCanDrag: (canDrag: boolean) => {
         if (!blockInfos[bId]) blockInfos[bId] = {};
@@ -508,7 +573,7 @@ const usePageBuilderContext = () => {
     // const getStoreItem_ = contentStore.current.nodeModules?.modules?.['@cromwell/core'].getStoreItem
     // const setStoreItem_ = contentStore.current.nodeModules?.modules?.['@cromwell/core'].setStoreItem
 
-    setDraggable(
+    draggable.current =
       new Draggable({
         document: contentWindowRef.current.document,
         draggableSelector: `.${blockCssClass}`,
@@ -533,8 +598,7 @@ const usePageBuilderContext = () => {
         onTryToInsert: onTryToInsert,
         dragPlacement: "underline",
         disableClickAwayDeselect: true,
-      }),
-    );
+      });
 
     const styles =
       contentWindowRef.current.document.createElement(
@@ -558,9 +622,10 @@ const usePageBuilderContext = () => {
     // pageChangeFinish();
   }
 
-  useEffect(() => {
-    onPageChange();
-  }, [pageFrameRef.current]);
+  // useEffect(() => {
+  //   console.log(pageFrameRef.current);
+  //   onPageChange();
+  // }, [pageFrameRef.current]);
 
   return {
     onPageChange,
@@ -571,6 +636,7 @@ const usePageBuilderContext = () => {
     redoModification,
     selectedEditableBlock,
     updateFramesPosition,
+    selectedFrames
   };
 };
 
