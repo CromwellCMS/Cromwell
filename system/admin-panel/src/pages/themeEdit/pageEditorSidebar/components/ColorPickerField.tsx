@@ -9,11 +9,13 @@ export const ColorPickerField = ({
   onChange = () => {},
   label = "color",
   id = "color",
+  top = false,
 }: {
   value?: any;
   onChange?: any;
   label?: string;
   id?: string;
+  top?: boolean;
 }) => {
   const [pickerRef, isOpen, setIsOpen] = useDropdown<HTMLDivElement>();
   const [internalValue, setInternalValue] = useState<string|undefined|null>(value);
@@ -36,7 +38,7 @@ export const ColorPickerField = ({
             className="border-b outline-none border-gray-200 h-[8px] text-right w-full px-1 relative inline-block appearance-none">
           </button>
             {isOpen && (
-              <div className="top-6 z-[80] absolute">
+              <div className={`top-6 ${top ? "transform -translate-y-full" : ""} z-[80] absolute`}>
                 <SketchPicker
                   color={internalValue || "#000000"}
                   onChangeComplete={({ rgb: { r, g, b, a }}) => {

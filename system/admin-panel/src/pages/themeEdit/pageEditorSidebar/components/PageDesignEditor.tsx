@@ -10,6 +10,7 @@ import { useThemeEditor } from "../../hooks/useThemeEditor";
 import { BackgroundEditor } from "./BackgroundEditor";
 import { DimensionsEditor } from "./DimensionsEditor";
 import { FontEditor } from "./FontEditor";
+import { ShadowEditor } from "./ShadowEditor";
 
 export const PageDesignEditor = ({
   block,
@@ -89,6 +90,12 @@ export const PageDesignEditor = ({
           handleStyleChange={handleStyleChange}
         />
         <BackgroundEditor
+          block={block}
+          styles={styles}
+          handleStyleChange={handleStyleChange}
+        />
+
+        <ShadowEditor
           block={block}
           styles={styles}
           handleStyleChange={handleStyleChange}
