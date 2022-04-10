@@ -13,6 +13,7 @@ export const TextInput = ({
   label,
   prefixElement,
   // resetField,
+  value = "",
   ...rest
 }: InputProps) => {
   return (
@@ -25,7 +26,7 @@ export const TextInput = ({
           <div className="top-1 left-1 text-gray-400 select-none absolute inline-block">
             {prefixElement}
           </div>
-          <input {...rest} className="border-b outline-none border-gray-200 text-left w-full py-1 pr-1 pl-6 inline-block appearance-none" />
+          <input value={value} {...rest} className="border-b outline-none border-gray-200 text-left w-full py-1 pr-1 pl-6 inline-block appearance-none" />
           {/* <XCircleIcon
             onClick={resetField}
             width="16px"

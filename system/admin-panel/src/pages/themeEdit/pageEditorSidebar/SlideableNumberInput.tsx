@@ -82,7 +82,6 @@ const DragLabel = ({
         );
         setStartVal(startingX);
         const initialValue = value && value !== "" ? parseInt(value) : 0;
-      // console.log("START", initialValue, value)
       setSnapshot(initialValue);
     },
     [value],
@@ -95,11 +94,7 @@ const DragLabel = ({
     // Only change the value if the drag was actually started.
     const onUpdate = (event: MouseEvent) => {
       if (startVal) {
-        // const rect = boundingRef.current?.getBoundingClientRect();
-        // const posX = (event.clientX - rect.left) / 2
-        // const start = (posX) + snapshot;
         const movementX = event.movementX;
-        // console.log(event.movementX);
         const nextVal = parseInt(
           `${Math.min(Math.max(min, snapshot + movementX), max)}`,
           10,

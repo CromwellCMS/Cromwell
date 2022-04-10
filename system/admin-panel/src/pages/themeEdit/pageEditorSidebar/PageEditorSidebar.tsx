@@ -15,7 +15,7 @@ import { PageDesignEditor } from "./components/PageDesignEditor";
 import { PageSettings } from "./components/PageSettings";
 import { PluginEditor } from "./components/PluginEditor";
 
-const BlockSubViews = ({ view, setView }) => {
+const BlockSubViews = ({ view, setView, setSidebarWidth}) => {
   const { selectedEditableBlock } = usePageBuilder();
   const data = selectedEditableBlock.current?.getData();
 
@@ -60,6 +60,7 @@ const BlockSubViews = ({ view, setView }) => {
         {view === "plugin" && (
           <PluginEditor
             block={selectedEditableBlock.current}
+            setSidebarWidth={setSidebarWidth}
           />
         )}
       </div>
@@ -225,6 +226,7 @@ export const PageEditorSidebar = () => {
           <BlockSubViews
             view={blockView}
             setView={setBlockView}
+            setSidebarWidth={setResizeW}
           />
         )}
         {

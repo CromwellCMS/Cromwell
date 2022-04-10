@@ -213,6 +213,7 @@ export type TCromwellBlockData = {
         withEffect?: boolean;
         alt?: string;
         objectFit?: 'contain' | 'cover';
+        objectPosition?: string;
         width?: number | string;
         height?: number | string;
     };

@@ -11,6 +11,7 @@ type CImageProps = {
     alt?: string;
     withEffect?: boolean;
     objectFit?: 'contain' | 'cover';
+    objectPosition?: 'string';
     width?: number | string;
     height?: number | string;
 } & TCromwellBlockProps;
@@ -29,6 +30,7 @@ export class CImage extends React.Component<CImageProps> {
                     const _link = data?.image?.link ?? image?.link ?? props.imgLink;
                     const _alt = data?.image?.alt ?? image?.alt ?? props.alt;
                     const _objectFit = data?.image?.objectFit ?? image?.objectFit ?? props.objectFit;
+                    const _objectPosition = data?.image?.objectPosition ?? image?.objectPosition ?? props.objectPosition;
                     const _width = data?.image?.width ?? image?.width ?? props.width;
                     const _height = data?.image?.height ?? image?.height ?? props.height;
                     const _withEffect = data?.image?.withEffect ?? image?.withEffect ?? props.withEffect;
@@ -40,7 +42,8 @@ export class CImage extends React.Component<CImageProps> {
                             style={{
                                 width: _width ? typeof _width === 'number' ? _width + 'px' : _width : '100%',
                                 height: _height ? typeof _height === 'number' ? _height + 'px' : _height : undefined,
-                                objectFit: _objectFit ?? 'contain'
+                                objectFit: _objectFit ?? 'contain',
+                                objectPosition: _objectPosition ?? "50% 50%"
                             }}
                         />
                     );
