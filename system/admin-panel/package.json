@@ -71,6 +71,7 @@
     "@mui/lab": "5.0.0-alpha.57",
     "@mui/material": "5.2.1",
     "@mui/styles": "5.2.1",
+    "@uiw/react-textarea-code-editor": "^2.0.1",
     "clsx": "1.1.1",
     "compression": "1.7.4",
     "countup.js": "2.0.8",

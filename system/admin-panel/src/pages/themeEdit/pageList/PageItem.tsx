@@ -2,8 +2,7 @@ import React, { Fragment } from "react"
 import { TExtendedPageInfo } from "../ThemeEdit";
 import { Menu, Transition } from "@headlessui/react";
 import {
-  ArrowLeftIcon,
-  ChevronLeftIcon,
+  CollectionIcon,
   DotsVerticalIcon,
   PencilIcon,
 } from "@heroicons/react/outline";
@@ -23,6 +22,7 @@ export const PageItem = ({
     page &&
     activePage.route === page.route &&
     activePage.id === page.id;
+  const isGeneric = page.route && (page.route.endsWith('[slug]') || page.route.endsWith('[id]'));
 
   return (
     <li
@@ -36,15 +36,15 @@ export const PageItem = ({
             active ? "font-bold" : ""
           }`}
           onClick={() => onOpenPage(page)}>
-          {page.name}
+          {isGeneric && <CollectionIcon className="h-4 mr-3 text-gray-600 w-4 inline-block" />}{page.name}
         </span>
         <Menu
           as="div"
-          className="relative inline-block text-left">
+          className="text-left relative inline-block">
           <div>
-            <Menu.Button className="inline-flex justify-center w-full py-2 px-4 text-white rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
+            <Menu.Button className="rounded-md text-white w-full py-2 px-4 inline-flex justify-center focus:outline-none focus-visible:ring-white focus-visible:ring-2 focus-visible:ring-opacity-75">
               <DotsVerticalIcon
-                className="w-4 h-4 text-gray-600 hover:text-indigo-600"
+                className="h-4 text-gray-600 w-4 hover:text-indigo-600"
                 aria-hidden="true"
               />
             </Menu.Button>
@@ -57,13 +57,13 @@ export const PageItem = ({
             leave="transition ease-in duration-75"
             leaveFrom="transform opacity-100 scale-100"
             leaveTo="transform opacity-0 scale-95">
-            <Menu.Items className="absolute left-0 w-56 mt-2 origin-top-left bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-10">
-              <div className="px-1 py-1 ">
+            <Menu.Items className="divide-y bg-white rounded-md divide-gray-100 shadow-lg ring-black mt-2 origin-top-right right-0 ring-1 ring-opacity-5 w-32 z-[300] absolute focus:outline-none">
+              <div className="py-1 px-1 ">
                 <Menu.Item>
                   <button
-                    className={`text-gray-900 group flex rounded-md items-center w-full px-2 py-2 text-sm`}>
+                    className={`text-gray-900 group flex rounded-md items-center w-full px-2 py-2 text-sm hover:bg-gray-100`}>
                     <PencilIcon
-                      className="w-5 h-5 mr-2"
+                      className="h-5 mr-2 w-5"
                       aria-hidden="true"
                     />{" "}
                     Edit

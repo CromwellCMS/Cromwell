@@ -1,4 +1,35 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+
+export function useDebounceFn<T extends (...args: any) => void>(fn: T, delay: number): T {
+  const timeoutId = React.useRef<NodeJS.Timeout>();
+  const originalFn = React.useRef<T>();
+
+  React.useEffect(() => {
+    originalFn.current = fn;
+    () => {
+      originalFn.current = null;
+    };
+  }, [fn]);
+
+  React.useEffect(() => {
+    return () => {
+      clearTimeout(timeoutId.current);
+    };
+  }, []);
+
+  return React.useMemo<any>(
+    () => (...args: any) => {
+      clearTimeout(timeoutId.current);
+
+      timeoutId.current = setTimeout(() => {
+        if (originalFn.current) {
+          originalFn.current(...args);
+        }
+      }, delay);
+    },
+    [delay]
+  );
+}
 
 export function useDebounce(value, delay) {
   // State and setters for debounced value

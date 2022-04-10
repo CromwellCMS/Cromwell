@@ -39,7 +39,7 @@ export const PaddingEditor = ({
 
   return (
     <>
-      <p className="my-2 mt-4 text-xs uppercase">Padding</p>
+      <p className="font-bold my-2 mt-4 text-xs uppercase">Padding</p>
       <div className="mb-2">
         <Switch
           checked={individual}

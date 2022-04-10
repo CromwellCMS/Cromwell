@@ -77,7 +77,7 @@ export const PageEditorSidebar = () => {
     usePageBuilder();
   const boundingRef = useRef<HTMLDivElement>();
   const [resizeSnapshot, setResizeSnapshot] = useState(0);
-  const [resizeW, setResizeW] = useState(295);
+  const [resizeW, setResizeW] = useState(320);
   const [tempW, setTempW] = useState(0);
   const [isResizing, setIsResizing] = useState(false);
   const forceUpdate = useForceUpdate();
@@ -158,7 +158,7 @@ export const PageEditorSidebar = () => {
     <div
       ref={boundingRef}
       style={{ width: resizeW }}
-      className="bg-white border-l h-screen border-gray-300 pt-14 pb-14 w-72 relative">
+      className="bg-white border-l h-screen border-gray-300 pt-10 pb-14 w-[320px] relative">
       <div
         onMouseDown={resizePanel}
         className="cursor-w-resize h-full top-0 left-0 w-[2px] absolute">
@@ -200,9 +200,9 @@ export const PageEditorSidebar = () => {
             Page
           </span>
         </div>
-        {resizeW !== 295 && (
+        {resizeW !== 320 && (
           <span
-            onClick={() => setResizeW(295)}
+            onClick={() => setResizeW(320)}
             className="cursor-pointer text-xs p-2 top-0 right-0 text-gray-600 absolute">
             <svg
               xmlns="http://www.w3.org/2000/svg"

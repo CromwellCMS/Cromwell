@@ -14,11 +14,12 @@ export const DimensionsEditor = ({
   handleStyleChange: (
     name: keyof React.CSSProperties,
     value: any,
+    withType?: string,
   ) => void;
 }) => {
   return (
     <>
-      <p className="my-2 mt-0 text-xs uppercase">Size</p>
+      <p className="font-bold my-2 mt-0 text-xs uppercase">Size</p>
       <div className="grid gap-1 grid-cols-2">
         <StyleNumberField
           value={styles.width}

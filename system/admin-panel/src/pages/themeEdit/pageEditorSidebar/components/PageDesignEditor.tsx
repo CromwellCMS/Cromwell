@@ -7,7 +7,9 @@ import React, {
 } from "react";
 import { usePageBuilder } from "../../hooks/usePageBuilder";
 import { useThemeEditor } from "../../hooks/useThemeEditor";
+import { BackgroundEditor } from "./BackgroundEditor";
 import { DimensionsEditor } from "./DimensionsEditor";
+import { FontEditor } from "./FontEditor";
 
 export const PageDesignEditor = ({
   block,
@@ -24,7 +26,7 @@ export const PageDesignEditor = ({
   const blockProps = createBlockProps(block);
 
   const handleStyleChange = useCallback(
-    (name: keyof CSSProperties, value: any) => {
+    (name: keyof CSSProperties, value: any, withType?: any) => {
       const newData = block.getData();
       if (!newData.style) newData.style = {};
       if (typeof newData.style === "string") {
@@ -33,7 +35,7 @@ export const PageDesignEditor = ({
       if (value === null || value === "") {
         delete newData.style[name];
       } else {
-        newData.style[name] = value;
+        newData.style[name] = value + (withType ? withType : "");
       }
 
       blockProps.modifyData?.(newData);
@@ -58,7 +60,7 @@ export const PageDesignEditor = ({
   const styles = data?.style as CSSProperties;
 
   return (
-    <div className="text-xs w-full overflow-y-auto">
+    <div className="h-full text-xs w-full scrollbar-slim">
       <div className="w-full p-2">
         <div className="-mt-2 mb-2">
           <p
@@ -77,6 +79,16 @@ export const PageDesignEditor = ({
           )}
         </div>
         <DimensionsEditor
+          block={block}
+          styles={styles}
+          handleStyleChange={handleStyleChange}
+        />
+        <FontEditor
+          block={block}
+          styles={styles}
+          handleStyleChange={handleStyleChange}
+        />
+        <BackgroundEditor
           block={block}
           styles={styles}
           handleStyleChange={handleStyleChange}

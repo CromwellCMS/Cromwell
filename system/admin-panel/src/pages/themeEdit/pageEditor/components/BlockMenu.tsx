@@ -53,7 +53,6 @@ export const BlockMenu = () => {
   const blockProps = createBlockProps(
     selectedEditableBlock.current,
   );
-  console.log("NEW PROPS", blockProps)
   const [showTopbar, setShowTopbar] = useState(true);
 
   useEffect(() => {
@@ -80,23 +79,7 @@ export const BlockMenu = () => {
 
   const addNewBlock = (block?: any, position?: "top"|"bottom") => {
     blockProps?.addBlock(block, position)
-    // blockProps?.createBlockAfter(block?.type, {
-    //   pluginName: block?.name,
-    //   blockName: block?.title
-    // })
-
-    // setTimeout(() => {
-    //   const nxBlockData = selectedEditableBlock.current?.getData()
-    //   const nxProps = createBlockProps(selectedEditableBlock.current)
-
-    //   console.log("NX", nxBlockData);
-
-    //   nxProps.modifyData?.(nxBlockData);
-    //   forceUpdate()
-    // }, 2000)
   }
-
-  // console.log(selectedEditableBlock.current)
 
   return ReactDOM.createPortal(
     <>

@@ -197,7 +197,6 @@ export class ThemeService {
 
         // Merge user's with theme's mods
         const pageConfig = this.mergePages(themePageConfig, userPageConfig, themeConfig?.globalModifications, userConfig?.globalModifications);
-
         return pageConfig;
     }
 

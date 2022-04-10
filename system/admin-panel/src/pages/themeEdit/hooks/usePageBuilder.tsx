@@ -12,12 +12,16 @@ import {
   blockCssClass,
   getBlockHtmlType,
   getBlockIdFromHtml,
+  getRestApiClient,
   pageRootContainerId,
 } from "@cromwell/core-frontend";
 import React, { useEffect, useRef, useState } from "react";
+import { askConfirmation } from "../../../components/modal/Confirmation";
+import { toast } from "../../../exports";
 import { Draggable } from "../../../helpers/Draggable/Draggable";
 import { contentStyles } from "../pageBuilder/contentStyles";
 import { TBlockMenuProps } from "../pageEditor/components/BlockMenu";
+import { TExtendedPageInfo } from "../ThemeEdit";
 import { useBlockEvents } from "./useBlockEvents";
 import { useBlockFns } from "./useBlockFns";
 import { useEditorUtils } from "./useEditorUtils";
@@ -29,14 +33,32 @@ type THistoryItem = {
   global: string;
 };
 
+const unsavedPrompt =
+  "Your unsaved changes will be lost. Do you want to discard and leave this page?";
+
 const usePageBuilderContext = () => {
   const {
     pageFrameRef,
     setChangedModifications,
     // editingPageConfig,
     rerender,
+    changedPageInfo,
+    changedPalette,
+    setChangedPalette,
     plugins,
+    editingPageConfig,
+    pageConfigOverrides,
+    overrideConfig,
     forceUpdate,
+    setEditingPageConfig,
+    setChangedPageInfo,
+    setLoading,
+    handleOpenPage,
+    pageInfos,
+    themePalette,
+    setThemePalette,
+    setPageInfos,
+    themeName,
   } = useThemeEditor();
   const contentWindowRef = useRef<Window>();
   const editorWidgetWrapperRef = useRef<HTMLDivElement>();
@@ -167,7 +189,7 @@ const usePageBuilderContext = () => {
     saveHist?: boolean,
   ) {
     if (!changedModifications)
-      __setChangedModifications([]);
+      updateChangedModifications([]);
     // Save history
     if (saveHist !== false) saveCurrentState();
 
@@ -184,7 +206,7 @@ const usePageBuilderContext = () => {
     setStoreItem.current("pageConfig", pageConfig);
 
     // Add to local changedModifications (contains only newly added changes)
-    __setChangedModifications(
+    updateChangedModifications(
       addToModifications(blockData, changedModifications),
     );
   }
@@ -251,16 +273,15 @@ const usePageBuilderContext = () => {
     if (
       history[history.length - 1]?.local !== current.local
     ) {
-      history.push(current);
+      setHistory([...history, current]);
     }
 
-    // undoneHistory = [];
-    setUndoneHistory([]);
+    // setUndoneHistory([]);
 
     if (history.length > 20) {
-      history.shift();
+      const [, ...restHistory] = history;
+      setHistory([...restHistory]);
     }
-    setHistory(history);
   }
 
   async function rerenderBlocks() {
@@ -285,8 +306,8 @@ const usePageBuilderContext = () => {
     pageConfig.modifications = JSON.parse(history.global);
     setStoreItem.current("pageConfig", pageConfig);
     // changedModifications = JSON.parse(history.local);
-    __setChangedModifications(JSON.parse(history.local));
-    await new Promise((done) => setTimeout(done, 100));
+    updateChangedModifications(JSON.parse(history.local));
+    await new Promise((done) => setTimeout(done, 10));
     await rerenderBlocks();
 
     if (selectedBlock.current)
@@ -296,17 +317,27 @@ const usePageBuilderContext = () => {
   }
 
   function undoModification() {
-    const last = history.pop();
+    // const last = history.pop();
+    const [last, ...nxt] = history.reverse();
     if (last) {
-      undoneHistory.push(getCurrentModificationsState());
-      setUndoneHistory(undoneHistory);
+      setHistory(nxt.reverse());
+      setUndoneHistory([
+        ...undoneHistory,
+        getCurrentModificationsState(),
+      ]);
       applyHistory(last);
     }
   }
 
+  const resetModifications = () => {
+    updateChangedModifications(null);
+  };
+
   function redoModification() {
     if (undoneHistory.length > 0) {
-      const last = undoneHistory.pop();
+      const [last, ...nxt] = undoneHistory.reverse();
+      // setHistory([...nxt.reverse()])
+      setUndoneHistory(nxt.reverse());
       saveCurrentState();
       applyHistory(last);
     }
@@ -331,9 +362,8 @@ const usePageBuilderContext = () => {
     blockData: TCromwellBlockData,
     callerBlock: TCromwellBlockData,
     containerData?: TCromwellBlockData,
-    position?: "top"|"bottom"
+    position?: "top" | "bottom",
   ) {
-    console.log("BLOCK CREATION", blockData, blockData.plugin)
     const newBlock: TCromwellBlockData = {
       id: `_${getRandStr()}`,
       type: blockData.type,
@@ -341,8 +371,8 @@ const usePageBuilderContext = () => {
       style: {
         minWidth: "50px",
         minHeight: "30px",
-      }
-    }
+      },
+    };
 
     if (blockData.type === "plugin") {
       newBlock.plugin = blockData.plugin;
@@ -373,7 +403,10 @@ const usePageBuilderContext = () => {
     newBlockType: TCromwellBlockType,
     afterBlockData: TCromwellBlockData,
     containerData?: TCromwellBlockData,
-    pluginInfo?: { pluginName?: string; blockName?: string }
+    pluginInfo?: {
+      pluginName?: string;
+      blockName?: string;
+    },
   ) {
     const newBlock: TCromwellBlockData = {
       id: `_${getRandStr()}`,
@@ -411,7 +444,7 @@ const usePageBuilderContext = () => {
       selectBlock(newBlock);
     }, 200);
 
-    return 
+    return;
   }
 
   function createBlockProps(
@@ -431,28 +464,30 @@ const usePageBuilderContext = () => {
     };
     const handleCreateNewBlock = (
       newBType: TCromwellBlockType,
-      pluginInfo?: { pluginName?: string; blockName?: string }
-      ) => {
-        console.log("Creating block")
-        return createNewBlock(
-          newBType,
-          data,
-          bType === "container" ? data : undefined,
-          pluginInfo,
-        );
-    }
+      pluginInfo?: {
+        pluginName?: string;
+        blockName?: string;
+      },
+    ) => {
+      return createNewBlock(
+        newBType,
+        data,
+        bType === "container" ? data : undefined,
+        pluginInfo,
+      );
+    };
 
     const handleAddBlock = async (
       block: TCromwellBlockData,
-      position: "top"|"bottom"
+      position: "top" | "bottom",
     ) => {
       return createBlockV2(
         block,
         data,
         block.type === "container" ? data : undefined,
-        position
-      )
-    }
+        position,
+      );
+    };
 
     const blockProps: TBlockMenuProps = {
       block: block,
@@ -489,6 +524,146 @@ const usePageBuilderContext = () => {
     return blockProps;
   }
 
+  async function resetCurrentPage() {
+    if (!editingPageConfig?.route) return;
+    setChangedPageInfo(false);
+    resetModifications();
+
+    if (
+      !(await askConfirmation({
+        title: `Reset page ${editingPageConfig?.name} ?`,
+      }))
+    )
+      return;
+
+    let success;
+    try {
+      success = await getRestApiClient()?.resetPage(
+        editingPageConfig.route,
+        themeName,
+      );
+    } catch (e) {
+      console.error(e);
+    }
+
+    await handleOpenPage(editingPageConfig);
+
+    if (success) {
+      toast.success("Page has been reset");
+    } else {
+      toast.error("Failed to reset page");
+    }
+  }
+
+  async function deletePage(pageInfo: TExtendedPageInfo) {
+    if (! await askConfirmation({
+          title: `Delete page ${pageInfo.name} ?`,
+      })) return;
+
+      let success;
+      if (pageInfo.isSaved === false && typeof pageInfo.isSaved !== "undefined") {
+          success = true;
+      } else {
+          try {
+              success = await getRestApiClient()?.deletePage(pageInfo.route, themeName);
+          } catch (error) {
+              console.error(error);
+          }
+      }
+
+      if (success) {
+          setPageInfos(prev => (prev.filter(page => page.id !== pageInfo.id)))
+          setChangedPageInfo(false);
+          toast.success('Page deleted'); 
+      } else {
+          toast.error('Failed to delete page');
+      }
+  }
+
+  async function savePage() {
+    if (
+      !hasUnsavedModifications &&
+      (editingPageConfig as TExtendedPageInfo)?.isSaved !==
+        false
+    ) {
+      toast.warning("No changes to save");
+      return;
+    }
+
+    const hasChangedPalette = changedPalette;
+
+    if (changedPalette && themePalette) {
+      try {
+        await getRestApiClient().saveThemePalette(
+          themeName,
+          themePalette,
+        );
+      } catch (error) {
+        console.error(error);
+      }
+      // changedPalette = false;
+      setChangedPalette(false);
+    }
+
+    const modifications = changedModifications ?? [];
+
+    if (!editingPageConfig) return;
+
+    const pageConfig: TPageConfig & { isSaved?: boolean } = {
+      ...editingPageConfig,
+      ...pageConfigOverrides,
+      modifications,
+    };
+
+    delete pageConfig.isSaved;
+
+    const client = getRestApiClient();
+    setLoading(true);
+
+    let success;
+    try {
+      success = await client?.savePageConfig(
+        pageConfig,
+        themeName,
+      );
+    } catch (error) {
+      console.error(error);
+    }
+
+    if (success) {
+      resetModifications();
+      setChangedPageInfo(false);
+      toast.success("Saved");
+
+      let hasChangedRoute = false;
+      delete (editingPageConfig as TExtendedPageInfo)
+        .isSaved;
+      setEditingPageConfig({
+        ...editingPageConfig,
+        ...pageConfigOverrides,
+        isSaved: undefined,
+      });
+      setPageInfos((prev) => {
+        return prev.map((page) => {
+          if (page.id === pageConfig.id) {
+            if (page.route !== pageConfig.route) {
+              hasChangedRoute = true;
+            }
+            return pageConfig;
+          }
+          return page;
+        });
+      });
+
+      if (hasChangedRoute || hasChangedPalette) {
+        handleOpenPage(pageConfig);
+      }
+    } else {
+      toast.error("Failed to save changes");
+    }
+    setLoading(false);
+  }
+
   function pageChangeStart() {
     if (pageFrameRef.current) {
       pageFrameRef.current.style.transitionDuration =
@@ -506,12 +681,15 @@ const usePageBuilderContext = () => {
   }
 
   async function onPageChange() {
+    // console.log("PAGE CHANGE")
     if (!pageFrameRef.current) return;
+    setHistory([]);
+    setUndoneHistory([]);
     deselectCurrentBlock();
     pageChangeStart();
-    await sleep(0.3);
+    await sleep(0.2);
     contentWindowRef.current =
-      pageFrameRef.current.contentWindow;
+      pageFrameRef.current?.contentWindow;
     // console.log(contentWindowRef.current.origin)
     editorWidgetWrapperRef.current =
       document.getElementById(
@@ -573,32 +751,31 @@ const usePageBuilderContext = () => {
     // const getStoreItem_ = contentStore.current.nodeModules?.modules?.['@cromwell/core'].getStoreItem
     // const setStoreItem_ = contentStore.current.nodeModules?.modules?.['@cromwell/core'].setStoreItem
 
-    draggable.current =
-      new Draggable({
-        document: contentWindowRef.current.document,
-        draggableSelector: `.${blockCssClass}`,
-        containerSelector: `.${getBlockHtmlType(
-          "container",
-        )}`,
-        rootElement:
-          contentWindowRef.current.document.getElementById(
-            "CB_root",
-          ),
-        disableInsert: true,
-        ignoreDraggableClass: ignoreDraggableClass,
-        canInsertBlock: canInsertBlock,
-        onBlockInserted: onBlockInserted,
-        onBlockSelected: onBlockSelected,
-        // onBlockDeSelected: onBlockDeSelected,
-        canDeselectBlock: canDeselectBlock,
-        canDragBlock: canDragBlock,
-        getFrameColor: getFrameColor,
-        onBlockHoverStart: onBlockHoverStart,
-        onBlockHoverEnd: onBlockHoverEnd,
-        onTryToInsert: onTryToInsert,
-        dragPlacement: "underline",
-        disableClickAwayDeselect: true,
-      });
+    draggable.current = new Draggable({
+      document: contentWindowRef.current.document,
+      draggableSelector: `.${blockCssClass}`,
+      containerSelector: `.${getBlockHtmlType(
+        "container",
+      )}`,
+      rootElement:
+        contentWindowRef.current.document.getElementById(
+          "CB_root",
+        ),
+      disableInsert: true,
+      ignoreDraggableClass: ignoreDraggableClass,
+      canInsertBlock: canInsertBlock,
+      onBlockInserted: onBlockInserted,
+      onBlockSelected: onBlockSelected,
+      // onBlockDeSelected: onBlockDeSelected,
+      canDeselectBlock: canDeselectBlock,
+      canDragBlock: canDragBlock,
+      getFrameColor: getFrameColor,
+      onBlockHoverStart: onBlockHoverStart,
+      onBlockHoverEnd: onBlockHoverEnd,
+      onTryToInsert: onTryToInsert,
+      dragPlacement: "underline",
+      disableClickAwayDeselect: true,
+    });
 
     const styles =
       contentWindowRef.current.document.createElement(
@@ -622,10 +799,9 @@ const usePageBuilderContext = () => {
     // pageChangeFinish();
   }
 
-  // useEffect(() => {
-  //   console.log(pageFrameRef.current);
-  //   onPageChange();
-  // }, [pageFrameRef.current]);
+  const hasUnsavedModifications =
+    changedPalette ||
+    !!(changedPageInfo || changedModifications?.length > 0);
 
   return {
     onPageChange,
@@ -636,7 +812,14 @@ const usePageBuilderContext = () => {
     redoModification,
     selectedEditableBlock,
     updateFramesPosition,
-    selectedFrames
+    selectedFrames,
+    changedModifications,
+    deletePage,
+    hasUnsavedModifications,
+    history,
+    undoneHistory,
+    savePage,
+    resetCurrentPage,
   };
 };
 

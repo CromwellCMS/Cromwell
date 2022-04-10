@@ -4,7 +4,9 @@ import {
   TCromwellBlockData,
   TCromwellStore,
   TPageConfig,
+  TPalette,
   TPluginEntity,
+  TThemeConfig,
 } from "@cromwell/core";
 import React, {
   useCallback,
@@ -32,9 +34,11 @@ const useThemeEditorContext = () => {
   >([]);
   const [editingPageConfig, setEditingPageConfig] =
     useState<TExtendedPageConfig | null | undefined>(null);
+  const [pageConfigOverrides, overrideConfig] = useState<Partial<TExtendedPageConfig> | null |undefined>(null);
   const [themeName] = useState<string>(
     getStoreItem("cmsSettings")?.themeName,
   );
+  const [themePalette, setThemePalette] = useState<TPalette>();
   const [minimizeLeftbar, setMinimizeLeftbar] =
     useState(false);
   const [isLoading, setLoading] = useState(false);
@@ -49,6 +53,7 @@ const useThemeEditorContext = () => {
   const [plugins, setPlugins] = useState<TPluginEntity[]>(
     [],
   );
+  const [themeConfig, setThemeConfig] = useState<TThemeConfig>(null);
   // const [isChangingPage, setIsChangingPage] = useState(false);
   const pageFrameRef = useRef<HTMLIFrameElement>();
   const pageBuilderContent = useRef<HTMLDivElement>();
@@ -84,16 +89,17 @@ const useThemeEditorContext = () => {
     }
   }, [themeName]);
 
+
   const handleOpenPage = useCallback(
     async (pageInfo: TExtendedPageInfo) => {
       if (
         hasUnsavedModifications &&
         !window.confirm(unsavedPrompt)
-      )
-        return;
+      ) return;
       setIsPageLoading(true);
       setChangedPageInfo(false);
       setChangedModifications(null);
+      overrideConfig(null);
 
       let pageConfig: TPageConfig | undefined;
       if (pageInfo?.isSaved !== false) {
@@ -131,6 +137,7 @@ const useThemeEditorContext = () => {
         ...(pageConfig.modifications ?? []),
       ];
       setEditingPageConfig(pageConfig);
+      // setChangedPageInfo(pageInfo.isSaved)
 
       setIsPageLoading(false);
       setTimeout(() => {
@@ -149,8 +156,12 @@ const useThemeEditorContext = () => {
           encode: false,
         }),
       );
+      const palette = await getRestApiClient().getThemePalette(themeName);
+      if (palette) {
+         setThemePalette(palette)
+      }
     },
-    [],
+    [hasUnsavedModifications],
   );
 
   const handlePageModificationsChange = useCallback(
@@ -201,11 +212,20 @@ const useThemeEditorContext = () => {
       infos?.find((i) => i.route === route) ??
       pageInfos?.[0];
     if (info) handleOpenPage(info);
-  }, [fetchPageInfos, fetchPlugins, handleOpenPage]);
+    
+    const themeConf = await getRestApiClient().getThemeConfig(themeName)
+    try {
+      if (themeConf) {
+        setThemeConfig(themeConfig)
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }, [fetchPageInfos, fetchPlugins, handleOpenPage, themeName]);
 
   useEffect(() => {
     init();
-  }, [init]);
+  }, []);
 
   const forceUpdate = () => forceRerender(o => o + 1);
 
@@ -222,9 +242,15 @@ const useThemeEditorContext = () => {
     changedModifications,
     plugins,
     setPageInfos,
+    pageConfigOverrides,
+    overrideConfig,
     setEditingPageConfig,
     setMinimizeLeftbar,
     setLoading,
+    themePalette,
+    setThemePalette,
+    themeConfig,
+    setThemeConfig,
     setIsPageLoading,
     forceRerender,
     setChangedPalette,
@@ -237,6 +263,7 @@ const useThemeEditorContext = () => {
     handlePageModificationsChange,
     resetModifications,
     frameWidth,
+    init,
     setFrameWidth,
     forceUpdate,
   };

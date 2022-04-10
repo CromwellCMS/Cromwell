@@ -61,7 +61,7 @@ export const MarginEditor = ({
 
   return (
     <>
-      <p className="my-2 mt-4 text-xs uppercase">Margin</p>
+      <p className="font-bold my-2 mt-4 text-xs uppercase">Margin</p>
       <div className="mb-2">
         <Switch
           checked={individual}

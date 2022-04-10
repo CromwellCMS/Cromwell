@@ -1,5 +1,7 @@
+import { Listbox, Transition } from "@headlessui/react";
 import { XCircleIcon } from "@heroicons/react/solid";
 import React, {
+  Fragment,
   useCallback,
   useEffect,
   useRef,
@@ -12,14 +14,16 @@ const DragLabel = ({
   label = "-",
   min = -Infinity,
   max = Infinity,
-  boundingRef = { current: null }
+  boundingRef = { current: null },
+  dataType = "px"
 }: {
   value?: any;
   setValue: any;
   label?: string;
   min?: number;
   max?: number;
-  boundingRef: React.MutableRefObject<HTMLDivElement>
+  dataType?: "px" | "string" | "rem" | "%" | "em" | "vh" | "vw";
+  boundingRef: React.MutableRefObject<HTMLDivElement>;
 }) => {
   // We are creating a snapshot of the values when the drag starts
   // because the [value] will itself change & we need the original
@@ -97,12 +101,31 @@ const DragLabel = ({
   );
 };
 
+export const styleDataTypes = [
+  "px",
+  "rem",
+  "%",
+  "em",
+  "vh",
+  "vw"
+]
+
 export const SlideableNumberInput = ({
   value = "",
   setValue,
   label = "-",
   min = -Infinity,
   max = Infinity,
+  dataType = "px",
+  onDataTypeChange = () => {},
+}: {
+  value?: any;
+  setValue?: any;
+  label?: any;
+  min: number;
+  max: number;
+  dataType?: "px" | "string" | "rem" | "%" | "em" | "vh" | "vw";
+  onDataTypeChange?: any;
 }) => {
   const boundingRef = useRef<HTMLDivElement>();
 
@@ -110,13 +133,13 @@ export const SlideableNumberInput = ({
     (ev) => {
       const raw = parseInt(ev.target.value, 10);
       const nextVal = isNaN(raw) ? "" : raw;
-      setValue(nextVal)
+      setValue(nextVal, dataType)
     },
-    [],
+    [dataType],
   );
 
   const resetValue = useCallback(() => {
-    setValue("");
+    setValue("", "px");
   }, [setValue])
 
   return (
@@ -139,9 +162,48 @@ export const SlideableNumberInput = ({
         inputMode="numeric"
         pattern="[0-9]*"
         max={max}
-        className="border-b outline-none border-gray-200 text-right py-1 pr-1 pl-0 w-9 inline-block appearance-none"
+        className="border-b outline-none border-gray-200 text-right py-1 pr-1 pl-0 w-[calc(100%-65px)] inline-block appearance-none"
       />
-      <span className="py-1 text-gray-400 inline-block select-none relative">px</span>
+      <Listbox value={dataType} onChange={onDataTypeChange}>
+        <div className="relative inline">
+          <Listbox.Button className="py-1 text-gray-400 inline-block select-none relative">
+            <span className="block truncate">{dataType}</span>
+          </Listbox.Button>
+          <Transition
+            as={Fragment}
+            leave="transition ease-in duration-100"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <Listbox.Options className="bg-white rounded-md shadow-lg ring-black mt-1 text-xs max-h-60 py-1 -right-3 ring-1 ring-opacity-5 w-14 z-[80] absolute overflow-auto focus:outline-none">
+              {styleDataTypes.map((typ, typIdx) => (
+                <Listbox.Option
+                  key={typIdx}
+                  className={({ active }) =>
+                    `cursor-default select-none relative py-2 pl-2 pr-2 ${
+                      active ? 'text-indigo-900 bg-indigo-100' : 'text-gray-900'
+                    }`
+                  }
+                  value={typ}
+                >
+                  {({ selected }) => (
+                    <>
+                      <span
+                        className={`block truncate ${
+                          selected ? 'font-medium' : 'font-normal'
+                        }`}
+                      >
+                        {typ}
+                      </span>
+                    </>
+                  )}
+                </Listbox.Option>
+              ))}
+            </Listbox.Options>
+          </Transition>
+          </div>
+      </Listbox>
+      {/* <span className="py-1 text-gray-400 inline-block select-none relative">{dataType}</span> */}
       <XCircleIcon
         onClick={resetValue}
         width="16px"
