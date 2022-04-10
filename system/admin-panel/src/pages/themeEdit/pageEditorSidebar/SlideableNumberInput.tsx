@@ -2,11 +2,32 @@ import { Listbox, Transition } from "@headlessui/react";
 import { XCircleIcon } from "@heroicons/react/solid";
 import React, {
   Fragment,
+  HTMLAttributes,
   useCallback,
   useEffect,
   useRef,
   useState,
 } from "react";
+
+function ResizeIcon(props: HTMLAttributes<SVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      x="0"
+      y="0"
+      enableBackground="new 0 0 330 330"
+      version="1.1"
+      viewBox="0 0 330 330"
+      fill="black"
+      stroke="white"
+      strokeWidth={2}
+      xmlSpace="preserve"
+      {...props}
+    >
+      <path d="M79.394 250.606A14.952 14.952 0 0090 255a14.95 14.95 0 0010.606-4.394c5.858-5.857 5.858-15.355 0-21.213L51.213 180h227.574l-49.393 49.394c-5.858 5.857-5.858 15.355 0 21.213C232.322 253.535 236.161 255 240 255s7.678-1.465 10.606-4.394l75-75c5.858-5.857 5.858-15.355 0-21.213l-75-75c-5.857-5.857-15.355-5.857-21.213 0-5.858 5.857-5.858 15.355 0 21.213L278.787 150H51.213l49.393-49.394c5.858-5.857 5.858-15.355 0-21.213-5.857-5.857-15.355-5.857-21.213 0l-75 75c-5.858 5.857-5.858 15.355 0 21.213l75.001 75z"></path>
+    </svg>
+  );
+}
 
 const DragLabel = ({
   value = "",
@@ -28,12 +49,14 @@ const DragLabel = ({
   // We are creating a snapshot of the values when the drag starts
   // because the [value] will itself change & we need the original
   // [value] to calculate during a drag.
+  const el = useRef<HTMLSpanElement>(null)
   const [snapshot, setSnapshot] = useState(value);
 
   // This captures the starting position of the drag and is used to
   // calculate the diff in positions of the cursor.
   const [startVal, setStartVal] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     if (!isDragging) {
@@ -45,15 +68,21 @@ const DragLabel = ({
   const onStart = useCallback(
     (event) => {
       setIsDragging(true);
+      el.current.requestPointerLock();
       // const rect = event.target.getBoundingClientRect();
       const rect = boundingRef.current?.getBoundingClientRect();
       const start = event.clientX - rect.left;
+      setMousePos({
+        x: event.pageX,
+        y: event.pageY
+      })
       const startingX = parseInt(
         `${Math.min(Math.max(min, start), max)}`,
         10,
-      );
-      setStartVal(startingX);
-      const initialValue = value && value !== "" ? value : 0;
+        );
+        setStartVal(startingX);
+        const initialValue = value && value !== "" ? parseInt(value) : 0;
+      // console.log("START", initialValue, value)
       setSnapshot(initialValue);
     },
     [value],
@@ -64,16 +93,26 @@ const DragLabel = ({
   // the operation..
   useEffect(() => {
     // Only change the value if the drag was actually started.
-    const onUpdate = (event) => {
+    const onUpdate = (event: MouseEvent) => {
       if (startVal) {
-        const rect = boundingRef.current?.getBoundingClientRect();
-        const posX = (event.clientX - rect.left) / 2
-        const start = (posX) + snapshot;
+        // const rect = boundingRef.current?.getBoundingClientRect();
+        // const posX = (event.clientX - rect.left) / 2
+        // const start = (posX) + snapshot;
+        const movementX = event.movementX;
+        // console.log(event.movementX);
         const nextVal = parseInt(
-          `${Math.min(Math.max(min, start), max)}`,
+          `${Math.min(Math.max(min, snapshot + movementX), max)}`,
           10,
-        );
-        setValue(nextVal);
+          );
+
+        requestAnimationFrame(() => {
+          setMousePos(o => ({
+            x: (o.x + event.movementX < 0 ? window.innerWidth : (o.x + event.movementX) % window.innerWidth),
+            y: o.y
+          }))
+          setSnapshot(nextVal);
+          setValue(nextVal);
+        })
       }
     };
 
@@ -81,21 +120,26 @@ const DragLabel = ({
     const onEnd = () => {
       setStartVal(0);
       setIsDragging(false);
+      document.exitPointerLock();
     };
 
+    // el.current?.requestPointerLock()
     document.addEventListener("mousemove", onUpdate);
     document.addEventListener("mouseup", onEnd);
     return () => {
       document.removeEventListener("mousemove", onUpdate);
       document.removeEventListener("mouseup", onEnd);
+      // document.exitPointerLock();
     };
   }, [startVal, setValue, snapshot]);
 
   return (
     <span
+      ref={el}
       onMouseDown={onStart}
-      className="cursor-ew-resize py-1 px-1 text-gray-400 select-none relative">
-      <span className={`w-96 h-96 absolute right-0 -top-20 ${isDragging ? "" : "hidden"}`} />
+      className="cursor-ew-resize py-1 px-1 transform text-gray-400 select-none relative">
+        <ResizeIcon style={{ transform: `translate(${mousePos.x}px, ${mousePos.y}px)` }} className={`h-4 top-0 left-0 w-4 z-[900] fixed ${isDragging ? "" : "hidden"}`} />
+        {/* <span className={`w-screen h-screen fixed left-0 top-0 z-20 ${isDragging ? "" : "hidden"}`} /> */}
       {label}
     </span>
   );

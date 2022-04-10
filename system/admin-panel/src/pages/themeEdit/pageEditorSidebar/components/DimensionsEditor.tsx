@@ -1,5 +1,5 @@
 import { TCromwellBlock } from "@cromwell/core";
-import React, { CSSProperties, useEffect, useState } from "react";
+import React, { CSSProperties, useCallback, useEffect, useState } from "react";
 import { MarginEditor } from "./MarginEditor";
 import { PaddingEditor } from "./PaddingEditor";
 import { StyleNumberField } from "./StyleNumberField";
@@ -17,6 +17,22 @@ export const DimensionsEditor = ({
     withType?: string,
   ) => void;
 }) => {
+
+  const handleRadius = useCallback((name: keyof React.CSSProperties, value: any, unit?: string) => {
+    const data = block?.getData();
+    const type = data?.type;
+
+    if (type === 'image') {
+      if (value === "" || !value) {
+        handleStyleChange("overflow", null);
+      } else {
+        handleStyleChange("overflow", "hidden");
+      }
+    }
+
+    handleStyleChange(name, value, unit);
+  }, [handleStyleChange])
+
   return (
     <>
       <p className="font-bold my-2 mt-0 text-xs uppercase">Size</p>
@@ -44,7 +60,7 @@ export const DimensionsEditor = ({
           keyName="borderRadius"
           label="⛶"
           min={0}
-          handleStyleChange={handleStyleChange}
+          handleStyleChange={handleRadius}
           dataType="px"
         />
       </div>
