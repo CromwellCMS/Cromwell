@@ -394,6 +394,11 @@ ${content}
             customEntities: input.customEntities,
         }
 
+        entity.modules = {
+            ecommerce: !!input.modules?.ecommerce,
+            blog: !!input.modules?.blog,
+        }
+
         await entity.save();
 
         if (input.robotsContent) {

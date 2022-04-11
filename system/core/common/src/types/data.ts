@@ -5,6 +5,7 @@ import { ESharedComponentNames, systemPackages } from '../constants';
 import { TCromwellBlock, TCromwellBlockData } from './blocks';
 import {
     TCmsAdminSettings,
+    TCmsEnabledModules,
     TCmsEntityCore,
     TCmsInternalSettings,
     TCmsPublicSettings,
@@ -217,6 +218,7 @@ export type TCmsConfig = {
     rewrites?: TCmsRedirect[];
     cmsInfo?: TCmsInfo;
     monolith?: boolean;
+    modules?: TCmsEnabledModules;
 };
 
 /**

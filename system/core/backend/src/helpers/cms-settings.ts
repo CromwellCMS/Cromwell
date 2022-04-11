@@ -75,12 +75,14 @@ export const getCmsSettings = async (): Promise<TCmsSettings | undefined> => {
 
     // Update info from DB on each call
     const entity = await getCmsEntity();
-
     const settings: TCmsSettings = Object.assign({},
         {
             ...(entity.publicSettings ?? {}),
             ...(entity.adminSettings ?? {}),
             ...(entity.internalSettings ?? {}),
+            modules: {
+                ...cmsConfig?.defaultSettings?.modules,
+            }
         },
         cmsConfig,
         {
@@ -92,7 +94,8 @@ export const getCmsSettings = async (): Promise<TCmsSettings | undefined> => {
             rewrites: [
                 ...(entity.publicSettings?.rewrites ?? []),
                 ...(cmsConfig?.rewrites ?? []),
-            ]
+            ],
+            modules: entity.modules ?? cmsConfig?.defaultSettings?.modules
         }
     );
     delete settings.defaultSettings;

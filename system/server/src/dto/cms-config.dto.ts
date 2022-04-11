@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { TCmsSettings, TCurrency, TServiceVersions, TCmsRedirect } from '@cromwell/core';
+import { TCmsSettings, TCurrency, TServiceVersions, TCmsRedirect, TCmsEnabledModules } from '@cromwell/core';
 import { CurrencyDto } from './currency.dto';
 
 export class CmsConfigDto implements TCmsSettings {
@@ -66,6 +66,9 @@ export class CmsConfigDto implements TCmsSettings {
     @ApiProperty()
     customMeta?: Record<string, string>;
 
+    @ApiProperty()
+    modules?: TCmsEnabledModules;
+
     parseConfig(config: TCmsSettings) {
         this.domain = config.domain;
         this.url = config.url;
@@ -88,6 +91,8 @@ export class CmsConfigDto implements TCmsSettings {
         this.rewrites = config.rewrites;
         this.redirects = config.redirects;
         this.customMeta = config.customMeta;
+        this.modules = config.modules;
+
         return this;
     }
 }

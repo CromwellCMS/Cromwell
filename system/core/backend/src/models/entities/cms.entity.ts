@@ -1,4 +1,4 @@
-import { TCmsAdminSettings, TCmsEntity, TCmsInternalSettings, TCmsPublicSettings } from '@cromwell/core';
+import { TCmsAdminSettings, TCmsEntity, TCmsInternalSettings, TCmsPublicSettings, TCmsEnabledModules } from '@cromwell/core';
 import { BaseEntity, Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity('cms')
@@ -26,6 +26,16 @@ export class CmsEntity extends BaseEntity implements TCmsEntity {
     }
     @Column({ type: "text", nullable: true })
     private _adminSettings?: string;
+
+
+    public get modules(): TCmsEnabledModules | undefined {
+        return this._modules ? JSON.parse(this._modules) : undefined;
+    }
+    public set modules(data: TCmsEnabledModules | undefined) {
+        this._modules = data ? JSON.stringify(data) : undefined;
+    }
+    @Column({ type: "text", nullable: true, default: '{"ecommerce": true,"blog":true}' })
+    private _modules?: string;
 
 
     public get internalSettings(): TCmsInternalSettings | undefined {

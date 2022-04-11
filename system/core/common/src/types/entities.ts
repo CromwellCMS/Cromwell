@@ -626,6 +626,23 @@ export type TCmsEntityCore = {
      * Internal settings.
      */
     internalSettings?: TCmsInternalSettings;
+
+    modules?: TCmsEnabledModules;
+}
+
+/**
+ * DB CMS Enabled Modules 
+ */
+export type TCmsEnabledModules = {
+    /**
+     * is E-Commerce Shopping Module enabled?
+     */
+    ecommerce?: boolean;
+
+    /**
+     * is Blogging Module enabled?
+     */
+    blog?: boolean;
 }
 
 /**

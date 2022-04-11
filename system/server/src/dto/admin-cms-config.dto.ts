@@ -1,4 +1,4 @@
-import { TAdminCustomEntity, TAdminCustomField, TCmsInfo, TCmsSettings } from '@cromwell/core';
+import { TAdminCustomEntity, TAdminCustomField, TCmsInfo, TCmsSettings, TCmsEnabledModules } from '@cromwell/core';
 import { ApiProperty } from '@nestjs/swagger';
 
 import { CmsConfigDto } from './cms-config.dto';
@@ -22,6 +22,9 @@ export class AdminCmsConfigDto extends CmsConfigDto {
     @ApiProperty()
     customEntities?: TAdminCustomEntity[];
 
+    @ApiProperty()
+    modules?: TCmsEnabledModules;
+
     parseConfig(config: TCmsSettings) {
         super.parseConfig(config);
 
@@ -29,6 +32,7 @@ export class AdminCmsConfigDto extends CmsConfigDto {
         this.sendFromEmail = config.sendFromEmail;
         this.customFields = config.customFields;
         this.customEntities = config.customEntities;
+
         return this;
     }
 }

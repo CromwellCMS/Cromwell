@@ -79,6 +79,10 @@ export const defaultCmsConfig: TCmsConfig = {
         internalSettings: {
             installed: false,
         },
+        modules: {
+            ecommerce: true,
+            blog: true,
+        },
         publicSettings: {
             themeName: "@cromwell/theme-store",
             logo: "/themes/@cromwell/theme-store/shopping-cart.png",
