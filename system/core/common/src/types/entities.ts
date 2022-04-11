@@ -628,6 +628,8 @@ export type TCmsEntityCore = {
     internalSettings?: TCmsInternalSettings;
 
     modules?: TCmsEnabledModules;
+
+    dashboardSettings?: TCmsDashboardSettings;
 }
 
 /**
@@ -710,6 +712,34 @@ export type TCmsPublicSettings = {
      * Data of custom fields
      */
     customMeta?: Record<string, string>;
+}
+
+export type TCmsDashboardSingleLayout = {
+    h?: number;
+    i?: string;
+    minH?: number;
+    minW?: number;
+    moved?: boolean;
+    static?: boolean;
+    w?: number;
+    x?: number;
+    y?: number;
+}[]
+
+export type TCmsDashboardLayout = {
+    lg: TCmsDashboardSingleLayout;
+    md: TCmsDashboardSingleLayout;
+    sm: TCmsDashboardSingleLayout;
+    xs: TCmsDashboardSingleLayout;
+    xxs: TCmsDashboardSingleLayout;
+}
+
+export type TCmsDashboardSettings = {
+    type?: "user"|"template";
+    for?: "user"|"role"|"system";
+    userId?: number;
+    user?: TUser;
+    layout?: TCmsDashboardLayout;
 }
 
 /**

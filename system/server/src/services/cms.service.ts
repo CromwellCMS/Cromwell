@@ -5,6 +5,7 @@ import {
     setStoreItem,
     sleep,
     TCCSVersion,
+    TCmsDashboardLayout,
     TDefaultPageName,
     TPackageCromwellConfig,
 } from '@cromwell/core';
@@ -24,9 +25,12 @@ import {
     PostRepository,
     ProductCategoryRepository,
     ProductRepository,
+    DashboardLayout,
+    DashboardEntity,
     readCmsModules,
     runShellCommand,
     TagRepository,
+    getCmsConfig,
 } from '@cromwell/core-backend';
 import { getCentralServerClient } from '@cromwell/core-frontend';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
@@ -42,6 +46,7 @@ import * as util from 'util';
 
 import { AdminCmsConfigDto } from '../dto/admin-cms-config.dto';
 import { CmsStatusDto } from '../dto/cms-status.dto';
+import { DashboardSettingsDto } from "../dto/dashboard-settings.dto";
 import { SetupDto } from '../dto/setup.dto';
 import { childSendMessage } from '../helpers/server-manager';
 import { endTransaction, restartService, setPendingKill, startTransaction } from '../helpers/state-manager';
@@ -359,6 +364,66 @@ ${content}
             logger.error(error);
         }
         return dto;
+    }
+
+    private async getFallbackDashboardLayout(): Promise<DashboardSettingsDto> {
+        const repo = getCustomRepository(DashboardLayout.repository);
+        const config = await getCmsConfig()
+
+        const dashboard = await repo.findOne({
+            where: {
+                type: "template",
+                for: "system"
+            }
+        })
+
+        if (!dashboard) {
+            return config!.defaultSettings!.dashboardSettings as DashboardSettingsDto
+        } 
+
+        return dashboard;
+    }
+
+    public async getDashboardLayout(userId: number): Promise<DashboardSettingsDto | undefined> {
+        const repo = getCustomRepository(DashboardLayout.repository)
+        let dashboard: DashboardSettingsDto|undefined = await repo.findOne({
+            where: {
+                userId,
+            }
+        })
+
+        if (!dashboard) {
+            dashboard = await this.getFallbackDashboardLayout();
+        }
+
+        const layout = dashboard.layout
+
+        return {
+            type: dashboard.type,
+            layout: layout
+        }
+    }
+
+    public async setDashboardLayout(userId: number, layout: TCmsDashboardLayout): Promise<DashboardSettingsDto|undefined> {
+        const repo = getCustomRepository(DashboardLayout.repository)
+        let existingEntity = await repo.findOne({
+            where: {
+                userId,
+            }
+        })
+
+        if (!existingEntity) {
+            existingEntity = new DashboardEntity()
+            existingEntity.for = "user"
+            existingEntity.type = "user"
+        }
+
+        existingEntity!.layout = layout;
+        existingEntity.userId = userId;
+
+        await existingEntity.save()
+
+        return existingEntity;
     }
 
     public async updateCmsSettings(input: AdminCmsConfigDto): Promise<AdminCmsConfigDto> {

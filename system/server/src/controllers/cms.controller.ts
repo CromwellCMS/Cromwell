@@ -7,8 +7,10 @@ import {
     ProductReviewInput,
     ProductReviewRepository,
     Roles,
+    TRequestWithUser,
 } from '@cromwell/core-backend';
 import {
+    BadRequestException,
     Body,
     Controller,
     Get,
@@ -18,7 +20,9 @@ import {
     Post,
     Query,
     Req,
+    Request,
     Response,
+    UnauthorizedException,
     UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -34,6 +38,7 @@ import { CmsConfigDto } from '../dto/cms-config.dto';
 import { CmsStatsDto } from '../dto/cms-stats.dto';
 import { CmsStatusDto } from '../dto/cms-status.dto';
 import { CreateOrderDto } from '../dto/create-order.dto';
+import { DashboardSettingsDto } from "../dto/dashboard-settings.dto";
 import { ExportOptionsDto } from '../dto/export-options.dto';
 import { ModuleInfoDto } from '../dto/module-info.dto';
 import { OrderTotalDto } from '../dto/order-total.dto';
@@ -440,6 +445,49 @@ export class CmsController {
 
         await this.statsService.viewPage(input);
         return true;
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get('dashboard-settings')
+    @Roles('administrator', 'author', 'guest')
+    @ApiOperation({
+        description: 'Get current dashboard layout',
+    })
+    @ApiResponse({
+        status: 200,
+        type: DashboardSettingsDto
+    })
+    async getDashboardSettings(@Request() request: TRequestWithUser): Promise<DashboardSettingsDto | undefined> {
+        if (!request.user?.id)
+            throw new UnauthorizedException('user.id is not set for the request');
+
+        const layout = await this.cmsService.getDashboardLayout(request.user?.id);
+        
+        return layout;
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Post('dashboard-settings')
+    @Roles('administrator', 'author', 'guest')
+    @ApiOperation({
+        description: 'Save dashboard layout for user',
+    })
+    @ApiBody({
+        type: DashboardSettingsDto
+    })
+    @ApiResponse({
+        status: 200,
+        type: DashboardSettingsDto
+    })
+    async updateDashboardSettings(@Request() request: TRequestWithUser, @Body() input: DashboardSettingsDto): Promise<DashboardSettingsDto | undefined> {
+        if (!request.user?.id)
+            throw new UnauthorizedException('user.id is not set for the request');
+        if (!input.layout)
+            throw new BadRequestException('no layout provided');
+
+        const layout = await this.cmsService.setDashboardLayout(request.user?.id, input.layout);
+        
+        return layout;
     }
 
 

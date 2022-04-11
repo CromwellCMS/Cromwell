@@ -1,8 +1,9 @@
 import { TUser, TUserRole } from '@cromwell/core';
 import { Field, ObjectType } from 'type-graphql';
-import { Column, Entity, Index, OneToMany } from 'typeorm';
+import { Column, Entity, Index, OneToMany, OneToOne } from 'typeorm';
 
 import { BasePageEntity } from './base-page.entity';
+import { DashboardEntity } from "./dashboard-entity.entity";
 import { UserMeta } from './meta/user-meta.entity';
 import { Post } from './post.entity';
 
@@ -65,4 +66,9 @@ export class User extends BasePageEntity implements TUser {
         cascade: true,
     })
     metaRecords?: UserMeta[] | null;
+
+    @OneToOne(() => DashboardEntity, dash => dash.user, {
+        cascade: true,
+    })
+    layout?: DashboardEntity | null;
 }

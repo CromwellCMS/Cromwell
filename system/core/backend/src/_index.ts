@@ -12,6 +12,7 @@ export * from './models/entities/plugin.entity';
 export * from './models/entities/theme.entity';
 export * from './models/entities/cms.entity';
 export * from './models/entities/order.entity';
+export * from './models/entities/dashboard-entity.entity';
 export * from './models/entities/tag.entity';
 export * from './models/entities/page-stats.entity';
 export * from './models/entities/post-comment.entity';

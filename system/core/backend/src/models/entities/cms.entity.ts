@@ -1,4 +1,4 @@
-import { TCmsAdminSettings, TCmsEntity, TCmsInternalSettings, TCmsPublicSettings, TCmsEnabledModules } from '@cromwell/core';
+import { TCmsAdminSettings, TCmsEntity, TCmsInternalSettings, TCmsPublicSettings, TCmsEnabledModules, TCmsDashboardSettings } from '@cromwell/core';
 import { BaseEntity, Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity('cms')
@@ -54,4 +54,6 @@ export class CmsEntity extends BaseEntity implements TCmsEntity {
     @Index()
     @UpdateDateColumn()
     updateDate: Date;
+
+    dashboardSettings?: TCmsDashboardSettings | undefined;
 }

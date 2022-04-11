@@ -23,6 +23,7 @@ import {
     TSystemUsage,
     TThemeConfig,
     TUser,
+    TCmsDashboardSettings,
 } from '@cromwell/core';
 import queryString from 'query-string';
 
@@ -268,6 +269,22 @@ export class CRestApiClient {
      */
     public getUserInfo = async (options?: TRequestOptions): Promise<TUser | undefined> => {
         return this.get(`v1/auth/user-info`, options);
+    }
+
+    /**
+     * Return dashboard layout for authenticated user
+     * @auth any
+     */
+     public getDashboardLayout = async (): Promise<TCmsDashboardSettings | undefined> => {
+        return this.get(`v1/cms/dashboard-settings`);
+    }
+
+    /**
+     * Save dashboard layout for authenticated user
+     * @auth any
+     */
+     public saveDashboardLayout = async (data: TCmsDashboardSettings): Promise<TCmsDashboardSettings | undefined> => {
+        return this.post(`v1/cms/dashboard-settings`, data);
     }
 
     /**
