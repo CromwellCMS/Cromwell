@@ -1,38 +1,231 @@
-import { TCmsStats, TProductReview } from "@cromwell/core";
-import React, { Suspense, useEffect, useState } from "react";
-import { DashboardContextProvider, useDashboard } from "../../hooks/useDashboard";
-import { Responsive, WidthProvider } from 'react-grid-layout';
+import {
+  TCmsDashboardLayout,
+  TCmsStats,
+  TProductReview,
+} from "@cromwell/core";
+import React, {
+  Suspense,
+  useEffect,
+  useState,
+} from "react";
+import {
+  DashboardContextProvider,
+  useDashboard,
+} from "../../hooks/useDashboard";
+import {
+  Responsive,
+  WidthProvider,
+} from "react-grid-layout";
 import { PageViewsWidget } from "./widgets/pageViews";
-// import DashboardOld from "./DashboardOld";
+import { ProductRatingWidget } from "./widgets/productRating";
+import { SalesValueWidget } from "./widgets/salesValue";
+import useLongPress from "../../hooks/useLongPress";
+import { SalesLastWeekWidget } from "./widgets/salesLastWeek";
+import { OrdersLastWeekWidget } from "./widgets/ordersLastWeek";
+import { CogIcon } from "@heroicons/react/outline";
+import { PageViewsList } from "./widgets/pageViewsList";
+import { WidgetPanel } from "./widgets/widgetPanel";
+import { AddWidgetMenu } from "./components/addWidgetMenu";
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
 const Dashboard = () => {
   const [isEditing, setEditing] = useState(false);
-  const { isLoadingLayout, getLayout, layout, saveLayout, setLayout, getReviews } = useDashboard()
+  const {
+    isLoadingLayout,
+    getLayout,
+    layout,
+    saveLayout,
+    setLayout,
+    getReviews,
+    getStats,
+    resetToSnapshot,
+    customWidgets,
+  } = useDashboard();
+  const longPressEvent = useLongPress(
+    () => {
+      setEditing(true);
+    },
+    () => {},
+    { shouldPreventDefault: false, delay: 2000 },
+  );
 
   useEffect(() => {
-    getReviews()
-  }, [getReviews])
+    getReviews();
+    getStats();
+  }, [getReviews]);
 
   if (isLoadingLayout) {
-    return <DashboardLoader />
+    return <DashboardLoader />;
   }
 
   return (
-    <div>
-      <ResponsiveGridLayout
-        margin={[15, 15]}
-        layouts={layout as any}
-        isDraggable={isEditing}
-        isResizable={isEditing}
-        breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
-      >
-        <PageViewsWidget key="pageViews" />
-      </ResponsiveGridLayout>
+    <div className="relative">
+      <div
+        className={`${
+          isEditing
+            ? "bg-white shadow-md top-2 rounded-lg "
+            : ""
+        } sticky top-0 backdrop-filter backdrop-blur-xl z-[40] flex flex-row py-2 px-4 justify-between transform transition-all`}>
+        <h1 className="font-bold text-3xl inline-block">
+          {isEditing ? "Edit" : "Dashboard"}
+        </h1>
+        {isEditing && <AddWidgetMenu />}
+        {isEditing && (
+          <div className="inline-block self-center">
+            <button
+              className="mx-1 text-xs py-1"
+              onClick={() => {
+                resetToSnapshot();
+                setEditing(false);
+              }}>
+              cancel
+            </button>
+            <button
+              onClick={async () => {
+                await saveLayout();
+                setEditing(false);
+              }}
+              className="rounded-lg bg-indigo-700 shadow-lg mx-2 text-xs text-white text-center py-1 px-6 transform transition-all hover:bg-indigo-600 hover:shadow-xl">
+              save
+            </button>
+          </div>
+        )}
+        {!isEditing && (
+          <button
+            onClick={() => {
+              setEditing(true);
+            }}
+            className="bg-none bg-transparent text-xs px-4 text-indigo-500 self-center">
+            <CogIcon className="h-4 w-4" />
+          </button>
+        )}
+      </div>
+      <div className="" {...longPressEvent}>
+        <ResponsiveGridLayout
+          margin={[15, 15]}
+          layouts={layout as any}
+          isDraggable={isEditing}
+          isResizable={isEditing}
+          onLayoutChange={(current, nextLayout: any) => {
+            setLayout(nextLayout);
+          }}
+          breakpoints={{
+            lg: 1200,
+            md: 996,
+            sm: 768,
+            xs: 480,
+            xxs: 0,
+          }}
+          cols={{ lg: 12, md: 9, sm: 6, xs: 4, xxs: 2 }}
+          rowHeight={30}>
+          {layout?.lg?.map((item) => {
+            if (item.i === "productRating") {
+              return (
+                <div
+                  key="productRating"
+                  className="h-full w-full">
+                  <ProductRatingWidget
+                    id="productRating"
+                    isEditing={isEditing}
+                  />
+                </div>
+              );
+            }
+
+            if (item.i === "salesValue") {
+              return (
+                <div
+                  key="salesValue"
+                  className="h-full w-full">
+                  <SalesValueWidget
+                    id="salesValue"
+                    isEditing={isEditing}
+                  />
+                </div>
+              );
+            }
+
+            if (item.i === "pageViews") {
+              return (
+                <div
+                  key="pageViews"
+                  className="h-full w-full">
+                  <PageViewsWidget
+                    id="pageViews"
+                    isEditing={isEditing}
+                  />
+                </div>
+              );
+            }
+
+            if (item.i === "salesValueLastWeek") {
+              return (
+                <div
+                  key="salesValueLastWeek"
+                  className="h-full w-full">
+                  <SalesLastWeekWidget
+                    id="salesValueLastWeek"
+                    isEditing={isEditing}
+                  />
+                </div>
+              );
+            }
+
+            if (item.i === "pageViewsStats") {
+              return (
+                <div
+                  key="pageViewsStats"
+                  className="h-full w-full">
+                  <PageViewsList
+                    id="pageViewsStats"
+                    isEditing={isEditing}
+                  />
+                </div>
+              );
+            }
+
+            if (item.i === "productReviews") {
+              return (
+                <div
+                  key="productReviews"
+                  className="h-full w-full">
+                  <PageViewsList
+                    id="productReviews"
+                    isEditing={isEditing}
+                  />
+                </div>
+              );
+            }
+
+            if (item.i === "ordersLastWeek") {
+              return (
+                <div
+                  key="ordersLastWeek"
+                  className="h-full w-full">
+                  <OrdersLastWeekWidget
+                    id="ordersLastWeek"
+                    isEditing={isEditing}
+                  />
+                </div>
+              );
+            }
+
+            const widget = customWidgets.find(k => k.key === item.i.replace("$widget_", ""))
+
+            return (
+              <div key={item.i} className="h-full w-full">
+              <WidgetPanel isEditing={isEditing} id={item.i}>
+                {widget}
+              </WidgetPanel>
+            </div>
+            )
+          }).filter(k => k)}
+        </ResponsiveGridLayout>
+      </div>
     </div>
-  )
-}
+  );
+};
 
 const DashboardLoader = () => {
   return (
@@ -64,13 +257,19 @@ const DashboardLoader = () => {
   );
 };
 
-export const DashboardWrapper = ({ stats, reviews }: { stats?: TCmsStats, reviews: TProductReview[] }) => {
+export const DashboardWrapper = ({
+  stats,
+  reviews,
+}: {
+  stats?: TCmsStats;
+  reviews: TProductReview[];
+}) => {
   return (
-      <DashboardContextProvider>
-        <div className="p-4">
-            <Dashboard />
-        </div>
-      </DashboardContextProvider>
+    <DashboardContextProvider>
+      <div className="p-4">
+        <Dashboard />
+      </div>
+    </DashboardContextProvider>
   );
 };
 

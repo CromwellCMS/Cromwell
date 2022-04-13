@@ -160,6 +160,8 @@ export class StatsService {
                 return {
                     pageRoute: stat.pageRoute,
                     views: stat.views,
+                    pageName: stat.pageName,
+                    slug: stat.slug
                 }
             }))
         }
