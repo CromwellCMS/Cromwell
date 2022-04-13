@@ -26,6 +26,7 @@ import { CogIcon } from "@heroicons/react/outline";
 import { PageViewsList } from "./widgets/pageViewsList";
 import { WidgetPanel } from "./widgets/widgetPanel";
 import { AddWidgetMenu } from "./components/addWidgetMenu";
+import { ProductReviewsList } from "./widgets/productReviews";
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -190,7 +191,7 @@ const Dashboard = () => {
                 <div
                   key="productReviews"
                   className="h-full w-full">
-                  <PageViewsList
+                  <ProductReviewsList
                     id="productReviews"
                     isEditing={isEditing}
                   />
