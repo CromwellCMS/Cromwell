@@ -50,9 +50,9 @@ export const InnerPageFrame = () => {
         <p className="my-10 text-center">
           This is the place where you can add new custom pages to your website, edit existing pages - or even change the theme pages! <br />
           <strong>To begin, select a page on the left (or add a new one 😊).</strong> <br />
-          Anything that's related to the page as a whole (metadata, SEO settings, route, and much more!) will be available under "Page" on the right.<br />
-          If you want to change the design of a Block (we call each element on a page a block), click on an element on the page and head to the "block -> design" section on the right.
-          Want to change plugin settings or text of an element: "block -> function"!
+          Anything that&apos;s related to the page as a whole (metadata, SEO settings, route, and much more!) will be available under &quot;Page&quot; on the right.<br />
+          If you want to change the design of a Block (we call each element on a page a block), click on an element on the page and head to the &quot;block -{">"} design&quot; section on the right.
+          Want to change plugin settings or text of an element: &quot;block -{">"} function&quot;!
         </p>
         <h2 className="font-bold text-lg text-center">Have fun customizing your website!</h2>
       </div>
