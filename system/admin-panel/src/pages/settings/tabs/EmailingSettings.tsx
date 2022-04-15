@@ -1,10 +1,10 @@
 import { Grid, TextField } from '@mui/material';
 import React from 'react';
 
-import { TTabProps } from '../Settings';
+// import { TTabProps } from '../Settings';
 import styles from '../Settings.module.scss';
 
-export default function EmailingSettings(props: TTabProps) {
+export default function EmailingSettings(props: any) {
     const { settings, handleTextFieldChange } = props;
 
     return (

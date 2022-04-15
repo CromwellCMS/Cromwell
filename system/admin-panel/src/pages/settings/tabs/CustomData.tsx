@@ -14,7 +14,7 @@ import Modal from '../../../components/modal/Modal';
 import { Select } from '../../../components/select/Select';
 import { baseEntityColumns, unregisterCustomEntity } from '../../../helpers/customEntities';
 import { unregisterCustomField } from '../../../helpers/customFields';
-import { TAdminCmsSettings, TTabProps } from '../Settings';
+// import { TAdminCmsSettings, TTabProps } from '../Settings';
 import styles from '../Settings.module.scss';
 
 type AdminEntityView = {
@@ -23,7 +23,7 @@ type AdminEntityView = {
     custom?: boolean;
 }
 
-export default function CustomData(props: TTabProps) {
+export default function CustomData(props: any) {
     const { settings, changeSettings } = props;
 
     const [entityToEdit, setEntityToEdit] = useState<TAdminCustomEntity | null>(null)
@@ -248,8 +248,8 @@ export default function CustomData(props: TTabProps) {
 type TCustomFieldSettingsData = {
     id: string;
     field: TAdminCustomField;
-    settings?: TAdminCmsSettings | null;
-    changeSettings: (key: keyof TAdminCmsSettings, value: any) => void;
+    settings?: any | null;
+    changeSettings: (key: keyof any, value: any) => void;
 }
 
 const CustomFieldSettings = (props: {

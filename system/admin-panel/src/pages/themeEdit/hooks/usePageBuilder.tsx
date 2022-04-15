@@ -19,7 +19,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { askConfirmation } from "../../../components/modal/Confirmation";
 import { toast } from "../../../exports";
 import { Draggable } from "../../../helpers/Draggable/Draggable";
-import { contentStyles } from "../pageBuilder/contentStyles";
 import { TBlockMenuProps } from "../pageEditor/components/BlockMenu";
 import { TExtendedPageInfo } from "../ThemeEdit";
 import { useBlockEvents } from "./useBlockEvents";
@@ -27,6 +26,21 @@ import { useBlockFns } from "./useBlockFns";
 import { useEditorUtils } from "./useEditorUtils";
 import { useEditorFrames } from "./useHoveredFrames";
 import { useThemeEditor } from "./useThemeEditor";
+
+export const contentStyles = `
+* {
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
+    user-drag: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+`;
 
 type THistoryItem = {
   local: string;

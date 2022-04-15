@@ -2,10 +2,10 @@ import { Grid, TextField } from '@mui/material';
 import React from 'react';
 
 import { NumberFormatCustom } from '../../../helpers/NumberFormatCustom';
-import { TTabProps } from '../Settings';
+// import { TTabProps } from '../Settings';
 import styles from '../Settings.module.scss';
 
-export default function StoreCurrencies(props: TTabProps) {
+export default function StoreCurrencies(props: any) {
     const { settings, handleTextFieldChange } = props;
     return (
         <Grid item container spacing={3}>

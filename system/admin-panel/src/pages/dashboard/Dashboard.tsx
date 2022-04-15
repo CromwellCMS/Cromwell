@@ -258,13 +258,7 @@ const DashboardLoader = () => {
   );
 };
 
-export const DashboardWrapper = ({
-  stats,
-  reviews,
-}: {
-  stats?: TCmsStats;
-  reviews: TProductReview[];
-}) => {
+export const DashboardWrapper = () => {
   return (
     <DashboardContextProvider>
       <div className="p-4">

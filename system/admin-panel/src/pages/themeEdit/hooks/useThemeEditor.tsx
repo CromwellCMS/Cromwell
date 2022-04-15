@@ -15,7 +15,6 @@ import React, {
   useState,
 } from "react";
 import {
-  TEditorInstances,
   TExtendedPageConfig,
   TExtendedPageInfo,
 } from "../ThemeEdit";

@@ -4,12 +4,12 @@ import { Badge, Grid, IconButton, TextField, Tooltip } from '@mui/material';
 import React from 'react';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 
-import { TTabProps } from '../Settings';
+// import { TTabProps } from '../Settings';
 import styles from '../Settings.module.scss';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
-export default function StoreCurrencies(props: TTabProps) {
+export default function StoreCurrencies(props: any) {
     const { settings, changeSettings } = props;
     const currencies = settings?.currencies ?? [];
 

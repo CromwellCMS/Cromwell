@@ -102,7 +102,8 @@ export const OrdersLastWeekWidget = ({
                 />
 
                 <AnimatedBarSeries
-                  fill="url(#order-bg)"
+                  // fill="url(#order-bg)"
+                  colorAccessor={() => "url(#order-bg)"}
                   dataKey="orderWeekBar"
                   barPadding={0.5}
                   data={stats?.salesPerDay}

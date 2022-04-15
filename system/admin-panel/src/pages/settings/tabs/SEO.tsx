@@ -5,10 +5,10 @@ import React, { useState } from 'react';
 
 import { LoadingStatus } from '../../../components/loadBox/LoadingStatus';
 import { toast } from '../../../components/toast/toast';
-import { TTabProps } from '../Settings';
+// import { TTabProps } from '../Settings';
 import styles from '../Settings.module.scss';
 
-export default function SEO(props: TTabProps) {
+export default function SEO(props: any) {
     const { settings, changeSettings } = props;
     const [buildingSitemap, setBuildingSitemap] = useState(false);
 

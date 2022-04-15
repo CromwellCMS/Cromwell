@@ -7,10 +7,10 @@ import { Select } from '../../../components/select/Select';
 import { languages } from '../../../constants/languages';
 import { timezones } from '../../../constants/timezones';
 import { RenderCustomFields } from '../../../helpers/customFields';
-import { TTabProps } from '../Settings';
+// import { TTabProps } from '../Settings';
 import styles from '../Settings.module.scss';
 
-export default function General(props: TTabProps) {
+export default function General(props: any) {
     const { settings, handleTextFieldChange, changeSettings } = props;
     return (
         <Grid container spacing={3}>
