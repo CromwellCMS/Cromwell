@@ -44,8 +44,9 @@ function Layout() {
 
   const darkMode = getStoreItem('theme')?.mode === 'dark';
 
-  document.body.classList.remove('modeDark', 'modeLight');
+  document.body.classList.remove('modeDark', 'modeLight', 'dark', 'light');
   document.body.classList.add(darkMode ? 'modeDark' : 'modeLight');
+  document.body.classList.add(darkMode ? 'dark' : 'light');
 
   const theme = createTheme(darkMode ? {
     palette: {
@@ -77,7 +78,7 @@ function Layout() {
 
   return (
     <ThemeProvider theme={theme}>
-      <div className="bg-gray-100 dark:bg-gray-800 min-h-screen relative">
+      <div className="min-h-screen bg-gray-100 relative dark:bg-gray-800">
         <div className="flex items-start justify-between">
         <BrowserRouter basename={'admin'}>
           <SideNav />
