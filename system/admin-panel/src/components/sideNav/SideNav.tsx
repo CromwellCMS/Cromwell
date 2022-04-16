@@ -80,7 +80,7 @@ export const SideNav = () => {
 
   return (
     <>
-      <div className="bg-white rounded-2xl shadow-lg my-4 mb-8 ml-4 transform-gpu transition-all shadow-indigo-200 w-80 z-[90] hidden relative lg:block dark:bg-gray-700">
+      <div className="bg-white max-h-full rounded-2xl shadow-lg my-4 mb-8 ml-4 transform-gpu transition-all top-4 shadow-indigo-200 w-80 z-[90] hidden sticky lg:block dark:bg-gray-700">
         <div className="h-full rounded-2xl">
           <div className="flex py-2 items-center justify-center">
             <Link to="/">
@@ -91,10 +91,10 @@ export const SideNav = () => {
               />
             </Link>
           </div>
-          <nav className="mt-0">
+          <nav className="h-[calc(100vh-150px)] mt-0 overflow-y-auto scrollbar-slim">
             {
               (
-                <div className={`flex ${currentInfo?.minimizeSidebar ? "flex-row" : "flex-col"}`}>
+                <div className={`h-full flex ${currentInfo?.minimizeSidebar ? "flex-row" : "flex-col"}`}>
                   {getSideBarLinks().map((link) => (
                     <SideNavLink
                       data={link}
