@@ -1,4 +1,4 @@
-import { TUserRole } from '@cromwell/core';
+import { TPermissionName } from '@cromwell/core';
 import React, { lazy } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 
@@ -36,7 +36,7 @@ export type TSidebarLink = {
     baseRoute?: string;
     subLinks?: TSidebarLink[];
     icon?: React.ReactNode;
-    roles: TUserRole[];
+    permissions?: TPermissionName[];
 }
 
 export type TPageInfo = {
@@ -45,88 +45,88 @@ export type TPageInfo = {
     baseRoute?: string;
     component: React.ComponentType<Partial<RouteComponentProps>>;
     disableSidebar?: boolean;
-    roles?: TUserRole[];
+    permissions?: TPermissionName[];
 }
 
 export const homePageInfo: TPageInfo = {
     name: 'Dashboard',
     route: '/',
     component: DashboardPage,
-    roles: ['administrator', 'guest'],
+    permissions: ['read_cms_statistics']
 };
 export const themeListPageInfo: TPageInfo = {
     name: 'ThemeList',
     route: '/themes',
     component: ThemeListPage,
-    roles: ['administrator', 'guest'],
+    permissions: ['read_themes']
 };
 export const themeEditPageInfo: TPageInfo = {
     name: 'ThemeEdit',
     route: '/theme-editor',
     baseRoute: '/theme-editor',
     component: ThemeEditPage,
-    roles: ['administrator', 'guest'],
+    permissions: ['read_themes']
 };
 export const productListInfo: TPageInfo = {
     name: 'ProductList',
     route: '/products',
     component: ProductListPage,
-    roles: ['administrator', 'guest'],
+    permissions: ['read_products']
 };
 export const productPageInfo: TPageInfo = {
     name: 'ProductList',
     route: '/products/:id',
     baseRoute: '/products',
     component: ProductPage,
-    roles: ['administrator', 'guest'],
+    permissions: ['read_products']
 };
 
 export const categoryListPageInfo: TPageInfo = {
     name: 'CategoryList',
     route: '/categories',
     component: CategoryListPage,
-    roles: ['administrator', 'guest'],
+    permissions: ['read_product_categories']
 };
 export const categoryPageInfo: TPageInfo = {
     name: 'Category',
     route: '/categories/:id',
     component: CategoryPage,
     baseRoute: '/categories',
-    roles: ['administrator', 'guest'],
+    permissions: ['read_product_categories']
 };
 
 export const attributesInfo: TPageInfo = {
     name: 'Attributes',
     route: '/attributes',
     component: AttributesPage,
-    roles: ['administrator', 'guest'],
+    permissions: ['read_attributes']
 };
 export const pluginListPageInfo: TPageInfo = {
     name: 'PluginList',
     route: '/plugins',
     component: PluginListPage,
-    roles: ['administrator', 'guest'],
+    permissions: ['read_plugins']
 };
 export const pluginPageInfo: TPageInfo = {
     name: 'Plugin',
     baseRoute: '/plugin',
     route: '/plugin',
     component: PluginPage,
-    roles: ['administrator', 'guest'],
+    permissions: ['read_plugins'],
 };
 
 export const postListInfo: TPageInfo = {
     name: 'Posts',
     route: '/posts',
     component: PostListPage,
-    roles: ['administrator', 'guest', 'author'],
+    permissions: ['read_posts'],
 };
 export const postPageInfo: TPageInfo = {
     name: 'Post',
     route: '/posts/:id',
     component: PostPage,
     baseRoute: '/posts',
-    roles: ['administrator', 'guest', 'author'],
+    permissions: ['read_posts'],
 };
 
 export const loginPageInfo: TPageInfo = {
@@ -141,7 +141,7 @@ export const orderListPageInfo: TPageInfo = {
     name: 'Order List',
     route: '/orders',
     component: OrderListPage,
-    roles: ['administrator', 'guest'],
+    permissions: ['read_orders'],
 };
 
 export const orderPageInfo: TPageInfo = {
@@ -149,7 +149,7 @@ export const orderPageInfo: TPageInfo = {
     route: '/orders/:id',
     baseRoute: '/orders',
     component: OrderPage,
-    roles: ['administrator', 'guest'],
+    permissions: ['read_orders'],
 };
 
 export const welcomePageInfo: TPageInfo = {
@@ -163,21 +163,21 @@ export const settingsPageInfo: TPageInfo = {
     name: 'Settings',
     route: '/settings',
     component: SettingsPage,
-    roles: ['administrator', 'guest'],
+    permissions: ['read_cms_settings'],
 };
 
 export const userListPageInfo: TPageInfo = {
     name: 'User List',
     route: '/users',
     component: UserListPage,
-    roles: ['administrator', 'guest'],
+    permissions: ['read_users'],
 };
 export const userPageInfo: TPageInfo = {
     name: 'User',
     route: '/users/:id',
     baseRoute: '/users',
     component: UserPage,
-    roles: ['administrator', 'guest', 'author'],
+    permissions: ['read_users'],
 };
 
 export const tagPageInfo: TPageInfo = {
@@ -185,33 +185,33 @@ export const tagPageInfo: TPageInfo = {
     route: '/tags/:id',
     baseRoute: '/tags',
     component: TagPage,
-    roles: ['administrator', 'guest', 'author'],
+    permissions: ['read_tags'],
 }
 export const tagListPageInfo: TPageInfo = {
     name: 'Tag List',
     route: '/tags',
     component: TagListPage,
-    roles: ['administrator', 'guest', 'author'],
+    permissions: ['read_tags'],
 }
 
 export const reviewListPageInfo: TPageInfo = {
     name: 'Reviews',
     route: '/reviews',
     component: ReviewListPage,
-    roles: ['administrator', 'guest'],
+    permissions: ['read_product_reviews'],
 }
 
 export const pluginMarketPageInfo: TPageInfo = {
     name: 'Plugin Market',
     route: '/plugin-market',
     component: PluginMarket,
-    roles: ['administrator', 'guest'],
+    permissions: ['read_plugins'],
 }
 export const themeMarketPageInfo: TPageInfo = {
     name: 'Theme Market',
     route: '/theme-market',
     component: ThemeMarket,
-    roles: ['administrator', 'guest'],
+    permissions: ['read_themes'],
 }
 
 export const couponPageInfo: TPageInfo = {
@@ -219,11 +219,11 @@ export const couponPageInfo: TPageInfo = {
     route: '/coupons/:id',
     baseRoute: '/coupons',
     component: CouponPage,
-    roles: ['administrator', 'guest'],
+    permissions: ['read_coupons'],
 }
 export const couponListPageInfo: TPageInfo = {
     name: 'Coupon List',
     route: '/coupons',
     component: CouponList,
-    roles: ['administrator', 'guest'],
+    permissions: ['read_coupons'],
 }

@@ -1,5 +1,5 @@
 import { setStoreItem } from '@cromwell/core';
-import { getGraphQLClient, getRestApiClient } from '@cromwell/core-frontend';
+import { getRestApiClient } from '@cromwell/core-frontend';
 import { Visibility as VisibilityIcon, VisibilityOff as VisibilityOffIcon } from '@mui/icons-material';
 import { Button, IconButton, InputAdornment, TextField } from '@mui/material';
 import { withStyles } from '@mui/styles';
@@ -8,13 +8,11 @@ import { useHistory } from 'react-router-dom';
 
 import { ImagePicker } from '../../components/imagePicker/ImagePicker';
 import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
-import { toast } from '../../components/toast/toast';
 import styles from './Welcome.module.scss';
 
 
 export default function WelcomePage() {
     const apiClient = getRestApiClient();
-    const graphQLClient = getGraphQLClient();
     const history = useHistory();
     const [showPassword, setShowPassword] = useState(false);
     const [submitPressed, setSubmitPressed] = useState(false);
@@ -38,23 +36,14 @@ export default function WelcomePage() {
         setLoading(true);
 
         try {
-            await graphQLClient.createUser({
-                fullName: nameInput,
-                email: emailInput,
-                password: passwordInput,
-                avatar: avatarInput,
-                role: 'administrator',
-            });
-        } catch (e) {
-            toast.error('Failed to create user with provided credentials');
-            console.error(e);
-            setLoading(false);
-            return;
-        }
-
-        try {
             await apiClient.setUpCms({
                 url: window.location.origin,
+                user: {
+                    fullName: nameInput,
+                    email: emailInput,
+                    password: passwordInput,
+                    avatar: avatarInput,
+                }
             });
 
             await apiClient.login({

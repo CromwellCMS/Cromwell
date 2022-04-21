@@ -103,27 +103,26 @@ export const getSideBarLinks = (): TSidebarLink[] => {
             title: homePageInfo.name,
             route: homePageInfo.route,
             icon: React.createElement(DashboardIcon),
-            roles: ['administrator', 'guest'],
+            permissions: ['read_cms_statistics'],
         },
         {
             id: '2_Store',
             title: 'Store',
             icon: React.createElement(LocalMallIcon),
-            roles: ['administrator', 'guest'],
             subLinks: [
                 {
                     id: '3_productList',
                     title: 'Products',
                     route: productListInfo.route,
                     icon: React.createElement(StorageIcon),
-                    roles: ['administrator', 'guest'],
+                    permissions: ['read_products'],
                 },
                 {
                     id: '4_Attributes',
                     title: 'Attributes',
                     route: attributesInfo.route,
                     icon: React.createElement(FilterListIcon),
-                    roles: ['administrator', 'guest'],
+                    permissions: ['read_attributes'],
                 },
                 {
                     id: '5_Categories',
@@ -132,28 +131,28 @@ export const getSideBarLinks = (): TSidebarLink[] => {
                     icon: React.createElement(CategoryIcon, {
                         viewBox: "-50 -50 400 400"
                     }),
-                    roles: ['administrator', 'guest'],
+                    permissions: ['read_product_categories'],
                 },
                 {
                     id: '11_Order_list',
                     title: 'Orders',
                     route: orderListPageInfo.route,
                     icon: React.createElement(ShoppingBasketIcon),
-                    roles: ['administrator', 'guest'],
+                    permissions: ['read_orders'],
                 },
                 {
                     id: 'Coupon_list',
                     title: 'Coupons',
                     route: couponListPageInfo.route,
                     icon: React.createElement(ConfirmationNumberIcon),
-                    roles: ['administrator', 'guest'],
+                    permissions: ['read_coupons'],
                 },
                 {
                     id: 'Review_list',
                     title: 'Reviews',
                     route: reviewListPageInfo.route,
                     icon: React.createElement(StarsIcon),
-                    roles: ['administrator', 'guest'],
+                    permissions: ['read_product_reviews'],
                 }
             ]
         },
@@ -164,21 +163,20 @@ export const getSideBarLinks = (): TSidebarLink[] => {
                 className: sidebarStyles.customIcon,
                 style: { backgroundImage: 'url(/admin/static/icon_blogging.png)' }
             }),
-            roles: ['administrator', 'guest', 'author'],
             subLinks: [
                 {
                     id: '7_Posts',
                     title: 'Posts',
                     route: postListInfo.route,
                     icon: React.createElement(LibraryBooksIcon),
-                    roles: ['administrator', 'guest', 'author'],
+                    permissions: ['read_posts'],
                 },
                 {
                     id: 'tags_page',
                     title: 'Tags',
                     route: tagListPageInfo.route,
                     icon: React.createElement(LocalOfferOutlinedIcon),
-                    roles: ['administrator', 'guest', 'author'],
+                    permissions: ['read_tags'],
                 },
             ]
         },
@@ -188,7 +186,7 @@ export const getSideBarLinks = (): TSidebarLink[] => {
             title: 'Themes',
             route: themeListPageInfo.route,
             icon: React.createElement(FormatPaintIcon),
-            roles: ['administrator', 'guest'],
+            permissions: ['read_themes'],
         },
         {
             id: '6_pluginsPage',
@@ -200,27 +198,37 @@ export const getSideBarLinks = (): TSidebarLink[] => {
                     filter: 'invert(1)',
                 }
             }),
-            roles: ['administrator', 'guest'],
+            permissions: ['read_plugins'],
         },
         {
             id: 'users_page',
             title: 'Users',
             route: userListPageInfo.route,
             icon: React.createElement(PeopleAltIcon),
-            roles: ['administrator', 'guest'],
+            permissions: ['read_users'],
         },
         {
             id: 'settings_page',
             title: 'Settings',
             route: settingsPageInfo.route,
             icon: React.createElement(SettingsIcon),
-            roles: ['administrator', 'guest'],
+            permissions: ['read_cms_settings'],
         }
     ];
 
     for (const modifier of Object.values(sidebarLinkModifiers)) {
         links = modifier(links);
     }
+    return links;
+}
+
+export const getSideBarLinksFlat = () => {
+    const links: TSidebarLink[] = [];
+    const pushLinks = (link: TSidebarLink) => {
+        links.push(link);
+        link.subLinks?.forEach(pushLinks);
+    }
+    getSideBarLinks().forEach(pushLinks);
     return links;
 }
 

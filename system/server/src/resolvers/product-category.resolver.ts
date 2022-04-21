@@ -1,4 +1,4 @@
-import { EDBEntity, GraphQLPaths, TAuthRole, TPagedList, TProduct, TProductCategory } from '@cromwell/core';
+import { EDBEntity, GraphQLPaths, TPermissionName, TPagedList, TProduct, TProductCategory } from '@cromwell/core';
 import {
     CreateProductCategory,
     DeleteManyInput,
@@ -56,7 +56,7 @@ export class ProductCategoryResolver {
         return await this.repository.getProductCategoryById(id);
     }
 
-    @Authorized<TAuthRole>("administrator")
+    @Authorized<TPermissionName>('create_product_category')
     @Mutation(() => ProductCategory)
     async [createPath](@Arg("data") data: CreateProductCategory) {
         const category = await this.repository.createProductCategory(data);
@@ -65,7 +65,7 @@ export class ProductCategoryResolver {
         return category;
     }
 
-    @Authorized<TAuthRole>("administrator")
+    @Authorized<TPermissionName>('update_product_category')
     @Mutation(() => ProductCategory)
     async [updatePath](@Arg("id", () => Int) id: number, @Arg("data") data: UpdateProductCategory) {
         const category = await this.repository.updateProductCategory(id, data);
@@ -74,7 +74,7 @@ export class ProductCategoryResolver {
         return category;
     }
 
-    @Authorized<TAuthRole>("administrator")
+    @Authorized<TPermissionName>('delete_product_category')
     @Mutation(() => Boolean)
     async [deletePath](@Arg("id", () => Int) id: number) {
         const category = await this.repository.deleteProductCategory(id);
@@ -83,13 +83,13 @@ export class ProductCategoryResolver {
         return category;
     }
 
-    @Authorized<TAuthRole>("administrator")
+    @Authorized<TPermissionName>('delete_product_category')
     @Mutation(() => Boolean)
     async [deleteManyPath](@Arg("data") data: DeleteManyInput): Promise<boolean | undefined> {
         return this.repository.deleteManyCategories(data);
     }
 
-    @Authorized<TAuthRole>("administrator")
+    @Authorized<TPermissionName>('delete_product_category')
     @Mutation(() => Boolean)
     async [deleteManyFilteredPath](
         @Arg("input") input: DeleteManyInput,

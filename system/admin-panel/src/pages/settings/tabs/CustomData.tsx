@@ -26,7 +26,7 @@ type AdminEntityView = {
 export default function CustomData(props: TTabProps) {
     const { settings, changeSettings } = props;
 
-    const [entityToEdit, setEntityToEdit] = useState<TAdminCustomEntity | null>(null)
+    const [entityToEdit, setEntityToEdit] = useState<TAdminCustomEntity | null>(null);
     const [canShowInvalid, setCanShowInvalid] = useState(false);
 
     const defaultEntitiesWithCustomFields: AdminEntityView[] = [

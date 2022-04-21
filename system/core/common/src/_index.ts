@@ -6,3 +6,4 @@ export * from './global-store';
 export * from './helpers';
 export * from './service-locator';
 export * from './redirects';
+export * from './auth';

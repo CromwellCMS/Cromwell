@@ -1,4 +1,4 @@
-import { EDBEntity, GraphQLPaths, TAuthRole, TCoupon, TPagedList } from '@cromwell/core';
+import { EDBEntity, GraphQLPaths, TPermissionName, TCoupon, TPagedList } from '@cromwell/core';
 import {
     BaseFilterInput,
     Coupon,
@@ -31,21 +31,21 @@ export class CouponResolver {
 
     private repository = getCustomRepository(CouponRepository);
 
-    @Authorized<TAuthRole>('administrator', 'guest')
+    @Authorized<TPermissionName>('read_coupons')
     @Query(() => PagedCoupon)
     async [getManyPath](@Arg("pagedParams", { nullable: true }) pagedParams?: PagedParamsInput<TCoupon>):
         Promise<TPagedList<TCoupon>> {
         return this.repository.getCoupons(pagedParams);
     }
 
-    @Authorized<TAuthRole>('administrator', 'guest')
+    @Authorized<TPermissionName>('read_coupons')
     @Query(() => Coupon)
     async [getOneByIdPath](@Arg("id", () => Int) id: number): Promise<TCoupon | undefined> {
         entityMetaRepository.getAllEntityMetaKeys(EDBEntity.CustomEntity);
         return this.repository.getCouponById(id);
     }
 
-    @Authorized<TAuthRole>("administrator", 'author')
+    @Authorized<TPermissionName>('create_coupon')
     @Mutation(() => Coupon)
     async [createPath](@Arg("data") data: CouponInput): Promise<TCoupon> {
         const coupon = await this.repository.createCoupon(data);
@@ -54,7 +54,7 @@ export class CouponResolver {
         return coupon;
     }
 
-    @Authorized<TAuthRole>("administrator", 'author')
+    @Authorized<TPermissionName>('update_coupon')
     @Mutation(() => Coupon)
     async [updatePath](@Arg("id", () => Int) id: number, @Arg("data") data: CouponInput): Promise<TCoupon | undefined> {
         const coupon = await this.repository.updateCoupon(id, data);
@@ -63,7 +63,7 @@ export class CouponResolver {
         return coupon;
     }
 
-    @Authorized<TAuthRole>("administrator", 'author')
+    @Authorized<TPermissionName>('delete_coupon')
     @Mutation(() => Boolean)
     async [deletePath](@Arg("id", () => Int) id: number): Promise<boolean> {
         const coupon = await this.repository.deleteCoupon(id);
@@ -72,7 +72,7 @@ export class CouponResolver {
         return coupon;
     }
 
-    @Authorized<TAuthRole>("administrator", 'author')
+    @Authorized<TPermissionName>('delete_coupon')
     @Mutation(() => Boolean)
     async [deleteManyPath](@Arg("data") data: DeleteManyInput): Promise<boolean | undefined> {
         const res = await this.repository.deleteMany(data);
@@ -80,7 +80,7 @@ export class CouponResolver {
         return res;
     }
 
-    @Authorized<TAuthRole>("administrator")
+    @Authorized<TPermissionName>('delete_coupon')
     @Mutation(() => Boolean)
     async [deleteManyFilteredPath](
         @Arg("input") input: DeleteManyInput,
@@ -91,7 +91,7 @@ export class CouponResolver {
         return res;
     }
 
-    @Authorized<TAuthRole>('administrator', 'guest')
+    @Authorized<TPermissionName>('read_coupons')
     @Query(() => PagedCoupon)
     async [getFilteredPath](
         @Arg("pagedParams", { nullable: true }) pagedParams?: PagedParamsInput<TCoupon>,
@@ -105,7 +105,7 @@ export class CouponResolver {
         return entityMetaRepository.getEntityMetaByKeys(EDBEntity.Coupon, entity.id, fields);
     }
 
-    @Authorized<TAuthRole>('administrator', 'guest')
+    @Authorized<TPermissionName>('read_coupons')
     @Query(() => [Coupon])
     async [getCouponsByCodesPath](@Arg("codes", () => [String]) codes: string[]):
         Promise<TCoupon[] | undefined> {

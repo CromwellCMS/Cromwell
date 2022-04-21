@@ -1,9 +1,9 @@
-import { EDBEntity, GraphQLPaths, TAuthRole, TPagedList, TTag } from '@cromwell/core';
+import { EDBEntity, GraphQLPaths, TPagedList, TPermissionName, TTag } from '@cromwell/core';
 import {
     BaseFilterInput,
     DeleteManyInput,
     entityMetaRepository,
-    InputTag,
+    TagInput,
     PagedParamsInput,
     PagedTag,
     Tag,
@@ -49,25 +49,25 @@ export class TagResolver {
         return this.repository.getTagById(id);
     }
 
-    @Authorized<TAuthRole>("administrator", 'author')
+    @Authorized<TPermissionName>('create_tag')
     @Mutation(() => Tag)
-    async [createPath](@Arg("data") data: InputTag): Promise<TTag> {
+    async [createPath](@Arg("data") data: TagInput): Promise<TTag> {
         const tag = await this.repository.createTag(data);
         serverFireAction('create_tag', tag);
         resetAllPagesCache();
         return tag;
     }
 
-    @Authorized<TAuthRole>("administrator", 'author')
+    @Authorized<TPermissionName>('update_tag')
     @Mutation(() => Tag)
-    async [updatePath](@Arg("id", () => Int) id: number, @Arg("data") data: InputTag): Promise<TTag | undefined> {
+    async [updatePath](@Arg("id", () => Int) id: number, @Arg("data") data: TagInput): Promise<TTag | undefined> {
         const tag = await this.repository.updateTag(id, data);
         serverFireAction('update_tag', tag);
         resetAllPagesCache();
         return tag;
     }
 
-    @Authorized<TAuthRole>("administrator", 'author')
+    @Authorized<TPermissionName>('delete_tag')
     @Mutation(() => Boolean)
     async [deletePath](@Arg("id", () => Int) id: number): Promise<boolean> {
         const tag = await this.repository.deleteTag(id);
@@ -76,7 +76,7 @@ export class TagResolver {
         return tag;
     }
 
-    @Authorized<TAuthRole>("administrator", 'author')
+    @Authorized<TPermissionName>('delete_tag')
     @Mutation(() => Boolean)
     async [deleteManyPath](@Arg("data") data: DeleteManyInput): Promise<boolean | undefined> {
         const res = await this.repository.deleteMany(data);
@@ -84,7 +84,7 @@ export class TagResolver {
         return res;
     }
 
-    @Authorized<TAuthRole>("administrator")
+    @Authorized<TPermissionName>('delete_tag')
     @Mutation(() => Boolean)
     async [deleteManyFilteredPath](
         @Arg("input") input: DeleteManyInput,

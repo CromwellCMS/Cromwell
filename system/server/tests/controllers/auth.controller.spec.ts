@@ -1,3 +1,4 @@
+import { TCreateUser } from '@cromwell/core';
 import * as coreBackend from '@cromwell/core-backend';
 
 const sendEmail = jest.spyOn(coreBackend, 'sendEmail');
@@ -10,7 +11,7 @@ getEmailTemplate.mockImplementation(async (name: string, content: any) => {
     return 'mail';
 });
 
-import { UserRepository } from '@cromwell/core-backend';
+import { RoleRepository, UserRepository } from '@cromwell/core-backend';
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { getCustomRepository } from 'typeorm';
@@ -29,17 +30,22 @@ describe('auth Controller', () => {
         server = state.server;
         app = state.app;
         testDir = state.testDir;
+        const adminRole = await getCustomRepository(RoleRepository).createRole({
+            name: 'administrator',
+            permissions: ['all'],
+        });
+
         await getCustomRepository(UserRepository).createUser({
             password: 'test',
             email: 'test@test.test',
-            role: 'administrator',
+            roles: [adminRole.name!],
             fullName: 'test',
         });
 
         await getCustomRepository(UserRepository).createUser({
             password: 'test3',
             email: 'test3@test.test',
-            role: 'administrator',
+            roles: [adminRole.name!],
             fullName: 'test3',
         });
     });
@@ -101,14 +107,14 @@ describe('auth Controller', () => {
 
 
     it(`/POST sign-up`, () => {
+        const input: TCreateUser = {
+            email: 'test2@test.test',
+            password: 'test',
+            fullName: 'test',
+        };
         return request(server)
             .post('/v1/auth/sign-up')
-            .send({
-                email: 'test2@test.test',
-                password: 'test',
-                fullName: 'test',
-                role: 'customer',
-            })
+            .send(input)
             .expect(201)
             .then(response => {
                 expect(response.body?.fullName).toEqual('test');

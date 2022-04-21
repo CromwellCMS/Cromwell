@@ -28,9 +28,9 @@ describe('product-showcase.resolver', () => {
             context: (): TGraphQLContext => {
                 return {
                     user: {
-                        id: 'test',
+                        id: 1,
                         email: 'test@test.org',
-                        role: 'administrator',
+                        roles: [{ name: 'administrator', permissions: ['all'], id: 1 }],
                     }
                 }
             }

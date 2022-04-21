@@ -1,7 +1,7 @@
 import { TCreateUser, TDeleteManyInput, TPagedList, TPagedParams, TUpdateUser, TUser } from '@cromwell/core';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import bcrypt from '@node-rs/bcrypt';
-import { EntityRepository, SelectQueryBuilder } from 'typeorm';
+import { Brackets, EntityRepository, getCustomRepository, SelectQueryBuilder } from 'typeorm';
 
 import { bcryptSaltRounds } from '../helpers/auth-settings';
 import { checkEntitySlug, getPaged, handleBaseInput, handleCustomMetaInput } from '../helpers/base-queries';
@@ -11,6 +11,7 @@ import { User } from '../models/entities/user.entity';
 import { UserFilterInput } from '../models/filters/user.filter';
 import { PagedParamsInput } from '../models/inputs/paged-params.input';
 import { BaseRepository } from './base.repository';
+import { RoleRepository } from './role.repository';
 
 const logger = getLogger();
 
@@ -23,27 +24,30 @@ export class UserRepository extends BaseRepository<User> {
 
     async getUsers(params?: TPagedParams<User>): Promise<TPagedList<User>> {
         logger.log('UserRepository::getUsers');
-        return this.getPaged(params)
+        const qb = this.createQueryBuilder(this.metadata.tablePath);
+        qb.leftJoinAndSelect(`${this.metadata.tablePath}.roles`,
+            getCustomRepository(RoleRepository).metadata.tablePath);
+        return await getPaged(qb, this.metadata.tablePath, params);
     }
 
     async getUserById(id: number): Promise<User | undefined> {
         logger.log('UserRepository::getUserById id: ' + id);
-        return this.getById(id);
+        return this.getById(id, ['roles']);
     }
 
     async getUserByEmail(email: string): Promise<User | undefined> {
         logger.log('UserRepository::getUserByEmail email: ' + email);
 
         const user = await this.findOne({
-            where: { email }
+            where: { email },
+            relations: ['roles'],
         });
-
         return user;
     }
 
     async getUserBySlug(slug: string): Promise<User | undefined> {
         logger.log('UserRepository::getUserBySlug slug: ' + slug);
-        return this.getBySlug(slug);
+        return this.getBySlug(slug, ['roles']);
     }
 
     async handleUserInput(user: User, userInput: TUpdateUser, action: 'update' | 'create') {
@@ -68,7 +72,16 @@ export class UserRepository extends BaseRepository<User> {
         user.bio = userInput.bio;
         user.phone = userInput.phone;
         user.address = userInput.address;
-        user.role = userInput.role;
+        if (userInput.roles !== undefined) {
+            user.roles = [];
+            for (const role of (userInput.roles ?? [])) {
+                const dbRole = await getCustomRepository(RoleRepository).getRoleByName(role);
+                if (dbRole) {
+                    if (!user.roles) user.roles = [];
+                    user.roles.push(dbRole)
+                }
+            }
+        }
 
         if (action === 'create') await user.save();
         await checkEntitySlug(user, User);
@@ -101,8 +114,6 @@ export class UserRepository extends BaseRepository<User> {
             user.password = createUser.password;
         }
 
-        if (!user.role) user.role = 'customer';
-
         await this.handleUserInput(user, createUser, 'create');
         await this.save(user);
         return user;
@@ -134,13 +145,34 @@ export class UserRepository extends BaseRepository<User> {
 
     }
 
-    applyUserFilter(qb: SelectQueryBuilder<TUser>, filterParams?: UserFilterInput) {
+    async applyUserFilter(qb: SelectQueryBuilder<TUser>, filterParams?: UserFilterInput) {
         this.applyBaseFilter(qb, filterParams);
 
+        const roleTable = getCustomRepository(RoleRepository).metadata.tablePath;
+        qb.leftJoinAndSelect(`${this.metadata.tablePath}.roles`, roleTable);
         // Search by role
-        if (filterParams?.role) {
-            const query = `${this.metadata.tablePath}.role = :role`;
-            qb.andWhere(query, { role: filterParams.role });
+
+        if (filterParams?.roles?.length) {
+            const brackets = new Brackets(subQb => {
+                filterParams?.roles?.forEach(role => {
+                    const query = `${roleTable}.name = :role_${role}`;
+                    subQb.orWhere(query, { [`role_${role}`]: role });
+                })
+            });
+            qb.andWhere(brackets);
+        }
+
+        if (filterParams?.permissions) {
+            const roles = await getCustomRepository(RoleRepository).getAll();
+            const rolesToSearch = roles.filter(r => r.permissions?.some(p => filterParams.permissions?.includes(p)));
+
+            const brackets = new Brackets(subQb => {
+                rolesToSearch.forEach(role => {
+                    const query = `${roleTable}.name = :role_${role.name}`;
+                    subQb.orWhere(query, { [`role_${role.name}`]: role.name });
+                })
+            });
+            qb.andWhere(brackets);
         }
 
         // Search by fullName
@@ -175,13 +207,16 @@ export class UserRepository extends BaseRepository<User> {
     async getFilteredUsers(pagedParams?: PagedParamsInput<TUser>, filterParams?: UserFilterInput): Promise<TPagedList<TUser>> {
         const qb = this.createQueryBuilder(this.metadata.tablePath);
         qb.select();
-        this.applyUserFilter(qb, filterParams);
+        await this.applyUserFilter(qb, filterParams);
+        if (pagedParams?.orderBy === 'roles') {
+            qb.orderBy(`${getCustomRepository(RoleRepository).metadata.tablePath}.title`, pagedParams.order ?? 'DESC');
+        }
         return await getPaged<TUser>(qb, this.metadata.tablePath, pagedParams);
     }
 
     async deleteManyFilteredUsers(input: TDeleteManyInput, filterParams?: UserFilterInput): Promise<boolean | undefined> {
         const qbSelect = this.createQueryBuilder(this.metadata.tablePath).select([`${this.metadata.tablePath}.id`]);
-        this.applyUserFilter(qbSelect, filterParams);
+        await this.applyUserFilter(qbSelect, filterParams);
         this.applyDeleteMany(qbSelect, input);
 
         const qbDelete = this.createQueryBuilder(this.metadata.tablePath).delete()

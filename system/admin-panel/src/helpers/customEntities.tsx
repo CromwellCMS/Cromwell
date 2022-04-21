@@ -60,9 +60,9 @@ export const getCustomEntityPages = (): TPageInfo[] => {
             entityLabel: entity.entityLabel,
             renderFields: () => <></>,
             getInput: () => ({ entityType: entity.entityType }),
-            getById: client.getCustomEntityById,
-            deleteOne: client.deleteCustomEntity,
-            deleteMany: client.deleteManyCustomEntities,
+            getById: (...args) => client.getCustomEntityById(entity.entityType, ...args),
+            deleteOne: (...args) => client.deleteCustomEntity(entity.entityType, ...args),
+            deleteMany: (input) => client.deleteManyFilteredCustomEntities(input, { entityType: entity.entityType }),
             deleteManyFiltered: client.deleteManyFilteredCustomEntities,
             getManyFiltered: client.getFilteredCustomEntities,
             update: client.updateCustomEntity,
@@ -80,7 +80,7 @@ export const getCustomEntityPages = (): TPageInfo[] => {
             name: entity.entityType,
             route: entityRoutes.entityListRoute,
             component: ListComp,
-            roles: ['administrator', 'guest', 'author'],
+            permissions: ['read_custom_entities', entity.permissions?.read as any].filter(Boolean),
         });
 
         const EntityComp = () => {
@@ -94,7 +94,7 @@ export const getCustomEntityPages = (): TPageInfo[] => {
             name: entity.entityType,
             route: entityRoutes.entityBaseRoute + '/:id',
             component: EntityComp,
-            roles: ['administrator', 'guest', 'author'],
+            permissions: ['read_custom_entities', entity.permissions?.read as any].filter(Boolean),
         });
     });
     return pages;
@@ -114,7 +114,7 @@ export const getCustomEntitySidebarLinks = (): TSidebarLink[] => {
                 className: sidebarStyles.customIcon,
                 style: { backgroundImage: `url(${entity.icon})` }
             }),
-            roles: ['administrator', 'guest', 'author'],
+            permissions: ['read_custom_entity', entity.permissions?.read as any].filter(Boolean),
         })
     });
     return links;

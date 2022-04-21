@@ -1,4 +1,4 @@
-import { GraphQLPaths, TAuthRole, TPagedList } from '@cromwell/core';
+import { GraphQLPaths, TPermissionName, TPagedList } from '@cromwell/core';
 import { Arg, Args, ArgsType, Authorized, Field, Int, Mutation, ObjectType, Query, Resolver } from 'type-graphql';
 import { EntityRepository, getCustomRepository, ObjectType as TObjectType } from 'typeorm';
 
@@ -56,32 +56,32 @@ export const createGenericEntity = <EntityType, EntityInputType = EntityType>(en
 
         private repository = getCustomRepository(GenericRepository)
 
-        @Authorized<TAuthRole>("administrator", "guest", "author")
+        @Authorized<string>(`read_${entityName.toLowerCase()}s`)
         @Query(() => PagedEntity)
         async [getPagedPath](@Arg("pagedParams") pagedParams: PagedParamsInput<EntityType>):
             Promise<TPagedList<EntityType>> {
             return this.repository.getPaged(pagedParams);
         }
 
-        @Authorized<TAuthRole>("administrator", "guest", "author")
+        @Authorized<string>(`read_${entityName.toLowerCase()}s`)
         @Query(() => [EntityClass])
         async [getAllPath](): Promise<EntityType[]> {
             return this.repository.getAll();
         }
 
-        @Authorized<TAuthRole>("administrator", "guest", "author")
+        @Authorized<string>(`read_${entityName.toLowerCase()}s`)
         @Query(() => EntityClass)
         async [getBySlugPath](@Arg("slug") slug: string): Promise<EntityType | undefined> {
             return this.repository.getBySlug(slug);
         }
 
-        @Authorized<TAuthRole>("administrator", "guest", "author")
+        @Authorized<string>(`read_${entityName.toLowerCase()}s`)
         @Query(() => EntityClass)
         async [getByIdPath](@Arg("id", () => Int) id: number): Promise<EntityType | undefined> {
             return this.repository.getById(id);
         }
 
-        @Authorized<TAuthRole>("administrator", "guest", "author")
+        @Authorized<string>(`read_${entityName.toLowerCase()}s`)
         @Query(() => PagedEntity)
         async [getFilteredPath](
             @Arg("pagedParams", () => PagedParamsInput, { nullable: true }) pagedParams?: PagedParamsInput<EntityType>,
@@ -90,19 +90,19 @@ export const createGenericEntity = <EntityType, EntityInputType = EntityType>(en
             return this.repository.getFilteredEntities(pagedParams, filterParams);
         }
 
-        @Authorized<TAuthRole>("administrator")
+        @Authorized<string>(`create_${entityName.toLowerCase()}`)
         @Mutation(() => EntityClass)
         async [createPath](@Args() { data }: CreateArgs): Promise<EntityType> {
             return this.repository.createEntity(data);
         }
 
-        @Authorized<TAuthRole>("administrator")
+        @Authorized<string>(`update_${entityName.toLowerCase()}`)
         @Mutation(() => EntityClass)
         async [updatePath](@Args() { id, data }: UpdateArgs): Promise<EntityType> {
             return this.repository.updateEntity(id, data);
         }
 
-        @Authorized<TAuthRole>("administrator")
+        @Authorized<string>(`delete_${entityName.toLowerCase()}`)
         @Mutation(() => Boolean)
         async [deletePath](@Arg("id", () => Int) id: number): Promise<boolean> {
             return this.repository.deleteEntity(id);

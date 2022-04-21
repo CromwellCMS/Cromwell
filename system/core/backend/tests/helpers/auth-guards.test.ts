@@ -1,4 +1,5 @@
-import { graphQlAuthChecker, TAuthUserInfo } from '../../src/helpers/auth-guards';
+import { TAuthUserInfo } from '@cromwell/core-backend';
+import { graphQlAuthChecker } from '../../src/helpers/auth-guards';
 
 
 describe('auth-guards', () => {
@@ -8,58 +9,44 @@ describe('auth-guards', () => {
             context: {
                 user: {
                     id: 1,
-                    role: 'administrator',
+                    roles: [{ name: 'administrator', permissions: ['all'] }],
                     email: 'test',
                 } as TAuthUserInfo
             }
-        }, ['administrator'])).toBeTruthy();
+        }, ['all'])).toBeTruthy();
     })
 
-    it('allows for administrators access other roles', async () => {
+    it('allows for administrators access other permissions', async () => {
         expect(graphQlAuthChecker({
             context: {
                 user: {
                     id: 1,
-                    role: 'administrator',
+                    roles: [{ name: 'administrator', permissions: ['all'] }],
                     email: 'test',
                 } as TAuthUserInfo
             }
-        }, ['author'])).toBeTruthy();
+        }, ['update_cms'])).toBeTruthy();
     });
 
-    it('forbids author to access admin', async () => {
+    it('not enough permissions', async () => {
         const test = () => {
             graphQlAuthChecker({
                 context: {
                     user: {
                         id: 1,
-                        role: 'author',
+                        roles: [{ name: 'author', permissions: ['update_post'] }],
                         email: 'test',
                     } as TAuthUserInfo
                 }
-            }, ['administrator'])
+            }, ['create_post'])
         };
         expect(test).toThrow();
     })
 
-    it('forbids customer to access admin', async () => {
-        const test = () => {
-            graphQlAuthChecker({
-                context: {
-                    user: {
-                        id: 1,
-                        role: 'customer',
-                        email: 'test',
-                    } as TAuthUserInfo
-                }
-            }, ['administrator'])
-        }
-        expect(test).toThrow();
-    })
 
-    it('unauthorized access customer', async () => {
+    it('unauthorized access', async () => {
         const test = () => {
-            graphQlAuthChecker(null, ['customer'])
+            graphQlAuthChecker(null, ['update_cms_settings'])
         }
         expect(test).toThrow();
     })

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { TCreateUser, TUserRole } from '@cromwell/core';
+import { TCreateUser } from '@cromwell/core';
 
 export class CreateUserDto implements TCreateUser {
     @ApiProperty()
@@ -21,7 +21,7 @@ export class CreateUserDto implements TCreateUser {
     address?: string;
     
     @ApiProperty()
-    role?: TUserRole;
+    roles?: string[];
 
     @ApiProperty()
     password?: string;

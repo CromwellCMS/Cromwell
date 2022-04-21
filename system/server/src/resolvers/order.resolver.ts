@@ -1,5 +1,6 @@
-import { EDBEntity, GraphQLPaths, TAuthRole, TOrder, TPagedList } from '@cromwell/core';
+import { EDBEntity, GraphQLPaths, matchPermissions, TOrder, TPagedList, TPermissionName } from '@cromwell/core';
 import {
+    Coupon,
     DeleteManyInput,
     entityMetaRepository,
     Order,
@@ -7,14 +8,13 @@ import {
     OrderInput,
     OrderRepository,
     PagedOrder,
-    Coupon,
     PagedParamsInput,
     TGraphQLContext,
 } from '@cromwell/core-backend';
+import { HttpException, HttpStatus } from '@nestjs/common';
 import { GraphQLJSONObject } from 'graphql-type-json';
 import { Arg, Authorized, Ctx, FieldResolver, Int, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
-import { HttpException, HttpStatus } from '@nestjs/common';
 
 import { serverFireAction } from '../helpers/server-fire-action';
 
@@ -35,7 +35,21 @@ export class OrderResolver {
 
     private repository = getCustomRepository(OrderRepository);
 
-    @Authorized<TAuthRole>("administrator", "guest")
+    private checkUserAccess(@Ctx() ctx: TGraphQLContext, userId?: number | null) {
+        if (!ctx?.user?.id || !ctx?.user?.roles?.length) throw new HttpException('Access denied.', HttpStatus.UNAUTHORIZED);
+        let hasAccess = false;
+
+        if (matchPermissions(ctx?.user, ['read_orders'])) {
+            hasAccess = true;
+        } else if (matchPermissions(ctx?.user, ['read_my_orders'])) {
+            if (ctx.user.id + '' === userId + '') {
+                hasAccess = true;
+            }
+        }
+        if (!hasAccess) throw new HttpException('Access denied.', HttpStatus.FORBIDDEN);
+    }
+
+    @Authorized<TPermissionName>('read_orders')
     @Query(() => PagedOrder)
     async [getManyPath](
         @Arg("pagedParams", { nullable: true }) pagedParams?: PagedParamsInput<TOrder>
@@ -43,44 +57,37 @@ export class OrderResolver {
         return this.repository.getOrders(pagedParams);
     }
 
-    @Authorized<TAuthRole>("all")
+    @Authorized<TPermissionName>('read_orders', 'read_my_orders')
     @Query(() => PagedOrder)
     async [getOrdersOfUser](
         @Ctx() ctx: TGraphQLContext,
         @Arg("userId", () => Int) userId: number,
         @Arg("pagedParams", { nullable: true }) pagedParams?: PagedParamsInput<TOrder>
     ): Promise<TPagedList<TOrder> | undefined> {
-        if (!ctx?.user?.role) throw new HttpException('Access denied.', HttpStatus.UNAUTHORIZED);
-
-        if (!(ctx.user.role === 'guest' || ctx.user.role === 'administrator' ||
-            ctx.user.id + '' === userId + '')) {
-            throw new HttpException('Access denied.', HttpStatus.FORBIDDEN);
-        }
+        this.checkUserAccess(ctx, userId);
         const orders = await this.repository.getOrdersOfUser(userId, pagedParams);
         return orders;
     }
 
-    @Authorized<TAuthRole>("administrator", "guest")
+    @Authorized<TPermissionName>('read_orders')
     @Query(() => Order)
     async [getOneBySlugPath](@Arg("slug") slug: string): Promise<TOrder | undefined> {
         return this.repository.getOrderBySlug(slug);
     }
 
-    @Authorized<TAuthRole>("all")
+    @Authorized<TPermissionName>('read_orders', 'read_my_orders')
     @Query(() => Order)
     async [getOneByIdPath](
         @Ctx() ctx: TGraphQLContext,
         @Arg("id", () => Int) id: number
     ): Promise<Order | undefined> {
-        if (!ctx?.user?.role) throw new HttpException('Access denied.', HttpStatus.UNAUTHORIZED);
-
+        if (!ctx?.user?.roles?.length) throw new HttpException('Access denied.', HttpStatus.UNAUTHORIZED);
         const order = await this.repository.getOrderById(id);
-        if (ctx.user.role === 'guest' || ctx.user.role === 'administrator' ||
-            (order?.userId && ctx.user.id + '' === order.userId + ''))
-            return order;
+        this.checkUserAccess(ctx, order?.userId);
+        return order;
     }
 
-    @Authorized<TAuthRole>("administrator")
+    @Authorized<TPermissionName>('update_order')
     @Mutation(() => Order)
     async [createPath](@Arg("data") data: OrderInput): Promise<Order> {
         const order = await this.repository.createOrder(data);
@@ -88,7 +95,7 @@ export class OrderResolver {
         return order;
     }
 
-    @Authorized<TAuthRole>("administrator")
+    @Authorized<TPermissionName>('create_order')
     @Mutation(() => Order)
     async [updatePath](@Arg("id", () => Int) id: number, @Arg("data") data: OrderInput): Promise<Order | undefined> {
         const order = await this.repository.updateOrder(id, data);
@@ -96,7 +103,7 @@ export class OrderResolver {
         return order;
     }
 
-    @Authorized<TAuthRole>("administrator")
+    @Authorized<TPermissionName>('delete_order')
     @Mutation(() => Boolean)
     async [deletePath](@Arg("id", () => Int) id: number): Promise<boolean> {
         const order = await this.repository.deleteOrder(id);
@@ -104,13 +111,13 @@ export class OrderResolver {
         return order;
     }
 
-    @Authorized<TAuthRole>("administrator")
+    @Authorized<TPermissionName>('delete_order')
     @Mutation(() => Boolean)
     async [deleteManyPath](@Arg("data") data: DeleteManyInput): Promise<boolean | undefined> {
         return this.repository.deleteMany(data);
     }
 
-    @Authorized<TAuthRole>("administrator")
+    @Authorized<TPermissionName>('delete_order')
     @Mutation(() => Boolean)
     async [deleteManyFilteredPath](
         @Arg("input") input: DeleteManyInput,
@@ -119,7 +126,7 @@ export class OrderResolver {
         return this.repository.deleteManyFilteredOrders(input, filterParams);
     }
 
-    @Authorized<TAuthRole>("administrator", "guest")
+    @Authorized<TPermissionName>('read_orders')
     @Query(() => PagedOrder)
     async [getFilteredPath](
         @Arg("pagedParams", { nullable: true }) pagedParams?: PagedParamsInput<TOrder>,

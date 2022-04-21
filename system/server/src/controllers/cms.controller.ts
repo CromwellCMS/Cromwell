@@ -1,12 +1,13 @@
 import { TOrder, TPackageCromwellConfig, TProductReview } from '@cromwell/core';
 import {
+    DefaultPermissions,
     getCmsSettings,
     getLogger,
+    getPermissions,
     getPublicDir,
     JwtAuthGuard,
     ProductReviewInput,
     ProductReviewRepository,
-    Roles,
 } from '@cromwell/core-backend';
 import {
     Body,
@@ -38,6 +39,7 @@ import { ExportOptionsDto } from '../dto/export-options.dto';
 import { ModuleInfoDto } from '../dto/module-info.dto';
 import { OrderTotalDto } from '../dto/order-total.dto';
 import { PageStatsDto } from '../dto/page-stats.dto';
+import { PermissionDto } from '../dto/permission.dto';
 import { SetupDto } from '../dto/setup.dto';
 import { SystemUsageDto } from '../dto/system-usage.dto';
 import { publicSystemDirs } from '../helpers/constants';
@@ -88,22 +90,22 @@ export class CmsController {
 
     @Get('admin-settings')
     @UseGuards(JwtAuthGuard)
-    @Roles('administrator', 'guest')
+    @DefaultPermissions('read_cms_settings')
     @ApiOperation({ description: 'Returns admin CMS settings from DB and cmsconfig.json' })
     @ApiResponse({
         status: 200,
         type: AdminCmsConfigDto,
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
-    async getAdminConfig(): Promise<AdminCmsConfigDto | undefined> {
+    async getAdminSettings(): Promise<AdminCmsConfigDto | undefined> {
         // logger.log('CmsController::getPrivateConfig');
-        return this.cmsService.getAdminConfig();
+        return this.cmsService.getAdminSettings();
     }
 
 
     @Post('admin-settings')
     @UseGuards(JwtAuthGuard)
-    @Roles('administrator')
+    @DefaultPermissions('update_cms_settings')
     @ApiOperation({
         description: 'Updates CMS config',
     })
@@ -121,7 +123,7 @@ export class CmsController {
 
     @Get('themes')
     @UseGuards(JwtAuthGuard)
-    @Roles('administrator', 'guest')
+    @DefaultPermissions('read_themes')
     @ApiOperation({ description: 'Returns info from configs of all themes present in "themes" directory' })
     @ApiResponse({
         status: 200,
@@ -136,7 +138,7 @@ export class CmsController {
 
     @Get('plugins')
     @UseGuards(JwtAuthGuard)
-    @Roles('administrator', 'guest')
+    @DefaultPermissions('read_plugins')
     @ApiOperation({ description: 'Returns info for all plugins present in "plugins" directory' })
     @ApiResponse({
         status: 200,
@@ -151,7 +153,7 @@ export class CmsController {
 
     @Get('read-public-dir')
     @UseGuards(JwtAuthGuard)
-    @Roles('administrator', 'guest', 'author')
+    @DefaultPermissions('read_public_directories')
     @ApiOperation({
         description: 'Read files and directories in specified subfolder of "public" files',
         parameters: [{ name: 'path', in: 'query' }]
@@ -169,7 +171,7 @@ export class CmsController {
 
     @Get('create-public-dir')
     @UseGuards(JwtAuthGuard)
-    @Roles('administrator', 'author')
+    @DefaultPermissions('create_public_directory')
     @ApiOperation({
         description: 'Creates new directory in specified subfolder of "public" files',
         parameters: [
@@ -193,7 +195,7 @@ export class CmsController {
 
     @Get('remove-public-dir')
     @UseGuards(JwtAuthGuard)
-    @Roles('administrator', 'author')
+    @DefaultPermissions('remove_public_directory')
     @ApiOperation({
         description: 'Removes directory in specified subfolder of "public" files',
         parameters: [
@@ -216,7 +218,7 @@ export class CmsController {
 
     @Post('upload-public-file')
     @UseGuards(JwtAuthGuard)
-    @Roles('administrator', 'author')
+    @DefaultPermissions('upload_file')
     @Header('content-type', 'multipart/form-data')
     @ApiOperation({
         description: 'Uploads a file to specified subfolder of "public" files',
@@ -245,7 +247,7 @@ export class CmsController {
 
     @Get('download-public-file')
     @UseGuards(JwtAuthGuard)
-    @Roles('administrator', 'guest', 'author')
+    @DefaultPermissions('download_file')
     @ApiOperation({
         description: 'Downloads a file from specified subfolder of "public" files',
         parameters: [
@@ -264,8 +266,6 @@ export class CmsController {
 
 
     @Post('set-up')
-    @UseGuards(JwtAuthGuard)
-    @Roles('administrator')
     @ApiBody({ type: SetupDto })
     @ApiOperation({
         description: 'Configure CMS after first launch',
@@ -277,7 +277,7 @@ export class CmsController {
         }
 
         if (config.installed)
-            throw new HttpException('CmsController::setUp CMS already installed', HttpStatus.BAD_REQUEST);
+            throw new HttpException('CmsController::setUp CMS is already installed', HttpStatus.BAD_REQUEST);
 
         const res = await this.cmsService.installCms(input);
         resetAllPagesCache();
@@ -287,7 +287,7 @@ export class CmsController {
 
     @Get('change-theme')
     @UseGuards(JwtAuthGuard)
-    @Roles('administrator')
+    @DefaultPermissions('change_theme')
     @ApiOperation({
         description: `Makes specified theme as active one and restarts Renderer`,
         parameters: [{ name: 'themeName', in: 'query', required: true }]
@@ -308,7 +308,7 @@ export class CmsController {
 
     @Get('activate-theme')
     @UseGuards(JwtAuthGuard)
-    @Roles('administrator')
+    @DefaultPermissions('activate_theme')
     @ApiOperation({
         description: `Activates/enables (installs in DB) downloaded theme. Does NOT make it as currently used by Renderer. See "change-theme"`,
         parameters: [{ name: 'themeName', in: 'query', required: true }]
@@ -329,7 +329,7 @@ export class CmsController {
 
     @Get('activate-plugin')
     @UseGuards(JwtAuthGuard)
-    @Roles('administrator')
+    @DefaultPermissions('activate_plugin')
     @ApiOperation({
         description: 'Activates downloaded plugin.',
         parameters: [{ name: 'pluginName', in: 'query', required: true }]
@@ -443,9 +443,9 @@ export class CmsController {
     }
 
 
-    @Get('stats')
+    @Get('statistics')
     @UseGuards(JwtAuthGuard)
-    @Roles('administrator', 'guest')
+    @DefaultPermissions('read_cms_statistics')
     @ApiOperation({
         description: `Returns CMS stats for AdminPanel dashboard`,
     })
@@ -460,7 +460,7 @@ export class CmsController {
 
     @Get('system')
     @UseGuards(JwtAuthGuard)
-    @Roles('administrator', 'guest')
+    @DefaultPermissions('read_system_info')
     @ApiOperation({
         description: `Returns system info and usage`,
     })
@@ -475,7 +475,7 @@ export class CmsController {
 
     @Get('status')
     @UseGuards(JwtAuthGuard)
-    @Roles('administrator', 'guest')
+    @DefaultPermissions('read_cms_status')
     @ApiOperation({
         description: `Returns Updates available and other info for AdminPanel NotificationCenter`,
     })
@@ -490,7 +490,7 @@ export class CmsController {
 
     @Get('launch-update')
     @UseGuards(JwtAuthGuard)
-    @Roles('administrator')
+    @DefaultPermissions('update_cms')
     @ApiOperation({
         description: `Launches CMS update`,
     })
@@ -505,7 +505,7 @@ export class CmsController {
 
     @Post('export-db')
     @UseGuards(JwtAuthGuard)
-    @Roles('administrator', 'guest')
+    @DefaultPermissions('export_db')
     @ApiOperation({
         description: `Exports DB into Excel file`,
     })
@@ -528,7 +528,7 @@ export class CmsController {
 
     @Post('import-db')
     @UseGuards(JwtAuthGuard)
-    @Roles('administrator')
+    @DefaultPermissions('import_db')
     @ApiOperation({
         description: 'Import DB from Excel files',
         parameters: [{ name: 'removeSurplus', in: 'query' }]
@@ -549,7 +549,7 @@ export class CmsController {
 
     @Get('build-sitemap')
     @UseGuards(JwtAuthGuard)
-    @Roles('administrator')
+    @DefaultPermissions('update_cms_settings')
     @ApiOperation({ description: 'Builds sitemap at /default_sitemap.xml' })
     @ApiResponse({
         status: 200,
@@ -558,5 +558,20 @@ export class CmsController {
     async buildSitemap() {
         logger.log('CmsController::buildSitemap');
         return this.cmsService.buildSitemap();
+    }
+
+
+    @Get('permissions')
+    @UseGuards(JwtAuthGuard)
+    @DefaultPermissions('read_permissions')
+    @ApiOperation({ description: 'Returns list of all available/registered permissions' })
+    @ApiResponse({
+        status: 200,
+        type: [PermissionDto],
+    })
+    @ApiForbiddenResponse({ description: 'Forbidden.' })
+    async getPermissions() {
+        logger.log('CmsController::getPermissions');
+        return getPermissions();
     }
 }

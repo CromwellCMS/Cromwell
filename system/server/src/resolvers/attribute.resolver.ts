@@ -1,4 +1,4 @@
-import { EDBEntity, GraphQLPaths, TAttribute, TAuthRole } from '@cromwell/core';
+import { EDBEntity, GraphQLPaths, TAttribute, TPermissionName } from '@cromwell/core';
 import { Attribute, AttributeInput, AttributeRepository, entityMetaRepository } from '@cromwell/core-backend';
 import { GraphQLJSONObject } from 'graphql-type-json';
 import { Arg, Authorized, FieldResolver, Int, Mutation, Query, Resolver, Root } from 'type-graphql';
@@ -28,7 +28,7 @@ export class AttributeResolver {
         return await this.repository.getAttribute(id);
     }
 
-    @Authorized<TAuthRole>("administrator")
+    @Authorized<TPermissionName>('create_attribute')
     @Mutation(() => Attribute)
     async [createPath](@Arg("data") data: AttributeInput): Promise<TAttribute> {
         const attr = await this.repository.createAttribute(data);
@@ -36,7 +36,7 @@ export class AttributeResolver {
         return attr;
     }
 
-    @Authorized<TAuthRole>("administrator")
+    @Authorized<TPermissionName>('update_attribute')
     @Mutation(() => Attribute)
     async [updatePath](@Arg("id", () => Int) id: number, @Arg("data") data: AttributeInput): Promise<Attribute> {
         const attr = await this.repository.updateAttribute(id, data);
@@ -45,7 +45,7 @@ export class AttributeResolver {
         return attr;
     }
 
-    @Authorized<TAuthRole>("administrator")
+    @Authorized<TPermissionName>('delete_attribute')
     @Mutation(() => Boolean)
     async [deletePath](@Arg("id", () => Int) id: number): Promise<boolean> {
         const attr = await this.repository.deleteAttribute(id);

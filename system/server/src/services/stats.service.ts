@@ -1,4 +1,4 @@
-import { resolvePageRoute, TOrder, TProductReview, TUser, TUserRole } from '@cromwell/core';
+import { resolvePageRoute, TOrder, TProductReview } from '@cromwell/core';
 import {
     applyGetPaged,
     Order,
@@ -8,6 +8,7 @@ import {
     Product,
     ProductReview,
     ProductReviewRepository,
+    RoleRepository,
     User,
     UserRepository,
 } from '@cromwell/core-backend';
@@ -82,8 +83,8 @@ export class StatsService {
 
         // Customers
         const userCountKey = 'userCount';
-        const userRoleKey: keyof TUser = 'role';
         const userTable = getCustomRepository(UserRepository).metadata.tablePath;
+        const roleTable = getCustomRepository(RoleRepository).metadata.tablePath;
 
 
         const getReviews = async () => {
@@ -159,7 +160,7 @@ export class StatsService {
                 stat.pageRoute = await resolvePageRoute(stat.pageRoute);
                 return {
                     pageRoute: stat.pageRoute,
-                    views: stat.views,
+                    views: stat.views
                 }
             }))
         }
@@ -168,7 +169,8 @@ export class StatsService {
             const customersStats = await getManager().createQueryBuilder(User, userTable)
                 .select([])
                 .addSelect(`COUNT(${userTable}.id)`, userCountKey)
-                .where(`${userTable}.${userRoleKey} = :role`, { role: 'customer' as TUserRole })
+                .leftJoinAndSelect(`${userTable}.roles`, roleTable)
+                .where(`${roleTable}.name = :roleName`, { roleName: 'customer' })
                 .execute();
 
             stats.customers = parseInt((customersStats?.[0]?.[userCountKey] ?? 0) + '');
@@ -208,5 +210,4 @@ export class StatsService {
         }
         return dto;
     }
-
 }

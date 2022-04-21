@@ -1,14 +1,14 @@
-import { JwtAuthGuard, Roles, TRequestWithUser } from '@cromwell/core-backend';
-import { TUserRole } from '@cromwell/core';
+import { CustomPermissions, JwtAuthGuard, TRequestWithUser } from '@cromwell/core-backend';
+import { matchPermissions } from '@cromwell/core';
 import {
     Body,
     Controller,
+    ForbiddenException,
     Get,
     HttpException,
     HttpStatus,
     Post,
     Request,
-    ForbiddenException,
     UseGuards,
 } from '@nestjs/common';
 import { ApiBody, ApiForbiddenResponse, ApiOperation, ApiProperty, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -16,8 +16,8 @@ import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { IsNotEmpty } from 'class-validator';
 import { getManager } from 'typeorm';
 
+import { newsletterPermissions } from '../auth';
 import PluginNewsletter from '../entities/newsletter-form.entity';
-
 
 class PluginNewsletterSubscription {
     @IsNotEmpty()
@@ -48,7 +48,7 @@ class PluginNewsletterController {
 
         const hasSubscribed = await getManager().findOne(PluginNewsletter, {
             where: {
-                email
+                email,
             }
         });
         if (hasSubscribed) return true;
@@ -65,9 +65,9 @@ class PluginNewsletterController {
      * Added for documentation purposes of custom Controllers.
      * */
     @Get('stats')
-    /** You can restrict route by assigning JwtAuthGuard and passing allowed roles as a decorator: */
+    /** You can restrict route access by assigning JwtAuthGuard and passing allowed permissions in a decorator: */
     @UseGuards(JwtAuthGuard)
-    @Roles('administrator', 'guest', 'author')
+    @CustomPermissions(newsletterPermissions.stats.name)
     @ApiOperation({ description: 'Get newsletters count' })
     @ApiResponse({
         status: 200,
@@ -75,15 +75,20 @@ class PluginNewsletterController {
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async getStats(@Request() request: TRequestWithUser): Promise<string> {
-
         // Or you can retrieve user info and validate permissions in the method:
-        const allowedRoles: TUserRole[] = ['administrator', 'guest', 'author'];
-        if (!allowedRoles.includes(request.user?.role))
+
+        // 1. Via matchPermissions method
+        if (!matchPermissions(request.user, [newsletterPermissions.stats as any]))
             throw new ForbiddenException('Forbidden');
+
+        // 2. Manually via checking roles and permissions:
+        if (!request.user?.roles?.some(role =>
+            role.permissions?.includes('all') ||
+            role.permissions?.includes(newsletterPermissions.stats as any)
+        )) throw new ForbiddenException('Forbidden');
 
         return (await getManager().find(PluginNewsletter) ?? []).length + '';
     }
-
 }
 
 export default PluginNewsletterController;

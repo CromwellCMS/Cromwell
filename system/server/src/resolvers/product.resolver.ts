@@ -1,7 +1,7 @@
 import {
     EDBEntity,
     GraphQLPaths,
-    TAuthRole,
+    TPermissionName,
     TFilteredProductList,
     TPagedList,
     TProduct,
@@ -73,7 +73,7 @@ export class ProductResolver {
         return this.repository.getProductById(id, { withRating: true });
     }
 
-    @Authorized<TAuthRole>("administrator")
+    @Authorized<TPermissionName>('create_product')
     @Mutation(() => Product)
     async [createPath](@Arg("data") data: CreateProduct): Promise<Product> {
         const product = await this.repository.createProduct(data);
@@ -82,7 +82,7 @@ export class ProductResolver {
         return product;
     }
 
-    @Authorized<TAuthRole>("administrator")
+    @Authorized<TPermissionName>('update_product')
     @Mutation(() => Product)
     async [updatePath](@Arg("id", () => Int) id: number, @Arg("data") data: UpdateProduct): Promise<Product> {
         const product = await this.repository.updateProduct(id, data);
@@ -91,16 +91,16 @@ export class ProductResolver {
         return product;
     }
 
-    @Authorized<TAuthRole>("administrator")
+    @Authorized<TPermissionName>('delete_product')
     @Mutation(() => Boolean)
     async [deletePath](@Arg("id", () => Int) id: number): Promise<boolean> {
         const product = await this.repository.deleteProduct(id);
-        serverFireAction('update_product', { id });
+        serverFireAction('delete_product', { id });
         resetAllPagesCache();
         return product;
     }
 
-    @Authorized<TAuthRole>("administrator")
+    @Authorized<TPermissionName>('delete_product')
     @Mutation(() => Boolean)
     async [deleteManyPath](@Arg("data") data: DeleteManyInput): Promise<boolean | undefined> {
         const res = await this.repository.deleteMany(data);
@@ -108,7 +108,7 @@ export class ProductResolver {
         return res;
     }
 
-    @Authorized<TAuthRole>("administrator")
+    @Authorized<TPermissionName>('delete_product')
     @Mutation(() => Boolean)
     async [deleteManyFilteredPath](
         @Arg("input") input: DeleteManyInput,

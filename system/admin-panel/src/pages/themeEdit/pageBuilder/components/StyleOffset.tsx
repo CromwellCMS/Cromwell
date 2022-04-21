@@ -12,7 +12,7 @@ export function StyleOffset(props: {
     type: 'margin' | 'padding';
     data: TCromwellBlockData;
 }) {
-    const data = props.data;
+    const { data, blockProps } = props;
 
     return (
         <div className={styles.stylesGroup}>
@@ -21,6 +21,7 @@ export function StyleOffset(props: {
                 <StyleField
                     label="top"
                     data={data}
+                    blockProps={blockProps}
                     name={props.type === 'margin' ? 'marginTop' : 'paddingTop'}
                     handleStyleChange={props.handleStyleChange}
                     dataType="px"
@@ -29,6 +30,7 @@ export function StyleOffset(props: {
                 <StyleField
                     label="bottom"
                     data={data}
+                    blockProps={blockProps}
                     name={props.type === 'margin' ? 'marginBottom' : 'paddingBottom'}
                     handleStyleChange={props.handleStyleChange}
                     dataType="px"
@@ -37,6 +39,7 @@ export function StyleOffset(props: {
                 <StyleField
                     label="left"
                     data={data}
+                    blockProps={blockProps}
                     name={props.type === 'margin' ? 'marginLeft' : 'paddingLeft'}
                     handleStyleChange={props.handleStyleChange}
                     dataType="px"
@@ -45,6 +48,7 @@ export function StyleOffset(props: {
                 <StyleField
                     label="right"
                     data={data}
+                    blockProps={blockProps}
                     name={props.type === 'margin' ? 'marginRight' : 'paddingRight'}
                     handleStyleChange={props.handleStyleChange}
                     dataType="px"

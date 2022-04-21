@@ -2,8 +2,8 @@ import { TTagInput } from '@cromwell/core';
 import { InputType, Field, Int } from "type-graphql";
 import { BasePageInput } from './base-page.input';
 
-@InputType('InputTag')
-export class InputTag extends BasePageInput implements TTagInput {
+@InputType('TagInput')
+export class TagInput extends BasePageInput implements TTagInput {
     @Field(type => String)
     name: string;
 

@@ -3,10 +3,12 @@ import { FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/mater
 import React from 'react';
 
 import { ColorPicker } from '../../../../components/colorPicker/ColorPicker';
+import { TBlockMenuProps } from '../blocks/BlockMenu';
 
 export function StyleField(props: {
     dataType: 'px' | 'string' | 'color' | 'select';
     handleStyleChange: (name: keyof React.CSSProperties, value: any) => void;
+    blockProps: TBlockMenuProps;
     data: TCromwellBlockData;
     name: keyof React.CSSProperties;
     label: string;
@@ -14,7 +16,16 @@ export function StyleField(props: {
     style?: React.CSSProperties;
     options?: string[];
 }) {
-    let val = props.data?.style?.[props.name];
+    const { blockProps, name, data } = props;
+    const cssName = name.replace(/([A-Z0-9])/g, '-$1').toLowerCase();
+    let val = props.data?.style?.[name];
+
+    if (!val) {
+        const elem = blockProps.getBlockElementById(data.id);
+        const compStyles = window.getComputedStyle(elem);
+        val = compStyles.getPropertyValue(cssName);
+    }
+
     if (props.dataType === 'px') {
         if (val) val = parseFloat(val);
         if (isNaN(val)) val = undefined;

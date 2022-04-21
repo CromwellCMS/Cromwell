@@ -130,6 +130,7 @@ export type TDBEntity = keyof {
     Attribute;
     Order;
     User;
+    Role;
     Theme;
     Plugin;
     Generic;
@@ -148,6 +149,7 @@ export enum EDBEntity {
     Attribute = 'Attribute',
     Order = 'Order',
     User = 'User',
+    Role = 'Role',
     Theme = 'Theme',
     Plugin = 'Plugin',
     Generic = 'Generic',
@@ -629,3 +631,104 @@ export type TSharedComponents = Partial<{
         post: TProduct;
     }>;
 }>
+
+
+export type TPermissionName =
+    'all'
+    // Plugin
+    | 'read_plugins'
+    | 'install_plugin'
+    | 'update_plugin'
+    | 'uninstall_plugin'
+    | 'activate_plugin'
+    | 'read_plugin_settings'
+    | 'update_plugin_settings'
+    // Theme
+    | 'read_themes'
+    | 'install_theme'
+    | 'update_theme'
+    | 'uninstall_theme'
+    | 'change_theme'
+    | 'activate_theme'
+    | 'read_theme_settings'
+    | 'update_theme_settings'
+    // Post
+    | 'read_posts'
+    | 'read_post_drafts'
+    | 'create_post'
+    | 'update_post'
+    | 'delete_post'
+    // Tag
+    | 'read_tags'
+    | 'create_tag'
+    | 'update_tag'
+    | 'delete_tag'
+    // Comment
+    | 'read_post_comments'
+    | 'create_post_comment'
+    | 'update_post_comment'
+    | 'delete_post_comment'
+    // Product
+    | 'read_products'
+    | 'create_product'
+    | 'update_product'
+    | 'delete_product'
+    // Product category
+    | 'read_product_categories'
+    | 'create_product_category'
+    | 'update_product_category'
+    | 'delete_product_category'
+    // Attribute
+    | 'read_attributes'
+    | 'create_attribute'
+    | 'update_attribute'
+    | 'delete_attribute'
+    // Order
+    | 'read_orders'
+    | 'read_my_orders'
+    | 'create_order'
+    | 'update_order'
+    | 'delete_order'
+    // Product review
+    | 'read_product_reviews'
+    | 'create_product_review'
+    | 'update_product_review'
+    | 'delete_product_review'
+    // User
+    | 'read_users'
+    | 'read_my_user'
+    | 'create_user'
+    | 'update_user'
+    | 'update_my_user'
+    | 'delete_user'
+    // Role
+    | 'read_roles'
+    | 'read_permissions'
+    | 'create_role'
+    | 'update_role'
+    | 'delete_role'
+    // Custom entity
+    | 'read_custom_entities'
+    | 'create_custom_entity'
+    | 'update_custom_entity'
+    | 'delete_custom_entity'
+    // Coupon
+    | 'read_coupons'
+    | 'create_coupon'
+    | 'update_coupon'
+    | 'delete_coupon'
+    // CMS settings
+    | 'read_cms_settings'
+    | 'update_cms_settings'
+    | 'update_cms'
+    | 'export_db'
+    | 'import_db'
+    | 'read_public_directories'
+    | 'create_public_directory'
+    | 'remove_public_directory'
+    | 'upload_file'
+    | 'download_file'
+    | 'delete_file'
+    | 'read_cms_statistics'
+    | 'read_cms_status'
+    | 'read_system_info';

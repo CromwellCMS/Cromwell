@@ -139,6 +139,17 @@ export const GraphQLPaths: { [K in Exclude<TDBEntity, 'Theme' | 'Plugin' | 'Post
         getFiltered: "getFilteredProductVariants",
         getProductVariantsByCodes: "getProductVariantsByCodes",
     },
+    Role: {
+        getOneBySlug: "getRoleBySlug",
+        getOneById: "getRoleById",
+        getMany: "getRoles",
+        create: "createRole",
+        update: "updateRole",
+        delete: "deleteRole",
+        deleteMany: "deleteManyRoles",
+        deleteManyFiltered: "deleteManyFilteredRoles",
+        getFiltered: "getFilteredRoles",
+    }
 }
 
 export enum ESharedComponentNames {

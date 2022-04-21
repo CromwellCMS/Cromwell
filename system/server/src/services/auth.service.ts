@@ -1,9 +1,10 @@
-import { sleep, TCreateUser } from '@cromwell/core';
+import { sleep, TCreateUser, TRole } from '@cromwell/core';
 import {
     bcryptSaltRounds,
     getAuthSettings,
     getEmailTemplate,
     getLogger,
+    getUserRole,
     sendEmail,
     TAuthSettings,
     TAuthUserInfo,
@@ -73,12 +74,12 @@ export class AuthService {
     async logIn(input: LoginDto): Promise<TLoginInfo> {
         const user = await this.validateUser(input.email, input.password);
 
-        if (!user) return null;
+        if (!user?.roles?.length) return null;
 
         const userInfo: TAuthUserInfo = {
             id: user.id,
             email: user.email,
-            role: user.role ?? 'customer',
+            roles: user.roles,
         }
 
         let validated: string[] = [];
@@ -108,12 +109,8 @@ export class AuthService {
         }
     }
 
-    async signUpUser(data: TCreateUser, initiator?: TAuthUserInfo) {
-        if (data?.role && data.role !== 'customer') {
-            if (!initiator?.id || initiator.role !== 'administrator')
-                throw new UnauthorizedException('Denied. You have no permissions to create this type of user');
-        }
-        if (!data.role) data.role = 'customer';
+    async signUpUser(data: TCreateUser) {
+        data.roles = ['customer'];
         return this.createUser(data);
     }
 
@@ -201,10 +198,13 @@ export class AuthService {
     }
 
     payloadToUserInfo(payload: TTokenPayload): TAuthUserInfo {
+        const roles: string[] = payload.roles && JSON.parse(payload.roles);
+        if (!payload.username || !payload.sub || !roles?.length)
+            throw new UnauthorizedException('payloadToUserInfo: Payload is not valid');
         return {
             id: payload.sub,
             email: payload.username,
-            role: payload.role,
+            roles: roles.map(getUserRole).filter(Boolean) as TRole[],
         };
     }
 
@@ -212,7 +212,7 @@ export class AuthService {
         const payload: TTokenPayload = {
             username: user.email,
             sub: user.id,
-            role: user.role,
+            roles: JSON.stringify(user.roles.map(r => r.name).filter(Boolean) as string[]),
         };
 
         const token = await this.jwtService.signAsync(payload, {
@@ -239,7 +239,7 @@ export class AuthService {
         const payload: TTokenPayload = {
             username: userInfo.email,
             sub: userInfo.id,
-            role: userInfo.role,
+            roles: JSON.stringify(userInfo.roles.map(r => r.name).filter(Boolean) as string[]),
         };
         // Generate new token and save to DB
         const token = await this.jwtService.signAsync(payload, {
@@ -392,11 +392,12 @@ export class AuthService {
             if (authHeader.startsWith('Service ')) {
                 // Access by secret token from other services such as Renderer
                 const serviceSecret = authHeader.substring(8, authHeader.length);
+
                 if (serviceSecret === this.authSettings.serviceSecret) {
                     request.user = {
-                        id: 111,
+                        id: 1,
                         email: 'service',
-                        role: 'administrator',
+                        roles: [{ id: 1, name: 'administrator', permissions: ['all'] }],
                     }
                     return request.user;
                 }
@@ -487,5 +488,4 @@ export class AuthService {
         checkCycle();
         this.isCheckerActive = false;
     }
-
 }

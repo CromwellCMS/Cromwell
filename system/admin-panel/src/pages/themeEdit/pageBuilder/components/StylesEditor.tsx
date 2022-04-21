@@ -12,6 +12,8 @@ export function StylesEditor(props: {
     forceUpdate: () => any;
     blockProps: TBlockMenuProps;
 }) {
+    const { blockProps } = props;
+
     const data = props.blockProps.block?.getData();
     if (!data.style) data.style = {};
     if (typeof data.style === 'string') data.style = JSON.parse(data.style);
@@ -60,6 +62,7 @@ export function StylesEditor(props: {
                 <StyleField
                     label="min"
                     data={data}
+                    blockProps={blockProps}
                     name={'minWidth'}
                     handleStyleChange={handleStyleChange}
                     dataType="px"
@@ -68,6 +71,7 @@ export function StylesEditor(props: {
                 <StyleField
                     label="desired"
                     data={data}
+                    blockProps={blockProps}
                     name={'width'}
                     handleStyleChange={handleStyleChange}
                     dataType="px"
@@ -76,6 +80,7 @@ export function StylesEditor(props: {
                 <StyleField
                     label="max"
                     data={data}
+                    blockProps={blockProps}
                     name={'maxWidth'}
                     handleStyleChange={handleStyleChange}
                     dataType="px"
@@ -104,6 +109,7 @@ export function StylesEditor(props: {
                 <StyleField
                     label="min"
                     data={data}
+                    blockProps={blockProps}
                     name={'minHeight'}
                     handleStyleChange={handleStyleChange}
                     dataType="px"
@@ -112,6 +118,7 @@ export function StylesEditor(props: {
                 <StyleField
                     label="desired"
                     data={data}
+                    blockProps={blockProps}
                     name={'height'}
                     handleStyleChange={handleStyleChange}
                     dataType="px"
@@ -120,6 +127,7 @@ export function StylesEditor(props: {
                 <StyleField
                     label="max"
                     data={data}
+                    blockProps={blockProps}
                     name={'maxHeight'}
                     handleStyleChange={handleStyleChange}
                     dataType="px"
@@ -134,6 +142,7 @@ export function StylesEditor(props: {
                 <StyleField
                     label="size"
                     data={data}
+                    blockProps={blockProps}
                     name={'fontSize'}
                     handleStyleChange={handleStyleChange}
                     dataType="px"
@@ -143,6 +152,7 @@ export function StylesEditor(props: {
                 <StyleField
                     label="color"
                     data={data}
+                    blockProps={blockProps}
                     name={'color'}
                     handleStyleChange={handleStyleChange}
                     dataType="color"
@@ -151,6 +161,7 @@ export function StylesEditor(props: {
                 <StyleField
                     label="weight"
                     data={data}
+                    blockProps={blockProps}
                     name={'fontWeight'}
                     handleStyleChange={handleStyleChange}
                     dataType="select"
@@ -161,6 +172,7 @@ export function StylesEditor(props: {
                 <StyleField
                     label="align"
                     data={data}
+                    blockProps={blockProps}
                     name={'textAlign'}
                     handleStyleChange={handleStyleChange}
                     dataType="select"
@@ -177,6 +189,7 @@ export function StylesEditor(props: {
                 <StyleField
                     label="color"
                     data={data}
+                    blockProps={blockProps}
                     name={'backgroundColor'}
                     handleStyleChange={handleStyleChange}
                     dataType="color"
@@ -191,6 +204,7 @@ export function StylesEditor(props: {
                 <StyleField
                     label="width"
                     data={data}
+                    blockProps={blockProps}
                     name={'borderWidth'}
                     handleStyleChange={handleStyleChange}
                     dataType="px"
@@ -200,6 +214,7 @@ export function StylesEditor(props: {
                 <StyleField
                     label="radius"
                     data={data}
+                    blockProps={blockProps}
                     name={'borderRadius'}
                     handleStyleChange={handleStyleChange}
                     dataType="px"
@@ -209,6 +224,7 @@ export function StylesEditor(props: {
                 <StyleField
                     label="color"
                     data={data}
+                    blockProps={blockProps}
                     name={'borderColor'}
                     handleStyleChange={handleStyleChange}
                     dataType="color"
@@ -217,6 +233,7 @@ export function StylesEditor(props: {
                 <StyleField
                     label="style"
                     data={data}
+                    blockProps={blockProps}
                     name={'borderStyle'}
                     handleStyleChange={handleStyleChange}
                     dataType="select"

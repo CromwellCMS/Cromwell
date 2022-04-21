@@ -1,5 +1,5 @@
 import { TPackageCromwellConfig, TPageConfig, TPageInfo, TThemeConfig } from '@cromwell/core';
-import { getLogger, getThemeConfigs, JwtAuthGuard, Roles } from '@cromwell/core-backend';
+import { getLogger, getThemeConfigs, JwtAuthGuard, DefaultPermissions } from '@cromwell/core-backend';
 import { Body, Controller, Delete, Get, HttpException, HttpStatus, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
@@ -52,7 +52,7 @@ export class ThemeController {
 
     @Post('page')
     @UseGuards(JwtAuthGuard)
-    @Roles('administrator')
+    @DefaultPermissions('update_theme_settings')
     @ApiOperation({
         description: `Saves page config for specified Page by pageRoute in query param. 
             Modifications (TCromwellBlockData) must contain only newly added mods or an empty array. 
@@ -82,7 +82,7 @@ export class ThemeController {
 
     @Delete('page')
     @UseGuards(JwtAuthGuard)
-    @Roles('administrator')
+    @DefaultPermissions('update_theme_settings')
     @ApiOperation({
         description: `Deletes virtual page in both configs`,
         parameters: [
@@ -106,7 +106,7 @@ export class ThemeController {
 
     @Get('page/reset')
     @UseGuards(JwtAuthGuard)
-    @Roles('administrator')
+    @DefaultPermissions('update_theme_settings')
     @ApiOperation({
         description: `Deletes user config of a page`,
         parameters: [
@@ -147,7 +147,7 @@ export class ThemeController {
 
     @Post('palette')
     @UseGuards(JwtAuthGuard)
-    @Roles('administrator')
+    @DefaultPermissions('update_theme_settings')
     @ApiOperation({
         description: `Update palette of an active theme`,
         parameters: [
@@ -171,7 +171,7 @@ export class ThemeController {
 
     @Get('plugins')
     @UseGuards(JwtAuthGuard)
-    @Roles('administrator')
+    @DefaultPermissions('read_theme_settings')
     @ApiOperation({
         description: `Returns plugins' configs at specified Page by pageRoute in query param. Output contains theme's original modifications overwritten by user's modifications.`,
         parameters: [
@@ -196,6 +196,8 @@ export class ThemeController {
 
 
     @Get('plugin-names')
+    @UseGuards(JwtAuthGuard)
+    @DefaultPermissions('read_theme_settings')
     @ApiOperation({
         description: `Returns array of plugin names at all pages.`,
         parameters: [
@@ -336,7 +338,7 @@ export class ThemeController {
 
     @Get('check-update')
     @UseGuards(JwtAuthGuard)
-    @Roles('administrator', 'guest')
+    @DefaultPermissions('read_theme_settings')
     @ApiOperation({
         description: `Returns available Update for specified Theme`,
         parameters: [{ name: 'themeName', in: 'query', required: true }]
@@ -358,7 +360,7 @@ export class ThemeController {
 
     @Get('update')
     @UseGuards(JwtAuthGuard)
-    @Roles('administrator')
+    @DefaultPermissions('update_theme')
     @ApiOperation({
         description: `Updates a Theme to latest version`,
         parameters: [{ name: 'themeName', in: 'query', required: true }]
@@ -378,7 +380,7 @@ export class ThemeController {
 
     @Get('install')
     @UseGuards(JwtAuthGuard)
-    @Roles('administrator')
+    @DefaultPermissions('install_theme')
     @ApiOperation({
         description: `Installs a Theme`,
         parameters: [{ name: 'themeName', in: 'query', required: true }]
@@ -398,7 +400,7 @@ export class ThemeController {
 
     @Get('delete')
     @UseGuards(JwtAuthGuard)
-    @Roles('administrator')
+    @DefaultPermissions('uninstall_theme')
     @ApiOperation({
         description: `Deletes a Theme`,
         parameters: [{ name: 'themeName', in: 'query', required: true }]

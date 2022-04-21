@@ -31,7 +31,7 @@ describe('plugin-newsletter.controller', () => {
     it(`/GET stats`, async () => {
         const stats = await controller.getStats({
             user: {
-                role: 'administrator'
+                roles: [{ name: 'administrator', permissions: ['all'], id: 1 }],
             }
         } as any);
 

@@ -1,4 +1,4 @@
-import { getLogger, JwtAuthGuard, Roles } from '@cromwell/core-backend';
+import { getLogger, JwtAuthGuard, DefaultPermissions } from '@cromwell/core-backend';
 import { Controller, Get, HttpException, HttpStatus, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
@@ -18,7 +18,7 @@ export class RendererController {
 
     @Get('page')
     @UseGuards(JwtAuthGuard)
-    @Roles('administrator')
+    @DefaultPermissions('all')
     @ApiOperation({
         description: `Gather all data for Renderer service required to render a page`,
         parameters: [
@@ -44,7 +44,7 @@ export class RendererController {
 
     @Get('purge-page-cache')
     @UseGuards(JwtAuthGuard)
-    @Roles('administrator')
+    @DefaultPermissions('all')
     @ApiOperation({
         description: `Purge Next.js cache for a page`,
         parameters: [{ name: 'pageRoute', in: 'query', required: true }]
@@ -64,7 +64,7 @@ export class RendererController {
 
     @Get('purge-entire-cache')
     @UseGuards(JwtAuthGuard)
-    @Roles('administrator')
+    @DefaultPermissions('all')
     @ApiOperation({
         description: `Purge Next.js entire pages cache`,
     })

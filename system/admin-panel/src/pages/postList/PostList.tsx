@@ -24,30 +24,18 @@ export default function PostTable() {
     }
 
     const getUsers = async () => {
-        const administrators = await client.getFilteredUsers({
-            pagedParams: {
-                pageSize: 9999
-            },
-            filterParams: {
-                role: 'administrator'
-            }
-        }).catch(err => {
-            console.error(err);
-            return undefined;
-        });
-
         const authors = await client.getFilteredUsers({
             pagedParams: {
-                pageSize: 9999
+                pageSize: 10000
             },
             filterParams: {
-                role: 'author'
+                permissions: ['create_post', 'update_post', 'all']
             }
         }).catch(err => {
             console.error(err);
             return undefined;
         });
-        setUsers([...(administrators?.elements ?? []), ...(authors?.elements ?? [])]);
+        setUsers(authors?.elements ?? []);
     }
 
     const getPostTags = async () => {

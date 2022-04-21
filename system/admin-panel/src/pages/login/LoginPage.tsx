@@ -1,9 +1,10 @@
-import { setStoreItem, TUser } from '@cromwell/core';
+import { matchPermissions, setStoreItem, TUser } from '@cromwell/core';
 import { getRestApiClient } from '@cromwell/core-frontend';
 import { Button, IconButton, InputAdornment, TextField } from '@mui/material';
 import { Visibility as VisibilityIcon, VisibilityOff as VisibilityOffIcon } from '@mui/icons-material';
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import { getSideBarLinksFlat } from '../../helpers/navigation';
 
 import { toast } from '../../components/toast/toast';
 import styles from './LoginPage.module.scss';
@@ -53,7 +54,7 @@ const LoginPage = () => {
     const checkAuth = async (showError?: boolean) => {
         const userInfo = await apiClient.getUserInfo({ disableLog: true });
         if (userInfo?.id) {
-            if (!userInfo.role || !userInfo.email) {
+            if (!userInfo.roles?.length || !userInfo.email) {
                 if (showError) toast.error('Incorrect user account');
                 return;
             }
@@ -69,13 +70,14 @@ const LoginPage = () => {
     }, []);
 
     const loginSuccess = (userInfo: TUser) => {
-        if (userInfo.role === 'administrator' || userInfo.role === 'guest') {
-            history?.push?.(`/`);
-        } else if (userInfo.role === 'author') {
-            history?.push?.(`/post-list`);
-        } else {
+        if (!userInfo?.roles?.length) {
             toast.error('Access forbidden');
+            return;
         }
+        // Find a page with allowed permissions for this user
+        const sidebarLinks = getSideBarLinksFlat();
+        const allowed = sidebarLinks.find(link => link.route && matchPermissions(userInfo, link.permissions));
+        history?.push?.(allowed?.route ?? '/');
     }
 
     const handleSubmit = (event: TEvent) => {

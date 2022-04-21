@@ -12,11 +12,12 @@ import {
     TFrontendBundle,
     TOrder,
     TOrderInput,
+    TOrderPaymentSession,
     TPackageCromwellConfig,
     TPageConfig,
     TPageInfo,
     TPalette,
-    TOrderPaymentSession,
+    TPermission,
     TPluginEntity,
     TProductReview,
     TProductReviewInput,
@@ -438,6 +439,7 @@ export class CRestApiClient {
     /** @internal */
     public setUpCms = async (input: {
         url: string;
+        user: TCreateUser;
     }, options?: TRequestOptions): Promise<boolean | undefined> => {
         return this.post(`v1/cms/set-up`, input, options);
     }
@@ -506,7 +508,7 @@ export class CRestApiClient {
      * @auth admin
      */
     public getCmsStats = async (options?: TRequestOptions): Promise<TCmsStats | undefined> => {
-        return this.get(`v1/cms/stats`, options);
+        return this.get(`v1/cms/statistics`, options);
     }
 
     /**
@@ -590,6 +592,15 @@ export class CRestApiClient {
      */
     public buildSitemap = async (options?: TRequestOptions): Promise<TCmsSettings | undefined> => {
         return this.get(`v1/cms/build-sitemap`, options);
+    }
+
+
+    /**
+     * Get all registered user/role permissions
+     * @auth admin
+     */
+    public getPermissions = async (options?: TRequestOptions): Promise<TPermission[] | undefined> => {
+        return this.get(`v1/cms/permissions`, options);
     }
 
     // < / CMS >
@@ -770,7 +781,6 @@ export class CRestApiClient {
             disableLog: true,
         });
     }
-
 
     // < / Renderer >
 

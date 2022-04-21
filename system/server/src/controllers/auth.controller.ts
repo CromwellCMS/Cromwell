@@ -69,6 +69,7 @@ export class AuthController {
         response.code(200).send(authInfo.userDto);
     }
 
+
     @UseGuards(JwtAuthGuard)
     @Post('log-out')
     @ApiOperation({
@@ -109,6 +110,7 @@ export class AuthController {
             user: authInfo.userDto,
         }
     }
+
 
     @Post('update-access-token')
     @UseGuards(ThrottlerGuard)
@@ -154,7 +156,7 @@ export class AuthController {
         type: UserDto
     })
     async signUp(@Request() request: TRequestWithUser, @Body() input: CreateUserDto) {
-        const user = await this.authService.signUpUser(input, request.user);
+        const user = await this.authService.signUpUser(input);
         if (!user) throw new HttpException('Failed to sign up', HttpStatus.INTERNAL_SERVER_ERROR);
         return new UserDto().parseUser(user);
     }
@@ -212,7 +214,7 @@ export class AuthController {
             throw new UnauthorizedException('user.id is not set for the request');
 
         const user = await this.authService.getUserById(request.user?.id);
-        
+
         if (user) {
             return new UserDto().parseUser(user);
         }

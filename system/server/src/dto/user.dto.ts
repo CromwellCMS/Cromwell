@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { TUser, TUserRole } from '@cromwell/core';
+import { TUser, TRole } from '@cromwell/core';
 
 export class UserDto implements TUser {
     @ApiProperty()
@@ -24,7 +24,7 @@ export class UserDto implements TUser {
     address?: string | null;
 
     @ApiProperty()
-    role?: TUserRole | null;
+    roles?: TRole[] | null;
 
     parseUser(user: TUser) {
         this.id = user.id;
@@ -34,7 +34,12 @@ export class UserDto implements TUser {
         this.bio = user.bio;
         this.phone = user.phone;
         this.address = user.address;
-        this.role = user.role;
+        this.roles = user.roles?.map(role => ({
+            id: role.id,
+            name: role.name,
+            title: role.title,
+            permissions: role.permissions,
+        }));
         return this;
     }
 }

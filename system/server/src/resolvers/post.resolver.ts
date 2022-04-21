@@ -1,4 +1,4 @@
-import { EDBEntity, GraphQLPaths, TAuthRole, TPagedList, TPost, TTag, TUser } from '@cromwell/core';
+import { EDBEntity, GraphQLPaths, matchPermissions, TPagedList, TPermissionName, TPost, TTag, TUser } from '@cromwell/core';
 import {
     CreatePost,
     DeleteManyInput,
@@ -45,12 +45,9 @@ export class PostResolver {
     private userRepository = getCustomRepository(UserRepository);
 
     private canGetDraft(ctx?: TGraphQLContext) {
-        if (ctx?.user?.role && (ctx.user.role === 'guest' || ctx.user.role === 'administrator' ||
-            ctx.user.role === 'author')) {
-            return true;
-        } else {
-            return false;
-        }
+        if (!ctx?.user?.roles?.length) return false;
+        if (matchPermissions(ctx?.user, ['read_post_drafts'])) return true;
+        return false;
     }
 
     private filterDrafts(posts: (Post | undefined)[], ctx?: TGraphQLContext) {
@@ -94,7 +91,7 @@ export class PostResolver {
         return post;
     }
 
-    @Authorized<TAuthRole>("administrator", 'author')
+    @Authorized<TPermissionName>('create_post')
     @Mutation(() => Post)
     async [createPath](@Arg("data") data: CreatePost): Promise<Post> {
         const post = await this.repository.createPost(data);
@@ -103,7 +100,7 @@ export class PostResolver {
         return post;
     }
 
-    @Authorized<TAuthRole>("administrator", 'author')
+    @Authorized<TPermissionName>('update_post')
     @Mutation(() => Post)
     async [updatePath](@Arg("id", () => Int) id: number, @Arg("data") data: UpdatePost): Promise<Post> {
         const post = await this.repository.updatePost(id, data);
@@ -112,7 +109,7 @@ export class PostResolver {
         return post;
     }
 
-    @Authorized<TAuthRole>("administrator", 'author')
+    @Authorized<TPermissionName>('delete_post')
     @Mutation(() => Boolean)
     async [deletePath](@Arg("id", () => Int) id: number): Promise<boolean> {
         const success = await this.repository.deletePost(id);
@@ -121,7 +118,7 @@ export class PostResolver {
         return success;
     }
 
-    @Authorized<TAuthRole>("administrator", 'author')
+    @Authorized<TPermissionName>('delete_post')
     @Mutation(() => Boolean)
     async [deleteManyPath](@Arg("data") data: DeleteManyInput): Promise<boolean | undefined> {
         const res = await this.repository.deleteMany(data);
@@ -129,7 +126,7 @@ export class PostResolver {
         return res;
     }
 
-    @Authorized<TAuthRole>("administrator", 'author')
+    @Authorized<TPermissionName>('delete_post')
     @Mutation(() => Boolean)
     async [deleteManyFilteredPath](
         @Arg("input") input: DeleteManyInput,

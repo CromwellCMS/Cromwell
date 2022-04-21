@@ -5,13 +5,16 @@ import { AttributeToProduct } from '../models/entities/attribute-product.entity'
 import { AttributeValue } from '../models/entities/attribute-value.entity';
 import { Attribute } from '../models/entities/attribute.entity';
 import { CmsEntity } from '../models/entities/cms.entity';
+import { Coupon } from '../models/entities/coupon.entity';
 import { CustomEntity } from '../models/entities/custom-entity.entity';
 import { AttributeMeta } from '../models/entities/meta/attribute-meta.entity';
+import { CouponMeta } from '../models/entities/meta/coupon-meta.entity';
 import { CustomEntityMeta } from '../models/entities/meta/custom-entity-meta.entity';
 import { OrderMeta } from '../models/entities/meta/order-meta.entity';
 import { PostMeta } from '../models/entities/meta/post-meta.entity';
 import { ProductCategoryMeta } from '../models/entities/meta/product-category-meta.entity';
 import { ProductMeta } from '../models/entities/meta/product-meta.entity';
+import { ProductVariantMeta } from '../models/entities/meta/product-variant-meta.entity';
 import { TagMeta } from '../models/entities/meta/tag-meta.entity';
 import { UserMeta } from '../models/entities/meta/user-meta.entity';
 import { Order } from '../models/entities/order.entity';
@@ -21,15 +24,12 @@ import { PostComment } from '../models/entities/post-comment.entity';
 import { Post } from '../models/entities/post.entity';
 import { ProductCategory } from '../models/entities/product-category.entity';
 import { ProductReview } from '../models/entities/product-review.entity';
+import { ProductVariant } from '../models/entities/product-variant.entity';
 import { Product } from '../models/entities/product.entity';
+import { Role } from '../models/entities/role.entity';
 import { Tag } from '../models/entities/tag.entity';
 import { ThemeEntity } from '../models/entities/theme.entity';
 import { User } from '../models/entities/user.entity';
-import { Coupon } from '../models/entities/coupon.entity';
-import { CouponMeta } from '../models/entities/meta/coupon-meta.entity';
-import { ProductVariant } from '../models/entities/product-variant.entity';
-import { ProductVariantMeta } from '../models/entities/meta/product-variant-meta.entity';
-
 
 export const ORMEntities = [
     ThemeEntity, PluginEntity,
@@ -40,7 +40,7 @@ export const ORMEntities = [
     ProductCategoryMeta, ProductMeta, TagMeta,
     UserMeta, AttributeToProduct, AttributeValue,
     CustomEntity, CustomEntityMeta, Coupon, CouponMeta,
-    ProductVariant, ProductVariantMeta,
+    ProductVariant, ProductVariantMeta, Role,
 ]
 
 export const rendererMessages = {
