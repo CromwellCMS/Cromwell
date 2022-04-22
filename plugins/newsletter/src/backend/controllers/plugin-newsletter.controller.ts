@@ -65,7 +65,7 @@ class PluginNewsletterController {
      * Added for documentation purposes of custom Controllers.
      * */
     @Get('stats')
-    /** You can restrict route access by assigning JwtAuthGuard and passing allowed permissions in a decorator: */
+    /** You can restrict route access by assigning JwtAuthGuard and passing allowed permissions in the decorator: */
     @UseGuards(JwtAuthGuard)
     @CustomPermissions(newsletterPermissions.stats.name)
     @ApiOperation({ description: 'Get newsletters count' })

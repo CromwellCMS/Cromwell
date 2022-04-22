@@ -154,9 +154,9 @@ export class UserRepository extends BaseRepository<User> {
 
         if (filterParams?.roles?.length) {
             const brackets = new Brackets(subQb => {
-                filterParams?.roles?.forEach(role => {
-                    const query = `${roleTable}.name = :role_${role}`;
-                    subQb.orWhere(query, { [`role_${role}`]: role });
+                filterParams.roles?.forEach((role, index) => {
+                    const query = `${roleTable}.name = :role_${index}`;
+                    subQb.orWhere(query, { [`role_${index}`]: role });
                 })
             });
             qb.andWhere(brackets);
@@ -167,9 +167,9 @@ export class UserRepository extends BaseRepository<User> {
             const rolesToSearch = roles.filter(r => r.permissions?.some(p => filterParams.permissions?.includes(p)));
 
             const brackets = new Brackets(subQb => {
-                rolesToSearch.forEach(role => {
-                    const query = `${roleTable}.name = :role_${role.name}`;
-                    subQb.orWhere(query, { [`role_${role.name}`]: role.name });
+                rolesToSearch.forEach((role, index) => {
+                    const query = `${roleTable}.name = :role_${index}`;
+                    subQb.orWhere(query, { [`role_${index}`]: role.name });
                 })
             });
             qb.andWhere(brackets);

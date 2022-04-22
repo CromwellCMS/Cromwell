@@ -1,24 +1,23 @@
-import { getStoreItem, onStoreChange, setStoreItem, matchPermissions } from '@cromwell/core';
+import { getStoreItem, matchPermissions, onStoreChange, setStoreItem } from '@cromwell/core';
 import { ThemeProvider, Toolbar } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
 import clsx from 'clsx';
+import deepEqual from 'fast-deep-equal/es6';
 import React, { Suspense, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter, Route, RouteComponentProps, Switch } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 
-import { getPageInfos } from '../../helpers/navigation';
 import { useForceUpdate } from '../../helpers/forceUpdate';
-import { store } from '../../redux/store';
 import { LayoutPortal } from '../../helpers/LayoutPortal';
+import { getPageInfos } from '../../helpers/navigation';
 import Page404 from '../../pages/404/404page';
+import { store } from '../../redux/store';
 import PageErrorBoundary from '../errorBoundaries/PageErrorBoundary';
 import FileManager from '../fileManager/FileManager';
-// import LoadBox from '../loadBox/LoadBox';
 import { ConfirmPrompt } from '../modal/Confirmation';
 import Sidebar from '../sidebar/Sidebar';
 import styles from './Layout.module.scss';
-import deepEqual from 'fast-deep-equal/es6';
 
 let userRoles = getStoreItem('userInfo')?.roles;
 

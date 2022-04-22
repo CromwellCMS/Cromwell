@@ -1,4 +1,6 @@
+import { getStoreItem } from '@cromwell/core';
 import {
+    ConfirmationNumber as ConfirmationNumberIcon,
     Dashboard as DashboardIcon,
     FilterList as FilterListIcon,
     FormatPaint as FormatPaintIcon,
@@ -10,15 +12,17 @@ import {
     ShoppingBasket as ShoppingBasketIcon,
     Stars as StarsIcon,
     Storage as StorageIcon,
-    ConfirmationNumber as ConfirmationNumberIcon,
 } from '@mui/icons-material';
 import React from 'react';
+
 import sidebarStyles from '../components/sidebar/Sidebar.module.scss';
 import { CategoryIcon, PluginIcon } from '../constants/icons';
 import {
     attributesInfo,
     categoryListPageInfo,
     categoryPageInfo,
+    couponListPageInfo,
+    couponPageInfo,
     homePageInfo,
     loginPageInfo,
     orderListPageInfo,
@@ -31,8 +35,6 @@ import {
     productListInfo,
     productPageInfo,
     reviewListPageInfo,
-    couponListPageInfo,
-    couponPageInfo,
     settingsPageInfo,
     tagListPageInfo,
     tagPageInfo,
@@ -46,15 +48,19 @@ import {
     welcomePageInfo,
 } from '../constants/PageInfos';
 import { getCustomEntityPages, getCustomEntitySidebarLinks } from '../helpers/customEntities';
+import { store } from '../redux/store';
 
 const pageInfoModifiers: Record<string, (infos: TPageInfo[]) => TPageInfo[]> = {}
 const sidebarLinkModifiers: Record<string, (infos: TSidebarLink[]) => TSidebarLink[]> = {}
 
 export const registerPageInfoModifier = (key: string, modifier: (infos: TPageInfo[]) => TPageInfo[]) => {
     pageInfoModifiers[key] = modifier;
+    getStoreItem('forceUpdatePage')?.();
 }
+
 export const registerSidebarLinkModifier = (key: string, modifier: (links: TSidebarLink[]) => TSidebarLink[]) => {
     sidebarLinkModifiers[key] = modifier;
+    store.getState().forceUpdateSidebar?.();
 }
 
 // Export all pages for react-router
