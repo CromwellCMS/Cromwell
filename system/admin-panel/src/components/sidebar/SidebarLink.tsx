@@ -1,4 +1,4 @@
-import { TUser } from '@cromwell/core';
+import { TUser, matchPermissions } from '@cromwell/core';
 import { ExpandMore as ExpandMoreIcon } from '@mui/icons-material';
 import { Accordion, AccordionDetails, AccordionSummary, MenuItem as MuiMenuItem } from '@mui/material';
 import { withStyles } from '@mui/styles';
@@ -46,12 +46,17 @@ const SidebarLink = (props: {
     userInfo: TUser | undefined;
 }) => {
     const isExpanded = props.expanded === props.data.id;
+    const { data, userInfo } = props;
 
-    if (props.data?.roles && props.userInfo?.role) {
-        if (!props.data.roles.includes(props.userInfo.role)) {
-            return null;
-        }
+    const hasPermission = (link: TSidebarLink) => !(link?.permissions?.length &&
+        !matchPermissions(userInfo, link?.permissions))
+
+    if (!hasPermission(data)) {
+        return null;
     }
+
+    // Don't show sidebar category if no sub links permitted to access
+    if (!data.route && !data.subLinks.every(hasPermission)) return null;
 
     let head = (
         <MenuItem className={styles.linkHead}>

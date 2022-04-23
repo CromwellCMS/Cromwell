@@ -3,6 +3,7 @@ import {
     TCmsSettings,
     TCoupon,
     TCustomEntity,
+    TCustomEntityFilter,
     TOrder,
     TOrderPaymentSession,
     TPost,
@@ -10,9 +11,11 @@ import {
     TProduct,
     TProductCategory,
     TProductReview,
+    TRole,
     TTag,
     TUser,
 } from '@cromwell/core';
+import { FastifyRequest } from 'fastify';
 
 export type TBackendModule = {
     controllers?: unknown[];
@@ -35,6 +38,7 @@ export type ActionTypes = {
     install_theme: Action<{ themeName: string; }>;
     update_theme: Action<{ themeName: string; }>;
     uninstall_theme: Action<{ themeName: string; }>;
+    change_theme: Action<{ themeName: string; }>;
 
     create_post: Action<TPost>;
     update_post: Action<TPost>;
@@ -72,15 +76,19 @@ export type ActionTypes = {
     update_user: Action<TUser>;
     delete_user: Action<{ id: number }>;
 
+    create_role: Action<TRole>;
+    update_role: Action<TRole>;
+    delete_role: Action<{ id: number }>;
+
     create_custom_entity: Action<TCustomEntity>;
     update_custom_entity: Action<TCustomEntity>;
-    delete_custom_entity: Action<{ id: number }>;
+    delete_custom_entity: Action<{ filterParams?: TCustomEntityFilter }>;
 
     create_coupon: Action<TCoupon>;
     update_coupon: Action<TCoupon>;
     delete_coupon: Action<{ id: number }>;
 
-    update_settings: Action<TCmsSettings>;
+    update_cms_settings: Action<TCmsSettings>;
 
     create_payment: Action<TOrderPaymentSession, {
         link: string;
@@ -89,3 +97,31 @@ export type ActionTypes = {
 };
 
 export type ActionNames = keyof ActionTypes;
+
+
+export type TAuthUserInfo = {
+    id: number;
+    email?: string | null;
+    roles: TRole[];
+}
+
+export type TTokenPayload = {
+    sub: number;
+    username?: string | null;
+    roles: string;
+}
+
+export type TRequestWithUser = FastifyRequest & {
+    user: TAuthUserInfo;
+    cookies: any;
+}
+
+export type TTokenInfo = {
+    token: string;
+    maxAge: string;
+    cookie: string;
+}
+
+export type TGraphQLContext = {
+    user?: TAuthUserInfo;
+}

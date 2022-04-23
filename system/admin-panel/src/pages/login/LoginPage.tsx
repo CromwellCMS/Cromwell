@@ -1,7 +1,10 @@
-import { setStoreItem, TUser } from "@cromwell/core";
-import { getRestApiClient } from "@cromwell/core-frontend";
-import React, { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { matchPermissions, setStoreItem, TUser } from '@cromwell/core';
+import { getRestApiClient } from '@cromwell/core-frontend';
+import { Button, IconButton, InputAdornment, TextField } from '@mui/material';
+import { Visibility as VisibilityIcon, VisibilityOff as VisibilityOffIcon } from '@mui/icons-material';
+import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
+import { getSideBarLinksFlat } from '../../helpers/navigation';
 
 import { toast } from "../../components/toast/toast";
 import { useForm } from "react-hook-form";
@@ -26,38 +29,29 @@ const LoginPage = () => {
   const [email, setEmail] = useState<string>("");
 
   const checkAuth = async (showError?: boolean) => {
-    // setLoading(true);
-    const userInfo = await apiClient.getUserInfo({
-      disableLog: true,
-    });
-    if (userInfo?.id) {
-      if (!userInfo.role || !userInfo.email) {
-        if (showError)
-          toast.error("Incorrect user account");
-        // setLoading(false);
-        return;
+      const userInfo = await apiClient.getUserInfo({ disableLog: true });
+      if (userInfo?.id) {
+          if (!userInfo.roles?.length || !userInfo.email) {
+              if (showError) toast.error('Incorrect user account');
+              return;
+          }
+          setStoreItem('userInfo', userInfo);
+          loginSuccess(userInfo);
+      } else {
+          if (showError) toast.error('Incorrect email or password');
       }
-      setStoreItem("userInfo", userInfo);
-      loginSuccess(userInfo);
-    } else {
-      if (showError)
-        toast.error("Incorrect email or password");
-    }
-    // setLoading(false);
-  };
+  }
 
   const loginSuccess = (userInfo: TUser) => {
-    if (
-      userInfo.role === "administrator" ||
-      userInfo.role === "guest"
-    ) {
-      history?.push?.(`/`);
-    } else if (userInfo.role === "author") {
-      history?.push?.(`/post-list`);
-    } else {
-      toast.error("Access forbidden");
-    }
-  };
+      if (!userInfo?.roles?.length) {
+          toast.error('Access forbidden');
+          return;
+      }
+      // Find a page with allowed permissions for this user
+      const sidebarLinks = getSideBarLinksFlat();
+      const allowed = sidebarLinks.find(link => link.route && matchPermissions(userInfo, link.permissions));
+      history?.push?.(allowed?.route ?? '/');
+  }
 
   useEffect(() => {
     checkAuth();
@@ -68,9 +62,9 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="w-screen h-full flex items-center z-999 fixed top-0 left-0 right-0 bottom-0 bg-gradient-to-tr from-indigo-900 to-pink-900">
-      <div className="w-full max-w-sm mx-auto overflow-hidden bg-white rounded-lg shadow-md dark:bg-gray-800">
-        <div className="px-6 py-4">
+    <div className="bg-gradient-to-tr flex h-full from-indigo-900 to-pink-900 w-screen top-0 right-0 bottom-0 left-0 z-999 items-center fixed">
+      <div className="bg-white rounded-lg mx-auto max-w-sm shadow-md w-full overflow-hidden dark:bg-gray-800">
+        <div className="py-4 px-6">
           <img
             src="/admin/static/logo_small_black.svg"
             width="80px"
@@ -167,19 +161,19 @@ const ResetPassForm = ({
 
   return (
     <form onSubmit={handleSubmit(handleResetPass)}>
-      <div className="w-full my-3 bg-green-800 rounded-md text-white p-2">
+      <div className="rounded-md bg-green-800 my-3 text-white w-full p-2">
         We sent you an e-mail with reset code. Copy the code below and create a new password
       </div>
-      <div className="w-full mt-4">
+      <div className="mt-4 w-full">
         <label
           htmlFor="email"
-          className="mb-1 text-xs sm:text-sm tracking-wide text-gray-600">
+          className="text-xs mb-1 tracking-wide text-gray-600 sm:text-sm">
           Email
         </label>
 
         <div className="relative">
-          <div className="absolute flex border border-transparent left-0 top-0 h-full w-10">
-            <div className="flex items-center justify-center rounded-tl-lg rounded-bl-lg z-10 bg-gray-100 text-gray-600 text-lg h-full w-full">
+          <div className="border border-transparent flex h-full top-0 left-0 w-10 absolute">
+            <div className="rounded-tl-lg rounded-bl-lg flex h-full bg-gray-100 text-lg w-full text-gray-600 z-10 items-center justify-center">
               <MailIcon className="h-5 w-5" />
             </div>
           </div>
@@ -196,22 +190,22 @@ const ResetPassForm = ({
             } shadow-md focus:shadow-indigo-300 rounded-lg placeholder-gray-400 focus:border-indigo-400 focus:outline-none py-2 pr-2 pl-12`}
           />
         </div>
-        <span className="flex items-center font-medium tracking-wide text-red-500 text-xs mt-1 ml-1">
+        <span className="flex font-medium mt-1 text-xs tracking-wide ml-1 text-red-500 items-center">
           {errors.email &&
             "Please provide an email address."}
         </span>
       </div>
 
-      <div className="w-full mt-4">
+      <div className="mt-4 w-full">
         <label
           htmlFor="password"
-          className="mb-1 text-xs sm:text-sm tracking-wide text-gray-600">
+          className="text-xs mb-1 tracking-wide text-gray-600 sm:text-sm">
           Password
         </label>
 
         <div className="relative">
-          <div className="absolute flex border border-transparent left-0 top-0 h-full w-10">
-            <div className="flex items-center justify-center rounded-tl-lg rounded-bl-lg z-10 bg-gray-100 text-gray-600 text-lg h-full w-full">
+          <div className="border border-transparent flex h-full top-0 left-0 w-10 absolute">
+            <div className="rounded-tl-lg rounded-bl-lg flex h-full bg-gray-100 text-lg w-full text-gray-600 z-10 items-center justify-center">
               <KeyIcon className="h-5 w-5" />
             </div>
           </div>
@@ -230,21 +224,21 @@ const ResetPassForm = ({
             } shadow-md focus:shadow-indigo-300 rounded-lg placeholder-gray-400 focus:border-indigo-400 focus:outline-none py-2 pr-2 pl-12`}
           />
         </div>
-        <span className="flex items-center font-medium tracking-wide text-red-500 text-xs mt-1 ml-1">
+        <span className="flex font-medium mt-1 text-xs tracking-wide ml-1 text-red-500 items-center">
           {errors.password && errors.password.message}
         </span>
       </div>
 
-      <div className="w-full mt-4">
+      <div className="mt-4 w-full">
         <label
           htmlFor="code"
-          className="mb-1 text-xs sm:text-sm tracking-wide text-gray-600">
+          className="text-xs mb-1 tracking-wide text-gray-600 sm:text-sm">
           Code
         </label>
 
         <div className="relative">
-          <div className="absolute flex border border-transparent left-0 top-0 h-full w-10">
-            <div className="flex items-center justify-center rounded-tl-lg rounded-bl-lg z-10 bg-gray-100 text-gray-600 text-lg h-full w-full">
+          <div className="border border-transparent flex h-full top-0 left-0 w-10 absolute">
+            <div className="rounded-tl-lg rounded-bl-lg flex h-full bg-gray-100 text-lg w-full text-gray-600 z-10 items-center justify-center">
               <LockClosedIcon className="h-5 w-5" />
             </div>
           </div>
@@ -263,15 +257,15 @@ const ResetPassForm = ({
             } shadow-md focus:shadow-indigo-300 rounded-lg placeholder-gray-400 focus:border-indigo-400 focus:outline-none py-2 pr-2 pl-12`}
           />
         </div>
-        <span className="flex items-center font-medium tracking-wide text-red-500 text-xs mt-1 ml-1">
+        <span className="flex font-medium mt-1 text-xs tracking-wide ml-1 text-red-500 items-center">
           {errors.code && errors.code.message}
         </span>
       </div>
 
-      <div className="flex items-center justify-between mt-4">
+      <div className="flex mt-4 items-center justify-between">
         <button
           disabled={loading}
-          className="px-4 py-2 leading-5 text-white transition-colors duration-200 transform bg-gray-700 rounded hover:bg-gray-600 focus:outline-none"
+          className="rounded bg-gray-700 text-white py-2 px-4 transform transition-colors leading-5 duration-200 hover:bg-gray-600 focus:outline-none"
           type="submit">
           Change Password
         </button>
@@ -329,16 +323,16 @@ const ForgotPassForm = ({
 
   return (
     <form onSubmit={handleSubmit(handleForgotPass)}>
-      <div className="w-full mt-4">
+      <div className="mt-4 w-full">
         <label
           htmlFor="email"
-          className="mb-1 text-xs sm:text-sm tracking-wide text-gray-600">
+          className="text-xs mb-1 tracking-wide text-gray-600 sm:text-sm">
           Email
         </label>
 
         <div className="relative">
-          <div className="absolute flex border border-transparent left-0 top-0 h-full w-10">
-            <div className="flex items-center justify-center rounded-tl-lg rounded-bl-lg z-10 bg-gray-100 text-gray-600 text-lg h-full w-full">
+          <div className="border border-transparent flex h-full top-0 left-0 w-10 absolute">
+            <div className="rounded-tl-lg rounded-bl-lg flex h-full bg-gray-100 text-lg w-full text-gray-600 z-10 items-center justify-center">
               <MailIcon className="h-5 w-5" />
             </div>
           </div>
@@ -355,16 +349,16 @@ const ForgotPassForm = ({
             } shadow-md focus:shadow-indigo-300 rounded-lg placeholder-gray-400 focus:border-indigo-400 focus:outline-none py-2 pr-2 pl-12`}
           />
         </div>
-        <span className="flex items-center font-medium tracking-wide text-red-500 text-xs mt-1 ml-1">
+        <span className="flex font-medium mt-1 text-xs tracking-wide ml-1 text-red-500 items-center">
           {errors.email &&
             "Please provide an email address."}
         </span>
       </div>
 
-      <div className="flex items-center justify-between mt-4">
+      <div className="flex mt-4 items-center justify-between">
         <button
           disabled={loading}
-          className="px-4 py-2 leading-5 text-white transition-colors duration-200 transform bg-gray-700 rounded hover:bg-gray-600 focus:outline-none"
+          className="rounded bg-gray-700 text-white py-2 px-4 transform transition-colors leading-5 duration-200 hover:bg-gray-600 focus:outline-none"
           type="submit">
           Reset Password
         </button>
@@ -421,16 +415,16 @@ const SignInForm = ({
 
   return (
     <form onSubmit={handleSubmit(handleLoginClick)}>
-      <div className="w-full mt-4">
+      <div className="mt-4 w-full">
         <label
           htmlFor="email"
-          className="mb-1 text-xs sm:text-sm tracking-wide text-gray-600">
+          className="text-xs mb-1 tracking-wide text-gray-600 sm:text-sm">
           Email
         </label>
 
         <div className="relative">
-          <div className="absolute flex border border-transparent left-0 top-0 h-full w-10">
-            <div className="flex items-center justify-center rounded-tl-lg rounded-bl-lg z-10 bg-gray-100 text-gray-600 text-lg h-full w-full">
+          <div className="border border-transparent flex h-full top-0 left-0 w-10 absolute">
+            <div className="rounded-tl-lg rounded-bl-lg flex h-full bg-gray-100 text-lg w-full text-gray-600 z-10 items-center justify-center">
               <MailIcon className="h-5 w-5" />
             </div>
           </div>
@@ -447,22 +441,22 @@ const SignInForm = ({
             } shadow-md focus:shadow-indigo-300 rounded-lg placeholder-gray-400 focus:border-indigo-400 focus:outline-none py-2 pr-2 pl-12`}
           />
         </div>
-        <span className="flex items-center font-medium tracking-wide text-red-500 text-xs mt-1 ml-1">
+        <span className="flex font-medium mt-1 text-xs tracking-wide ml-1 text-red-500 items-center">
           {errors.email &&
             "Please provide an email address."}
         </span>
       </div>
 
-      <div className="w-full mt-4">
+      <div className="mt-4 w-full">
         <label
           htmlFor="password"
-          className="mb-1 text-xs sm:text-sm tracking-wide text-gray-600">
+          className="text-xs mb-1 tracking-wide text-gray-600 sm:text-sm">
           Password
         </label>
 
         <div className="relative">
-          <div className="absolute flex border border-transparent left-0 top-0 h-full w-10">
-            <div className="flex items-center justify-center rounded-tl-lg rounded-bl-lg z-10 bg-gray-100 text-gray-600 text-lg h-full w-full">
+          <div className="border border-transparent flex h-full top-0 left-0 w-10 absolute">
+            <div className="rounded-tl-lg rounded-bl-lg flex h-full bg-gray-100 text-lg w-full text-gray-600 z-10 items-center justify-center">
               <KeyIcon className="h-5 w-5" />
             </div>
           </div>
@@ -481,22 +475,22 @@ const SignInForm = ({
             } shadow-md focus:shadow-indigo-300 rounded-lg placeholder-gray-400 focus:border-indigo-400 focus:outline-none py-2 pr-2 pl-12`}
           />
         </div>
-        <span className="flex items-center font-medium tracking-wide text-red-500 text-xs mt-1 ml-1">
+        <span className="flex font-medium mt-1 text-xs tracking-wide ml-1 text-red-500 items-center">
           {errors.password && errors.password.message}
         </span>
       </div>
 
-      <div className="flex items-center justify-between mt-4">
+      <div className="flex mt-4 items-center justify-between">
         <button
           disabled={loading}
-          className="px-4 py-2 leading-5 text-white transition-colors duration-200 transform bg-gray-700 rounded hover:bg-gray-600 focus:outline-none"
+          className="rounded bg-gray-700 text-white py-2 px-4 transform transition-colors leading-5 duration-200 hover:bg-gray-600 focus:outline-none"
           type="submit">
           Login
         </button>
       </div>
       <p
         onClick={onClickForget}
-        className="hover:underline my-2">
+        className="my-2 hover:underline">
         Forgot password?
       </p>
     </form>

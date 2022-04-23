@@ -96,7 +96,7 @@ describe('Tag resolver', () => {
 
         const res = await server.executeOperation({
             query: gql`
-              mutation testUpdateTag($id: Int!, $data: InputTag!) {
+              mutation testUpdateTag($id: Int!, $data: TagInput!) {
                   ${path}(id: $id, data: $data) {
                       ...TagFragment
                   }
@@ -142,7 +142,7 @@ describe('Tag resolver', () => {
 
         const res = await server.executeOperation({
             query: gql`
-              mutation testCreateTag($data: InputTag!) {
+              mutation testCreateTag($data: TagInput!) {
                   ${path}(data: $data) {
                       ...TagFragment
                   }

@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client';
-import { EDBEntity, getStoreItem, setStoreItem, TCreateUser, TUpdateUser, TUser, TUserRole } from '@cromwell/core';
+import { EDBEntity, getStoreItem, setStoreItem, TCreateUser, TRole, TUpdateUser, TUser } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
 import {
     ArrowBack as ArrowBackIcon,
@@ -12,10 +12,9 @@ import { useHistory, useParams } from 'react-router-dom';
 
 import { ImagePicker } from '../../components/imagePicker/ImagePicker';
 import { Select } from '../../components/select/Select';
-import { parseAddress } from '../../helpers/addressParser';
 import { toast } from '../../components/toast/toast';
 import { userPageInfo } from '../../constants/PageInfos';
-import { userRoles } from '../../constants/roles';
+import { parseAddress } from '../../helpers/addressParser';
 import { getCustomMetaFor, getCustomMetaKeysFor, RenderCustomFields } from '../../helpers/customFields';
 import commonStyles from '../../styles/common.module.scss';
 import styles from './User.module.scss';
@@ -27,6 +26,7 @@ export default function UserPage() {
     const [passwordInput, setPasswordInput] = useState('');
     const history = useHistory();
     const [userData, setUserData] = useState<TUser | undefined | null>(null);
+    const [roles, setRoles] = useState<TRole[]>([]);
     const [showPassword, setShowPassword] = useState(false);
     const isNew = userId === 'new';
     const [canValidate, setCanValidate] = useState(false);
@@ -60,7 +60,11 @@ export default function UserPage() {
                     bio
                     phone
                     address
-                    role
+                    roles {
+                        name
+                        permissions
+                        title
+                    }
                     customMeta (keys: ${JSON.stringify(getCustomMetaKeysFor(EDBEntity.User))})
                 }`, 'AdminPanelUserFragment');
         } catch (e) { console.error(e) }
@@ -78,6 +82,13 @@ export default function UserPage() {
 
         } else if (isNew) {
             setUserData({} as any);
+        }
+
+        try {
+            const roles = await getGraphQLClient().getRoles({ pageSize: 10000 });
+            setRoles(roles?.elements ?? []);
+        } catch (error) {
+            console.error(error);
         }
     }
 
@@ -112,7 +123,7 @@ export default function UserPage() {
         bio: userData.bio,
         phone: userData.phone,
         address: userData.address,
-        role: userData.role,
+        roles: userData.roles?.map(r => r.name),
         customMeta: Object.assign({}, userData.customMeta, await getCustomMetaFor(EDBEntity.User)),
     });
 
@@ -120,7 +131,7 @@ export default function UserPage() {
         setCanValidate(true);
         const inputData = await getInput();
 
-        if (!inputData.email || !inputData.fullName || !inputData.role) return;
+        if (!inputData.email || !inputData.fullName || !inputData.roles?.length) return;
 
         if (isNew) {
             if (!passwordInput) return;
@@ -256,12 +267,12 @@ export default function UserPage() {
                             fullWidth
                             variant="standard"
                             label="Role"
-                            value={(userData?.role ?? '') as TUserRole}
+                            value={userData?.roles?.[0]?.name ?? ''}
                             onChange={(event: SelectChangeEvent<unknown>) => {
-                                handleInputChange('role', event.target.value)
+                                handleInputChange('roles', [{ name: event.target.value }])
                             }}
-                            error={canValidate && !userData?.role}
-                            options={userRoles.map(role => ({ label: role, value: role }))}
+                            error={canValidate && !userData?.roles?.length}
+                            options={roles.map(role => ({ label: role.title, value: role.name }))}
                         />
                     </Grid>
                     <Grid item xs={12} sm={12}>

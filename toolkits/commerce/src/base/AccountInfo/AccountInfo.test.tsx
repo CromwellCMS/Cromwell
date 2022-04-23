@@ -9,7 +9,7 @@ describe('AccountInfo', () => {
   it("renders fields", async () => {
     setStoreItem('userInfo', {
       id: 1,
-      role: 'administrator'
+      roles: [{ name: 'administrator', permissions: ['all'], id: 1 }],
     });
     render(<AccountInfo
       fields={[

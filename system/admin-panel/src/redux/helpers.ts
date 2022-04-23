@@ -1,4 +1,4 @@
-import { getStoreItem, TDeleteManyInput } from '@cromwell/core';
+import { getStoreItem, TDeleteManyInput, matchPermissions } from '@cromwell/core';
 import { getRestApiClient } from '@cromwell/core-frontend';
 
 import { store } from './store';
@@ -74,8 +74,7 @@ let isChecking = false;
 export const startUpdateChecker = () => {
     if (isChecking) return;
 
-    if (getStoreItem('userInfo')?.role === 'administrator'
-        || getStoreItem('userInfo')?.role === 'guest') {
+    if (matchPermissions(getStoreItem('userInfo'), ['update_cms', 'read_cms_status'])) {
         isChecking = true;
         updateChecker();
     }

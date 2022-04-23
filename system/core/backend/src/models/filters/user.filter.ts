@@ -1,4 +1,4 @@
-import { TUserFilter, TUserRole } from '@cromwell/core';
+import { TPermissionName, TUserFilter } from '@cromwell/core';
 import { Field, InputType } from 'type-graphql';
 
 import { BaseFilterInput } from './base-filter.filter';
@@ -18,6 +18,9 @@ export class UserFilterInput extends BaseFilterInput implements TUserFilter {
     @Field(type => String, { nullable: true })
     address?: string;
 
-    @Field(type => String, { nullable: true })
-    role?: TUserRole;
+    @Field(() => [String], { nullable: true })
+    roles?: string[];
+
+    @Field(type => [String], { nullable: true })
+    permissions?: TPermissionName[];
 }

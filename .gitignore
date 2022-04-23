@@ -9,7 +9,6 @@ lerna-debug.log*
 package.json.lerna_backup
 package-lock.json
 /pnpm-lock.yaml
-/yarn.lock
 /cmsconfig.json
 /.vscode/settings.json
 /themes/theme-test

@@ -85,7 +85,7 @@ describe('Sidebar component', () => {
             activeId={null}
             // setActiveId={() => { }}
             data={homeLink}
-            userInfo={{ role: 'administrator' } as any}
+            userInfo={{ roles: [{ name: 'administrator', permissions: ['all'] }], } as any}
         /></Router>);
 
         screen.getByText(homePageInfo.name);

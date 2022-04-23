@@ -1,4 +1,4 @@
-import { TPagedList, TStoreListItem, EDBEntity } from './data';
+import { EDBEntity, TPagedList, TPermissionName, TStoreListItem } from './data';
 
 export type TBasePageEntity = {
     /**
@@ -340,23 +340,25 @@ export type TUser = TBasePageEntity & {
     bio?: string | null;
     phone?: string | null;
     address?: string | null;
-    role?: TUserRole | null;
+    roles?: TRole[] | null;
 }
-export type TUserRole = 'administrator' | 'author' | 'customer' | 'guest';
-export type TAuthRole = TUserRole | 'self' | 'all';
 
-export type TCreateUser = Omit<TUser, TDBAuxiliaryColumns> & {
+export type TCreateUser = Omit<TUser, TDBAuxiliaryColumns | 'roles'> & {
     password?: string;
+    roles?: string[];
 };
 
-export type TUpdateUser = Omit<TUser, TDBAuxiliaryColumns>;
+export type TUpdateUser = Omit<TUser, TDBAuxiliaryColumns | 'roles'> & {
+    roles?: string[];
+};
 
 export type TUserFilter = TBaseFilter & {
     fullName?: string;
     email?: string;
     phone?: string;
     address?: string;
-    role?: TUserRole;
+    roles?: string[];
+    permissions?: TPermissionName[];
 }
 
 
@@ -822,6 +824,12 @@ export type TAdminCustomEntity = {
     icon?: string;
     entityBaseRoute?: string;
     entityListRoute?: string;
+    permissions?: {
+        read?: string;
+        create?: string;
+        update?: string;
+        delete?: string;
+    }
 }
 
 export type TCustomEntityColumn = {
@@ -887,3 +895,26 @@ export type TCustomEntityFilter = TBaseFilter & {
     entityType?: string;
     name?: string;
 }
+
+export type TPermission = {
+    name: TPermissionName;
+    title?: string;
+    description?: string;
+}
+
+export type TCustomPermission = {
+    name: string;
+    title?: string;
+    description?: string;
+}
+
+export type TRole = TBasePageEntity & {
+    /* Role name/key */
+    name?: string | null;
+    /** Title for role to display */
+    title?: string | null;
+    /* Set of pre-defined by CMS permissions */
+    permissions: TPermissionName[] | null;
+}
+
+export type TRoleInput = Omit<TRole, TDBAuxiliaryColumns>;

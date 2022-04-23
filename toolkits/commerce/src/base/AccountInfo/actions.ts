@@ -13,7 +13,7 @@ export const useAccountActions = (config: {
     const { fields = getDefaultAccountFields(config.props), text,
         notifier = baseNotifier, notifierOptions = {}, } = config.props;
     const userInfo = useUserInfo();
-    const [user, setUser] = useState<TUpdateUser | undefined>(userInfo);
+    const [user, setUser] = useState<TUser | undefined>(userInfo);
     const [canShowValidation, setCanShowValidation] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -34,8 +34,8 @@ export const useAccountActions = (config: {
         canShowValidation,
         setUser,
         isLoading,
-        changeUser: (key: keyof TUpdateUser, value: any) => {
-            setUser(prevState => {
+        changeUser: (key, value) => {
+            setUser((prevState: any) => {
                 return {
                     ...prevState,
                     [key]: value
@@ -133,7 +133,7 @@ export const useAccountActions = (config: {
                 bio: user.bio,
                 phone: user.phone,
                 address: user.address,
-                role: user.role,
+                roles: user.roles?.map(r => r.name).filter(Boolean) as string[],
             }
             try {
                 await getGraphQLClient()?.updateUser(userInfo.id, inputData);

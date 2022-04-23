@@ -506,6 +506,7 @@ export class ThemeService {
         }
         await entity.save();
         await restartService('renderer');
+        await serverFireAction('change_theme', { themeName });
 
         const cmsSettings = getStoreItem('cmsSettings');
         const timeout = (cmsSettings?.watchPoll ?? 2000) + 1000;

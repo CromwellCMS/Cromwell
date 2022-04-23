@@ -155,7 +155,7 @@ registerWidget({
 
 :::note
 Plugin settings are private and visible only for administrators.  
-Server will reject `getPluginSettings` or `savePluginSettings` request if it called from unauthenticated client or logged user does not have `Administrator` role (unauthorized). 
+Server will reject `getPluginSettings` or `savePluginSettings` request if it called from unauthenticated client or logged user does not have read/update permissions (unauthorized). 
 :::
 
 ### Instance settings

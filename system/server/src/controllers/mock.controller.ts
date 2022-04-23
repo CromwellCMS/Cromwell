@@ -68,9 +68,7 @@ export class MockController {
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async mockAttributes(): Promise<boolean> {
-
         logger.log('MockController::mockAttributes');
-
         return this.mockService.mockAttributes();
     }
 

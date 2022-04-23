@@ -1,20 +1,20 @@
-import { getStoreItem, onStoreChange, setStoreItem } from '@cromwell/core';
+import { getStoreItem, matchPermissions, onStoreChange, setStoreItem } from '@cromwell/core';
 import { ThemeProvider, Toolbar } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
 import clsx from 'clsx';
+import deepEqual from 'fast-deep-equal/es6';
 import React, { Suspense, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter, Route, RouteComponentProps, Switch } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 
-import { getPageInfos } from '../../helpers/navigation';
 import { useForceUpdate } from '../../helpers/forceUpdate';
-import { store } from '../../redux/store';
 import { LayoutPortal } from '../../helpers/LayoutPortal';
+import { getPageInfos } from '../../helpers/navigation';
 import Page404 from '../../pages/404/404page';
+import { store } from '../../redux/store';
 import PageErrorBoundary from '../errorBoundaries/PageErrorBoundary';
 import FileManager from '../fileManager/FileManager';
-// import LoadBox from '../loadBox/LoadBox';
 import { ConfirmPrompt } from '../modal/Confirmation';
 import Sidebar from '../sidebar/Sidebar';
 import styles from './Layout.module.scss';
@@ -22,16 +22,18 @@ import SideNav from "../sideNav/SideNav";
 import Topbar from "../topbar/Topbar";
 import { ContextualBarCtx } from "src/components/topbar/context";
 
-let userRole = getStoreItem('userInfo')?.role;
+let userRoles = getStoreItem('userInfo')?.roles;
 
 function Layout() {
   const forceUpdate = useForceUpdate();
   setStoreItem('forceUpdatePage', forceUpdate);
 
   onStoreChange('userInfo', (user) => {
-    if (user && user.role !== userRole) {
-      userRole = user.role;
-      forceUpdate();
+    if (user && user.roles !== userRoles) {
+      if (!deepEqual(userRoles, user.roles)) {
+        userRoles = user.roles;
+        forceUpdate();
+      }
     }
   });
 
@@ -86,7 +88,7 @@ function Layout() {
             {/* <Toolbar className={styles.dummyToolbar} /> */}
             <Switch>
               {getPageInfos().map(page => {
-                if (page.roles && !page.roles.includes(getStoreItem('userInfo')?.role))
+                if (page.permissions?.length && !matchPermissions(getStoreItem('userInfo'), page.permissions))
                   return null;
                 return (
                   <Route exact={!page.baseRoute}

@@ -1,12 +1,13 @@
 
-import { BadgeCheckIcon, ClipboardListIcon, CogIcon, CollectionIcon, DocumentDuplicateIcon, HashtagIcon, HomeIcon, MailIcon, PencilAltIcon, ShoppingBagIcon, StarIcon, TagIcon, TemplateIcon, UsersIcon, ViewGridAddIcon } from "@heroicons/react/solid";
+import { BadgeCheckIcon, CogIcon, CollectionIcon, DocumentDuplicateIcon, HashtagIcon, HomeIcon, PencilAltIcon, ShoppingBagIcon, StarIcon, TagIcon, TemplateIcon, UsersIcon, ViewGridAddIcon } from "@heroicons/react/solid";
 import React from 'react';
-import sidebarStyles from '../components/sidebar/Sidebar.module.scss';
-import { CategoryIcon, PluginIcon } from '../constants/icons';
+import { getStoreItem } from '@cromwell/core';
 import {
     attributesInfo,
     categoryListPageInfo,
     categoryPageInfo,
+    couponListPageInfo,
+    couponPageInfo,
     homePageInfo,
     loginPageInfo,
     orderListPageInfo,
@@ -19,8 +20,6 @@ import {
     productListInfo,
     productPageInfo,
     reviewListPageInfo,
-    couponListPageInfo,
-    couponPageInfo,
     settingsPageInfo,
     tagListPageInfo,
     tagPageInfo,
@@ -34,15 +33,19 @@ import {
     welcomePageInfo,
 } from '../constants/PageInfos';
 import { getCustomEntityPages, getCustomEntitySidebarLinks } from '../helpers/customEntities';
+import { store } from '../redux/store';
 
 const pageInfoModifiers: Record<string, (infos: TPageInfo[]) => TPageInfo[]> = {}
 const sidebarLinkModifiers: Record<string, (infos: TSidebarLink[]) => TSidebarLink[]> = {}
 
 export const registerPageInfoModifier = (key: string, modifier: (infos: TPageInfo[]) => TPageInfo[]) => {
     pageInfoModifiers[key] = modifier;
+    getStoreItem('forceUpdatePage')?.();
 }
+
 export const registerSidebarLinkModifier = (key: string, modifier: (links: TSidebarLink[]) => TSidebarLink[]) => {
     sidebarLinkModifiers[key] = modifier;
+    store.getState().forceUpdateSidebar?.();
 }
 
 // Export all pages for react-router
@@ -91,55 +94,54 @@ export const getSideBarLinks = (): TSidebarLink[] => {
             title: homePageInfo.name,
             route: homePageInfo.route,
             icon: <HomeIcon className="h-5 w-5" />,
-            roles: ['administrator', 'guest'],
+            permissions: ['read_cms_statistics'],
         },
         {
             id: '2_Store',
             title: 'Store',
             icon: <ShoppingBagIcon className="h-5 w-5" />,
-            roles: ['administrator', 'guest'],
             subLinks: [
                 {
                     id: '3_productList',
                     title: 'Products',
                     route: productListInfo.route,
                     icon: <CollectionIcon className="h-5 w-5" />,
-                    roles: ['administrator', 'guest'],
+                    permissions: ['read_products'],
                 },
                 {
                     id: '4_Attributes',
                     title: 'Attributes',
                     route: attributesInfo.route,
                     icon: <TagIcon className="h-5 w-5" />,
-                    roles: ['administrator', 'guest'],
+                    permissions: ['read_attributes'],
                 },
                 {
                     id: '5_Categories',
                     title: 'Categories',
                     route: categoryListPageInfo.route,
                     icon: <HashtagIcon className="h-5 w-5" />,
-                    roles: ['administrator', 'guest'],
+                    permissions: ['read_product_categories'],
                 },
                 {
                     id: '11_Order_list',
                     title: 'Orders',
                     route: orderListPageInfo.route,
                     icon: <ShoppingBagIcon className="h-5 w-5" />,
-                    roles: ['administrator', 'guest'],
+                    permissions: ['read_orders'],
                 },
                 {
                     id: 'Coupon_list',
                     title: 'Coupons',
                     route: couponListPageInfo.route,
                     icon: <BadgeCheckIcon className="h-5 w-5" />,
-                    roles: ['administrator', 'guest'],
+                    permissions: ['read_coupons'],
                 },
                 {
                     id: 'Review_list',
                     title: 'Reviews',
                     route: reviewListPageInfo.route,
                     icon: <StarIcon className="h-5 w-5" />,
-                    roles: ['administrator', 'guest'],
+                    permissions: ['read_product_reviews'],
                 }
             ]
         },
@@ -147,21 +149,20 @@ export const getSideBarLinks = (): TSidebarLink[] => {
             id: '6_Blog',
             title: 'Blog',
             icon: <PencilAltIcon className="h-5 w-5" />,
-            roles: ['administrator', 'guest', 'author'],
             subLinks: [
                 {
                     id: '7_Posts',
                     title: 'Posts',
                     route: postListInfo.route,
                     icon: <DocumentDuplicateIcon className="h-5 w-5" />,
-                    roles: ['administrator', 'guest', 'author'],
+                    permissions: ['read_posts'],
                 },
                 {
                     id: 'tags_page',
                     title: 'Tags',
                     route: tagListPageInfo.route,
                     icon: <TagIcon className="h-5 w-5" />,
-                    roles: ['administrator', 'guest', 'author'],
+                    permissions: ['read_tags'],
                 },
             ]
         },
@@ -171,34 +172,44 @@ export const getSideBarLinks = (): TSidebarLink[] => {
             title: 'Theme Editor',
             route: themeEditPageInfo.route,
             icon: <TemplateIcon className="h-5 w-5" />,
-            roles: ['administrator', 'guest'],
+            permissions: ['read_themes'],
         },
         {
             id: '6_pluginsPage',
             title: 'Plugins',
             route: pluginListPageInfo.route,
             icon: <ViewGridAddIcon className="h-5 w-5" />,
-            roles: ['administrator', 'guest'],
+            permissions: ['read_plugins'],
         },
         {
             id: 'users_page',
             title: 'Users',
             route: userListPageInfo.route,
             icon: <UsersIcon className="h-5 w-5" />,
-            roles: ['administrator', 'guest'],
+            permissions: ['read_users'],
         },
         {
             id: 'settings_page',
             title: 'Settings',
             route: settingsPageInfo.route,
             icon: <CogIcon className="h-5 w-5" />,
-            roles: ['administrator', 'guest'],
+            permissions: ['read_cms_settings'],
         }
     ];
 
     for (const modifier of Object.values(sidebarLinkModifiers)) {
         links = modifier(links);
     }
+    return links;
+}
+
+export const getSideBarLinksFlat = () => {
+    const links: TSidebarLink[] = [];
+    const pushLinks = (link: TSidebarLink) => {
+        links.push(link);
+        link.subLinks?.forEach(pushLinks);
+    }
+    getSideBarLinks().forEach(pushLinks);
     return links;
 }
 

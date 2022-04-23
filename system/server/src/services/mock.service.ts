@@ -6,8 +6,10 @@ import {
     TPost,
     TProduct,
     TProductCategoryInput,
+    TPermissionName,
     TProductReview,
     TProductReviewInput,
+    TRoleInput,
     TTag,
 } from '@cromwell/core';
 import {
@@ -17,6 +19,8 @@ import {
     ProductCategoryRepository,
     ProductRepository,
     ProductReviewRepository,
+    RoleRepository,
+    getLogger,
     TagRepository,
     UserRepository,
 } from '@cromwell/core-backend';
@@ -27,6 +31,8 @@ import { Service } from 'typedi';
 import { getCustomRepository } from 'typeorm';
 
 import { resetAllPagesCache } from '../helpers/reset-page';
+
+const logger = getLogger();
 
 @Injectable()
 @Service()
@@ -129,6 +135,7 @@ export class MockService {
     public getRandomName = (): string => (nameGenerator().spaced).replace(/\b\w/g, l => l.toUpperCase());
 
     public async mockAll(): Promise<boolean> {
+        await this.mockRoles();
         await this.mockUsers();
         await this.mockTags();
         await this.mockPosts();
@@ -362,37 +369,130 @@ export class MockService {
         return true;
     }
 
+    public async mockRoles() {
+        const dbRoles = await getCustomRepository(RoleRepository).getAll();
+        if (dbRoles?.length) return;
+
+        const authorPermissions: TPermissionName[] = [
+            'read_my_user',
+            'read_posts',
+            'read_post_drafts',
+            'create_post',
+            'update_post',
+            'delete_post',
+            'read_tags',
+            'create_tag',
+            'update_tag',
+            'delete_tag',
+            'read_users',
+            'read_roles',
+            'read_post_comments',
+            'create_post_comment',
+            'update_post_comment',
+            'delete_post_comment',
+            'read_public_directories',
+            'create_public_directory',
+            'remove_public_directory',
+            'upload_file',
+            'download_file',
+            'delete_file',
+        ];
+
+        const guestPermissions: TPermissionName[] = [
+            'read_my_user',
+            'read_plugins',
+            'read_themes',
+            'read_posts',
+            'read_post_drafts',
+            'read_tags',
+            'read_post_comments',
+            'read_products',
+            'read_product_categories',
+            'read_attributes',
+            'read_orders',
+            'read_product_reviews',
+            'read_users',
+            'read_roles',
+            'read_custom_entities',
+            'read_coupons',
+            'read_cms_settings',
+            'read_my_orders',
+            'read_public_directories',
+            'download_file',
+            'read_system_info',
+            'read_cms_statistics',
+            'read_cms_status',
+        ];
+        guestPermissions.push('newsletter_stats' as any);
+        guestPermissions.push('newsletter_export' as any);
+
+        const roles: TRoleInput[] = [
+            {
+                name: 'administrator',
+                title: 'Administrator',
+                permissions: ['all']
+            },
+            {
+                name: 'author',
+                title: 'Author',
+                permissions: authorPermissions
+            },
+            {
+                name: 'customer',
+                title: 'Customer',
+                permissions: [
+                    'update_my_user',
+                    'read_my_orders',
+                ],
+            },
+            {
+                name: 'guest',
+                title: 'Guest',
+                permissions: guestPermissions,
+            }
+        ];
+
+        for (const role of roles) {
+            try {
+                const dbRole = await getCustomRepository(RoleRepository).getRoleByName(role.name!).catch(() => null);
+                if (!dbRole) await getCustomRepository(RoleRepository).createRole(role);
+            } catch (error) {
+                logger.error(error);
+            }
+        }
+    }
+
     public async mockUsers() {
         const users: TCreateUser[] = [
             {
                 fullName: 'Creed',
                 email: 'Creed@example.com',
                 password: cryptoRandomString({ length: 12 }),
-                role: 'author',
+                roles: ['author'],
             },
             {
                 fullName: 'Pam',
                 email: 'Pam@example.com',
                 password: cryptoRandomString({ length: 12 }),
-                role: 'author',
+                roles: ['author'],
             },
             {
                 fullName: 'Michael',
                 email: 'Michael@example.com',
                 password: cryptoRandomString({ length: 12 }),
-                role: 'author',
+                roles: ['author'],
             },
             {
                 fullName: 'Kevin',
                 email: 'Kevin@example.com',
                 password: cryptoRandomString({ length: 12 }),
-                role: 'customer',
+                roles: ['customer'],
             },
             {
                 fullName: 'Dwight',
                 email: 'Dwight@example.com',
                 password: cryptoRandomString({ length: 14 }),
-                role: 'administrator',
+                roles: ['administrator'],
             },
         ]
 
@@ -404,11 +504,7 @@ export class MockService {
 
     public async mockPosts(amount?: number) {
 
-        const users = await this.userRepo.find({
-            where: {
-                role: 'author'
-            }
-        });
+        const users = (await this.userRepo.getFilteredUsers({}, { roles: ['author'] }))?.elements ?? [];
 
         const images = [
             '/themes/@cromwell/theme-blog/post1.jpg',

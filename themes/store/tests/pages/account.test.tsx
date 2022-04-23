@@ -15,7 +15,7 @@ jest.mock('@cromwell/core-frontend', () => {
                 getUserInfo: () => ({
                     id: 'test',
                     email: 'test@test.org',
-                    role: 'administrator',
+                    roles: [{ name: 'administrator', permissions: ['all'], id: 1 }],
                 }),
             }
         },

@@ -44,6 +44,8 @@ import {
     TProductReview,
     TProductReviewFilter,
     TProductReviewInput,
+    TRole,
+    TRoleInput,
     TTag,
     TTagInput,
     TUpdateUser,
@@ -354,6 +356,7 @@ export class CGraphQLClient {
             }, path);
         }
     }
+
 
     /** @internal */
     public createUpdateEntity<TEntity, TInput>(entityName: TDBEntity, inputName: string, nativeFragment: DocumentNode, nativeFragmentName: string) {
@@ -934,9 +937,15 @@ export class CGraphQLClient {
             bio
             phone
             address
-            role
+            roles {
+                id
+                name
+                title
+                permissions
+            }
         }
     `;
+
 
     public getUsers = this.createGetMany<TUser>('User', this.UserFragment, 'UserFragment');
     public getUserById = this.createGetById<TUser>('User', this.UserFragment, 'UserFragment');
@@ -968,6 +977,35 @@ export class CGraphQLClient {
         }, path);
     }
     // </User>
+
+
+    // <Role>
+
+    public RoleFragment = gql`
+     fragment RoleFragment on Role {
+         id
+         slug
+         createDate
+         updateDate
+         pageTitle
+         pageDescription
+         isEnabled
+         name
+         title
+         permissions
+     }
+    `;
+
+    public getRoles = this.createGetMany<TRole>('Role', this.RoleFragment, 'RoleFragment');
+    public getRoleById = this.createGetById<TRole>('Role', this.RoleFragment, 'RoleFragment');
+    public updateRole = this.createUpdateEntity<TRole, TRoleInput>('Role', 'RoleInput', this.RoleFragment, 'RoleFragment')
+    public createRole = this.createCreateEntity<TRole, TRoleInput>('Role', 'RoleInput', this.RoleFragment, 'RoleFragment');
+    public deleteRole = this.createDeleteEntity('Role');
+    public deleteManyRoles = this.createDeleteMany('Role');
+    public deleteManyFilteredRoles = this.createDeleteManyFiltered<TBaseFilter>('Role', 'BaseFilterInput');
+    public getFilteredRoles = this.createGetFiltered<TRole, TBaseFilter>('Role', this.RoleFragment, 'RoleFragment', 'BaseFilterInput');
+
+    // </Role>
 
 
     // <Order>
@@ -1063,8 +1101,8 @@ export class CGraphQLClient {
     public getTagById = this.createGetById<TTag>('Tag', this.TagFragment, 'TagFragment');
     public getTagBySlug = this.createGetBySlug<TTag>('Tag', this.TagFragment, 'TagFragment');
     public getFilteredTags = this.createGetFiltered<TTag, TBaseFilter>('Tag', this.TagFragment, 'TagFragment', 'BaseFilterInput');
-    public updateTag = this.createUpdateEntity<TTag, TTagInput>('Tag', 'InputTag', this.TagFragment, 'TagFragment')
-    public createTag = this.createCreateEntity<TTag, TTagInput>('Tag', 'InputTag', this.TagFragment, 'TagFragment');
+    public updateTag = this.createUpdateEntity<TTag, TTagInput>('Tag', 'TagInput', this.TagFragment, 'TagFragment')
+    public createTag = this.createCreateEntity<TTag, TTagInput>('Tag', 'TagInput', this.TagFragment, 'TagFragment');
     public deleteTag = this.createDeleteEntity('Tag');
     public deleteManyTags = this.createDeleteMany('Tag');
     public deleteManyFilteredTags = this.createDeleteManyFiltered<TBaseFilter>('Tag', 'BaseFilterInput');
@@ -1136,14 +1174,67 @@ export class CGraphQLClient {
         }
     `;
 
-    public getCustomEntities = this.createGetMany<TCustomEntity>('CustomEntity', this.CustomEntityFragment, 'CustomEntityFragment');
-    public getCustomEntityById = this.createGetById<TCustomEntity>('CustomEntity', this.CustomEntityFragment, 'CustomEntityFragment');
-    public getCustomEntitySlug = this.createGetBySlug<TCustomEntity>('CustomEntity', this.CustomEntityFragment, 'CustomEntityFragment');
+    public getCustomEntityById(entityType: string, id: number, customFragment?: DocumentNode, customFragmentName?: string): Promise<TCustomEntity | undefined> {
+        const path = GraphQLPaths['CustomEntity'].getOneById;
+        const fragment = customFragment ?? this.CustomEntityFragment;
+        const fragmentName = customFragmentName ?? 'CustomEntityFragment';
+        return this.query({
+            query: gql`
+                query core${path}($entityType: String!, $id: Int!) {
+                  ${path}(entityType: $entityType, id: $id) {
+                      ...${fragmentName}
+                  }
+              }
+              ${fragment}
+          `,
+            variables: {
+                entityType,
+                id,
+            }
+        }, path);
+    }
+
+    public getCustomEntitySlug(entityType: string, slug: string, customFragment?: DocumentNode, customFragmentName?: string): Promise<TCustomEntity | undefined> {
+        const path = GraphQLPaths['CustomEntity'].getOneBySlug;
+        const fragment = customFragment ?? this.CustomEntityFragment;
+        const fragmentName = customFragmentName ?? 'CustomEntityFragment';
+
+        return this.query({
+            query: gql`
+              query core${path}($entityType: String!, $slug: String!) {
+                  ${path}(entityType: $entityType, slug: $slug) {
+                      ...${fragmentName}
+                  }
+              }
+              ${fragment}
+          `,
+            variables: {
+                entityType,
+                slug,
+            }
+        }, path);
+    }
+
+
     public getFilteredCustomEntities = this.createGetFiltered<TCustomEntity, TCustomEntityFilter>('CustomEntity', this.CustomEntityFragment, 'CustomEntityFragment', 'CustomEntityFilterInput');
     public updateCustomEntity = this.createUpdateEntity<TCustomEntity, TCustomEntityInput>('CustomEntity', 'CustomEntityInput', this.CustomEntityFragment, 'CustomEntityFragment')
     public createCustomEntity = this.createCreateEntity<TCustomEntity, TCustomEntityInput>('CustomEntity', 'CustomEntityInput', this.CustomEntityFragment, 'CustomEntityFragment');
-    public deleteCustomEntity = this.createDeleteEntity('CustomEntity');
-    public deleteManyCustomEntities = this.createDeleteMany('CustomEntity');
+
+    public deleteCustomEntity(entityType: string, id: number) {
+        const path = GraphQLPaths['CustomEntity'].delete;
+        return this.mutate({
+            mutation: gql`
+                    mutation core${path}($entityType: String!, $id: Int!) {
+                        ${path}(entityType: $entityType, id: $id)
+                    }
+                `,
+            variables: {
+                entityType,
+                id,
+            }
+        }, path);
+    }
+
     public deleteManyFilteredCustomEntities = this.createDeleteManyFiltered<TCustomEntityFilter>('CustomEntity', 'CustomEntityFilterInput');
 
     // </CustomEntity>

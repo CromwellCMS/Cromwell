@@ -1,4 +1,4 @@
-import { GraphQLPaths, TAuthRole, TPagedList, TProductReview } from '@cromwell/core';
+import { GraphQLPaths, TPermissionName, TPagedList, TProductReview } from '@cromwell/core';
 import {
     DeleteManyInput,
     PagedParamsInput,
@@ -38,7 +38,7 @@ export class ProductReviewResolver {
         return await this.repository.getProductReview(id);
     }
 
-    @Authorized<TAuthRole>("administrator")
+    @Authorized<TPermissionName>('create_product_review')
     @Mutation(() => ProductReview)
     async [createPath](@Arg("data") data: ProductReviewInput): Promise<TProductReview> {
         const review = await this.repository.createProductReview(data);
@@ -46,7 +46,7 @@ export class ProductReviewResolver {
         return review;
     }
 
-    @Authorized<TAuthRole>("administrator")
+    @Authorized<TPermissionName>('update_product_review')
     @Mutation(() => ProductReview)
     async [updatePath](@Arg("id", () => Int) id: number, @Arg("data") data: ProductReviewInput): Promise<ProductReview> {
         const review = await this.repository.updateProductReview(id, data);
@@ -55,7 +55,7 @@ export class ProductReviewResolver {
         return review;
     }
 
-    @Authorized<TAuthRole>("administrator")
+    @Authorized<TPermissionName>('delete_product_review')
     @Mutation(() => Boolean)
     async [deletePath](@Arg("id", () => Int) id: number): Promise<boolean> {
         const review = await this.repository.deleteProductReview(id);
@@ -64,7 +64,7 @@ export class ProductReviewResolver {
         return review;
     }
 
-    @Authorized<TAuthRole>("administrator")
+    @Authorized<TPermissionName>('delete_product_review')
     @Mutation(() => Boolean)
     async [deleteManyPath](@Arg("data") data: DeleteManyInput): Promise<boolean | undefined> {
         const res = await this.repository.deleteMany(data);
@@ -72,7 +72,7 @@ export class ProductReviewResolver {
         return res;
     }
 
-    @Authorized<TAuthRole>("administrator")
+    @Authorized<TPermissionName>('delete_product_review')
     @Mutation(() => Boolean)
     async [deleteManyFilteredPath](
         @Arg("input") input: DeleteManyInput,

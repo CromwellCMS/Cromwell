@@ -8,6 +8,7 @@ import { ProductCategoryResolver } from '../resolvers/product-category.resolver'
 import { ProductReviewResolver } from '../resolvers/product-review.resolver';
 import { ProductResolver } from '../resolvers/product.resolver';
 import { TagResolver } from '../resolvers/tag.resolver';
+import { RoleResolver } from '../resolvers/role.resolver';
 import { UserResolver } from '../resolvers/user.resolver';
 import { CouponResolver } from '../resolvers/coupon.resolver';
 
@@ -24,6 +25,7 @@ const nativeResolvers = [
     TagResolver,
     CustomEntityResolver,
     CouponResolver,
+    RoleResolver,
 ];
 
 export const getResolvers = async (): Promise<any> => [

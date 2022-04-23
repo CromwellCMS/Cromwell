@@ -1,11 +1,11 @@
-import { TUser, TUserRole } from '@cromwell/core';
+import { TUser } from '@cromwell/core';
 import { Field, ObjectType } from 'type-graphql';
-import { Column, Entity, Index, OneToMany, OneToOne } from 'typeorm';
-
+import { Column, Entity, Index, JoinTable, ManyToMany, OneToMany, OneToOne } from 'typeorm';
 import { BasePageEntity } from './base-page.entity';
 import { DashboardEntity } from "./dashboard-entity.entity";
 import { UserMeta } from './meta/user-meta.entity';
 import { Post } from './post.entity';
+import { Role } from './role.entity';
 
 @Entity()
 @ObjectType()
@@ -29,10 +29,12 @@ export class User extends BasePageEntity implements TUser {
     @Column({ type: "text", nullable: true })
     bio?: string | null;
 
-    @Field(() => String, { nullable: true })
-    @Column({ type: "varchar", length: 50, nullable: true })
-    @Index()
-    role?: TUserRole | null;
+    @Field(() => [Role], { nullable: true })
+    @JoinTable()
+    @ManyToMany(() => Role, role => role.users, {
+        onDelete: 'SET NULL'
+    })
+    roles?: Role[] | null;
 
     @Field(() => String, { nullable: true })
     @Column({ type: "varchar", nullable: true, length: 1000 })

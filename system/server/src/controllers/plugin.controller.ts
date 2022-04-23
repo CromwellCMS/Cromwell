@@ -1,5 +1,12 @@
 import { TFrontendBundle } from '@cromwell/core';
-import { getLogger, getPluginSettings, findPlugin, JwtAuthGuard, Roles, savePluginSettings } from '@cromwell/core-backend';
+import {
+    findPlugin,
+    getLogger,
+    getPluginSettings,
+    JwtAuthGuard,
+    DefaultPermissions,
+    savePluginSettings,
+} from '@cromwell/core-backend';
 import { Body, Controller, Get, HttpException, HttpStatus, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
@@ -19,7 +26,7 @@ export class PluginController {
 
     @Get('settings')
     @UseGuards(JwtAuthGuard)
-    @Roles('administrator', 'guest')
+    @DefaultPermissions('read_plugin_settings')
     @ApiOperation({
         description: 'Returns JSON settings of a plugin by pluginName.',
         parameters: [{ name: 'pluginName', in: 'query', required: true }]
@@ -40,7 +47,7 @@ export class PluginController {
 
     @Post('settings')
     @UseGuards(JwtAuthGuard)
-    @Roles('administrator')
+    @DefaultPermissions('update_plugin_settings')
     @ApiOperation({
         description: 'Saves JSON settings of a plugin by pluginName.',
         parameters: [{ name: 'pluginName', in: 'query', required: true }]
@@ -62,7 +69,7 @@ export class PluginController {
 
     @Get('entity')
     @UseGuards(JwtAuthGuard)
-    @Roles('administrator', 'guest')
+    @DefaultPermissions('read_plugins')
     @ApiOperation({
         description: 'Returns DB record of a plugin by pluginName.',
         parameters: [{ name: 'pluginName', in: 'query', required: true }]
@@ -107,7 +114,7 @@ export class PluginController {
 
     @Get('admin-bundle')
     @UseGuards(JwtAuthGuard)
-    @Roles('administrator', 'guest', 'author')
+    @DefaultPermissions('read_plugins')
     @ApiOperation({
         description: `Returns plugin's JS admin bundle info.`,
         parameters: [{ name: 'pluginName', in: 'query', required: true }]
@@ -132,7 +139,7 @@ export class PluginController {
 
     @Get('check-update')
     @UseGuards(JwtAuthGuard)
-    @Roles('administrator', 'guest')
+    @DefaultPermissions('read_plugins')
     @ApiOperation({
         description: `Returns available Update for sepcified Plugin`,
         parameters: [{ name: 'pluginName', in: 'query', required: true }]
@@ -153,7 +160,7 @@ export class PluginController {
 
     @Get('update')
     @UseGuards(JwtAuthGuard)
-    @Roles('administrator')
+    @DefaultPermissions('update_plugin')
     @ApiOperation({
         description: `Updates a Plugin to latest version`,
         parameters: [{ name: 'pluginName', in: 'query', required: true }]
@@ -172,7 +179,7 @@ export class PluginController {
 
     @Get('install')
     @UseGuards(JwtAuthGuard)
-    @Roles('administrator')
+    @DefaultPermissions('install_plugin')
     @ApiOperation({
         description: `Installs a Plugin`,
         parameters: [{ name: 'pluginName', in: 'query', required: true }]
@@ -191,9 +198,9 @@ export class PluginController {
 
     @Get('delete')
     @UseGuards(JwtAuthGuard)
-    @Roles('administrator')
+    @DefaultPermissions('uninstall_plugin')
     @ApiOperation({
-        description: `Deletes a Plugin`,
+        description: `Uninstall a Plugin`,
         parameters: [{ name: 'pluginName', in: 'query', required: true }]
     })
     @ApiResponse({
@@ -206,5 +213,4 @@ export class PluginController {
 
         return this.pluginService.handleDeletePlugin(pluginName);
     }
-
 }

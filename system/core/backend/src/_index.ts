@@ -19,6 +19,7 @@ export * from './models/entities/post-comment.entity';
 export * from './models/entities/meta/base-meta.entity';
 export * from './models/entities/custom-entity.entity';
 export * from './models/entities/coupon.entity';
+export * from './models/entities/role.entity';
 export * from './models/entities/meta/coupon-meta.entity';
 export * from './models/entities/meta/attribute-meta.entity';
 export * from './models/entities/meta/custom-entity-meta.entity';
@@ -40,6 +41,7 @@ export * from './models/paged/order.paged';
 export * from './models/paged/tag.paged';
 export * from './models/paged/custom-entity.paged';
 export * from './models/paged/coupon.paged';
+export * from './models/paged/role.paged';
 
 export * from './models/filters/product.filter';
 export * from './models/filters/post.filter';
@@ -69,6 +71,7 @@ export * from './models/inputs/plugin.input';
 export * from './models/inputs/custom-entity.input';
 export * from './models/inputs/coupon.input';
 export * from './models/inputs/product-variant.input';
+export * from './models/inputs/role.input';
 
 export * from './models/objects/attribute-instance.object';
 export * from './models/objects/custom-date.scalar';
@@ -87,6 +90,7 @@ export * from './repositories/page-stats.repository';
 export * from './repositories/custom-entity.repository';
 export * from './repositories/coupon.repository';
 export * from './repositories/product-variant.repository';
+export * from './repositories/role.repository';
 
 export * from './helpers/paths';
 export * from './helpers/logger';
@@ -110,3 +114,7 @@ export * from './helpers/base-queries';
 export * from './helpers/plugin-settings';
 export * from './helpers/entity-meta';
 export * from './helpers/connect-database';
+export {
+    getCurrentRoles, getUserRole, DefaultPermissions, CustomPermissions,
+    registerPermission, getPermissions,
+} from './helpers/auth-roles-permissions';

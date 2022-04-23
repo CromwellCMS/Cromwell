@@ -129,6 +129,9 @@ const checkData = async (init: boolean) => {
         const mockService = Container.get(MockService);
         await mockService.mockAll();
     }
+
+    // Check DB has user roles
+    await cmsService.checkRolesOnStart();
 }
 
 export const closeConnection = async () => {

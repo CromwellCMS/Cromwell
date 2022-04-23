@@ -9,12 +9,14 @@ import {
     TDBEntity,
     TOrderInput,
     TOrderStatus,
+    TRoleInput,
     TPluginEntity,
     TPostInput,
     TProductCategoryInput,
     TProductInput,
     TProductReviewInput,
     TProductVariantInput,
+    TRole,
     TStockStatus,
     TTagInput,
     TThemeEntity,
@@ -28,6 +30,7 @@ import {
     Coupon,
     CouponRepository,
     CustomEntity,
+    Role,
     CustomEntityRepository,
     entityMetaRepository,
     GenericPlugin,
@@ -48,6 +51,7 @@ import {
     ProductReviewRepository,
     ProductVariant,
     ProductVariantRepository,
+    RoleRepository,
     Tag,
     TagRepository,
     ThemeEntity,
@@ -77,6 +81,7 @@ enum ESheetNames {
     Theme = 'Themes',
     User = 'Users',
     Coupon = 'Coupons',
+    Role = 'Roles',
 }
 type TBaseEntityRecord = Omit<TBasePageEntity, 'id'> & { id?: number | null };
 type TEntityRecord<TEntity> = Record<keyof (TEntity & { id }), string | null | undefined>;
@@ -137,6 +142,9 @@ export class MigrationService {
         if (entityTypes.includes('User') || exportAll) {
             await this.exportUsers(workbook);
         }
+        if (entityTypes.includes('User') || entityTypes.includes('Role') || exportAll) {
+            await this.exportRoles(workbook);
+        }
         if (entityTypes.includes('Plugin') || exportAll) {
             await this.exportPlugins(workbook);
         }
@@ -174,6 +182,7 @@ export class MigrationService {
             const uint8Array = new Uint8Array(file);
             const workbook = await this.xlsxPopulate.fromDataAsync(uint8Array);
 
+            await this.importRoles({ workbook, removeSurplus });
             await this.importUsers({ workbook, removeSurplus });
             await this.importTags({ workbook, removeSurplus });
             await this.importPosts({ workbook, removeSurplus });
@@ -586,7 +595,7 @@ export class MigrationService {
             bio: ent.bio,
             phone: ent.phone,
             address: ent.address,
-            role: ent.role,
+            roles: ent.roles,
             password: ent.password,
             customMeta: await entityMetaRepository.getEntityMetaByKeys(EDBEntity.User, ent.id, metaKeys),
             views: undefined,
@@ -595,6 +604,28 @@ export class MigrationService {
         this.fillSheet(workbook, ESheetNames.User, usersSheet);
     }
 
+    // Roles
+    private async exportRoles(workbook: any) {
+        const roles = await getCustomRepository(RoleRepository).find();
+
+        const dataSheet: Record<keyof TRole, any>[] = await Promise.all(roles.map(async ent => ({
+            id: ent.id,
+            slug: ent.slug,
+            pageTitle: ent.pageTitle,
+            pageDescription: ent.pageDescription,
+            meta: ent.meta,
+            createDate: ent.createDate,
+            updateDate: ent.updateDate,
+            isEnabled: ent.isEnabled,
+            permissions: ent.permissions,
+            name: ent.name,
+            title: ent.title,
+            customMeta: undefined,
+            views: undefined,
+        })));
+
+        this.fillSheet(workbook, ESheetNames.Role, dataSheet);
+    }
     // PLUGINS
     private async exportPlugins(workbook: any) {
         const plugins = await PluginEntity.find();
@@ -1096,6 +1127,23 @@ export class MigrationService {
         })
     }
 
+    private async importRoles(options: TImportOptions) {
+        const repo = getCustomRepository(RoleRepository);
+        await this.importBase<TRoleInput>({
+            ...options,
+            sheetName: ESheetNames.Role,
+            EntityClass: Role,
+            transformInput: (input) => ({
+                ...this.parseBaseInput(input),
+                name: input.name || null,
+                title: input.title || null,
+                permissions: this.parseJson(input.permissions),
+            }),
+            update: async (input) => input.id && repo.updateRole(input.id, input),
+            create: (input) => repo.createRole(input, input.id),
+        });
+    }
+
     private async importUsers(options: TImportOptions) {
         const userRepo = getCustomRepository(UserRepository);
         await this.importBase<TCreateUser>({
@@ -1110,7 +1158,7 @@ export class MigrationService {
                 bio: input.bio || null,
                 phone: input.phone || null,
                 address: input.address || null,
-                role: input.role as any || null,
+                roles: this.parseJson(input.roles),
                 password: input.password as any || undefined,
             }),
             update: async (input) => input.id && userRepo.updateUser(input.id, input),

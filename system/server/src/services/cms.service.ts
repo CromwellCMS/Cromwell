@@ -28,6 +28,7 @@ import {
     DashboardLayout,
     DashboardEntity,
     readCmsModules,
+    RoleRepository,
     runShellCommand,
     TagRepository,
     getCmsConfig,
@@ -48,11 +49,13 @@ import { AdminCmsConfigDto } from '../dto/admin-cms-config.dto';
 import { CmsStatusDto } from '../dto/cms-status.dto';
 import { DashboardSettingsDto } from "../dto/dashboard-settings.dto";
 import { SetupDto } from '../dto/setup.dto';
+import { serverFireAction } from '../helpers/server-fire-action';
 import { childSendMessage } from '../helpers/server-manager';
 import { endTransaction, restartService, setPendingKill, startTransaction } from '../helpers/state-manager';
 import { MockService } from './mock.service';
 import { PluginService } from './plugin.service';
 import { ThemeService } from './theme.service';
+import { authServiceInst } from './auth.service';
 
 const logger = getLogger();
 const pump = util.promisify(pipeline);
@@ -194,13 +197,25 @@ export class CmsService {
 
     public async installCms(input: SetupDto) {
         if (!input.url)
-            throw new HttpException('URL is not provided', HttpStatus.UNPROCESSABLE_ENTITY);
+            throw new HttpException('URL is not provided', HttpStatus.BAD_REQUEST);
+
+        if (!input.user)
+            throw new HttpException('User info is not provided', HttpStatus.BAD_REQUEST);
 
         const cmsEntity = await getCmsEntity();
         if (cmsEntity?.internalSettings?.installed) {
             logger.error('CMS already installed');
             throw new HttpException('CMS already installed', HttpStatus.BAD_REQUEST);
         }
+
+        await this.checkRolesOnStart();
+        const adminRole = (await getCustomRepository(RoleRepository).getAll()).find(r => r.permissions?.includes('all'));
+        if (!adminRole?.name)
+            throw new HttpException('No administrator role found in DB', HttpStatus.BAD_REQUEST);
+
+        input.user.roles = [adminRole.name];
+
+        await authServiceInst!.createUser(input.user);
 
         cmsEntity.internalSettings = {
             ...(cmsEntity.internalSettings ?? {}),
@@ -348,13 +363,13 @@ ${content}
         return out;
     }
 
-    public async getAdminConfig() {
-        const config = await getCmsSettings();
+    public async getAdminSettings() {
+        const settings = await getCmsSettings();
         const info = await getCmsInfo();
-        if (!config) {
-            throw new HttpException('CmsController::getPrivateConfig Failed to read CMS Config', HttpStatus.INTERNAL_SERVER_ERROR);
+        if (!settings) {
+            throw new HttpException('CmsController::getPrivateConfig Failed to read CMS Settings', HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        const dto = new AdminCmsConfigDto().parseConfig(config);
+        const dto = new AdminCmsConfigDto().parseConfig(settings);
         dto.cmsInfo = info;
         try {
             const robotsPath = resolve(getPublicDir(), 'robots.txt');
@@ -471,6 +486,8 @@ ${content}
                 encoding: 'UTF-8'
             });
         }
+
+        await serverFireAction('update_cms_settings');
 
         const config = await getCmsSettings();
         if (!config) throw new HttpException('!config', HttpStatus.INTERNAL_SERVER_ERROR);
@@ -619,6 +636,17 @@ ${content}
             } catch (error) {
                 logger.error(error);
             }
+        }
+    }
+
+    async getUerRoles() {
+        return getCustomRepository(RoleRepository).getAll();
+    }
+
+    async checkRolesOnStart() {
+        const roles = await getCustomRepository(RoleRepository).getAll();
+        if (!roles?.length) {
+            await this.mockService.mockRoles();
         }
     }
 }

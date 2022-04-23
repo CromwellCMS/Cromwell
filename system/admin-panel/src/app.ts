@@ -1,14 +1,14 @@
 import './helpers/Draggable/Draggable.css';
 import './helpers/importDependencies';
 import './styles/global.scss';
+import '@cromwell/core-frontend/dist/_index.css';
 import 'pure-react-carousel/dist/react-carousel.es.css';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import 'react-toastify/dist/ReactToastify.css';
-import '@cromwell/core-frontend/dist/_index.css';
 import './styles/base.css';
 
-import { getStoreItem, onStoreChange, setStoreItem, TUser } from '@cromwell/core';
+import { getStoreItem, matchPermissions, onStoreChange, setStoreItem, TUser } from '@cromwell/core';
 import { getGraphQLClient, getRestApiClient, TErrorInfo } from '@cromwell/core-frontend';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -17,9 +17,9 @@ import { Provider } from 'react-redux-ts';
 import Layout from './components/layout/Layout';
 import { toast } from './components/toast/toast';
 import { loginPageInfo, welcomePageInfo } from './constants/PageInfos';
-import { loadPlugins } from './helpers/loadPlugins';
-import { registerCustomFieldOfType } from './helpers/customFields';
 import { registerCustomEntity } from './helpers/customEntities';
+import { registerCustomFieldOfType } from './helpers/customFields';
+import { loadPlugins } from './helpers/loadPlugins';
 import { store } from './redux/store';
 
 (async () => {
@@ -76,7 +76,7 @@ import { store } from './redux/store';
             console.error(e);
         }
         restClient?.onUnauthorized(onUnauthorized, onUnauthorizedCbId);
-        if (!userInfo?.id || !userInfo.role) {
+        if (!userInfo?.id || !userInfo.roles?.length) {
             if (!window.location.pathname.includes(loginPageInfo.route)) {
                 window.history.pushState({}, '', '/admin' + loginPageInfo.route);
                 window.location.reload();
@@ -113,7 +113,7 @@ import { store } from './redux/store';
         }
 
         // Redirect to /login page if not authorized
-        if (!userInfo?.id || !userInfo.role) {
+        if (!userInfo?.id || !userInfo.roles?.length) {
             if (!window.location.pathname.includes(loginPageInfo.route)) {
                 window.history.pushState({}, '', '/admin' + loginPageInfo.route);
                 window.location.reload();
@@ -132,27 +132,26 @@ import { store } from './redux/store';
     }
 
     const onUserLogged = async (info: TUser) => {
-        if (info?.role) {
+        if (matchPermissions(info, ['read_plugins'])) {
             setTimeout(() => loadPlugins({ onlyNew: true }), 50);
+        }
 
-            if (getStoreItem('userInfo')?.role === 'administrator'
-                || getStoreItem('userInfo')?.role === 'guest') {
-                try {
-                    const settings = await restClient.getAdminCmsSettings();
-                    if (settings) {
-                        setStoreItem('cmsSettings', settings);
+        if (matchPermissions(info, ['read_cms_settings'])) {
+            try {
+                const settings = await restClient.getAdminCmsSettings();
+                if (settings) {
+                    setStoreItem('cmsSettings', settings);
 
-                        settings?.customFields?.forEach(registerCustomFieldOfType);
-                        settings?.customEntities?.forEach(registerCustomEntity);
-                    }
-                } catch (error) {
-                    console.error(error);
+                    settings?.customFields?.forEach(registerCustomFieldOfType);
+                    settings?.customEntities?.forEach(registerCustomEntity);
                 }
+            } catch (error) {
+                console.error(error);
             }
         }
     }
 
-    if (userInfo?.role) {
+    if (userInfo?.roles) {
         onUserLogged(userInfo);
     } else {
         onStoreChange('userInfo', (info) => {
