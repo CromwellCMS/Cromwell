@@ -83,7 +83,7 @@ function Layout() {
         <BrowserRouter basename={'admin'}>
           <SideNav />
           <div className="flex flex-col w-full">
-            <Toolbar className={styles.dummyToolbar} />
+            {/* <Toolbar className={styles.dummyToolbar} /> */}
             <Switch>
               {getPageInfos().map(page => {
                 if (page.roles && !page.roles.includes(getStoreItem('userInfo')?.role))

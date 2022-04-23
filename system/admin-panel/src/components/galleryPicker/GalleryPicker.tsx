@@ -2,18 +2,17 @@ import { TImageSettings } from '@cromwell/core';
 import { IconButton, Tooltip, Popover, TextField } from '@mui/material';
 import {
     Add as AddIcon,
-    DeleteForever as DeleteForeverIcon,
-    DeleteOutline as DeleteOutlineIcon,
-    DragIndicator as DragIndicatorIcon,
-    Link as LinkIcon,
 } from '@mui/icons-material';
 import clsx from 'clsx';
 import React, { Component } from 'react';
 import { Responsive, WidthProvider } from 'react-grid-layout';
+import { LinkIcon, TrashIcon } from "@heroicons/react/outline"
+import { TrashIcon as FillTrashIcon } from "@heroicons/react/outline"
 
 import { ImagePickerProps } from '../imagePicker/ImagePicker';
 import styles from './GalleryPicker.module.scss';
 import { ImageItem } from './ImageItem';
+import { GrabIcon } from "../icons/grabIcon";
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -121,29 +120,32 @@ export class GalleryPicker extends Component<GalleryPickerProps, {
         });
 
         return (
-            <div className={clsx(styles.GalleryPicker, this.props.className)} style={this.props.style}>
+            <div className={clsx("w-full relative", this.props.className)} style={this.props.style}>
                 {this.props.label && (
-                    <p className={styles.label}>{this.props.label}</p>
+                    <p className="font-bold pb-1 pl-[2px] text-gray-700">{this.props.label}</p>
                 )}
+                {images?.length === 0 && <div className="flex h-[150px] w-full top-6 left-0 z-10 absolute">
+                        <span className="font-bold mx-auto text-base p-1 text-gray-700 self-center">
+                            No Images. Tap on + to add an image
+                        </span>
+                    </div>}
                 <ResponsiveGridLayout
                     margin={[0, 0]}
                     isResizable={false}
                     breakpoints={{ xs: 480, xxs: 0 }}
-                    rowHeight={64}
+                    rowHeight={144}
                     layouts={this.getGridLayout(images)}
                     onLayoutChange={this.onLayoutChange(images)}
                     cols={{ xs: 1, xxs: 1 }}
                     draggableHandle='.draggableHandle'
+                    className="rounded-lg bg-gray-100 min-h-[150px] py-2 px-1"
                 >
                     {images.map((image, index) => {
                         return (<div
                             key={(image?.id ?? index) + ''}
-                            className={styles.imageItem}
+                            className={"!h-36 w-full flex flex-row gap-1"}
                         >
-                            <IconButton style={{ cursor: 'move', marginRight: '10px' }}
-                                className="draggableHandle">
-                                <DragIndicatorIcon />
-                            </IconButton>
+                            <GrabIcon className="rounded-md cursor-grab h-7 mr-2 p-1 w-7 self-center draggableHandle hover:bg-indigo-100" />
                             <ImageItem
                                 draggableHandleClass="draggableHandle"
                                 key={(image?.id ?? index) + ''}
@@ -156,17 +158,14 @@ export class GalleryPicker extends Component<GalleryPickerProps, {
                                 }}
                             />
                             {this.props.editLink && (
-                                <IconButton style={{ cursor: 'pointer', marginLeft: '10px' }}
-                                    onClick={(event) => this.handleShowLink(index, event)}
-                                >
-                                    <LinkIcon />
-                                </IconButton>
+                                <LinkIcon
+                                onClick={(event) => this.handleShowLink(index, event)}
+                                className="rounded-md cursor-pointer h-7 mr-2 p-1 w-7 self-center hover:bg-indigo-100" />
                             )}
-                            <IconButton style={{ cursor: 'pointer', marginLeft: '10px' }}
+                            <TrashIcon
                                 onClick={() => this.handleRemoveImage(index)}
-                            >
-                                <DeleteOutlineIcon />
-                            </IconButton>
+                                className="rounded-md cursor-pointer h-7 mr-2 p-1 text-gray-600 w-7 self-center hover:bg-indigo-100 hover:text-red-600"
+                            />
                             {this.props.editLink && this.state?.editableLink === index && (
                                 <Popover
                                     elevation={0}
@@ -195,7 +194,7 @@ export class GalleryPicker extends Component<GalleryPickerProps, {
                         </div>)
                     })}
                 </ResponsiveGridLayout>
-                <div className={styles.actions}>
+                <div className="flex flex-row w-full gap-2 justify-between">
                     <Tooltip title="Add image">
                         <IconButton
                             className={styles.galleryAddImageBtn}
@@ -211,7 +210,7 @@ export class GalleryPicker extends Component<GalleryPickerProps, {
                             aria-label="clear image"
                             onClick={this.handleDeleteAllImages}
                         >
-                            <DeleteForeverIcon />
+                            <FillTrashIcon className="h-6 text-gray-500 w-6 hover:text-red-500" />
                         </IconButton>
                     </Tooltip>
                 </div>

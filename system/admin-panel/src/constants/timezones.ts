@@ -56,7 +56,7 @@ export const timezones: {
         },
         {
             "value": 0,
-            "text": "(GMT) Western Europe Time, London, Lisbon, Casablanca"
+            "text": "(GMT 0:00) Western Europe Time, London, Lisbon, Casablanca"
         },
         {
             "value": 1,

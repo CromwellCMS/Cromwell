@@ -165,6 +165,7 @@ export const welcomePageInfo: TPageInfo = {
 export const settingsPageInfo: TPageInfo = {
     name: 'Settings',
     route: '/settings',
+    baseRoute: '/settings',
     component: SettingsPage,
     roles: ['administrator', 'guest'],
 };

@@ -169,11 +169,11 @@ const ThemeListing: React.FunctionComponent<
   }, []);
 
   return (
-    <div className="" ref={pageRef}>
+    <div className="p-4" ref={pageRef}>
       <Link to={themeMarketPageInfo.route}>
-        <button className="text-white max-w-lg my-auto mx-auto bg-gradient-to-r from-indigo-900 to-pink-800 hover:to-pink-600 transform transition-all py-2 px-4 rounded-xl">
-          <div className="flex justify-between w-full">
-              <PlusIcon className="w-5 h-5 fill-white mr-2 mt-[2px]" />
+        <button className="bg-gradient-to-r rounded-xl my-auto mx-auto max-w-lg from-indigo-900 to-pink-800 text-white py-2 transform px-4 transition-all hover:to-pink-600">
+          <div className="flex w-full justify-between">
+              <PlusIcon className="h-5 fill-white mt-[2px] mr-2 w-5" />
               <div>
                   <p className="text-md">Explore themestore</p>
               </div>
@@ -181,21 +181,21 @@ const ThemeListing: React.FunctionComponent<
       </button>
       </Link>
       <div className="flex flex-row gap-4">
-        <div className="grid grid-cols-1 gap-4 relative">
-          {isChangingTheme && <div className="absolute top-0 left-0 w-full h-full backdrop-filter backdrop-blur-md flex flex-row items-center z-30">
-              <RefreshIcon className="w-16 h-16 animate-spin self-center fill-indigo-600 p-2 bg-white rounded-full mx-auto" />
+        <div className="grid gap-4 grid-cols-1 relative">
+          {isChangingTheme && <div className="flex flex-row h-full w-full top-0 left-0 z-30 absolute backdrop-filter backdrop-blur-md items-center">
+              <RefreshIcon className="bg-white rounded-full mx-auto h-16 p-2 animate-spin fill-indigo-600 w-16 self-center" />
             </div>}
           {
             isLoading && (
               Array.from({ length: 3 }).fill('-').map((v, i) => (
-                <div key={i} className="grid grid-cols-1- gap-4">
+                <div key={i} className="grid gap-4 grid-cols-1-">
                   <ThemePackageSkeleton />
                 </div>
               ))
             )
           }
           {!isLoading && (
-            <div className="grid grid-cols-1 gap-4">
+            <div className="grid gap-4 grid-cols-1">
               {packages.map((info) => {
                 const isActive = Boolean(
                   cmsConfig &&
@@ -228,12 +228,12 @@ const ThemeListing: React.FunctionComponent<
             </div>
           )}
         </div>
-        <div className="hidden lg:inline-block h-auto max-h-[24rem] xl:max-h-[22rem] bg-white dark:bg-gray-900 max-w-xs xl:max-w-md rounded-xl shadow-md shadow-indigo-300 p-4 mt-2">
-          <h2 className="text-2xl font-bold my-3 text-indigo-600">
+        <div className="bg-white rounded-xl h-auto max-w-xs shadow-md mt-2 max-h-[24rem] p-4 shadow-indigo-300 hidden lg:inline-block xl:max-w-md xl:max-h-[22rem] dark:bg-gray-900">
+          <h2 className="font-bold my-3 text-2xl text-indigo-600">
             Did You Know?
           </h2>
           <hr />
-          <p className="py-2 text-sm">
+          <p className="text-sm py-2">
             Cromwell CMS follows principles of headless CMS
             where API server runs separately from frontend
             server. So basically you can create any type of
@@ -247,7 +247,7 @@ const ThemeListing: React.FunctionComponent<
             Theme Editor as long as Themes follow the
             guidelines we are going to show.
 
-            <Link className="text-indigo-600 underline my-3" to="https://cromwellcms.com/docs/development/theme-development" target="_blank">
+            <Link className="my-3 text-indigo-600 underline" to="https://cromwellcms.com/docs/development/theme-development" target="_blank">
               Learn more about theme development.
             </Link>
           </p>

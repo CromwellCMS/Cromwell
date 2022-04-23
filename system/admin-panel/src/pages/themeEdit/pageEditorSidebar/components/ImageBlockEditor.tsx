@@ -84,7 +84,7 @@ export const ImageBlockEditor = ({
           value={imageData?.src}
           placeholder={"Pick an image"}
           onChange={(val) => handleChange("src", val)}
-          className="mx-2 w-full"
+          className="w-full"
         />
       </label>
       <TextInput

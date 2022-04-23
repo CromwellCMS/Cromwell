@@ -19,7 +19,7 @@ export const ImageItem = (props: {
             src ? Object.assign({}, props.data, { src }) : undefined);
     }
     return (<ImagePicker
-        className={styles.imageItemContent}
+        className={"w-[calc(100%-42px)] !h-36"}
         classes={props.itemProps.classes}
         value={props.data.src}
         placeholder="Pick an image"

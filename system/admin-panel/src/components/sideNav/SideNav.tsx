@@ -14,6 +14,7 @@ import {
 } from "../../helpers/navigation";
 import { store } from "../../redux/store";
 import Topbar from "../topbar/Topbar";
+import { EyeIcon } from "@heroicons/react/solid";
 
 export const SideNav = () => {
   const pageInfos = getPageInfos();
@@ -82,7 +83,7 @@ export const SideNav = () => {
     <>
       <div className="bg-white max-h-full rounded-2xl shadow-lg my-4 mb-8 ml-4 transform-gpu transition-all top-4 shadow-indigo-200 w-80 z-[90] hidden sticky lg:block dark:bg-gray-700">
         <div className="h-full rounded-2xl">
-          <div className="flex py-2 items-center justify-center">
+          <div className="flex py-2 items-center justify-center relative">
             <Link to="/">
               <img
                 src="/admin/static/logo_small_black.svg"
@@ -90,6 +91,9 @@ export const SideNav = () => {
                 className="mx-auto mt-0"
               />
             </Link>
+            <a href="/" target="_blank" className="top-2 left-2 absolute">
+              <EyeIcon className="h-4 text-gray-400 w-4 hover:text-indigo-600" />
+            </a>
           </div>
           <nav className="h-[calc(100vh-150px)] mt-0 overflow-y-auto scrollbar-slim">
             {
