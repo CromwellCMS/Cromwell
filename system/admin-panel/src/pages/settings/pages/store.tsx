@@ -73,7 +73,7 @@ export const StoreSettingsPage = () => {
         </div>
 
         <div className="flex flex-col z-4 gap-6 relative lg:flex-row">
-          <div className="max-h-min my-4 top-16 self-start lg:order-2 lg:sticky">
+          <div className="max-h-min my-4 lg:max-w-[13rem] top-16 self-start lg:order-2 lg:sticky">
             <h2 className="font-bold text-gray-700 col-span-1">
               Shipping Settings
             </h2>
@@ -113,7 +113,7 @@ export const StoreSettingsPage = () => {
         </div>
 
         <div className="flex flex-col mt-6 gap-6 relative lg:flex-row">
-          <div className="max-h-min max-w-md my-4 top-16 self-start lg:order-2 lg:sticky">
+          <div className="flex-shrink max-h-min my-4 lg:max-w-[13rem] top-16 self-start lg:order-2 lg:sticky">
             <h2 className="font-bold text-gray-700 col-span-1">
               Currency Settings
             </h2>
@@ -135,7 +135,7 @@ export const StoreSettingsPage = () => {
           </div>
 
           <div
-            className={`bg-white rounded-lg shadow-lg w-full p-4 max-w-4xl ${
+            className={`bg-white flex-grow rounded-lg shadow-lg w-full p-4 max-w-4xl ${
               currencyDirty
                 ? "border border-indigo-600 shadow-indigo-400"
                 : "border border-white"

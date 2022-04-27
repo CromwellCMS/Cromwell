@@ -10,8 +10,10 @@ import {
   useAdminSettings,
 } from "../../hooks/useAdminSettings";
 import { SettingsIndexPage } from "./pages";
+import { ACLSettingsPage } from "./pages/acl";
 import { CodeSettingsPage } from "./pages/code";
 import { CustomEntitySettingsPage } from "./pages/custom/customEntity";
+import { CustomRoleSettingsPage } from "./pages/custom/customRole";
 import { DefaultEntitySettingsPage } from "./pages/custom/defaultEntity";
 import { CustomDataPage } from "./pages/customData";
 import { GeneralSettingsPage } from "./pages/general";
@@ -45,6 +47,15 @@ export const SettingsPage = () => {
           path={`${match.path}/seo`}
           exact
           component={SEOSettingsPage}
+        />
+        <Route
+          path={`${match.path}/acl`}
+          exact
+          component={ACLSettingsPage}
+        />
+        <Route
+          path={`${match.path}/acl/:roleId`}
+          component={CustomRoleSettingsPage}
         />
         <Route
           path={`${match.path}/custom-data`}

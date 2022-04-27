@@ -22,7 +22,7 @@ export const TBreadcrumbs = (props: BreadcrumbProps) => {
   const lastTwo = [penultimate, last].filter(k => k)
 
   return (
-    <h1 className="font-bold my-2 text-base max-w-[calc(100vw-100px)] overflow-x-auto whitespace-nowrap inline-block md:text-xl lg:max-w-fit lg:text-3xl">
+    <h1 className="font-bold h-8 my-2 text-base max-w-[calc(100vw-100px)] overflow-x-auto whitespace-nowrap inline-block md:h-9 md:text-xl lg:max-w-fit lg:h-10 lg:text-3xl">
       {rest && rest.length > 0 && <>
         <Menu
           as="div"

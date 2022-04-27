@@ -78,7 +78,7 @@ export const GeneralSettingsPage = () => {
           </div>
 
         <div className="flex flex-col gap-2 relative lg:flex-row lg:gap-6">
-          <div className="max-h-min my-1 top-16 self-start lg:order-2 lg:my-4 lg:sticky">
+          <div className="max-h-min my-1 lg:max-w-[13rem] top-16 self-start lg:order-2 lg:my-4 lg:sticky">
             <h2 className="font-bold text-gray-700 col-span-1">
               System settings
             </h2>
@@ -134,7 +134,7 @@ export const GeneralSettingsPage = () => {
                       label={"Logo"}
                       showRemove
                       backgroundSize="contain"
-                      className="h-32 max-w-[13rem]"
+                      className="h-32 lg:max-w-[13rem]"
                     />
                   )}
                 />
@@ -152,7 +152,7 @@ export const GeneralSettingsPage = () => {
                       label={"Favicon"}
                       showRemove
                       backgroundSize="contain"
-                      className="h-32 max-w-[13rem]"
+                      className="h-32 lg:max-w-[13rem]"
                     />
                   )}
                 />

@@ -25,9 +25,9 @@ export const CustomFieldSettings = (props: {
 
   // }, [])
 
-  const fields = adminSettings?.customFields?.filter(
+  const fields = (adminSettings?.customFields?.filter(
     (k) => k.entityType === entityType,
-  );
+  ) || []);
 
   return (
     <>

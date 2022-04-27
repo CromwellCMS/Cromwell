@@ -33,7 +33,7 @@ export const CustomDataPage = () => {
       </div>
 
       <div className="flex flex-col z-4 gap-6 relative lg:flex-row">
-        <div className="max-h-min max-w-md my-4 top-16 self-start lg:order-2 lg:sticky">
+        <div className="max-h-min my-4 top-16 self-start lg:order-2 lg:max-w-[13rem] lg:sticky">
           <h2 className="font-bold text-gray-700 col-span-1">
             Custom Data
           </h2>

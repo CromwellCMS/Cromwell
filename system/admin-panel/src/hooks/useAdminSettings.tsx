@@ -1,6 +1,6 @@
-import { setStoreItem, TAdminCustomEntity, TAdminCustomField, TCmsConfig } from "@cromwell/core";
+import { setStoreItem, TAdminCustomEntity, TAdminCustomField, TCmsConfig, TPermission, TRole } from "@cromwell/core";
 import { CustomEntity } from "@cromwell/core-backend";
-import { getRestApiClient, useCmsSettings } from "@cromwell/core-frontend";
+import { getGraphQLClient, getRestApiClient, useCmsSettings } from "@cromwell/core-frontend";
 import React, { useCallback, useEffect, useState } from "react";
 import { toast } from "../components/toast/toast";
 
@@ -29,6 +29,8 @@ const uniqBy = (arr: any[], predicate?: any) => {
 const useAdminSettingsContext = () => {
   const cmsSets = useCmsSettings()
   const [adminSettings, setAdminSettings] = useState<TAdminCmsSettingsType>(null);
+  const [roles, setRoles] = useState<TRole[]>([]);
+  const [permissions, setPermissions] = useState<TPermission[]>([]);
   
   const getAdminCmsSettings = useCallback(async () => {
     const client = getRestApiClient()
@@ -38,6 +40,11 @@ const useAdminSettingsContext = () => {
 
       if (settings) {
         if (!Array.isArray(settings.currencies)) settings.currencies = [];
+        if (!Array.isArray(settings.customFields)) settings.customFields = [];
+        if (!Array.isArray(settings.customEntities)) settings.customEntities = [];
+        if (!Array.isArray(settings.redirects)) settings.redirects = [];
+        if (!Array.isArray(settings.rewrites)) settings.rewrites = [];
+        if (!(settings.customMeta)) settings.customMeta = {};
         setAdminSettings(settings);
       }
 
@@ -49,34 +56,57 @@ const useAdminSettingsContext = () => {
 
   useEffect(() => {
     if (adminSettings) {
-      console.log("SETTING STORE ITEM");
       setStoreItem("cmsSettings", adminSettings);
-      console.log("STORE ITEM SET");
     }
   }, [adminSettings, setStoreItem])
+
+  const getRoles = useCallback(async () => {
+    const rolesRes = await getGraphQLClient().getRoles({ pageNumber: 0, pageSize: 100 })
+
+    setRoles(rolesRes.elements)
+  }, [])
+
+  const getPermissions = useCallback(async () => {
+    const client = getRestApiClient()
+
+    const permList = await client.getPermissions();
+
+    setPermissions(permList)
+  }, [])
+
+  const saveRole = useCallback(async (role: TRole) => {
+    await getGraphQLClient().updateRole(role.id, {
+      title: role.title,
+      name: role.name,
+      permissions: role.permissions,
+      isEnabled: role.isEnabled,
+    })
+
+    return role
+  }, [getRoles])
 
   const saveAdminCmsSettings = useCallback(async (newData: Partial<TAdminCmsSettingsType>) => {
     const old = adminSettings
     const newSettings: TAdminCmsSettingsType = {
       ...old,
       ...newData,
-      currencies: uniqBy([...old.currencies, ...newData?.currencies], 'tag'),
-      customFields: uniqBy([...old.customFields, ...newData?.customFields], 'id'),
+      currencies: uniqBy([...old?.currencies, ...newData?.currencies], 'tag'),
+      customFields: uniqBy([...old?.customFields, ...newData?.customFields], 'id'),
       customMeta: {
-        ...old.customMeta,
-        ...newData.customMeta,
+        ...(old?.customMeta || {}),
+        ...(newData.customMeta || {}),
       },
       modules: {
-        ...old.modules,
-        ...newData.modules,
+        ...(old.modules || {}),
+        ...(newData.modules || {}),
       },
       redirects: [
-        ...old.redirects,
-        ...newData.redirects,
+        ...(old.redirects || []),
+        ...(newData.redirects || []),
       ],
       rewrites: [
-        ...old.rewrites,
-        ...newData.rewrites,
+        ...(old?.rewrites || []),
+        ...(newData.rewrites || []),
       ],
     }
 
@@ -134,7 +164,7 @@ const useAdminSettingsContext = () => {
     const newSettings: TAdminCmsSettingsType = {
       ...old,
       customFields: [
-        ...old.customFields.filter(k => k.entityType !== entityType),
+        ...(old.customFields?.filter(k => k.entityType !== entityType)||[]),
         ...customFields
       ],
     }
@@ -147,17 +177,22 @@ const useAdminSettingsContext = () => {
     const newSettings: TAdminCmsSettingsType = {
       ...old,
       customFields: [
-        ...old.customFields.filter(k => k.entityType !== originalEntityType),
+        ...(old.customFields?.filter(k => k.entityType !== originalEntityType) || []),
         ...customFields
       ],
       customEntities: [
-        ...old.customEntities.filter(k => k.entityType !== originalEntityType),
+        ...(old.customEntities?.filter(k => k.entityType !== originalEntityType) || []),
         entity
       ]
     }
 
     return await __saveSettings(newSettings)
   }, [adminSettings])
+
+
+  const findRole = useCallback((id: number) => {
+    return roles.find(role => role.id === id);
+  }, [roles])
 
   return {
     settings: cmsSets,
@@ -169,6 +204,12 @@ const useAdminSettingsContext = () => {
     addCustomEntityToDB,
     saveCustomEntity,
     saveDefaultEntity,
+    getRoles,
+    roles,
+    getPermissions,
+    permissions,
+    findRole,
+    saveRole,
   }
 }
 
@@ -185,8 +226,14 @@ export const AdminSettingsContextProvider = ({ children }) => {
   const value = useAdminSettingsContext();
 
   useEffect(() => {
-    value.getAdminCmsSettings();
-  }, [value.getAdminCmsSettings])
+    const initialize = async () => {
+      await value.getRoles();
+      await value.getPermissions();
+      await value.getAdminCmsSettings();
+    }
+
+    initialize();
+  }, [value.getAdminCmsSettings, value.getRoles, value.getPermissions])
 
   return (
     <AdminSettingsContext.Provider value={value}>

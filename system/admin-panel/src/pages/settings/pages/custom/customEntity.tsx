@@ -201,7 +201,7 @@ const CustomEntityForm = ({
                       label={"Icon"}
                       showRemove
                       backgroundSize="contain"
-                      className="h-52 max-w-[13rem]"
+                      className="h-52 lg:max-w-[13rem]"
                     />
                   )}
                 />

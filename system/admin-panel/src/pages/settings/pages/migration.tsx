@@ -257,7 +257,7 @@ export const MigrationSettingsPage = () => {
         </div>
 
         <div className="flex flex-col z-4 gap-6 relative lg:flex-row">
-          <div className="max-h-min max-w-md my-4 top-16 self-start lg:order-2 lg:sticky">
+          <div className="max-h-min my-4 lg:max-w-[13rem] top-16 self-start lg:order-2 lg:sticky">
             <h2 className="font-bold text-gray-700 col-span-1">
               Backups
             </h2>
@@ -292,7 +292,7 @@ export const MigrationSettingsPage = () => {
         </div>
 
         <div className="flex flex-col mt-10 z-4 gap-6 relative lg:flex-row">
-          <div className="max-h-min max-w-md my-4 top-16 self-start lg:order-2 lg:sticky">
+          <div className="max-h-min my-4 lg:max-w-[13rem] top-16 self-start lg:order-2 lg:sticky">
             <h2 className="font-bold text-gray-700 col-span-1">
               Import
             </h2>

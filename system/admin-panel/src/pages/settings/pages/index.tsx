@@ -4,6 +4,7 @@ import {
   CogIcon,
   SearchIcon,
   SwitchVerticalIcon,
+  UserGroupIcon,
 } from "@heroicons/react/outline";
 import { TemplateIcon } from "@heroicons/react/solid";
 import React from "react";
@@ -20,7 +21,7 @@ export const SettingsIndexPage = () => {
   return (
     <>
       <TBreadcrumbs path={titlePath} />
-      <div className="grid gap-6 grid-cols-1 lg:grid-cols-2">
+      <div className="grid gap-6 grid-cols-1 xl:grid-cols-2">
         <div className="bg-white rounded-lg shadow-lg w-full p-4">
           <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
             <SettingItem
@@ -39,6 +40,15 @@ export const SettingsIndexPage = () => {
               }
               title="Store"
               description="E-Commerce settings, shipping and currencies"
+            />
+
+            <SettingItem
+              href="/settings/acl"
+              icon={
+                <UserGroupIcon className="mx-auto h-8 w-8 self-center" />
+              }
+              title="Access Control List"
+              description="Configure roles and permissions for users."
             />
 
             <SettingItem
