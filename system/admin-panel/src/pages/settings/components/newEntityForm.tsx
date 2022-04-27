@@ -137,7 +137,7 @@ export const NewEntityForm = ({
                         label={"Icon"}
                         showRemove
                         backgroundSize="contain"
-                        className="h-52 max-w-[13rem]"
+                        className="h-52 max-w-[12rem]"
                       />
                     )}
                   />
