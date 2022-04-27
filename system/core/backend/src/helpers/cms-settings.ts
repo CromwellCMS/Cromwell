@@ -69,7 +69,7 @@ export const getCmsEntity = async (): Promise<CmsEntity> => {
 
 let cmsConfig: TCmsConfig | undefined = undefined;
 
-export const getCmsSettings = async (): Promise<TCmsSettings | undefined> => {
+export const getCmsSettings = async (): Promise<TCmsSettings> => {
     // Read cmsconfig.json only once 
     if (!cmsConfig) cmsConfig = await readCMSConfig();
 

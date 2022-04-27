@@ -22,11 +22,17 @@ describe('Generic resolver', () => {
         fragmentName = 'PluginFragment';
     });
 
+    const query: typeof server.executeOperation = async (...args) => {
+        const res = await server.executeOperation(...args);
+        if (res.errors) throw res.errors;
+        return res;
+    }
+
     it(`getGeneric`, async () => {
         const path = GraphQLPaths.Generic.getMany + entityName;
-        const res = await server.executeOperation({
+        const res = await query({
             query: gql`
-              query testGetGenerics($pagedParams: PagedParamsInput!) {
+              query testGetGenerics {
                 ${path} {
                     ...${fragmentName}
                 }
@@ -42,7 +48,7 @@ describe('Generic resolver', () => {
 
     const getGenericById = async (id: number) => {
         const path = GraphQLPaths.Generic.getOneById + entityName;
-        const res = await server.executeOperation({
+        const res = await query({
             query: gql`
                 query testGenericGetEntityById($id: Int!) {
                     ${path}(id: $id) {
@@ -84,7 +90,7 @@ describe('Generic resolver', () => {
 
     const getGenericBySlug = async (slug: string) => {
         const path = GraphQLPaths.Generic.getOneBySlug + entityName;
-        const res = await server.executeOperation({
+        const res = await query({
             query: gql`
                 query testGenericGetEntityBySlug($slug: String!) {
                     ${path}(slug: $slug) {
@@ -139,7 +145,7 @@ describe('Generic resolver', () => {
             isInstalled: data1.isInstalled,
         }
 
-        const res = await server.executeOperation({
+        const res = await query({
             query: gql`
               mutation testUpdateGeneric($id: Int!, $data: PluginInput!) {
                   ${path}(id: $id, data: $data) {
@@ -193,7 +199,7 @@ describe('Generic resolver', () => {
             isInstalled: data1.isInstalled,
         }
 
-        const res = await server.executeOperation({
+        const res = await query({
             query: gql`
               mutation testCreatePost($data: PluginInput!) {
                   ${path}(data: $data) {
@@ -239,7 +245,7 @@ describe('Generic resolver', () => {
         expect(data1.id).toBeTruthy();
         const path = GraphQLPaths.Generic.delete + entityName;
 
-        const res = await server.executeOperation({
+        const res = await query({
             query: gql`
                 mutation testDeleteGeneric($id: Int!) {
                     ${path}(id: $id)
@@ -256,7 +262,7 @@ describe('Generic resolver', () => {
         }
         expect(success === true).toBeTruthy();
 
-        const data2 = await getGenericById(id);
+        const data2 = await getGenericById(id).catch(() => null);
 
         expect(!data2?.id).toBeTruthy();
         expect(!data2?.slug).toBeTruthy();

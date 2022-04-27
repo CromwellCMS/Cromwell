@@ -9,7 +9,8 @@ import {
     RoleInput,
     RoleRepository,
 } from '@cromwell/core-backend';
-import { Arg, Authorized, Int, Mutation, Query, Resolver } from 'type-graphql';
+import { GraphQLJSONObject } from 'graphql-type-json';
+import { Arg, Authorized, FieldResolver, Int, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
 import { resetAllPagesCache } from '../helpers/reset-page';
@@ -105,5 +106,10 @@ export class RoleResolver {
         @Arg("filterParams", () => BaseFilterInput, { nullable: true }) filterParams?: BaseFilterInput,
     ): Promise<TPagedList<TRole> | undefined> {
         return this.repository.getFilteredRoles(pagedParams, filterParams);
+    }
+
+    @FieldResolver(() => GraphQLJSONObject, { nullable: true })
+    async customMeta(@Root() entity: Role, @Arg("keys", () => [String]) fields: string[]): Promise<any> {
+        return entityMetaRepository.getEntityMetaByKeys(EDBEntity.Role, entity.id, fields);
     }
 }

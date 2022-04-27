@@ -1,9 +1,10 @@
 import { TPermissionName, TRole } from '@cromwell/core';
 import { Field, ObjectType } from 'type-graphql';
-import { Column, Entity, ManyToMany } from 'typeorm';
+import { OneToMany, Column, Entity, ManyToMany } from 'typeorm';
 
 import { BasePageEntity } from './base-page.entity';
 import { User } from './user.entity';
+import { RoleMeta } from './meta/role-meta.entity';
 
 @Entity()
 @ObjectType()
@@ -25,4 +26,9 @@ export class Role extends BasePageEntity implements TRole {
         cascade: true,
     })
     users?: User[] | null;
+
+    @OneToMany(() => RoleMeta, meta => meta.entity, {
+        cascade: true,
+    })
+    metaRecords?: RoleMeta[];
 }

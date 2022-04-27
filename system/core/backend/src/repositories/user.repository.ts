@@ -140,6 +140,8 @@ export class UserRepository extends BaseRepository<User> {
             logger.error('UserRepository::deleteUser failed to find user by id');
             return false;
         }
+        user.roles = [];
+        await user.save();
         const res = await this.delete(id);
         return true;
 

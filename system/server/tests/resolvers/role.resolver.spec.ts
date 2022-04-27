@@ -1,17 +1,17 @@
-import { GraphQLPaths, TPagedParams, TTag, TTagInput } from '@cromwell/core';
-import { TagRepository } from '@cromwell/core-backend';
+import { GraphQLPaths, TPagedParams, TRole, TRoleInput } from '@cromwell/core';
+import { RoleRepository } from '@cromwell/core-backend';
 import { getGraphQLClient, TCGraphQLClient } from '@cromwell/core-frontend';
 import { ApolloServer, gql } from 'apollo-server';
 import { getCustomRepository } from 'typeorm';
 
 import { setupResolver, tearDownResolver } from '../resolver.helpers';
 
-describe('Tag resolver', () => {
+describe('Role resolver', () => {
     let server: ApolloServer;
     let crwClient: TCGraphQLClient | undefined;
 
     beforeAll(async () => {
-        server = await setupResolver('tag');
+        server = await setupResolver('role');
         crwClient = getGraphQLClient();
     });
 
@@ -21,27 +21,27 @@ describe('Tag resolver', () => {
         return res;
     }
 
-    it(`getTags`, async () => {
-        const path = GraphQLPaths.Tag.getMany;
+    it(`getRoles`, async () => {
+        const path = GraphQLPaths.Role.getMany;
         const res = await query({
             query: gql`
-              query testGetTags($pagedParams: PagedParamsInput!) {
+              query testGetRoles($pagedParams: PagedParamsInput!) {
                   ${path}(pagedParams: $pagedParams) {
                       pagedMeta {
                           ...PagedMetaFragment
                       }
                       elements {
-                          ...TagFragment
+                          ...RoleFragment
                       }
                   }
               }
-              ${crwClient?.TagFragment}
+              ${crwClient?.RoleFragment}
               ${crwClient?.PagedMetaFragment}
           `,
             variables: {
                 pagedParams: {
                     pageNumber: 1,
-                } as TPagedParams<TTag>
+                } as TPagedParams<TRole>
             }
         });
         const data = crwClient?.returnData(res, path);
@@ -50,50 +50,51 @@ describe('Tag resolver', () => {
         expect(data.pagedMeta.pageSize).toBeTruthy();
     });
 
-    const getTag = async (tagId: number): Promise<TTag> => {
-        const path = GraphQLPaths.Tag.getOneById;
+    const getRole = async (roleId: number): Promise<TRole> => {
+        const path = GraphQLPaths.Role.getOneById;
         const res = await query({
             query: gql`
-            query testGetTagById($id: Int!) {
+            query testGetRoleById($id: Int!) {
                 ${path}(id: $id) {
-                    ...TagFragment
+                    ...RoleFragment
                 }
             }
-            ${crwClient?.TagFragment}
+            ${crwClient?.RoleFragment}
             `,
             variables: {
-                id: tagId
+                id: roleId
             }
         });
         const data = crwClient?.returnData(res, path);
         return data;
     }
 
-    it(`getTag`, async () => {
-        const data = await getTag(1);
+    it(`getRole`, async () => {
+        const data = await getRole(1);
         expect(data).toBeTruthy();
         expect(data.id).toBeTruthy();
     });
 
-    it(`updateTag`, async () => {
-        const data1 = await getTag(1);
+    it(`updateRole`, async () => {
+        const data1 = await getRole(1);
         expect(data1).toBeTruthy();
         expect(data1.id).toBeTruthy();
 
-        const path = GraphQLPaths.Tag.update;
+        const path = GraphQLPaths.Role.update;
 
-        const inputData: TTagInput = {
+        const inputData: TRoleInput = {
             name: '__test__',
+            permissions: ['all'],
         }
 
         const res = await query({
             query: gql`
-              mutation testUpdateTag($id: Int!, $data: TagInput!) {
+              mutation testUpdateRole($id: Int!, $data: RoleInput!) {
                   ${path}(id: $id, data: $data) {
-                      ...TagFragment
+                      ...RoleFragment
                   }
               }
-              ${crwClient?.TagFragment}
+              ${crwClient?.RoleFragment}
           `,
             variables: {
                 id: 1,
@@ -103,32 +104,33 @@ describe('Tag resolver', () => {
         const success = crwClient?.returnData(res, path);
         expect(success).toBeTruthy();
 
-        const data2 = await getTag(1);
+        const data2 = await getRole(1);
         expect(data2).toBeTruthy();
         expect(data2.id).toBeTruthy();
         expect(data2.name).toEqual(inputData.name);
     });
 
 
-    it(`createTag`, async () => {
-        const data1: TTag = await getTag(3);
+    it(`createRole`, async () => {
+        const data1: TRole = await getRole(3);
         expect(data1).toBeTruthy();
         expect(data1.id).toBeTruthy();
 
-        const path = GraphQLPaths.Tag.create;
+        const path = GraphQLPaths.Role.create;
 
-        const inputData: TTagInput = {
+        const inputData: TRoleInput = {
             name: '__test2__',
+            permissions: ['all'],
         }
 
         const res = await query({
             query: gql`
-              mutation testCreateTag($data: TagInput!) {
+              mutation testCreateRole($data: RoleInput!) {
                   ${path}(data: $data) {
-                      ...TagFragment
+                      ...RoleFragment
                   }
               }
-              ${crwClient?.TagFragment}
+              ${crwClient?.RoleFragment}
           `,
             variables: {
                 data: inputData,
@@ -137,7 +139,7 @@ describe('Tag resolver', () => {
         const success = crwClient?.returnData(res, path);
         expect(success).toBeTruthy();
 
-        const data2 = await getCustomRepository(TagRepository).findOne({
+        const data2 = await getCustomRepository(RoleRepository).findOne({
             where: {
                 name: inputData.name
             }
@@ -148,15 +150,15 @@ describe('Tag resolver', () => {
     });
 
 
-    it(`deleteTag`, async () => {
-        const data1 = await getTag(4);
+    it(`deleteRole`, async () => {
+        const data1 = await getRole(4);
         expect(data1).toBeTruthy();
         expect(data1.id).toBeTruthy();
-        const path = GraphQLPaths.Tag.delete;
+        const path = GraphQLPaths.Role.delete;
 
         const res = await query({
             query: gql`
-                mutation testDeleteTag($id: Int!) {
+                mutation testDeleteRole($id: Int!) {
                     ${path}(id: $id)
                 }
           `,
@@ -167,7 +169,7 @@ describe('Tag resolver', () => {
         const success = crwClient?.returnData(res, path);
         expect(success === true).toBeTruthy();
 
-        const data2 = await getTag(4).catch(() => null);
+        const data2 = await getRole(4).catch(() => null);
 
         expect(!data2?.id).toBeTruthy();
     });

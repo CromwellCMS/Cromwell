@@ -1,4 +1,4 @@
-import { getRandStr, getStoreItem, isServer, onStoreChange, setStoreItem, TUser } from '@cromwell/core';
+import { getRandStr, getStoreItem, isServer, onStoreChange, setStoreItem, TCreateUser, TUser } from '@cromwell/core';
 import { useEffect } from 'react';
 
 import { getRestApiClient } from '../api/CRestApiClient';
@@ -371,14 +371,15 @@ class AuthClient {
      * @param password 
      * @param fullName 
      */
-    public async signUp(email: string, password: string, fullName: string): Promise<TAuthClientOperationResult> {
+    public async signUp(user: TCreateUser): Promise<TAuthClientOperationResult> {
+        const { password, email, fullName } = user;
         if (!email || !password) return {
             code: 400,
             message: 'Empty email or password',
             success: false,
         };
         if (!fullName) return {
-            code: 406,
+            code: 400,
             message: 'Empty user name',
             success: false,
         };

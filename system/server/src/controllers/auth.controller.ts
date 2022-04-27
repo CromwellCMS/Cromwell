@@ -155,7 +155,7 @@ export class AuthController {
         status: 201,
         type: UserDto
     })
-    async signUp(@Request() request: TRequestWithUser, @Body() input: CreateUserDto) {
+    async signUp(@Body() input: CreateUserDto) {
         const user = await this.authService.signUpUser(input);
         if (!user) throw new HttpException('Failed to sign up', HttpStatus.INTERNAL_SERVER_ERROR);
         return new UserDto().parseUser(user);

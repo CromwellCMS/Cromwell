@@ -31,7 +31,9 @@ jest.mock('@cromwell/core-frontend', () => {
                 getPageConfig: jest.fn().mockImplementation(async () => testPageConfig),
                 getThemeConfig: jest.fn().mockImplementation(async () => ({})),
                 getThemeCustomConfig: jest.fn().mockImplementation(async () => ({})),
+                getThemePalette: jest.fn().mockImplementation(async () => ({})),
                 getCmsStatus: jest.fn().mockImplementation(async () => ({})),
+                fetch: async () => null,
             }
         },
         getGraphQLClient: () => {

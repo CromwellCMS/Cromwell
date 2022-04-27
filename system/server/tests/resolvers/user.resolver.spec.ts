@@ -19,9 +19,15 @@ describe('User resolver', () => {
         await tearDownResolver(server);
     });
 
+    const query: typeof server.executeOperation = async (...args) => {
+        const res = await server.executeOperation(...args);
+        if (res.errors) throw res.errors;
+        return res;
+    }
+
     it(`getUsers`, async () => {
         const path = GraphQLPaths.User.getMany;
-        const res = await server.executeOperation({
+        const res = await query({
             query: gql`
               query testGetUsers($pagedParams: PagedParamsInput!) {
                   ${path}(pagedParams: $pagedParams) {
@@ -55,7 +61,7 @@ describe('User resolver', () => {
 
     const getUser = async (id: number): Promise<TUser> => {
         const path = GraphQLPaths.User.getOneById;
-        const res = await server.executeOperation({
+        const res = await query({
             query: gql`
             query testGetUserById($id: Int!) {
                 ${path}(id: $id) {
@@ -99,7 +105,7 @@ describe('User resolver', () => {
             email: '__test__@mail.com',
         }
 
-        const res = await server.executeOperation({
+        const res = await query({
             query: gql`
               mutation testUpdateUser($id: Int!, $data: UpdateUser!) {
                   ${path}(id: $id, data: $data) {
@@ -147,7 +153,7 @@ describe('User resolver', () => {
             password: '__test2__',
         }
 
-        const res = await server.executeOperation({
+        const res = await query({
             query: gql`
               mutation testCreateUser($data: CreateUser!) {
                   ${path}(data: $data) {
@@ -192,7 +198,7 @@ describe('User resolver', () => {
         expect(data1.id).toBeTruthy();
         const path = GraphQLPaths.User.delete;
 
-        const res = await server.executeOperation({
+        const res = await query({
             query: gql`
                 mutation testDeleteUser($id: Int!) {
                     ${path}(id: $id)
@@ -209,7 +215,7 @@ describe('User resolver', () => {
         }
         expect(success === true).toBeTruthy();
 
-        const data2 = await getUser(4);
+        const data2 = await getUser(4).catch(() => null);
         expect(!data2?.id).toBeTruthy();
     });
 });

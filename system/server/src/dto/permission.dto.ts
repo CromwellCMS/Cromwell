@@ -10,4 +10,7 @@ export class PermissionDto implements TPermission {
 
     @ApiProperty()
     description?: string;
+
+    @ApiProperty()
+    source?: 'cms' | 'plugin';
 }

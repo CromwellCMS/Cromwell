@@ -4,7 +4,7 @@ import { Injectable } from '@nestjs/common';
 import fetch from 'node-fetch';
 import { Container, Service } from 'typedi';
 
-import { CmsConfigDto } from '../dto/cms-config.dto';
+import { CmsSettingsDto } from '../dto/cms-settings.dto';
 import { ThemeConfigDto } from '../dto/theme-config.dto';
 import { ThemeService } from './theme.service';
 
@@ -52,7 +52,7 @@ export class RendererService {
             pluginsSettings,
             themeConfig: new ThemeConfigDto().parse(allConfigs.themeConfig),
             userConfig: new ThemeConfigDto().parse(allConfigs.userConfig),
-            cmsSettings: cmsSettings && new CmsConfigDto().parseConfig(cmsSettings),
+            cmsSettings: cmsSettings && new CmsSettingsDto().parseSettings(cmsSettings),
             themeCustomConfig: Object.assign({}, allConfigs.themeConfig?.themeCustomConfig, allConfigs.userConfig?.themeCustomConfig),
             pagesInfo,
         }

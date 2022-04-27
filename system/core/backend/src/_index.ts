@@ -29,6 +29,7 @@ export * from './models/entities/meta/product-meta.entity';
 export * from './models/entities/meta/tag-meta.entity';
 export * from './models/entities/meta/user-meta.entity';
 export * from './models/entities/meta/product-variant-meta.entity';
+export * from './models/entities/meta/role-meta.entity';
 
 export * from './models/paged/product.paged';
 export * from './models/paged/meta.paged';

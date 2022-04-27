@@ -2,6 +2,7 @@ import {
     connectDatabase as coreConnectDatabase,
     GenericPlugin,
     GenericTheme,
+    getCurrentRoles,
     getLogger,
     getModuleStaticDir,
     getPublicPluginsDir,
@@ -132,6 +133,7 @@ const checkData = async (init: boolean) => {
 
     // Check DB has user roles
     await cmsService.checkRolesOnStart();
+    getCurrentRoles();
 }
 
 export const closeConnection = async () => {

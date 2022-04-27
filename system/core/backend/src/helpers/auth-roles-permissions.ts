@@ -9,14 +9,20 @@ export const onRolesChange = async () => {
     roles = await getCustomRepository(RoleRepository).getAll();
 }
 
-export const getCurrentRoles = () => roles;
-
-export const getUserRole = (role: string) => roles.find(r => r.name === role);
-
 export const checkRoles = async () => {
     if (!roles?.length) {
         await onRolesChange();
     }
+}
+
+export const getCurrentRoles = () => {
+    checkRoles();
+    return roles;
+}
+
+export const getUserRole = (role: string) => {
+    checkRoles();
+    return roles.find(r => r.name === role);
 }
 
 /** Nest.js guard */
@@ -29,7 +35,11 @@ export const CustomPermissions = <TCustomPermissions = string>
 const permissions: Record<string, TCustomPermission> = {};
 
 export const registerPermission = (permission: TPermission | TCustomPermission) => {
-    permissions[permission.name] = permission;
+    permissions[permission.name] = Object.assign({ source: 'plugin' }, permission);
+}
+
+const registerDefaultPermission = (permission: TPermission | TCustomPermission) => {
+    permissions[permission.name] = Object.assign({ source: 'cms' }, permission);
 }
 
 export const getPermissions = (): TCustomPermission[] => Object.values(permissions);
@@ -452,4 +462,4 @@ const cmsPermissions: Record<TPermissionName, TPermission> = {
     },
 }
 
-Object.values(cmsPermissions).forEach(registerPermission);
+Object.values(cmsPermissions).forEach(registerDefaultPermission);

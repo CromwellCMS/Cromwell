@@ -1,9 +1,9 @@
 import { TAdminCustomEntity, TAdminCustomField, TCmsInfo, TCmsSettings } from '@cromwell/core';
 import { ApiProperty } from '@nestjs/swagger';
 
-import { CmsConfigDto } from './cms-config.dto';
+import { CmsSettingsDto } from './cms-settings.dto';
 
-export class AdminCmsConfigDto extends CmsConfigDto {
+export class AdminCmsSettingsDto extends CmsSettingsDto {
     @ApiProperty()
     smtpConnectionString?: string;
 
@@ -22,13 +22,21 @@ export class AdminCmsConfigDto extends CmsConfigDto {
     @ApiProperty()
     customEntities?: TAdminCustomEntity[];
 
-    parseConfig(config: TCmsSettings) {
-        super.parseConfig(config);
+    @ApiProperty()
+    signupEnabled?: boolean;
+
+    @ApiProperty()
+    signupRoles?: string[];
+
+    parseSettings(config: TCmsSettings) {
+        super.parseSettings(config);
 
         this.smtpConnectionString = config.smtpConnectionString;
         this.sendFromEmail = config.sendFromEmail;
         this.customFields = config.customFields;
         this.customEntities = config.customEntities;
+        this.signupEnabled = config.signupEnabled;
+        this.signupRoles = config.signupRoles;
         return this;
     }
 }

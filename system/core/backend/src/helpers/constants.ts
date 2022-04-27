@@ -15,6 +15,7 @@ import { PostMeta } from '../models/entities/meta/post-meta.entity';
 import { ProductCategoryMeta } from '../models/entities/meta/product-category-meta.entity';
 import { ProductMeta } from '../models/entities/meta/product-meta.entity';
 import { ProductVariantMeta } from '../models/entities/meta/product-variant-meta.entity';
+import { RoleMeta } from '../models/entities/meta/role-meta.entity';
 import { TagMeta } from '../models/entities/meta/tag-meta.entity';
 import { UserMeta } from '../models/entities/meta/user-meta.entity';
 import { Order } from '../models/entities/order.entity';
@@ -41,6 +42,7 @@ export const ORMEntities = [
     UserMeta, AttributeToProduct, AttributeValue,
     CustomEntity, CustomEntityMeta, Coupon, CouponMeta,
     ProductVariant, ProductVariantMeta, Role,
+    RoleMeta,
 ]
 
 export const rendererMessages = {
@@ -78,6 +80,10 @@ export const defaultCmsConfig: TCmsConfig = {
     defaultSettings: {
         internalSettings: {
             installed: false,
+        },
+        adminSettings: {
+            signupEnabled: true,
+            signupRoles: ['customer'],
         },
         publicSettings: {
             themeName: "@cromwell/theme-store",

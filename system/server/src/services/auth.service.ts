@@ -2,6 +2,7 @@ import { sleep, TCreateUser, TRole } from '@cromwell/core';
 import {
     bcryptSaltRounds,
     getAuthSettings,
+    getCmsSettings,
     getEmailTemplate,
     getLogger,
     getUserRole,
@@ -76,6 +77,9 @@ export class AuthService {
 
         if (!user?.roles?.length) return null;
 
+        const roles = user?.roles?.filter(r => r && r.isEnabled !== false) as TRole[];
+        if (!roles.length) return null;
+
         const userInfo: TAuthUserInfo = {
             id: user.id,
             email: user.email,
@@ -110,7 +114,16 @@ export class AuthService {
     }
 
     async signUpUser(data: TCreateUser) {
-        data.roles = ['customer'];
+        const settings = await getCmsSettings();
+        if (!settings?.signupEnabled)
+            throw new HttpException('Sign up is not enabled for this website', HttpStatus.BAD_REQUEST);
+
+        if (!data?.roles?.length)
+            throw new HttpException('You must specify user roles', HttpStatus.BAD_REQUEST);
+
+        if (!data.roles.every(role => (settings?.signupRoles ?? []).includes(role)))
+            throw new HttpException('Specified user role in not available for sign up', HttpStatus.BAD_REQUEST);
+
         return this.createUser(data);
     }
 
@@ -123,7 +136,7 @@ export class AuthService {
     async forgotUserPassword(email: string) {
         const userRepo = getCustomRepository(UserRepository);
         const user = await userRepo.getUserByEmail(email);
-        if (!user?.id) throw new HttpException('Failed', HttpStatus.BAD_REQUEST);
+        if (!user?.id) throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
 
         const secretCode = cryptoRandomString({ length: 6, type: 'numeric' });
 
@@ -145,8 +158,9 @@ export class AuthService {
     async resetUserPassword(input: ResetPasswordDto) {
         const userRepo = getCustomRepository(UserRepository);
         const user = await userRepo.getUserByEmail(input.email);
+        const errMessage = 'User not found or reset code is not valid';
         if (!user?.id || !user.resetPasswordCode || !user.resetPasswordDate || !user.email)
-            throw new HttpException('Failed', HttpStatus.BAD_REQUEST);
+            throw new HttpException(errMessage, HttpStatus.BAD_REQUEST);
 
         const resetUserCode = async () => {
             if (!user) return;
@@ -176,12 +190,12 @@ export class AuthService {
             this.authSettings.resetPasswordCodeExpirationAccessTime < new Date(Date.now()).getTime()) {
             logger.warn('Tried to reset password with expired code');
             await resetUserCode();
-            throw new HttpException('Failed', HttpStatus.BAD_REQUEST);
+            throw new HttpException(errMessage, HttpStatus.BAD_REQUEST);
         }
 
         if (input.code !== user.resetPasswordCode) {
             logger.warn('Tried to reset password with invalid code');
-            throw new HttpException('Failed', HttpStatus.BAD_REQUEST);
+            throw new HttpException(errMessage, HttpStatus.BAD_REQUEST);
         }
 
         user.password = await this.hashPassword(input.newPassword);
@@ -198,13 +212,17 @@ export class AuthService {
     }
 
     payloadToUserInfo(payload: TTokenPayload): TAuthUserInfo {
-        const roles: string[] = payload.roles && JSON.parse(payload.roles);
-        if (!payload.username || !payload.sub || !roles?.length)
+        const roleNames: string[] = payload.roles && JSON.parse(payload.roles);
+        if (!payload.username || !payload.sub || !roleNames?.length)
             throw new UnauthorizedException('payloadToUserInfo: Payload is not valid');
+
+        const roles = roleNames.map(getUserRole).filter(r => r && r.isEnabled !== false) as TRole[];
+        if (!roles.length)
+            throw new UnauthorizedException('User has no valid roles for authentication');
         return {
             id: payload.sub,
             email: payload.username,
-            roles: roles.map(getUserRole).filter(Boolean) as TRole[],
+            roles,
         };
     }
 

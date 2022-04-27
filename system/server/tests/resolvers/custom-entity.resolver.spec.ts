@@ -1,5 +1,5 @@
-import { GraphQLPaths, TBaseFilter, TCustomEntity, TCustomEntityInput, TPagedParams } from '@cromwell/core';
-import { CustomEntityRepository } from '@cromwell/core-backend';
+import { GraphQLPaths, TCustomEntity, TCustomEntityFilter, TCustomEntityInput, TPagedParams } from '@cromwell/core';
+import { CustomEntityRepository, getCmsEntity } from '@cromwell/core-backend';
 import { getGraphQLClient, TCGraphQLClient } from '@cromwell/core-frontend';
 import { ApolloServer, gql } from 'apollo-server';
 import { getCustomRepository } from 'typeorm';
@@ -11,36 +11,67 @@ describe('Custom entity resolver', () => {
     let crwClient: TCGraphQLClient | undefined;
 
     beforeAll(async () => {
-        server = await setupResolver('Custom entity');
+        server = await setupResolver('custom-entity');
         crwClient = getGraphQLClient();
+
+        const entity = await getCmsEntity();
+        if (!entity.adminSettings) entity.adminSettings = {};
+        entity.adminSettings = {
+            customEntities: [{
+                entityType: 'test',
+                listLabel: 'test',
+            }, {
+                entityType: 'test_delete',
+                listLabel: 'test_delete'
+            }, {
+                entityType: 'test2',
+                listLabel: 'test2'
+            }, {
+                entityType: 'to_create',
+                listLabel: 'to_create'
+            }]
+        };
+        await entity.save();
 
         for (let i = 0; i < 10; i++) {
             await getCustomRepository(CustomEntityRepository).createCustomEntity({
-                entityType: `test_${i % 5}_${i}`,
+                entityType: `test`,
+                slug: `test_${i % 5}_${i}`,
                 customMeta: {
                     test: `test_${i % 5}_${i}`,
                 }
             }, i + 1);
         }
+        await Promise.all((await getCustomRepository(CustomEntityRepository).getAll()).map(async e => {
+            if (!e.slug || !e.slug.includes('test')) await e.remove();
+        }));
     });
 
     afterAll(async () => {
         await tearDownResolver(server);
     });
 
-    const getCustomEntity = async (id: number, customMetaKeys?: string[]): Promise<TCustomEntity> => {
+    const query: typeof server.executeOperation = async (...args) => {
+        const res = await server.executeOperation(...args);
+        if (res.errors) throw res.errors;
+        return res;
+    }
+
+    const getCustomEntity = async (entityType: string, id: number, customMetaKeys?: string[]): Promise<TCustomEntity> => {
         const path = GraphQLPaths.CustomEntity.getOneById;
-        const res = await server.executeOperation({
+        const res = await query({
             query: gql`
-            query testGetCustomEntityById($id: Int!) {
-                ${path}(id: $id) {
+            query testGetCustomEntityById($entityType: String!, $id: Int!) {
+                ${path}(entityType: $entityType, id: $id) {
                     id
                     entityType
+                    slug
                     customMeta(keys: ${JSON.stringify(customMetaKeys ?? [])})
                 }
             }`,
             variables: {
-                id
+                id,
+                entityType,
             }
         });
         const data = crwClient?.returnData(res, path);
@@ -50,7 +81,7 @@ describe('Custom entity resolver', () => {
     const updateEntity = async (id: number, input: TCustomEntityInput) => {
         const path = GraphQLPaths.CustomEntity.update;
 
-        const res = await server.executeOperation({
+        const res = await query({
             query: gql`
               mutation testUpdateCustomEntity($id: Int!, $data: CustomEntityInput!) {
                   ${path}(id: $id, data: $data) {
@@ -69,17 +100,18 @@ describe('Custom entity resolver', () => {
     }
 
 
-    const deleteEntity = async (id: number) => {
+    const deleteEntity = async (entityType: string, id: number) => {
         const path = GraphQLPaths.CustomEntity.delete;
 
-        const res = await server.executeOperation({
+        const res = await query({
             query: gql`
-                mutation testDeleteCustomEntity($id: Int!) {
-                    ${path}(id: $id)
+                mutation testDeleteCustomEntity($entityType: String!, $id: Int!) {
+                    ${path}(entityType: $entityType, id: $id)
                 }
             `,
             variables: {
                 id,
+                entityType,
             }
         });
         const success = crwClient?.returnData(res, path);
@@ -87,9 +119,9 @@ describe('Custom entity resolver', () => {
     }
 
 
-    const getFilteredCustomEntities = async (filterParams: TBaseFilter) => {
+    const getFilteredCustomEntities = async (filterParams: TCustomEntityFilter) => {
         const path = GraphQLPaths.CustomEntity.getFiltered;
-        const res = await server.executeOperation({
+        const res = await query({
             query: gql`
                 query testGetFilteredCustomEntities($pagedParams: PagedParamsInput, $filterParams: CustomEntityFilterInput) {
                     ${path}(pagedParams: $pagedParams, filterParams: $filterParams) {
@@ -98,6 +130,7 @@ describe('Custom entity resolver', () => {
                         }
                         elements {
                             id
+                            slug
                             entityType
                             customMeta(keys: ["test"])
                         }
@@ -119,10 +152,10 @@ describe('Custom entity resolver', () => {
 
     it(`getCustomEntities`, async () => {
         const path = GraphQLPaths.CustomEntity.getMany;
-        const res = await server.executeOperation({
+        const res = await query({
             query: gql`
-              query testGetCustomEntities($pagedParams: PagedParamsInput!) {
-                  ${path}(pagedParams: $pagedParams) {
+              query testGetCustomEntities($entityType: String!, $pagedParams: PagedParamsInput!) {
+                  ${path}(entityType: $entityType, pagedParams: $pagedParams) {
                       pagedMeta {
                           ...PagedMetaFragment
                       }
@@ -136,6 +169,7 @@ describe('Custom entity resolver', () => {
               ${crwClient?.PagedMetaFragment}
           `,
             variables: {
+                entityType: 'test',
                 pagedParams: {
                     pageNumber: 1,
                 } as TPagedParams<TCustomEntity>
@@ -154,7 +188,7 @@ describe('Custom entity resolver', () => {
 
 
     it(`getCustomEntity`, async () => {
-        const data = await getCustomEntity(1);
+        const data = await getCustomEntity('test', 1);
         if (Array.isArray(data)) {
             console.error('data error', data)
             expect(!Array.isArray(data)).toBeTruthy();
@@ -166,13 +200,13 @@ describe('Custom entity resolver', () => {
 
 
     it(`updateCustomEntity and meta`, async () => {
-        const data1 = await getCustomEntity(1);
+        const data1 = await getCustomEntity('test', 1);
         expect(data1).toBeTruthy();
         expect(data1.id).toBeTruthy();
 
-
         const inputData: TCustomEntityInput = {
             entityType: 'test2',
+            slug: data1.slug,
             customMeta: {
                 testUpdate: 'testUpdate'
             }
@@ -184,11 +218,7 @@ describe('Custom entity resolver', () => {
             expect(!Array.isArray(success)).toBeTruthy();
         }
 
-        const data2 = await getCustomEntity(data1.id, ['testUpdate']);
-        if (Array.isArray(data2)) {
-            console.error('data error', data2)
-            expect(!Array.isArray(data2)).toBeTruthy();
-        }
+        const data2 = await getCustomEntity(inputData.entityType, data1.id, ['testUpdate']);
 
         expect(data2).toBeTruthy();
         expect(data2.id).toBeTruthy();
@@ -197,11 +227,12 @@ describe('Custom entity resolver', () => {
 
         await updateEntity(data1.id, {
             entityType: data1.entityType,
+            slug: data1.slug,
             customMeta: {
                 testUpdate: null
             }
         });
-        const data3 = await getCustomEntity(data1.id, ['testUpdate']);
+        const data3 = await getCustomEntity(data1.entityType, data1.id, ['testUpdate']);
         expect(data3).toBeTruthy();
         expect(data3.id).toBeTruthy();
         expect(data3.entityType).toEqual(data1.entityType);
@@ -213,9 +244,10 @@ describe('Custom entity resolver', () => {
         const path = GraphQLPaths.CustomEntity.create;
         const inputData: TCustomEntityInput = {
             entityType: 'to_create',
+            slug: 'to_create',
         }
 
-        const res = await server.executeOperation({
+        const res = await query({
             query: gql`
               mutation testCreateCustomEntity($data: CustomEntityInput!) {
                   ${path}(data: $data) {
@@ -255,9 +287,9 @@ describe('Custom entity resolver', () => {
     it(`deleteCustomEntity`, async () => {
         const entity = await getCustomRepository(CustomEntityRepository).createCustomEntity({
             entityType: `test_delete`,
-
+            slug: `test_delete`,
         });
-        const success = await deleteEntity(entity.id);
+        const success = await deleteEntity(`test_delete`, entity.id);
 
         if (Array.isArray(success)) {
             console.error('res error', success)
@@ -265,16 +297,17 @@ describe('Custom entity resolver', () => {
         }
         expect(success === true).toBeTruthy();
 
-        const data2 = await getCustomEntity(entity.id);
-        expect(!data2?.id).toBeTruthy();
+        const data2 = await getCustomEntity(`test_delete`, entity.id).catch(() => null);
+        expect(data2?.id).toBeFalsy();
     });
 
 
     it(`base filter by column`, async () => {
         const data = await getFilteredCustomEntities({
+            entityType: 'test',
             filters: [
                 {
-                    key: 'entityType',
+                    key: 'slug',
                     value: 'test_3',
                     inMeta: false,
                 }
@@ -285,9 +318,10 @@ describe('Custom entity resolver', () => {
 
     it(`base filter by column exact`, async () => {
         const data = await getFilteredCustomEntities({
+            entityType: 'test',
             filters: [
                 {
-                    key: 'entityType',
+                    key: 'slug',
                     value: 'test_3_3',
                     exact: true,
                 }
@@ -299,6 +333,7 @@ describe('Custom entity resolver', () => {
 
     it(`base filter by meta`, async () => {
         const data = await getFilteredCustomEntities({
+            entityType: 'test',
             filters: [
                 {
                     key: 'test',
@@ -308,12 +343,14 @@ describe('Custom entity resolver', () => {
             ]
         });
 
+
         expect(data.elements.length).toBe(2);
     });
 
 
     it(`base filter by meta exact`, async () => {
         const data = await getFilteredCustomEntities({
+            entityType: 'test',
             filters: [
                 {
                     key: 'test',
@@ -331,31 +368,32 @@ describe('Custom entity resolver', () => {
 
     it(`base sort by column desc`, async () => {
         const data = await getFilteredCustomEntities({
+            entityType: 'test',
             sorts: [
                 {
-                    key: 'entityType',
+                    key: 'slug',
                     sort: "DESC",
                 }
             ]
         });
 
-        expect(data.elements[0].entityType).toBe(`test_4_9`);
+        expect(data.elements[0].slug).toBe(`test_4_9`);
         expect(data.elements[0].customMeta.test).toBe(`test_4_9`);
     });
 
 
     it(`base sort by column asc`, async () => {
         const data = await getFilteredCustomEntities({
+            entityType: 'test',
             sorts: [
                 {
-                    key: 'entityType',
+                    key: 'slug',
                     sort: "ASC",
                 }
             ]
         });
 
-
-        expect(data.elements[0].entityType).toBe(`test_0_0`);
+        expect(data.elements[0].slug).toBe(`test_0_0`);
         expect(data.elements[0].customMeta.test).toBe(`test_0_0`);
     });
 
@@ -363,6 +401,7 @@ describe('Custom entity resolver', () => {
 
     it(`base sort by meta desc`, async () => {
         const data = await getFilteredCustomEntities({
+            entityType: 'test',
             sorts: [
                 {
                     key: 'test',
@@ -372,7 +411,7 @@ describe('Custom entity resolver', () => {
             ]
         });
 
-        expect(data.elements[0].entityType).toBe(`test_4_9`);
+        expect(data.elements[0].slug).toBe(`test_4_9`);
         expect(data.elements[0].customMeta.test).toBe(`test_4_9`);
     });
 

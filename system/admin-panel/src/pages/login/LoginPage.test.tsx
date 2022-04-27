@@ -16,6 +16,8 @@ jest.mock('@cromwell/core-frontend', () => {
                 getUserInfo: jest.fn().mockImplementation(() => testData),
             }
         },
+        iconFromPath: () => null,
+        getCmsStatus: async () => null,
     }
 });
 
@@ -25,6 +27,7 @@ jest.mock('react-router-dom', () => {
         useHistory: () => { },
         BrowserRouter: originalModule.BrowserRouter,
         Link: () => <></>,
+        withRouter: (c) => c,
     }
 });
 

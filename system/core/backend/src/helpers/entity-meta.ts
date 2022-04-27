@@ -1,29 +1,31 @@
 import { EDBEntity } from '@cromwell/core';
-import { Brackets, BaseEntity } from 'typeorm';
+import { BaseEntity, Brackets } from 'typeorm';
 
 import { Attribute } from '../models/entities/attribute.entity';
 import { BasePageEntity } from '../models/entities/base-page.entity';
+import { Coupon } from '../models/entities/coupon.entity';
+import { CustomEntity } from '../models/entities/custom-entity.entity';
 import { AttributeMeta } from '../models/entities/meta/attribute-meta.entity';
 import { BaseEntityMeta, TEntityMeta } from '../models/entities/meta/base-meta.entity';
+import { CouponMeta } from '../models/entities/meta/coupon-meta.entity';
+import { CustomEntityMeta } from '../models/entities/meta/custom-entity-meta.entity';
 import { OrderMeta } from '../models/entities/meta/order-meta.entity';
 import { PostMeta } from '../models/entities/meta/post-meta.entity';
 import { ProductCategoryMeta } from '../models/entities/meta/product-category-meta.entity';
 import { ProductMeta } from '../models/entities/meta/product-meta.entity';
+import { ProductVariantMeta } from '../models/entities/meta/product-variant-meta.entity';
+import { RoleMeta } from '../models/entities/meta/role-meta.entity';
 import { TagMeta } from '../models/entities/meta/tag-meta.entity';
 import { UserMeta } from '../models/entities/meta/user-meta.entity';
 import { Order } from '../models/entities/order.entity';
 import { Post } from '../models/entities/post.entity';
 import { ProductCategory } from '../models/entities/product-category.entity';
 import { ProductReview } from '../models/entities/product-review.entity';
+import { ProductVariant } from '../models/entities/product-variant.entity';
 import { Product } from '../models/entities/product.entity';
+import { Role } from '../models/entities/role.entity';
 import { Tag } from '../models/entities/tag.entity';
 import { User } from '../models/entities/user.entity';
-import { CustomEntity } from '../models/entities/custom-entity.entity';
-import { CustomEntityMeta } from '../models/entities/meta/custom-entity-meta.entity';
-import { Coupon } from '../models/entities/coupon.entity';
-import { CouponMeta } from '../models/entities/meta/coupon-meta.entity';
-import { ProductVariant } from '../models/entities/product-variant.entity';
-import { ProductVariantMeta } from '../models/entities/meta/product-variant-meta.entity';
 
 type TEntityMetaModel = BaseEntityMeta & TEntityMeta;
 
@@ -39,6 +41,7 @@ class EntityMetaRepository {
         if (entityType === EDBEntity.CustomEntity) return CustomEntityMeta;
         if (entityType === EDBEntity.Coupon) return CouponMeta;
         if (entityType === EDBEntity.ProductVariant) return ProductVariantMeta;
+        if (entityType === EDBEntity.Role) return RoleMeta;
     }
 
     getEntityClass(entityType: EDBEntity): (new (...args: any[]) => BasePageEntity) & typeof BaseEntity | undefined {
@@ -53,6 +56,7 @@ class EntityMetaRepository {
         if (entityType === EDBEntity.CustomEntity) return CustomEntity;
         if (entityType === EDBEntity.Coupon) return Coupon;
         if (entityType === EDBEntity.ProductVariant) return ProductVariant;
+        if (entityType === EDBEntity.Role) return Role;
     }
 
     getEntityType(entityClass: any): EDBEntity | undefined {
@@ -67,6 +71,7 @@ class EntityMetaRepository {
         if (entityClass instanceof CustomEntity || entityClass === CustomEntity) return EDBEntity.CustomEntity;
         if (entityClass instanceof Coupon || entityClass === Coupon) return EDBEntity.Coupon;
         if (entityClass instanceof ProductVariant || entityClass === ProductVariant) return EDBEntity.ProductVariant;
+        if (entityClass instanceof Role || entityClass === Role) return EDBEntity.Role;
     }
 
     async getEntityMetaByKey(type: EDBEntity, id: number, key: string): Promise<TEntityMetaModel | undefined | null> {

@@ -719,6 +719,15 @@ export type TCmsAdminSettings = {
      */
     customEntities?: TAdminCustomEntity[];
 
+    /**
+     * Enable sign-up public REST API v1/api/auth/sign-up (everyone can register on the website) 
+     */
+    signupEnabled?: boolean;
+
+    /**
+     * Role names available for sign-up public API.
+     */
+    signupRoles?: string[];
 }
 
 /**
@@ -845,20 +854,18 @@ export type TCustomEntity = TBasePageEntity & {
 export type TCustomEntityInput = Omit<TCustomEntity, TDBAuxiliaryColumns>;
 
 export type TCustomEntityFilter = TBaseFilter & {
-    entityType?: string;
+    entityType: string;
     name?: string;
-}
-
-export type TPermission = {
-    name: TPermissionName;
-    title?: string;
-    description?: string;
 }
 
 export type TCustomPermission = {
     name: string;
     title?: string;
     description?: string;
+}
+
+export type TPermission = TCustomPermission & {
+    source?: 'cms' | 'plugin';
 }
 
 export type TRole = TBasePageEntity & {

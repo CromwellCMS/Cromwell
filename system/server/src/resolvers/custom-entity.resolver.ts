@@ -20,6 +20,7 @@ import {
 } from '@cromwell/core-backend';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { GraphQLJSONObject } from 'graphql-type-json';
+import { throttle } from 'throttle-debounce';
 import { Arg, Ctx, FieldResolver, Int, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { Container } from 'typedi';
 import { getCustomRepository } from 'typeorm';
@@ -34,15 +35,14 @@ const createPath = GraphQLPaths.CustomEntity.create;
 const updatePath = GraphQLPaths.CustomEntity.update;
 const deletePath = GraphQLPaths.CustomEntity.delete;
 const getFilteredPath = GraphQLPaths.CustomEntity.getFiltered;
+const getManyPath = GraphQLPaths.CustomEntity.getMany;
 const deleteManyFilteredPath = GraphQLPaths.CustomEntity.deleteManyFiltered;
 const viewsKey: keyof TCustomEntity = 'views';
-
 
 @Resolver(CustomEntity)
 export class CustomEntityResolver {
 
     private repository = getCustomRepository(CustomEntityRepository);
-
 
     private get cmsService() {
         return Container.get(CmsService);
@@ -51,13 +51,15 @@ export class CustomEntityResolver {
     private customEntities: TAdminCustomEntity[] = [];
 
     async checkPermissions(entityType: string | undefined, action: 'read' | 'create' | 'update' | 'delete', ctx: TGraphQLContext) {
-        // Try to update first
         if (!entityType) {
-            throw new HttpException(`You must provide 'entityType' filter param for this request`, HttpStatus.BAD_REQUEST);
+            throw new HttpException(`You must provide 'entityType' parameter for this request`, HttpStatus.BAD_REQUEST);
         }
 
         if (!this.customEntities.find(e => e.entityType === entityType)) {
             this.customEntities = (await this.cmsService.getAdminSettings()).customEntities ?? [];
+        } else {
+            // Async update to not slow down request
+            this.updateEntityConfig();
         }
 
         const entityConfig = this.customEntities.find(e => e.entityType === entityType);
@@ -87,6 +89,23 @@ export class CustomEntityResolver {
             throw new HttpException('Access denied.', HttpStatus.FORBIDDEN);
 
         return true;
+    }
+
+    private updateEntityConfig = throttle(1000, () => {
+        setTimeout(async () => {
+            this.customEntities = (await this.cmsService.getAdminSettings()).customEntities ?? [];
+        }, 100);
+    });
+
+
+    @Query(() => PagedCustomEntity)
+    async [getManyPath](
+        @Ctx() ctx: TGraphQLContext,
+        @Arg("entityType") entityType: string,
+        @Arg("pagedParams", { nullable: true }) pagedParams?: PagedParamsInput<TCustomEntity>
+    ): Promise<TPagedList<TCustomEntity>> {
+        await this.checkPermissions(entityType, 'read', ctx);
+        return this.repository.getCustomEntities(pagedParams);
     }
 
 

@@ -1,5 +1,5 @@
 import { getRandStr, getStoreItem, TPageConfig, TPalette, TThemeConfig } from '@cromwell/core';
-import { getRestApiClient } from '@cromwell/core-frontend';
+import { fetch, getRestApiClient } from '@cromwell/core-frontend';
 import {
     AddCircle as AddCircleIcon,
     Close as CloseIcon,

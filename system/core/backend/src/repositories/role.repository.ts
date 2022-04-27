@@ -3,7 +3,7 @@ import { HttpException, HttpStatus } from '@nestjs/common';
 import { EntityRepository, SelectQueryBuilder } from 'typeorm';
 
 import { onRolesChange } from '../helpers/auth-roles-permissions';
-import { getPaged } from '../helpers/base-queries';
+import { checkEntitySlug, getPaged, handleCustomMetaInput } from '../helpers/base-queries';
 import { getLogger } from '../helpers/logger';
 import { Role } from '../models/entities/role.entity';
 import { BaseFilterInput } from '../models/filters/base-filter.filter';
@@ -48,6 +48,10 @@ export class RoleRepository extends BaseRepository<Role> {
         role.name = input.name;
         role.title = input.title;
         role.permissions = input.permissions;
+
+        if (action === 'create') await role.save();
+        await checkEntitySlug(role, Role);
+        await handleCustomMetaInput(role, input);
     }
 
     async createRole(inputData: TRoleInput, id?: number | null): Promise<Role> {
@@ -79,7 +83,8 @@ export class RoleRepository extends BaseRepository<Role> {
             logger.error('RoleRepository::deleteRole failed to find Role by id');
             return false;
         }
-        const res = await this.delete(id);
+
+        await this.delete(id);
         await onRolesChange();
         return true;
     }

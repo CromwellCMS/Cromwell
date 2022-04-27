@@ -50,7 +50,7 @@ export const getCustomEntityPages = (): TPageInfo[] => {
         const entityRoutes = getEntityRoutes(entity);
         const client = getGraphQLClient();
 
-        const entityPageProps: TEntityPageProps<TCustomEntity, TCustomEntityFilter> = {
+        const entityPageProps: TEntityPageProps<TCustomEntity, Partial<TCustomEntityFilter>> = {
             entityCategory: EDBEntity.CustomEntity,
             entityBaseRoute: entityRoutes.entityBaseRoute,
             entityListRoute: entityRoutes.entityListRoute,

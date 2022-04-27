@@ -30,8 +30,8 @@ import { join } from 'path';
 import { Container } from 'typedi';
 import { getCustomRepository } from 'typeorm';
 
-import { AdminCmsConfigDto } from '../dto/admin-cms-config.dto';
-import { CmsConfigDto } from '../dto/cms-config.dto';
+import { AdminCmsSettingsDto } from '../dto/admin-cms-settings.dto';
+import { CmsSettingsDto } from '../dto/cms-settings.dto';
 import { CmsStatsDto } from '../dto/cms-stats.dto';
 import { CmsStatusDto } from '../dto/cms-status.dto';
 import { CreateOrderDto } from '../dto/create-order.dto';
@@ -75,16 +75,16 @@ export class CmsController {
     @ApiOperation({ description: 'Returns public CMS settings from DB and cmsconfig.json' })
     @ApiResponse({
         status: 200,
-        type: CmsConfigDto,
+        type: CmsSettingsDto,
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
-    async getConfig(): Promise<CmsConfigDto | undefined> {
+    async getConfig(): Promise<CmsSettingsDto | undefined> {
         // logger.log('CmsController::getConfig');
         const config = await getCmsSettings();
         if (!config) {
             throw new HttpException('CmsController::getConfig Failed to read CMS Config', HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new CmsConfigDto().parseConfig(config);
+        return new CmsSettingsDto().parseSettings(config);
     }
 
 
@@ -94,10 +94,10 @@ export class CmsController {
     @ApiOperation({ description: 'Returns admin CMS settings from DB and cmsconfig.json' })
     @ApiResponse({
         status: 200,
-        type: AdminCmsConfigDto,
+        type: AdminCmsSettingsDto,
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
-    async getAdminSettings(): Promise<AdminCmsConfigDto | undefined> {
+    async getAdminSettings(): Promise<AdminCmsSettingsDto | undefined> {
         // logger.log('CmsController::getPrivateConfig');
         return this.cmsService.getAdminSettings();
     }
@@ -109,12 +109,12 @@ export class CmsController {
     @ApiOperation({
         description: 'Updates CMS config',
     })
-    @ApiBody({ type: AdminCmsConfigDto })
+    @ApiBody({ type: AdminCmsSettingsDto })
     @ApiResponse({
         status: 200,
-        type: AdminCmsConfigDto,
+        type: AdminCmsSettingsDto,
     })
-    async updateCmsSettings(@Body() input: AdminCmsConfigDto): Promise<AdminCmsConfigDto | undefined> {
+    async updateCmsSettings(@Body() input: AdminCmsSettingsDto): Promise<AdminCmsSettingsDto | undefined> {
         const settings = await this.cmsService.updateCmsSettings(input);
         resetAllPagesCache();
         return settings;
