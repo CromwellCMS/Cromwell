@@ -10,6 +10,7 @@ import {
 import { useParams } from "react-router-dom";
 import { ActionButton } from "../../../../components/actionButton";
 import { TBreadcrumbs } from "../../../../components/breadcrumbs";
+import { CheckboxInput } from "../../../../components/forms/inputs/checkboxInput";
 import { TextInputField } from "../../../../components/forms/inputs/textInput";
 import { toast } from "../../../../exports";
 import { slugify } from "../../../../helpers/slugify";
@@ -368,38 +369,14 @@ export const CustomRoleSettingsPage = () => {
                   name="isEnabled"
                   control={control}
                   render={({ field }) => (
-                    <Switch.Group>
-                      <div className="flex items-center">
-                        <Switch
-                          checked={field.value}
-                          onChange={field.onChange}
-                          className={`${
-                            field.value ? 'bg-indigo-600' : 'bg-gray-200'
-                          } relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
-                        >
-                          <span
-                            className={`${
-                              field.value ? 'translate-x-6' : 'translate-x-1'
-                            } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
-                          />
-                        </Switch>
-                        <Switch.Label className="ml-4">{
-                          field.value ? "Role is active" : "Role is inactive"
-                        }</Switch.Label>
-                      </div>
-                    </Switch.Group>
-                    // <ImagePicker
-                    //   key={field.name}
-                    //   onChange={(value) =>
-                    //     field.onChange(value ?? "")
-                    //   }
-                    //   value={field.value}
-                    //   id="control"
-                    //   label={"Icon"}
-                    //   showRemove
-                    //   backgroundSize="contain"
-                    //   className="h-52 lg:max-w-[13rem]"
-                    // />
+                    <CheckboxInput
+                      value={field.value}
+                      onChange={field.onChange}
+                      label={{
+                        active: "Role is active",
+                        inactive: "Role is disabled",
+                      }}
+                    />
                   )}
                 />
               </div>

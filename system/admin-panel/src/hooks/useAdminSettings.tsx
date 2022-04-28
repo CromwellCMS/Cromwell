@@ -85,6 +85,19 @@ const useAdminSettingsContext = () => {
     return role
   }, [getRoles])
 
+  const addRole = useCallback(async (role: Partial<TRole>) => {
+    const data = await getGraphQLClient().createRole({
+      title: role.title,
+      name: role.name,
+      permissions: role.permissions,
+      isEnabled: role.isEnabled,
+    })
+
+    console.log(data)
+
+    return true;
+  }, [])
+
   const saveAdminCmsSettings = useCallback(async (newData: Partial<TAdminCmsSettingsType>) => {
     const old = adminSettings
     const newSettings: TAdminCmsSettingsType = {
@@ -205,6 +218,7 @@ const useAdminSettingsContext = () => {
     saveCustomEntity,
     saveDefaultEntity,
     getRoles,
+    addRole,
     roles,
     getPermissions,
     permissions,

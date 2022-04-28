@@ -13,6 +13,7 @@ import { TBreadcrumbs } from "../../../components/breadcrumbs";
 import { SpyIcon } from "../../../components/icons/spyIcon";
 import { useAdminSettings } from "../../../hooks/useAdminSettings";
 import { NewEntityForm } from "../components/newEntityForm";
+import { NewRoleForm } from "../components/newRoleForm";
 import { SettingItem } from "../components/settingItem";
 
 const titlePath = [
@@ -21,7 +22,7 @@ const titlePath = [
 ];
 
 export const ACLSettingsPage = () => {
-  const [showEntityForm, setShowEntityForm] =
+  const [showRoleForm, setShowRoleForm] =
     useState(false);
   const { adminSettings, roles } = useAdminSettings();
 
@@ -65,7 +66,7 @@ export const ACLSettingsPage = () => {
 
             <hr className="my-2" />
             <SettingItem
-                onClick={() => setShowEntityForm(true)}
+                onClick={() => setShowRoleForm(true)}
                 className="bg-transparent"
                 icon={
                   <PlusIcon className="mx-auto h-8 w-8 self-center" />
@@ -76,9 +77,9 @@ export const ACLSettingsPage = () => {
           </div>
         </div>
       </div>
-      <NewEntityForm
-        show={showEntityForm}
-        onToggle={setShowEntityForm}
+      <NewRoleForm
+        show={showRoleForm}
+        onToggle={setShowRoleForm}
       />
     </>
   );
