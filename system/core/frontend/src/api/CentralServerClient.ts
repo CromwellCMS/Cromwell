@@ -1,6 +1,6 @@
 import { fetch } from '../helpers/isomorphicFetch';
 import { getStoreItem, TCCSVersion, TCCSModuleShortInfo, TCCSModuleInfo, TPagedParams, TPagedList } from '@cromwell/core';
-import { TErrorInfo, TRequestOptions } from './CRestApiClient'
+import { TRestApiErrorInfo, TRequestOptions } from './CRestApiClient'
 
 /**
  * CentralServerClient - CromwellCMS Central Server API Client
@@ -13,9 +13,9 @@ export class CentralServerClient {
         return getStoreItem('cmsSettings')?.centralServerUrl;
     }
 
-    private handleError = async (response: Response, data: any, route: string, disableLog?: boolean): Promise<[any, TErrorInfo | null]> => {
+    private handleError = async (response: Response, data: any, route: string, disableLog?: boolean): Promise<[any, TRestApiErrorInfo | null]> => {
         if (response.status >= 400) {
-            const errorInfo: TErrorInfo = {
+            const errorInfo: TRestApiErrorInfo = {
                 statusCode: response.status,
                 message: data?.message,
                 route,
@@ -29,7 +29,7 @@ export class CentralServerClient {
     public fetch = async <T>(route: string, options?: TRequestOptions): Promise<T | undefined> => {
         const input = options?.input;
         let data;
-        let errorInfo: TErrorInfo | null = null;
+        let errorInfo: TRestApiErrorInfo | null = null;
         const baseUrl = this.getBaseUrl();
         if (!baseUrl) throw new Error('CentralServer URL is not defined');
 

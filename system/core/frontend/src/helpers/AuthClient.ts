@@ -164,17 +164,13 @@ class AuthClient {
             } else {
                 throw new Error('!user');
             }
-        } catch (error: any) {
+        } catch (error: any /* TRestApiErrorInfo */) {
             console.error(error);
-            let info = error?.message;
-            try {
-                info = JSON.parse(error.message)
-            } catch (e) { }
 
-            if (info?.statusCode === 429) {
+            if (error?.statusCode === 429) {
                 result = {
                     code: 403,
-                    message: 'To many requests',
+                    message: 'Too many requests',
                     error,
                     success: false
                 };
@@ -208,7 +204,7 @@ class AuthClient {
             if (!isServer() && window.localStorage.getItem(this.userEverLoggedStorageKey)) {
                 window.localStorage.removeItem(this.userEverLoggedStorageKey);
             }
-        } catch (error) {
+        } catch (error: any /* TRestApiErrorInfo */) {
             console.error(error);
             return {
                 code: 404,
@@ -258,17 +254,13 @@ class AuthClient {
             } else {
                 throw new Error('!success');
             }
-        } catch (error: any) {
+        } catch (error: any /* TRestApiErrorInfo */) {
             console.error(error);
-            let info = error?.message;
-            try {
-                info = JSON.parse(error.message)
-            } catch (e) { }
 
-            if (info?.statusCode === 429) {
+            if (error?.statusCode === 429) {
                 result = {
                     code: 403,
-                    message: 'To many requests',
+                    message: 'Too many requests',
                     error,
                     success: false
                 };
@@ -328,21 +320,17 @@ class AuthClient {
             } else {
                 throw new Error('!success');
             }
-        } catch (error: any) {
+        } catch (error: any /* TRestApiErrorInfo */) {
             console.error(error);
-            let info = error?.message;
-            try {
-                info = JSON.parse(error.message)
-            } catch (error) { }
 
-            if (info?.statusCode === 429) {
+            if (error?.statusCode === 429) {
                 result = {
                     code: 403,
-                    message: 'To many requests',
+                    message: 'Too many requests',
                     error,
                     success: false
                 };
-            } else if (info?.statusCode === 417) {
+            } else if (error?.statusCode === 417) {
                 result = {
                     code: 406,
                     message: 'Exceeded reset password attempts',
@@ -410,24 +398,20 @@ class AuthClient {
                 success: true,
                 user,
             }
-        } catch (error: any) {
+        } catch (error: any /* TRestApiErrorInfo */) {
             console.error(error);
-            let info = error?.message;
-            try {
-                info = JSON.parse(error.message)
-            } catch (e) { }
 
-            if (info?.statusCode === 429) {
+            if (error?.statusCode === 429) {
                 result = {
                     code: 403,
-                    message: 'To many requests',
+                    message: 'Too many requests',
                     error,
                     success: false
                 };
             } else {
                 result = {
                     code: 401,
-                    message: 'Incorrect e-mail or password or e-mail already has been taken',
+                    message: error?.message ?? 'Incorrect e-mail or password or e-mail already has been taken',
                     error,
                     success: false
                 };

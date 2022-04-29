@@ -116,5 +116,5 @@ export * from './helpers/entity-meta';
 export * from './helpers/connect-database';
 export {
     getCurrentRoles, getUserRole, DefaultPermissions, CustomPermissions,
-    registerPermission, getPermissions,
+    registerPermission, getPermissions, registerPermissionCategory,
 } from './helpers/auth-roles-permissions';

@@ -8,7 +8,7 @@ import 'react-resizable/css/styles.css';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { getStoreItem, matchPermissions, onStoreChange, setStoreItem, TUser } from '@cromwell/core';
-import { getGraphQLClient, getRestApiClient, TErrorInfo } from '@cromwell/core-frontend';
+import { getGraphQLClient, getRestApiClient, TRestApiErrorInfo } from '@cromwell/core-frontend';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux-ts';
@@ -87,7 +87,7 @@ import { store } from './redux/store';
     restClient?.onUnauthorized(onUnauthorized, onUnauthorizedCbId);
     graphClient?.onUnauthorized(onUnauthorized, onUnauthorizedCbId);
 
-    const onRestApiError = (info: TErrorInfo) => {
+    const onRestApiError = (info: TRestApiErrorInfo) => {
         if (info?.statusCode === 429) {
             toast.error('Too many requests. Try again later');
         } else {

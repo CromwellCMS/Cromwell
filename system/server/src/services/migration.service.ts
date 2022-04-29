@@ -620,6 +620,7 @@ export class MigrationService {
             permissions: ent.permissions,
             name: ent.name,
             title: ent.title,
+            icon: ent.icon,
             customMeta: undefined,
             views: undefined,
         })));
@@ -1138,6 +1139,7 @@ export class MigrationService {
                 name: input.name || null,
                 title: input.title || null,
                 permissions: this.parseJson(input.permissions),
+                icon: input.icon || null,
             }),
             update: async (input) => input.id && repo.updateRole(input.id, input),
             create: (input) => repo.createRole(input, input.id),

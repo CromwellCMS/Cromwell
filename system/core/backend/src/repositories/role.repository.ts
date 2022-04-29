@@ -48,6 +48,7 @@ export class RoleRepository extends BaseRepository<Role> {
         role.name = input.name;
         role.title = input.title;
         role.permissions = input.permissions;
+        role.icon = input.icon;
 
         if (action === 'create') await role.save();
         await checkEntitySlug(role, Role);

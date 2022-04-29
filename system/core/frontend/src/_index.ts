@@ -35,7 +35,7 @@ export {
     useAppPropsContext,
 } from './constants';
 export { getGraphQLClient, TCGraphQLClient, TGraphQLErrorInfo } from './api/CGraphQLClient';
-export { getRestApiClient, TCRestApiClient, TErrorInfo, TRequestOptions } from './api/CRestApiClient';
+export { getRestApiClient, TCRestApiClient, TRestApiErrorInfo, TRequestOptions } from './api/CRestApiClient';
 export * from './api/CentralServerClient';
 export * from './helpers/hooks';
 export * from './helpers/forceUpdate';

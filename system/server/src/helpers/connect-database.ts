@@ -25,7 +25,6 @@ import { loadEnv } from './settings';
 
 const logger = getLogger();
 
-
 export const connectDatabase = async (ormConfigOverride?: Partial<Writeable<ConnectionOptions & MysqlConnectionOptions>>,
     awaitCheck?: boolean) => {
 
@@ -131,8 +130,6 @@ const checkData = async (init: boolean) => {
         await mockService.mockAll();
     }
 
-    // Check DB has user roles
-    await cmsService.checkRolesOnStart();
     getCurrentRoles();
 }
 

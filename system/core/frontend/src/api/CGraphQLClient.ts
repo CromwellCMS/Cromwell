@@ -993,6 +993,7 @@ export class CGraphQLClient {
          name
          title
          permissions
+         icon
      }
     `;
 

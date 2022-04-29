@@ -13,4 +13,19 @@ export class PermissionDto implements TPermission {
 
     @ApiProperty()
     source?: 'cms' | 'plugin';
+
+    @ApiProperty()
+    categoryName?: string | undefined;
+
+    @ApiProperty()
+    categoryDescription?: string | undefined;
+
+    @ApiProperty()
+    categoryTitle?: string | undefined;
+
+    @ApiProperty()
+    moduleName?: string;
+
+    @ApiProperty()
+    moduleTitle?: string;
 }

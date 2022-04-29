@@ -13,6 +13,7 @@ export default async function () {
     await connectDatabase({ synchronize: true, migrationsRun: false }, true);
 
     const mockService = Container.get(MockService);
+    await mockService.mockRoles();
     await mockService.mockUsers();
     await mockService.mockTags(12);
     await mockService.mockPosts(12);

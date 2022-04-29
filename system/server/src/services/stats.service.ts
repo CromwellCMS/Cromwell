@@ -171,6 +171,7 @@ export class StatsService {
                 .addSelect(`COUNT(${userTable}.id)`, userCountKey)
                 .leftJoinAndSelect(`${userTable}.roles`, roleTable)
                 .where(`${roleTable}.name = :roleName`, { roleName: 'customer' })
+                .groupBy(`${roleTable}.id`)
                 .execute();
 
             stats.customers = parseInt((customersStats?.[0]?.[userCountKey] ?? 0) + '');

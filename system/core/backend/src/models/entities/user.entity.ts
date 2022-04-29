@@ -31,9 +31,7 @@ export class User extends BasePageEntity implements TUser {
 
     @Field(() => [Role], { nullable: true })
     @JoinTable()
-    @ManyToMany(() => Role, role => role.users, {
-        onDelete: 'SET NULL'
-    })
+    @ManyToMany(() => Role, role => role.users)
     roles?: Role[] | null;
 
     @Field(() => String, { nullable: true })

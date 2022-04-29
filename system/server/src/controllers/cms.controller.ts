@@ -271,6 +271,7 @@ export class CmsController {
         description: 'Configure CMS after first launch',
     })
     async setUp(@Body() input: SetupDto) {
+        logger.log('CmsController::setUp');
         const config = await getCmsSettings();
         if (!config) {
             throw new HttpException('CmsController::setUp Failed to read CMS Config', HttpStatus.INTERNAL_SERVER_ERROR);

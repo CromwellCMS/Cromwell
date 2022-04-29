@@ -862,10 +862,23 @@ export type TCustomPermission = {
     name: string;
     title?: string;
     description?: string;
+    categoryName?: string;
 }
 
 export type TPermission = TCustomPermission & {
     source?: 'cms' | 'plugin';
+    categoryTitle?: string;
+    categoryDescription?: string;
+    moduleName?: string;
+    moduleTitle?: string;
+}
+
+export type TPermissionCategory = {
+    name: string;
+    title?: string;
+    description?: string;
+    moduleName?: string;
+    moduleTitle?: string;
 }
 
 export type TRole = TBasePageEntity & {
@@ -875,6 +888,8 @@ export type TRole = TBasePageEntity & {
     title?: string | null;
     /* Set of pre-defined by CMS permissions */
     permissions: TPermissionName[] | null;
+    /** Role icon */
+    icon?: string | null;
 }
 
 export type TRoleInput = Omit<TRole, TDBAuxiliaryColumns>;

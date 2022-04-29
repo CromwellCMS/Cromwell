@@ -203,7 +203,11 @@ export class CmsService {
             throw new HttpException('CMS already installed', HttpStatus.BAD_REQUEST);
         }
 
-        await this.checkRolesOnStart();
+        const roles = await getCustomRepository(RoleRepository).getAll();
+        if (!roles?.length) {
+            await this.mockService.mockRoles();
+        }
+
         const adminRole = (await getCustomRepository(RoleRepository).getAll()).find(r => r.permissions?.includes('all'));
         if (!adminRole?.name)
             throw new HttpException('No administrator role found in DB', HttpStatus.BAD_REQUEST);
@@ -567,12 +571,5 @@ ${content}
 
     async getUerRoles() {
         return getCustomRepository(RoleRepository).getAll();
-    }
-
-    async checkRolesOnStart() {
-        const roles = await getCustomRepository(RoleRepository).getAll();
-        if (!roles?.length) {
-            await this.mockService.mockRoles();
-        }
     }
 }

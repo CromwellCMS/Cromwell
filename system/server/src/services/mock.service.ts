@@ -3,10 +3,10 @@ import {
     TAttributeInput,
     TCreateUser,
     TOrderInput,
+    TPermissionName,
     TPost,
     TProduct,
     TProductCategoryInput,
-    TPermissionName,
     TProductReview,
     TProductReviewInput,
     TRoleInput,
@@ -14,13 +14,13 @@ import {
 } from '@cromwell/core';
 import {
     AttributeRepository,
+    getLogger,
     OrderRepository,
     PostRepository,
     ProductCategoryRepository,
     ProductRepository,
     ProductReviewRepository,
     RoleRepository,
-    getLogger,
     TagRepository,
     UserRepository,
 } from '@cromwell/core-backend';

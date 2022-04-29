@@ -18,17 +18,17 @@ export class Role extends BasePageEntity implements TRole {
     @Column({ type: "varchar", length: 255, nullable: true })
     title?: string | null;
 
+    @Field(type => String, { nullable: true })
+    @Column({ type: "varchar", length: 255, nullable: true })
+    icon?: string | null;
+
     @Field(type => [String], { nullable: true })
     @Column({ type: "simple-array", nullable: true })
     permissions: TPermissionName[] | null;
 
-    @ManyToMany(() => User, user => user.roles, {
-        cascade: true,
-    })
+    @ManyToMany(() => User, user => user.roles)
     users?: User[] | null;
 
-    @OneToMany(() => RoleMeta, meta => meta.entity, {
-        cascade: true,
-    })
+    @OneToMany(() => RoleMeta, meta => meta.entity)
     metaRecords?: RoleMeta[];
 }
