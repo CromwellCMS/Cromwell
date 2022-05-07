@@ -1,5 +1,6 @@
-import { EDBEntity, GraphQLPaths, TPermissionName, TPagedList, TProduct, TProductCategory } from '@cromwell/core';
+import { EDBEntity, GraphQLPaths, TPagedList, TPermissionName, TProduct, TProductCategory } from '@cromwell/core';
 import {
+    applyDataFilters,
     CreateProductCategory,
     DeleteManyInput,
     entityMetaRepository,
@@ -10,14 +11,22 @@ import {
     ProductCategoryFilterInput,
     ProductCategoryRepository,
     ProductRepository,
+    TGraphQLContext,
     UpdateProductCategory,
 } from '@cromwell/core-backend';
 import { GraphQLJSONObject } from 'graphql-type-json';
-import { Arg, Authorized, FieldResolver, Int, Mutation, Query, Resolver, Root } from 'type-graphql';
+import { Arg, Authorized, Ctx, FieldResolver, Int, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
-import { resetAllPagesCache } from '../helpers/reset-page';
-import { serverFireAction } from '../helpers/server-fire-action';
+import {
+    createWithFilters,
+    deleteManyWithFilters,
+    deleteWithFilters,
+    getByIdWithFilters,
+    getBySlugWithFilters,
+    getManyWithFilters,
+    updateWithFilters,
+} from '../helpers/data-filters';
 
 const getOneBySlugPath = GraphQLPaths.ProductCategory.getOneBySlug;
 const getOneByIdPath = GraphQLPaths.ProductCategory.getOneById;
@@ -26,9 +35,7 @@ const createPath = GraphQLPaths.ProductCategory.create;
 const updatePath = GraphQLPaths.ProductCategory.update;
 const deletePath = GraphQLPaths.ProductCategory.delete;
 const deleteManyPath = GraphQLPaths.ProductCategory.deleteMany;
-const deleteManyFilteredPath = GraphQLPaths.ProductCategory.deleteManyFiltered;
 const getRootCategoriesPath = GraphQLPaths.ProductCategory.getRootCategories;
-const getFilteredPath = GraphQLPaths.ProductCategory.getFiltered;
 const productsKey: keyof TProductCategory = 'products';
 const parentKey: keyof TProductCategory = 'parent';
 const childrenKey: keyof TProductCategory = 'children';
@@ -41,91 +48,105 @@ export class ProductCategoryResolver {
     private repository = getCustomRepository(ProductCategoryRepository)
     private productRepository = getCustomRepository(ProductRepository)
 
+    @Query(() => ProductCategory)
+    async [getOneByIdPath](
+        @Ctx() ctx: TGraphQLContext,
+        @Arg("id", () => Int) id: number,
+    ) {
+        return getByIdWithFilters('ProductCategory', ctx, [], id,
+            (...args) => this.repository.getProductCategoryById(...args));
+    }
+
+    @Query(() => ProductCategory)
+    async [getOneBySlugPath](
+        @Ctx() ctx: TGraphQLContext,
+        @Arg("slug") slug: string,
+    ) {
+        return getBySlugWithFilters('ProductCategory', ctx, [], slug,
+            (...args) => this.repository.getProductCategoryBySlug(...args));
+    }
+
     @Query(() => PagedProductCategory)
-    async [getManyPath](@Arg("pagedParams") pagedParams: PagedParamsInput<TProductCategory>): Promise<TPagedList<TProductCategory>> {
-        return await this.repository.getProductCategories(pagedParams);
+    async [getManyPath](
+        @Ctx() ctx: TGraphQLContext,
+        @Arg("pagedParams", { nullable: true }) pagedParams?: PagedParamsInput<TProductCategory>,
+        @Arg("filterParams", { nullable: true }) filterParams?: ProductCategoryFilterInput,
+    ): Promise<TPagedList<TProductCategory>> {
+        return getManyWithFilters('ProductCategory', ctx, [], pagedParams, filterParams,
+            (...args) => this.repository.getFilteredCategories(...args));
     }
 
-    @Query(() => ProductCategory)
-    async [getOneBySlugPath](@Arg("slug") slug: string) {
-        return await this.repository.getProductCategoryBySlug(slug);
-    }
-
-    @Query(() => ProductCategory)
-    async [getOneByIdPath](@Arg("id", () => Int) id: number) {
-        return await this.repository.getProductCategoryById(id);
+    @Query(() => PagedProductCategory)
+    async [getRootCategoriesPath](@Ctx() ctx: TGraphQLContext): Promise<TPagedList<TProductCategory>> {
+        await applyDataFilters('ProductCategory', 'getRootCategoriesInput' as any as 'getManyInput', {
+            user: ctx?.user,
+            permissions: [],
+        });
+        return (await applyDataFilters('ProductCategory', 'getRootCategoriesOutput' as any as 'getManyOutput', {
+            data: await this.repository.getRootCategories(),
+            user: ctx?.user,
+            permissions: [],
+        })).data;
     }
 
     @Authorized<TPermissionName>('create_product_category')
     @Mutation(() => ProductCategory)
-    async [createPath](@Arg("data") data: CreateProductCategory) {
-        const category = await this.repository.createProductCategory(data);
-        serverFireAction('create_product_category', category);
-        resetAllPagesCache();
-        return category;
+    async [createPath](
+        @Ctx() ctx: TGraphQLContext,
+        @Arg("data") data: CreateProductCategory
+    ) {
+        return createWithFilters('ProductCategory', ctx, ['create_product_category'], data,
+            (...args) => this.repository.createProductCategory(...args));
     }
 
     @Authorized<TPermissionName>('update_product_category')
     @Mutation(() => ProductCategory)
-    async [updatePath](@Arg("id", () => Int) id: number, @Arg("data") data: UpdateProductCategory) {
-        const category = await this.repository.updateProductCategory(id, data);
-        serverFireAction('update_product_category', category);
-        resetAllPagesCache();
-        return category;
+    async [updatePath](
+        @Ctx() ctx: TGraphQLContext,
+        @Arg("id", () => Int) id: number,
+        @Arg("data") data: UpdateProductCategory
+    ) {
+        return updateWithFilters('ProductCategory', ctx, ['update_product_category'], data, id,
+            (...args) => this.repository.updateProductCategory(...args));
     }
 
     @Authorized<TPermissionName>('delete_product_category')
     @Mutation(() => Boolean)
-    async [deletePath](@Arg("id", () => Int) id: number) {
-        const category = await this.repository.deleteProductCategory(id);
-        serverFireAction('delete_product_category', { id });
-        resetAllPagesCache();
-        return category;
+    async [deletePath](
+        @Ctx() ctx: TGraphQLContext,
+        @Arg("id", () => Int) id: number
+    ) {
+        return deleteWithFilters('ProductCategory', ctx, ['delete_product_category'], id,
+            (...args) => this.repository.deleteProductCategory(...args));
     }
 
     @Authorized<TPermissionName>('delete_product_category')
     @Mutation(() => Boolean)
-    async [deleteManyPath](@Arg("data") data: DeleteManyInput): Promise<boolean | undefined> {
-        return this.repository.deleteManyCategories(data);
-    }
-
-    @Authorized<TPermissionName>('delete_product_category')
-    @Mutation(() => Boolean)
-    async [deleteManyFilteredPath](
+    async [deleteManyPath](
+        @Ctx() ctx: TGraphQLContext,
         @Arg("input") input: DeleteManyInput,
         @Arg("filterParams", { nullable: true }) filterParams?: ProductCategoryFilterInput,
     ): Promise<boolean | undefined> {
-        const res = await this.repository.deleteManyCategories(input, filterParams);
-        resetAllPagesCache();
-        return res;
-    }
-
-    @Query(() => PagedProductCategory)
-    async [getRootCategoriesPath](): Promise<TPagedList<ProductCategory>> {
-        return this.repository.getRootCategories();
-    }
-
-    @Query(() => PagedProductCategory)
-    async [getFilteredPath](
-        @Arg("pagedParams", { nullable: true }) pagedParams?: PagedParamsInput<TProductCategory>,
-        @Arg("filterParams", { nullable: true }) filterParams?: ProductCategoryFilterInput,
-    ): Promise<TPagedList<TProductCategory>> {
-        return this.repository.getFilteredCategories(pagedParams, filterParams);
+        return deleteManyWithFilters('ProductCategory', ctx, ['delete_product_category'], input, filterParams,
+            (...args) => this.repository.deleteManyCategories(...args));
     }
 
     @FieldResolver(() => PagedProduct)
-    async [productsKey](@Root() productCategory: ProductCategory, @Arg("pagedParams") pagedParams: PagedParamsInput<TProduct>): Promise<TPagedList<TProduct>> {
-        return await this.productRepository.getProductsFromCategory(productCategory.id, pagedParams);
+    async [productsKey](
+        @Root() productCategory: ProductCategory,
+        @Arg("pagedParams") pagedParams: PagedParamsInput<TProduct>
+    ): Promise<TPagedList<TProduct>> {
+        return this.productRepository.getProductsFromCategory(productCategory.id, pagedParams);
     }
 
     @FieldResolver(() => ProductCategory, { nullable: true })
     async [parentKey](@Root() productCategory: ProductCategory): Promise<TProductCategory | undefined | null> {
-        return await this.repository.getParentCategory(productCategory);
+        return this.repository.getParentCategory(productCategory);
     }
 
     @FieldResolver(() => [ProductCategory])
     async [childrenKey](@Root() productCategory: ProductCategory): Promise<TProductCategory[]> {
-        return await this.repository.getChildCategories(productCategory);
+        return this.repository.getChildCategories(productCategory);
     }
 
     @FieldResolver(() => GraphQLJSONObject, { nullable: true })

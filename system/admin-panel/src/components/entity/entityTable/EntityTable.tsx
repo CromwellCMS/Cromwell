@@ -169,7 +169,7 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
         this.setState({ isLoading: true });
         this.totalElements = 0;
         try {
-            await this.props.deleteManyFiltered(input, filterInput);
+            await this.props.deleteMany(input, filterInput);
             toast.success(`${this.props.entityLabel ?? 'Items'} deleted`);
         } catch (e) {
             console.error(e);
@@ -229,8 +229,8 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
     }
 
     private getManyFilteredItems = async (params: TPagedParams<TEntityType>) => {
-        if (!this.props.getManyFiltered) {
-            console.error('this.props.getManyFiltered in not defined, you must provide getManyFiltered for list to be displayed');
+        if (!this.props.getMany) {
+            console.error('this.props.getMany in not defined, you must provide getMany for list to be displayed');
             return;
         }
         const tableColumns = this.getColumns();
@@ -250,7 +250,7 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
         const customFragments = tableColumns.filter(col => col.visible && col.customGraphQlFragment)
             .map(col => col.customGraphQlFragment);
 
-        const data = (await this.props.getManyFiltered({
+        const data = (await this.props.getMany({
             pagedParams: params,
             customFragment: gql`
                 fragment ${this.props.entityCategory}ListFragment on ${this.props.entityCategory} {

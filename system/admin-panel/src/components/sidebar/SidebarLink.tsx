@@ -51,12 +51,9 @@ const SidebarLink = (props: {
     const hasPermission = (link: TSidebarLink) => !(link?.permissions?.length &&
         !matchPermissions(userInfo, link?.permissions))
 
-    if (!hasPermission(data)) {
-        return null;
-    }
-
+    if (!hasPermission(data)) return null;
     // Don't show sidebar category if no sub links permitted to access
-    if (!data.route && !data.subLinks.every(hasPermission)) return null;
+    if (!data.route && !data.subLinks.some(hasPermission)) return null;
 
     let head = (
         <MenuItem className={styles.linkHead}>

@@ -8,7 +8,7 @@ jest.mock('@cromwell/core-frontend', () => {
       id: 1,
       name: '_test3_'
     }),
-    getAttributes: jest.fn().mockImplementation(async () => []),
+    getAttributes: jest.fn().mockImplementation(async () => ({ elements: [] })),
   }
   return {
     ...originalModule,

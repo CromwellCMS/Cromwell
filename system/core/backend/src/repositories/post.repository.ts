@@ -1,4 +1,4 @@
-import { TDeleteManyInput, TPagedList, TPagedParams, TPost, TPostInput } from '@cromwell/core';
+import { TDeleteManyInput, TPagedList, TPagedParams, TPost, TPostFilter, TPostInput } from '@cromwell/core';
 import readingTime from 'reading-time';
 import sanitizeHtml from 'sanitize-html';
 import { Brackets, EntityRepository, getCustomRepository, SelectQueryBuilder } from 'typeorm';
@@ -22,17 +22,17 @@ export class PostRepository extends BaseRepository<Post> {
         super(Post)
     }
 
-    async getPosts(params: TPagedParams<Post>): Promise<TPagedList<Post>> {
+    async getPosts(params?: TPagedParams<TPost>): Promise<TPagedList<Post>> {
         logger.log('PostRepository::getPosts');
         return this.getPaged(params)
     }
 
-    async getPostById(id: number): Promise<Post | undefined> {
+    async getPostById(id: number): Promise<Post> {
         logger.log('PostRepository::getPostById id: ' + id);
         return this.getById(id);
     }
 
-    async getPostBySlug(slug: string): Promise<Post | undefined> {
+    async getPostBySlug(slug: string): Promise<Post> {
         logger.log('PostRepository::getPostBySlug slug: ' + slug);
         return this.getBySlug(slug);
     }
@@ -110,7 +110,7 @@ export class PostRepository extends BaseRepository<Post> {
         return true;
     }
 
-    applyPostFilter(qb: SelectQueryBuilder<TPost>, filterParams?: PostFilterInput) {
+    applyPostFilter(qb: SelectQueryBuilder<TPost>, filterParams?: TPostFilter) {
         this.applyBaseFilter(qb, filterParams);
 
         if (filterParams?.tagIds && filterParams.tagIds.length > 0) {
@@ -164,14 +164,16 @@ export class PostRepository extends BaseRepository<Post> {
         return qb;
     }
 
-    async getFilteredPosts(pagedParams?: PagedParamsInput<Post>, filterParams?: PostFilterInput): Promise<TPagedList<TPost>> {
+    async getFilteredPosts(pagedParams?: TPagedParams<TPost>, filterParams?: TPostFilter): Promise<TPagedList<TPost>> {
         const qb = this.createQueryBuilder(this.metadata.tablePath);
         qb.select();
         this.applyPostFilter(qb, filterParams);
         return await getPaged(qb, this.metadata.tablePath, pagedParams);
     }
 
-    async deleteManyFilteredPosts(input: TDeleteManyInput, filterParams?: PostFilterInput): Promise<boolean | undefined> {
+    async deleteManyFilteredPosts(input: TDeleteManyInput, filterParams?: TPostFilter): Promise<boolean> {
+        if (!filterParams) return this.deleteMany(input);
+        
         const qbSelect = this.createQueryBuilder(this.metadata.tablePath).select([`${this.metadata.tablePath}.id`]);
         this.applyPostFilter(qbSelect, filterParams);
         this.applyDeleteMany(qbSelect, input);

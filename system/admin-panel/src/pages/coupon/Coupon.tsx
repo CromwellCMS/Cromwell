@@ -193,7 +193,7 @@ const CouponPage = () => {
     }
 
     const handleSearchCategory = async (text: string, params: TPagedParams<TProductCategory>) => {
-        return client?.getFilteredProductCategories({
+        return client?.getProductCategories({
             filterParams: {
                 nameSearch: text
             },
@@ -202,7 +202,7 @@ const CouponPage = () => {
     }
 
     const handleSearchProduct = async (text: string, params: TPagedParams<TProduct>) => {
-        return client?.getFilteredProducts({
+        return client?.getProducts({
             filterParams: {
                 nameSearch: text
             },

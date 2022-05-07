@@ -1,4 +1,4 @@
-import { TPagedList, TPagedParams, TPluginEntityInput } from '@cromwell/core';
+import { TPagedList, TPagedParams, TPluginEntityInput, TPluginEntity } from '@cromwell/core';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { EntityRepository } from 'typeorm';
 
@@ -16,17 +16,17 @@ export class PluginRepository extends BaseRepository<PluginEntity> {
         super(PluginEntity)
     }
 
-    async getPlugins(params: TPagedParams<PluginEntity>): Promise<TPagedList<PluginEntity>> {
+    async getPlugins(params?: TPagedParams<TPluginEntity>): Promise<TPagedList<PluginEntity>> {
         logger.log('PluginRepository::getPlugins');
         return this.getPaged(params);
     }
 
-    async getPluginById(id: number): Promise<PluginEntity | undefined> {
+    async getPluginById(id: number): Promise<PluginEntity> {
         logger.log('PluginRepository::getPluginById id: ' + id);
         return this.getById(id);
     }
 
-    async getPluginBySlug(slug: string): Promise<PluginEntity | undefined> {
+    async getPluginBySlug(slug: string): Promise<PluginEntity> {
         logger.log('PluginRepository::getPluginBySlug slug: ' + slug);
         return this.getBySlug(slug);
     }
@@ -76,15 +76,16 @@ export class PluginRepository extends BaseRepository<PluginEntity> {
         return true;
     }
 
-    async getPluginSettings<T>(pluginName: string): Promise<T | undefined> {
+    async getPluginSettings<T>(pluginName: string): Promise<T> {
         const plugin = await this.findOne({
             where: {
                 name: pluginName
             }
         })
-        if (plugin?.settings) {
-            return JSON.parse(plugin?.settings);
+        if (!plugin?.settings) {
+            throw new HttpException(`${this.metadata.tablePath} plugin settings not found for ${pluginName}`, HttpStatus.NOT_FOUND);
         }
+        return JSON.parse(plugin?.settings);
     }
 
 }

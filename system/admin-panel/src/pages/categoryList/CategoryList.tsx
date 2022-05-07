@@ -159,7 +159,7 @@ const CategoryList = (props: TPropsType) => {
         params.orderBy = orderByRef.current ?? 'id';
         params.order = orderRef.current ?? 'DESC';
 
-        const data = await client?.getFilteredProductCategories({
+        const data = await client?.getProductCategories({
             pagedParams: params,
             customFragment: gql`
                 fragment ProductCategoryListFragment on ProductCategory {
@@ -218,7 +218,7 @@ const CategoryList = (props: TPropsType) => {
         totalElements.current = 0;
         try {
             const input = getSelectedInput();
-            await client?.deleteManyFilteredProductCategories(input, filterInput.current);
+            await client?.deleteManyProductCategories(input, filterInput.current);
             toast.success('Categories deleted');
         } catch (e) {
             console.error(e);

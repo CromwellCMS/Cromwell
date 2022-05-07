@@ -29,7 +29,7 @@ jest.mock('@cromwell/core-frontend', () => {
         getGraphQLClient: () => {
             return {
                 getProductById: jest.fn().mockImplementation(async () => testData),
-                getAttributes: jest.fn().mockImplementation(async () => []),
+                getAttributes: jest.fn().mockImplementation(async () => ({ elements: [] })),
             }
         },
         CGallery: () => {

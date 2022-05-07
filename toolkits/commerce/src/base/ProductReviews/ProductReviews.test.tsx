@@ -22,7 +22,7 @@ jest.mock('@cromwell/core-frontend', () => {
     ...originalModule,
     getGraphQLClient: () => {
       return {
-        getFilteredProductReviews: jest.fn().mockImplementation(async () => testData)
+        getProductReviews: jest.fn().mockImplementation(async () => testData)
       }
     },
     CList: (props: any) => {

@@ -119,7 +119,7 @@ export default class Dashboard extends React.Component<any, {
     private async getReviews() {
         try {
             const reviews = await getGraphQLClient()?.getProductReviews({
-                pageSize: 10
+                pagedParams: { pageSize: 10 }
             });
             if (reviews?.elements) this.setState({ reviews: reviews.elements })
         } catch (error) {

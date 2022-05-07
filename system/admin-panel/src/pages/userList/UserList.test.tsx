@@ -46,7 +46,7 @@ jest.mock('@cromwell/core-frontend', () => {
         },
         getGraphQLClient: () => {
             return {
-                getFilteredUsers: jest.fn().mockImplementation(async () => testData),
+                getUsers: jest.fn().mockImplementation(async () => testData),
                 getRoles: jest.fn().mockImplementation(async () => []),
             }
         },

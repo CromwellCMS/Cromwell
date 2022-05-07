@@ -5,6 +5,8 @@ import { BaseFilterInput } from './base-filter.filter';
 
 @InputType("OrderFilterInput")
 export class OrderFilterInput extends BaseFilterInput implements TOrderFilter {
+    @Field(type => Number, { nullable: true })
+    userId?: number;
 
     @Field(type => String, { nullable: true })
     status?: string;

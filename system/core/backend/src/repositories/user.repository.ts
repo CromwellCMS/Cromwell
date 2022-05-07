@@ -1,4 +1,4 @@
-import { TCreateUser, TDeleteManyInput, TPagedList, TPagedParams, TUpdateUser, TUser } from '@cromwell/core';
+import { TCreateUser, TDeleteManyInput, TPagedList, TPagedParams, TUpdateUser, TUser, TUserFilter } from '@cromwell/core';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import bcrypt from '@node-rs/bcrypt';
 import { Brackets, EntityRepository, getCustomRepository, SelectQueryBuilder } from 'typeorm';
@@ -8,8 +8,6 @@ import { checkEntitySlug, getPaged, handleBaseInput, handleCustomMetaInput } fro
 import { getLogger } from '../helpers/logger';
 import { validateEmail } from '../helpers/validation';
 import { User } from '../models/entities/user.entity';
-import { UserFilterInput } from '../models/filters/user.filter';
-import { PagedParamsInput } from '../models/inputs/paged-params.input';
 import { BaseRepository } from './base.repository';
 import { RoleRepository } from './role.repository';
 
@@ -22,30 +20,31 @@ export class UserRepository extends BaseRepository<User> {
         super(User)
     }
 
-    async getUsers(params?: TPagedParams<User>): Promise<TPagedList<User>> {
+    async getUsers(params?: TPagedParams<TUser>): Promise<TPagedList<User>> {
         logger.log('UserRepository::getUsers');
         const qb = this.createQueryBuilder(this.metadata.tablePath);
         qb.leftJoinAndSelect(`${this.metadata.tablePath}.roles`,
             getCustomRepository(RoleRepository).metadata.tablePath);
-        return await getPaged(qb, this.metadata.tablePath, params);
+        return await getPaged<User>(qb, this.metadata.tablePath, params);
     }
 
-    async getUserById(id: number): Promise<User | undefined> {
+    async getUserById(id: number): Promise<User> {
         logger.log('UserRepository::getUserById id: ' + id);
         return this.getById(id, ['roles']);
     }
 
-    async getUserByEmail(email: string): Promise<User | undefined> {
+    async getUserByEmail(email: string): Promise<User> {
         logger.log('UserRepository::getUserByEmail email: ' + email);
 
         const user = await this.findOne({
             where: { email },
             relations: ['roles'],
         });
+        if (!user) throw new HttpException(`${this.metadata.tablePath} ${email} not found!`, HttpStatus.NOT_FOUND);
         return user;
     }
 
-    async getUserBySlug(slug: string): Promise<User | undefined> {
+    async getUserBySlug(slug: string): Promise<User> {
         logger.log('UserRepository::getUserBySlug slug: ' + slug);
         return this.getBySlug(slug, ['roles']);
     }
@@ -147,7 +146,7 @@ export class UserRepository extends BaseRepository<User> {
 
     }
 
-    async applyUserFilter(qb: SelectQueryBuilder<TUser>, filterParams?: UserFilterInput) {
+    async applyUserFilter(qb: SelectQueryBuilder<User>, filterParams?: TUserFilter) {
         this.applyBaseFilter(qb, filterParams);
 
         const roleTable = getCustomRepository(RoleRepository).metadata.tablePath;
@@ -206,7 +205,7 @@ export class UserRepository extends BaseRepository<User> {
         }
     }
 
-    async getFilteredUsers(pagedParams?: PagedParamsInput<TUser>, filterParams?: UserFilterInput): Promise<TPagedList<TUser>> {
+    async getFilteredUsers(pagedParams?: TPagedParams<TUser>, filterParams?: TUserFilter): Promise<TPagedList<TUser>> {
         const qb = this.createQueryBuilder(this.metadata.tablePath);
         qb.select();
         await this.applyUserFilter(qb, filterParams);
@@ -216,7 +215,9 @@ export class UserRepository extends BaseRepository<User> {
         return await getPaged<TUser>(qb, this.metadata.tablePath, pagedParams);
     }
 
-    async deleteManyFilteredUsers(input: TDeleteManyInput, filterParams?: UserFilterInput): Promise<boolean | undefined> {
+    async deleteManyFilteredUsers(input: TDeleteManyInput, filterParams?: TUserFilter): Promise<boolean> {
+        if (!filterParams) return this.deleteMany(input);
+
         const qbSelect = this.createQueryBuilder(this.metadata.tablePath).select([`${this.metadata.tablePath}.id`]);
         await this.applyUserFilter(qbSelect, filterParams);
         this.applyDeleteMany(qbSelect, input);

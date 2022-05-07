@@ -1,5 +1,5 @@
 import { TDBEntity, TGraphQLNode } from './types/data';
-import { TShippingOption, TPaymentOption } from './types/entities';
+import { TPaymentOption, TShippingOption } from './types/entities';
 
 export const GraphQLPaths: { [K in Exclude<TDBEntity, 'Theme' | 'Plugin' | 'PostComment' | 'CMS'>]: TGraphQLNode } = {
     Generic: {
@@ -21,8 +21,6 @@ export const GraphQLPaths: { [K in Exclude<TDBEntity, 'Theme' | 'Plugin' | 'Post
         update: "updatePost",
         delete: "deletePost",
         deleteMany: "deleteManyPosts",
-        deleteManyFiltered: "deleteManyFilteredPosts",
-        getFiltered: "getFilteredPosts",
     },
     Product: {
         getOneBySlug: "getProductBySlug",
@@ -32,9 +30,6 @@ export const GraphQLPaths: { [K in Exclude<TDBEntity, 'Theme' | 'Plugin' | 'Post
         update: "updateProduct",
         delete: "deleteProduct",
         deleteMany: "deleteManyProducts",
-        deleteManyFiltered: "deleteManyFilteredProducts",
-        getFromCategory: "getProductsFromCategory",
-        getFiltered: "getFilteredProducts"
     },
     User: {
         getOneBySlug: "getUserBySlug",
@@ -45,8 +40,6 @@ export const GraphQLPaths: { [K in Exclude<TDBEntity, 'Theme' | 'Plugin' | 'Post
         update: "updateUser",
         delete: "deleteUser",
         deleteMany: "deleteManyUsers",
-        deleteManyFiltered: "deleteManyFilteredUsers",
-        getFiltered: "getFilteredUsers"
     },
     ProductCategory: {
         getOneBySlug: "getProductCategoryBySlug",
@@ -56,9 +49,7 @@ export const GraphQLPaths: { [K in Exclude<TDBEntity, 'Theme' | 'Plugin' | 'Post
         update: "updateProductCategory",
         delete: "deleteProductCategory",
         deleteMany: "deleteManyProductCategories",
-        deleteManyFiltered: "deleteManyFilteredProductCategories",
         getRootCategories: 'getRootCategories',
-        getFiltered: "getFilteredProductCategories",
     },
     Attribute: {
         getOneBySlug: "getAttributeBySlug",
@@ -68,7 +59,6 @@ export const GraphQLPaths: { [K in Exclude<TDBEntity, 'Theme' | 'Plugin' | 'Post
         update: "updateAttribute",
         delete: "deleteAttribute",
         deleteMany: "deleteManyAttributes",
-        getFiltered: "getFilteredAttributes"
     },
     ProductReview: {
         getOneBySlug: "getProductReviewBySlug",
@@ -78,8 +68,6 @@ export const GraphQLPaths: { [K in Exclude<TDBEntity, 'Theme' | 'Plugin' | 'Post
         update: "updateProductReview",
         delete: "deleteProductReview",
         deleteMany: "deleteManyProductReviews",
-        deleteManyFiltered: "deleteManyFilteredProductReviews",
-        getFiltered: "getFilteredProductReviews",
     },
     Order: {
         getOneBySlug: "getOrderBySlug",
@@ -88,9 +76,7 @@ export const GraphQLPaths: { [K in Exclude<TDBEntity, 'Theme' | 'Plugin' | 'Post
         create: "createOrder",
         update: "updateOrder",
         delete: "deleteOrder",
-        deleteManyFiltered: "deleteManyFilteredOrders",
         deleteMany: "deleteManyOrders",
-        getFiltered: "getFilteredOrders",
         getOrdersOfUser: 'getOrdersOfUser',
     },
     Tag: {
@@ -101,8 +87,6 @@ export const GraphQLPaths: { [K in Exclude<TDBEntity, 'Theme' | 'Plugin' | 'Post
         update: "updateTag",
         delete: "deleteTag",
         deleteMany: "deleteManyTags",
-        deleteManyFiltered: "deleteManyFilteredTags",
-        getFiltered: "getFilteredTags",
     },
     CustomEntity: {
         getOneBySlug: "getCustomEntityBySlug",
@@ -112,8 +96,6 @@ export const GraphQLPaths: { [K in Exclude<TDBEntity, 'Theme' | 'Plugin' | 'Post
         update: "updateCustomEntity",
         delete: "deleteCustomEntity",
         deleteMany: "deleteManyCustomEntities",
-        deleteManyFiltered: "deleteManyFilteredCustomEntities",
-        getFiltered: "getFilteredCustomEntities",
     },
     Coupon: {
         getOneBySlug: "getCouponBySlug",
@@ -123,8 +105,6 @@ export const GraphQLPaths: { [K in Exclude<TDBEntity, 'Theme' | 'Plugin' | 'Post
         update: "updateCoupon",
         delete: "deleteCoupon",
         deleteMany: "deleteManyCoupons",
-        deleteManyFiltered: "deleteManyFilteredCoupons",
-        getFiltered: "getFilteredCoupons",
         getCouponsByCodes: "getCouponsByCodes",
     },
     ProductVariant: {
@@ -135,8 +115,6 @@ export const GraphQLPaths: { [K in Exclude<TDBEntity, 'Theme' | 'Plugin' | 'Post
         update: "updateProductVariant",
         delete: "deleteProductVariant",
         deleteMany: "deleteManyProductVariants",
-        deleteManyFiltered: "deleteManyFilteredProductVariants",
-        getFiltered: "getFilteredProductVariants",
         getProductVariantsByCodes: "getProductVariantsByCodes",
     },
     Role: {
@@ -147,8 +125,6 @@ export const GraphQLPaths: { [K in Exclude<TDBEntity, 'Theme' | 'Plugin' | 'Post
         update: "updateRole",
         delete: "deleteRole",
         deleteMany: "deleteManyRoles",
-        deleteManyFiltered: "deleteManyFilteredRoles",
-        getFiltered: "getFilteredRoles",
     }
 }
 

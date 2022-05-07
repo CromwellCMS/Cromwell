@@ -3,28 +3,34 @@ import {
     BaseFilterInput,
     DeleteManyInput,
     entityMetaRepository,
-    TagInput,
     PagedParamsInput,
     PagedTag,
     Tag,
+    TagInput,
     TagRepository,
+    TGraphQLContext,
 } from '@cromwell/core-backend';
 import { GraphQLJSONObject } from 'graphql-type-json';
-import { Arg, Authorized, FieldResolver, Int, Mutation, Query, Resolver, Root } from 'type-graphql';
+import { Arg, Authorized, Ctx, FieldResolver, Int, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
-import { resetAllPagesCache } from '../helpers/reset-page';
-import { serverFireAction } from '../helpers/server-fire-action';
+import {
+    createWithFilters,
+    deleteManyWithFilters,
+    deleteWithFilters,
+    getByIdWithFilters,
+    getBySlugWithFilters,
+    getManyWithFilters,
+    updateWithFilters,
+} from '../helpers/data-filters';
 
 const getOneBySlugPath = GraphQLPaths.Tag.getOneBySlug;
 const getOneByIdPath = GraphQLPaths.Tag.getOneById;
 const getManyPath = GraphQLPaths.Tag.getMany;
-const getFilteredPath = GraphQLPaths.Tag.getFiltered;
 const createPath = GraphQLPaths.Tag.create;
 const updatePath = GraphQLPaths.Tag.update;
 const deletePath = GraphQLPaths.Tag.delete;
 const deleteManyPath = GraphQLPaths.Tag.deleteMany;
-const deleteManyFilteredPath = GraphQLPaths.Tag.deleteManyFiltered;
 const viewsKey: keyof TTag = 'views';
 
 @Resolver(Tag)
@@ -32,75 +38,74 @@ export class TagResolver {
 
     private repository = getCustomRepository(TagRepository);
 
+    @Query(() => Tag)
+    async [getOneByIdPath](
+        @Ctx() ctx: TGraphQLContext,
+        @Arg("id", () => Int) id: number
+    ): Promise<TTag> {
+        return getByIdWithFilters('Tag', ctx, [], id,
+            (...args) => this.repository.getTagById(...args));
+    }
+
+    @Query(() => Tag)
+    async [getOneBySlugPath](
+        @Ctx() ctx: TGraphQLContext,
+        @Arg("slug") slug: string
+    ): Promise<TTag> {
+        return getBySlugWithFilters('Tag', ctx, [], slug,
+            (...args) => this.repository.getTagBySlug(...args));
+    }
+
     @Query(() => PagedTag)
-    async [getManyPath](@Arg("pagedParams", { nullable: true }) pagedParams?: PagedParamsInput<TTag>):
-        Promise<TPagedList<TTag>> {
-        return this.repository.getTags(pagedParams);
-    }
-
-    @Query(() => Tag)
-    async [getOneBySlugPath](@Arg("slug") slug: string): Promise<TTag | undefined> {
-        return this.repository.getTagBySlug(slug);
-    }
-
-    @Query(() => Tag)
-    async [getOneByIdPath](@Arg("id", () => Int) id: number): Promise<TTag | undefined> {
-        entityMetaRepository.getAllEntityMetaKeys(EDBEntity.CustomEntity);
-        return this.repository.getTagById(id);
+    async [getManyPath](
+        @Ctx() ctx: TGraphQLContext,
+        @Arg("pagedParams", { nullable: true }) pagedParams?: PagedParamsInput<TTag>,
+        @Arg("filterParams", () => BaseFilterInput, { nullable: true }) filterParams?: BaseFilterInput,
+    ): Promise<TPagedList<TTag> | undefined> {
+        return getManyWithFilters('Tag', ctx, [], pagedParams, filterParams,
+            (...args) => this.repository.getFilteredTags(...args));
     }
 
     @Authorized<TPermissionName>('create_tag')
     @Mutation(() => Tag)
-    async [createPath](@Arg("data") data: TagInput): Promise<TTag> {
-        const tag = await this.repository.createTag(data);
-        serverFireAction('create_tag', tag);
-        resetAllPagesCache();
-        return tag;
+    async [createPath](
+        @Ctx() ctx: TGraphQLContext,
+        @Arg("data") data: TagInput
+    ): Promise<TTag> {
+        return createWithFilters('Tag', ctx, ['create_tag'], data,
+            (...args) => this.repository.createTag(...args));
     }
 
     @Authorized<TPermissionName>('update_tag')
     @Mutation(() => Tag)
-    async [updatePath](@Arg("id", () => Int) id: number, @Arg("data") data: TagInput): Promise<TTag | undefined> {
-        const tag = await this.repository.updateTag(id, data);
-        serverFireAction('update_tag', tag);
-        resetAllPagesCache();
-        return tag;
+    async [updatePath](
+        @Ctx() ctx: TGraphQLContext,
+        @Arg("id", () => Int) id: number,
+        @Arg("data") data: TagInput
+    ): Promise<TTag | undefined> {
+        return updateWithFilters('Tag', ctx, ['update_tag'], data, id,
+            (...args) => this.repository.updateTag(...args));
     }
 
     @Authorized<TPermissionName>('delete_tag')
     @Mutation(() => Boolean)
-    async [deletePath](@Arg("id", () => Int) id: number): Promise<boolean> {
-        const tag = await this.repository.deleteTag(id);
-        serverFireAction('delete_tag', { id });
-        resetAllPagesCache();
-        return tag;
+    async [deletePath](
+        @Ctx() ctx: TGraphQLContext,
+        @Arg("id", () => Int) id: number
+    ): Promise<boolean> {
+        return deleteWithFilters('Tag', ctx, ['delete_tag'], id,
+            (...args) => this.repository.deleteTag(...args));
     }
 
     @Authorized<TPermissionName>('delete_tag')
     @Mutation(() => Boolean)
-    async [deleteManyPath](@Arg("data") data: DeleteManyInput): Promise<boolean | undefined> {
-        const res = await this.repository.deleteMany(data);
-        resetAllPagesCache();
-        return res;
-    }
-
-    @Authorized<TPermissionName>('delete_tag')
-    @Mutation(() => Boolean)
-    async [deleteManyFilteredPath](
+    async [deleteManyPath](
+        @Ctx() ctx: TGraphQLContext,
         @Arg("input") input: DeleteManyInput,
         @Arg("filterParams", () => BaseFilterInput, { nullable: true }) filterParams?: BaseFilterInput,
     ): Promise<boolean | undefined> {
-        const res = await this.repository.deleteManyFilteredTags(input, filterParams);
-        resetAllPagesCache();
-        return res;
-    }
-
-    @Query(() => PagedTag)
-    async [getFilteredPath](
-        @Arg("pagedParams", { nullable: true }) pagedParams?: PagedParamsInput<TTag>,
-        @Arg("filterParams", () => BaseFilterInput, { nullable: true }) filterParams?: BaseFilterInput,
-    ): Promise<TPagedList<TTag> | undefined> {
-        return this.repository.getFilteredTags(pagedParams, filterParams);
+        return deleteManyWithFilters('Tag', ctx, ['delete_tag'], input, filterParams,
+            (...args) => this.repository.deleteManyFilteredTags(...args));
     }
 
     @FieldResolver(() => GraphQLJSONObject, { nullable: true })

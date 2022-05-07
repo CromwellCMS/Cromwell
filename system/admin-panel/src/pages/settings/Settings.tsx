@@ -115,6 +115,8 @@ class SettingsPage extends React.Component<any, {
                 defaultShippingPrice: settings.defaultShippingPrice,
                 sendFromEmail: settings.sendFromEmail,
                 smtpConnectionString: settings.smtpConnectionString,
+                signupRoles: settings.signupRoles,
+                signupEnabled: settings.signupEnabled,
                 customFields: settings.customFields?.filter(field => field.key),
                 customEntities: settings.customEntities?.filter(entity => entity.entityType),
                 customMeta: Object.assign({}, settings.customMeta, await getCustomMetaFor(EDBEntity.CMS)),

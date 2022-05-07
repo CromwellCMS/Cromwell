@@ -1,4 +1,4 @@
-import { TDeleteManyInput, TPagedList, TPagedParams, TRole, TRoleInput } from '@cromwell/core';
+import { TBaseFilter, TDeleteManyInput, TPagedList, TPagedParams, TRole, TRoleInput } from '@cromwell/core';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { EntityRepository, SelectQueryBuilder } from 'typeorm';
 
@@ -6,8 +6,6 @@ import { onRolesChange } from '../helpers/auth-roles-permissions';
 import { checkEntitySlug, getPaged, handleCustomMetaInput } from '../helpers/base-queries';
 import { getLogger } from '../helpers/logger';
 import { Role } from '../models/entities/role.entity';
-import { BaseFilterInput } from '../models/filters/base-filter.filter';
-import { PagedParamsInput } from '../models/inputs/paged-params.input';
 import { BaseRepository } from './base.repository';
 
 const logger = getLogger();
@@ -24,12 +22,12 @@ export class RoleRepository extends BaseRepository<Role> {
         return this.getPaged(params);
     }
 
-    async getRoleById(id: number): Promise<Role | undefined> {
+    async getRoleById(id: number): Promise<Role> {
         logger.log('RoleRepository::getRoleById id: ' + id);
         return this.getById(id);
     }
 
-    async getRoleByName(name: string): Promise<Role | undefined> {
+    async getRoleByName(name: string): Promise<Role> {
         logger.log('RoleRepository::getRoleByName name: ' + name);
         const entity = await this.findOne({
             where: { name }
@@ -90,19 +88,21 @@ export class RoleRepository extends BaseRepository<Role> {
         return true;
     }
 
-    applyRoleFilter(qb: SelectQueryBuilder<Role>, filterParams?: BaseFilterInput) {
+    applyRoleFilter(qb: SelectQueryBuilder<Role>, filterParams?: TBaseFilter) {
         this.applyBaseFilter(qb, filterParams)
         return qb;
     }
 
-    async getFilteredRoles(pagedParams?: PagedParamsInput<Role>, filterParams?: BaseFilterInput): Promise<TPagedList<Role>> {
+    async getFilteredRoles(pagedParams?: TPagedParams<TRole>, filterParams?: TBaseFilter): Promise<TPagedList<Role>> {
         const qb = this.createQueryBuilder(this.metadata.tablePath);
         qb.select();
         this.applyRoleFilter(qb, filterParams);
         return await getPaged<Role>(qb, this.metadata.tablePath, pagedParams);
     }
 
-    async deleteManyFilteredRoles(input: TDeleteManyInput, filterParams?: BaseFilterInput): Promise<boolean | undefined> {
+    async deleteManyFilteredRoles(input: TDeleteManyInput, filterParams?: TBaseFilter): Promise<boolean> {
+        if (!filterParams) return this.deleteMany(input);
+        
         const qbSelect = this.createQueryBuilder(this.metadata.tablePath).select([`${this.metadata.tablePath}.id`]);
         this.applyRoleFilter(qbSelect, filterParams);
         this.applyDeleteMany(qbSelect, input);

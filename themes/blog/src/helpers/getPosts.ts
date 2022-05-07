@@ -7,8 +7,9 @@ export const handleGetFilteredPosts = async (params: TPagedParams<TPost>, filter
     filter.published = true;
 
     const client = getGraphQLClient();
-    const posts = await client?.getFilteredPosts({
+    const posts = await client.getPosts({
         pagedParams: params,
+        filterParams: filter,
         customFragment: gql`
             fragment PostListFragment on Post {
                 id
@@ -36,7 +37,6 @@ export const handleGetFilteredPosts = async (params: TPagedParams<TPost>, filter
         }
     `,
         customFragmentName: 'PostListFragment',
-        filterParams: filter,
     });
     return posts;
 }

@@ -152,7 +152,7 @@ export const getStaticProps: TGetStaticProps<BlogProps> = async () => {
 
   let tags: TTag[] | undefined;
   try {
-    tags = (await client?.getTags({ pageSize: 10000 }))?.elements;
+    tags = (await client.getTags({ pagedParams: { pageSize: 1000 } }))?.elements;
   } catch (e) {
     console.error('BlogPage::getStaticProps', e)
   }

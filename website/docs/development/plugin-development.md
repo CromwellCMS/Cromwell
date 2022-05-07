@@ -510,9 +510,9 @@ import { getCustomRepository } from 'typeorm';
 registerAction({
   pluginName: 'your-plugin-name',
   actionName: 'install_plugin',
-  action: (payload) => {
+  action: async (payload) => {
     if (payload.pluginName === 'your-plugin-name') {
-      getLogger().info('Thanks for installing our plugin!');
+      getLogger().error('Thanks for installing our plugin!');
     }
   }
 });

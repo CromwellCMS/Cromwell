@@ -1,4 +1,11 @@
-import { TDeleteManyInput, TPagedList, TPagedParams, TProductVariant, TProductVariantInput } from '@cromwell/core';
+import {
+    TBaseFilter,
+    TDeleteManyInput,
+    TPagedList,
+    TPagedParams,
+    TProductVariant,
+    TProductVariantInput,
+} from '@cromwell/core';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { EntityRepository, getCustomRepository, SelectQueryBuilder } from 'typeorm';
 
@@ -6,8 +13,6 @@ import { checkEntitySlug, getPaged, handleBaseInput, handleCustomMetaInput } fro
 import { getLogger } from '../helpers/logger';
 import { ProductVariant } from '../models/entities/product-variant.entity';
 import { Product } from '../models/entities/product.entity';
-import { BaseFilterInput } from '../models/filters/base-filter.filter';
-import { PagedParamsInput } from '../models/inputs/paged-params.input';
 import { BaseRepository } from './base.repository';
 import { ProductRepository } from './product.repository';
 
@@ -22,7 +27,7 @@ export class ProductVariantRepository extends BaseRepository<ProductVariant> {
         super(ProductVariant);
     }
 
-    async getProductVariants(params: TPagedParams<TProductVariant>): Promise<TPagedList<TProductVariant>> {
+    async getProductVariants(params?: TPagedParams<TProductVariant>): Promise<TPagedList<TProductVariant>> {
         return getPaged(this.createQueryBuilder(this.metadata.tablePath), this.metadata.tablePath, params);
     }
 
@@ -87,11 +92,11 @@ export class ProductVariantRepository extends BaseRepository<ProductVariant> {
         return true;
     }
 
-    applyProductVariantFilter(qb: SelectQueryBuilder<TProductVariant>, filterParams?: BaseFilterInput) {
+    applyProductVariantFilter(qb: SelectQueryBuilder<TProductVariant>, filterParams?: TBaseFilter) {
         this.applyBaseFilter(qb, filterParams);
     }
 
-    async getFilteredProductVariants(pagedParams?: PagedParamsInput<TProductVariant>, filterParams?: BaseFilterInput): Promise<TPagedList<TProductVariant>> {
+    async getFilteredProductVariants(pagedParams?: TPagedParams<TProductVariant>, filterParams?: TBaseFilter): Promise<TPagedList<TProductVariant>> {
         const qb = this.createQueryBuilder(this.metadata.tablePath);
         qb.select();
         this.applyProductVariantFilter(qb, filterParams);
@@ -99,7 +104,9 @@ export class ProductVariantRepository extends BaseRepository<ProductVariant> {
     }
 
 
-    async deleteManyFilteredProductVariants(input: TDeleteManyInput, filterParams?: BaseFilterInput): Promise<boolean | undefined> {
+    async deleteManyFilteredProductVariants(input: TDeleteManyInput, filterParams?: TBaseFilter): Promise<boolean> {
+        if (!filterParams) return this.deleteMany(input);
+        
         const qbSelect = this.createQueryBuilder(this.metadata.tablePath).select([`${this.metadata.tablePath}.id`]);
         this.applyProductVariantFilter(qbSelect, filterParams);
         this.applyDeleteMany(qbSelect, input);

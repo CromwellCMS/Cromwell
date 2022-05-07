@@ -20,10 +20,9 @@ export default function TagTable() {
             listLabel="Tags"
             entityLabel="Tag"
             nameProperty="name"
-            getManyFiltered={client.getFilteredTags}
+            getMany={client.getTags}
             deleteOne={client.deleteTag}
             deleteMany={client.deleteManyTags}
-            deleteManyFiltered={client.deleteManyFilteredTags}
             columns={[
                 {
                     name: 'image',

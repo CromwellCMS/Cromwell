@@ -93,10 +93,8 @@ export type TEntityPageProps<TEntityType extends TBasePageEntity, TFilterType ex
     update?: (id: number, input: Omit<TEntityType, 'id'>) => Promise<TEntityType>;
     create?: (input: Omit<TEntityType, 'id'>) => Promise<TEntityType>;
     deleteOne?: (id: number) => any;
-    deleteMany?: (input: TDeleteManyInput) => any;
-    deleteManyFiltered?: (input: TDeleteManyInput, filter: TFilterType) => any;
-
-    getManyFiltered?: (options: {
+    deleteMany?: (input: TDeleteManyInput, filter: TFilterType) => any;
+    getMany?: (options: {
         pagedParams?: TPagedParams<TEntityType>;
         filterParams?: TFilterType;
         customFragment?: DocumentNode;

@@ -475,6 +475,7 @@ export type TOrderInput = TOrderCore & {
 };
 
 export type TOrderFilter = TBaseFilter & {
+    userId?: number;
     status?: string;
     customerName?: string;
     customerPhone?: string;

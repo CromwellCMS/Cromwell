@@ -16,7 +16,8 @@ export const useStoreAttributes = (attributes?: TAttribute[] | null) => {
             if (!isFetchingAttributes) {
                 isFetchingAttributes = true;
                 try {
-                    moduleState.setAttributes(await client.getAttributes());
+                    const data = await client.getAttributes({ pagedParams: { pageSize: 1000 } });
+                    moduleState.setAttributes(data?.elements);
                     forceUpdate();
                 } catch (e) {
                     console.error('ccom_ModuleState::checkAttributesData', e)

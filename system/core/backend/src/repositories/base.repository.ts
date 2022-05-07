@@ -2,6 +2,7 @@ import {
     EDBEntity,
     getRandStr,
     getStoreItem,
+    TBaseFilter,
     TBasePageEntity,
     TDeleteManyInput,
     TPagedList,
@@ -14,8 +15,6 @@ import { applyBaseFilter, getPaged, getSqlBoolStr, getSqlLike, wrapInQuotes } fr
 import { entityMetaRepository } from '../helpers/entity-meta';
 import { getLogger } from '../helpers/logger';
 import { PageStats } from '../models/entities/page-stats.entity';
-import { BaseFilterInput } from '../models/filters/base-filter.filter';
-import { PagedParamsInput } from '../models/inputs/paged-params.input';
 
 const logger = getLogger();
 
@@ -152,7 +151,7 @@ export class BaseRepository<EntityType, EntityInputType = EntityType> extends Re
         return entity?.[this.metadata.tablePath + '_' + 'views'];
     }
 
-    applyBaseFilter<EntityType = TBasePageEntity>(qb: SelectQueryBuilder<EntityType>, filter?: BaseFilterInput): SelectQueryBuilder<EntityType> {
+    applyBaseFilter<EntityType = TBasePageEntity>(qb: SelectQueryBuilder<EntityType>, filter?: TBaseFilter): SelectQueryBuilder<EntityType> {
         if (!filter) return qb;
         const entityType = entityMetaRepository.getEntityType(this.EntityClass);
         return applyBaseFilter({
@@ -161,7 +160,7 @@ export class BaseRepository<EntityType, EntityInputType = EntityType> extends Re
         });
     }
 
-    async getFilteredEntities(pagedParams?: PagedParamsInput<EntityType>, filterParams?: BaseFilterInput) {
+    async getFilteredEntities(pagedParams?: TPagedParams<EntityType>, filterParams?: TBaseFilter) {
         logger.log('BaseRepository::getFilteredEntities ' + this.metadata.tablePath, pagedParams, filterParams);
         const qb = this.createQueryBuilder(this.metadata.tablePath).select();
         this.applyBaseFilter(qb, filterParams);

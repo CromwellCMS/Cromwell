@@ -27,7 +27,9 @@ describe('Attribute resolver', () => {
             query: gql`
                 query coreGetAttributes {
                     ${path} {
-                        ...AttributeFragment
+                        elements {
+                            ...AttributeFragment
+                        }
                     }
                 }
                 ${crwClient?.AttributeFragment}
@@ -36,7 +38,7 @@ describe('Attribute resolver', () => {
         const data = crwClient?.returnData(res, path);
 
         expect(data).toBeTruthy();
-        expect(data.length).toBeTruthy();
+        expect(data.elements.length).toBeTruthy();
     });
 
     const getAttributeById = async (attributeId: number) => {

@@ -20,10 +20,9 @@ export default function CouponList() {
             listLabel="Coupons"
             entityLabel="Coupon"
             nameProperty="name"
-            getManyFiltered={client.getFilteredCoupons}
+            getMany={client.getCoupons}
             deleteOne={client.deleteCoupon}
             deleteMany={client.deleteManyCoupons}
-            deleteManyFiltered={client.deleteManyFilteredCoupons}
             columns={[
                 {
                     name: 'code',

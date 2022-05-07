@@ -24,7 +24,7 @@ export default function PostTable() {
     }
 
     const getUsers = async () => {
-        const authors = await client.getFilteredUsers({
+        const authors = await client.getUsers({
             pagedParams: {
                 pageSize: 10000
             },
@@ -39,7 +39,7 @@ export default function PostTable() {
     }
 
     const getPostTags = async () => {
-        const data = (await client?.getTags({ pageSize: 99999 })
+        const data = (await client?.getTags({ pagedParams: { pageSize: 10000 } })
             .catch(err => { console.error(err); return undefined }))?.elements as TTag[];
         setTags(data?.sort((a, b) => a.name < b.name ? -1 : 1) ?? []);
     }
@@ -59,10 +59,9 @@ export default function PostTable() {
             listLabel="Posts"
             entityLabel="Post"
             nameProperty="title"
-            getManyFiltered={client.getFilteredPosts}
+            getMany={client.getPosts}
             deleteOne={client.deletePost}
             deleteMany={client.deleteManyPosts}
-            deleteManyFiltered={client.deleteManyFilteredPosts}
             columns={[
                 {
                     name: 'mainImage',

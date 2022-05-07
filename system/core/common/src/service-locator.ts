@@ -2,14 +2,14 @@ import { getCmsSettings } from './global-store';
 import { isServer } from './helpers';
 import { TCmsConfig } from './types/data';
 
-const getBaseUrl = (key: keyof TCmsConfig) => {
+const getBaseUrl = (key: keyof TCmsConfig): string | null => {
     const cmsConfig = getCmsSettings();
-    const url = cmsConfig?.[key] ?? serviceLocator.defaultLocations[key] as string;
+    const url = (cmsConfig?.[key] ?? serviceLocator.defaultLocations[key]) as string;
 
     if (isServer()) {
         if (!url) {
             console.error('core:serviceLocator: !url for ' + key);
-            return undefined;
+            return null;
         }
         return url;
     }

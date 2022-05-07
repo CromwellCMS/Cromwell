@@ -40,54 +40,6 @@ export type ActionTypes = {
     uninstall_theme: Action<{ themeName: string; }>;
     change_theme: Action<{ themeName: string; }>;
 
-    create_post: Action<TPost>;
-    update_post: Action<TPost>;
-    delete_post: Action<{ id: number }>;
-
-    create_tag: Action<TTag>;
-    update_tag: Action<TTag>;
-    delete_tag: Action<{ id: number }>;
-
-    create_post_comment: Action<TPostComment>;
-    update_post_comment: Action<TPostComment>;
-    delete_post_comment: Action<{ id: number }>;
-
-    create_product: Action<TProduct>;
-    update_product: Action<TProduct>;
-    delete_product: Action<{ id: number }>;
-
-    create_product_category: Action<TProductCategory>;
-    update_product_category: Action<TProductCategory>;
-    delete_product_category: Action<{ id: number }>;
-
-    create_attribute: Action<TAttribute>;
-    update_attribute: Action<TAttribute>;
-    delete_attribute: Action<{ id: number }>;
-
-    create_order: Action<TOrder>;
-    update_order: Action<TOrder>;
-    delete_order: Action<{ id: number }>;
-
-    create_product_review: Action<TProductReview>;
-    update_product_review: Action<TProductReview>;
-    delete_product_review: Action<{ id: number }>;
-
-    create_user: Action<TUser>;
-    update_user: Action<TUser>;
-    delete_user: Action<{ id: number }>;
-
-    create_role: Action<TRole>;
-    update_role: Action<TRole>;
-    delete_role: Action<{ id: number }>;
-
-    create_custom_entity: Action<TCustomEntity>;
-    update_custom_entity: Action<TCustomEntity>;
-    delete_custom_entity: Action<{ filterParams?: TCustomEntityFilter }>;
-
-    create_coupon: Action<TCoupon>;
-    update_coupon: Action<TCoupon>;
-    delete_coupon: Action<{ id: number }>;
-
     update_cms_settings: Action<TCmsSettings>;
 
     create_payment: Action<TOrderPaymentSession, {

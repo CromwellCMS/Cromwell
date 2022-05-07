@@ -1,5 +1,5 @@
+import { matchPermissions, TPermissionName } from '@cromwell/core';
 import { CustomPermissions, JwtAuthGuard, TRequestWithUser } from '@cromwell/core-backend';
-import { matchPermissions } from '@cromwell/core';
 import {
     Body,
     Controller,
@@ -78,13 +78,13 @@ class PluginNewsletterController {
         // Or you can retrieve user info and validate permissions in the method:
 
         // 1. Via matchPermissions method
-        if (!matchPermissions(request.user, [newsletterPermissions.stats as any]))
+        if (!matchPermissions(request.user, [newsletterPermissions.stats.name]))
             throw new ForbiddenException('Forbidden');
 
         // 2. Manually via checking roles and permissions:
         if (!request.user?.roles?.some(role =>
             role.permissions?.includes('all') ||
-            role.permissions?.includes(newsletterPermissions.stats as any)
+            role.permissions?.includes(newsletterPermissions.stats.name as TPermissionName)
         )) throw new ForbiddenException('Forbidden');
 
         return (await getManager().find(PluginNewsletter) ?? []).length + '';

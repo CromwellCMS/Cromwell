@@ -22,9 +22,11 @@ import {
     getNodeModuleDir,
     getPluginAdminBundlePath,
     getPluginAdminCjsPath,
+    getPluginBackendPath,
     getPluginFrontendBundlePath,
     getPluginFrontendCjsPath,
     getPublicPluginsDir,
+    PluginEntity,
     readPluginsExports,
     runShellCommand,
 } from '@cromwell/core-backend';
@@ -41,6 +43,7 @@ import { serverFireAction } from '../helpers/server-fire-action';
 import { childSendMessage } from '../helpers/server-manager';
 import {
     endTransaction,
+    getManagerState,
     restartService,
     setPendingKill,
     setPendingRestart,
@@ -90,7 +93,8 @@ export class PluginService {
      * @param pluginName 
      * @param pathGetter 
      */
-    public async getPluginBundle(pluginName: string, bundleType: 'admin' | 'frontend'): Promise<TFrontendBundle | undefined> {
+    public async getPluginBundle(pluginName: string, bundleType: 'admin' | 'frontend' | 'backend')
+        : Promise<TFrontendBundle | undefined> {
         logger.log('PluginService::getPluginBundle');
         let out: TFrontendBundle | undefined = undefined;
         let pathGetter: ((distDir: string) => string) | undefined = undefined;
@@ -103,6 +107,9 @@ export class PluginService {
         if (bundleType === 'frontend') {
             pathGetter = getPluginFrontendBundlePath;
             cjsPathGetter = getPluginFrontendCjsPath;
+        }
+        if (bundleType === 'backend') {
+            pathGetter = getPluginBackendPath;
         }
         if (!pathGetter) return;
 
@@ -132,7 +139,8 @@ export class PluginService {
                 out = {
                     source,
                     meta,
-                    cjsPath
+                    cjsPath,
+                    sourcePath: filePath,
                 }
             } catch (e) {
                 logger.error("Failed to read plugin's settings", e);
@@ -238,7 +246,6 @@ export class PluginService {
 
                 setPendingKill(2000);
             }
-
         }
 
         await this.activatePlugin(pluginName);
@@ -319,10 +326,16 @@ export class PluginService {
 
 
     public async activatePlugin(pluginName: string): Promise<boolean> {
+        const transactionId = getRandStr(8);
+        startTransaction(transactionId);
+
         const pluginPath = await getNodeModuleDir(pluginName);
         const pluginPckg = await getModulePackage(pluginName);
 
         if (!pluginPckg?.version || !pluginPath) throw new HttpException('Failed to find package.json of the plugin ' + pluginName, HttpStatus.INTERNAL_SERVER_ERROR);
+
+        const pluginExports = (await readPluginsExports()).find(p => p.pluginName === pluginName);
+        if (!pluginExports) throw new HttpException('Plugin in not a CMS module', HttpStatus.INTERNAL_SERVER_ERROR);
 
         // Read module info from package.json
         const moduleInfo = await getCmsModuleInfo(pluginName);
@@ -357,8 +370,8 @@ export class PluginService {
 
         // Check for admin bundle
         let hasAdminBundle = false;
-        const bundle = await this.getPluginBundle(pluginName, 'admin');
-        if (bundle) hasAdminBundle = true;
+        const adminBundle = await this.getPluginBundle(pluginName, 'admin');
+        if (adminBundle) hasAdminBundle = true;
 
         // Create DB entity
         const input: TPluginEntityInput = {
@@ -387,16 +400,28 @@ export class PluginService {
         }
 
         const pluginRepo = getCustomRepository(GenericPlugin.repository);
-        let entity;
+        let entity: PluginEntity | null = null;
 
         // Update entity if already in DB
         try {
             entity = await pluginRepo.getBySlug(pluginName);
             if (entity) {
+                const hasToUpdate = !!(input.version && entity.version !== input.version)
                 entity = Object.assign({}, entity, input);
                 await pluginRepo.save(entity);
 
-                await serverFireAction('update_plugin', { pluginName });
+                if (hasToUpdate) {
+                    if (pluginExports?.backendPath) {
+                        // Require backend code so plugin's update hook will be executed
+                        require(pluginExports.backendPath);
+                    }
+                    await serverFireAction('update_plugin', { pluginName });
+
+                    // We need restart to apply other backend parts like entities/controllers/etc
+                    if (pluginExports?.backendPath && !getManagerState().isPendingAnyAction()) {
+                        setPendingRestart(2000);
+                    }
+                }
             }
         } catch (error) { }
 
@@ -411,16 +436,25 @@ export class PluginService {
                     }
                 }
                 entity = await pluginRepo.createEntity(input);
+
+                if (pluginExports.backendPath) {
+                    // Require backend code so plugin's install hook will be executed
+                    require(pluginExports.backendPath);
+                }
                 await serverFireAction('install_plugin', { pluginName });
+
+                // We need restart to apply other backend parts like entities/controllers/etc
+                if (pluginExports.backendPath && !getManagerState().isPendingAnyAction()) {
+                    setPendingRestart(2000);
+                }
+
             } catch (e) {
                 logger.error(e);
             }
         }
+        endTransaction(transactionId);
 
-        if (entity) {
-            return true;
-        }
-        return false;
+        return !!entity;
     }
 
 

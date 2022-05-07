@@ -131,7 +131,7 @@ export function ProductReviews(props: ProductReviewsProps) {
           pageSize={10}
           blockRef={(block) => reviewsInst.current = block}
           loader={async (params) => {
-            return client.getFilteredProductReviews({
+            return client.getProductReviews({
               pagedParams: params,
               filterParams: {
                 productId,
@@ -142,7 +142,7 @@ export function ProductReviews(props: ProductReviewsProps) {
           elements={{
             pagination: elements?.Pagination,
           }}
-          {...(listProps ?? {})}
+          {...((listProps as Partial<TCListProps<TProductReview, TReviewListItemProps>>) ?? {})}
         />
         <Form productId={productId} notifier={notifier} parentProps={props} />
       </CContainer>

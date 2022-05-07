@@ -74,7 +74,7 @@ describe('EntityTable component', () => {
                     <EntityTableComp
                         entityCategory={EDBEntity.CustomEntity}
                         listLabel="Entities"
-                        getManyFiltered={async () => testData}
+                        getMany={async () => testData}
                         columns={columns}
                     />
                 </Router>

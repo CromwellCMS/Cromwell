@@ -95,7 +95,7 @@ export default MyPage;
 
 export const getStaticProps: TGetStaticProps<MyPageProps> = async (context) => {
     const client = getGraphQLClient();
-    const posts = await client.getFilteredPosts({
+    const posts = await client.getPosts({
         pagedParams: {
             pageSize: 3,
         },
@@ -117,7 +117,7 @@ export const getStaticProps: TGetStaticProps<MyPageProps> = async (context) => {
 }
 ```
 
-In the example above `getFilteredPosts` used a default fragment for us. But if we want to leverage GraphQL we can provide a custom fragment for a Post: 
+In the example above `getPosts` used a default fragment for us. But if we want to leverage GraphQL we can provide a custom fragment for a Post: 
 
 ```ts
 import { gql } from '@apollo/client';
@@ -125,7 +125,7 @@ import { getGraphQLClient } from '@cromwell/core-frontend';
 
 const client = getGraphQLClient();
 
-const posts = await client.getFilteredPosts({
+const posts = await client.getPosts({
     pagedParams: {
         pageSize: 3,
     },
@@ -166,8 +166,8 @@ const client = getGraphQLClient();
 
 const response = await client.query({
     query: gql`
-        query getFilteredPosts($pagedParams: PagedParamsInput, $filterParams: PostFilterInput) {
-            getFilteredPosts(pagedParams: $pagedParams, filterParams: $filterParams) {
+        query getPosts($pagedParams: PagedParamsInput, $filterParams: PostFilterInput) {
+            getPosts(pagedParams: $pagedParams, filterParams: $filterParams) {
                 pagedMeta {
                     ...PagedMetaFragment
                 }
@@ -197,7 +197,7 @@ const response = await client.query({
     }
 }); 
 
-const posts = response?.data?.getFilteredPosts?.elements;
+const posts = response?.data?.getPosts?.elements;
 ```
 
 You can notice that some methods of GraphQLClient create or update database records. They all require authentication. To log in on frontend use REST API client:
@@ -261,7 +261,7 @@ export const getStaticProps: TGetStaticProps<MyPageProps> = async (context) => {
         = __non_webpack_require__('@cromwell/core-backend');
 
     // Use repository methods
-    const posts = await getCustomRepository(PostRepository).getFilteredPosts({
+    const posts = await getCustomRepository(PostRepository).getPosts({
         pageSize: 3,
     }, {
         sorts: [

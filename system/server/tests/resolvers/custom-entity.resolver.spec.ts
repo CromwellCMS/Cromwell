@@ -120,7 +120,7 @@ describe('Custom entity resolver', () => {
 
 
     const getFilteredCustomEntities = async (filterParams: TCustomEntityFilter) => {
-        const path = GraphQLPaths.CustomEntity.getFiltered;
+        const path = GraphQLPaths.CustomEntity.getMany;
         const res = await query({
             query: gql`
                 query testGetFilteredCustomEntities($pagedParams: PagedParamsInput, $filterParams: CustomEntityFilterInput) {
@@ -154,8 +154,8 @@ describe('Custom entity resolver', () => {
         const path = GraphQLPaths.CustomEntity.getMany;
         const res = await query({
             query: gql`
-              query testGetCustomEntities($entityType: String!, $pagedParams: PagedParamsInput!) {
-                  ${path}(entityType: $entityType, pagedParams: $pagedParams) {
+              query testGetCustomEntities($filterParams: CustomEntityFilterInput!, $pagedParams: PagedParamsInput!) {
+                  ${path}(filterParams: $filterParams, pagedParams: $pagedParams) {
                       pagedMeta {
                           ...PagedMetaFragment
                       }
@@ -169,7 +169,7 @@ describe('Custom entity resolver', () => {
               ${crwClient?.PagedMetaFragment}
           `,
             variables: {
-                entityType: 'test',
+                filterParams: { entityType: 'test' },
                 pagedParams: {
                     pageNumber: 1,
                 } as TPagedParams<TCustomEntity>

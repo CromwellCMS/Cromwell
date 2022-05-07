@@ -165,14 +165,12 @@ export type TGraphQLNode = {
     getOneById: string;
     getOneBySlug: string;
     getMany: string;
-    getFiltered: string;
     create: string;
     update: string;
     delete: string;
     deleteMany: string;
     [x: string]: string;
 }
-
 
 export type TPagedList<Entity> = {
     pagedMeta?: TPagedMeta;
@@ -368,6 +366,7 @@ export type TPagesMetaInfo = {
 
 export type TFrontendBundle = {
     source?: string;
+    sourcePath?: string;
     meta?: TScriptMetaInfo;
     cjsPath?: string;
 }

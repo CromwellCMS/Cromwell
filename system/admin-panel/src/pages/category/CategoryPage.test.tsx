@@ -30,7 +30,7 @@ jest.mock('@cromwell/core-frontend', () => {
                 getProductCategoryById: jest.fn().mockImplementation(() => testData),
                 createProductCategory: jest.fn().mockImplementation(() => testData),
                 updateProductCategory: jest.fn().mockImplementation(() => testData),
-                getFilteredProductCategories: jest.fn().mockImplementation(() => ({ elements: [testData] })),
+                getProductCategories: jest.fn().mockImplementation(() => ({ elements: [testData] })),
             }
         },
         CList: () => {

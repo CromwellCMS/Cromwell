@@ -7,7 +7,6 @@ import {
     getPublicDir,
     JwtAuthGuard,
     ProductReviewInput,
-    ProductReviewRepository,
 } from '@cromwell/core-backend';
 import {
     Body,
@@ -28,7 +27,6 @@ import { FastifyReply } from 'fastify';
 import fs from 'fs-extra';
 import { join } from 'path';
 import { Container } from 'typedi';
-import { getCustomRepository } from 'typeorm';
 
 import { AdminCmsSettingsDto } from '../dto/admin-cms-settings.dto';
 import { CmsSettingsDto } from '../dto/cms-settings.dto';
@@ -44,7 +42,6 @@ import { SetupDto } from '../dto/setup.dto';
 import { SystemUsageDto } from '../dto/system-usage.dto';
 import { publicSystemDirs } from '../helpers/constants';
 import { resetAllPagesCache } from '../helpers/reset-page';
-import { serverFireAction } from '../helpers/server-fire-action';
 import { CmsService } from '../services/cms.service';
 import { MigrationService } from '../services/migration.service';
 import { PluginService } from '../services/plugin.service';
@@ -79,7 +76,6 @@ export class CmsController {
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async getConfig(): Promise<CmsSettingsDto | undefined> {
-        // logger.log('CmsController::getConfig');
         const config = await getCmsSettings();
         if (!config) {
             throw new HttpException('CmsController::getConfig Failed to read CMS Config', HttpStatus.INTERNAL_SERVER_ERROR);
@@ -98,7 +94,6 @@ export class CmsController {
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async getAdminSettings(): Promise<AdminCmsSettingsDto | undefined> {
-        // logger.log('CmsController::getPrivateConfig');
         return this.cmsService.getAdminSettings();
     }
 
@@ -398,9 +393,7 @@ export class CmsController {
         if (!input || !input.customerEmail
             || !input.customerPhone) throw new HttpException('Order form is incomplete', HttpStatus.NOT_ACCEPTABLE);
 
-        const order = await this.storeService.placeOrder(input);
-        serverFireAction('create_order', order);
-        return order;
+        return this.storeService.placeOrder(input);
     }
 
 
@@ -418,9 +411,7 @@ export class CmsController {
         if (!input || !input.productId
             || !(input.description || input.rating) || input.approved) throw new HttpException('Review form is incomplete', HttpStatus.NOT_ACCEPTABLE);
 
-        const review = await getCustomRepository(ProductReviewRepository).createProductReview(input);
-        serverFireAction('create_product_review', review);
-        return review;
+        return this.storeService.placeProductReview(input);
     }
 
 
