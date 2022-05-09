@@ -132,7 +132,7 @@ export class CStore {
                     const pickedValues = productPickedAttributes[attrKey] || [];
                     if (values.length !== pickedValues.length) return false;
                     return values.every(key => pickedValues.includes(key))
-                })
+                });
             }
             return false;
         };

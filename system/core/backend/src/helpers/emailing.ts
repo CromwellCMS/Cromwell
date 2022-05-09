@@ -74,6 +74,8 @@ export const sendEmail = async (addresses: string[], subject: string, htmlConten
             })
         }
         return new Promise(done => {
+            setTimeout(() => done(false), 120000);
+
             sendmailTransporter(messageContent, (err, reply) => {
                 logger.log(reply);
                 if (err)
