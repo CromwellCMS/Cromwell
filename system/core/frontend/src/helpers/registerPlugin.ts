@@ -20,10 +20,10 @@ const plugins: {
 }[] = [];
 
 /** @internal */
-export const getRegisteredPluginsAtPage = (pageName: string) => {
+export const getRegisteredPluginsAtPage = (pageName?: string) => {
     const registered: string[] = [];
     for (const plugin of plugins) {
-        if (plugin.pageName === '*' || plugin.pageName === pageName) {
+        if (plugin.pageName === '*' || (pageName && plugin.pageName === pageName)) {
             registered.push(plugin.pluginName);
         }
     }

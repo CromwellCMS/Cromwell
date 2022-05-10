@@ -22,7 +22,9 @@ export const getLogger = (writeToFile = true) => {
                 loggerFormat
             ),
             transports: [
-                new winston.transports.Console(),
+                new winston.transports.Console({
+                    stderrLevels: ['error']
+                }),
             ],
         });
     }

@@ -26,7 +26,8 @@ export const pluginsDataFetcher = async (pageName?: TDefaultPageName | string, c
     if (!pluginsData) return plugins;
     const configPlugins = Object.values(pluginsData);
 
-    for (const extra of [...(extraPlugins ?? []), ...(pageName ? getRegisteredPluginsAtPage(pageName) : [])]) {
+    for (const extra of [...(extraPlugins ?? []), ...getRegisteredPluginsAtPage(pageName)]) {
+
         const extraName = typeof extra === 'object' ? extra.pluginName : extra;
 
         if (!configPlugins.find(p => {

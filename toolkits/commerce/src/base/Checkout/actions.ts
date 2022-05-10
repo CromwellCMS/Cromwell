@@ -31,7 +31,7 @@ export const usuCheckoutActions = (config: {
     const cstore = getCStore();
     const { notifier = baseNotifier, notifierOptions = {},
         fields = getDefaultCheckoutFields(config.checkoutProps),
-        text, getPaymentOptions } = config.checkoutProps;
+        text, getPaymentOptions, changeErrorText } = config.checkoutProps;
 
     const [isLoading, setIsLoading] = useState(false);
     const [isAwaitingPayment, setIsAwaitingPayment] = useState(false);
@@ -189,7 +189,8 @@ export const usuCheckoutActions = (config: {
                 couponCodes: Object.values(coupons.current).map(c => c.value).filter(Boolean),
             })).catch(e => {
                 console.error(e);
-                notifier?.error?.(text?.failedCreateOrder ?? 'Failed to create order',
+                notifier?.error?.((text?.failedCreateOrder ?? 'Failed to place order.') + ' ' +
+                    (changeErrorText ?? ((m) => m))(e.message),
                     { ...notifierOptions, });
             }) || null;
 
