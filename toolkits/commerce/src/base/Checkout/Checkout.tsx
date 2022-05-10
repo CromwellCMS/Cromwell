@@ -104,6 +104,11 @@ export type CheckoutProps = {
   onGetOrderTotal?: (data: TOrderPaymentSession | undefined | null) => void;
   onPlaceOrder?: (placedOrder: TOrder | undefined | null) => void;
   onPay?: (success: boolean) => void;
+
+  /**
+   * Change text of backend errors before showing notifications.
+   */
+  changeErrorText?: (message: string) => string;
 }
 
 /**

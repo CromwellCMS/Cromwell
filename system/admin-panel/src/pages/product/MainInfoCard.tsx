@@ -122,7 +122,8 @@ const MainInfoCard = (props: {
                     type="number"
                     onChange={(e) => {
                         let val = parseInt(e.target.value);
-                        if (!val || isNaN(val)) val = undefined;
+                        if (isNaN(val)) val = null;
+                        if (val && val < 0) val = 0;
                         handleChange('stockAmount', val);
                     }}
                 />
