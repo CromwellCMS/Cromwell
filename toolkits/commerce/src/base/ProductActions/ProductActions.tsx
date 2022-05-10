@@ -217,8 +217,9 @@ export function ProductActions(props: ProductActionsProps) {
   //     }
   // }
 
-  const outOfStock = (modifiedProduct?.stockStatus === 'Out of stock' ||
-    modifiedProduct?.stockStatus === 'On backorder');
+  const outOfStock = !!((modifiedProduct?.stockStatus === 'Out of stock' ||
+    modifiedProduct?.stockStatus === 'On backorder') ||
+    (modifiedProduct?.manageStock && modifiedProduct?.stockAmount && modifiedProduct?.stockAmount < amount));
 
   let cartButtonText = text?.addToCart ?? 'Add to cart';
   if (inCart) {
@@ -229,8 +230,8 @@ export function ProductActions(props: ProductActionsProps) {
     }
   }
 
-  if (outOfStock && modifiedProduct?.stockStatus) {
-    cartButtonText = modifiedProduct?.stockStatus;
+  if (outOfStock) {
+    cartButtonText = text?.outOfStock ?? 'Out of stock';
   }
 
   return (

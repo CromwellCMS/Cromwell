@@ -1,6 +1,6 @@
 {
   "name": "@cromwell/server",
-  "version": "2.1.5",
+  "version": "2.1.6",
   "description": "",
   "keywords": [],
   "license": "MIT",
@@ -31,8 +31,8 @@
   },
   "dependencies": {
     "@cromwell/core": "2.0.13",
-    "@cromwell/core-backend": "2.0.14",
-    "@cromwell/core-frontend": "2.1.4",
+    "@cromwell/core-backend": "2.0.15",
+    "@cromwell/core-frontend": "2.1.5",
     "@nestjs/common": "8.0.6",
     "@nestjs/core": "8.0.6",
     "@nestjs/graphql": "8.0.2",

@@ -63,7 +63,7 @@ export type ProductReviewsProps = {
   /**
    * Override props to CList
    */
-  listProps?: TCListProps<TProductReview, TReviewListItemProps>;
+  listProps?: Partial<TCListProps<TProductReview, TReviewListItemProps>>;
   /**
    * Notifier tool
    */
