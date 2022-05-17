@@ -81,7 +81,7 @@ export const SideNav = () => {
 
   return (
     <>
-      <div className="bg-white max-h-full rounded-2xl shadow-lg my-4 mb-8 ml-4 transform-gpu transition-all top-4 shadow-indigo-200 w-80 z-[90] hidden sticky lg:block dark:bg-gray-700">
+      <div className="bg-white max-h-full rounded-2xl shadow-lg my-4 mb-4 ml-4 transform-gpu transition-all top-4 shadow-indigo-200 w-80 z-[90] hidden sticky lg:block dark:bg-gray-700">
         <div className="h-full rounded-2xl">
           <div className="flex py-2 items-center justify-center relative">
             <Link to="/">
