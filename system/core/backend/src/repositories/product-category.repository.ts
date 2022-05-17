@@ -6,6 +6,7 @@ import {
     TPagedList,
     TPagedParams,
     TProductCategory,
+    TProductCategoryFilter,
     TProductCategoryInput,
 } from '@cromwell/core';
 import { HttpException, HttpStatus } from '@nestjs/common';
@@ -34,9 +35,6 @@ import {
 import { entityMetaRepository } from '../helpers/entity-meta';
 import { getLogger } from '../helpers/logger';
 import { ProductCategory } from '../models/entities/product-category.entity';
-import { BaseFilterInput } from '../models/filters/base-filter.filter';
-import { ProductCategoryFilterInput } from '../models/filters/product-category.filter';
-import { PagedParamsInput } from '../models/inputs/paged-params.input';
 import { CreateProductCategory } from '../models/inputs/product-category.create';
 import { UpdateProductCategory } from '../models/inputs/product-category.update';
 import { ProductRepository } from './product.repository';
@@ -58,11 +56,10 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
     getSqlLike = () => getSqlLike(this.dbType);
     quote = (str: string) => wrapInQuotes(this.dbType, str);
 
-    async getProductCategories(params: TPagedParams<TProductCategory>): Promise<TPagedList<TProductCategory>> {
+    async getProductCategories(params?: TPagedParams<TProductCategory>): Promise<TPagedList<ProductCategory>> {
         logger.log('ProductCategoryRepository::getProductCategories');
         const qb = this.createQueryBuilder(this.metadata.tablePath);
-
-        return getPaged(qb, this.metadata.tablePath, params);
+        return getPaged<ProductCategory>(qb, this.metadata.tablePath, params);
     }
 
     async getProductCategoriesById(ids: number[]): Promise<ProductCategory[]> {
@@ -149,7 +146,7 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
         return true;
     }
 
-    async deleteManyCategories(input: TDeleteManyInput, filterParams?: ProductCategoryFilterInput) {
+    async deleteManyCategories(input: TDeleteManyInput, filterParams?: TProductCategoryFilter) {
         const qb = this.createQueryBuilder(this.metadata.tablePath);
         qb.select(['id']);
         if (filterParams) this.applyCategoryFilter(qb, filterParams);
@@ -215,14 +212,14 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
         }
     }
 
-    applyBaseFilter(qb: SelectQueryBuilder<TBasePageEntity>, filter?: BaseFilterInput): SelectQueryBuilder<TBasePageEntity> {
+    applyBaseFilter(qb: SelectQueryBuilder<TBasePageEntity>, filter?: TProductCategoryFilter): SelectQueryBuilder<TBasePageEntity> {
         if (!filter) return qb;
         const entityType = entityMetaRepository.getEntityType(ProductCategory);
         if (!entityType) return qb;
         return applyBaseFilter({ qb, filter, entityType, dbType: this.dbType });
     }
 
-    applyCategoryFilter(qb: SelectQueryBuilder<ProductCategory>, filterParams?: ProductCategoryFilterInput) {
+    applyCategoryFilter(qb: SelectQueryBuilder<ProductCategory>, filterParams?: TProductCategoryFilter) {
         this.applyBaseFilter(qb, filterParams);
 
         // Search by category name or id
@@ -241,7 +238,7 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
         }
     }
 
-    async getFilteredCategories(pagedParams?: PagedParamsInput<ProductCategory>, filterParams?: ProductCategoryFilterInput):
+    async getFilteredCategories(pagedParams?: TPagedParams<TProductCategory>, filterParams?: TProductCategoryFilter):
         Promise<TPagedList<TProductCategory>> {
         const qb = this.createQueryBuilder(this.metadata.tablePath);
         qb.select();

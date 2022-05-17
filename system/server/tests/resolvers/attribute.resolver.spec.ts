@@ -15,13 +15,21 @@ describe('Attribute resolver', () => {
         crwClient = getGraphQLClient();
     });
 
+    const query: typeof server.executeOperation = async (...args) => {
+        const res = await server.executeOperation(...args);
+        if (res.errors) throw res.errors;
+        return res;
+    }
+
     it(`getAttributes`, async () => {
         const path = GraphQLPaths.Attribute.getMany;
-        const res = await server.executeOperation({
+        const res = await query({
             query: gql`
                 query coreGetAttributes {
                     ${path} {
-                        ...AttributeFragment
+                        elements {
+                            ...AttributeFragment
+                        }
                     }
                 }
                 ${crwClient?.AttributeFragment}
@@ -30,12 +38,12 @@ describe('Attribute resolver', () => {
         const data = crwClient?.returnData(res, path);
 
         expect(data).toBeTruthy();
-        expect(data.length).toBeTruthy();
+        expect(data.elements.length).toBeTruthy();
     });
 
     const getAttributeById = async (attributeId: number) => {
         const path = GraphQLPaths.Attribute.getOneById;
-        const res = await server.executeOperation({
+        const res = await query({
             query: gql`
             query testGetAttributeById($attributeId: Int!) {
                 ${path}(id: $attributeId) {
@@ -75,7 +83,7 @@ describe('Attribute resolver', () => {
             values: [],
         }
 
-        const res = await server.executeOperation({
+        const res = await query({
             query: gql`
               mutation testUpdateAttribute($id: Int!, $data: AttributeInput!) {
                   ${path}(id: $id, data: $data) {
@@ -118,7 +126,7 @@ describe('Attribute resolver', () => {
             values: [],
         }
 
-        const res = await server.executeOperation({
+        const res = await query({
             query: gql`
               mutation testCreateAttribute($data: AttributeInput!) {
                   ${path}(data: $data) {
@@ -145,28 +153,28 @@ describe('Attribute resolver', () => {
 
 
     it(`deleteAttribute`, async () => {
-        const data1: TAttribute = await getAttributeById(1);
+        const data1: TAttribute = await getAttributeById(2);
         expect(data1).toBeTruthy();
         expect(data1.id).toBeTruthy();
         expect(data1.slug).toBeTruthy();
 
         const path = GraphQLPaths.Attribute.delete;
 
-        const res = await server.executeOperation({
+        const res = await query({
             query: gql`
                 mutation testDeleteAttribute($id: Int!) {
                     ${path}(id: $id)
                 }
           `,
             variables: {
-                id: 1,
+                id: 2,
             }
         });
         const success = crwClient?.returnData(res, path);
         expect(!success.ValidationError).toBeTruthy();
         expect(success === true).toBeTruthy();
 
-        const data2 = await getAttributeById(1);
+        const data2 = await getAttributeById(2).catch(() => null);
 
         expect(!data2?.id).toBeTruthy();
         expect(!data2?.slug).toBeTruthy();

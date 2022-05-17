@@ -8,12 +8,20 @@ import {
     Role,
     RoleInput,
     RoleRepository,
+    TGraphQLContext,
 } from '@cromwell/core-backend';
-import { Arg, Authorized, Int, Mutation, Query, Resolver } from 'type-graphql';
+import { GraphQLJSONObject } from 'graphql-type-json';
+import { Arg, Authorized, Ctx, FieldResolver, Int, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
-import { resetAllPagesCache } from '../helpers/reset-page';
-import { serverFireAction } from '../helpers/server-fire-action';
+import {
+    createWithFilters,
+    deleteManyWithFilters,
+    deleteWithFilters,
+    getByIdWithFilters,
+    getManyWithFilters,
+    updateWithFilters,
+} from '../helpers/data-filters';
 
 const getOneByIdPath = GraphQLPaths.Role.getOneById;
 const getManyPath = GraphQLPaths.Role.getMany;
@@ -21,8 +29,6 @@ const createPath = GraphQLPaths.Role.create;
 const updatePath = GraphQLPaths.Role.update;
 const deletePath = GraphQLPaths.Role.delete;
 const deleteManyPath = GraphQLPaths.Role.deleteMany;
-const deleteManyFilteredPath = GraphQLPaths.Role.deleteManyFiltered;
-const getFilteredPath = GraphQLPaths.Role.getFiltered;
 
 @Resolver(Role)
 export class RoleResolver {
@@ -30,80 +36,70 @@ export class RoleResolver {
     private repository = getCustomRepository(RoleRepository);
 
     @Authorized<TPermissionName>('read_roles')
-    @Query(() => PagedRole)
-    async [getManyPath](
-        @Arg("pagedParams", { nullable: true }) pagedParams?: PagedParamsInput<TRole>
-    ): Promise<TPagedList<TRole>> {
-        return this.repository.getRoles(pagedParams);
+    @Query(() => Role)
+    async [getOneByIdPath](
+        @Ctx() ctx: TGraphQLContext,
+        @Arg("id", () => Int) id: number
+    ): Promise<TRole | undefined> {
+        return getByIdWithFilters('Role', ctx, ['read_roles'], id,
+            (...args) => this.repository.getRoleById(...args));
     }
 
     @Authorized<TPermissionName>('read_roles')
-    @Query(() => Role)
-    async [getOneByIdPath](@Arg("id", () => Int) id: number): Promise<TRole | undefined> {
-        entityMetaRepository.getAllEntityMetaKeys(EDBEntity.CustomEntity);
-        return this.repository.getRoleById(id);
+    @Query(() => PagedRole)
+    async [getManyPath](
+        @Ctx() ctx: TGraphQLContext,
+        @Arg("pagedParams", { nullable: true }) pagedParams?: PagedParamsInput<TRole>,
+        @Arg("filterParams", () => BaseFilterInput, { nullable: true }) filterParams?: BaseFilterInput,
+    ): Promise<TPagedList<TRole> | undefined> {
+        return getManyWithFilters('Role', ctx, ['read_roles'], pagedParams, filterParams,
+            (...args) => this.repository.getFilteredRoles(...args));
     }
 
     @Authorized<TPermissionName>('create_role')
     @Mutation(() => Role)
-    async [createPath](@Arg("data") data: RoleInput): Promise<TRole> {
-        const role = await this.repository.createRole(data);
-        serverFireAction('create_role', role);
-        resetAllPagesCache();
-        return role;
+    async [createPath](
+        @Ctx() ctx: TGraphQLContext,
+        @Arg("data") data: RoleInput
+    ): Promise<TRole> {
+        return createWithFilters('Role', ctx, ['create_role'], data,
+            (...args) => this.repository.createRole(...args));
     }
 
     @Authorized<TPermissionName>('update_role')
     @Mutation(() => Role)
-    async [updatePath](@Arg("id", () => Int) id: number, @Arg("data") data: RoleInput): Promise<TRole | undefined> {
-        const role = await this.repository.updateRole(id, data);
-        serverFireAction('update_role', role);
-        resetAllPagesCache();
-        return role;
+    async [updatePath](
+        @Ctx() ctx: TGraphQLContext,
+        @Arg("id", () => Int) id: number,
+        @Arg("data") data: RoleInput
+    ): Promise<TRole | undefined> {
+        return updateWithFilters('Role', ctx, ['update_role'], data, id,
+            (...args) => this.repository.updateRole(...args));
     }
 
     @Authorized<TPermissionName>('delete_role')
     @Mutation(() => Boolean)
-    async [deletePath](@Arg("id", () => Int) id: number): Promise<boolean> {
-        const role = await this.repository.deleteRole(id);
-        serverFireAction('delete_role', { id });
-        resetAllPagesCache();
-        return role;
+    async [deletePath](
+        @Ctx() ctx: TGraphQLContext,
+        @Arg("id", () => Int) id: number
+    ): Promise<boolean> {
+        return deleteWithFilters('Role', ctx, ['delete_role'], id,
+            (...args) => this.repository.deleteRole(...args));
     }
 
     @Authorized<TPermissionName>('delete_role')
     @Mutation(() => Boolean)
-    async [deleteManyPath](@Arg("data") data: DeleteManyInput): Promise<boolean | undefined> {
-        const res = await this.repository.deleteMany(data);
-        resetAllPagesCache();
-        return res;
-    }
-
-    @Authorized<TPermissionName>('delete_role')
-    @Mutation(() => Boolean)
-    async [deleteManyPath](@Arg("data") data: DeleteManyInput): Promise<boolean | undefined> {
-        const res = await this.repository.deleteMany(data);
-        resetAllPagesCache();
-        return res;
-    }
-
-    @Authorized<TPermissionName>('delete_role')
-    @Mutation(() => Boolean)
-    async [deleteManyFilteredPath](
+    async [deleteManyPath](
+        @Ctx() ctx: TGraphQLContext,
         @Arg("input") input: DeleteManyInput,
         @Arg("filterParams", () => BaseFilterInput, { nullable: true }) filterParams?: BaseFilterInput,
     ): Promise<boolean | undefined> {
-        const res = await this.repository.deleteManyFilteredRoles(input, filterParams);
-        resetAllPagesCache();
-        return res;
+        return deleteManyWithFilters('Role', ctx, ['delete_role'], input, filterParams,
+            (...args) => this.repository.deleteManyFilteredRoles(...args));
     }
 
-    @Authorized<TPermissionName>('read_roles')
-    @Query(() => PagedRole)
-    async [getFilteredPath](
-        @Arg("pagedParams", { nullable: true }) pagedParams?: PagedParamsInput<TRole>,
-        @Arg("filterParams", () => BaseFilterInput, { nullable: true }) filterParams?: BaseFilterInput,
-    ): Promise<TPagedList<TRole> | undefined> {
-        return this.repository.getFilteredRoles(pagedParams, filterParams);
+    @FieldResolver(() => GraphQLJSONObject, { nullable: true })
+    async customMeta(@Root() entity: Role, @Arg("keys", () => [String]) fields: string[]): Promise<any> {
+        return entityMetaRepository.getEntityMetaByKeys(EDBEntity.Role, entity.id, fields);
     }
 }

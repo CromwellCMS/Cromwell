@@ -13,9 +13,15 @@ describe('Product category resolver', () => {
         crwClient = getGraphQLClient();
     });
 
+    const query: typeof server.executeOperation = async (...args) => {
+        const res = await server.executeOperation(...args);
+        if (res.errors) throw res.errors;
+        return res;
+    }
+
     it(`getProductCategories`, async () => {
         const path = GraphQLPaths.ProductCategory.getMany;
-        const res = await server.executeOperation({
+        const res = await query({
             query: gql`
               query testGetProducts($pagedParams: PagedParamsInput!) {
                   ${path}(pagedParams: $pagedParams) {
@@ -50,7 +56,7 @@ describe('Product category resolver', () => {
 
     const getProductCategoryById = async (id: number) => {
         const path = GraphQLPaths.ProductCategory.getOneById;
-        const res = await server.executeOperation({
+        const res = await query({
             query: gql`
             query testGetProductCategoryById($id: Int!) {
                 ${path}(id: $id) {
@@ -81,7 +87,7 @@ describe('Product category resolver', () => {
 
     const getProductCategoryBySlug = async (slug: string) => {
         const path = GraphQLPaths.ProductCategory.getOneBySlug;
-        const res = await server.executeOperation({
+        const res = await query({
             query: gql`
             query testGetProductCategoryBySlug($slug: String!) {
                 ${path}(slug: $slug) {
@@ -129,7 +135,7 @@ describe('Product category resolver', () => {
             isEnabled: data1.isEnabled,
         }
 
-        const res = await server.executeOperation({
+        const res = await query({
             query: gql`
               mutation testUpdateProductCategory($id: Int!, $data: UpdateProductCategory!) {
                   ${path}(id: $id, data: $data) {
@@ -181,7 +187,7 @@ describe('Product category resolver', () => {
             isEnabled: data1.isEnabled,
         }
 
-        const res = await server.executeOperation({
+        const res = await query({
             query: gql`
               mutation testCreatePost($data: CreateProductCategory!) {
                   ${path}(data: $data) {
@@ -224,7 +230,7 @@ describe('Product category resolver', () => {
         expect(data1.slug).toBeTruthy();
         const path = GraphQLPaths.ProductCategory.delete;
 
-        const res = await server.executeOperation({
+        const res = await query({
             query: gql`
                 mutation testDeleteProductCategory($id: Int!) {
                     ${path}(id: $id)
@@ -241,7 +247,7 @@ describe('Product category resolver', () => {
         }
         expect(success === true).toBeTruthy();
 
-        const data2 = await getProductCategoryById(3);
+        const data2 = await getProductCategoryById(3).catch(() => null);
 
         expect(!data2?.id).toBeTruthy();
         expect(!data2?.slug).toBeTruthy();

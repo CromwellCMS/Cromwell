@@ -111,7 +111,7 @@ export const connectDatabase = async ({ ormConfigOverride, development }: {
             ...(pluginExports.migrations ?? [] as any),
             (serverDir && ormconfig?.cli?.migrationsDir) ?
                 normalizePath(resolve(serverDir, ormconfig.cli.migrationsDir)) + '/*.js' : '',
-        ].filter(it => it && it !== ''),
+        ].filter(Boolean),
     };
 
     if (connectionOptions) await createConnection(connectionOptions);

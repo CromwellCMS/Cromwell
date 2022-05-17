@@ -45,7 +45,6 @@ import { PluginService } from './plugin.service';
 
 const logger = getLogger();
 
-
 @Injectable()
 @Service()
 export class ThemeService {
@@ -498,7 +497,7 @@ export class ThemeService {
 
     public async setActive(themeName: string): Promise<boolean> {
         const entity = await getCmsEntity();
-        if (!entity) throw new HttpException('!cms entity', HttpStatus.INTERNAL_SERVER_ERROR);
+        if (!entity) throw new HttpException('cms settings not found', HttpStatus.INTERNAL_SERVER_ERROR);
 
         entity.publicSettings = {
             ...(entity.publicSettings ?? {}),

@@ -8,6 +8,7 @@ const store: {
     isPendingKill: boolean;
     isPendingRestart: boolean;
     isPendingServiceRestart: boolean,
+    isPendingAnyAction: () => boolean,
     pendingTimer?: number;
     isClosing: boolean;
     transactions: Record<string, boolean>;
@@ -17,7 +18,10 @@ const store: {
     isPendingServiceRestart: false,
     isClosing: false,
     transactions: {},
+    isPendingAnyAction: () => store.isPendingKill || store.isPendingRestart || store.isPendingServiceRestart,
 }
+
+export const getManagerState = () => store;
 
 export const restartService = async (serviceName: keyof TServiceVersions) => {
     // if (serviceName === 'api-server') {

@@ -1,8 +1,8 @@
-import { getStoreItem, setStoreItem } from '@cromwell/core';
+import { getStoreItem, setStoreItem, sleep } from '@cromwell/core';
 import { getServerTempDir, readCMSConfig } from '@cromwell/core-backend';
 import * as coreBackend from '@cromwell/core-backend';
 import fs from 'fs-extra';
-import { join, resolve } from 'path';
+import { dirname, join, resolve } from 'path';
 
 import { connectDatabase } from '../src/helpers/connect-database';
 
@@ -40,10 +40,11 @@ export const setupConnection = async (name: string) => {
     });
 
     if (fs.pathExistsSync(setupDBPath)) {
-        const tempDBPath = resolve(getServerTempDir(), 'db.sqlite3');
+        const tempDBPath = resolve(getServerTempDir(), '.cromwell/server', 'db.sqlite3');
+        fs.ensureDirSync(dirname(tempDBPath));
         fs.copyFileSync(setupDBPath, tempDBPath);
     }
-
+    await sleep(0.1);
     await connectDatabase({ synchronize: true, migrationsRun: false }, true);
 
     let cmsSettings = getStoreItem('cmsSettings');

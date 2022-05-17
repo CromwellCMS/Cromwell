@@ -5,9 +5,13 @@ import {
     standardShipping,
     TOrder,
     TOrderInput,
+    TProduct,
+    TProductReview,
+    TProductVariant,
     TStoreListItem,
 } from '@cromwell/core';
 import {
+    applyDataFilters,
     AttributeRepository,
     CouponRepository,
     getCmsSettings,
@@ -16,6 +20,8 @@ import {
     getThemeConfigs,
     OrderRepository,
     ProductRepository,
+    ProductReviewInput,
+    ProductReviewRepository,
     sendEmail,
 } from '@cromwell/core-backend';
 import { getCStore } from '@cromwell/core-frontend';
@@ -59,7 +65,6 @@ export class StoreService {
             local: true, apiClient: {
                 getProductById: (id) => getCustomRepository(ProductRepository).getProductById(id,
                     { withAttributes: true, withCategories: true, withVariants: true }),
-                getAttributes: () => getCustomRepository(AttributeRepository).getAttributes(),
                 getCouponsByCodes: (codes) => getCustomRepository(CouponRepository)
                     .getCouponsByCodes(codes)
             }
@@ -106,11 +111,10 @@ export class StoreService {
         total.paymentOptions = [...Object.values(payments ?? {}),
         ...(!settings?.disablePayLater ? [
             payLaterOption,
-        ] : []),];
+        ] : [])];
 
         return total;
     }
-
 
     async placeOrder(input: CreateOrderDto): Promise<TOrder | undefined> {
         const orderTotal = await this.calcOrderTotal(input);
@@ -162,6 +166,58 @@ export class StoreService {
             });
         }
 
+        const attributes = await getCustomRepository(AttributeRepository).getAll();
+
+        // Update stock of products / product variants
+        await Promise.all(orderTotal.cart?.map(async item => {
+            const product = item.product?.id && await getCustomRepository(ProductRepository)
+                .getProductById(item.product.id, { withVariants: true }) || null;
+
+            if (!product) return;
+
+            const decreaseStock = (product: TProduct | TProductVariant) => {
+                if (product.manageStock && product.stockAmount) {
+                    product.stockAmount = product.stockAmount - (item.amount ?? 1);
+                    if (product.stockAmount < 0) {
+                        throw new HttpException(`Product ${product.name ?? item.product?.name} is not available in amount ${item.amount ?? 1}`,
+                            HttpStatus.BAD_REQUEST);
+                    }
+
+                    if (product.stockAmount === 0) {
+                        product.stockStatus = 'Out of stock';
+                    }
+                }
+            }
+
+            if (!item.pickedAttributes) {
+                // Manage stock of main product record
+                decreaseStock(product);
+            } else {
+                // Manage product variants
+                // Find picked variant (if it is created)
+                const variant = product?.variants?.find(variant => {
+                    return Object.entries(item.pickedAttributes ?? {}).every(([key, values]) => {
+                        const attribute = attributes.find(attr => attr.key === key);
+                        if (attribute?.type === 'radio')
+                            return variant.attributes?.[key] === values[0];
+
+                        // Attribute type `checkbox` is not supported for auto management
+                        return false;
+                    });
+                });
+
+                if (variant) {
+                    decreaseStock(variant);
+                } else {
+                    // Variant not found, use main product info
+                    decreaseStock(product);
+                }
+            }
+            await product?.save();
+        }));
+
+
+        // Apply coupons
         if (orderTotal.appliedCoupons?.length) {
             try {
                 const coupons = await getCustomRepository(CouponRepository)
@@ -251,7 +307,22 @@ export class StoreService {
         }
         // < / Send e-mail >
 
-        return getCustomRepository(OrderRepository).createOrder(createOrder);
+        const createOrderFiltered = (await applyDataFilters('Order', 'createInput', {
+            data: createOrder,
+            permissions: []
+        })).data;
+        const createdOrder = await getCustomRepository(OrderRepository).createOrder(createOrderFiltered);
+        return (await applyDataFilters('Order', 'createOutput', { data: createdOrder, permissions: [] })).data;
+    }
+
+    async placeProductReview(input: ProductReviewInput): Promise<TProductReview> {
+        const inputFiltered = (await applyDataFilters('ProductReview', 'createInput', {
+            data: input,
+            permissions: []
+        })).data;
+
+        const review = await getCustomRepository(ProductReviewRepository).createProductReview(inputFiltered);
+        return (await applyDataFilters('ProductReview', 'createOutput', { data: review, permissions: [] })).data;
     }
 
 }

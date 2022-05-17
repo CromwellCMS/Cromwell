@@ -60,6 +60,7 @@ export function CartListItem(props: CartListItemProps) {
         </div>
       </div>
       <div className={clsx(styles.attributesBlock, classes?.attributesBlock)}>
+        <p key="__amount" className={clsx(styles.attributeValue, classes?.attributeValue)}>Amount: {item.amount ?? 1}</p>
         {checkedAttrKeys.map(key => {
           const values = item.pickedAttributes?.[key];
           if (!values?.length || !key) return null;

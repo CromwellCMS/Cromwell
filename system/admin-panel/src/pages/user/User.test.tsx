@@ -31,6 +31,7 @@ jest.mock('@cromwell/core-frontend', () => {
                 getUserById: jest.fn().mockImplementation(() => testData),
                 createUser: jest.fn().mockImplementation(() => testData),
                 updateUser: jest.fn().mockImplementation(() => testData),
+                getRoles: jest.fn().mockImplementation(() => []),
             }
         },
     }

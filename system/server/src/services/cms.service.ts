@@ -45,17 +45,17 @@ import { Container, Service } from 'typedi';
 import { getConnection, getCustomRepository, Repository } from 'typeorm';
 import * as util from 'util';
 
-import { AdminCmsConfigDto } from '../dto/admin-cms-config.dto';
+import { AdminCmsSettingsDto } from '../dto/admin-cms-settings.dto';
 import { CmsStatusDto } from '../dto/cms-status.dto';
 import { DashboardSettingsDto } from "../dto/dashboard-settings.dto";
 import { SetupDto } from '../dto/setup.dto';
 import { serverFireAction } from '../helpers/server-fire-action';
 import { childSendMessage } from '../helpers/server-manager';
 import { endTransaction, restartService, setPendingKill, startTransaction } from '../helpers/state-manager';
+import { authServiceInst } from './auth.service';
 import { MockService } from './mock.service';
 import { PluginService } from './plugin.service';
 import { ThemeService } from './theme.service';
-import { authServiceInst } from './auth.service';
 
 const logger = getLogger();
 const pump = util.promisify(pipeline);
@@ -208,7 +208,11 @@ export class CmsService {
             throw new HttpException('CMS already installed', HttpStatus.BAD_REQUEST);
         }
 
-        await this.checkRolesOnStart();
+        const roles = await getCustomRepository(RoleRepository).getAll();
+        if (!roles?.length) {
+            await this.mockService.mockRoles();
+        }
+
         const adminRole = (await getCustomRepository(RoleRepository).getAll()).find(r => r.permissions?.includes('all'));
         if (!adminRole?.name)
             throw new HttpException('No administrator role found in DB', HttpStatus.BAD_REQUEST);
@@ -251,8 +255,8 @@ export class CmsService {
 
     public async buildSitemap() {
         const settings = await getCmsSettings();
-        if (!settings?.url) throw new HttpException("CmsService::buildSitemap: could not find website's URL", HttpStatus.INTERNAL_SERVER_ERROR);
-        if (!settings.themeName) throw new HttpException("CmsService::buildSitemap: could not find website's themeName", HttpStatus.INTERNAL_SERVER_ERROR);
+        if (!settings?.url) throw new HttpException("Could not find website's URL", HttpStatus.INTERNAL_SERVER_ERROR);
+        if (!settings.themeName) throw new HttpException("Could not find website's themeName", HttpStatus.INTERNAL_SERVER_ERROR);
         const configs = await getThemeConfigs(settings.themeName);
         setStoreItem('defaultPages', configs.themeConfig?.defaultPages);
 
@@ -366,10 +370,7 @@ ${content}
     public async getAdminSettings() {
         const settings = await getCmsSettings();
         const info = await getCmsInfo();
-        if (!settings) {
-            throw new HttpException('CmsController::getPrivateConfig Failed to read CMS Settings', HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        const dto = new AdminCmsConfigDto().parseConfig(settings);
+        const dto = new AdminCmsSettingsDto().parseSettings(settings);
         dto.cmsInfo = info;
         try {
             const robotsPath = resolve(getPublicDir(), 'robots.txt');
@@ -441,7 +442,7 @@ ${content}
         return existingEntity;
     }
 
-    public async updateCmsSettings(input: AdminCmsConfigDto): Promise<AdminCmsConfigDto> {
+    public async updateCmsSettings(input: AdminCmsSettingsDto): Promise<AdminCmsSettingsDto> {
         const entity = await getCmsEntity();
         if (!entity) throw new HttpException('CMS settings not found', HttpStatus.INTERNAL_SERVER_ERROR);
 
@@ -489,9 +490,8 @@ ${content}
 
         await serverFireAction('update_cms_settings');
 
-        const config = await getCmsSettings();
-        if (!config) throw new HttpException('!config', HttpStatus.INTERNAL_SERVER_ERROR);
-        return new AdminCmsConfigDto().parseConfig(config);
+        const settings = await getCmsSettings();
+        return new AdminCmsSettingsDto().parseSettings(settings);
     }
 
     async checkCmsUpdate(): Promise<TCCSVersion | undefined> {
@@ -555,7 +555,7 @@ ${content}
 
     async updateCms(): Promise<boolean> {
         const availableUpdate = await this.checkCmsUpdate();
-        if (!availableUpdate?.packageVersion) throw new HttpException(`Update failed: !availableUpdate?.packageVersion`, HttpStatus.INTERNAL_SERVER_ERROR);
+        if (!availableUpdate?.packageVersion) throw new HttpException(`Update failed: update info is not valid`, HttpStatus.INTERNAL_SERVER_ERROR);
         if (availableUpdate.onlyManualUpdate) throw new HttpException(`Update failed: Cannot launch automatic update. Please update using npm install command and restart CMS`, HttpStatus.FORBIDDEN);
 
         const pckg = await getModulePackage();
@@ -641,12 +641,5 @@ ${content}
 
     async getUerRoles() {
         return getCustomRepository(RoleRepository).getAll();
-    }
-
-    async checkRolesOnStart() {
-        const roles = await getCustomRepository(RoleRepository).getAll();
-        if (!roles?.length) {
-            await this.mockService.mockRoles();
-        }
     }
 }

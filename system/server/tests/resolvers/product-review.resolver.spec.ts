@@ -15,9 +15,15 @@ describe('Product-review resolver', () => {
         crwClient = getGraphQLClient();
     });
 
+    const query: typeof server.executeOperation = async (...args) => {
+        const res = await server.executeOperation(...args);
+        if (res.errors) throw res.errors;
+        return res;
+    }
+
     it(`getProductReviews`, async () => {
         const path = GraphQLPaths.ProductReview.getMany;
-        const res = await server.executeOperation({
+        const res = await query({
             query: gql`
               query testGetProducts($pagedParams: PagedParamsInput!) {
                   ${path}(pagedParams: $pagedParams) {
@@ -207,7 +213,7 @@ describe('Product-review resolver', () => {
         }
         expect(success === true).toBeTruthy();
 
-        const data2 = await getProductReview(4);
+        const data2 = await getProductReview(4).catch(() => null);
 
         expect(!data2?.id).toBeTruthy();
     });

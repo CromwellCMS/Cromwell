@@ -15,6 +15,7 @@ import { PostMeta } from '../models/entities/meta/post-meta.entity';
 import { ProductCategoryMeta } from '../models/entities/meta/product-category-meta.entity';
 import { ProductMeta } from '../models/entities/meta/product-meta.entity';
 import { ProductVariantMeta } from '../models/entities/meta/product-variant-meta.entity';
+import { RoleMeta } from '../models/entities/meta/role-meta.entity';
 import { TagMeta } from '../models/entities/meta/tag-meta.entity';
 import { UserMeta } from '../models/entities/meta/user-meta.entity';
 import { Order } from '../models/entities/order.entity';
@@ -33,15 +34,16 @@ import { User } from '../models/entities/user.entity';
 import { DashboardEntity } from "../models/entities/dashboard-entity.entity";
 
 export const ORMEntities = [
-    ThemeEntity, PluginEntity,
-    Product, ProductCategory, Post, User,
-    Attribute, ProductReview, Order,
-    CmsEntity, Tag, PageStats, PostComment,
-    AttributeMeta, OrderMeta, PostMeta,
-    ProductCategoryMeta, ProductMeta, TagMeta,
-    UserMeta, AttributeToProduct, AttributeValue,
-    CustomEntity, CustomEntityMeta, Coupon, CouponMeta,
-    ProductVariant, ProductVariantMeta, Role, DashboardEntity,
+  ThemeEntity, PluginEntity,
+  Product, ProductCategory, Post, User,
+  Attribute, ProductReview, Order,
+  CmsEntity, Tag, PageStats, PostComment,
+  AttributeMeta, OrderMeta, PostMeta,
+  ProductCategoryMeta, ProductMeta, TagMeta,
+  UserMeta, AttributeToProduct, AttributeValue,
+  CustomEntity, CustomEntityMeta, Coupon, CouponMeta,
+  ProductVariant, ProductVariantMeta, Role, DashboardEntity,
+  RoleMeta,
 ]
 
 export const rendererMessages = {
@@ -84,6 +86,10 @@ export const defaultCmsConfig: TCmsConfig = {
     modules: {
       ecommerce: true,
       blog: true,
+    },
+    adminSettings: {
+      signupEnabled: true,
+      signupRoles: ['customer'],
     },
     publicSettings: {
       themeName: "@cromwell/theme-store",
@@ -532,7 +538,7 @@ export const defaultCmsConfig: TCmsConfig = {
 export const cmsPackageName = "@cromwell/cms";
 
 export const getMigrationsDirName = (dbType: ConnectionOptions['type']) => {
-    if (dbType === 'sqlite') return 'migrations/sqlite';
-    if (dbType === 'mysql' || dbType === 'mariadb') return 'migrations/mysql';
-    if (dbType === 'postgres') return 'migrations/postgres';
+  if (dbType === 'sqlite') return 'migrations/sqlite';
+  if (dbType === 'mysql' || dbType === 'mariadb') return 'migrations/mysql';
+  if (dbType === 'postgres') return 'migrations/postgres';
 }

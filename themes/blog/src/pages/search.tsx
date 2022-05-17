@@ -166,7 +166,7 @@ export const getStaticProps: TGetStaticProps<SearchPageProps> = async () => {
 
     let tags: TTag[] | undefined;
     try {
-        tags = (await client?.getTags({ pageSize: 99999 }))?.elements;
+        tags = (await client.getTags({ pagedParams: { pageSize: 1000 } }))?.elements;
     } catch (e) {
         console.error('SearchPage::getStaticProps', e)
     }

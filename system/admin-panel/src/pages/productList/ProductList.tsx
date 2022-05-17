@@ -38,8 +38,8 @@ export default function ProductTable() {
     }, []);
 
     const init = async () => {
-        const attributes = await client.getAttributes();
-        setAttributes(attributes);
+        const attributes = await client.getAttributes({ pagedParams: { pageSize: 1000 } });
+        setAttributes(attributes.elements);
     }
 
     const handleToggleFilter = () => {
@@ -66,21 +66,20 @@ export default function ProductTable() {
                 listLabel="Products"
                 entityLabel="Product"
                 nameProperty="name"
-                getManyFiltered={async (options) => {
+                getMany={async (options) => {
                     if (!options.filterParams) options.filterParams = {};
                     options.filterParams.minPrice = attributesFilterInput.current?.minPrice;
                     options.filterParams.maxPrice = attributesFilterInput.current?.maxPrice;
                     options.filterParams.attributes = attributesFilterInput.current?.attributes;
                     options.filterParams.nameSearch = attributesFilterInput.current?.nameSearch;
 
-                    const data = await client.getFilteredProducts(options);
+                    const data = await client.getProducts(options);
                     filterInstRef.current?.updateFilterMeta(data);
                     productsRef.current = data;
                     return data;
                 }}
                 deleteOne={client.deleteProduct}
                 deleteMany={client.deleteManyProducts}
-                deleteManyFiltered={client.deleteManyFilteredProducts}
                 getPageListInstance={inst => {
                     entityListPageRef.current = inst;
                     initialFilterRef.current = Object.assign({}, inst.getFilterInput());
@@ -156,7 +155,7 @@ export default function ProductTable() {
                         <div>
                             <Tooltip title="Attribute filter">
                                 <IconButton
-                                className={styles.attributeFilterButton}
+                                    className={styles.attributeFilterButton}
                                     onClick={handleToggleFilter}
                                     aria-label="show filter"
                                 >

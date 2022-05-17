@@ -30,6 +30,7 @@ export * from './models/entities/meta/product-meta.entity';
 export * from './models/entities/meta/tag-meta.entity';
 export * from './models/entities/meta/user-meta.entity';
 export * from './models/entities/meta/product-variant-meta.entity';
+export * from './models/entities/meta/role-meta.entity';
 
 export * from './models/paged/product.paged';
 export * from './models/paged/meta.paged';
@@ -42,6 +43,7 @@ export * from './models/paged/tag.paged';
 export * from './models/paged/custom-entity.paged';
 export * from './models/paged/coupon.paged';
 export * from './models/paged/role.paged';
+export * from './models/paged/attribute.paged';
 
 export * from './models/filters/product.filter';
 export * from './models/filters/post.filter';
@@ -114,7 +116,8 @@ export * from './helpers/base-queries';
 export * from './helpers/plugin-settings';
 export * from './helpers/entity-meta';
 export * from './helpers/connect-database';
+export * from './helpers/data-filters';
 export {
     getCurrentRoles, getUserRole, DefaultPermissions, CustomPermissions,
-    registerPermission, getPermissions,
+    registerPermission, getPermissions, registerPermissionCategory,
 } from './helpers/auth-roles-permissions';

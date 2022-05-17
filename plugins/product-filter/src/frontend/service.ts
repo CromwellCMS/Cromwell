@@ -59,12 +59,8 @@ export const getInitialData = async (slug?: string): Promise<TInitialData> => {
     }
     const productCategory = await getCategory();
 
-    let attributes: TAttribute[] | undefined;
-    try {
-        attributes = await client?.getAttributes();
-    } catch (e: any) {
-        console.error('ProductFilter::getStaticProps getAttributes', e.message)
-    }
+    const attributes: TAttribute[] | undefined = await client.getAttributes({ pagedParams: { pageSize: 1000 } }).catch(e =>
+        console.error('ProductFilter::getStaticProps error: ', e)).then(data => data && data.elements) || undefined;
 
     let filterMeta: TProductFilterMeta | undefined;
 
@@ -112,8 +108,8 @@ export const getFiltered = async (client: TCGraphQLClient | undefined, categoryI
         try {
             return await client?.query({
                 query: gql`
-                query getFilteredProducts($pagedParams: PagedParamsInput!, $filterParams: ProductFilterInput!) {
-                    getFilteredProducts(pagedParams: $pagedParams, filterParams: $filterParams) {
+                query getProducts($pagedParams: PagedParamsInput!, $filterParams: ProductFilterInput) {
+                    getProducts(pagedParams: $pagedParams, filterParams: $filterParams) {
                         pagedMeta {
                             ...PagedMetaFragment
                         }
@@ -140,7 +136,7 @@ export const getFiltered = async (client: TCGraphQLClient | undefined, categoryI
     }
     const data = await getProducts();
 
-    const filteredList: TFilteredProductList | undefined = data?.data?.getFilteredProducts;
+    const filteredList: TFilteredProductList | undefined = data?.data?.getProducts;
     if (cb) cb(filteredList);
     return filteredList;
 }

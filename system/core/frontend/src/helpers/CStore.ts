@@ -26,7 +26,6 @@ type TLocalStorage = {
 
 export type TApiClient = {
     getProductById: (id: number) => Promise<TProduct | undefined>;
-    getAttributes: () => Promise<TAttribute[] | undefined>;
     getCouponsByCodes?: (codes: string[]) => Promise<TCoupon[] | undefined>;
 };
 
@@ -132,7 +131,7 @@ export class CStore {
                     const pickedValues = productPickedAttributes[attrKey] || [];
                     if (values.length !== pickedValues.length) return false;
                     return values.every(key => pickedValues.includes(key))
-                })
+                });
             }
             return false;
         };

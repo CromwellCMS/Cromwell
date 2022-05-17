@@ -93,7 +93,7 @@ const Post = (props) => {
 
     const getPostTags = async () => {
         try {
-            const data = (await client?.getTags({ pageSize: 99999 }))?.elements;
+            const data = (await client?.getTags({ pagedParams: { pageSize: 10000 } }))?.elements;
             if (data && Array.isArray(data)) {
                 setAllTags(data.sort((a, b) => a.name < b.name ? -1 : 1));
             }

@@ -1,4 +1,4 @@
-import { TBasePageEntity, TDeleteManyInput, TOrder, TOrderInput, TPagedList, TPagedParams } from '@cromwell/core';
+import { TDeleteManyInput, TOrder, TOrderFilter, TOrderInput, TPagedList, TPagedParams } from '@cromwell/core';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import sanitizeHtml from 'sanitize-html';
 import { EntityRepository, getCustomRepository, SelectQueryBuilder } from 'typeorm';
@@ -9,8 +9,6 @@ import { getLogger } from '../helpers/logger';
 import { validateEmail } from '../helpers/validation';
 import { Coupon } from '../models/entities/coupon.entity';
 import { Order } from '../models/entities/order.entity';
-import { OrderFilterInput } from '../models/filters/order.filter';
-import { PagedParamsInput } from '../models/inputs/paged-params.input';
 import { BaseRepository } from './base.repository';
 import { CouponRepository } from './coupon.repository';
 
@@ -28,12 +26,12 @@ export class OrderRepository extends BaseRepository<Order> {
         return this.getPaged(params)
     }
 
-    async getOrderById(id: number): Promise<Order | undefined> {
+    async getOrderById(id: number): Promise<Order> {
         logger.log('OrderRepository::getOrderById id: ' + id);
         return this.getById(id);
     }
 
-    async getOrderBySlug(slug: string): Promise<Order | undefined> {
+    async getOrderBySlug(slug: string): Promise<Order> {
         logger.log('OrderRepository::getOrderBySlug slug: ' + slug);
         return this.getBySlug(slug);
     }
@@ -82,7 +80,7 @@ export class OrderRepository extends BaseRepository<Order> {
         return order;
     }
 
-    async updateOrder(id: number, inputData: TOrderInput): Promise<Order | undefined> {
+    async updateOrder(id: number, inputData: TOrderInput): Promise<Order> {
         logger.log('OrderRepository::updateOrder id: ' + id);
         let order = await this.getById(id);
 
@@ -99,34 +97,40 @@ export class OrderRepository extends BaseRepository<Order> {
             logger.log('OrderRepository::deleteOrder failed to find Order by id');
             return false;
         }
-        const res = await this.delete(id);
+        await this.delete(id);
         return true;
     }
 
-    applyOrderFilter(qb: SelectQueryBuilder<TOrder>, filterParams?: OrderFilterInput) {
-        this.applyBaseFilter(qb as SelectQueryBuilder<TBasePageEntity>, filterParams);
+    applyOrderFilter(qb: SelectQueryBuilder<TOrder>, filterParams?: TOrderFilter) {
+        this.applyBaseFilter(qb, filterParams);
+
+        // Search by userId
+        if (filterParams?.userId) {
+            const query = `${this.metadata.tablePath}.userId = :userId`;
+            qb.andWhere(query, { userId: filterParams.userId });
+        }
 
         // Search by status
-        if (filterParams?.status && filterParams.status !== '') {
+        if (filterParams?.status) {
             const query = `${this.metadata.tablePath}.status = :statusSearch`;
             qb.andWhere(query, { statusSearch: filterParams.status });
         }
 
         // Search by orderId
-        if (filterParams?.orderId && filterParams.orderId !== '') {
+        if (filterParams?.orderId) {
             const query = `${this.metadata.tablePath}.id = :orderId`;
             qb.andWhere(query, { orderId: filterParams.orderId });
         }
 
         // Search by customerName
-        if (filterParams?.customerName && filterParams.customerName !== '') {
+        if (filterParams?.customerName) {
             const customerNameSearch = `%${filterParams.customerName}%`;
             const query = `${this.metadata.tablePath}.${this.quote('customerName')} ${this.getSqlLike()} :customerNameSearch`;
             qb.andWhere(query, { customerNameSearch });
         }
 
         // Search by customerPhone
-        if (filterParams?.customerPhone && filterParams.customerPhone !== '') {
+        if (filterParams?.customerPhone) {
             const customerPhone = filterParams.customerPhone.replace(/\W/g, '');
             const customerPhoneSearch = `%${customerPhone}%`;
             const query = `${this.metadata.tablePath}.${this.quote('customerPhone')} ${this.getSqlLike()} :customerPhoneSearch`;
@@ -134,14 +138,14 @@ export class OrderRepository extends BaseRepository<Order> {
         }
 
         // Search by customerEmail
-        if (filterParams?.customerEmail && filterParams.customerEmail !== '') {
+        if (filterParams?.customerEmail) {
             const customerEmailSearch = `%${filterParams.customerEmail}%`;
             const query = `${this.metadata.tablePath}.${this.quote('customerEmail')} ${this.getSqlLike()} :customerEmailSearch`;
             qb.andWhere(query, { customerEmailSearch });
         }
 
         // Search by create date
-        if (filterParams?.dateFrom && filterParams.dateFrom !== '') {
+        if (filterParams?.dateFrom) {
             const dateFrom = new Date(Date.parse(filterParams.dateFrom));
             const dateTo = new Date(filterParams.dateTo ? Date.parse(filterParams.dateTo) : Date.now());
 
@@ -153,15 +157,17 @@ export class OrderRepository extends BaseRepository<Order> {
         }
     }
 
-    async getFilteredOrders(pagedParams?: PagedParamsInput<TOrder>, filterParams?: OrderFilterInput): Promise<TPagedList<TOrder>> {
+    async getFilteredOrders(pagedParams?: TPagedParams<TOrder>, filterParams?: TOrderFilter): Promise<TPagedList<Order>> {
         const qb = this.createQueryBuilder(this.metadata.tablePath);
         qb.select();
         this.applyOrderFilter(qb, filterParams);
-        return await getPaged<TOrder>(qb, this.metadata.tablePath, pagedParams);
+        return await getPaged<Order>(qb, this.metadata.tablePath, pagedParams);
     }
 
 
-    async deleteManyFilteredOrders(input: TDeleteManyInput, filterParams?: OrderFilterInput): Promise<boolean | undefined> {
+    async deleteManyFilteredOrders(input: TDeleteManyInput, filterParams?: TOrderFilter): Promise<boolean> {
+        if (!filterParams) return this.deleteMany(input);
+
         const qbSelect = this.createQueryBuilder(this.metadata.tablePath).select([`${this.metadata.tablePath}.id`]);
         this.applyOrderFilter(qbSelect, filterParams);
         this.applyDeleteMany(qbSelect, input);
@@ -174,13 +180,13 @@ export class OrderRepository extends BaseRepository<Order> {
         return true;
     }
 
-    async getOrdersOfUser(userId: number, pagedParams?: PagedParamsInput<TOrder>): Promise<TPagedList<TOrder>> {
+    async getOrdersOfUser(userId: number, pagedParams?: TPagedParams<TOrder>): Promise<TPagedList<Order>> {
         const qb = this.createQueryBuilder(this.metadata.tablePath);
         qb.select();
         qb.where(`${this.metadata.tablePath}.${this.quote('userId')} = :userId`, {
             userId,
         });
-        return await getPaged<TOrder>(qb, this.metadata.tablePath, pagedParams);
+        return await getPaged<Order>(qb, this.metadata.tablePath, pagedParams);
     }
 
     async getCouponsOfOrder(id: number): Promise<Coupon[] | undefined | null> {

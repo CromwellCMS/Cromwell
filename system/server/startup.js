@@ -21,7 +21,6 @@ const main = () => {
         return (fs.existsSync(buildProxyPath))
     }
 
-
     if (scriptName === 'dev') {
         if (!isServiceBuild()) {
             buildServer();
@@ -34,7 +33,7 @@ const main = () => {
             { shell: true, stdio: 'pipe', cwd: serverRootDir });
 
         rollupProc.stdout.on('data', buff => console.log((buff && buff.toString) ? buff.toString() : buff));
-        rollupProc.stderr.on('data', buff => console.log((buff && buff.toString) ? buff.toString() : buff));
+        rollupProc.stderr.on('data', buff => console.error((buff && buff.toString) ? buff.toString() : buff));
 
         setTimeout(() => {
             process.send(serverMessages.onStartMessage);

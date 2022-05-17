@@ -31,7 +31,7 @@ import queryString from 'query-string';
 import { getServiceSecret } from '../helpers/getServiceSecret';
 import { fetch } from '../helpers/isomorphicFetch';
 
-export type TErrorInfo = {
+export type TRestApiErrorInfo = {
     statusCode: number;
     message: string;
     route: string;
@@ -66,7 +66,7 @@ export class CRestApiClient {
     private onUnauthorizedCallbacks: Record<string, ((route: string) => any)> = {};
 
     /** @internal */
-    private onErrorCallbacks: Record<string, ((info: TErrorInfo) => any)> = {};
+    private onErrorCallbacks: Record<string, ((info: TRestApiErrorInfo) => any)> = {};
     public getBaseUrl = () => {
         const serverUrl = serviceLocator.getApiUrl();
         if (!serverUrl) throw new Error('CRestApiClient: Failed to find base API URL');
@@ -119,7 +119,7 @@ export class CRestApiClient {
     }
 
     /** @internal */
-    private handleError = async (response: Response, data: any, route: string, disableLog?: boolean): Promise<[any, TErrorInfo | null]> => {
+    private handleError = async (response: Response, data: any, route: string, disableLog?: boolean): Promise<[any, TRestApiErrorInfo | null]> => {
         if ((response.status === 403 || response.status === 401) && !isServer()) {
             Object.values(this.onUnauthorizedCallbacks).forEach(cb => cb?.(route));
         }
@@ -131,7 +131,7 @@ export class CRestApiClient {
                     message = (await response.json())?.message;
                 } catch (error) { }
             }
-            const errorInfo: TErrorInfo = {
+            const errorInfo: TRestApiErrorInfo = {
                 statusCode: response.status,
                 message,
                 route,
@@ -148,7 +148,7 @@ export class CRestApiClient {
     }
 
     /** @internal */
-    private throwError(errorInfo: TErrorInfo, route: string, options?: TRequestOptions) {
+    private throwError(errorInfo: TRestApiErrorInfo, route: string, options?: TRequestOptions) {
         for (const cb of Object.values(this.onErrorCallbacks)) {
             cb(errorInfo);
         }
@@ -167,7 +167,7 @@ export class CRestApiClient {
         const baseUrl = this.getBaseUrl();
         const input = options?.input;
         let data;
-        let errorInfo: TErrorInfo | null = null;
+        let errorInfo: TRestApiErrorInfo | null = null;
         try {
             const res = await fetch(`${baseUrl}/${route}`, {
                 method: options?.method ?? 'get',
@@ -336,7 +336,7 @@ export class CRestApiClient {
      * Add on error callback. Triggers if any of methods of this
      * client get any type of error
      */
-    public onError(cb: ((info: TErrorInfo) => any), id?: string) {
+    public onError(cb: ((info: TRestApiErrorInfo) => any), id?: string) {
         if (!id) id = Object.keys(this.onErrorCallbacks).length + '';
         this.onErrorCallbacks[id] = cb;
     }

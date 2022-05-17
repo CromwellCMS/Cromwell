@@ -50,8 +50,8 @@ export class HeaderSearch extends React.Component<unknown, {
         try {
             const data = await client?.query({
                 query: gql`
-                    query getFilteredPosts($pagedParams: PagedParamsInput, $filterParams: PostFilterInput) {
-                        getFilteredPosts(pagedParams: $pagedParams, filterParams: $filterParams) {
+                    query getPosts($pagedParams: PagedParamsInput, $filterParams: PostFilterInput) {
+                        getPosts(pagedParams: $pagedParams, filterParams: $filterParams) {
                             pagedMeta {
                                 ...PagedMetaFragment
                             }
@@ -71,7 +71,7 @@ export class HeaderSearch extends React.Component<unknown, {
                     filterParams,
                 }
             });
-            const elements = data?.data?.getFilteredPosts?.elements;
+            const elements = data?.data?.getPosts?.elements;
             if (elements) this.setState({ searchItems: elements });
 
         } catch (e) {

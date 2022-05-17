@@ -16,7 +16,15 @@ import { GraphQLJSONObject } from 'graphql-type-json';
 import { Arg, Authorized, Ctx, FieldResolver, Int, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
-import { serverFireAction } from '../helpers/server-fire-action';
+import {
+    createWithFilters,
+    deleteManyWithFilters,
+    deleteWithFilters,
+    getByIdWithFilters,
+    getBySlugWithFilters,
+    getManyWithFilters,
+    updateWithFilters,
+} from '../helpers/data-filters';
 
 const getOneBySlugPath = GraphQLPaths.Order.getOneBySlug;
 const getOneByIdPath = GraphQLPaths.Order.getOneById;
@@ -25,8 +33,6 @@ const createPath = GraphQLPaths.Order.create;
 const updatePath = GraphQLPaths.Order.update;
 const deletePath = GraphQLPaths.Order.delete;
 const deleteManyPath = GraphQLPaths.Order.deleteMany;
-const deleteManyFilteredPath = GraphQLPaths.Order.deleteManyFiltered;
-const getFilteredPath = GraphQLPaths.Order.getFiltered;
 const getOrdersOfUser = GraphQLPaths.Order.getOrdersOfUser;
 const couponsKey: keyof TOrder = 'coupons';
 
@@ -49,12 +55,39 @@ export class OrderResolver {
         if (!hasAccess) throw new HttpException('Access denied.', HttpStatus.FORBIDDEN);
     }
 
+    @Authorized<TPermissionName>('read_orders', 'read_my_orders')
+    @Query(() => Order)
+    async [getOneByIdPath](
+        @Ctx() ctx: TGraphQLContext,
+        @Arg("id", () => Int) id: number,
+    ): Promise<TOrder> {
+        if (!ctx?.user?.roles?.length) throw new HttpException('Access denied.', HttpStatus.UNAUTHORIZED);
+        const order = await getByIdWithFilters('Order', ctx, ['read_orders', 'read_my_orders'], id,
+            (...args) => this.repository.getOrderById(...args));
+
+        this.checkUserAccess(ctx, order?.userId);
+        return order;
+    }
+
+    @Authorized<TPermissionName>('read_orders')
+    @Query(() => Order)
+    async [getOneBySlugPath](
+        @Ctx() ctx: TGraphQLContext,
+        @Arg("slug") slug: string
+    ): Promise<TOrder | undefined> {
+        return getBySlugWithFilters('Order', ctx, ['read_orders'], slug,
+            (...args) => this.repository.getOrderBySlug(...args));
+    }
+
     @Authorized<TPermissionName>('read_orders')
     @Query(() => PagedOrder)
     async [getManyPath](
-        @Arg("pagedParams", { nullable: true }) pagedParams?: PagedParamsInput<TOrder>
-    ): Promise<TPagedList<TOrder>> {
-        return this.repository.getOrders(pagedParams);
+        @Ctx() ctx: TGraphQLContext,
+        @Arg("pagedParams", { nullable: true }) pagedParams?: PagedParamsInput<TOrder>,
+        @Arg("filterParams", { nullable: true }) filterParams?: OrderFilterInput,
+    ): Promise<TPagedList<TOrder> | undefined> {
+        return getManyWithFilters('Order', ctx, ['read_orders'], pagedParams, filterParams,
+            (...args) => this.repository.getFilteredOrders(...args));
     }
 
     @Authorized<TPermissionName>('read_orders', 'read_my_orders')
@@ -65,74 +98,50 @@ export class OrderResolver {
         @Arg("pagedParams", { nullable: true }) pagedParams?: PagedParamsInput<TOrder>
     ): Promise<TPagedList<TOrder> | undefined> {
         this.checkUserAccess(ctx, userId);
-        const orders = await this.repository.getOrdersOfUser(userId, pagedParams);
-        return orders;
-    }
-
-    @Authorized<TPermissionName>('read_orders')
-    @Query(() => Order)
-    async [getOneBySlugPath](@Arg("slug") slug: string): Promise<TOrder | undefined> {
-        return this.repository.getOrderBySlug(slug);
-    }
-
-    @Authorized<TPermissionName>('read_orders', 'read_my_orders')
-    @Query(() => Order)
-    async [getOneByIdPath](
-        @Ctx() ctx: TGraphQLContext,
-        @Arg("id", () => Int) id: number
-    ): Promise<Order | undefined> {
-        if (!ctx?.user?.roles?.length) throw new HttpException('Access denied.', HttpStatus.UNAUTHORIZED);
-        const order = await this.repository.getOrderById(id);
-        this.checkUserAccess(ctx, order?.userId);
-        return order;
+        return getManyWithFilters('Order', ctx, ['read_orders', 'read_my_orders'], pagedParams, { userId },
+            (...args) => this.repository.getFilteredOrders(...args));
     }
 
     @Authorized<TPermissionName>('update_order')
     @Mutation(() => Order)
-    async [createPath](@Arg("data") data: OrderInput): Promise<Order> {
-        const order = await this.repository.createOrder(data);
-        serverFireAction('create_order', order);
-        return order;
+    async [createPath](
+        @Ctx() ctx: TGraphQLContext,
+        @Arg("data") data: OrderInput
+    ): Promise<TOrder> {
+        return createWithFilters('Order', ctx, ['update_order'], data,
+            (...args) => this.repository.createOrder(...args));
     }
 
     @Authorized<TPermissionName>('create_order')
     @Mutation(() => Order)
-    async [updatePath](@Arg("id", () => Int) id: number, @Arg("data") data: OrderInput): Promise<Order | undefined> {
-        const order = await this.repository.updateOrder(id, data);
-        serverFireAction('create_order', order);
-        return order;
+    async [updatePath](
+        @Ctx() ctx: TGraphQLContext,
+        @Arg("id", () => Int) id: number,
+        @Arg("data") data: OrderInput
+    ): Promise<TOrder> {
+        return updateWithFilters('Order', ctx, ['create_order'], data, id,
+            (...args) => this.repository.updateOrder(...args));
     }
 
     @Authorized<TPermissionName>('delete_order')
     @Mutation(() => Boolean)
-    async [deletePath](@Arg("id", () => Int) id: number): Promise<boolean> {
-        const order = await this.repository.deleteOrder(id);
-        serverFireAction('delete_order', { id });
-        return order;
+    async [deletePath](
+        @Ctx() ctx: TGraphQLContext,
+        @Arg("id", () => Int) id: number
+    ): Promise<boolean> {
+        return deleteWithFilters('Order', ctx, ['delete_order'], id,
+            (...args) => this.repository.deleteOrder(...args));
     }
 
     @Authorized<TPermissionName>('delete_order')
     @Mutation(() => Boolean)
-    async [deleteManyPath](@Arg("data") data: DeleteManyInput): Promise<boolean | undefined> {
-        return this.repository.deleteMany(data);
-    }
-
-    @Authorized<TPermissionName>('delete_order')
-    @Mutation(() => Boolean)
-    async [deleteManyFilteredPath](
+    async [deleteManyPath](
+        @Ctx() ctx: TGraphQLContext,
         @Arg("input") input: DeleteManyInput,
         @Arg("filterParams", { nullable: true }) filterParams?: OrderFilterInput,
     ): Promise<boolean | undefined> {
-        return this.repository.deleteManyFilteredOrders(input, filterParams);
-    }
-
-    @Authorized<TPermissionName>('read_orders')
-    @Query(() => PagedOrder)
-    async [getFilteredPath](
-        @Arg("pagedParams", { nullable: true }) pagedParams?: PagedParamsInput<TOrder>,
-        @Arg("filterParams", { nullable: true }) filterParams?: OrderFilterInput,
-    ): Promise<TPagedList<TOrder> | undefined> {
-        return this.repository.getFilteredOrders(pagedParams, filterParams);
+        return deleteManyWithFilters('Order', ctx, ['delete_order'], input, filterParams,
+            (...args) => this.repository.deleteManyFilteredOrders(...args));
     }
 
     @FieldResolver(() => GraphQLJSONObject, { nullable: true })

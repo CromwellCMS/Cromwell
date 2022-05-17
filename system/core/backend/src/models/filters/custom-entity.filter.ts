@@ -7,7 +7,7 @@ import { BaseFilterInput } from './base-filter.filter';
 export class CustomEntityFilterInput extends BaseFilterInput implements TCustomEntityFilter {
 
     @Field(type => String, { nullable: true })
-    entityType?: string;
+    entityType: string;
 
     @Field(type => String, { nullable: true })
     name?: string;

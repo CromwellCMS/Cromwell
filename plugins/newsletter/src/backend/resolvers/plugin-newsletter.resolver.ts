@@ -23,7 +23,7 @@ export default class PluginNewsletterResolver {
     async pluginNewsletterStats(@Ctx() ctx: TGraphQLContext): Promise<string> {
 
         // Or via checking manually user info: (both methods can work independently)
-        if (!matchPermissions(ctx.user, [newsletterPermissions.stats as any]))
+        if (!matchPermissions(ctx.user, [newsletterPermissions.stats.name]))
             throw new ForbiddenException('Forbidden');
 
         return (await getManager().find(PluginNewsletter) ?? []).length + '';

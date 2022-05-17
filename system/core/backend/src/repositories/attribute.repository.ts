@@ -1,8 +1,8 @@
-import { TAttribute, TAttributeInput } from '@cromwell/core';
+import { TAttributeInput, TBaseFilter, TDeleteManyInput, TPagedList, TAttribute, TPagedParams } from '@cromwell/core';
 import { HttpException, HttpStatus } from '@nestjs/common';
-import { EntityRepository } from 'typeorm';
+import { EntityRepository, SelectQueryBuilder, getCustomRepository } from 'typeorm';
 
-import { checkEntitySlug, handleBaseInput, handleCustomMetaInput } from '../helpers/base-queries';
+import { checkEntitySlug, handleBaseInput, handleCustomMetaInput, getPaged } from '../helpers/base-queries';
 import { getLogger } from '../helpers/logger';
 import { AttributeToProduct } from '../models/entities/attribute-product.entity';
 import { AttributeValue } from '../models/entities/attribute-value.entity';
@@ -19,25 +19,29 @@ export class AttributeRepository extends BaseRepository<Attribute> {
         super(Attribute);
     }
 
-    async getAttributes(): Promise<Attribute[]> {
+    async getAttributes(params?: TPagedParams<TAttribute>): Promise<TPagedList<Attribute>> {
         logger.log('AttributeRepository::getAttributes');
-        return this.find({ relations: ['values'] });
+        const qb = this.createQueryBuilder(this.metadata.tablePath);
+        qb.leftJoinAndSelect(`${this.metadata.tablePath}.values`, AttributeValue.getRepository().metadata.tablePath);
+        return await getPaged<Attribute>(qb, this.metadata.tablePath, params);
     }
 
-    async getAttribute(id: number): Promise<Attribute | undefined> {
+    async getAttribute(id: number): Promise<Attribute> {
         logger.log('AttributeRepository::getAttribute; id: ' + id);
         return this.getById(id, ['values']);
     }
 
-    async getAttributeByKey(key: string): Promise<Attribute | undefined> {
+    async getAttributeByKey(key: string): Promise<Attribute> {
         logger.log('AttributeRepository::getAttributeByKey; key: ' + key);
-        return this.findOne({
+        const attribute = await this.findOne({
             where: { key },
             relations: ['values']
         });
+        if (!attribute) throw new HttpException(`${this.metadata.tablePath} ${key} not found!`, HttpStatus.NOT_FOUND);
+        return attribute;
     }
 
-    async getAttributeInstancesOfProduct(productId: number): Promise<AttributeToProduct[] | undefined> {
+    async getAttributeInstancesOfProduct(productId: number): Promise<AttributeToProduct[]> {
         logger.log('AttributeRepository::getAttributeInstancesOfProduct; productId: ' + productId);
 
         return AttributeToProduct.getRepository().find({
@@ -100,7 +104,7 @@ export class AttributeRepository extends BaseRepository<Attribute> {
         await checkEntitySlug(attribute, Attribute);
     }
 
-    async createAttribute(createAttribute: TAttributeInput, id?: number | null): Promise<TAttribute> {
+    async createAttribute(createAttribute: TAttributeInput, id?: number | null): Promise<Attribute> {
         logger.log('AttributeRepository::createAttribute');
         const attribute = new Attribute();
         if (id) attribute.id = id;
@@ -124,5 +128,34 @@ export class AttributeRepository extends BaseRepository<Attribute> {
     async deleteAttribute(id: number): Promise<boolean> {
         logger.log('AttributeRepository::deleteAttribute; id: ' + id);
         return this.deleteEntity(id);
+    }
+
+
+    applyAttributeFilter(qb: SelectQueryBuilder<Attribute>, filterParams?: TBaseFilter) {
+        this.applyBaseFilter(qb, filterParams);
+        return qb;
+    }
+
+    async getFilteredAttributes(pagedParams?: TPagedParams<TAttribute>, filterParams?: TBaseFilter): Promise<TPagedList<Attribute>> {
+        const qb = this.createQueryBuilder(this.metadata.tablePath);
+        qb.select();
+        qb.leftJoinAndSelect(`${this.metadata.tablePath}.values`, AttributeValue.getRepository().metadata.tablePath);
+        this.applyAttributeFilter(qb, filterParams);
+        return await getPaged<Attribute>(qb, this.metadata.tablePath, pagedParams);
+    }
+
+    async deleteManyFilteredAttributes(input: TDeleteManyInput, filterParams?: TBaseFilter): Promise<boolean> {
+        if (!filterParams) return this.deleteMany(input);
+
+        const qbSelect = this.createQueryBuilder(this.metadata.tablePath).select([`${this.metadata.tablePath}.id`]);
+        this.applyAttributeFilter(qbSelect, filterParams);
+        this.applyDeleteMany(qbSelect, input);
+
+        const qbDelete = this.createQueryBuilder(this.metadata.tablePath).delete()
+            .where(`${this.metadata.tablePath}.id IN (${qbSelect.getQuery()})`)
+            .setParameters(qbSelect.getParameters());
+
+        await qbDelete.execute();
+        return true;
     }
 }

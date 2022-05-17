@@ -79,9 +79,9 @@ const getProps: TGetStaticProps<ProductProps> = async (context) => {
     }
   }
 
-  const attributes = (await client.getAttributes().catch((error: TGraphQLErrorInfo) => {
+  const attributes = (await client.getAttributes({ pagedParams: { pageSize: 1000 } }).catch((error: TGraphQLErrorInfo) => {
     console.error('Product::getStaticProps', error);
-  })) || null;
+  }).then(data => data && data.elements)) || null;
 
   return {
     props: removeUndefined({

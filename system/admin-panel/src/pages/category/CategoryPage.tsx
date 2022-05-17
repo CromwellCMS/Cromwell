@@ -140,7 +140,7 @@ export default function CategoryPage(props) {
     }
 
     const handleSearchRequest = async (text: string, params: TPagedParams<TProductCategory>) => {
-        return client?.getFilteredProductCategories({
+        return client.getProductCategories({
             filterParams: {
                 nameSearch: text
             },

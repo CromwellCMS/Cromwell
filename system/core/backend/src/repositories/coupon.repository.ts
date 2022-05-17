@@ -1,11 +1,9 @@
-import { TCoupon, TCouponInput, TDeleteManyInput, TPagedList, TPagedParams } from '@cromwell/core';
+import { TBaseFilter, TCoupon, TCouponInput, TDeleteManyInput, TPagedList, TPagedParams } from '@cromwell/core';
 import { EntityRepository, SelectQueryBuilder } from 'typeorm';
 
 import { checkEntitySlug, getPaged, handleBaseInput, handleCustomMetaInput } from '../helpers/base-queries';
 import { getLogger } from '../helpers/logger';
 import { Coupon } from '../models/entities/coupon.entity';
-import { BaseFilterInput } from '../models/filters/base-filter.filter';
-import { PagedParamsInput } from '../models/inputs/paged-params.input';
 import { BaseRepository } from './base.repository';
 
 const logger = getLogger();
@@ -22,7 +20,7 @@ export class CouponRepository extends BaseRepository<Coupon> {
         return this.getPaged(params)
     }
 
-    async getCouponById(id: number): Promise<Coupon | undefined> {
+    async getCouponById(id: number): Promise<Coupon> {
         logger.log('CouponRepository::getCouponById id: ' + id);
         return this.getById(id);
     }
@@ -32,7 +30,7 @@ export class CouponRepository extends BaseRepository<Coupon> {
         return this.findByIds(ids);
     }
 
-    async getCouponsByCodes(codes: string[]): Promise<Coupon[] | undefined> {
+    async getCouponsByCodes(codes: string[]): Promise<Coupon[]> {
         logger.log('CouponRepository::getCouponsByCodes');
         if (!codes?.length) return [];
         const qb = this.createQueryBuilder(this.metadata.tablePath);
@@ -98,19 +96,21 @@ export class CouponRepository extends BaseRepository<Coupon> {
         return true;
     }
 
-    applyCouponFilter(qb: SelectQueryBuilder<Coupon>, filterParams?: BaseFilterInput) {
+    applyCouponFilter(qb: SelectQueryBuilder<TCoupon>, filterParams?: TBaseFilter) {
         this.applyBaseFilter(qb, filterParams)
         return qb;
     }
 
-    async getFilteredCoupons(pagedParams?: PagedParamsInput<Coupon>, filterParams?: BaseFilterInput): Promise<TPagedList<Coupon>> {
+    async getFilteredCoupons(pagedParams?: TPagedParams<TCoupon>, filterParams?: TBaseFilter): Promise<TPagedList<Coupon>> {
         const qb = this.createQueryBuilder(this.metadata.tablePath);
         qb.select();
         this.applyCouponFilter(qb, filterParams);
         return await getPaged<Coupon>(qb, this.metadata.tablePath, pagedParams);
     }
 
-    async deleteManyFilteredCoupons(input: TDeleteManyInput, filterParams?: BaseFilterInput): Promise<boolean | undefined> {
+    async deleteManyFilteredCoupons(input: TDeleteManyInput, filterParams?: TBaseFilter): Promise<boolean> {
+        if (!filterParams) return this.deleteMany(input);
+        
         const qbSelect = this.createQueryBuilder(this.metadata.tablePath).select([`${this.metadata.tablePath}.id`]);
         this.applyCouponFilter(qbSelect, filterParams);
         this.applyDeleteMany(qbSelect, input);

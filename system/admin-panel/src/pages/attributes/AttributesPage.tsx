@@ -18,8 +18,8 @@ export default function AttributesPage() {
 
     const getAttributes = async () => {
         try {
-            const attrs = await graphClient?.getAttributes();
-            if (attrs && Array.isArray(attrs)) attributes.current = attrs;
+            const attrs = await graphClient.getAttributes({ pagedParams: { pageSize: 1000 } });
+            if (attrs?.elements) attributes.current = attrs.elements;
         } catch (e) {
             console.error(e);
         }

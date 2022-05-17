@@ -3,7 +3,7 @@ import React from 'react';
 
 const testData = {
   data: {
-    getFilteredProducts: {
+    getProducts: {
       elements: [
         {
           id: 1,

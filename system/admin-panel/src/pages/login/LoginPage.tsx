@@ -1,15 +1,15 @@
 import { matchPermissions, setStoreItem, TUser } from '@cromwell/core';
 import { getRestApiClient } from '@cromwell/core-frontend';
-import { Button, IconButton, InputAdornment, TextField } from '@mui/material';
 import { Visibility as VisibilityIcon, VisibilityOff as VisibilityOffIcon } from '@mui/icons-material';
+import { Button, IconButton, InputAdornment, TextField } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { getSideBarLinksFlat } from '../../helpers/navigation';
 
 import { toast } from "../../components/toast/toast";
 import { useForm } from "react-hook-form";
 import { KeyIcon, LockClosedIcon, MailIcon } from "@heroicons/react/solid";
 import { LoadingStatus } from "../../components/loadBox/LoadingStatus";
+import { getSideBarLinksFlat } from '../../helpers/navigation';
 
 export type TFromType =
   | "sign-in"
@@ -17,7 +17,7 @@ export type TFromType =
   | "forgot-pass"
   | "reset-pass";
 
-type TEvent = { preventDefault: () => any };
+type TEvent = { preventDefault: () => any; };
 
 const LoginPage = () => {
   const apiClient = getRestApiClient();

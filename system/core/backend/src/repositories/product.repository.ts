@@ -5,6 +5,7 @@ import {
     TPagedList,
     TPagedParams,
     TProduct,
+    TProductFilter,
     TProductFilterMeta,
     TProductInput,
     TProductRating,
@@ -27,8 +28,6 @@ import { Attribute } from '../models/entities/attribute.entity';
 import { ProductReview } from '../models/entities/product-review.entity';
 import { ProductVariant } from '../models/entities/product-variant.entity';
 import { Product } from '../models/entities/product.entity';
-import { ProductFilterInput } from '../models/filters/product.filter';
-import { PagedParamsInput } from '../models/inputs/paged-params.input';
 import { AttributeInstance } from '../models/objects/attribute-instance.object';
 import { AttributeRepository } from './attribute.repository';
 import { BaseRepository } from './base.repository';
@@ -66,28 +65,28 @@ export class ProductRepository extends BaseRepository<Product> {
             .groupBy(`${this.metadata.tablePath}.id`);
     }
 
-    async applyAndGetPagedProducts(qb: SelectQueryBuilder<TProduct>, params?: TPagedParams<TProduct>): Promise<TPagedList<TProduct>> {
+    async applyAndGetPagedProducts(qb: SelectQueryBuilder<Product>, params?: TPagedParams<TProduct>): Promise<TPagedList<Product>> {
         this.applyGetProductRating(qb);
 
         if (params?.orderBy === 'rating') {
             params.orderBy = this.metadata.tablePath + '_' + averageKey as any;
-            return getPaged(qb, undefined, params);
+            return getPaged<Product>(qb, undefined, params);
         }
         if (params?.orderBy === 'views') {
             this.applyGetEntityViews(qb, EDBEntity.Product);
             params.orderBy = this.metadata.tablePath + '_' + 'views' as any;
-            return getPaged(qb, undefined, params);
+            return getPaged<Product>(qb, undefined, params);
         }
-        return await getPaged(qb, this.metadata.tablePath, params);
+        return await getPaged<Product>(qb, this.metadata.tablePath, params);
     }
 
-    async getProducts(params?: TPagedParams<TProduct>): Promise<TPagedList<TProduct>> {
+    async getProducts(params?: TPagedParams<TProduct>): Promise<TPagedList<Product>> {
         logger.log('ProductRepository::getProducts');
         const qb = this.createQueryBuilder(this.metadata.tablePath);
         return await this.applyAndGetPagedProducts(qb, params);
     }
 
-    async getProductById(id: number, options?: TGetProductOptions): Promise<Product | undefined> {
+    async getProductById(id: number, options?: TGetProductOptions): Promise<Product> {
         logger.log('ProductRepository::getProductById id: ' + id);
         const qb = this.createQueryBuilder(this.metadata.tablePath).select();
 
@@ -102,7 +101,7 @@ export class ProductRepository extends BaseRepository<Product> {
         return product;
     }
 
-    async getProductBySlug(slug: string, options?: TGetProductOptions): Promise<Product | undefined> {
+    async getProductBySlug(slug: string, options?: TGetProductOptions): Promise<Product> {
         logger.log('ProductRepository::getProductBySlug slug: ' + slug);
         const qb = this.createQueryBuilder(this.metadata.tablePath).select();
 
@@ -266,7 +265,7 @@ export class ProductRepository extends BaseRepository<Product> {
         return true;
     }
 
-    async getProductsFromCategory(categoryId: number, params?: TPagedParams<TProduct>): Promise<TPagedList<TProduct>> {
+    async getProductsFromCategory(categoryId: number, params?: TPagedParams<TProduct>): Promise<TPagedList<Product>> {
         logger.log('ProductRepository::getProductsFromCategory id: ' + categoryId);
         const categoryTable = getCustomRepository(ProductCategoryRepository).metadata.tablePath;
         const qb = this.createQueryBuilder(this.metadata.tablePath).select();
@@ -274,13 +273,13 @@ export class ProductRepository extends BaseRepository<Product> {
         return this.applyAndGetPagedProducts(qb, params);
     }
 
-    async getReviewsOfProduct(productId: number, params?: TPagedParams<TProductReview>): Promise<TPagedList<TProductReview>> {
+    async getReviewsOfProduct(productId: number, params?: TPagedParams<TProductReview>): Promise<TPagedList<ProductReview>> {
         logger.log('ProductRepository::getReviewsOfProduct id: ' + productId);
         const reviewTable = getCustomRepository(ProductReviewRepository).metadata.tablePath;
 
         const qb = getCustomRepository(ProductReviewRepository).createQueryBuilder(reviewTable).select();
         applyGetManyFromOne(qb, reviewTable, 'product', this.metadata.tablePath, productId);
-        return getPaged(qb, reviewTable, params)
+        return getPaged<ProductReview>(qb, reviewTable, params)
     }
 
     async getProductRating(productId: number): Promise<TProductRating> {
@@ -299,79 +298,77 @@ export class ProductRepository extends BaseRepository<Product> {
         return raw;
     }
 
-    applyProductFilter(qb: SelectQueryBuilder<Product>, filterParams?: ProductFilterInput) {
+    applyProductFilter(qb: SelectQueryBuilder<Product>, filterParams?: TProductFilter) {
         this.applyBaseFilter(qb, filterParams);
 
-        if (filterParams) {
-            if (filterParams.categoryId) {
-                applyGetManyFromOne(qb, this.metadata.tablePath, 'categories',
-                    getCustomRepository(ProductCategoryRepository).metadata.tablePath, filterParams.categoryId);
-            }
+        if (!filterParams) return;
+        if (filterParams.categoryId) {
+            applyGetManyFromOne(qb, this.metadata.tablePath, 'categories',
+                getCustomRepository(ProductCategoryRepository).metadata.tablePath, filterParams.categoryId);
+        }
 
-            // Attribute filter
-            if (filterParams.attributes?.length) {
-                const productAttributeTable = AttributeToProduct.getRepository().metadata.tablePath;
+        // Attribute filter
+        if (filterParams.attributes?.length) {
+            const productAttributeTable = AttributeToProduct.getRepository().metadata.tablePath;
 
-                filterParams.attributes.forEach((attr, attrIndex) => {
-                    if (!attr.key || !attr.values?.length) return;
+            filterParams.attributes.forEach((attr, attrIndex) => {
+                if (!attr.key || !attr.values?.length) return;
 
-                    const joinName = `${productAttributeTable}_${attrIndex}`;
-                    qb.leftJoin(AttributeToProduct, joinName,
-                        `${joinName}.${this.quote('productId')} = ${this.metadata.tablePath}.id `);
-                });
+                const joinName = `${productAttributeTable}_${attrIndex}`;
+                qb.leftJoin(AttributeToProduct, joinName,
+                    `${joinName}.${this.quote('productId')} = ${this.metadata.tablePath}.id `);
+            });
 
-                filterParams.attributes.forEach((attr, attrIndex) => {
-                    if (!attr.key || !attr.values?.length) return;
-                    const joinName = `${productAttributeTable}_${attrIndex}`;
+            filterParams.attributes.forEach((attr, attrIndex) => {
+                if (!attr.key || !attr.values?.length) return;
+                const joinName = `${productAttributeTable}_${attrIndex}`;
 
-                    const brackets = new Brackets(subQb1 => {
-                        attr.values.forEach((val, valIndex) => {
-                            const brackets = new Brackets(subQb2 => {
-                                const keyProp = `key_${attrIndex}`;
-                                const valueProp = `value_${attrIndex}_${valIndex}`;
-                                subQb2.where(`${joinName}.${this.quote('key')} = :${keyProp}`,
-                                    { [keyProp]: attr.key });
-                                subQb2.andWhere(`${joinName}.${this.quote('value')} = :${valueProp}`,
-                                    { [valueProp]: val });
-                            });
-                            subQb1.orWhere(brackets);
+                const brackets = new Brackets(subQb1 => {
+                    attr.values.forEach((val, valIndex) => {
+                        const brackets = new Brackets(subQb2 => {
+                            const keyProp = `key_${attrIndex}`;
+                            const valueProp = `value_${attrIndex}_${valIndex}`;
+                            subQb2.where(`${joinName}.${this.quote('key')} = :${keyProp}`,
+                                { [keyProp]: attr.key });
+                            subQb2.andWhere(`${joinName}.${this.quote('value')} = :${valueProp}`,
+                                { [valueProp]: val });
                         });
-                    })
-                    qb.andWhere(brackets);
-                });
-            }
-
-            // Search by product name or sku or id
-            if (filterParams.nameSearch && filterParams.nameSearch !== '') {
-                const nameLikeStr = `%${filterParams.nameSearch}%`;
-
-                const brackets = new Brackets(subQb => {
-                    subQb.where(`${this.metadata.tablePath}.name ${this.getSqlLike()} :nameLikeStr`, { nameLikeStr });
-                    subQb.orWhere(`${this.metadata.tablePath}.sku ${this.getSqlLike()} :nameLikeStr`, { nameLikeStr });
-
-                    if (!isNaN(parseInt(filterParams.nameSearch + '')))
-                        subQb.orWhere(`${this.metadata.tablePath}.id = :idSearch`, {
-                            idSearch: filterParams.nameSearch
-                        });
-                });
+                        subQb1.orWhere(brackets);
+                    });
+                })
                 qb.andWhere(brackets);
-            }
+            });
+        }
 
-            // Price filter
-            if (filterParams.maxPrice) {
-                const query = `${this.metadata.tablePath}.price <= :maxPrice`;
-                qb.andWhere(query, { maxPrice: filterParams.maxPrice });
-            }
-            if (filterParams.minPrice) {
-                const query = `${this.metadata.tablePath}.price >= :minPrice`;
-                qb.andWhere(query, { minPrice: filterParams.minPrice });
-            }
+        // Search by product name or sku or id
+        if (filterParams.nameSearch && filterParams.nameSearch !== '') {
+            const nameLikeStr = `%${filterParams.nameSearch}%`;
+
+            const brackets = new Brackets(subQb => {
+                subQb.where(`${this.metadata.tablePath}.name ${this.getSqlLike()} :nameLikeStr`, { nameLikeStr });
+                subQb.orWhere(`${this.metadata.tablePath}.sku ${this.getSqlLike()} :nameLikeStr`, { nameLikeStr });
+
+                if (!isNaN(parseInt(filterParams.nameSearch + '')))
+                    subQb.orWhere(`${this.metadata.tablePath}.id = :idSearch`, {
+                        idSearch: filterParams.nameSearch
+                    });
+            });
+            qb.andWhere(brackets);
+        }
+
+        // Price filter
+        if (filterParams.maxPrice) {
+            const query = `${this.metadata.tablePath}.price <= :maxPrice`;
+            qb.andWhere(query, { maxPrice: filterParams.maxPrice });
+        }
+        if (filterParams.minPrice) {
+            const query = `${this.metadata.tablePath}.price >= :minPrice`;
+            qb.andWhere(query, { minPrice: filterParams.minPrice });
         }
     }
 
-    async getFilteredProducts(pagedParams?: PagedParamsInput<TProduct>, filterParams?: ProductFilterInput): Promise<TFilteredProductList> {
+    async getFilteredProducts(pagedParams?: TPagedParams<TProduct>, filterParams?: TProductFilter): Promise<TFilteredProductList> {
         logger.log('ProductRepository::getFilteredProducts');
-        const timestamp = Date.now();
 
         const getQb = (shouldApplyPriceFilter = true): SelectQueryBuilder<Product> => {
             const qb = this.createQueryBuilder(this.metadata.tablePath).select();
@@ -412,9 +409,6 @@ export class ProductRepository extends BaseRepository<Product> {
 
         const [filterMeta, paged] = await Promise.all([getFilterMeta(), getElements()]);
 
-        const timestamp2 = Date.now();
-        logger.log('ProductRepository::getFilteredProducts time elapsed: ' + (timestamp2 - timestamp) + 'ms');
-
         const filtered: TFilteredProductList = {
             ...paged,
             filterMeta
@@ -422,7 +416,9 @@ export class ProductRepository extends BaseRepository<Product> {
         return filtered;
     }
 
-    async deleteManyFilteredProducts(input: TDeleteManyInput, filterParams?: ProductFilterInput): Promise<boolean | undefined> {
+    async deleteManyFilteredProducts(input: TDeleteManyInput, filterParams?: TProductFilter): Promise<boolean> {
+        if (!filterParams) return this.deleteMany(input);
+
         const qbSelect = this.createQueryBuilder(this.metadata.tablePath).select([`${this.metadata.tablePath}.id`]);
         this.applyProductFilter(qbSelect, filterParams);
         this.applyDeleteMany(qbSelect, input);
@@ -459,7 +455,7 @@ export class ProductRepository extends BaseRepository<Product> {
         return this.attributeRecordsToProductAttributeInstances(records);
     }
 
-    async getProductVariantsOfProduct(productId: number): Promise<ProductVariant[] | undefined | null> {
+    async getProductVariantsOfProduct(productId: number): Promise<ProductVariant[]> {
         return getCustomRepository(ProductVariantRepository).find({
             where: { productId },
         });

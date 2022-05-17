@@ -7,7 +7,6 @@ mockWorkingDirectory('CStore');
 const getLocalCStore = () => getCStore({
     local: true, apiClient: {
         getProductById: async () => undefined,
-        getAttributes: async () => [],
     }
 });
 
@@ -162,7 +161,6 @@ describe('CStore', () => {
                     id: 1,
                     name: '_test2_',
                 }),
-                getAttributes: async () => [],
             }
         });
 

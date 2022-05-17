@@ -111,6 +111,7 @@ describe('auth Controller', () => {
             email: 'test2@test.test',
             password: 'test',
             fullName: 'test',
+            roles: ['customer'],
         };
         return request(server)
             .post('/v1/auth/sign-up')

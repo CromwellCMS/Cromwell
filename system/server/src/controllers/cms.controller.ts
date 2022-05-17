@@ -7,7 +7,6 @@ import {
     getPublicDir,
     JwtAuthGuard,
     ProductReviewInput,
-    ProductReviewRepository,
     TRequestWithUser,
 } from '@cromwell/core-backend';
 import {
@@ -32,14 +31,13 @@ import { FastifyReply } from 'fastify';
 import fs from 'fs-extra';
 import { join } from 'path';
 import { Container } from 'typedi';
-import { getCustomRepository } from 'typeorm';
 
-import { AdminCmsConfigDto } from '../dto/admin-cms-config.dto';
-import { CmsConfigDto } from '../dto/cms-config.dto';
+import { AdminCmsSettingsDto } from '../dto/admin-cms-settings.dto';
+import { CmsSettingsDto } from '../dto/cms-settings.dto';
 import { CmsStatsDto } from '../dto/cms-stats.dto';
 import { CmsStatusDto } from '../dto/cms-status.dto';
 import { CreateOrderDto } from '../dto/create-order.dto';
-import { DashboardSettingsDto } from "../dto/dashboard-settings.dto";
+import { DashboardSettingsDto } from '../dto/dashboard-settings.dto';
 import { ExportOptionsDto } from '../dto/export-options.dto';
 import { ModuleInfoDto } from '../dto/module-info.dto';
 import { OrderTotalDto } from '../dto/order-total.dto';
@@ -49,7 +47,6 @@ import { SetupDto } from '../dto/setup.dto';
 import { SystemUsageDto } from '../dto/system-usage.dto';
 import { publicSystemDirs } from '../helpers/constants';
 import { resetAllPagesCache } from '../helpers/reset-page';
-import { serverFireAction } from '../helpers/server-fire-action';
 import { CmsService } from '../services/cms.service';
 import { MigrationService } from '../services/migration.service';
 import { PluginService } from '../services/plugin.service';
@@ -80,16 +77,15 @@ export class CmsController {
     @ApiOperation({ description: 'Returns public CMS settings from DB and cmsconfig.json' })
     @ApiResponse({
         status: 200,
-        type: CmsConfigDto,
+        type: CmsSettingsDto,
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
-    async getConfig(): Promise<CmsConfigDto | undefined> {
-        // logger.log('CmsController::getConfig');
+    async getConfig(): Promise<CmsSettingsDto | undefined> {
         const config = await getCmsSettings();
         if (!config) {
             throw new HttpException('CmsController::getConfig Failed to read CMS Config', HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new CmsConfigDto().parseConfig(config);
+        return new CmsSettingsDto().parseSettings(config);
     }
 
 
@@ -99,11 +95,10 @@ export class CmsController {
     @ApiOperation({ description: 'Returns admin CMS settings from DB and cmsconfig.json' })
     @ApiResponse({
         status: 200,
-        type: AdminCmsConfigDto,
+        type: AdminCmsSettingsDto,
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
-    async getAdminSettings(): Promise<AdminCmsConfigDto | undefined> {
-        // logger.log('CmsController::getPrivateConfig');
+    async getAdminSettings(): Promise<AdminCmsSettingsDto | undefined> {
         return this.cmsService.getAdminSettings();
     }
 
@@ -114,12 +109,12 @@ export class CmsController {
     @ApiOperation({
         description: 'Updates CMS config',
     })
-    @ApiBody({ type: AdminCmsConfigDto })
+    @ApiBody({ type: AdminCmsSettingsDto })
     @ApiResponse({
         status: 200,
-        type: AdminCmsConfigDto,
+        type: AdminCmsSettingsDto,
     })
-    async updateCmsSettings(@Body() input: AdminCmsConfigDto): Promise<AdminCmsConfigDto | undefined> {
+    async updateCmsSettings(@Body() input: AdminCmsSettingsDto): Promise<AdminCmsSettingsDto | undefined> {
         const settings = await this.cmsService.updateCmsSettings(input);
         resetAllPagesCache();
         return settings;
@@ -276,6 +271,7 @@ export class CmsController {
         description: 'Configure CMS after first launch',
     })
     async setUp(@Body() input: SetupDto) {
+        logger.log('CmsController::setUp');
         const config = await getCmsSettings();
         if (!config) {
             throw new HttpException('CmsController::setUp Failed to read CMS Config', HttpStatus.INTERNAL_SERVER_ERROR);
@@ -402,9 +398,7 @@ export class CmsController {
         if (!input || !input.customerEmail
             || !input.customerPhone) throw new HttpException('Order form is incomplete', HttpStatus.NOT_ACCEPTABLE);
 
-        const order = await this.storeService.placeOrder(input);
-        serverFireAction('create_order', order);
-        return order;
+        return this.storeService.placeOrder(input);
     }
 
 
@@ -422,9 +416,7 @@ export class CmsController {
         if (!input || !input.productId
             || !(input.description || input.rating) || input.approved) throw new HttpException('Review form is incomplete', HttpStatus.NOT_ACCEPTABLE);
 
-        const review = await getCustomRepository(ProductReviewRepository).createProductReview(input);
-        serverFireAction('create_product_review', review);
-        return review;
+        return this.storeService.placeProductReview(input);
     }
 
 

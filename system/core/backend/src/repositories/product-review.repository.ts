@@ -1,4 +1,11 @@
-import { TDeleteManyInput, TPagedList, TPagedParams, TProductReview, TProductReviewInput } from '@cromwell/core';
+import {
+    TDeleteManyInput,
+    TPagedList,
+    TPagedParams,
+    TProductReview,
+    TProductReviewFilter,
+    TProductReviewInput,
+} from '@cromwell/core';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import sanitizeHtml from 'sanitize-html';
 import { Brackets, EntityRepository, getCustomRepository, SelectQueryBuilder } from 'typeorm';
@@ -6,8 +13,6 @@ import { Brackets, EntityRepository, getCustomRepository, SelectQueryBuilder } f
 import { checkEntitySlug, getPaged, handleBaseInput, handleCustomMetaInput } from '../helpers/base-queries';
 import { getLogger } from '../helpers/logger';
 import { ProductReview } from '../models/entities/product-review.entity';
-import { ProductReviewFilter } from '../models/filters/product-review.filter';
-import { PagedParamsInput } from '../models/inputs/paged-params.input';
 import { BaseRepository } from './base.repository';
 import { ProductRepository } from './product.repository';
 
@@ -22,8 +27,8 @@ export class ProductReviewRepository extends BaseRepository<ProductReview> {
         super(ProductReview);
     }
 
-    async getProductReviews(params: TPagedParams<TProductReview>): Promise<TPagedList<TProductReview>> {
-        return getPaged(this.createQueryBuilder(this.metadata.tablePath), this.metadata.tablePath, params);
+    async getProductReviews(params?: TPagedParams<TProductReview>): Promise<TPagedList<ProductReview>> {
+        return getPaged<ProductReview>(this.createQueryBuilder(this.metadata.tablePath), this.metadata.tablePath, params);
     }
 
     async getProductReview(id: number): Promise<ProductReview> {
@@ -57,7 +62,7 @@ export class ProductReviewRepository extends BaseRepository<ProductReview> {
         await handleCustomMetaInput(productReview, input);
     }
 
-    async createProductReview(createProductReview: TProductReviewInput, id?: number | null): Promise<TProductReview> {
+    async createProductReview(createProductReview: TProductReviewInput, id?: number | null): Promise<ProductReview> {
         logger.log('ProductReviewRepository::createProductReview');
         const productReview = new ProductReview();
         if (id) productReview.id = id;
@@ -88,7 +93,7 @@ export class ProductReviewRepository extends BaseRepository<ProductReview> {
         return true;
     }
 
-    applyProductReviewFilter(qb: SelectQueryBuilder<TProductReview>, filterParams?: ProductReviewFilter) {
+    applyProductReviewFilter(qb: SelectQueryBuilder<TProductReview>, filterParams?: TProductReviewFilter) {
         this.applyBaseFilter(qb, filterParams);
 
         // Search by approved
@@ -127,7 +132,7 @@ export class ProductReviewRepository extends BaseRepository<ProductReview> {
         }
     }
 
-    async getFilteredProductReviews(pagedParams?: PagedParamsInput<TProductReview>, filterParams?: ProductReviewFilter): Promise<TPagedList<TProductReview>> {
+    async getFilteredProductReviews(pagedParams?: TPagedParams<TProductReview>, filterParams?: TProductReviewFilter): Promise<TPagedList<TProductReview>> {
         const qb = this.createQueryBuilder(this.metadata.tablePath);
         qb.select();
         this.applyProductReviewFilter(qb, filterParams);
@@ -135,7 +140,9 @@ export class ProductReviewRepository extends BaseRepository<ProductReview> {
     }
 
 
-    async deleteManyFilteredProductReviews(input: TDeleteManyInput, filterParams?: ProductReviewFilter): Promise<boolean | undefined> {
+    async deleteManyFilteredProductReviews(input: TDeleteManyInput, filterParams?: TProductReviewFilter): Promise<boolean> {
+        if (!filterParams) return this.deleteMany(input);
+
         const qbSelect = this.createQueryBuilder(this.metadata.tablePath).select([`${this.metadata.tablePath}.id`]);
         this.applyProductReviewFilter(qbSelect, filterParams);
         this.applyDeleteMany(qbSelect, input);
@@ -147,5 +154,4 @@ export class ProductReviewRepository extends BaseRepository<ProductReview> {
         await qbDelete.execute();
         return true;
     }
-
 }

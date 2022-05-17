@@ -85,7 +85,7 @@ export default function UserPage() {
         }
 
         try {
-            const roles = await getGraphQLClient().getRoles({ pageSize: 10000 });
+            const roles = await getGraphQLClient().getRoles({ pagedParams: { pageSize: 1000 } });
             setRoles(roles?.elements ?? []);
         } catch (error) {
             console.error(error);
@@ -272,7 +272,7 @@ export default function UserPage() {
                                 handleInputChange('roles', [{ name: event.target.value }])
                             }}
                             error={canValidate && !userData?.roles?.length}
-                            options={roles.map(role => ({ label: role.title, value: role.name }))}
+                            options={roles.map(role => ({ label: role.title ?? role.name, value: role.name }))}
                         />
                     </Grid>
                     <Grid item xs={12} sm={12}>

@@ -82,6 +82,11 @@ module.exports = {
       ],
     },
     {
+      id: "category/[slug]",
+      route: "category/[slug]",
+      name: "Product category",
+    },
+    {
       id: "blog/[slug]",
       route: "blog/[slug]",
       name: "Blog post",

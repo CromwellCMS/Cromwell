@@ -475,6 +475,7 @@ export type TOrderInput = TOrderCore & {
 };
 
 export type TOrderFilter = TBaseFilter & {
+    userId?: number;
     status?: string;
     customerName?: string;
     customerPhone?: string;
@@ -766,6 +767,15 @@ export type TCmsAdminSettings = {
      */
     customEntities?: TAdminCustomEntity[];
 
+    /**
+     * Enable sign-up public REST API v1/api/auth/sign-up (everyone can register on the website) 
+     */
+    signupEnabled?: boolean;
+
+    /**
+     * Role names available for sign-up public API.
+     */
+    signupRoles?: string[];
 }
 
 /**
@@ -892,20 +902,31 @@ export type TCustomEntity = TBasePageEntity & {
 export type TCustomEntityInput = Omit<TCustomEntity, TDBAuxiliaryColumns>;
 
 export type TCustomEntityFilter = TBaseFilter & {
-    entityType?: string;
+    entityType: string;
     name?: string;
-}
-
-export type TPermission = {
-    name: TPermissionName;
-    title?: string;
-    description?: string;
 }
 
 export type TCustomPermission = {
     name: string;
     title?: string;
     description?: string;
+    categoryName?: string;
+}
+
+export type TPermission = TCustomPermission & {
+    source?: 'cms' | 'plugin';
+    categoryTitle?: string;
+    categoryDescription?: string;
+    moduleName?: string;
+    moduleTitle?: string;
+}
+
+export type TPermissionCategory = {
+    name: string;
+    title?: string;
+    description?: string;
+    moduleName?: string;
+    moduleTitle?: string;
 }
 
 export type TRole = TBasePageEntity & {
@@ -915,6 +936,8 @@ export type TRole = TBasePageEntity & {
     title?: string | null;
     /* Set of pre-defined by CMS permissions */
     permissions: TPermissionName[] | null;
+    /** Role icon */
+    icon?: string | null;
 }
 
 export type TRoleInput = Omit<TRole, TDBAuxiliaryColumns>;

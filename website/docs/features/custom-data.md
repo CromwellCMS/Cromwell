@@ -107,8 +107,8 @@ const post = result.data?.getPostById;
 Custom entities should be requested via filter method:
 
 ```graphql
-query GetFilteredCustomEntities {
-  getFilteredCustomEntities(
+query GetCustomEntities {
+  getCustomEntities(
     filterParams: {
       entityType: "Brand"
     }, 
@@ -138,8 +138,8 @@ Cromwell CMS has a base filter that allows to sort or filter over any meta key o
 For example, you want to get only entities with `key1` that contains `text1` in value (SQL LIKE operator) and sort by `key2`:
 
 ```graphql
-query GetFilteredCustomEntities {
-  getFilteredCustomEntities(
+query GetCustomEntities {
+  getCustomEntities(
     filterParams: {
       entityType: "Brand",
       filters: [

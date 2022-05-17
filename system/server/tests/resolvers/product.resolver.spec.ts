@@ -13,9 +13,15 @@ describe('Product resolver', () => {
         crwClient = getGraphQLClient();
     });
 
+    const query: typeof server.executeOperation = async (...args) => {
+        const res = await server.executeOperation(...args);
+        if (res.errors) throw res.errors;
+        return res;
+    }
+
     it(`getProducts`, async () => {
         const path = GraphQLPaths.Product.getMany;
-        const res = await server.executeOperation({
+        const res = await query({
             query: gql`
               query testGetProducts($pagedParams: PagedParamsInput!) {
                   ${path}(pagedParams: $pagedParams) {
@@ -50,7 +56,7 @@ describe('Product resolver', () => {
 
     const getProductById = async (productId: number) => {
         const path = GraphQLPaths.Product.getOneById;
-        const res = await server.executeOperation({
+        const res = await query({
             query: gql`
             query testGetProductById($productId: Int!) {
                 ${path}(id: $productId) {
@@ -81,7 +87,7 @@ describe('Product resolver', () => {
 
     const getProductBySlug = async (slug: string) => {
         const path = GraphQLPaths.Product.getOneBySlug;
-        const res = await server.executeOperation({
+        const res = await query({
             query: gql`
             query testGetProductBySlug($slug: String!) {
                 ${path}(slug: $slug) {
@@ -129,7 +135,7 @@ describe('Product resolver', () => {
             isEnabled: data1.isEnabled,
         }
 
-        const res = await server.executeOperation({
+        const res = await query({
             query: gql`
               mutation testUpdateProduct($id: Int!, $data: UpdateProduct!) {
                   ${path}(id: $id, data: $data) {
@@ -181,7 +187,7 @@ describe('Product resolver', () => {
             isEnabled: data1.isEnabled,
         }
 
-        const res = await server.executeOperation({
+        const res = await query({
             query: gql`
               mutation testCreatePost($data: CreateProduct!) {
                   ${path}(data: $data) {
@@ -224,7 +230,7 @@ describe('Product resolver', () => {
         expect(data1.slug).toBeTruthy();
         const path = GraphQLPaths.Product.delete;
 
-        const res = await server.executeOperation({
+        const res = await query({
             query: gql`
                 mutation testDeleteProduct($id: Int!) {
                     ${path}(id: $id)
@@ -241,7 +247,7 @@ describe('Product resolver', () => {
         }
         expect(success === true).toBeTruthy();
 
-        const data2 = await getProductById(4);
+        const data2 = await getProductById(4).catch(() => null);
 
         expect(!data2?.id).toBeTruthy();
         expect(!data2?.slug).toBeTruthy();

@@ -279,37 +279,6 @@ export class CGraphQLClient {
 
 
     /** @internal */
-    public createGetMany<TEntity>(entityName: TDBEntity, nativeFragment: DocumentNode, nativeFragmentName: string) {
-        const path = GraphQLPaths[entityName].getMany;
-
-        return (pagedParams?: TPagedParams<TEntity>, customFragment?: DocumentNode, customFragmentName?: string): Promise<TPagedList<TEntity>> => {
-            const fragment = customFragment ?? nativeFragment;
-            const fragmentName = customFragmentName ?? nativeFragmentName;
-
-            return this.query({
-                query: gql`
-                    query core${path}($pagedParams: PagedParamsInput!) {
-                        ${path}(pagedParams: $pagedParams) {
-                            pagedMeta {
-                                ...PagedMetaFragment
-                            }
-                            elements {
-                                ...${fragmentName}
-                            }
-                        }
-                    }
-                    ${fragment}
-                    ${this.PagedMetaFragment}
-                `,
-                variables: {
-                    pagedParams: pagedParams ?? {},
-                }
-            }, path);
-        }
-    }
-
-
-    /** @internal */
     public createGetById<TEntity>(entityName: TDBEntity, nativeFragment: DocumentNode, nativeFragmentName: string) {
         const path = GraphQLPaths[entityName].getOneById;
 
@@ -357,6 +326,37 @@ export class CGraphQLClient {
         }
     }
 
+    /** @internal */
+    public createGetMany<TEntity, TFilter>(entityName: TDBEntity, nativeFragment: DocumentNode,
+        nativeFragmentName: string, filterName: string, path?: string): ((options: TGetFilteredOptions<TEntity, TFilter>) => Promise<TPagedList<TEntity>>) {
+        path = path ?? GraphQLPaths[entityName].getMany;
+
+        return ({ pagedParams, filterParams, customFragment, customFragmentName }) => {
+            const fragment = customFragment ?? nativeFragment;
+            const fragmentName = customFragmentName ?? nativeFragmentName;
+
+            return this.query({
+                query: gql`
+                query core${path}($pagedParams: PagedParamsInput, $filterParams: ${filterName}) {
+                    ${path}(pagedParams: $pagedParams, filterParams: $filterParams) {
+                        pagedMeta {
+                            ...PagedMetaFragment
+                        }
+                        elements {
+                            ...${fragmentName}
+                        }
+                    }
+                }
+                ${fragment}
+                ${this.PagedMetaFragment}
+            `,
+                variables: {
+                    pagedParams: pagedParams ?? {},
+                    filterParams,
+                }
+            }, path as string);
+        }
+    }
 
     /** @internal */
     public createUpdateEntity<TEntity, TInput>(entityName: TDBEntity, inputName: string, nativeFragment: DocumentNode, nativeFragmentName: string) {
@@ -382,7 +382,6 @@ export class CGraphQLClient {
             }, path);
         }
     }
-
 
     /** @internal */
     public createCreateEntity<TEntity, TInput>(entityName: TDBEntity, inputName: string, nativeFragment: DocumentNode, nativeFragmentName: string) {
@@ -426,25 +425,8 @@ export class CGraphQLClient {
     }
 
     /** @internal */
-    public createDeleteMany(entityName: TDBEntity) {
+    public createDeleteMany<TFilter>(entityName: TDBEntity, filterName: string) {
         const path = GraphQLPaths[entityName].deleteMany;
-        return (input: TDeleteManyInput) => {
-            return this.mutate({
-                mutation: gql`
-                mutation core${path}($data: DeleteManyInput!) {
-                    ${path}(data: $data)
-                }
-            `,
-                variables: {
-                    data: input,
-                }
-            }, path);
-        }
-    }
-
-    /** @internal */
-    public createDeleteManyFiltered<TFilter>(entityName: TDBEntity, filterName: string) {
-        const path = GraphQLPaths[entityName].deleteManyFiltered;
 
         return (input: TDeleteManyInput, filterParams?: TFilter) => {
             return this.mutate({
@@ -458,38 +440,6 @@ export class CGraphQLClient {
                     filterParams
                 }
             }, path);
-        }
-    }
-
-    /** @internal */
-    public createGetFiltered<TEntity, TFilter>(entityName: TDBEntity, nativeFragment: DocumentNode,
-        nativeFragmentName: string, filterName: string, path?: string): ((options: TGetFilteredOptions<TEntity, TFilter>) => Promise<TPagedList<TEntity>>) {
-        path = path ?? GraphQLPaths[entityName].getFiltered;
-
-        return ({ pagedParams, filterParams, customFragment, customFragmentName }) => {
-            const fragment = customFragment ?? nativeFragment;
-            const fragmentName = customFragmentName ?? nativeFragmentName;
-
-            return this.query({
-                query: gql`
-                query core${path}($pagedParams: PagedParamsInput, $filterParams: ${filterName}) {
-                    ${path}(pagedParams: $pagedParams, filterParams: $filterParams) {
-                        pagedMeta {
-                            ...PagedMetaFragment
-                        }
-                        elements {
-                            ...${fragmentName}
-                        }
-                    }
-                }
-                ${fragment}
-                ${this.PagedMetaFragment}
-            `,
-                variables: {
-                    pagedParams: pagedParams ?? {},
-                    filterParams,
-                }
-            }, path as string);
         }
     }
 
@@ -585,10 +535,10 @@ export class CGraphQLClient {
     * Get filtered records of a generic entity 
     * @auth admin
     */
-    public getFilteredEntities<TEntity, TFilter>(entityName: string, fragment: DocumentNode,
+    public getEntities<TEntity, TFilter>(entityName: string, fragment: DocumentNode,
         fragmentName: string, options: TGetFilteredOptions<TEntity, TFilter>) {
         const path = GraphQLPaths.Generic.getFiltered + entityName;
-        return this.createGetFiltered<TEntity, TBaseFilter>('Generic',
+        return this.createGetMany<TEntity, TBaseFilter>('Generic',
             fragment, fragmentName, 'BaseFilterInput', path)(options);
     }
 
@@ -649,59 +599,28 @@ export class CGraphQLClient {
     `;
 
 
-    public getProducts = this.createGetMany<TProduct>('Product', this.ProductFragment, 'ProductFragment');
     public getProductById = this.createGetById<TProduct>('Product', this.ProductFragment, 'ProductFragment');
     public getProductBySlug = this.createGetBySlug<TProduct>('Product', this.ProductFragment, 'ProductFragment');
     public updateProduct = this.createUpdateEntity<TProduct, TProductInput>('Product', 'UpdateProduct', this.ProductFragment, 'ProductFragment')
     public createProduct = this.createCreateEntity<TProduct, TProductInput>('Product', 'CreateProduct', this.ProductFragment, 'ProductFragment');
     public deleteProduct = this.createDeleteEntity('Product');
-    public deleteManyProducts = this.createDeleteMany('Product');
-    public deleteManyFilteredProducts = this.createDeleteManyFiltered<TProductFilter>('Product', 'ProductFilterInput');
+    public deleteManyProducts = this.createDeleteMany<TProductFilter>('Product', 'ProductFilterInput');
 
-
-    public getProductsFromCategory = async (categoryId: number, pagedParams?: TPagedParams<TProduct>,
-        customFragment?: DocumentNode, customFragmentName?: string): Promise<TPagedList<TProduct>> => {
-        const path = GraphQLPaths.Product.getFromCategory;
-        const fragment = customFragment ?? this.ProductFragment;
-        const fragmentName = customFragmentName ?? 'ProductFragment';
-
-        return this.query({
-            query: gql`
-                query coreGetProductsFromCategory($categoryId: Int!, $pagedParams: PagedParamsInput!) {
-                    ${path}(categoryId: $categoryId, pagedParams: $pagedParams) {
-                        pagedMeta {
-                            ...PagedMetaFragment
-                        }
-                        elements {
-                            ...${fragmentName}
-                        }
-                    }
-                }
-                ${fragment}
-                ${this.PagedMetaFragment}
-            `,
-            variables: {
-                pagedParams: pagedParams ?? {},
-                categoryId
-            }
-        }, path);
-    }
-
-    public getFilteredProducts = async (
+    public getProducts = async (
         { pagedParams, filterParams, customFragment, customFragmentName }: {
             pagedParams?: TPagedParams<TProduct>;
             filterParams?: TProductFilter;
             customFragment?: DocumentNode;
             customFragmentName?: string;
         }): Promise<TFilteredProductList> => {
-        const path = GraphQLPaths.Product.getFiltered;
+        const path = GraphQLPaths.Product.getMany;
 
         const fragment = customFragment ?? this.ProductFragment;
         const fragmentName = customFragmentName ?? 'ProductFragment';
 
         return this.query({
             query: gql`
-                query getFilteredProducts($pagedParams: PagedParamsInput, $filterParams: ProductFilterInput) {
+                query getProducts($pagedParams: PagedParamsInput, $filterParams: ProductFilterInput) {
                     ${path}(pagedParams: $pagedParams, filterParams: $filterParams) {
                         pagedMeta {
                             ...PagedMetaFragment
@@ -756,15 +675,13 @@ export class CGraphQLClient {
         }
     `;
 
-    public getProductCategories = this.createGetMany<TProductCategory>('ProductCategory', this.ProductCategoryFragment, 'ProductCategoryFragment');
+    public getProductCategories = this.createGetMany<TProductCategory, TProductCategoryFilter>('ProductCategory', this.ProductCategoryFragment, 'ProductCategoryFragment', 'ProductCategoryFilterInput');
     public getProductCategoryById = this.createGetById<TProductCategory>('ProductCategory', this.ProductCategoryFragment, 'ProductCategoryFragment');
     public getProductCategoryBySlug = this.createGetBySlug<TProductCategory>('ProductCategory', this.ProductCategoryFragment, 'ProductCategoryFragment');
     public updateProductCategory = this.createUpdateEntity<TProductCategory, TProductCategoryInput>('ProductCategory', 'UpdateProductCategory', this.ProductCategoryFragment, 'ProductCategoryFragment')
     public createProductCategory = this.createCreateEntity<TProductCategory, TProductCategoryInput>('ProductCategory', 'CreateProductCategory', this.ProductCategoryFragment, 'ProductCategoryFragment');
     public deleteProductCategory = this.createDeleteEntity('ProductCategory');
-    public deleteManyProductCategories = this.createDeleteMany('ProductCategory');
-    public deleteManyFilteredProductCategories = this.createDeleteManyFiltered<TProductCategoryFilter>('ProductCategory', 'ProductCategoryFilterInput');
-    public getFilteredProductCategories = this.createGetFiltered<TProductCategory, TProductCategoryFilter>('ProductCategory', this.ProductCategoryFragment, 'ProductCategoryFragment', 'ProductCategoryFilterInput');
+    public deleteManyProductCategories = this.createDeleteMany<TProductCategoryFilter>('ProductCategory', 'ProductCategoryFilterInput');
 
     public getRootCategories = async (customFragment?: DocumentNode, customFragmentName?: string): Promise<TPagedList<TProductCategory> | undefined> => {
         const path = GraphQLPaths.ProductCategory.getRootCategories;
@@ -813,23 +730,11 @@ export class CGraphQLClient {
    `;
 
     public getAttributeById = this.createGetById<TAttribute>('Attribute', this.AttributeFragment, 'AttributeFragment');
+    public getAttributes = this.createGetMany<TAttribute, TBaseFilter>('Attribute', this.AttributeFragment, 'AttributeFragment', 'BaseFilterInput');
     public updateAttribute = this.createUpdateEntity<TAttribute, TAttributeInput>('Attribute', 'AttributeInput', this.AttributeFragment, 'AttributeFragment')
     public createAttribute = this.createCreateEntity<TAttribute, TAttributeInput>('Attribute', 'AttributeInput', this.AttributeFragment, 'AttributeFragment');
     public deleteAttribute = this.createDeleteEntity('Attribute');
-
-    public getAttributes = async (): Promise<TAttribute[] | undefined> => {
-        const path = GraphQLPaths.Attribute.getMany;
-        return this.query({
-            query: gql`
-                query coreGetAttributes {
-                    ${path} {
-                        ...AttributeFragment
-                    }
-                }
-                ${this.AttributeFragment}
-           `
-        }, path);
-    }
+    public deleteManyAttributes = this.createDeleteMany<TBaseFilter>('Attribute', 'BaseFilterInput');
 
     // </Attribute>
 
@@ -852,14 +757,12 @@ export class CGraphQLClient {
         }
   `
 
-    public getProductReviews = this.createGetMany<TProductReview>('ProductReview', this.ProductReviewFragment, 'ProductReviewFragment');
+    public getProductReviews = this.createGetMany<TProductReview, TProductReviewFilter>('ProductReview', this.ProductReviewFragment, 'ProductReviewFragment', 'ProductReviewFilter');
     public getProductReviewById = this.createGetById<TProductReview>('ProductReview', this.ProductReviewFragment, 'ProductReviewFragment');
     public updateProductReview = this.createUpdateEntity<TProductReview, TProductReviewInput>('ProductReview', 'ProductReviewInput', this.ProductReviewFragment, 'ProductReviewFragment')
     public createProductReview = this.createCreateEntity<TProductReview, TProductReviewInput>('ProductReview', 'ProductReviewInput', this.ProductReviewFragment, 'ProductReviewFragment');
     public deleteProductReview = this.createDeleteEntity('ProductReview');
-    public deleteManyProductReviews = this.createDeleteMany('ProductReview');
-    public deleteManyFilteredProductReviews = this.createDeleteManyFiltered<TProductReviewFilter>('ProductReview', 'ProductReviewFilter');
-    public getFilteredProductReviews = this.createGetFiltered<TProductReview, TProductReviewFilter>('ProductReview', this.ProductReviewFragment, 'ProductReviewFragment', 'ProductReviewFilter');
+    public deleteManyProductReviews = this.createDeleteMany<TProductReviewFilter>('ProductReview', 'ProductReviewFilter');
 
     // </ProductReview>
 
@@ -900,17 +803,13 @@ export class CGraphQLClient {
       }
     `;
 
-    public getPosts = this.createGetMany<TPost>('Post', this.PostFragment, 'PostFragment');
+    public getPosts = this.createGetMany<TPost, TPostFilter>('Post', this.PostFragment, 'PostFragment', 'PostFilterInput');
     public getPostById = this.createGetById<TPost>('Post', this.PostFragment, 'PostFragment');
     public getPostBySlug = this.createGetBySlug<TPost>('Post', this.PostFragment, 'PostFragment');
     public updatePost = this.createUpdateEntity<TPost, TPostInput>('Post', 'UpdatePost', this.PostFragment, 'PostFragment')
     public createPost = this.createCreateEntity<TPost, TPostInput>('Post', 'CreatePost', this.PostFragment, 'PostFragment');
     public deletePost = this.createDeleteEntity('Post');
-    public deleteManyPosts = this.createDeleteMany('Post');
-    public deleteManyFilteredPosts = this.createDeleteManyFiltered<TPostFilter>('Post', 'PostFilterInput');
-    public getFilteredPosts = this.createGetFiltered<TPost, TPostFilter>('Post', this.PostFragment, 'PostFragment', 'PostFilterInput');
-
-
+    public deleteManyPosts = this.createDeleteMany<TPostFilter>('Post', 'PostFilterInput');
 
 
     // </Post>
@@ -947,15 +846,13 @@ export class CGraphQLClient {
     `;
 
 
-    public getUsers = this.createGetMany<TUser>('User', this.UserFragment, 'UserFragment');
+    public getUsers = this.createGetMany<TUser, TUserFilter>('User', this.UserFragment, 'UserFragment', 'UserFilterInput');
     public getUserById = this.createGetById<TUser>('User', this.UserFragment, 'UserFragment');
     public getUserBySlug = this.createGetBySlug<TUser>('User', this.UserFragment, 'UserFragment');
     public updateUser = this.createUpdateEntity<TUser, TUpdateUser>('User', 'UpdateUser', this.UserFragment, 'UserFragment')
     public createUser = this.createCreateEntity<TUser, TCreateUser>('User', 'CreateUser', this.UserFragment, 'UserFragment');
     public deleteUser = this.createDeleteEntity('User');
-    public deleteManyUsers = this.createDeleteMany('User');
-    public deleteManyFilteredUsers = this.createDeleteManyFiltered<TUserFilter>('User', 'UserFilterInput');
-    public getFilteredUsers = this.createGetFiltered<TUser, TUserFilter>('User', this.UserFragment, 'UserFragment', 'UserFilterInput');
+    public deleteManyUsers = this.createDeleteMany<TUserFilter>('User', 'UserFilterInput');
 
     public getUserByEmail = (email: string, customFragment?: DocumentNode, customFragmentName?: string): Promise<TUser | undefined> => {
         const path = GraphQLPaths.User.getOneByEmail;
@@ -993,17 +890,16 @@ export class CGraphQLClient {
          name
          title
          permissions
+         icon
      }
     `;
 
-    public getRoles = this.createGetMany<TRole>('Role', this.RoleFragment, 'RoleFragment');
+    public getRoles = this.createGetMany<TRole, TBaseFilter>('Role', this.RoleFragment, 'RoleFragment', 'BaseFilterInput');
     public getRoleById = this.createGetById<TRole>('Role', this.RoleFragment, 'RoleFragment');
     public updateRole = this.createUpdateEntity<TRole, TRoleInput>('Role', 'RoleInput', this.RoleFragment, 'RoleFragment')
     public createRole = this.createCreateEntity<TRole, TRoleInput>('Role', 'RoleInput', this.RoleFragment, 'RoleFragment');
     public deleteRole = this.createDeleteEntity('Role');
-    public deleteManyRoles = this.createDeleteMany('Role');
-    public deleteManyFilteredRoles = this.createDeleteManyFiltered<TBaseFilter>('Role', 'BaseFilterInput');
-    public getFilteredRoles = this.createGetFiltered<TRole, TBaseFilter>('Role', this.RoleFragment, 'RoleFragment', 'BaseFilterInput');
+    public deleteManyRoles = this.createDeleteMany<TBaseFilter>('Role', 'BaseFilterInput');
 
     // </Role>
 
@@ -1034,16 +930,13 @@ export class CGraphQLClient {
         }
     `;
 
-    public getOrders = this.createGetMany<TOrder>('Order', this.OrderFragment, 'OrderFragment');
+    public getOrders = this.createGetMany<TOrder, TOrderFilter>('Order', this.OrderFragment, 'OrderFragment', 'OrderFilterInput');
     public getOrderById = this.createGetById<TOrder>('Order', this.OrderFragment, 'OrderFragment');
     public getOrderBySlug = this.createGetBySlug<TOrder>('Order', this.OrderFragment, 'OrderFragment');
     public updateOrder = this.createUpdateEntity<TOrder, TOrderInput>('Order', 'OrderInput', this.OrderFragment, 'OrderFragment')
     public createOrder = this.createCreateEntity<TOrder, TOrderInput>('Order', 'OrderInput', this.OrderFragment, 'OrderFragment');
     public deleteOrder = this.createDeleteEntity('Order');
-    public deleteManyOrders = this.createDeleteMany('Order');
-    public deleteManyFilteredOrders = this.createDeleteManyFiltered<TOrderFilter>('Order', 'OrderFilterInput');
-    public getFilteredOrders = this.createGetFiltered<TOrder, TOrderFilter>('Order', this.OrderFragment, 'OrderFragment', 'OrderFilterInput');
-
+    public deleteManyOrders = this.createDeleteMany<TOrderFilter>('Order', 'OrderFilterInput');
 
     public getOrdersOfUser = async (userId: number, pagedParams: TPagedParams<TOrder>,
         customFragment?: DocumentNode, customFragmentName?: string): Promise<TPagedList<TOrder> | undefined> => {
@@ -1097,16 +990,13 @@ export class CGraphQLClient {
         }
     `;
 
-    public getTags = this.createGetMany<TTag>('Tag', this.TagFragment, 'TagFragment');
+    public getTags = this.createGetMany<TTag, TBaseFilter>('Tag', this.TagFragment, 'TagFragment', 'BaseFilterInput');
     public getTagById = this.createGetById<TTag>('Tag', this.TagFragment, 'TagFragment');
     public getTagBySlug = this.createGetBySlug<TTag>('Tag', this.TagFragment, 'TagFragment');
-    public getFilteredTags = this.createGetFiltered<TTag, TBaseFilter>('Tag', this.TagFragment, 'TagFragment', 'BaseFilterInput');
     public updateTag = this.createUpdateEntity<TTag, TTagInput>('Tag', 'TagInput', this.TagFragment, 'TagFragment')
     public createTag = this.createCreateEntity<TTag, TTagInput>('Tag', 'TagInput', this.TagFragment, 'TagFragment');
     public deleteTag = this.createDeleteEntity('Tag');
-    public deleteManyTags = this.createDeleteMany('Tag');
-    public deleteManyFilteredTags = this.createDeleteManyFiltered<TBaseFilter>('Tag', 'BaseFilterInput');
-
+    public deleteManyTags = this.createDeleteMany<TBaseFilter>('Tag', 'BaseFilterInput');
 
     // <Plugin>
 
@@ -1216,7 +1106,7 @@ export class CGraphQLClient {
     }
 
 
-    public getFilteredCustomEntities = this.createGetFiltered<TCustomEntity, TCustomEntityFilter>('CustomEntity', this.CustomEntityFragment, 'CustomEntityFragment', 'CustomEntityFilterInput');
+    public getCustomEntities = this.createGetMany<TCustomEntity, TCustomEntityFilter>('CustomEntity', this.CustomEntityFragment, 'CustomEntityFragment', 'CustomEntityFilterInput');
     public updateCustomEntity = this.createUpdateEntity<TCustomEntity, TCustomEntityInput>('CustomEntity', 'CustomEntityInput', this.CustomEntityFragment, 'CustomEntityFragment')
     public createCustomEntity = this.createCreateEntity<TCustomEntity, TCustomEntityInput>('CustomEntity', 'CustomEntityInput', this.CustomEntityFragment, 'CustomEntityFragment');
 
@@ -1235,7 +1125,7 @@ export class CGraphQLClient {
         }, path);
     }
 
-    public deleteManyFilteredCustomEntities = this.createDeleteManyFiltered<TCustomEntityFilter>('CustomEntity', 'CustomEntityFilterInput');
+    public deleteManyCustomEntities = this.createDeleteMany<TCustomEntityFilter>('CustomEntity', 'CustomEntityFilterInput');
 
     // </CustomEntity>
 
@@ -1266,15 +1156,13 @@ export class CGraphQLClient {
         usageLimit
     }`;
 
-    public getCoupons = this.createGetMany<TCoupon>('Coupon', this.CouponFragment, 'CouponFragment');
+    public getCoupons = this.createGetMany<TCoupon, TBaseFilter>('Coupon', this.CouponFragment, 'CouponFragment', 'BaseFilterInput');
     public getCouponById = this.createGetById<TCoupon>('Coupon', this.CouponFragment, 'CouponFragment');
     public getCouponBySlug = this.createGetBySlug<TCoupon>('Coupon', this.CouponFragment, 'CouponFragment');
-    public getFilteredCoupons = this.createGetFiltered<TCoupon, TBaseFilter>('Coupon', this.CouponFragment, 'CouponFragment', 'BaseFilterInput');
     public updateCoupon = this.createUpdateEntity<TCoupon, TCouponInput>('Coupon', 'CouponInput', this.CouponFragment, 'CouponFragment')
     public createCoupon = this.createCreateEntity<TCoupon, TCouponInput>('Coupon', 'CouponInput', this.CouponFragment, 'CouponFragment');
     public deleteCoupon = this.createDeleteEntity('Coupon');
-    public deleteManyCoupons = this.createDeleteMany('Coupon');
-    public deleteManyFilteredCoupons = this.createDeleteManyFiltered<TBaseFilter>('Coupon', 'BaseFilterInput');
+    public deleteManyCoupons = this.createDeleteMany<TBaseFilter>('Coupon', 'BaseFilterInput');
 
     public getCouponsByCodes = async (codes: string[],
         customFragment?: DocumentNode, customFragmentName?: string): Promise<TCoupon[] | undefined> => {

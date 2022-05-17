@@ -50,7 +50,7 @@ export const getCustomEntityPages = (): TPageInfo[] => {
         const entityRoutes = getEntityRoutes(entity);
         const client = getGraphQLClient();
 
-        const entityPageProps: TEntityPageProps<TCustomEntity, TCustomEntityFilter> = {
+        const entityPageProps: TEntityPageProps<TCustomEntity, Partial<TCustomEntityFilter>> = {
             entityCategory: EDBEntity.CustomEntity,
             entityBaseRoute: entityRoutes.entityBaseRoute,
             entityListRoute: entityRoutes.entityListRoute,
@@ -62,9 +62,8 @@ export const getCustomEntityPages = (): TPageInfo[] => {
             getInput: () => ({ entityType: entity.entityType }),
             getById: (...args) => client.getCustomEntityById(entity.entityType, ...args),
             deleteOne: (...args) => client.deleteCustomEntity(entity.entityType, ...args),
-            deleteMany: (input) => client.deleteManyFilteredCustomEntities(input, { entityType: entity.entityType }),
-            deleteManyFiltered: client.deleteManyFilteredCustomEntities,
-            getManyFiltered: client.getFilteredCustomEntities,
+            deleteMany: (input) => client.deleteManyCustomEntities(input, { entityType: entity.entityType }),
+            getMany: client.getCustomEntities,
             update: client.updateCustomEntity,
             create: client.createCustomEntity,
         }

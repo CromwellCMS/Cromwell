@@ -42,7 +42,7 @@ export const getThemeConfigs = async (themeName: string): Promise<TAllThemeConfi
     }
 
     if (!theme) {
-        getLogger().error(`Current theme ${themeName} was not registered in DB`);
+        getLogger().error(`Current theme ${themeName} is not registered in DB`);
     }
 
     try {

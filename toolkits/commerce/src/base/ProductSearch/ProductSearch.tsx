@@ -77,8 +77,8 @@ export function ProductSearch(props: ProductSearchProps) {
     try {
       const data = await client?.query({
         query: gql`
-          query getFilteredProducts($pagedParams: PagedParamsInput, $filterParams: ProductFilterInput) {
-            getFilteredProducts(pagedParams: $pagedParams, filterParams: $filterParams) {
+          query getProducts($pagedParams: PagedParamsInput, $filterParams: ProductFilterInput) {
+            getProducts(pagedParams: $pagedParams, filterParams: $filterParams) {
               pagedMeta {
                 ...PagedMetaFragment
               }
@@ -94,7 +94,7 @@ export function ProductSearch(props: ProductSearchProps) {
           filterParams,
         }
       });
-      const products = data?.data?.getFilteredProducts?.elements;
+      const products = data?.data?.getProducts?.elements;
       if (products) setSearchItems(products);
 
     } catch (e) {

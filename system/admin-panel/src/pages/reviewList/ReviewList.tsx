@@ -78,10 +78,9 @@ export default function ProductReviewTable() {
                 listLabel="Product reviews"
                 entityLabel="Review"
                 hideAddNew
-                getManyFiltered={client.getFilteredProductReviews}
+                getMany={client.getProductReviews}
                 deleteOne={client.deleteProductReview}
                 deleteMany={client.deleteManyProductReviews}
-                deleteManyFiltered={client.deleteManyFilteredProductReviews}
                 getPageListInstance={inst => {
                     entityListPageRef.current = inst;
                 }}

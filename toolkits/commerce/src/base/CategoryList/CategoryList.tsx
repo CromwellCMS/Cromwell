@@ -115,7 +115,7 @@ export function CategoryList(props: CategoryListProps) {
           pageSize={20}
           firstBatch={data?.firstPage}
           loader={async (params) => {
-            return client?.getProductsFromCategory(category.id, params)
+            return client.getProducts({ pagedParams: params, filterParams: { categoryId: category.id } });
           }}
           cssClasses={{
             page: styles.productList
@@ -151,25 +151,26 @@ CategoryList.withGetProps = (originalGetProps?: TGetStaticProps, options?: {
       }
     }
 
-    const firstPage = category?.id && (await client?.getProductsFromCategory(category.id,
-      { pageSize: 20 },
-      options?.customFragment ?? gql`
-        fragment ProductShortFragment on Product {
-          id
-          slug
-          isEnabled
-          name
-          price
-          oldPrice
-          sku
-          mainImage
-          rating {
-            average
-            reviewsNumber
-          }
-        }`,
-      options?.customFragmentName ?? 'ProductShortFragment'
-    ).catch(e => {
+    const firstPage = category?.id && (await client.getProducts({
+      pagedParams: { pageSize: 20 },
+      filterParams: { categoryId: category.id },
+      customFragment: options?.customFragment ?? gql`
+      fragment ProductShortFragment on Product {
+        id
+        slug
+        isEnabled
+        name
+        price
+        oldPrice
+        sku
+        mainImage
+        rating {
+          average
+          reviewsNumber
+        }
+      }`,
+      customFragmentName: options?.customFragmentName ?? 'ProductShortFragment',
+    }).catch(e => {
       console.error(`CategoryList::getProps for slug ${slug} get firstPage error: `, e);
     })) || null;
 

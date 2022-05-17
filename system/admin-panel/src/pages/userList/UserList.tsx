@@ -21,7 +21,7 @@ export default function UserTable() {
 
     const init = async () => {
         try {
-            const roles = await getGraphQLClient().getRoles({ pageSize: 10000 });
+            const roles = await getGraphQLClient().getRoles({ pagedParams: { pageSize: 1000 } });
             setRoles(roles?.elements ?? []);
         } catch (error) {
             console.error(error);
@@ -40,10 +40,9 @@ export default function UserTable() {
             listLabel="Users"
             entityLabel="User"
             nameProperty="fullName"
-            getManyFiltered={client.getFilteredUsers}
+            getMany={client.getUsers}
             deleteOne={client.deleteUser}
             deleteMany={client.deleteManyUsers}
-            deleteManyFiltered={client.deleteManyFilteredUsers}
             columns={[
                 {
                     name: 'avatar',

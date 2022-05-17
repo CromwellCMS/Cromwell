@@ -1,57 +1,99 @@
-import { EDBEntity, GraphQLPaths, TAttribute, TPermissionName } from '@cromwell/core';
-import { Attribute, AttributeInput, AttributeRepository, entityMetaRepository } from '@cromwell/core-backend';
+import { EDBEntity, GraphQLPaths, TAttribute, TPagedList, TPermissionName } from '@cromwell/core';
+import {
+    Attribute,
+    AttributeInput,
+    AttributeRepository,
+    BaseFilterInput,
+    DeleteManyInput,
+    entityMetaRepository,
+    PagedAttribute,
+    PagedParamsInput,
+    TGraphQLContext,
+} from '@cromwell/core-backend';
 import { GraphQLJSONObject } from 'graphql-type-json';
-import { Arg, Authorized, FieldResolver, Int, Mutation, Query, Resolver, Root } from 'type-graphql';
+import { Arg, Authorized, Ctx, FieldResolver, Int, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
-import { resetAllPagesCache } from '../helpers/reset-page';
-import { serverFireAction } from '../helpers/server-fire-action';
+import {
+    createWithFilters,
+    deleteManyWithFilters,
+    deleteWithFilters,
+    getByIdWithFilters,
+    getManyWithFilters,
+    updateWithFilters,
+} from '../helpers/data-filters';
 
 const getOneByIdPath = GraphQLPaths.Attribute.getOneById;
 const getManyPath = GraphQLPaths.Attribute.getMany;
 const createPath = GraphQLPaths.Attribute.create;
 const updatePath = GraphQLPaths.Attribute.update;
 const deletePath = GraphQLPaths.Attribute.delete;
+const deleteManyPath = GraphQLPaths.Attribute.deleteMany;
 
 @Resolver(Attribute)
 export class AttributeResolver {
 
     private repository = getCustomRepository(AttributeRepository)
 
-    @Query(() => [Attribute])
-    async [getManyPath](): Promise<TAttribute[]> {
-        return await this.repository.getAttributes();
+    @Query(() => Attribute)
+    async [getOneByIdPath](
+        @Ctx() ctx: TGraphQLContext,
+        @Arg("id", () => Int) id: number,
+    ): Promise<TAttribute> {
+        return getByIdWithFilters('Attribute', ctx, [], id,
+            (...args) => this.repository.getAttribute(...args));
     }
 
-    @Query(() => Attribute)
-    async [getOneByIdPath](@Arg("id", () => Int) id: number): Promise<Attribute | undefined> {
-        return await this.repository.getAttribute(id);
+    @Query(() => PagedAttribute)
+    async [getManyPath](
+        @Ctx() ctx: TGraphQLContext,
+        @Arg("pagedParams", { nullable: true }) pagedParams?: PagedParamsInput<TAttribute>,
+        @Arg("filterParams", () => BaseFilterInput, { nullable: true }) filterParams?: BaseFilterInput,
+    ): Promise<TPagedList<TAttribute> | undefined> {
+        return getManyWithFilters('Attribute', ctx, [], pagedParams, filterParams,
+            (...args) => this.repository.getFilteredAttributes(...args));
     }
 
     @Authorized<TPermissionName>('create_attribute')
     @Mutation(() => Attribute)
-    async [createPath](@Arg("data") data: AttributeInput): Promise<TAttribute> {
-        const attr = await this.repository.createAttribute(data);
-        serverFireAction('create_attribute', attr);
-        return attr;
+    async [createPath](
+        @Ctx() ctx: TGraphQLContext,
+        @Arg("data") data: AttributeInput
+    ): Promise<TAttribute> {
+        return createWithFilters('Attribute', ctx, ['create_attribute'], data,
+            (...args) => this.repository.createAttribute(...args));
     }
 
     @Authorized<TPermissionName>('update_attribute')
     @Mutation(() => Attribute)
-    async [updatePath](@Arg("id", () => Int) id: number, @Arg("data") data: AttributeInput): Promise<Attribute> {
-        const attr = await this.repository.updateAttribute(id, data);
-        serverFireAction('update_attribute', attr);
-        resetAllPagesCache();
-        return attr;
+    async [updatePath](
+        @Ctx() ctx: TGraphQLContext,
+        @Arg("id", () => Int) id: number,
+        @Arg("data") data: AttributeInput
+    ): Promise<TAttribute> {
+        return updateWithFilters('Attribute', ctx, ['update_attribute'], data, id,
+            (...args) => this.repository.updateAttribute(...args));
     }
 
     @Authorized<TPermissionName>('delete_attribute')
     @Mutation(() => Boolean)
-    async [deletePath](@Arg("id", () => Int) id: number): Promise<boolean> {
-        const attr = await this.repository.deleteAttribute(id);
-        serverFireAction('delete_attribute', { id });
-        resetAllPagesCache();
-        return attr;
+    async [deletePath](
+        @Ctx() ctx: TGraphQLContext,
+        @Arg("id", () => Int) id: number
+    ): Promise<boolean> {
+        return deleteWithFilters('Attribute', ctx, ['delete_attribute'], id,
+            (...args) => this.repository.deleteAttribute(...args));
+    }
+
+    @Authorized<TPermissionName>('delete_attribute')
+    @Mutation(() => Boolean)
+    async [deleteManyPath](
+        @Ctx() ctx: TGraphQLContext,
+        @Arg("input") input: DeleteManyInput,
+        @Arg("filterParams", () => BaseFilterInput, { nullable: true }) filterParams?: BaseFilterInput,
+    ): Promise<boolean | undefined> {
+        return deleteManyWithFilters('Attribute', ctx, ['delete_attribute'], input, filterParams,
+            (...args) => this.repository.deleteManyFilteredAttributes(...args));
     }
 
     @FieldResolver(() => GraphQLJSONObject, { nullable: true })

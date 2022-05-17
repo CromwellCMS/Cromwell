@@ -35,6 +35,12 @@ export type SignUpProps = {
     }
 
     /**
+     * Specify user roles to use. Make sure sure roles configured in the admin panel for registration. 
+     * `["customer"]` by default
+     */
+    signUpRoles?: string[];
+
+    /**
      * Called when user successfully registered
      */
     onSignUpSuccess?: (user: TUser, password: string) => any;
@@ -63,7 +69,12 @@ export function SignUp(props: SignUpProps) {
         e.preventDefault();
         setSubmitPressed(true);
 
-        const result = await authClient.signUp(emailInput, passwordInput, nameInput);
+        const result = await authClient.signUp({
+            email: emailInput,
+            password: passwordInput,
+            fullName: nameInput,
+            roles: props.signUpRoles ?? ['customer'],
+        });
         if (result.success && result.user) {
             props?.onSignUpSuccess?.(result.user, passwordInput);
         } else {

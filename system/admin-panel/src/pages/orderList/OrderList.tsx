@@ -22,10 +22,9 @@ export default function OrderTable() {
             listLabel="Orders"
             entityLabel="Order"
             hideAddNew
-            getManyFiltered={client.getFilteredOrders as any}
+            getMany={client.getOrders as any}
             deleteOne={client.deleteOrder}
             deleteMany={client.deleteManyOrders}
-            deleteManyFiltered={client.deleteManyFilteredOrders}
             columns={[
                 {
                     name: 'id',

@@ -1,4 +1,4 @@
-import { GraphQLPaths, TPermissionName, TPagedList, TProductReview } from '@cromwell/core';
+import { GraphQLPaths, TPagedList, TPermissionName, TProductReview } from '@cromwell/core';
 import {
     DeleteManyInput,
     PagedParamsInput,
@@ -7,12 +7,19 @@ import {
     ProductReviewFilter,
     ProductReviewInput,
     ProductReviewRepository,
+    TGraphQLContext,
 } from '@cromwell/core-backend';
-import { Arg, Authorized, Int, Mutation, Query, Resolver } from 'type-graphql';
+import { Arg, Authorized, Ctx, Int, Mutation, Query, Resolver } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
-import { resetAllPagesCache } from '../helpers/reset-page';
-import { serverFireAction } from '../helpers/server-fire-action';
+import {
+    createWithFilters,
+    deleteManyWithFilters,
+    deleteWithFilters,
+    getByIdWithFilters,
+    getManyWithFilters,
+    updateWithFilters,
+} from '../helpers/data-filters';
 
 const getOneByIdPath = GraphQLPaths.ProductReview.getOneById;
 const getManyPath = GraphQLPaths.ProductReview.getMany;
@@ -20,75 +27,70 @@ const createPath = GraphQLPaths.ProductReview.create;
 const updatePath = GraphQLPaths.ProductReview.update;
 const deletePath = GraphQLPaths.ProductReview.delete;
 const deleteManyPath = GraphQLPaths.ProductReview.deleteMany;
-const deleteManyFilteredPath = GraphQLPaths.ProductReview.deleteManyFiltered;
-const getFilteredPath = GraphQLPaths.ProductReview.getFiltered;
 
 @Resolver(ProductReview)
 export class ProductReviewResolver {
 
     private repository = getCustomRepository(ProductReviewRepository)
 
-    @Query(() => PagedProductReview)
-    async [getManyPath](@Arg("pagedParams") pagedParams: PagedParamsInput<TProductReview>): Promise<TPagedList<TProductReview>> {
-        return await this.repository.getProductReviews(pagedParams);
+    @Query(() => ProductReview)
+    async [getOneByIdPath](
+        @Ctx() ctx: TGraphQLContext,
+        @Arg("id", () => Int) id: number
+    ): Promise<TProductReview> {
+        return getByIdWithFilters('ProductReview', ctx, [], id,
+            (...args) => this.repository.getProductReview(...args));
     }
 
-    @Query(() => ProductReview)
-    async [getOneByIdPath](@Arg("id", () => Int) id: number): Promise<ProductReview> {
-        return await this.repository.getProductReview(id);
+    @Query(() => PagedProductReview)
+    async [getManyPath](
+        @Ctx() ctx: TGraphQLContext,
+        @Arg("pagedParams", { nullable: true }) pagedParams?: PagedParamsInput<TProductReview>,
+        @Arg("filterParams", { nullable: true }) filterParams?: ProductReviewFilter,
+    ): Promise<TPagedList<TProductReview> | undefined> {
+        return getManyWithFilters('ProductReview', ctx, [], pagedParams, filterParams,
+            (...args) => this.repository.getFilteredProductReviews(...args));
     }
 
     @Authorized<TPermissionName>('create_product_review')
     @Mutation(() => ProductReview)
-    async [createPath](@Arg("data") data: ProductReviewInput): Promise<TProductReview> {
-        const review = await this.repository.createProductReview(data);
-        serverFireAction('create_product_review', review);
-        return review;
+    async [createPath](
+        @Ctx() ctx: TGraphQLContext,
+        @Arg("data") data: ProductReviewInput
+    ): Promise<TProductReview> {
+        return createWithFilters('ProductReview', ctx, ['create_product_review'], data,
+            (...args) => this.repository.createProductReview(...args));
     }
 
     @Authorized<TPermissionName>('update_product_review')
     @Mutation(() => ProductReview)
-    async [updatePath](@Arg("id", () => Int) id: number, @Arg("data") data: ProductReviewInput): Promise<ProductReview> {
-        const review = await this.repository.updateProductReview(id, data);
-        serverFireAction('update_product_review', review);
-        resetAllPagesCache();
-        return review;
+    async [updatePath](
+        @Ctx() ctx: TGraphQLContext,
+        @Arg("id", () => Int) id: number,
+        @Arg("data") data: ProductReviewInput
+    ): Promise<TProductReview> {
+        return updateWithFilters('ProductReview', ctx, ['update_product_review'], data, id,
+            (...args) => this.repository.updateProductReview(...args));
     }
 
     @Authorized<TPermissionName>('delete_product_review')
     @Mutation(() => Boolean)
-    async [deletePath](@Arg("id", () => Int) id: number): Promise<boolean> {
-        const review = await this.repository.deleteProductReview(id);
-        serverFireAction('delete_product_review', { id });
-        resetAllPagesCache();
-        return review;
+    async [deletePath](
+        @Ctx() ctx: TGraphQLContext,
+        @Arg("id", () => Int) id: number
+    ): Promise<boolean> {
+        return deleteWithFilters('ProductReview', ctx, ['delete_product_review'], id,
+            (...args) => this.repository.deleteProductReview(...args));
     }
 
     @Authorized<TPermissionName>('delete_product_review')
     @Mutation(() => Boolean)
-    async [deleteManyPath](@Arg("data") data: DeleteManyInput): Promise<boolean | undefined> {
-        const res = await this.repository.deleteMany(data);
-        resetAllPagesCache();
-        return res;
-    }
-
-    @Authorized<TPermissionName>('delete_product_review')
-    @Mutation(() => Boolean)
-    async [deleteManyFilteredPath](
+    async [deleteManyPath](
+        @Ctx() ctx: TGraphQLContext,
         @Arg("input") input: DeleteManyInput,
         @Arg("filterParams", { nullable: true }) filterParams?: ProductReviewFilter,
     ): Promise<boolean | undefined> {
-        const res = await this.repository.deleteManyFilteredProductReviews(input, filterParams);
-        resetAllPagesCache();
-        return res;
+        return deleteManyWithFilters('ProductReview', ctx, ['delete_product_review'], input, filterParams,
+            (...args) => this.repository.deleteManyFilteredProductReviews(...args));
     }
-
-    @Query(() => PagedProductReview)
-    async [getFilteredPath](
-        @Arg("pagedParams", { nullable: true }) pagedParams?: PagedParamsInput<TProductReview>,
-        @Arg("filterParams", { nullable: true }) filterParams?: ProductReviewFilter,
-    ): Promise<TPagedList<TProductReview> | undefined> {
-        return this.repository.getFilteredProductReviews(pagedParams, filterParams);
-    }
-
 }

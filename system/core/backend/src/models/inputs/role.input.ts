@@ -13,4 +13,7 @@ export class RoleInput extends BasePageInput implements TRoleInput {
 
     @Field(type => [String], { nullable: true })
     permissions: TPermissionName[] | null;
+
+    @Field(type => String, { nullable: true })
+    icon?: string | null;
 }

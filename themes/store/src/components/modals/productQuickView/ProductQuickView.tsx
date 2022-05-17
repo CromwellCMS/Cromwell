@@ -27,11 +27,11 @@ const ProductQuickView = observer(() => {
       if (!appState.quickViewProductId) return;
 
       const [attrs, prod] = await Promise.all([
-        getGraphQLClient()?.getAttributes(),
+        getGraphQLClient()?.getAttributes({ pagedParams: { pageSize: 1000 } }),
         getGraphQLClient()?.getProductById(appState.quickViewProductId)
       ])
       if (prod) setProduct(prod);
-      if (attrs) setAttributes(attrs);
+      if (attrs?.elements) setAttributes(attrs.elements);
     } catch (e) {
       console.error(e);
     }

@@ -15,9 +15,15 @@ describe('Order resolver', () => {
         crwClient = getGraphQLClient();
     });
 
+    const query: typeof server.executeOperation = async (...args) => {
+        const res = await server.executeOperation(...args);
+        if (res.errors) throw res.errors;
+        return res;
+    }
+
     it(`getOrders`, async () => {
         const path = GraphQLPaths.Order.getMany;
-        const res = await server.executeOperation({
+        const res = await query({
             query: gql`
               query testGetOrders($pagedParams: PagedParamsInput!) {
                   ${path}(pagedParams: $pagedParams) {
@@ -51,7 +57,7 @@ describe('Order resolver', () => {
 
     const getOrder = async (orderId: number): Promise<TOrder> => {
         const path = GraphQLPaths.Order.getOneById;
-        const res = await server.executeOperation({
+        const res = await query({
             query: gql`
             query testGetOrderById($id: Int!) {
                 ${path}(id: $id) {
@@ -95,7 +101,7 @@ describe('Order resolver', () => {
             cartTotalPrice: 111.222,
         }
 
-        const res = await server.executeOperation({
+        const res = await query({
             query: gql`
               mutation testUpdateOrder($id: Int!, $data: OrderInput!) {
                   ${path}(id: $id, data: $data) {
@@ -142,7 +148,7 @@ describe('Order resolver', () => {
             cartTotalPrice: 111.222,
         }
 
-        const res = await server.executeOperation({
+        const res = await query({
             query: gql`
               mutation testCreateOrder($data: OrderInput!) {
                   ${path}(data: $data) {
@@ -187,7 +193,7 @@ describe('Order resolver', () => {
         expect(data1.id).toBeTruthy();
         const path = GraphQLPaths.Order.delete;
 
-        const res = await server.executeOperation({
+        const res = await query({
             query: gql`
                 mutation testDeleteOrder($id: Int!) {
                     ${path}(id: $id)
@@ -204,7 +210,7 @@ describe('Order resolver', () => {
         }
         expect(success === true).toBeTruthy();
 
-        const data2 = await getOrder(4);
+        const data2 = await getOrder(4).catch(() => null);
 
         expect(!data2?.id).toBeTruthy();
     });

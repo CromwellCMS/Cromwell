@@ -33,7 +33,7 @@ async function main(): Promise<void> {
 
         const getErrorCallback = (message: string) => (err) => {
             logger.error(message, err);
-            res.writeHead(500, { 'Content-Type': 'text/plain' });
+            res.writeHead(500, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({
                 message,
                 code: 500,
@@ -47,7 +47,7 @@ async function main(): Promise<void> {
                     target: `http://localhost:${serverPort}`
                 }, getErrorCallback('INTERNAL SERVER ERROR. Proxy: Server is down'));
             } else {
-                res.writeHead(500, { 'Content-Type': 'text/plain' });
+                res.writeHead(500, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({
                     message: 'INTERNAL SERVER ERROR. Proxy: Server is down',
                     code: 500,

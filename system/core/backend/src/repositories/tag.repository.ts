@@ -1,11 +1,9 @@
-import { TDeleteManyInput, TPagedList, TPagedParams, TTag, TTagInput } from '@cromwell/core';
+import { TBaseFilter, TDeleteManyInput, TPagedList, TPagedParams, TTag, TTagInput } from '@cromwell/core';
 import { EntityRepository, SelectQueryBuilder } from 'typeorm';
 
 import { checkEntitySlug, getPaged, handleBaseInput, handleCustomMetaInput } from '../helpers/base-queries';
 import { getLogger } from '../helpers/logger';
 import { Tag } from '../models/entities/tag.entity';
-import { BaseFilterInput } from '../models/filters/base-filter.filter';
-import { PagedParamsInput } from '../models/inputs/paged-params.input';
 import { BaseRepository } from './base.repository';
 
 const logger = getLogger();
@@ -22,7 +20,7 @@ export class TagRepository extends BaseRepository<Tag> {
         return this.getPaged(params)
     }
 
-    async getTagById(id: number): Promise<Tag | undefined> {
+    async getTagById(id: number): Promise<Tag> {
         logger.log('TagRepository::getTagById id: ' + id);
         return this.getById(id);
     }
@@ -32,7 +30,7 @@ export class TagRepository extends BaseRepository<Tag> {
         return this.findByIds(ids);
     }
 
-    async getTagBySlug(slug: string): Promise<Tag | undefined> {
+    async getTagBySlug(slug: string): Promise<Tag> {
         logger.log('TagRepository::getTagBySlug slug: ' + slug);
         return this.getBySlug(slug);
     }
@@ -82,19 +80,21 @@ export class TagRepository extends BaseRepository<Tag> {
         return true;
     }
 
-    applyTagFilter(qb: SelectQueryBuilder<Tag>, filterParams?: BaseFilterInput) {
+    applyTagFilter(qb: SelectQueryBuilder<Tag>, filterParams?: TBaseFilter) {
         this.applyBaseFilter(qb, filterParams)
         return qb;
     }
 
-    async getFilteredTags(pagedParams?: PagedParamsInput<Tag>, filterParams?: BaseFilterInput): Promise<TPagedList<Tag>> {
+    async getFilteredTags(pagedParams?: TPagedParams<TTag>, filterParams?: TBaseFilter): Promise<TPagedList<Tag>> {
         const qb = this.createQueryBuilder(this.metadata.tablePath);
         qb.select();
         this.applyTagFilter(qb, filterParams);
         return await getPaged<Tag>(qb, this.metadata.tablePath, pagedParams);
     }
 
-    async deleteManyFilteredTags(input: TDeleteManyInput, filterParams?: BaseFilterInput): Promise<boolean | undefined> {
+    async deleteManyFilteredTags(input: TDeleteManyInput, filterParams?: TBaseFilter): Promise<boolean> {
+        if (!filterParams) return this.deleteMany(input);
+        
         const qbSelect = this.createQueryBuilder(this.metadata.tablePath).select([`${this.metadata.tablePath}.id`]);
         this.applyTagFilter(qbSelect, filterParams);
         this.applyDeleteMany(qbSelect, input);

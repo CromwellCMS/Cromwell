@@ -1,6 +1,8 @@
-import { resolvePageRoute, serviceLocator, TProductVariant, TProduct, TStockStatus, getRandStr } from '@cromwell/core';
-import { Autocomplete, Grid, TextField, Tooltip } from '@mui/material';
+import { getRandStr, resolvePageRoute, serviceLocator, TProduct, TProductVariant, TStockStatus } from '@cromwell/core';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import { Autocomplete, Checkbox, FormControlLabel, FormGroup, Grid, TextField, Tooltip } from '@mui/material';
 import React, { useEffect } from 'react';
+import { debounce } from 'throttle-debounce';
 
 import { GalleryPicker } from '../../components/galleryPicker/GalleryPicker';
 import { Select } from '../../components/select/Select';
@@ -8,8 +10,6 @@ import { getEditorData, getEditorHtml, initTextEditor } from '../../helpers/edit
 import { useForceUpdate } from '../../helpers/forceUpdate';
 import { NumberFormatCustom } from '../../helpers/NumberFormatCustom';
 import styles from './Product.module.scss';
-import { debounce } from 'throttle-debounce';
-
 
 const MainInfoCard = (props: {
     product: TProduct | TProductVariant,
@@ -104,6 +104,7 @@ const MainInfoCard = (props: {
                     onChange={(e) => { handleChange('sku', e.target.value) }}
                 />
             </Grid>
+            <Grid item xs={12} sm={6}></Grid>
             <Grid item xs={12} sm={6}>
                 <Select
                     fullWidth
@@ -113,6 +114,31 @@ const MainInfoCard = (props: {
                     onChange={(e) => { handleChange('stockStatus', e.target.value) }}
                     options={['In stock', 'Out of stock', 'On backorder'] as TStockStatus[]}
                 />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+                <TextField label="Stock amount" variant="standard"
+                    value={product.stockAmount ?? ''}
+                    className={styles.textField}
+                    type="number"
+                    onChange={(e) => {
+                        let val = parseInt(e.target.value);
+                        if (isNaN(val)) val = null;
+                        if (val && val < 0) val = 0;
+                        handleChange('stockAmount', val);
+                    }}
+                />
+            </Grid>
+            <Grid item xs={12} sm={12} style={{ display: 'flex', alignItems: 'center' }}>
+                <FormGroup>
+                    <FormControlLabel control={<Checkbox defaultChecked />}
+                        label="Manage stock"
+                        checked={!!product?.manageStock}
+                        onChange={() => handleChange('manageStock', !product?.manageStock)}
+                    />
+                </FormGroup>
+                <Tooltip title="Automatically manage stock amount when new orders placed">
+                    <InfoOutlinedIcon />
+                </Tooltip>
             </Grid>
             <Grid item xs={12} sm={6}>
                 <TextField label="Price" variant="standard"

@@ -23,7 +23,6 @@ const ProductPage = () => {
     const { id: productId } = useParams<{ id: string }>();
     const client = getGraphQLClient();
     const [isLoading, setIsLoading] = useState(false);
-    // const [product, setProdData] = useState<TProduct | null>(null);
     const [attributes, setAttributes] = useState<TAttribute[]>([]);
 
     const [activeTabNum, setActiveTabNum] = React.useState(0);
@@ -74,7 +73,7 @@ const ProductPage = () => {
                         stockAmount
                         stockStatus
                         manageStock
-                        categories(pagedParams: {pageSize: 9999}) {
+                        categories(pagedParams: { pageSize: 10000 }) {
                             id
                         }
                         customMeta (keys: ${JSON.stringify(getCustomMetaKeysFor(EDBEntity.Product))})
@@ -128,8 +127,8 @@ const ProductPage = () => {
 
     const getAttributes = async () => {
         try {
-            const attr = await client?.getAttributes();
-            if (attr) setAttributes(attr);
+            const attr = await client?.getAttributes({ pagedParams: { pageSize: 1000 } });
+            if (attr?.elements) setAttributes(attr.elements);
         } catch (e) { console.error(e) }
     }
 
@@ -179,6 +178,7 @@ const ProductPage = () => {
                 images: product.images,
                 stockStatus: product.stockStatus ?? 'In stock',
                 stockAmount: product.stockAmount,
+                manageStock: product.manageStock,
                 description: product.description,
                 descriptionDelta: product.descriptionDelta,
                 slug: product.slug,
@@ -200,6 +200,7 @@ const ProductPage = () => {
                     descriptionDelta: variant.descriptionDelta,
                     stockAmount: variant.stockAmount,
                     stockStatus: variant.stockStatus,
+                    manageStock: variant.manageStock,
                     attributes: variant.attributes,
                 })),
                 customMeta: Object.assign({}, product.customMeta, await getCustomMetaFor(EDBEntity.Product)),
