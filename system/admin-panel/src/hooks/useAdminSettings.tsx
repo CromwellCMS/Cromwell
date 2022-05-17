@@ -7,7 +7,7 @@ import { toast } from "../components/toast/toast";
 const client = getRestApiClient()
 
 type AsyncReturnType<T extends (...args: any) => Promise<any>> =
-    T extends (...args: any) => Promise<infer R> ? R : any
+  T extends (...args: any) => Promise<infer R> ? R : any
 
 type CustomEntityType = ArrayElement<TAdminCmsSettingsType["customEntities"]>;
 
@@ -15,13 +15,13 @@ export type TAdminCmsSettingsType = AsyncReturnType<typeof client.getAdminCmsSet
 
 const uniqBy = (arr: any[], predicate?: any) => {
   const cb = typeof predicate === 'function' ? predicate : (o) => o[predicate];
-  
+
   return [...arr.reduce((map, item) => {
-    const key = (item === null || item === undefined) ? 
+    const key = (item === null || item === undefined) ?
       item : cb(item);
-    
+
     map.has(key) || map.set(key, item);
-    
+
     return map;
   }, new Map()).values()];
 };
@@ -31,7 +31,7 @@ const useAdminSettingsContext = () => {
   const [adminSettings, setAdminSettings] = useState<TAdminCmsSettingsType>(null);
   const [roles, setRoles] = useState<TRole[]>([]);
   const [permissions, setPermissions] = useState<TPermission[]>([]);
-  
+
   const getAdminCmsSettings = useCallback(async () => {
     const client = getRestApiClient()
 
@@ -61,7 +61,7 @@ const useAdminSettingsContext = () => {
   }, [adminSettings, setStoreItem])
 
   const getRoles = useCallback(async () => {
-    const rolesRes = await getGraphQLClient().getRoles({ pageNumber: 0, pageSize: 100 })
+    const rolesRes = await getGraphQLClient().getRoles({ pagedParams: { pageNumber: 0, pageSize: 100 } })
 
     setRoles(rolesRes.elements)
   }, [])
@@ -177,7 +177,7 @@ const useAdminSettingsContext = () => {
     const newSettings: TAdminCmsSettingsType = {
       ...old,
       customFields: [
-        ...(old.customFields?.filter(k => k.entityType !== entityType)||[]),
+        ...(old.customFields?.filter(k => k.entityType !== entityType) || []),
         ...customFields
       ],
     }

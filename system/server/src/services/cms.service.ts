@@ -473,6 +473,8 @@ ${content}
             smtpConnectionString: input.smtpConnectionString,
             customFields: input.customFields,
             customEntities: input.customEntities,
+            signupEnabled: input.signupEnabled,
+            signupRoles: input.signupRoles,
         }
 
         entity.modules = {
