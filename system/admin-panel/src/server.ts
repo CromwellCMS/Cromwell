@@ -1,6 +1,7 @@
 import { bundledModulesDirName, setStoreItem } from '@cromwell/core';
 import {
     adminPanelMessages,
+    getAdminPanelDir,
     getAdminPanelServiceBuildDir,
     getAdminPanelStaticDir,
     getAdminPanelTempDir,
@@ -20,7 +21,6 @@ import normalizePath from 'normalize-path';
 import { resolve } from 'path';
 import symlinkDir from 'symlink-dir';
 import yargs from 'yargs-parser';
-
 
 const start = async () => {
     const args = yargs(process.argv.slice(2));
@@ -74,32 +74,15 @@ const start = async () => {
     await app.register(middie);
 
     if (isDevelopment) {
-        const webpack = require('webpack');
-        const webpackConfig = require('../webpack.config');
-        const chalk = require('react-dev-utils/chalk');
-        const compiler = webpack(webpackConfig);
+        const { runRollupCompiler, runWebpackCompiler } = require(resolve(getAdminPanelDir(),
+            './src/helpers/compiler.js'));
 
-        compiler.hooks.watchRun.tap('adminPanelStart', () => {
-            console.log(chalk.cyan('\r\nBegin admin panel compile at ' + new Date() + '\r\n'));// eslint-disable-line
-        });
-        compiler.hooks.done.tap('adminPanelDone', () => {
-            setTimeout(() => {
-                console.log(chalk.cyan('\r\nEnd admin panel compile at ' + new Date() + '\r\n'));// eslint-disable-line
-            }, 100)
-        });
+        // Start Webpack watcher
+        runWebpackCompiler();
 
-        compiler.watch({}, (err, stats) => {
-            if (err) console.error(err);
-            console.log(stats?.toString({ // eslint-disable-line
-                chunks: false,
-                colors: true
-            }));
-        });
-        // app.use(require("webpack-dev-middleware")(compiler, {
-        //     publicPath: webpackConfig.output.publicPath
-        // }));
-
-        // app.use(require("webpack-hot-middleware")(compiler));
+        // Since we use `swc` for Typescript compilation, it will not make any type checks.
+        // Run TSC in the background to see TS error.
+        runRollupCompiler();
     }
 
     app.use(compress());

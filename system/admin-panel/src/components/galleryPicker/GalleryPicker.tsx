@@ -63,7 +63,7 @@ export class GalleryPicker extends Component<GalleryPickerProps, {
         this.props.onChange?.([]);
     }
 
-    private handleShowLink = (index: number, event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    private handleShowLink = (index: number, event: React.MouseEvent<Element, MouseEvent>) => {
         const images = [...(this.props.images ?? this.uncontrolledInput)];
         this.setState({
             editableLink: index,
@@ -125,10 +125,10 @@ export class GalleryPicker extends Component<GalleryPickerProps, {
                     <p className="font-bold pb-1 pl-[2px] text-gray-700">{this.props.label}</p>
                 )}
                 {images?.length === 0 && <div className="flex h-[150px] w-full top-6 left-0 z-10 absolute">
-                        <span className="font-bold mx-auto text-base p-1 text-gray-700 self-center">
-                            No Images. Tap on + to add an image
-                        </span>
-                    </div>}
+                    <span className="font-bold mx-auto text-base p-1 text-gray-700 self-center">
+                        No Images. Tap on + to add an image
+                    </span>
+                </div>}
                 <ResponsiveGridLayout
                     margin={[0, 0]}
                     isResizable={false}
@@ -159,8 +159,8 @@ export class GalleryPicker extends Component<GalleryPickerProps, {
                             />
                             {this.props.editLink && (
                                 <LinkIcon
-                                onClick={(event) => this.handleShowLink(index, event)}
-                                className="rounded-md cursor-pointer h-7 mr-2 p-1 w-7 self-center hover:bg-indigo-100" />
+                                    onClick={(event) => this.handleShowLink(index, event)}
+                                    className="rounded-md cursor-pointer h-7 mr-2 p-1 w-7 self-center hover:bg-indigo-100" />
                             )}
                             <TrashIcon
                                 onClick={() => this.handleRemoveImage(index)}

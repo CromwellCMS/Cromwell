@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const resolveFrom = require('resolve-from');
 const { getAdminPanelDir } = require('@cromwell/core-backend/dist/helpers/paths');
 const normalizePath = require('normalize-path');
+
 const styleLoaderPath = resolveFrom(getAdminPanelDir(), 'style-loader');
 const cssLoaderPath = resolveFrom(getAdminPanelDir(), 'css-loader');
 const sassLoaderPath = resolveFrom(getAdminPanelDir(), 'sass-loader');
@@ -12,6 +13,7 @@ const isProduction = buildMode === 'production';
 const styleLoaderOptions = {
     attributes: { 'data-meta': 'crw-admin-style' }
 }
+
 
 const entry = [normalizePath(path.resolve(__dirname, 'src/index.ts'))];
 // if (!isProduction) {

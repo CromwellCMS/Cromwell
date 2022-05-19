@@ -328,10 +328,11 @@ export class CGraphQLClient {
 
     /** @internal */
     public createGetMany<TEntity, TFilter>(entityName: TDBEntity, nativeFragment: DocumentNode,
-        nativeFragmentName: string, filterName: string, path?: string): ((options: TGetFilteredOptions<TEntity, TFilter>) => Promise<TPagedList<TEntity>>) {
+        nativeFragmentName: string, filterName: string, path?: string): ((options?: TGetFilteredOptions<TEntity, TFilter>) => Promise<TPagedList<TEntity>>) {
         path = path ?? GraphQLPaths[entityName].getMany;
 
-        return ({ pagedParams, filterParams, customFragment, customFragmentName }) => {
+        return (options) => {
+            const { pagedParams, filterParams, customFragment, customFragmentName } = options ?? {};
             const fragment = customFragment ?? nativeFragment;
             const fragmentName = customFragmentName ?? nativeFragmentName;
 

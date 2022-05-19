@@ -72,12 +72,12 @@ const main = () => {
 
                 if (proc.stderr && proc.stderr.on) {
                     proc.stderr.on('data', (data) => {
-                        console.log(data.toString ? data.toString() : data);
+                        console.error(data.toString ? data.toString() : data); // eslint-disable-line
                     });
                 }
                 if (proc.stdout && proc.stdout.on) {
                     proc.stdout.on('data', (data) => {
-                        console.log(data.toString ? data.toString() : data);
+                        console.log(data.toString ? data.toString() : data); // eslint-disable-line
                     });
                 }
 

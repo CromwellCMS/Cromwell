@@ -12,6 +12,7 @@
     ],
     "baseUrl": ".",
     "jsx": "react",
+    "outDir": "build",
     "moduleResolution": "node",
     "noImplicitAny": false,
     "allowSyntheticDefaultImports": true,
@@ -27,10 +28,14 @@
   "exclude": [
     "node_modules",
     ".cromwell",
-    "build"
+    "build",
+    "./built/**/*",
+    "./.cromwell/**/*",
+    "./node_modules/**/*",
+    "src/helpers/compiler.js"
   ],
   "include": [
     "src/**/*.ts",
-    "src/**/*.tsx"
+    "src/**/*.tsx",
   ]
 }

@@ -25,6 +25,7 @@ export class AdminCmsSettingsDto extends CmsSettingsDto {
     @ApiProperty()
     modules?: TCmsEnabledModules;
 
+    @ApiProperty()
     signupEnabled?: boolean;
 
     @ApiProperty()

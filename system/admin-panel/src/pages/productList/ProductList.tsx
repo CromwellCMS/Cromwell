@@ -88,9 +88,8 @@ const ProductTableHead = () => {
             {({ open }) => (
               <>
                 <Popover.Button
-                  className={`${
-                    open ? "text-indigo-700" : ""
-                  } font-bold flex-none`}>
+                  className={`${open ? "text-indigo-700" : ""
+                    } font-bold flex-none`}>
                   <TableIcon className="h-5 mr-1 bottom-[1.5px] w-5 relative inline" />
                   <span className="rounded-lg bg-indigo-200 mr-1 px-1">
                     {columns.length}
@@ -168,9 +167,8 @@ const ProductTableHead = () => {
                   {...column.getResizerProps()}
                   className="w-1 group">
                   <div
-                    className={`right-0 bg-indigo-400 group-hover:bg-indigo-600 w-[2px] h-full absolute top-0 z-1 touch-none ${
-                      column.isResizing ? "bg-red-600" : ""
-                    }`}
+                    className={`right-0 bg-indigo-400 group-hover:bg-indigo-600 w-[2px] h-full absolute top-0 z-1 touch-none ${column.isResizing ? "bg-red-600" : ""
+                      }`}
                   />
                 </div>
               )}
@@ -204,7 +202,7 @@ const TableData = ({
     console.log(listRef.current)
     console.log("scrolling")
   }, [page, listRef?.current])
-  
+
   return (
     <List
       height={height}
@@ -227,7 +225,7 @@ const TableData = ({
             <div
               id={`row-${index}`}
               key={index}
-              className={`align-middle self-center ${index % 2 === 0 ? "bg-gray-100": ""} hover:bg-indigo-100 first:mt-2 group`}
+              className={`align-middle self-center ${index % 2 === 0 ? "bg-gray-100" : ""} hover:bg-indigo-100 first:mt-2 group`}
               style={{ ...style, ...rowStyle }}
               {...rowProps}>
               {row.cells.map((cell, cix) => {
@@ -235,9 +233,8 @@ const TableData = ({
                   <div
                     key={row.values.id}
                     {...cell.getCellProps()}
-                    className={`px-1 align-middle self-center ${
-                      condensed ? "text-xs" : ""
-                    }`}>
+                    className={`px-1 align-middle self-center ${condensed ? "text-xs" : ""
+                      }`}>
                     {cell.render("Cell")}
                   </div>
                 );
@@ -522,8 +519,8 @@ export function ProductTable() {
   }, []);
 
   const init = async () => {
-    const attributes = await client.getAttributes();
-    setAttributes(attributes);
+    const attributes = await client.getAttributes({ pagedParams: { pageSize: 1000 } });
+    setAttributes(attributes?.elements);
   };
 
   const handleToggleFilter = () => {
@@ -552,7 +549,7 @@ export function ProductTable() {
         listLabel="Products"
         entityLabel="Product"
         nameProperty="name"
-        getManyFiltered={async (options) => {
+        getMany={async (options) => {
           if (!options.filterParams)
             options.filterParams = {};
           options.filterParams.minPrice =
@@ -564,7 +561,7 @@ export function ProductTable() {
           options.filterParams.nameSearch =
             attributesFilterInput.current?.nameSearch;
 
-          const data = await client.getFilteredProducts(
+          const data = await client.getProducts(
             options,
           );
           filterInstRef.current?.updateFilterMeta(data);
@@ -573,9 +570,6 @@ export function ProductTable() {
         }}
         deleteOne={client.deleteProduct}
         deleteMany={client.deleteManyProducts}
-        deleteManyFiltered={
-          client.deleteManyFilteredProducts
-        }
         getPageListInstance={(inst) => {
           entityListPageRef.current = inst;
           initialFilterRef.current = Object.assign(

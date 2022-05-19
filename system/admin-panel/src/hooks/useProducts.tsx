@@ -45,7 +45,7 @@ const client = getRestApiClient();
 const gqlClient = getGraphQLClient();
 const cstore = getCStore();
 
-const defaultColumns: (x:any) => Column<TProduct>[] = ({ condensed = false }) => {
+const defaultColumns: (x: any) => any[] = ({ condensed = false }) => {
 
   return [
     {
@@ -60,7 +60,7 @@ const defaultColumns: (x:any) => Column<TProduct>[] = ({ condensed = false }) =>
           <img
             src={value}
             alt={row?.values?.name}
-            className={`rounded-lg ${condensed ? "h-8 w-8" :"h-14 w-14"}`}
+            className={`rounded-lg ${condensed ? "h-8 w-8" : "h-14 w-14"}`}
           />
         );
       },
@@ -126,42 +126,43 @@ const defaultColumns: (x:any) => Column<TProduct>[] = ({ condensed = false }) =>
       .map((col) => {
         const isDate = col.type === "Date" || col.type === "Datetime"
         return ({
-        Header: col.label,
-        accessor: col.name,
-        minWidth: isDate ? 100 : Number(col.minWidth),
-        maxWidth: isDate ? 100 : Number(col.maxWidth),
-        width: isDate ? 100 : Number(col.width),
-        disableResizing: false,
-        Cell: ({ value }) => {
-          // col.type
-          if (
-            isDate
-          ) {
-            return <span className="">{timeSince(value)}</span>;
-          }
+          Header: col.label,
+          accessor: col.name,
+          minWidth: isDate ? 100 : Number(col.minWidth),
+          maxWidth: isDate ? 100 : Number(col.maxWidth),
+          width: isDate ? 100 : Number(col.width),
+          disableResizing: false,
+          Cell: ({ value }) => {
+            // col.type
+            if (
+              isDate
+            ) {
+              return <span className="">{timeSince(value)}</span>;
+            }
 
-          return value;
-        },
-      })}),
-      {
-        Header: "Actions",
-        accessor: "pageTitle",
-        minWidth: 30,
-        maxWidth: 100,
-        width: 120,
-        disableResizing: true,
-        Cell: ({ row }) => {
-          return <Link to={`products/${row.original.id}`}>
-            <PencilIcon className="h-4 text-gray-300 w-4 float-right group-hover:text-indigo-700" />
-          </Link>
-        }
-      },
+            return value;
+          },
+        })
+      }),
+    {
+      Header: "Actions",
+      accessor: "pageTitle",
+      minWidth: 30,
+      maxWidth: 100,
+      width: 120,
+      disableResizing: true,
+      Cell: ({ row }) => {
+        return <Link to={`products/${row.original.id}`}>
+          <PencilIcon className="h-4 text-gray-300 w-4 float-right group-hover:text-indigo-700" />
+        </Link>
+      }
+    },
   ];
 };
 
 export function useProducts<
   TFilterType extends TBaseEntityFilter,
->() {
+  >() {
   const [products, setProducts] = useState<TProduct[]>([]);
   const [loading, setLoading] = useState(false);
   const [condensed, setCondensed] = useState(false);
@@ -172,7 +173,7 @@ export function useProducts<
   const [page, setPage] = useState(1);
   const [maxPage, setMaxPage] = useState(1);
   const [loadedPages, setLoadedPages] = useState({});
-  const tableInstance = useTable<TProduct>(
+  const tableInstance = useTable(
     {
       columns,
       data: products,
@@ -192,7 +193,7 @@ export function useProducts<
     useState<TFilterType>();
   const [filterParams, setFilterParams] =
     useState<TFilterType>();
-  
+
   const [orderBy, setOrderBy] =
     useState<keyof TBasePageEntity>("id");
   const [orderDirection, setOrderDirection] = useState<
@@ -203,14 +204,14 @@ export function useProducts<
   const [attributes, setAttributes] = useState(null);
   const [nameSearch, setNameSearch] = useState("");
   const [totalProducts, setTotalProducts] = useState(0);
-  const [,forceUpdate] = useReducer((d) => d+1, 0);
+  const [, forceUpdate] = useReducer((d) => d + 1, 0);
 
   const getProducts = useCallback(
     async (pageNo: number = page) => {
       setLoading(true);
 
       if (!loadedPages[pageNo]) {
-        const data = await gqlClient.getFilteredProducts({
+        const data = await gqlClient.getProducts({
           pagedParams: {
             pageSize: 25,
             pageNumber: pageNo,
@@ -224,9 +225,9 @@ export function useProducts<
             nameSearch,
           },
         });
-  
+
         // setProducts(data.elements);
-        setLoadedPages({ ...loadedPages, [pageNo] : true })
+        setLoadedPages({ ...loadedPages, [pageNo]: true })
         if (pageNo > page) {
           setProducts([...products, ...data.elements]);
         } else if (pageNo < page) {

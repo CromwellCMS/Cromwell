@@ -12,6 +12,9 @@ import {
 import {
     BasePageEntity,
     cmsPackageName,
+    DashboardEntity,
+    DashboardLayout,
+    getCmsConfig,
     getCmsEntity,
     getCmsInfo,
     getCmsModuleInfo,
@@ -25,13 +28,10 @@ import {
     PostRepository,
     ProductCategoryRepository,
     ProductRepository,
-    DashboardLayout,
-    DashboardEntity,
     readCmsModules,
     RoleRepository,
     runShellCommand,
     TagRepository,
-    getCmsConfig,
 } from '@cromwell/core-backend';
 import { getCentralServerClient } from '@cromwell/core-frontend';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
@@ -47,7 +47,7 @@ import * as util from 'util';
 
 import { AdminCmsSettingsDto } from '../dto/admin-cms-settings.dto';
 import { CmsStatusDto } from '../dto/cms-status.dto';
-import { DashboardSettingsDto } from "../dto/dashboard-settings.dto";
+import { DashboardSettingsDto } from '../dto/dashboard-settings.dto';
 import { SetupDto } from '../dto/setup.dto';
 import { serverFireAction } from '../helpers/server-fire-action';
 import { childSendMessage } from '../helpers/server-manager';
@@ -297,9 +297,13 @@ export class CmsService {
             );
         })
 
-        const outputEntity = async (repo: Repository<any>, pageName: TDefaultPageName) => {
+        const outputEntity = async (repo: Repository<any>, pageName: TDefaultPageName, conditions?: Record<string, any>) => {
             const entities: BasePageEntity[] = await repo.find({
                 select: ['slug', 'id', 'updateDate', 'createDate'],
+                where: {
+                    isEnabled: true,
+                    ...(conditions ?? {}),
+                },
             });
 
             entities.forEach(ent => {
@@ -312,7 +316,7 @@ export class CmsService {
 
         }
 
-        await outputEntity(getCustomRepository(PostRepository), 'post');
+        await outputEntity(getCustomRepository(PostRepository), 'post', { published: true });
         await outputEntity(getCustomRepository(ProductRepository), 'product');
         await outputEntity(getCustomRepository(ProductCategoryRepository), 'category');
         await outputEntity(getCustomRepository(TagRepository), 'tag');
@@ -395,14 +399,14 @@ ${content}
 
         if (!dashboard) {
             return config!.defaultSettings!.dashboardSettings as DashboardSettingsDto
-        } 
+        }
 
         return dashboard;
     }
 
     public async getDashboardLayout(userId: number): Promise<DashboardSettingsDto | undefined> {
         const repo = getCustomRepository(DashboardLayout.repository)
-        let dashboard: DashboardSettingsDto|undefined = await repo.findOne({
+        let dashboard: DashboardSettingsDto | undefined = await repo.findOne({
             where: {
                 userId,
             }
@@ -420,7 +424,7 @@ ${content}
         }
     }
 
-    public async setDashboardLayout(userId: number, layout: TCmsDashboardLayout): Promise<DashboardSettingsDto|undefined> {
+    public async setDashboardLayout(userId: number, layout: TCmsDashboardLayout): Promise<DashboardSettingsDto | undefined> {
         const repo = getCustomRepository(DashboardLayout.repository)
         let existingEntity = await repo.findOne({
             where: {

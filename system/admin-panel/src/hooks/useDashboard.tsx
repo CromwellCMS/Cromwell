@@ -6,13 +6,13 @@ import { WidgetErrorBoundary } from "../helpers/WidgetErrorBoundary";
 export const getThirdPartyWidget = <T extends WidgetNames>(widgetName: T, widgetProps?: WidgetTypes[T]) => {
   const widgets = getWidgets(widgetName) ?? {};
   return Object.keys(widgets).map(pluginName => {
-      const Comp = widgets[pluginName];
-      if (!Comp) return null;
-      return (
-          <WidgetErrorBoundary widgetName={pluginName} key={pluginName}>
-              <Comp {...(typeof widgetProps !== 'object' ? {} as any : widgetProps)} />
-          </WidgetErrorBoundary>
-      );
+    const Comp = widgets[pluginName];
+    if (!Comp) return null;
+    return (
+      <WidgetErrorBoundary widgetName={pluginName} key={pluginName}>
+        <Comp {...(typeof widgetProps !== 'object' ? {} as any : widgetProps)} />
+      </WidgetErrorBoundary>
+    );
   }).filter(Boolean);
 }
 
@@ -28,7 +28,7 @@ const defaultWidgetList = [
 
 const defaultWidgetKeys = defaultWidgetList.map(k => k.id)
 
-type ArrayElement<ArrayType extends readonly unknown[]> = 
+type ArrayElement<ArrayType extends readonly unknown[]> =
   ArrayType extends readonly (infer ElementType)[] ? ElementType : never;
 
 const getDefaultLayout: (w: string) => ArrayElement<TCmsDashboardSingleLayout> = (widgetKey: string) => {
@@ -48,11 +48,11 @@ const getDefaultLayout: (w: string) => ArrayElement<TCmsDashboardSingleLayout> =
 const useDashboardContext = () => {
   const cstore = getCStore();
   const [stats, setStats] = useState<TCmsStats>();
-  const [reviews, setReviews]= useState<TProductReview[]>([]);
+  const [reviews, setReviews] = useState<TProductReview[]>([]);
   const [isLoadingStats, setLoadingStats] = useState(true);
   const [isLoadingReviews, setLoadingReviews] = useState(true);
-  const [layout, setLayout] = useState<TCmsDashboardLayout|undefined>();
-  const [lastSnapshot, setLastSnapshot] = useState<TCmsDashboardLayout|undefined>();
+  const [layout, setLayout] = useState<TCmsDashboardLayout | undefined>();
+  const [lastSnapshot, setLastSnapshot] = useState<TCmsDashboardLayout | undefined>();
   const [isLoadingLayout, setLoading] = useState(true);
   const [customWidgets, setCustomWidgets] = useState<JSX.Element[]>([]);
   const [widgetList, setWidgetList] = useState<ArrayElement<typeof defaultWidgetList>[]>(defaultWidgetList);
@@ -63,7 +63,7 @@ const useDashboardContext = () => {
       setWidgetList(o => ([...o, { id: pluginName, title: pluginName }]))
       setCustomWidgets(getWidgetsForPlace('Dashboard', {
         stats,
-        setSize: () => {},
+        setSize: () => { },
       }))
     })
   }, [])
@@ -72,7 +72,9 @@ const useDashboardContext = () => {
     setLoadingReviews(true)
     try {
       const nReviews = await getGraphQLClient()?.getProductReviews({
-        pageSize: 10,
+        pagedParams: {
+          pageSize: 10,
+        }
       })
       if (nReviews?.elements) {
         setReviews(nReviews.elements)
@@ -100,7 +102,7 @@ const useDashboardContext = () => {
         })).reverse()
         setStats(nStats);
       }
-    } catch(e) {
+    } catch (e) {
 
     }
     setLoadingStats(false);
@@ -132,7 +134,7 @@ const useDashboardContext = () => {
       if (oldLayout.lg.find(k => k.i === widgetKey)) {
         return oldLayout
       }
-      
+
       return ({
         xxs: [...oldLayout?.xxs, (getDefaultLayout(widgetKey))],
         xs: [...oldLayout?.xs, (getDefaultLayout(widgetKey))],

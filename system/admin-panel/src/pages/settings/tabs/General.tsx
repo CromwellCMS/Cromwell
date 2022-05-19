@@ -59,7 +59,7 @@ export default function General(props: any) {
                     onChange={(val) => changeSettings('logo', val)}
                     value={settings?.logo}
                     className={styles.imageField}
-                    backgroundSize='80%'
+                    // backgroundSize='80%'
                     showRemove
                 />
             </Grid>

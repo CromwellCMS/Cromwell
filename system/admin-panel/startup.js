@@ -20,12 +20,32 @@ const main = () => {
     }
 
     const buildService = (dev = false) => {
+        // Cleanup old build
+        const fs = require('fs-extra');
+        fs.removeSync(getAdminPanelServiceBuildDir());
+
         spawnSync(`npx --no-install rollup -c`, [],
             { shell: true, stdio: 'inherit', cwd: __dirname });
 
         if (dev) return;
+
+        const cyan = require('rollup/dist/shared/loadConfigFile.js').cyan;
+        console.error(cyan('\nStart bundling at ' + new Date() + '\n'));
+
         spawnSync('npx webpack', [],
             { shell: true, stdio: 'inherit', cwd: __dirname });
+
+        // Move type declarations
+        const declarations = resolve(getAdminPanelServiceBuildDir(), 'types/system/admin-panel/src')
+        if (fs.pathExistsSync(declarations)) {
+            const typesTemp = resolve(getAdminPanelServiceBuildDir(), 'types2');
+            const typesDest = resolve(getAdminPanelServiceBuildDir(), 'types');
+            fs.moveSync(declarations, typesTemp);
+            fs.removeSync(typesDest);
+            fs.moveSync(typesTemp, typesDest);
+        }
+
+        console.error(cyan('\nBundle created at ' + new Date() + '\n'));
     }
 
     if (scriptName === 'build') {
