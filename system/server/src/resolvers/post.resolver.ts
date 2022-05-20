@@ -74,7 +74,7 @@ export class PostResolver {
         @Ctx() ctx: TGraphQLContext,
         @Arg("id", () => Int) id: number,
     ): Promise<TPost> {
-        return getByIdWithFilters('Post', ctx, [], id,
+        return getByIdWithFilters('Post', ctx, [], ['read_posts'], id,
             async (id) => {
                 const post = this.filterDrafts([await this.repository.getPostById(id)], ctx)[0];
                 if (!post) throw new HttpException(`Post ${id} not found!`, HttpStatus.NOT_FOUND);
@@ -87,7 +87,7 @@ export class PostResolver {
         @Ctx() ctx: TGraphQLContext,
         @Arg("slug") slug: string,
     ): Promise<TPost | undefined> {
-        return getBySlugWithFilters('Post', ctx, [], slug,
+        return getBySlugWithFilters('Post', ctx, [], ['read_posts'], slug,
             async (slug) => {
                 const post = this.filterDrafts([await this.repository.getPostBySlug(slug)], ctx)[0];
                 if (!post) throw new HttpException(`Post ${slug} not found!`, HttpStatus.NOT_FOUND);
@@ -101,15 +101,13 @@ export class PostResolver {
         @Arg("pagedParams", { nullable: true }) pagedParams?: PagedParamsInput<TPost>,
         @Arg("filterParams", { nullable: true }) filterParams?: PostFilterInput,
     ): Promise<TPagedList<TPost> | undefined> {
-        return getManyWithFilters('Post', ctx, [], pagedParams, filterParams,
-            (pagedParams, filterParams) => {
-                if (!this.canGetDraft(ctx)) {
-                    // No auth, return only published posts
-                    if (!filterParams) filterParams = {};
-                    filterParams.published === true;
-                }
-                return this.repository.getFilteredPosts(pagedParams, filterParams);
-            });
+        if (!this.canGetDraft(ctx)) {
+            // No auth, return only published posts
+            if (!filterParams) filterParams = {};
+            filterParams.published === true;
+        }
+        return getManyWithFilters('Post', ctx, [], ['read_posts'], pagedParams, filterParams,
+            (...args) => this.repository.getFilteredPosts(...args));
     }
 
     @Authorized<TPermissionName>('create_post')
@@ -155,18 +153,34 @@ export class PostResolver {
     }
 
     @FieldResolver(() => User, { nullable: true })
-    async [authorKey](@Root() post: Post): Promise<TUser | undefined> {
+    async [authorKey](
+        @Ctx() ctx: TGraphQLContext,
+        @Root() post: Post
+    ): Promise<TUser | undefined> {
         try {
-            if (post.authorId)
-                return await this.userRepository.getUserById(post.authorId);
+            if (post.authorId) {
+                const user = await this.userRepository.getUserById(post.authorId);
+                if (user.isEnabled === false && !matchPermissions(ctx.user, ['read_users'])) {
+                    return;
+                }
+                return user;
+            }
         } catch (e) {
             logger.error(e);
         }
     }
 
     @FieldResolver(() => [Tag], { nullable: true })
-    async [tagsKey](@Root() post: Post): Promise<TTag[] | undefined | null> {
-        return this.repository.getTagsOfPost(post.id);
+    async [tagsKey](
+        @Ctx() ctx: TGraphQLContext,
+        @Root() post: Post
+    ): Promise<TTag[] | undefined | null> {
+        const tags = await this.repository.getTagsOfPost(post.id);
+
+        if (!matchPermissions(ctx.user, ['read_tags'])) {
+            return tags?.filter(tag => tag.isEnabled !== false);
+        }
+        return tags;
     }
 
     @FieldResolver(() => GraphQLJSONObject, { nullable: true })

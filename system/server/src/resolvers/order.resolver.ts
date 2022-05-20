@@ -62,7 +62,7 @@ export class OrderResolver {
         @Arg("id", () => Int) id: number,
     ): Promise<TOrder> {
         if (!ctx?.user?.roles?.length) throw new HttpException('Access denied.', HttpStatus.UNAUTHORIZED);
-        const order = await getByIdWithFilters('Order', ctx, ['read_orders', 'read_my_orders'], id,
+        const order = await getByIdWithFilters('Order', ctx, ['read_orders', 'read_my_orders'], ['read_orders'], id,
             (...args) => this.repository.getOrderById(...args));
 
         this.checkUserAccess(ctx, order?.userId);
@@ -75,7 +75,7 @@ export class OrderResolver {
         @Ctx() ctx: TGraphQLContext,
         @Arg("slug") slug: string
     ): Promise<TOrder | undefined> {
-        return getBySlugWithFilters('Order', ctx, ['read_orders'], slug,
+        return getBySlugWithFilters('Order', ctx, ['read_orders'], ['read_orders'], slug,
             (...args) => this.repository.getOrderBySlug(...args));
     }
 
@@ -86,7 +86,7 @@ export class OrderResolver {
         @Arg("pagedParams", { nullable: true }) pagedParams?: PagedParamsInput<TOrder>,
         @Arg("filterParams", { nullable: true }) filterParams?: OrderFilterInput,
     ): Promise<TPagedList<TOrder> | undefined> {
-        return getManyWithFilters('Order', ctx, ['read_orders'], pagedParams, filterParams,
+        return getManyWithFilters('Order', ctx, ['read_orders'], ['read_orders'], pagedParams, filterParams,
             (...args) => this.repository.getFilteredOrders(...args));
     }
 
@@ -98,7 +98,7 @@ export class OrderResolver {
         @Arg("pagedParams", { nullable: true }) pagedParams?: PagedParamsInput<TOrder>
     ): Promise<TPagedList<TOrder> | undefined> {
         this.checkUserAccess(ctx, userId);
-        return getManyWithFilters('Order', ctx, ['read_orders', 'read_my_orders'], pagedParams, { userId },
+        return getManyWithFilters('Order', ctx, ['read_orders', 'read_my_orders'], ['read_orders'], pagedParams, { userId },
             (...args) => this.repository.getFilteredOrders(...args));
     }
 

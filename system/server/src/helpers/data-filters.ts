@@ -1,5 +1,13 @@
-import { TPagedList, TPagedParams, TPermissionName } from '@cromwell/core';
-import { applyDataFilters, DeleteManyInput, TFilterableEntities, TGraphQLContext } from '@cromwell/core-backend';
+import { matchPermissions, TBaseFilter, TPagedList, TPagedParams, TPermissionName } from '@cromwell/core';
+import {
+    applyDataFilters,
+    CustomEntityRepository,
+    DeleteManyInput,
+    TFilterableEntities,
+    TGraphQLContext,
+} from '@cromwell/core-backend';
+import { HttpException, HttpStatus } from '@nestjs/common';
+import { getCustomRepository } from 'typeorm';
 
 import { resetAllPagesCache } from './reset-page';
 
@@ -8,6 +16,7 @@ export const getByIdWithFilters = async <TEntityKey extends keyof TFilterableEnt
     entity: TEntityKey,
     ctx: TGraphQLContext,
     permissions: TPermissionName[],
+    getDisabledPermissions: TPermissionName[],
     id: number,
     getById: (id: number) => Promise<TFilterableEntities[TEntityKey]['entity']>
 ): Promise<TFilterableEntities[TEntityKey]['entity']> => {
@@ -16,18 +25,23 @@ export const getByIdWithFilters = async <TEntityKey extends keyof TFilterableEnt
         user: ctx?.user,
         permissions,
     })).id;
-    return (await applyDataFilters(entity, 'getOneByIdOutput', {
+    const data = (await applyDataFilters(entity, 'getOneByIdOutput', {
         id,
         data: await getById(id),
         user: ctx?.user,
         permissions,
     })).data;
+    if (!matchPermissions(ctx.user, getDisabledPermissions) && data.isEnabled === false) {
+        throw new HttpException(`${entity} ${id} not found!`, HttpStatus.NOT_FOUND);
+    }
+    return data;
 }
 
 export const getBySlugWithFilters = async <TEntityKey extends keyof TFilterableEntities>(
     entity: TEntityKey,
     ctx: TGraphQLContext,
     permissions: TPermissionName[],
+    getDisabledPermissions: TPermissionName[],
     slug: string,
     getBySlug: (slug: string) => Promise<TFilterableEntities[TEntityKey]['entity']>
 ): Promise<TFilterableEntities[TEntityKey]['entity']> => {
@@ -36,24 +50,33 @@ export const getBySlugWithFilters = async <TEntityKey extends keyof TFilterableE
         user: ctx?.user,
         permissions,
     })).slug;
-    return (await applyDataFilters(entity, 'getOneBySlugOutput', {
+    const data = (await applyDataFilters(entity, 'getOneBySlugOutput', {
         slug,
         data: await getBySlug(slug),
         user: ctx?.user,
         permissions,
     })).data;
+    if (!matchPermissions(ctx.user, getDisabledPermissions) && data.isEnabled === false) {
+        throw new HttpException(`${entity} ${slug} not found!`, HttpStatus.NOT_FOUND);
+    }
+    return data;
 }
 
 export const getManyWithFilters = async <TEntityKey extends keyof TFilterableEntities>(
     entity: TEntityKey,
     ctx: TGraphQLContext,
     permissions: TPermissionName[],
+    getDisabledPermissions: TPermissionName[],
     params: TPagedParams<TFilterableEntities[TEntityKey]['entity']> | undefined,
     filter: TFilterableEntities[TEntityKey]['filter'] | undefined,
     getMany: (params?: TPagedParams<TFilterableEntities[TEntityKey]['entity']>,
         filter?: TFilterableEntities[TEntityKey]['filter']) =>
         Promise<TPagedList<TFilterableEntities[TEntityKey]['entity']>>
 ): Promise<TPagedList<TFilterableEntities[TEntityKey]['entity']>> => {
+    if (!matchPermissions(ctx.user, getDisabledPermissions)) {
+        filter = setupFilterForEnabledOnly(filter);
+    }
+
     const result = (await applyDataFilters(entity, 'getManyInput', {
         params,
         filter,
@@ -160,4 +183,15 @@ export const deleteManyWithFilters = async <TEntityKey extends keyof TFilterable
         user: ctx?.user,
         permissions,
     }).then(res => { resetAllPagesCache(); return res; })).success;
+}
+
+export const setupFilterForEnabledOnly = <T extends TBaseFilter>(filter?: T): T => {
+    if (!filter) (filter as any) = {};
+    if (!filter!.filters) filter!.filters = [];
+    filter!.filters.push({
+        key: 'isEnabled',
+        value: getCustomRepository(CustomEntityRepository).getSqlBoolStr(true),
+        exact: true,
+    });
+    return filter!;
 }

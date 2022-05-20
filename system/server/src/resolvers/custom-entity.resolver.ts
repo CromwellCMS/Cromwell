@@ -111,7 +111,8 @@ export class CustomEntityResolver {
         @Arg("id", () => Int) id: number
     ): Promise<TCustomEntity | undefined> {
         const permissions = await this.checkPermissions(entityType, 'read', ctx);
-        return getByIdWithFilters('CustomEntity', ctx, permissions, id,
+        const getAllPermissions = [...new Set([...permissions, 'read_custom_entities'])] as TPermissionName[];
+        return getByIdWithFilters('CustomEntity', ctx, permissions, getAllPermissions, id,
             (...args) => this.repository.getCustomEntityById(...args));
     }
 
@@ -122,7 +123,8 @@ export class CustomEntityResolver {
         @Arg("slug") slug: string
     ): Promise<TCustomEntity | undefined> {
         const permissions = await this.checkPermissions(entityType, 'read', ctx);
-        return getBySlugWithFilters('CustomEntity', ctx, permissions, slug,
+        const getAllPermissions = [...new Set([...permissions, 'read_custom_entities'])] as TPermissionName[];
+        return getBySlugWithFilters('CustomEntity', ctx, permissions, getAllPermissions, slug,
             (...args) => this.repository.getCustomEntityBySlug(...args));
     }
 
@@ -133,7 +135,8 @@ export class CustomEntityResolver {
         @Arg("filterParams", { nullable: true }) filterParams?: CustomEntityFilterInput,
     ): Promise<TPagedList<TCustomEntity> | undefined> {
         const permissions = await this.checkPermissions(filterParams?.entityType, 'read', ctx);
-        return getManyWithFilters('CustomEntity', ctx, permissions, pagedParams, filterParams,
+        const getAllPermissions = [...new Set([...permissions, 'read_custom_entities'])] as TPermissionName[];
+        return getManyWithFilters('CustomEntity', ctx, permissions, getAllPermissions, pagedParams, filterParams,
             (...args) => this.repository.getFilteredCustomEntities(...args));
     }
 

@@ -40,7 +40,7 @@ export class AttributeResolver {
         @Ctx() ctx: TGraphQLContext,
         @Arg("id", () => Int) id: number,
     ): Promise<TAttribute> {
-        return getByIdWithFilters('Attribute', ctx, [], id,
+        return getByIdWithFilters('Attribute', ctx, [], ['read_attributes'], id,
             (...args) => this.repository.getAttribute(...args));
     }
 
@@ -50,7 +50,7 @@ export class AttributeResolver {
         @Arg("pagedParams", { nullable: true }) pagedParams?: PagedParamsInput<TAttribute>,
         @Arg("filterParams", () => BaseFilterInput, { nullable: true }) filterParams?: BaseFilterInput,
     ): Promise<TPagedList<TAttribute> | undefined> {
-        return getManyWithFilters('Attribute', ctx, [], pagedParams, filterParams,
+        return getManyWithFilters('Attribute', ctx, [], ['read_attributes'], pagedParams, filterParams,
             (...args) => this.repository.getFilteredAttributes(...args));
     }
 

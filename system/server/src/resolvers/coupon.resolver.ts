@@ -43,7 +43,7 @@ export class CouponResolver {
         @Ctx() ctx: TGraphQLContext,
         @Arg("id", () => Int) id: number,
     ): Promise<TCoupon | undefined> {
-        return getByIdWithFilters('Coupon', ctx, ['read_coupons'], id,
+        return getByIdWithFilters('Coupon', ctx, ['read_coupons'], ['read_coupons'], id,
             (...args) => this.repository.getCouponById(...args));
     }
 
@@ -54,7 +54,7 @@ export class CouponResolver {
         @Arg("pagedParams", { nullable: true }) pagedParams?: PagedParamsInput<TCoupon>,
         @Arg("filterParams", () => BaseFilterInput, { nullable: true }) filterParams?: BaseFilterInput,
     ): Promise<TPagedList<TCoupon> | undefined> {
-        return getManyWithFilters('Coupon', ctx, ['read_coupons'], pagedParams, filterParams,
+        return getManyWithFilters('Coupon', ctx, ['read_coupons'], ['read_coupons'], pagedParams, filterParams,
             (...args) => this.repository.getFilteredCoupons(...args));
     }
 

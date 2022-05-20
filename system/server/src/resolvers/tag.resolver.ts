@@ -43,7 +43,7 @@ export class TagResolver {
         @Ctx() ctx: TGraphQLContext,
         @Arg("id", () => Int) id: number
     ): Promise<TTag> {
-        return getByIdWithFilters('Tag', ctx, [], id,
+        return getByIdWithFilters('Tag', ctx, [], ['read_tags'], id,
             (...args) => this.repository.getTagById(...args));
     }
 
@@ -52,7 +52,7 @@ export class TagResolver {
         @Ctx() ctx: TGraphQLContext,
         @Arg("slug") slug: string
     ): Promise<TTag> {
-        return getBySlugWithFilters('Tag', ctx, [], slug,
+        return getBySlugWithFilters('Tag', ctx, [], ['read_tags'], slug,
             (...args) => this.repository.getTagBySlug(...args));
     }
 
@@ -62,7 +62,7 @@ export class TagResolver {
         @Arg("pagedParams", { nullable: true }) pagedParams?: PagedParamsInput<TTag>,
         @Arg("filterParams", () => BaseFilterInput, { nullable: true }) filterParams?: BaseFilterInput,
     ): Promise<TPagedList<TTag> | undefined> {
-        return getManyWithFilters('Tag', ctx, [], pagedParams, filterParams,
+        return getManyWithFilters('Tag', ctx, [], ['read_tags'], pagedParams, filterParams,
             (...args) => this.repository.getFilteredTags(...args));
     }
 

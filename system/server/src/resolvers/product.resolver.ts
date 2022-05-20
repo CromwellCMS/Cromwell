@@ -1,12 +1,15 @@
 import {
     EDBEntity,
+    getCmsSettings,
     GraphQLPaths,
+    matchPermissions,
     TPagedList,
     TPermissionName,
     TProduct,
     TProductCategory,
     TProductRating,
     TProductReview,
+    TProductReviewFilter,
 } from '@cromwell/core';
 import {
     AttributeInstance,
@@ -22,6 +25,7 @@ import {
     ProductFilterInput,
     ProductRating,
     ProductRepository,
+    ProductReviewRepository,
     ProductVariant,
     TGraphQLContext,
     UpdateProduct,
@@ -65,7 +69,7 @@ export class ProductResolver {
         @Ctx() ctx: TGraphQLContext,
         @Arg("id", () => Int) id: number
     ): Promise<TProduct> {
-        return getByIdWithFilters('Product', ctx, [], id,
+        return getByIdWithFilters('Product', ctx, [], ['read_products'], id,
             (id) => this.repository.getProductById(id, { withRating: true }));
     }
 
@@ -74,7 +78,7 @@ export class ProductResolver {
         @Ctx() ctx: TGraphQLContext,
         @Arg("slug") slug: string
     ): Promise<TProduct> {
-        return getBySlugWithFilters('Product', ctx, [], slug,
+        return getBySlugWithFilters('Product', ctx, [], ['read_products'], slug,
             (slug) => this.repository.getProductBySlug(slug, { withRating: true }));
     }
 
@@ -84,7 +88,7 @@ export class ProductResolver {
         @Arg("pagedParams", { nullable: true }) pagedParams?: PagedParamsInput<TProduct>,
         @Arg("filterParams", { nullable: true }) filterParams?: ProductFilterInput,
     ): Promise<TPagedList<TProduct>> {
-        return getManyWithFilters('Product', ctx, [], pagedParams, filterParams,
+        return getManyWithFilters('Product', ctx, [], ['read_products'], pagedParams, filterParams,
             (...args) => this.repository.getFilteredProducts(...args));
     }
 
@@ -131,13 +135,35 @@ export class ProductResolver {
     }
 
     @FieldResolver(() => [ProductCategory], { nullable: true })
-    async [categoriesKey](@Root() product: Product, @Arg("pagedParams") pagedParams: PagedParamsInput<TProductCategory>): Promise<TProductCategory[]> {
-        return getCustomRepository(ProductCategoryRepository).getCategoriesOfProduct(product.id, pagedParams);
+    async [categoriesKey](
+        @Ctx() ctx: TGraphQLContext,
+        @Root() product: Product,
+    ): Promise<TProductCategory[]> {
+        let categories = await getCustomRepository(ProductCategoryRepository).getCategoriesOfProduct(product.id);
+
+        if (!matchPermissions(ctx.user, ['read_product_categories'])) {
+            categories = categories?.filter(category => category.isEnabled !== false);
+        }
+        return categories;
     }
 
     @FieldResolver(() => PagedProductReview)
-    async [reviewsKey](@Root() product: Product, @Arg("pagedParams") pagedParams: PagedParamsInput<TProductReview>): Promise<TPagedList<TProductReview>> {
-        return this.repository.getReviewsOfProduct(product.id, pagedParams);
+    async [reviewsKey](
+        @Ctx() ctx: TGraphQLContext,
+        @Root() product: Product,
+        @Arg("pagedParams", { nullable: true }) pagedParams: PagedParamsInput<TProductReview>
+    ): Promise<TPagedList<TProductReview>> {
+        const filterParams: TProductReviewFilter = {
+            productId: product.id,
+        };
+        const settings = await getCmsSettings();
+        if (!matchPermissions(ctx.user, ['read_product_reviews'])) {
+            if (!settings?.showUnapprovedReviews) {
+                filterParams.approved = true;
+            }
+        }
+        return getManyWithFilters('ProductReview', ctx, [], ['read_product_reviews'], pagedParams, filterParams,
+            (...args) => getCustomRepository(ProductReviewRepository).getFilteredProductReviews(...args));
     }
 
     @FieldResolver(() => ProductRating)

@@ -122,7 +122,7 @@ export class ProductRepository extends BaseRepository<Product> {
         }
         if (options.withCategories) {
             product.categories = await getCustomRepository(ProductCategoryRepository)
-                .getCategoriesOfProduct(product.id, { pageSize: 1000 });
+                .getCategoriesOfProduct(product.id);
         }
         if (options.withVariants) {
             product.variants = await this.getProductVariantsOfProduct(product.id);

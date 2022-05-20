@@ -28,6 +28,9 @@ export class AdminCmsSettingsDto extends CmsSettingsDto {
     @ApiProperty()
     signupRoles?: string[];
 
+    @ApiProperty()
+    showUnapprovedReviews?: boolean;
+
     parseSettings(config: TCmsSettings) {
         super.parseSettings(config);
 
@@ -37,6 +40,7 @@ export class AdminCmsSettingsDto extends CmsSettingsDto {
         this.customEntities = config.customEntities;
         this.signupEnabled = config.signupEnabled;
         this.signupRoles = config.signupRoles;
+        this.showUnapprovedReviews = config.showUnapprovedReviews;
         return this;
     }
 }

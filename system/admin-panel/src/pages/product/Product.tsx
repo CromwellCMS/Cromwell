@@ -73,7 +73,7 @@ const ProductPage = () => {
                         stockAmount
                         stockStatus
                         manageStock
-                        categories(pagedParams: { pageSize: 10000 }) {
+                        categories {
                             id
                         }
                         customMeta (keys: ${JSON.stringify(getCustomMetaKeysFor(EDBEntity.Product))})

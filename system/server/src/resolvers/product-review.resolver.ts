@@ -1,6 +1,7 @@
-import { GraphQLPaths, TPagedList, TPermissionName, TProductReview } from '@cromwell/core';
+import { GraphQLPaths, matchPermissions, TPagedList, TPermissionName, TProductReview } from '@cromwell/core';
 import {
     DeleteManyInput,
+    getCmsSettings,
     PagedParamsInput,
     PagedProductReview,
     ProductReview,
@@ -9,6 +10,7 @@ import {
     ProductReviewRepository,
     TGraphQLContext,
 } from '@cromwell/core-backend';
+import { HttpException, HttpStatus } from '@nestjs/common';
 import { Arg, Authorized, Ctx, Int, Mutation, Query, Resolver } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
@@ -38,8 +40,16 @@ export class ProductReviewResolver {
         @Ctx() ctx: TGraphQLContext,
         @Arg("id", () => Int) id: number
     ): Promise<TProductReview> {
-        return getByIdWithFilters('ProductReview', ctx, [], id,
-            (...args) => this.repository.getProductReview(...args));
+        return getByIdWithFilters('ProductReview', ctx, [], ['read_product_reviews'], id,
+            async (...args) => {
+                const review = await this.repository.getProductReview(...args);
+                const settings = await getCmsSettings();
+                if (!settings.showUnapprovedReviews &&
+                    !matchPermissions(ctx.user, ['read_product_reviews']) && !review?.approved) {
+                    throw new HttpException(`Product review ${id} not found!`, HttpStatus.NOT_FOUND);
+                }
+                return review;
+            });
     }
 
     @Query(() => PagedProductReview)
@@ -48,7 +58,13 @@ export class ProductReviewResolver {
         @Arg("pagedParams", { nullable: true }) pagedParams?: PagedParamsInput<TProductReview>,
         @Arg("filterParams", { nullable: true }) filterParams?: ProductReviewFilter,
     ): Promise<TPagedList<TProductReview> | undefined> {
-        return getManyWithFilters('ProductReview', ctx, [], pagedParams, filterParams,
+        const settings = await getCmsSettings();
+        if (!settings.showUnapprovedReviews && !matchPermissions(ctx.user, ['read_product_reviews'])) {
+            if (!filterParams) filterParams = {};
+            filterParams.approved = true;
+        }
+
+        return getManyWithFilters('ProductReview', ctx, [], ['read_product_reviews'], pagedParams, filterParams,
             (...args) => this.repository.getFilteredProductReviews(...args));
     }
 
