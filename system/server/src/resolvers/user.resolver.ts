@@ -46,11 +46,11 @@ export class UserResolver {
         @Ctx() ctx: TGraphQLContext,
         @Arg("id", () => Int) id: number,
     ): Promise<TUser> {
-        return getByIdWithFilters('User', ctx, ['read_users', 'read_my_user'], id,
+        return getByIdWithFilters('User', ctx, ['read_users', 'read_my_user'], ['read_users'], id,
             async (id) => {
                 // If no 'read_user', check that has 'read_my_user' and the same id
                 if (!matchPermissions(ctx.user, ['read_users'])) {
-                    if (!ctx?.user?.id + '' === id + '')
+                    if (ctx?.user?.id + '' !== id + '')
                         throw new HttpException('Access denied.', HttpStatus.FORBIDDEN);
                 }
                 return this.repository.getUserById(id);
@@ -63,7 +63,7 @@ export class UserResolver {
         @Ctx() ctx: TGraphQLContext,
         @Arg("slug") slug: string
     ): Promise<TUser> {
-        return getBySlugWithFilters('User', ctx, ['read_users'], slug,
+        return getBySlugWithFilters('User', ctx, ['read_users'], ['read_users'], slug,
             (...args) => this.repository.getUserBySlug(...args));
     }
 
@@ -83,7 +83,7 @@ export class UserResolver {
         @Arg("pagedParams", { nullable: true }) pagedParams?: PagedParamsInput<TUser>,
         @Arg("filterParams", { nullable: true }) filterParams?: UserFilterInput,
     ): Promise<TPagedList<TUser> | undefined> {
-        return getManyWithFilters('User', ctx, ['read_users'], pagedParams, filterParams,
+        return getManyWithFilters('User', ctx, ['read_users'], ['read_users'], pagedParams, filterParams,
             (...args) => this.repository.getFilteredUsers(...args));
     }
 

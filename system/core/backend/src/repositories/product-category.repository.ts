@@ -172,13 +172,12 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
         return true;
     }
 
-    async getCategoriesOfProduct(productId: number, params?: TPagedParams<TProductCategory>): Promise<TProductCategory[]> {
+    async getCategoriesOfProduct(productId: number): Promise<TProductCategory[]> {
         logger.log('ProductCategoryRepository::getCategoriesOfProduct id: ' + productId);
         const qb = this.createQueryBuilder(this.metadata.tablePath);
         applyGetManyFromOne(qb, this.metadata.tablePath, 'products',
             getCustomRepository(ProductRepository).metadata.tablePath, productId);
 
-        applyGetPaged(qb, this.metadata.tablePath, params);
         return await qb.getMany();
     }
 

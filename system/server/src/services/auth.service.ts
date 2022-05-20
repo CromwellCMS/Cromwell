@@ -122,7 +122,7 @@ export class AuthService {
             throw new HttpException('You must specify user roles', HttpStatus.BAD_REQUEST);
 
         if (!data.roles.every(role => (settings?.signupRoles ?? []).includes(role)))
-            throw new HttpException('Specified user role in not available for sign up', HttpStatus.BAD_REQUEST);
+            throw new HttpException('Specified user roles are not available for sign up', HttpStatus.BAD_REQUEST);
 
         return this.createUser(data);
     }

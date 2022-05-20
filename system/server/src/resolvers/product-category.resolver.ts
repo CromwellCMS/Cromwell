@@ -1,4 +1,4 @@
-import { EDBEntity, GraphQLPaths, TPagedList, TPermissionName, TProduct, TProductCategory } from '@cromwell/core';
+import { EDBEntity, GraphQLPaths, TPagedList, TPermissionName, matchPermissions, TProduct, TProductCategory } from '@cromwell/core';
 import {
     applyDataFilters,
     CreateProductCategory,
@@ -10,6 +10,7 @@ import {
     ProductCategory,
     ProductCategoryFilterInput,
     ProductCategoryRepository,
+    ProductFilterInput,
     ProductRepository,
     TGraphQLContext,
     UpdateProductCategory,
@@ -25,6 +26,7 @@ import {
     getByIdWithFilters,
     getBySlugWithFilters,
     getManyWithFilters,
+    setupFilterForEnabledOnly,
     updateWithFilters,
 } from '../helpers/data-filters';
 
@@ -53,7 +55,7 @@ export class ProductCategoryResolver {
         @Ctx() ctx: TGraphQLContext,
         @Arg("id", () => Int) id: number,
     ) {
-        return getByIdWithFilters('ProductCategory', ctx, [], id,
+        return getByIdWithFilters('ProductCategory', ctx, [], ['read_product_categories'], id,
             (...args) => this.repository.getProductCategoryById(...args));
     }
 
@@ -62,7 +64,7 @@ export class ProductCategoryResolver {
         @Ctx() ctx: TGraphQLContext,
         @Arg("slug") slug: string,
     ) {
-        return getBySlugWithFilters('ProductCategory', ctx, [], slug,
+        return getBySlugWithFilters('ProductCategory', ctx, [], ['read_product_categories'], slug,
             (...args) => this.repository.getProductCategoryBySlug(...args));
     }
 
@@ -72,7 +74,7 @@ export class ProductCategoryResolver {
         @Arg("pagedParams", { nullable: true }) pagedParams?: PagedParamsInput<TProductCategory>,
         @Arg("filterParams", { nullable: true }) filterParams?: ProductCategoryFilterInput,
     ): Promise<TPagedList<TProductCategory>> {
-        return getManyWithFilters('ProductCategory', ctx, [], pagedParams, filterParams,
+        return getManyWithFilters('ProductCategory', ctx, [], ['read_product_categories'], pagedParams, filterParams,
             (...args) => this.repository.getFilteredCategories(...args));
     }
 
@@ -82,11 +84,15 @@ export class ProductCategoryResolver {
             user: ctx?.user,
             permissions: [],
         });
-        return (await applyDataFilters('ProductCategory', 'getRootCategoriesOutput' as any as 'getManyOutput', {
+        const categories = (await applyDataFilters('ProductCategory', 'getRootCategoriesOutput' as any as 'getManyOutput', {
             data: await this.repository.getRootCategories(),
             user: ctx?.user,
             permissions: [],
         })).data;
+        if (categories?.elements && !matchPermissions(ctx.user, ['read_product_categories'])) {
+            categories.elements = categories.elements.filter(category => category.isEnabled !== false);
+        }
+        return categories;
     }
 
     @Authorized<TPermissionName>('create_product_category')
@@ -133,20 +139,40 @@ export class ProductCategoryResolver {
 
     @FieldResolver(() => PagedProduct)
     async [productsKey](
+        @Ctx() ctx: TGraphQLContext,
         @Root() productCategory: ProductCategory,
-        @Arg("pagedParams") pagedParams: PagedParamsInput<TProduct>
+        @Arg("pagedParams") pagedParams: PagedParamsInput<TProduct>,
+        @Arg("filterParams", { nullable: true }) filterParams?: ProductFilterInput,
     ): Promise<TPagedList<TProduct>> {
-        return this.productRepository.getProductsFromCategory(productCategory.id, pagedParams);
+        if (!filterParams) filterParams = {};
+        filterParams.categoryId = productCategory.id;
+
+        if (!matchPermissions(ctx.user, ['read_products'])) {
+            filterParams = setupFilterForEnabledOnly(filterParams);
+        }
+        return this.productRepository.getFilteredProducts(pagedParams, filterParams);
     }
 
     @FieldResolver(() => ProductCategory, { nullable: true })
-    async [parentKey](@Root() productCategory: ProductCategory): Promise<TProductCategory | undefined | null> {
-        return this.repository.getParentCategory(productCategory);
+    async [parentKey](
+        @Ctx() ctx: TGraphQLContext,
+        @Root() productCategory: ProductCategory
+    ): Promise<TProductCategory | undefined | null> {
+        const category = await this.repository.getParentCategory(productCategory);
+        if (category?.isEnabled === false && !matchPermissions(ctx.user, ['read_product_categories'])) return;
+        return category;
     }
 
     @FieldResolver(() => [ProductCategory])
-    async [childrenKey](@Root() productCategory: ProductCategory): Promise<TProductCategory[]> {
-        return this.repository.getChildCategories(productCategory);
+    async [childrenKey](
+        @Ctx() ctx: TGraphQLContext,
+        @Root() productCategory: ProductCategory
+    ): Promise<TProductCategory[]> {
+        let categories = await this.repository.getChildCategories(productCategory);
+        if (!matchPermissions(ctx.user, ['read_product_categories'])) {
+            categories = categories.filter(category => category.isEnabled !== false);
+        }
+        return categories;
     }
 
     @FieldResolver(() => GraphQLJSONObject, { nullable: true })

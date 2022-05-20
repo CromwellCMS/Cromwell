@@ -444,6 +444,7 @@ export type TOrderCore = {
     id?: number | null;
     createDate?: Date | null;
     updateDate?: Date | null;
+    isEnabled?: boolean | null;
     status?: TOrderStatus | null;
     cart?: string | TStoreListItem[] | null;
     orderTotalPrice?: number | null;
@@ -776,6 +777,11 @@ export type TCmsAdminSettings = {
      * Role names available for sign-up public API.
      */
     signupRoles?: string[];
+
+    /**
+     * Show unapproved product reviews. Hide by default
+     */
+    showUnapprovedReviews?: boolean;
 }
 
 /**

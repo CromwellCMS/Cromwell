@@ -55,9 +55,7 @@ export const breadcrumbsGetData = async (options: BreadcrumbsGetDataOptions): Pr
         const productWithCategoriesFragment = gql`
         fragment ProductWithCategoriesFragment on Product {
             mainCategoryId
-            categories(pagedParams: {
-                pageSize: 30
-            }) {
+            categories {
                 id
                 name
                 nestedLevel

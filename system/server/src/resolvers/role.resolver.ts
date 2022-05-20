@@ -41,7 +41,7 @@ export class RoleResolver {
         @Ctx() ctx: TGraphQLContext,
         @Arg("id", () => Int) id: number
     ): Promise<TRole | undefined> {
-        return getByIdWithFilters('Role', ctx, ['read_roles'], id,
+        return getByIdWithFilters('Role', ctx, ['read_roles'], ['read_roles'], id,
             (...args) => this.repository.getRoleById(...args));
     }
 
@@ -52,7 +52,7 @@ export class RoleResolver {
         @Arg("pagedParams", { nullable: true }) pagedParams?: PagedParamsInput<TRole>,
         @Arg("filterParams", () => BaseFilterInput, { nullable: true }) filterParams?: BaseFilterInput,
     ): Promise<TPagedList<TRole> | undefined> {
-        return getManyWithFilters('Role', ctx, ['read_roles'], pagedParams, filterParams,
+        return getManyWithFilters('Role', ctx, ['read_roles'], ['read_roles'], pagedParams, filterParams,
             (...args) => this.repository.getFilteredRoles(...args));
     }
 

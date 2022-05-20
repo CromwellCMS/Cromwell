@@ -31,15 +31,19 @@ export class AdminCmsSettingsDto extends CmsSettingsDto {
     @ApiProperty()
     signupRoles?: string[];
 
-    parseSettings(settings: TCmsSettings) {
-        super.parseSettings(settings);
+    @ApiProperty()
+    showUnapprovedReviews?: boolean;
 
-        this.smtpConnectionString = settings.smtpConnectionString;
-        this.sendFromEmail = settings.sendFromEmail;
-        this.customFields = settings.customFields;
-        this.customEntities = settings.customEntities;
-        this.signupEnabled = settings.signupEnabled;
-        this.signupRoles = settings.signupRoles;
+    parseSettings(config: TCmsSettings) {
+        super.parseSettings(config);
+
+        this.smtpConnectionString = config.smtpConnectionString;
+        this.sendFromEmail = config.sendFromEmail;
+        this.customFields = config.customFields;
+        this.customEntities = config.customEntities;
+        this.signupEnabled = config.signupEnabled;
+        this.signupRoles = config.signupRoles;
+        this.showUnapprovedReviews = config.showUnapprovedReviews;
         return this;
     }
 }
