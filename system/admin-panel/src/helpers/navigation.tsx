@@ -100,6 +100,7 @@ export const getSideBarLinks = (): TSidebarLink[] => {
             id: '2_Store',
             title: 'Store',
             icon: <ShoppingBagIcon className="h-5 w-5" />,
+            module: 'ecommerce',
             subLinks: [
                 {
                     id: '3_productList',
@@ -107,6 +108,7 @@ export const getSideBarLinks = (): TSidebarLink[] => {
                     route: productListInfo.route,
                     icon: <CollectionIcon className="h-5 w-5" />,
                     permissions: ['read_products'],
+                    module: 'ecommerce',
                 },
                 {
                     id: '4_Attributes',
@@ -114,6 +116,7 @@ export const getSideBarLinks = (): TSidebarLink[] => {
                     route: attributesInfo.route,
                     icon: <TagIcon className="h-5 w-5" />,
                     permissions: ['read_attributes'],
+                    module: 'ecommerce',
                 },
                 {
                     id: '5_Categories',
@@ -121,6 +124,7 @@ export const getSideBarLinks = (): TSidebarLink[] => {
                     route: categoryListPageInfo.route,
                     icon: <HashtagIcon className="h-5 w-5" />,
                     permissions: ['read_product_categories'],
+                    module: 'ecommerce',
                 },
                 {
                     id: '11_Order_list',
@@ -128,6 +132,7 @@ export const getSideBarLinks = (): TSidebarLink[] => {
                     route: orderListPageInfo.route,
                     icon: <ShoppingBagIcon className="h-5 w-5" />,
                     permissions: ['read_orders'],
+                    module: 'ecommerce',
                 },
                 {
                     id: 'Coupon_list',
@@ -135,6 +140,7 @@ export const getSideBarLinks = (): TSidebarLink[] => {
                     route: couponListPageInfo.route,
                     icon: <BadgeCheckIcon className="h-5 w-5" />,
                     permissions: ['read_coupons'],
+                    module: 'ecommerce',
                 },
                 {
                     id: 'Review_list',
@@ -142,6 +148,7 @@ export const getSideBarLinks = (): TSidebarLink[] => {
                     route: reviewListPageInfo.route,
                     icon: <StarIcon className="h-5 w-5" />,
                     permissions: ['read_product_reviews'],
+                    module: 'ecommerce',
                 }
             ]
         },
@@ -149,6 +156,7 @@ export const getSideBarLinks = (): TSidebarLink[] => {
             id: '6_Blog',
             title: 'Blog',
             icon: <PencilAltIcon className="h-5 w-5" />,
+            module: 'blog',
             subLinks: [
                 {
                     id: '7_Posts',
@@ -156,6 +164,7 @@ export const getSideBarLinks = (): TSidebarLink[] => {
                     route: postListInfo.route,
                     icon: <DocumentDuplicateIcon className="h-5 w-5" />,
                     permissions: ['read_posts'],
+                    module: 'blog',
                 },
                 {
                     id: 'tags_page',
@@ -163,6 +172,7 @@ export const getSideBarLinks = (): TSidebarLink[] => {
                     route: tagListPageInfo.route,
                     icon: <TagIcon className="h-5 w-5" />,
                     permissions: ['read_tags'],
+                    module: 'blog',
                 },
             ]
         },

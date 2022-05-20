@@ -83,15 +83,15 @@ export const defaultCmsConfig: TCmsConfig = {
     internalSettings: {
       installed: false,
     },
-    modules: {
-      ecommerce: true,
-      blog: true,
-    },
     adminSettings: {
       signupEnabled: true,
       signupRoles: ['customer'],
     },
     publicSettings: {
+      modules: {
+        ecommerce: true,
+        blog: true,
+      },
       themeName: "@cromwell/theme-store",
       logo: "/themes/@cromwell/theme-store/shopping-cart.png",
       defaultPageSize: 15,

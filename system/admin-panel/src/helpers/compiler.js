@@ -42,7 +42,7 @@ const runWebpackCompiler = () => {
 }
 
 const runRollupCompiler = () => {
-    const proc = spawn(`node --max-old-space-size=4096 ${normalizePath(
+    const proc = spawn(`node --max-old-space-size=4096 --max_old_space_size=4096 ${normalizePath(
         resolve(getAdminPanelDir(), 'src/helpers/compiler.js'))} run-rollup`, [],
         { shell: true, stdio: 'pipe', cwd: getAdminPanelDir() });
 

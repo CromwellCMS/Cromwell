@@ -1,4 +1,4 @@
-import { TPermissionName } from '@cromwell/core';
+import { TCmsEnabledModules, TPermissionName } from '@cromwell/core';
 import React, { lazy } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 
@@ -37,6 +37,7 @@ export type TSidebarLink = {
     subLinks?: TSidebarLink[];
     icon?: React.ReactNode;
     permissions?: TPermissionName[];
+    module?: keyof TCmsEnabledModules;
 }
 
 export type TPageInfo = {
@@ -47,6 +48,7 @@ export type TPageInfo = {
     disableSidebar?: boolean;
     minimizeSidebar?: boolean;
     permissions?: TPermissionName[];
+    module?: keyof TCmsEnabledModules;
 }
 
 export const homePageInfo: TPageInfo = {
@@ -74,35 +76,40 @@ export const productListInfo: TPageInfo = {
     name: 'ProductList',
     route: '/products',
     component: ProductListPage,
-    permissions: ['read_products']
+    permissions: ['read_products'],
+    module: 'ecommerce',
 };
 export const productPageInfo: TPageInfo = {
-    name: 'ProductList',
+    name: 'Product',
     route: '/products/:id',
     baseRoute: '/products',
     component: ProductPage,
-    permissions: ['read_products']
+    permissions: ['read_products'],
+    module: 'ecommerce',
 };
 
 export const categoryListPageInfo: TPageInfo = {
     name: 'CategoryList',
     route: '/categories',
     component: CategoryListPage,
-    permissions: ['read_product_categories']
+    permissions: ['read_product_categories'],
+    module: 'ecommerce',
 };
 export const categoryPageInfo: TPageInfo = {
     name: 'Category',
     route: '/categories/:id',
     component: CategoryPage,
     baseRoute: '/categories',
-    permissions: ['read_product_categories']
+    permissions: ['read_product_categories'],
+    module: 'ecommerce',
 };
 
 export const attributesInfo: TPageInfo = {
     name: 'Attributes',
     route: '/attributes',
     component: AttributesPage,
-    permissions: ['read_attributes']
+    permissions: ['read_attributes'],
+    module: 'ecommerce',
 };
 export const pluginListPageInfo: TPageInfo = {
     name: 'PluginList',
@@ -123,6 +130,7 @@ export const postListInfo: TPageInfo = {
     route: '/posts',
     component: PostListPage,
     permissions: ['read_posts'],
+    module: 'blog',
 };
 export const postPageInfo: TPageInfo = {
     name: 'Post',
@@ -130,6 +138,7 @@ export const postPageInfo: TPageInfo = {
     component: PostPage,
     baseRoute: '/posts',
     permissions: ['read_posts'],
+    module: 'blog',
 };
 
 export const loginPageInfo: TPageInfo = {
@@ -145,6 +154,7 @@ export const orderListPageInfo: TPageInfo = {
     route: '/orders',
     component: OrderListPage,
     permissions: ['read_orders'],
+    module: 'ecommerce',
 };
 
 export const orderPageInfo: TPageInfo = {
@@ -153,6 +163,7 @@ export const orderPageInfo: TPageInfo = {
     baseRoute: '/orders',
     component: OrderPage,
     permissions: ['read_orders'],
+    module: 'ecommerce',
 };
 
 export const welcomePageInfo: TPageInfo = {
@@ -190,12 +201,14 @@ export const tagPageInfo: TPageInfo = {
     baseRoute: '/tags',
     component: TagPage,
     permissions: ['read_tags'],
+    module: 'blog',
 }
 export const tagListPageInfo: TPageInfo = {
     name: 'Tag List',
     route: '/tags',
     component: TagListPage,
     permissions: ['read_tags'],
+    module: 'blog',
 }
 
 export const reviewListPageInfo: TPageInfo = {
@@ -203,6 +216,7 @@ export const reviewListPageInfo: TPageInfo = {
     route: '/reviews',
     component: ReviewListPage,
     permissions: ['read_product_reviews'],
+    module: 'ecommerce',
 }
 
 export const pluginMarketPageInfo: TPageInfo = {
@@ -224,10 +238,12 @@ export const couponPageInfo: TPageInfo = {
     baseRoute: '/coupons',
     component: CouponPage,
     permissions: ['read_coupons'],
+    module: 'ecommerce',
 }
 export const couponListPageInfo: TPageInfo = {
     name: 'Coupon List',
     route: '/coupons',
     component: CouponList,
     permissions: ['read_coupons'],
+    module: 'ecommerce',
 }

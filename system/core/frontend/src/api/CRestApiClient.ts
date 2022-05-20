@@ -25,6 +25,7 @@ import {
     TThemeConfig,
     TUser,
     TCmsDashboardSettings,
+    TCmsEnabledModules,
 } from '@cromwell/core';
 import queryString from 'query-string';
 
@@ -276,7 +277,7 @@ export class CRestApiClient {
      * Return dashboard layout for authenticated user
      * @auth any
      */
-     public getDashboardLayout = async (): Promise<TCmsDashboardSettings | undefined> => {
+    public getDashboardLayout = async (): Promise<TCmsDashboardSettings | undefined> => {
         return this.get(`v1/cms/dashboard-settings`);
     }
 
@@ -284,7 +285,7 @@ export class CRestApiClient {
      * Save dashboard layout for authenticated user
      * @auth any
      */
-     public saveDashboardLayout = async (data: TCmsDashboardSettings): Promise<TCmsDashboardSettings | undefined> => {
+    public saveDashboardLayout = async (data: TCmsDashboardSettings): Promise<TCmsDashboardSettings | undefined> => {
         return this.post(`v1/cms/dashboard-settings`, data);
     }
 
@@ -454,11 +455,18 @@ export class CRestApiClient {
     }
 
     /** @internal */
-    public setUpCms = async (input: {
-        url: string;
+    public setupCmsFirstStep = async (input: {
         user: TCreateUser;
     }, options?: TRequestOptions): Promise<boolean | undefined> => {
-        return this.post(`v1/cms/set-up`, input, options);
+        return this.post(`v1/cms/set-up-step-1`, input, options);
+    }
+
+    /** @internal */
+    public setupCmsSecondStep = async (input: {
+        url: string;
+        modules: TCmsEnabledModules;
+    }, options?: TRequestOptions): Promise<boolean | undefined> => {
+        return this.post(`v1/cms/set-up-step-2`, input, options);
     }
 
     /**

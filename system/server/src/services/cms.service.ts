@@ -32,6 +32,7 @@ import {
     RoleRepository,
     runShellCommand,
     TagRepository,
+    User,
 } from '@cromwell/core-backend';
 import { getCentralServerClient } from '@cromwell/core-frontend';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
@@ -48,10 +49,11 @@ import * as util from 'util';
 import { AdminCmsSettingsDto } from '../dto/admin-cms-settings.dto';
 import { CmsStatusDto } from '../dto/cms-status.dto';
 import { DashboardSettingsDto } from '../dto/dashboard-settings.dto';
-import { SetupDto } from '../dto/setup.dto';
+import { SetupFirstStepDto, SetupSecondStepDto } from '../dto/setup.dto';
+import { resetAllPagesCache } from '../helpers/reset-page';
 import { serverFireAction } from '../helpers/server-fire-action';
 import { childSendMessage } from '../helpers/server-manager';
-import { endTransaction, restartService, setPendingKill, startTransaction } from '../helpers/state-manager';
+import { endTransaction, restartService, setPendingKill, startTransaction, setPendingRestart } from '../helpers/state-manager';
 import { authServiceInst } from './auth.service';
 import { MockService } from './mock.service';
 import { PluginService } from './plugin.service';
@@ -195,18 +197,16 @@ export class CmsService {
         }
     }
 
-    public async installCms(input: SetupDto) {
-        if (!input.url)
-            throw new HttpException('URL is not provided', HttpStatus.BAD_REQUEST);
+    public async setupCmsFirstStep(input: SetupFirstStepDto): Promise<User> {
+        const config = await getCmsSettings();
+        if (!config) {
+            throw new HttpException('Failed to read CMS Config', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        if (config.installed)
+            throw new HttpException('CMS is already installed', HttpStatus.BAD_REQUEST);
 
         if (!input.user)
             throw new HttpException('User info is not provided', HttpStatus.BAD_REQUEST);
-
-        const cmsEntity = await getCmsEntity();
-        if (cmsEntity?.internalSettings?.installed) {
-            logger.error('CMS already installed');
-            throw new HttpException('CMS already installed', HttpStatus.BAD_REQUEST);
-        }
 
         const roles = await getCustomRepository(RoleRepository).getAll();
         if (!roles?.length) {
@@ -219,7 +219,21 @@ export class CmsService {
 
         input.user.roles = [adminRole.name];
 
-        await authServiceInst!.createUser(input.user);
+        return await authServiceInst!.createUser(input.user);
+    }
+
+    public async setupCmsSecondStep(input: SetupSecondStepDto) {
+        const config = await getCmsSettings();
+        if (!config) {
+            throw new HttpException('Failed to read CMS Config', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        if (config.installed)
+            throw new HttpException('CMS is already installed', HttpStatus.BAD_REQUEST);
+
+        if (!input.url)
+            throw new HttpException('URL is not provided', HttpStatus.BAD_REQUEST);
+
+        const cmsEntity = await getCmsEntity();
 
         cmsEntity.internalSettings = {
             ...(cmsEntity.internalSettings ?? {}),
@@ -229,6 +243,7 @@ export class CmsService {
         cmsEntity.publicSettings = {
             ...(cmsEntity.publicSettings ?? {}),
             url: input.url,
+            modules: input.modules,
         }
         await cmsEntity.save();
 
@@ -237,7 +252,20 @@ export class CmsService {
             setStoreItem('cmsSettings', settings)
         }
 
-        await this.mockService.mockAll();
+        await this.mockService.mockRoles();
+        await this.mockService.mockUsers();
+
+        if (settings.modules?.blog) {
+            await this.mockService.mockTags();
+            await this.mockService.mockPosts();
+        }
+        if (settings.modules?.ecommerce) {
+            await this.mockService.mockAttributes();
+            await this.mockService.mockCategories();
+            await this.mockService.mockProducts();
+            await this.mockService.mockReviews();
+            await this.mockService.mockOrders();
+        }
 
         const serverDir = getServerDir();
         const publicDir = getPublicDir();
@@ -250,6 +278,14 @@ export class CmsService {
             encoding: 'UTF-8'
         });
 
+        resetAllPagesCache();
+
+        if (!input.modules?.blog || !input.modules?.ecommerce) {
+            const transactionId = getRandStr(8);
+            startTransaction(transactionId);
+            setPendingRestart(2000);
+            endTransaction(transactionId);
+        }
         return true;
     }
 
@@ -470,6 +506,10 @@ ${content}
             footerHtml: input.footerHtml,
             defaultShippingPrice: input.defaultShippingPrice,
             customMeta: input.customMeta,
+            modules: {
+                ecommerce: !!input.modules?.ecommerce,
+                blog: !!input.modules?.blog,
+            },
         }
 
         entity.adminSettings = {
@@ -479,11 +519,6 @@ ${content}
             customEntities: input.customEntities,
             signupEnabled: input.signupEnabled,
             signupRoles: input.signupRoles,
-        }
-
-        entity.modules = {
-            ecommerce: !!input.modules?.ecommerce,
-            blog: !!input.modules?.blog,
         }
 
         await entity.save();

@@ -76,7 +76,7 @@ import { store } from './redux/store';
             console.error(e);
         }
         restClient?.onUnauthorized(onUnauthorized, onUnauthorizedCbId);
-        if (!userInfo?.id || !userInfo.roles?.length) {
+        if ((!userInfo?.id || !userInfo.roles?.length) && settings?.installed) {
             if (!window.location.pathname.includes(loginPageInfo.route)) {
                 window.history.pushState({}, '', '/admin' + loginPageInfo.route);
                 window.location.reload();

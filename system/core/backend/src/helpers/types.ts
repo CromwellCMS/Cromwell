@@ -1,20 +1,4 @@
-import {
-    TAttribute,
-    TCmsSettings,
-    TCoupon,
-    TCustomEntity,
-    TCustomEntityFilter,
-    TOrder,
-    TOrderPaymentSession,
-    TPost,
-    TPostComment,
-    TProduct,
-    TProductCategory,
-    TProductReview,
-    TRole,
-    TTag,
-    TUser,
-} from '@cromwell/core';
+import { TCmsSettings, TOrderPaymentSession, TRole } from '@cromwell/core';
 import { FastifyRequest } from 'fastify';
 
 export type TBackendModule = {

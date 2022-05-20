@@ -18,21 +18,21 @@ else {
 
 export const getStore = (): TCromwellStore => {
     if (isServer()) {
-        return global.CromwellStore;
+        return global?.CromwellStore;
     }
     else {
-        return window.CromwellStore;
+        return window?.CromwellStore;
     }
 }
 
 export const getStoreItem = <K extends keyof TCromwellStore>(itemName: K): TCromwellStore[K] => {
-    return getStore()[itemName];
+    return getStore()?.[itemName];
 }
 
 export const setStoreItem = <K extends keyof TCromwellStore>(itemName: K, item: TCromwellStore[K]): void => {
     getStore()[itemName] = item;
 
-    const storeChangeCallbacks = getStoreItem('storeChangeCallbacks');
+    const storeChangeCallbacks = getStoreItem?.('storeChangeCallbacks');
     if (storeChangeCallbacks?.[itemName]) {
         for (const callback of Object.values(storeChangeCallbacks?.[itemName] ?? {})) {
             try {
@@ -45,7 +45,7 @@ export const setStoreItem = <K extends keyof TCromwellStore>(itemName: K, item: 
 export const onStoreChange = <K extends keyof TCromwellStore>(itemName: K,
     callback: (itemValue: TCromwellStore[K]) => any, callbackId?: string): string => {
 
-    let storeChangeCallbacks = getStoreItem('storeChangeCallbacks')
+    let storeChangeCallbacks = getStoreItem?.('storeChangeCallbacks')
 
     if (!storeChangeCallbacks) {
         storeChangeCallbacks = {};

@@ -43,7 +43,7 @@ import { ModuleInfoDto } from '../dto/module-info.dto';
 import { OrderTotalDto } from '../dto/order-total.dto';
 import { PageStatsDto } from '../dto/page-stats.dto';
 import { PermissionDto } from '../dto/permission.dto';
-import { SetupDto } from '../dto/setup.dto';
+import { SetupFirstStepDto, SetupSecondStepDto } from '../dto/setup.dto';
 import { SystemUsageDto } from '../dto/system-usage.dto';
 import { publicSystemDirs } from '../helpers/constants';
 import { resetAllPagesCache } from '../helpers/reset-page';
@@ -83,7 +83,7 @@ export class CmsController {
     async getConfig(): Promise<CmsSettingsDto | undefined> {
         const config = await getCmsSettings();
         if (!config) {
-            throw new HttpException('CmsController::getConfig Failed to read CMS Config', HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new HttpException('Failed to read CMS Config', HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new CmsSettingsDto().parseSettings(config);
     }
@@ -265,24 +265,25 @@ export class CmsController {
     }
 
 
-    @Post('set-up')
-    @ApiBody({ type: SetupDto })
+    @Post('set-up-step-1')
+    @ApiBody({ type: SetupFirstStepDto })
     @ApiOperation({
-        description: 'Configure CMS after first launch',
+        description: 'Configure CMS after first launch. Step 1',
     })
-    async setUp(@Body() input: SetupDto) {
-        logger.log('CmsController::setUp');
-        const config = await getCmsSettings();
-        if (!config) {
-            throw new HttpException('CmsController::setUp Failed to read CMS Config', HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    async setupCmsFirstStep(@Body() input: SetupFirstStepDto) {
+        logger.log('CmsController::setupCmsFirstStep');
+        return this.cmsService.setupCmsFirstStep(input);
+    }
 
-        if (config.installed)
-            throw new HttpException('CmsController::setUp CMS is already installed', HttpStatus.BAD_REQUEST);
 
-        const res = await this.cmsService.installCms(input);
-        resetAllPagesCache();
-        return res;
+    @Post('set-up-step-2')
+    @ApiBody({ type: SetupSecondStepDto })
+    @ApiOperation({
+        description: 'Configure CMS after first launch. Step 2',
+    })
+    async setupCmsSecondStep(@Body() input: SetupSecondStepDto) {
+        logger.log('CmsController::setupCmsSecondStep');
+        return this.cmsService.setupCmsSecondStep(input);
     }
 
 
@@ -363,6 +364,9 @@ export class CmsController {
     async getOrderTotal(@Body() input: CreateOrderDto): Promise<OrderTotalDto | undefined> {
         if (!input) throw new HttpException('Order form is incomplete', HttpStatus.NOT_ACCEPTABLE);
 
+        const settings = await getCmsSettings();
+        if (!settings?.modules?.ecommerce) throw new HttpException('', HttpStatus.NOT_FOUND);
+
         return this.storeService.calcOrderTotal(input);
     }
 
@@ -380,6 +384,10 @@ export class CmsController {
     })
     async createPaymentSession(@Body() input: CreateOrderDto): Promise<OrderTotalDto> {
         if (!input) throw new HttpException('Order form is incomplete', HttpStatus.NOT_ACCEPTABLE);
+
+        const settings = await getCmsSettings();
+        if (!settings?.modules?.ecommerce) throw new HttpException('', HttpStatus.NOT_FOUND);
+
         return this.storeService.createPaymentSession(input);
     }
 
@@ -398,6 +406,9 @@ export class CmsController {
         if (!input || !input.customerEmail
             || !input.customerPhone) throw new HttpException('Order form is incomplete', HttpStatus.NOT_ACCEPTABLE);
 
+        const settings = await getCmsSettings();
+        if (!settings?.modules?.ecommerce) throw new HttpException('', HttpStatus.NOT_FOUND);
+
         return this.storeService.placeOrder(input);
     }
 
@@ -415,6 +426,9 @@ export class CmsController {
     async placeProductReview(@Body() input: ProductReviewInput): Promise<TProductReview> {
         if (!input || !input.productId
             || !(input.description || input.rating) || input.approved) throw new HttpException('Review form is incomplete', HttpStatus.NOT_ACCEPTABLE);
+
+        const settings = await getCmsSettings();
+        if (!settings?.modules?.ecommerce) throw new HttpException('', HttpStatus.NOT_FOUND);
 
         return this.storeService.placeProductReview(input);
     }
@@ -453,7 +467,7 @@ export class CmsController {
             throw new UnauthorizedException('user.id is not set for the request');
 
         const layout = await this.cmsService.getDashboardLayout(request.user?.id);
-        
+
         return layout;
     }
 
@@ -476,7 +490,7 @@ export class CmsController {
             throw new BadRequestException('no layout provided');
 
         const layout = await this.cmsService.setDashboardLayout(request.user?.id, input.layout);
-        
+
         return layout;
     }
 

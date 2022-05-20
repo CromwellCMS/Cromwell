@@ -1,4 +1,5 @@
 import { TUser, matchPermissions } from "@cromwell/core";
+import { useCmsSettings } from "@cromwell/core-frontend";
 import { Disclosure, Transition } from "@headlessui/react";
 import { ChevronRightIcon } from "@heroicons/react/solid";
 import React from "react";
@@ -22,6 +23,9 @@ const SideNavLink = (props: {
 }) => {
   const { data, userInfo, expanded } = props;
   const isExpanded = expanded === data.id;
+  const settings = useCmsSettings();
+
+  if (data.module && !settings?.modules?.[data.module]) return null;
 
   const hasPermission = (link: TSidebarLink) => !(link?.permissions?.length &&
     !matchPermissions(userInfo, link?.permissions))

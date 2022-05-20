@@ -631,25 +631,10 @@ export type TCmsEntityCore = {
      */
     internalSettings?: TCmsInternalSettings;
 
-    modules?: TCmsEnabledModules;
 
     dashboardSettings?: TCmsDashboardSettings;
 }
 
-/**
- * DB CMS Enabled Modules 
- */
-export type TCmsEnabledModules = {
-    /**
-     * is E-Commerce Shopping Module enabled?
-     */
-    ecommerce?: boolean;
-
-    /**
-     * is Blogging Module enabled?
-     */
-    blog?: boolean;
-}
 
 /**
  * Public CMS settings
@@ -716,6 +701,26 @@ export type TCmsPublicSettings = {
      * Data of custom fields
      */
     customMeta?: Record<string, string>;
+
+    /**
+     * Enabled CMS core modules
+     */
+    modules?: TCmsEnabledModules;
+}
+
+/**
+ * CMS Enabled core Modules 
+ */
+export type TCmsEnabledModules = {
+    /**
+     * is E-Commerce Shopping Module enabled?
+     */
+    ecommerce?: boolean;
+
+    /**
+     * is Blogging Module enabled?
+     */
+    blog?: boolean;
 }
 
 export type TCmsDashboardSingleLayout = {
@@ -739,8 +744,8 @@ export type TCmsDashboardLayout = {
 }
 
 export type TCmsDashboardSettings = {
-    type?: "user"|"template";
-    for?: "user"|"role"|"system";
+    type?: "user" | "template";
+    for?: "user" | "role" | "system";
     userId?: number;
     user?: TUser;
     layout?: TCmsDashboardLayout;

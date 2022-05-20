@@ -82,16 +82,17 @@ export const getCmsSettings = async (): Promise<TCmsSettings> => {
     const entity = await getCmsEntity();
     const settings: TCmsSettings = Object.assign({},
         {
+            ...(cmsConfig.defaultSettings?.publicSettings ?? {}),
+            ...(cmsConfig.defaultSettings?.adminSettings ?? {}),
+            ...(cmsConfig.defaultSettings?.internalSettings ?? {}),
+        },
+        {
             ...(entity.publicSettings ?? {}),
             ...(entity.adminSettings ?? {}),
             ...(entity.internalSettings ?? {}),
-            modules: {
-                ...cmsConfig?.defaultSettings?.modules,
-            }
         },
         cmsConfig,
         {
-            themeName: entity?.publicSettings?.themeName ?? cmsConfig.defaultSettings?.publicSettings?.themeName,
             redirects: [
                 ...(entity.publicSettings?.redirects ?? []),
                 ...(cmsConfig?.redirects ?? []),
@@ -100,7 +101,6 @@ export const getCmsSettings = async (): Promise<TCmsSettings> => {
                 ...(entity.publicSettings?.rewrites ?? []),
                 ...(cmsConfig?.rewrites ?? []),
             ],
-            modules: entity.modules ?? cmsConfig?.defaultSettings?.modules
         }
     );
     delete settings.defaultSettings;
