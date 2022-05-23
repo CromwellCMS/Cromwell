@@ -4,13 +4,15 @@ import { SketchPicker } from 'react-color';
 
 import { useForceUpdate } from '../../helpers/forceUpdate';
 
-export function ColorPicker(props: {
+export type ColorPickerProps = {
     label?: string;
     value?: string;
     className?: string;
     style?: React.CSSProperties;
     onChange?: (color: string) => void;
-}) {
+}
+
+export function ColorPicker(props: ColorPickerProps) {
     const colorRef = useRef<string | null>(null);
     const prevValue = useRef<string | null>(null);
     const inputAnchorRef = useRef<HTMLDivElement | null>(null);

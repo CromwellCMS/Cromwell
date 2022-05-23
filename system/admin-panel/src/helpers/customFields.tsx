@@ -1,9 +1,9 @@
 import { EDBEntity, getRandStr, TAdminCustomField, TBasePageEntity, TImageSettings } from '@cromwell/core';
-import { SelectChangeEvent, SelectProps, TextField, TextFieldProps } from '@mui/material';
+import { SelectChangeEvent, SelectProps, TextField, TextFieldProps, Checkbox, FormControlLabel, CheckboxProps } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import { debounce } from 'throttle-debounce';
 
-import { ColorPicker } from '../components/colorPicker/ColorPicker';
+import { ColorPicker, ColorPickerProps } from '../components/colorPicker/ColorPicker';
 import entityEditStyles from '../components/entity/entityEdit/EntityEdit.module.scss';
 import { GalleryPicker, GalleryPickerProps } from '../components/galleryPicker/GalleryPicker';
 import { ImagePicker, ImagePickerProps } from '../components/imagePicker/ImagePicker';
@@ -12,13 +12,26 @@ import { getEditorData, getEditorHtml, initTextEditor } from './editor/editor';
 import { useForceUpdate } from './forceUpdate';
 
 export type TRegisteredCustomField = TAdminCustomField & {
-    component: (props: { initialValue: string | undefined; entity: TBasePageEntity }) => JSX.Element;
+    component: React.ComponentType<{ initialValue: string | undefined; entity: TBasePageEntity }>;
     saveData: () => string | Promise<string>;
 }
+
+export type TFieldDefaultComponent = React.ComponentType<{
+    initialValue: string | undefined;
+    entity: TBasePageEntity;
+    canValidate?: boolean;
+    error?: boolean;
+}>
 
 const customFields: Record<EDBEntity | string, Record<string, TRegisteredCustomField>> = {};
 const customFieldsForceUpdates: Partial<Record<EDBEntity, (() => void)>> = {};
 const onFieldRegisterListeners: Record<string, ((field: TRegisteredCustomField) => any)> = {};
+
+const fieldsCache: Record<string, {
+    component: TFieldDefaultComponent;
+    saveData: () => string | Promise<string>;
+    value?: any;
+}> = {};
 
 export const registerCustomField = (field: TRegisteredCustomField) => {
     if (!customFields[field.entityType]) customFields[field.entityType] = {};
@@ -111,21 +124,48 @@ const useInitialValue = (initialValue: string): [string, React.Dispatch<React.Se
 }
 
 
-export const registerSimpleTextCustomField = (settings: {
-    entityType: EDBEntity | string;
-    key: string;
+export const getCustomField = (settings: {
+    id: string;
+    key?: string;
+    label?: string;
+    component: React.ComponentType<{
+        value: any;
+        onChange: (value: any) => void;
+        cnaValidate?: boolean;
+    }>;
+    saveData?: () => any | Promise<any>;
+}) => {
+    const { id, component: Component, saveData } = settings;
+    if (fieldsCache[id]) return fieldsCache[id];
+
+    fieldsCache[id] = {
+        component: !Component ? undefined : (props) => {
+            const [value, setValue] = useInitialValue(props.initialValue);
+            fieldsCache[id].value = value;
+
+            return <Component
+                value={value}
+                onChange={value => setValue(value)}
+            />
+        },
+        saveData: saveData ?? (() => (!fieldsCache[id].value) ? null : fieldsCache[id].value),
+    };
+    return fieldsCache[id];
+}
+
+export const getSimpleTextField = (settings: {
+    id: string;
+    key?: string;
     label?: string;
     props?: TextFieldProps;
 }) => {
-    let customFieldValue;
+    const { id } = settings;
+    if (fieldsCache[id]) return fieldsCache[id];
 
-    registerCustomField({
-        id: getRandStr(10),
-        fieldType: 'Simple text',
-        ...settings,
+    fieldsCache[id] = {
         component: (props) => {
             const [value, setValue] = useInitialValue(props.initialValue);
-            customFieldValue = value;
+            fieldsCache[id].value = value;
 
             return <TextField
                 value={value ?? ''}
@@ -136,25 +176,45 @@ export const registerSimpleTextCustomField = (settings: {
                 fullWidth
                 variant="standard"
                 style={{ marginBottom: '15px' }}
+                error={props.error && props.canValidate}
                 {...(settings.props ?? {})}
             />
         },
-        saveData: () => (!customFieldValue) ? null : customFieldValue,
-    });
+        saveData: () => (!fieldsCache[id].value) ? null : fieldsCache[id].value,
+    };
+    return fieldsCache[id];
 }
 
-export const registerTextEditorCustomField = (settings: {
+
+export const registerSimpleTextCustomField = (settings: {
     entityType: EDBEntity | string;
     key: string;
     label?: string;
     props?: TextFieldProps;
 }) => {
-    const editorId = 'editor_' + getRandStr(12);
+    const id = getRandStr(12);
+    const field = getSimpleTextField({ id, ...settings });
 
     registerCustomField({
         id: getRandStr(10),
-        fieldType: 'Text editor',
+        fieldType: 'Simple text',
         ...settings,
+        component: field.component,
+        saveData: field.saveData,
+    });
+}
+
+
+export const getTextEditorField = (settings: {
+    id: string;
+    label?: string;
+    props?: TextFieldProps;
+}) => {
+    const { id } = settings;
+    if (fieldsCache[id]) return fieldsCache[id];
+    const editorId = 'editor_' + id;
+
+    fieldsCache[id] = {
         component: (props) => {
             const initialValueRef = useRef<null | string>(null);
 
@@ -202,26 +262,42 @@ export const registerTextEditorCustomField = (settings: {
                 json,
             });
         },
+    };
+    return fieldsCache[id];
+}
+
+export const registerTextEditorCustomField = (settings: {
+    entityType: EDBEntity | string;
+    key: string;
+    label?: string;
+    props?: TextFieldProps;
+}) => {
+    const id = getRandStr(12);
+    const field = getTextEditorField({ id, ...settings });
+
+    registerCustomField({
+        id: getRandStr(10),
+        fieldType: 'Text editor',
+        ...settings,
+        component: field.component,
+        saveData: field.saveData,
     });
 }
 
 
-export const registerSelectCustomField = (settings: {
-    entityType: EDBEntity | string;
-    key: string;
+export const getSelectField = (settings: {
+    id: string;
     label?: string;
-    options?: string[];
     props?: SelectProps<string>;
+    options?: string[];
 }) => {
-    let customFieldValue;
+    const { id } = settings;
+    if (fieldsCache[id]) return fieldsCache[id];
 
-    registerCustomField({
-        id: getRandStr(10),
-        fieldType: 'Select',
-        ...settings,
+    fieldsCache[id] = {
         component: (props) => {
             const [value, setValue] = useInitialValue(props.initialValue);
-            customFieldValue = value;
+            fieldsCache[id].value = value;
 
             return (
                 <Select
@@ -239,26 +315,43 @@ export const registerSelectCustomField = (settings: {
                 />
             )
         },
-        saveData: () => (!customFieldValue) ? null : customFieldValue,
+        saveData: () => (!fieldsCache[id].value) ? null : fieldsCache[id].value,
+    };
+    return fieldsCache[id];
+}
+
+export const registerSelectCustomField = (settings: {
+    entityType: EDBEntity | string;
+    key: string;
+    label?: string;
+    options?: string[];
+    props?: SelectProps<string>;
+}) => {
+    const id = getRandStr(12);
+    const field = getSelectField({ id, ...settings });
+
+    registerCustomField({
+        id: getRandStr(10),
+        fieldType: 'Select',
+        ...settings,
+        component: field.component,
+        saveData: field.saveData,
     });
 }
 
 
-export const registerImageCustomField = (settings: {
-    entityType: EDBEntity | string;
-    key: string;
+export const getImageField = (settings: {
+    id: string;
     label?: string;
     props?: ImagePickerProps;
 }) => {
-    let customFieldValue;
+    const { id } = settings;
+    if (fieldsCache[id]) return fieldsCache[id];
 
-    registerCustomField({
-        id: getRandStr(10),
-        fieldType: 'Image',
-        ...settings,
+    fieldsCache[id] = {
         component: (props) => {
             const [value, setValue] = useInitialValue(props.initialValue);
-            customFieldValue = value;
+            fieldsCache[id].value = value;
 
             return (
                 <ImagePicker
@@ -274,26 +367,42 @@ export const registerImageCustomField = (settings: {
                 />
             )
         },
-        saveData: () => (!customFieldValue) ? null : customFieldValue,
+        saveData: () => (!fieldsCache[id].value) ? null : fieldsCache[id].value,
+    };
+    return fieldsCache[id];
+}
+
+export const registerImageCustomField = (settings: {
+    entityType: EDBEntity | string;
+    key: string;
+    label?: string;
+    props?: ImagePickerProps;
+}) => {
+    const id = getRandStr(12);
+    const field = getImageField({ id, ...settings });
+
+    registerCustomField({
+        id: getRandStr(10),
+        fieldType: 'Image',
+        ...settings,
+        component: field.component,
+        saveData: field.saveData,
     });
 }
 
 
-export const registerGalleryCustomField = (settings: {
-    entityType: EDBEntity | string;
-    key: string;
+export const getGalleryField = (settings: {
+    id: string;
     label?: string;
     props?: GalleryPickerProps;
 }) => {
-    let customFieldValue: string;
+    const { id } = settings;
+    if (fieldsCache[id]) return fieldsCache[id];
 
-    registerCustomField({
-        id: getRandStr(10),
-        fieldType: 'Gallery',
-        ...settings,
+    fieldsCache[id] = {
         component: (props) => {
             const [value, setValue] = useInitialValue(props.initialValue);
-            customFieldValue = value;
+            fieldsCache[id].value = value;
 
             return (
                 <GalleryPicker
@@ -308,31 +417,46 @@ export const registerGalleryCustomField = (settings: {
                 />
             )
         },
-        saveData: () => (!customFieldValue) ? null : customFieldValue,
-    });
+        saveData: () => (!fieldsCache[id].value) ? null : fieldsCache[id].value,
+    };
+    return fieldsCache[id];
 }
 
-
-export const registerColorCustomField = (settings: {
+export const registerGalleryCustomField = (settings: {
     entityType: EDBEntity | string;
     key: string;
     label?: string;
-    props?: ImagePickerProps;
+    props?: GalleryPickerProps;
 }) => {
-    let customFieldValue;
+    const id = getRandStr(12);
+    const field = getGalleryField({ id, ...settings });
 
     registerCustomField({
         id: getRandStr(10),
-        fieldType: 'Color',
+        fieldType: 'Gallery',
         ...settings,
+        component: field.component,
+        saveData: field.saveData,
+    });
+}
+
+export const getColorField = (settings: {
+    id: string;
+    label?: string;
+    props?: ColorPickerProps;
+}) => {
+    const { id, label } = settings;
+    if (fieldsCache[id]) return fieldsCache[id];
+
+    fieldsCache[id] = {
         component: (props) => {
             const [value, setValue] = useInitialValue(props.initialValue);
-            customFieldValue = value;
+            fieldsCache[id].value = value;
 
             return (
                 <ColorPicker
                     value={value}
-                    label={settings.label}
+                    label={label}
                     onChange={(value) => {
                         setValue(value);
                     }}
@@ -341,9 +465,82 @@ export const registerColorCustomField = (settings: {
                 />
             )
         },
-        saveData: () => (!customFieldValue) ? null : customFieldValue,
+        saveData: () => (!fieldsCache[id].value) ? null : fieldsCache[id].value,
+    };
+    return fieldsCache[id];
+}
+
+export const registerColorCustomField = (settings: {
+    entityType: EDBEntity | string;
+    key: string;
+    label?: string;
+    props?: ColorPickerProps;
+}) => {
+    const id = getRandStr(12);
+    const field = getColorField({ id, ...settings });
+
+    registerCustomField({
+        id,
+        fieldType: 'Color',
+        ...settings,
+        component: field.component,
+        saveData: field.saveData,
     });
 }
+
+
+export const getCheckboxField = (settings: {
+    id: string;
+    label?: string;
+    props?: CheckboxProps;
+}) => {
+    const { id, label } = settings;
+    if (fieldsCache[id]) return fieldsCache[id];
+
+    fieldsCache[id] = {
+        component: (props) => {
+            const [value, setValue] = useInitialValue(props.initialValue);
+            fieldsCache[id].value = value;
+
+            return (
+                <FormControlLabel
+                    control={
+                        <Checkbox
+                            checked={!!value}
+                            onChange={(event, value) => {
+                                setValue(value as any);
+                            }}
+                            color="primary"
+                            {...(settings.props ?? {})}
+                        />
+                    }
+                    label={label}
+                />
+            )
+        },
+        saveData: () => (!fieldsCache[id].value) ? null : fieldsCache[id].value,
+    };
+    return fieldsCache[id];
+}
+
+export const registerCheckboxCustomField = (settings: {
+    entityType: EDBEntity | string;
+    key: string;
+    label?: string;
+    props?: CheckboxProps;
+}) => {
+    const id = getRandStr(12);
+    const field = getCheckboxField({ id, ...settings });
+
+    registerCustomField({
+        id,
+        fieldType: 'Color',
+        ...settings,
+        component: field.component,
+        saveData: field.saveData,
+    });
+}
+
 
 
 export const registerCustomFieldOfType = (field: TAdminCustomField) => {

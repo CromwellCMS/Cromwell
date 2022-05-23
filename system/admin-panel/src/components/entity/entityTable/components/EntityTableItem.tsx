@@ -105,7 +105,6 @@ class EntityTableItem<TEntityType extends TBasePageEntity, TFilterType extends T
                                 <p className={styles.ellipsis} ref={this.columnRefs[col.name]}>{cstore.getPriceWithCurrency(value)}</p>
                             )
                         }
-
                         if (col.type === 'Rating') {
                             content = (
                                 <Rating name="read-only"
@@ -114,6 +113,11 @@ class EntityTableItem<TEntityType extends TBasePageEntity, TFilterType extends T
                                     precision={0.5}
                                     readOnly
                                 />
+                            )
+                        }
+                        if (col.type === 'Checkbox') {
+                            content = (
+                                <Checkbox checked={!!value} disabled />
                             )
                         }
 

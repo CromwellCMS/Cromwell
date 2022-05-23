@@ -1,4 +1,5 @@
 import { getRestApiClient } from '@cromwell/core-frontend';
+import { setStoreItem } from '@cromwell/core';
 import React, { useState } from 'react';
 import { Switch } from "@headlessui/react";
 import { TCmsEnabledModules } from '@cromwell/core';
@@ -15,6 +16,7 @@ export function CmsSettingsForm(props: {
   });
 
   const handleSubmitClick = async () => {
+    if (loading) return;
     setLoading(true);
 
     try {
@@ -22,6 +24,11 @@ export function CmsSettingsForm(props: {
         url: window.location.origin,
         modules,
       });
+
+      const settings = await apiClient.getAdminCmsSettings();
+      if (settings) {
+        setStoreItem('cmsSettings', settings);
+      }
 
       props.onSuccess();
     } catch (e) {

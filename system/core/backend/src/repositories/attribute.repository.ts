@@ -1,8 +1,16 @@
-import { TAttributeInput, TBaseFilter, TDeleteManyInput, TPagedList, TAttribute, TPagedParams } from '@cromwell/core';
+import {
+    TAttribute,
+    TAttributeInput,
+    TAttributeValue,
+    TBaseFilter,
+    TDeleteManyInput,
+    TPagedList,
+    TPagedParams,
+} from '@cromwell/core';
 import { HttpException, HttpStatus } from '@nestjs/common';
-import { EntityRepository, SelectQueryBuilder, getCustomRepository } from 'typeorm';
+import { EntityRepository, SelectQueryBuilder } from 'typeorm';
 
-import { checkEntitySlug, handleBaseInput, handleCustomMetaInput, getPaged } from '../helpers/base-queries';
+import { checkEntitySlug, getPaged, handleBaseInput, handleCustomMetaInput } from '../helpers/base-queries';
 import { getLogger } from '../helpers/logger';
 import { AttributeToProduct } from '../models/entities/attribute-product.entity';
 import { AttributeValue } from '../models/entities/attribute-value.entity';
@@ -65,6 +73,7 @@ export class AttributeRepository extends BaseRepository<Attribute> {
     async handleAttributeInput(attribute: Attribute, input: TAttributeInput, action: 'update' | 'create') {
         await handleBaseInput(attribute, input);
         attribute.key = input.key;
+        attribute.title = input.title;
         attribute.type = input.type;
         attribute.icon = input.icon;
         attribute.required = input.required;
@@ -73,18 +82,16 @@ export class AttributeRepository extends BaseRepository<Attribute> {
         if (action === 'create') await attribute.save();
 
         if (input.values) {
-            if (attribute.values) {
-                for (const value of attribute.values) {
-                    if (!input.values.find(val => value.value === val.value)) {
-                        await value.remove();
-                    }
-                }
-            }
+            const valuesObj: Record<string, TAttributeValue> = {};
+            input.values.forEach(value => {
+                if (!valuesObj[value.value]) valuesObj[value.value] = value;
+            });
+            input.values = Object.values(valuesObj);
 
             const updatedValues: AttributeValue[] = [];
             input.values = input.values.sort((a, b) => (a.value > b.value) ? 1 : -1);
             for (const valueInput of input.values) {
-                if (!attribute.key) return;
+                if (!attribute.key) continue;
                 const value = attribute.values?.find(val => val.value === valueInput.value)
                     ?? new AttributeValue();
 
@@ -97,6 +104,15 @@ export class AttributeRepository extends BaseRepository<Attribute> {
                 await value.save();
                 updatedValues.push(value);
             }
+
+            if (attribute.values) {
+                for (const value of attribute.values) {
+                    if (!updatedValues.find(val => value.id === val.id)) {
+                        await value.remove();
+                    }
+                }
+            }
+
             attribute.values = updatedValues;
         }
 

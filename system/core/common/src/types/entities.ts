@@ -827,7 +827,7 @@ export type TCustomFieldType = 'Simple text' | 'Text editor' | 'Select' | 'Image
 
 export type TAdminCustomField = {
     entityType: EDBEntity | string;
-    fieldType: TCustomFieldType
+    fieldType: TCustomFieldType;
     key: string;
     id: string;
     options?: string[];
@@ -871,6 +871,7 @@ export type TCustomEntityColumn = {
     }[];
     customGraphQlFragment?: string;
     disableSort?: boolean;
+    disableSearch?: boolean;
     getValueView?: (value: any) => React.ReactNode;
     getTooltipValueView?: (value: any) => React.ReactNode;
     applyFilter?: <TFilter extends TBaseFilter>(value: any, filter: TFilter) => TFilter;

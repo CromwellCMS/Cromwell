@@ -220,6 +220,7 @@ export class UserRepository extends BaseRepository<User> {
 
         const qbSelect = this.createQueryBuilder(this.metadata.tablePath).select([`${this.metadata.tablePath}.id`]);
         await this.applyUserFilter(qbSelect, filterParams);
+        qbSelect.select(`${this.metadata.tablePath}.id`, 'id');
         this.applyDeleteMany(qbSelect, input);
 
         const qbDelete = this.createQueryBuilder(this.metadata.tablePath).delete()

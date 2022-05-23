@@ -42,6 +42,7 @@ export function UserForm(props: {
   }
 
   const handleSubmitClick = async (data) => {
+    if (loading) return;
     setLoading(true);
 
     const { email, password, name, passwordConfirm } = data;

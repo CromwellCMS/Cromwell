@@ -177,7 +177,7 @@ export class CGraphQLClient {
     public async query(options: QueryOptions, path?: string) {
         await this.checkUrl();
 
-        const res = await this.handleError(() => this.apolloClient.query(options))
+        const res = await this.handleError(() => this.apolloClient.query(options));
         if (path) return this.returnData(res, path);
         return res;
     }
@@ -208,7 +208,7 @@ export class CGraphQLClient {
             data = await func();
             error = (data as any).errors?.[0];
         } catch (e: any) {
-            error = e?.graphQLErrors?.[0];
+            error = e?.graphQLErrors?.[0] ?? e.message;
         }
 
         if (error) {

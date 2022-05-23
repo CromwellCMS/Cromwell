@@ -53,7 +53,13 @@ import { SetupFirstStepDto, SetupSecondStepDto } from '../dto/setup.dto';
 import { resetAllPagesCache } from '../helpers/reset-page';
 import { serverFireAction } from '../helpers/server-fire-action';
 import { childSendMessage } from '../helpers/server-manager';
-import { endTransaction, restartService, setPendingKill, startTransaction, setPendingRestart } from '../helpers/state-manager';
+import {
+    endTransaction,
+    restartService,
+    setPendingKill,
+    setPendingRestart,
+    startTransaction,
+} from '../helpers/state-manager';
 import { authServiceInst } from './auth.service';
 import { MockService } from './mock.service';
 import { PluginService } from './plugin.service';

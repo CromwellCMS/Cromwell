@@ -32,7 +32,7 @@ jest.mock('@cromwell/core-frontend', () => {
 });
 
 import { render, screen } from '@testing-library/react';
-import AttributesPage from './AttributesPage';
+import AttributesPage from './AttributesList';
 
 
 describe('AttributesPage', () => {

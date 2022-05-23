@@ -7,6 +7,9 @@ export class AttributeInput extends BasePageInput implements TAttributeInput {
     @Field(type => String)
     key: string;
 
+    @Field(type => String, { nullable: true })
+    title?: string | null;
+
     @Field(type => [AttributeValueInput])
     values: AttributeValueInput[];
 

@@ -528,9 +528,11 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
                                     style={this.getColumnStyles(col, tableColumns)}
                                 >
                                     <div style={{ display: 'flex', alignItems: 'center' }}>
-                                        <Tooltip title="Open search" placement="top" enterDelay={500}>
-                                            <p onClick={() => this.openColumnSearch(col)}
-                                                className={clsx(styles.ellipsis, styles.columnNameText)}>{col.label}</p>
+                                        <Tooltip title={col.disableSearch ? '' : 'Open search'} placement="top" enterDelay={500}>
+                                            <p onClick={col.disableSearch ? null : () => this.openColumnSearch(col)}
+                                                className={clsx(styles.ellipsis, styles.columnNameText)}
+                                                style={{ cursor: !col.disableSearch ? 'pointer' : 'initial' }}
+                                            >{col.label}</p>
                                         </Tooltip>
                                         {!col.disableSort && (
                                             <Tooltip title="Toggle sort" placement="top" enterDelay={500}>

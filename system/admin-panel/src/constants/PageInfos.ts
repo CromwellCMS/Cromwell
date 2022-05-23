@@ -2,7 +2,8 @@ import { TCmsEnabledModules, TPermissionName } from '@cromwell/core';
 import React, { lazy } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 
-const AttributesPage = lazy(() => import('../pages/attributes/AttributesPage'));
+const AttributesListPage = lazy(() => import('../pages/attributeList/AttributesList'));
+const AttributePage = lazy(() => import('../pages/attribute/AttributePage'));
 const CategoryPage = lazy(() => import('../pages/category/CategoryPage'));
 const CategoryListPage = lazy(() => import('../pages/categoryList/CategoryList'));
 const DashboardPage = lazy(() => import('../pages/dashboard/Dashboard'));
@@ -104,10 +105,18 @@ export const categoryPageInfo: TPageInfo = {
     module: 'ecommerce',
 };
 
-export const attributesInfo: TPageInfo = {
+export const attributePageInfo: TPageInfo = {
+    name: 'Attribute',
+    route: '/attributes/:id',
+    baseRoute: '/attributes',
+    component: AttributePage,
+    permissions: ['read_attributes'],
+    module: 'ecommerce',
+};
+export const attributeListPageInfo: TPageInfo = {
     name: 'Attributes',
     route: '/attributes',
-    component: AttributesPage,
+    component: AttributesListPage,
     permissions: ['read_attributes'],
     module: 'ecommerce',
 };

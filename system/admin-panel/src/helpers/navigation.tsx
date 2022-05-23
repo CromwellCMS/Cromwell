@@ -3,7 +3,8 @@ import { BadgeCheckIcon, CogIcon, CollectionIcon, DocumentDuplicateIcon, Hashtag
 import React from 'react';
 import { getStoreItem } from '@cromwell/core';
 import {
-    attributesInfo,
+    attributeListPageInfo,
+    attributePageInfo,
     categoryListPageInfo,
     categoryPageInfo,
     couponListPageInfo,
@@ -57,7 +58,8 @@ export const getPageInfos = (): TPageInfo[] => {
         productListInfo,
         productPageInfo,
         pluginListPageInfo,
-        attributesInfo,
+        attributeListPageInfo,
+        attributePageInfo,
         pluginPageInfo,
         postListInfo,
         postPageInfo,
@@ -113,7 +115,7 @@ export const getSideBarLinks = (): TSidebarLink[] => {
                 {
                     id: '4_Attributes',
                     title: 'Attributes',
-                    route: attributesInfo.route,
+                    route: attributeListPageInfo.route,
                     icon: <TagIcon className="h-5 w-5" />,
                     permissions: ['read_attributes'],
                     module: 'ecommerce',

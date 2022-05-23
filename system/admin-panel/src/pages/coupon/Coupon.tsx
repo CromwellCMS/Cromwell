@@ -235,9 +235,7 @@ const CouponPage = () => {
         <div className={styles.CouponPage}>
             <div className={styles.header}>
                 <div className={styles.headerLeft}>
-                    <IconButton
-                        onClick={() => window.history.back()}
-                    >
+                    <IconButton onClick={() => window.history.back()}>
                         <ArrowBackIcon style={{ fontSize: '18px' }} />
                     </IconButton>
                     <p className={commonStyles.pageTitle}>coupon</p>

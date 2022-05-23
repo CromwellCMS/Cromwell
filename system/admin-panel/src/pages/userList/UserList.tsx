@@ -8,11 +8,6 @@ import { userListPageInfo, userPageInfo } from '../../constants/PageInfos';
 import { getTooltipValueView, getValueView } from '../../helpers/addressParser';
 import { baseEntityColumns } from '../../helpers/customEntities';
 
-const ellipsisStyle: React.CSSProperties = {
-    whiteSpace: 'nowrap',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-}
 const EntityTableComp = EntityTable as React.ComponentType<TEntityPageProps<TUser, TUserFilter>>;
 
 export default function UserTable() {
@@ -78,7 +73,8 @@ export default function UserTable() {
                     type: 'Simple text',
                     exactSearch: true,
                     customGraphQlFragment: 'roles {\n id\n name\n title\n }\n',
-                    getValueView: (value: TRole[]) => <p style={ellipsisStyle}>{value?.map(r => r.title).join(', ')}</p>,
+                    getValueView: (value: TRole[]) => value?.map(r => r.title).join(', '),
+                    getTooltipValueView: (value: TRole[]) => value?.map(r => r.title).join(', '),
                     searchOptions: roles.map(role => ({
                         value: role.name,
                         label: role.title,

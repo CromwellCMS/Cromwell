@@ -8,6 +8,7 @@ export const CheckList = (props: {
     title: React.ReactNode;
     items: string[];
     itemComp?: React.ComponentType<{ value: string }>;
+    itemProps?: any;
     checked: string[];
     setChecked: (items: string[]) => any;
     actions?: React.ReactNode;
@@ -88,7 +89,7 @@ export const CheckList = (props: {
                                 />
                             </ListItemIcon>
                             {props.itemComp ? (
-                                <props.itemComp value={value} />
+                                <props.itemComp value={value} {...(props.itemProps ?? {})} />
                             ) : (
                                 <ListItemText id={labelId} primary={value} />
                             )}
