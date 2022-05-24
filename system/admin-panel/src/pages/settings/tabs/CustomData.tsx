@@ -295,7 +295,10 @@ const CustomFieldSettings = (props: {
             }));
     }
 
-    const deleteSelectOption = (option: string) => {
+    const deleteSelectOption = (option: string | number | {
+        value: string | number;
+        label: string;
+    }) => {
         changeSettings('customFields', (settings?.customFields ?? [])
             .map(field => {
                 if (field.id === fieldData.id) {

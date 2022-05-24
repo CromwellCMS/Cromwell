@@ -1,22 +1,30 @@
 import { gql } from '@apollo/client';
-import { getStoreItem, resolvePageRoute, serviceLocator, TBasePageEntity, TCustomFieldType } from '@cromwell/core';
+import {
+  getStoreItem,
+  resolvePageRoute,
+  serviceLocator,
+  TBasePageEntity,
+  TCustomFieldSimpleTextType,
+  TCustomFieldType,
+} from '@cromwell/core';
 import { ArrowBack as ArrowBackIcon, OpenInNew as OpenInNewIcon } from '@mui/icons-material';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { Autocomplete as MuiAutocomplete, Button, Grid, IconButton, Skeleton, TextField, Tooltip } from '@mui/material';
 import React from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
 import {
   getCheckboxField,
   getColorField,
   getCustomField,
   getCustomMetaFor,
+  getCustomMetaKeysFor,
+  getDatepickerField,
   getGalleryField,
   getImageField,
   getSelectField,
   getSimpleTextField,
   getTextEditorField,
-  getCustomMetaKeysFor,
   RenderCustomFields,
   TFieldDefaultComponent,
 } from '../../../helpers/customFields';
@@ -25,24 +33,39 @@ import { toast } from '../../toast/toast';
 import { TBaseEntityFilter, TEntityPageProps } from '../types';
 import styles from './EntityEdit.module.scss';
 
-type TEditField = {
+type TEditField<TEntityType> = {
   key: string;
   type: TCustomFieldType | 'custom';
+  simpleTextType?: TCustomFieldSimpleTextType;
   label?: string;
   tooltip?: string;
+  options?: ({
+    value: string | number | undefined;
+    label: string;
+  } | string | number | undefined)[];
+  width?: {
+    xs?: number;
+    sm?: number;
+  };
   component?: React.ComponentType<{
     value: any;
     onChange: (value: any) => void;
+    entity: TBasePageEntity;
+    canValidate?: boolean;
+    error?: boolean;
   }>;
   customGraphQlFragment?: string;
   saveValue?: (value: any) => any;
   required?: boolean;
+  onlyOnCreate?: boolean;
+  getInitialValue?: (value: any, entityData: TEntityType) => any;
 }
 
 
 type TEntityEditProps<TEntityType extends TBasePageEntity, TFilterType extends TBaseEntityFilter>
   = TEntityPageProps<TEntityType, TFilterType> & RouteComponentProps<{ id: string }> & {
-    fields?: TEditField[];
+    fields?: TEditField<TEntityType>[];
+    disableMeta?: boolean;
   };
 
 class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseEntityFilter>
@@ -99,7 +122,7 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
       'id', 'slug', 'isEnabled', this.props.entityType && 'entityType', 'createDate',
       'updateDate', 'pageTitle', 'pageDescription',
       ...((this.props.fields ?? [])
-        .filter(field => !field.customGraphQlFragment).map(field => field.key)),
+        .filter(field => !field.customGraphQlFragment && !field.onlyOnCreate).map(field => field.key)),
     ])].filter(Boolean);
 
     const customFragments = (this.props.fields ?? []).filter(field => field.customGraphQlFragment)
@@ -161,9 +184,12 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
         keywords: entityData.meta.keywords,
       },
       ...Object.assign({}, ...(await Promise.all((this.props?.fields?.map(async field => {
-        const value = this.getCachedField(field)?.value;
+        const cached = this.getCachedField(field);
+        const value = (await cached?.saveData?.()) ?? cached?.value;
+
+        if (field?.saveValue) return await field.saveValue(value);
         return {
-          [field.key]: await field?.saveValue?.(value) ?? value,
+          [field.key]: value,
         }
       }) ?? [])))),
       ...(this.props.getInput?.() ?? {} as Omit<TEntityType, "id">),
@@ -171,7 +197,13 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
 
     for (const field of (this.props?.fields ?? [])) {
       if (field.required && (inputData[field.key] === null
-        || inputData[field.key] === undefined || inputData[field.key] === '')) return;
+        || inputData[field.key] === undefined || inputData[field.key] === '')) {
+        if (field.onlyOnCreate && this.state?.entityData?.id) {
+          // Update
+        } else {
+          return;
+        }
+      }
     }
 
     const entityId = this.props.match?.params?.id;
@@ -210,61 +242,81 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
     this.setState({ isSaving: false, canValidate: false });
   }
 
-  private getIdFromField = (field: TEditField) => {
+  private getIdFromField = (field: TEditField<TEntityType>) => {
     return `${this.props.entityCategory}_${field.key}`;
   }
 
-  private getCachedField = (field: TEditField): {
+  private getCachedField = (field: TEditField<TEntityType>): {
     component: TFieldDefaultComponent;
     saveData: () => string | Promise<string>;
     value?: any;
   } | undefined => {
     if (field.type === 'Simple text') {
       return getSimpleTextField({
+        ...field,
         id: this.getIdFromField(field),
-        label: field.label,
+      });
+    }
+    if (field.type === 'Currency') {
+      return getSimpleTextField({
+        simpleTextType: 'currency',
+        ...field,
+        id: this.getIdFromField(field),
       });
     }
     if (field.type === 'Text editor') {
       return getTextEditorField({
+        ...field,
         id: this.getIdFromField(field),
-        label: field.label,
       });
     }
     if (field.type === 'Select') {
       return getSelectField({
+        ...field,
         id: this.getIdFromField(field),
-        label: field.label,
       });
     }
     if (field.type === 'Image') {
       return getImageField({
+        ...field,
         id: this.getIdFromField(field),
-        label: field.label,
       });
     }
     if (field.type === 'Gallery') {
       return getGalleryField({
+        ...field,
         id: this.getIdFromField(field),
-        label: field.label,
       });
     }
     if (field.type === 'Color') {
       return getColorField({
+        ...field,
         id: this.getIdFromField(field),
-        label: field.label,
       });
     }
     if (field.type === 'Checkbox') {
       return getCheckboxField({
+        ...field,
         id: this.getIdFromField(field),
-        label: field.label,
+      });
+    }
+    if (field.type === 'Date') {
+      return getDatepickerField({
+        ...field,
+        id: this.getIdFromField(field),
+      });
+    }
+    if (field.type === 'Datetime') {
+      return getDatepickerField({
+        dateType: 'datetime',
+        ...field,
+        id: this.getIdFromField(field),
       });
     }
     if (field.type === 'custom') {
       return getCustomField({
+        ...field,
         id: this.getIdFromField(field),
-        component: field.component,
       });
     }
   }
@@ -344,10 +396,17 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
                   || fieldCache?.value === undefined || fieldCache?.value === '')
 
                 if (!Component) return null;
+                if (field.onlyOnCreate && this.state?.entityData?.id) return null;
+
                 return (
-                  <Grid item xs={12} key={field.key}>
+                  <Grid item
+                    xs={field.width?.xs ?? 12}
+                    sm={field.width?.sm ?? 12}
+                    key={field.key}>
                     <Component entity={entityData}
-                      initialValue={entityData[field.key]}
+                      options={field.options}
+                      initialValue={field.getInitialValue ?
+                        field.getInitialValue(entityData[field.key], entityData) : entityData[field.key]}
                       canValidate={this.state?.canValidate}
                       error={error}
                     />
@@ -370,59 +429,65 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
                     />
                   </Grid>
                 )}
-              <Grid item xs={12}>
-                <TextField label="Slug"
-                  value={entityData?.slug ?? ''}
-                  fullWidth
-                  variant="standard"
-                  className={styles.defaultField}
-                  onChange={(e) => { this.handleInputChange('slug', e.target.value) }}
-                  helperText={pageFullUrl}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField label="Meta title"
-                  value={entityData?.pageTitle ?? ''}
-                  fullWidth
-                  variant="standard"
-                  className={styles.defaultField}
-                  onChange={(e) => { this.handleInputChange('pageTitle', e.target.value) }}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField label="Meta description"
-                  value={entityData?.pageDescription ?? ''}
-                  fullWidth
-                  variant="standard"
-                  className={styles.defaultField}
-                  onChange={(e) => { this.handleInputChange('pageDescription', e.target.value) }}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <MuiAutocomplete
-                  multiple
-                  freeSolo
-                  options={[]}
-                  className={styles.defaultField}
-                  value={entityData?.meta?.keywords ?? []}
-                  getOptionLabel={(option) => option as any}
-                  onChange={(e, newVal) => {
-                    this.handleInputChange('meta', {
-                      ...(entityData.meta ?? {}),
-                      keywords: newVal
-                    })
-                  }}
-                  renderInput={(params) => (
-                    <Tooltip title="Press ENTER to add">
-                      <TextField
-                        {...params}
-                        variant="standard"
-                        label="Meta keywords"
-                      />
-                    </Tooltip>
-                  )}
-                />
-              </Grid>
+              {!this.props.disableMeta && (<>
+                <Grid item xs={12}>
+                  <TextField label="Page URL"
+                    value={entityData?.slug ?? ''}
+                    fullWidth
+                    variant="standard"
+                    style={{ margin: '10px 0' }}
+                    className={styles.defaultField}
+                    onChange={(e) => { this.handleInputChange('slug', e.target.value) }}
+                    helperText={pageFullUrl}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField label="Meta title"
+                    value={entityData?.pageTitle ?? ''}
+                    fullWidth
+                    variant="standard"
+                    style={{ margin: '10px 0' }}
+                    className={styles.defaultField}
+                    onChange={(e) => { this.handleInputChange('pageTitle', e.target.value) }}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField label="Meta description"
+                    value={entityData?.pageDescription ?? ''}
+                    fullWidth
+                    variant="standard"
+                    style={{ margin: '10px 0' }}
+                    className={styles.defaultField}
+                    onChange={(e) => { this.handleInputChange('pageDescription', e.target.value) }}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <MuiAutocomplete
+                    multiple
+                    freeSolo
+                    options={[]}
+                    className={styles.defaultField}
+                    value={entityData?.meta?.keywords ?? []}
+                    getOptionLabel={(option) => option as any}
+                    onChange={(e, newVal) => {
+                      this.handleInputChange('meta', {
+                        ...(entityData.meta ?? {}),
+                        keywords: newVal
+                      })
+                    }}
+                    renderInput={(params) => (
+                      <Tooltip title="Press ENTER to add">
+                        <TextField
+                          {...params}
+                          variant="standard"
+                          label="Meta keywords"
+                          style={{ margin: '10px 0' }}
+                        />
+                      </Tooltip>
+                    )}
+                  />
+                </Grid>
+              </>)}
             </Grid>
           )}
         </div>

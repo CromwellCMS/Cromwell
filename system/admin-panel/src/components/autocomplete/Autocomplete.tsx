@@ -32,6 +32,7 @@ class Autocomplete<TItemData extends { id: number | string }> extends React.Comp
     label?: string;
     variant?: 'standard' | 'outlined' | 'filled';
     multiple?: boolean;
+    style?: React.CSSProperties;
 }, {
     searchOpen?: boolean;
     isLoading: boolean;
@@ -235,6 +236,7 @@ class Autocomplete<TItemData extends { id: number | string }> extends React.Comp
                     renderInput={(params) => (
                         <TextField
                             {...params}
+                            style={this.props.style}
                             value={this.state.searchText ?? ''}
                             onChange={(event) => this.handleSearchInput(event.currentTarget.value)}
                             onFocus={() => this.handleSearchInput(this.state.searchText)}

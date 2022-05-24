@@ -1,15 +1,35 @@
-import { EDBEntity, getRandStr, TAdminCustomField, TBasePageEntity, TImageSettings } from '@cromwell/core';
-import { SelectChangeEvent, SelectProps, TextField, TextFieldProps, Checkbox, FormControlLabel, CheckboxProps } from '@mui/material';
+import {
+    EDBEntity,
+    getRandStr,
+    TAdminCustomField,
+    TBasePageEntity,
+    TCustomFieldSimpleTextType,
+    TImageSettings,
+} from '@cromwell/core';
+import { Visibility as VisibilityIcon, VisibilityOff as VisibilityOffIcon } from '@mui/icons-material';
+import {
+    Checkbox,
+    CheckboxProps,
+    FormControlLabel,
+    IconButton,
+    InputAdornment,
+    SelectChangeEvent,
+    SelectProps,
+    TextField,
+    TextFieldProps,
+} from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import { debounce } from 'throttle-debounce';
 
 import { ColorPicker, ColorPickerProps } from '../components/colorPicker/ColorPicker';
+import { Datepicker, DatepickerProps } from '../components/datepicker/Datepicker';
 import entityEditStyles from '../components/entity/entityEdit/EntityEdit.module.scss';
 import { GalleryPicker, GalleryPickerProps } from '../components/galleryPicker/GalleryPicker';
 import { ImagePicker, ImagePickerProps } from '../components/imagePicker/ImagePicker';
 import { Select } from '../components/select/Select';
 import { getEditorData, getEditorHtml, initTextEditor } from './editor/editor';
 import { useForceUpdate } from './forceUpdate';
+import { NumberFormatCustom } from './NumberFormatCustom';
 
 export type TRegisteredCustomField = TAdminCustomField & {
     component: React.ComponentType<{ initialValue: string | undefined; entity: TBasePageEntity }>;
@@ -21,6 +41,10 @@ export type TFieldDefaultComponent = React.ComponentType<{
     entity: TBasePageEntity;
     canValidate?: boolean;
     error?: boolean;
+    options?: ({
+        value: string | number | undefined;
+        label: string;
+    } | string | number | undefined)[];
 }>
 
 const customFields: Record<EDBEntity | string, Record<string, TRegisteredCustomField>> = {};
@@ -113,7 +137,7 @@ export const getCustomFieldsFor = (entityType: EDBEntity | string): TRegisteredC
     return Object.values(customFields[entityType] ?? {});
 }
 
-const useInitialValue = (initialValue: string): [string, React.Dispatch<React.SetStateAction<string>>] => {
+const useInitialValue = (initialValue: any): [any, React.Dispatch<React.SetStateAction<any>>] => {
     const [value, setValue] = useState(initialValue);
     const initialValueRef = useRef(initialValue);
     if (initialValue !== initialValueRef.current) {
@@ -128,14 +152,17 @@ export const getCustomField = (settings: {
     id: string;
     key?: string;
     label?: string;
-    component: React.ComponentType<{
+    component?: React.ComponentType<{
         value: any;
         onChange: (value: any) => void;
-        cnaValidate?: boolean;
+        entity: TBasePageEntity;
+        canValidate?: boolean;
+        error?: boolean;
     }>;
     saveData?: () => any | Promise<any>;
 }) => {
     const { id, component: Component, saveData } = settings;
+    if (!Component) return;
     if (fieldsCache[id]) return fieldsCache[id];
 
     fieldsCache[id] = {
@@ -144,6 +171,7 @@ export const getCustomField = (settings: {
             fieldsCache[id].value = value;
 
             return <Component
+                {...props}
                 value={value}
                 onChange={value => setValue(value)}
             />
@@ -158,29 +186,64 @@ export const getSimpleTextField = (settings: {
     key?: string;
     label?: string;
     props?: TextFieldProps;
+    simpleTextType?: TCustomFieldSimpleTextType;
 }) => {
-    const { id } = settings;
+    const { id, simpleTextType } = settings;
     if (fieldsCache[id]) return fieldsCache[id];
 
     fieldsCache[id] = {
         component: (props) => {
             const [value, setValue] = useInitialValue(props.initialValue);
+            const [showPassword, setShowPassword] = useState(false);
             fieldsCache[id].value = value;
 
             return <TextField
                 value={value ?? ''}
+                multiline={simpleTextType === 'multiline'}
+                type={(simpleTextType === 'password' && !showPassword) ? 'password' : 'text'}
                 onChange={e => {
+                    if (simpleTextType === 'integer' || simpleTextType === 'float') {
+                        const val = simpleTextType === 'integer' ? parseInt(e.target.value) :
+                            parseFloat(e.target.value);
+                        if (!isNaN(val)) setValue(val as any);
+                        return;
+                    }
                     setValue(e.target.value);
                 }}
                 label={settings.label ?? settings.key}
                 fullWidth
+                InputProps={{
+                    inputComponent: simpleTextType === 'currency' ? NumberFormatCustom as any : undefined,
+                    endAdornment: simpleTextType === 'password' ? (
+                        <InputAdornment position="end">
+                            <IconButton
+                                aria-label="toggle password visibility"
+                                onClick={() => setShowPassword(!showPassword)}
+                                edge="end"
+                            >
+                                {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                            </IconButton>
+                        </InputAdornment>
+                    ) : undefined,
+                }}
                 variant="standard"
-                style={{ marginBottom: '15px' }}
+                style={{ margin: '10px 0' }}
                 error={props.error && props.canValidate}
                 {...(settings.props ?? {})}
             />
         },
-        saveData: () => (!fieldsCache[id].value) ? null : fieldsCache[id].value,
+        saveData: () => {
+            const value = fieldsCache[id].value;
+            if (simpleTextType === 'currency' || simpleTextType === 'float') {
+                const valueNum = parseFloat(value);
+                return isNaN(valueNum) ? null : valueNum;
+            }
+            if (simpleTextType === 'integer') {
+                const valueNum = parseInt(value);
+                return isNaN(valueNum) ? null : valueNum;
+            }
+            return !value ? null : value;
+        },
     };
     return fieldsCache[id];
 }
@@ -191,6 +254,7 @@ export const registerSimpleTextCustomField = (settings: {
     key: string;
     label?: string;
     props?: TextFieldProps;
+    simpleTextType?: TCustomFieldSimpleTextType;
 }) => {
     const id = getRandStr(12);
     const field = getSimpleTextField({ id, ...settings });
@@ -216,7 +280,7 @@ export const getTextEditorField = (settings: {
 
     fieldsCache[id] = {
         component: (props) => {
-            const initialValueRef = useRef<null | string>(null);
+            const initialValueRef = useRef<null | string>(editorId);
 
             const initEditor = async () => {
                 let data: {
@@ -247,7 +311,7 @@ export const getTextEditorField = (settings: {
             });
 
             return (
-                <div style={{ margin: '15px 0' }}
+                <div style={{ margin: '10px 0' }}
                     className={entityEditStyles.descriptionEditor}>
                     <div style={{ height: '350px' }} id={editorId}></div>
                 </div>
@@ -289,7 +353,10 @@ export const getSelectField = (settings: {
     id: string;
     label?: string;
     props?: SelectProps<string>;
-    options?: string[];
+    options?: ({
+        value: string | number | undefined;
+        label: string;
+    } | string | number | undefined)[];
 }) => {
     const { id } = settings;
     if (fieldsCache[id]) return fieldsCache[id];
@@ -301,8 +368,7 @@ export const getSelectField = (settings: {
 
             return (
                 <Select
-                    style={{ margin: '15px 0' }}
-                    label={settings.label}
+                    style={{ margin: '10px 0' }}
                     value={value}
                     onChange={(event: SelectChangeEvent<string>) => {
                         setValue(event.target.value);
@@ -310,7 +376,8 @@ export const getSelectField = (settings: {
                     size="small"
                     variant="standard"
                     fullWidth
-                    options={settings.options?.map(opt => ({ label: opt, value: opt }))}
+                    options={props.options ?? settings.options}
+                    error={props.error && props.canValidate}
                     {...(settings.props ?? {})}
                 />
             )
@@ -324,7 +391,10 @@ export const registerSelectCustomField = (settings: {
     entityType: EDBEntity | string;
     key: string;
     label?: string;
-    options?: string[];
+    options?: ({
+        value: string | number | undefined;
+        label: string;
+    } | string | number | undefined)[];
     props?: SelectProps<string>;
 }) => {
     const id = getRandStr(12);
@@ -361,7 +431,7 @@ export const getImageField = (settings: {
                     }}
                     showRemove
                     label={settings.label}
-                    style={{ margin: '15px 0' }}
+                    style={{ margin: '10px 0' }}
                     variant="standard"
                     {...(settings.props ?? {})}
                 />
@@ -412,7 +482,7 @@ export const getGalleryField = (settings: {
                         setValue(valStr);
                     }}
                     label={settings.label}
-                    style={{ margin: '15px 0', border: '1px solid #ccc', borderRadius: '6px', padding: '10px' }}
+                    style={{ margin: '10px 0', border: '1px solid #ccc', borderRadius: '6px', padding: '10px' }}
                     {...(settings.props ?? {})}
                 />
             )
@@ -460,7 +530,7 @@ export const getColorField = (settings: {
                     onChange={(value) => {
                         setValue(value);
                     }}
-                    style={{ margin: '15px 0' }}
+                    style={{ margin: '10px 0' }}
                     {...(settings.props ?? {})}
                 />
             )
@@ -542,6 +612,57 @@ export const registerCheckboxCustomField = (settings: {
 }
 
 
+export const getDatepickerField = (settings: {
+    id: string;
+    label?: string;
+    props?: DatepickerProps;
+    dateType?: 'date' | 'datetime' | 'time';
+}) => {
+    const { id, label, dateType } = settings;
+    if (fieldsCache[id]) return fieldsCache[id];
+
+    fieldsCache[id] = {
+        component: (props) => {
+            const [value, setValue] = useInitialValue(props.initialValue);
+            fieldsCache[id].value = value;
+
+            return (
+                <div style={{ margin: '10px 0' }}>
+                    <Datepicker
+                        onChange={setValue}
+                        value={value}
+                        label={label}
+                        dateType={dateType}
+                        {...(settings.props ?? {})}
+                    />
+                </div>
+            )
+        },
+        saveData: () => (!fieldsCache[id].value) ? null : fieldsCache[id].value,
+    };
+    return fieldsCache[id];
+}
+
+export const registerDatepickerCustomField = (settings: {
+    entityType: EDBEntity | string;
+    key: string;
+    label?: string;
+    props?: DatepickerProps;
+    dateType?: 'date' | 'datetime' | 'time';
+}) => {
+    const id = getRandStr(12);
+    const field = getDatepickerField({ id, ...settings });
+
+    registerCustomField({
+        id,
+        fieldType: 'Color',
+        ...settings,
+        component: field.component,
+        saveData: field.saveData,
+    });
+}
+
+
 
 export const registerCustomFieldOfType = (field: TAdminCustomField) => {
     if (field.fieldType === 'Simple text') {
@@ -561,5 +682,14 @@ export const registerCustomFieldOfType = (field: TAdminCustomField) => {
     }
     if (field.fieldType === 'Color') {
         registerColorCustomField(field);
+    }
+    if (field.fieldType === 'Checkbox') {
+        registerCheckboxCustomField(field);
+    }
+    if (field.fieldType === 'Currency') {
+        registerSimpleTextCustomField({
+            simpleTextType: 'currency',
+            ...field,
+        });
     }
 }

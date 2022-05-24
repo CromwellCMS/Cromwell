@@ -1,343 +1,141 @@
-import { gql } from '@apollo/client';
-import { EDBEntity, getStoreItem, setStoreItem, TCreateUser, TRole, TUpdateUser, TUser } from '@cromwell/core';
+import { EDBEntity, TRole } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
-import {
-    ArrowBack as ArrowBackIcon,
-    Visibility as VisibilityIcon,
-    VisibilityOff as VisibilityOffIcon,
-} from '@mui/icons-material';
-import { Button, Grid, IconButton, InputAdornment, SelectChangeEvent, TextField } from '@mui/material';
+import { Grid, TextField } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
 
-import { ImagePicker } from '../../components/imagePicker/ImagePicker';
-import { Select } from '../../components/select/Select';
-import { toast } from '../../components/toast/toast';
-import { userPageInfo } from '../../constants/PageInfos';
+import EntityEdit from '../../components/entity/entityEdit/EntityEdit';
+import { userListPageInfo, userPageInfo } from '../../constants/PageInfos';
 import { parseAddress } from '../../helpers/addressParser';
-import { getCustomMetaFor, getCustomMetaKeysFor, RenderCustomFields } from '../../helpers/customFields';
-import commonStyles from '../../styles/common.module.scss';
-import styles from './User.module.scss';
+
 
 export default function UserPage() {
-    const { id: userId } = useParams<{ id: string }>();
-    const client = getGraphQLClient();
-    const [notFound, setNotFound] = useState(false);
-    const [passwordInput, setPasswordInput] = useState('');
-    const history = useHistory();
-    const [userData, setUserData] = useState<TUser | undefined | null>(null);
-    const [roles, setRoles] = useState<TRole[]>([]);
-    const [showPassword, setShowPassword] = useState(false);
-    const isNew = userId === 'new';
-    const [canValidate, setCanValidate] = useState(false);
+  const client = getGraphQLClient();
+  const [roles, setRoles] = useState<TRole[]>([]);
 
-    // Support old and new address format
-    const { addressString, addressJson } = parseAddress(userData?.address);
-
-    const handleClickShowPassword = () => {
-        setShowPassword(!showPassword);
+  const init = async () => {
+    try {
+      const roles = await getGraphQLClient().getRoles({ pagedParams: { pageSize: 1000 } });
+      setRoles(roles?.elements ?? []);
+    } catch (error) {
+      console.error(error);
     }
+  }
 
-    const getUser = async (id: number) => {
-        let data: TUser | undefined;
-        try {
-            data = await client?.getUserById(id,
-                gql`
-                fragment AdminPanelUserFragment on User {
-                    id
-                    slug
-                    createDate
-                    updateDate
-                    isEnabled
-                    pageTitle
-                    pageDescription
-                    meta {
-                        keywords
-                    }
-                    fullName
-                    email
-                    avatar
-                    bio
-                    phone
-                    address
-                    roles {
-                        name
-                        permissions
-                        title
-                    }
-                    customMeta (keys: ${JSON.stringify(getCustomMetaKeysFor(EDBEntity.User))})
-                }`, 'AdminPanelUserFragment');
-        } catch (e) { console.error(e) }
-
-        return data;
-    }
+  useEffect(() => {
+    init();
+  }, []);
 
 
-    const init = async () => {
-        if (userId && !isNew) {
-            const data = await getUser(parseInt(userId));
-            if (data?.id) {
-                setUserData(data);
-            } else setNotFound(true);
+  return <EntityEdit
+    entityCategory={EDBEntity.User}
+    entityListRoute={userListPageInfo.route}
+    entityBaseRoute={userPageInfo.baseRoute}
+    listLabel="Users"
+    entityLabel="User"
+    getById={client.getUserById}
+    update={client.updateUser}
+    create={client.createUser}
+    deleteOne={client.deleteUser}
+    fields={[
+      {
+        key: 'fullName',
+        type: 'Simple text',
+        label: 'Full name',
+        required: true,
+        width: { sm: 6 }
+      },
+      {
+        key: 'avatar',
+        type: 'Image',
+        label: 'Avatar',
+        width: { sm: 6 }
+      },
+      {
+        key: 'email',
+        type: 'Simple text',
+        label: 'Email',
+        required: true,
+        width: { sm: 6 }
+      },
+      {
+        key: 'password',
+        type: 'Simple text',
+        label: 'Password',
+        simpleTextType: 'password',
+        required: true,
+        onlyOnCreate: true,
+        width: { sm: 6 }
+      },
+      {
+        key: 'roles',
+        type: 'Select',
+        label: 'Role',
+        required: true,
+        customGraphQlFragment: `roles {
+                    name
+                    permissions
+                    title
+                }`,
+        options: roles.map(role => ({ label: role.title ?? role.name, value: role.name })),
+        saveValue: (name) => ({
+          roles: name && [name],
+        }),
+        getInitialValue: (roles: TRole[]) => roles?.[0]?.name,
+        width: { sm: 6 },
+      },
+      {
+        key: 'bio',
+        type: 'Simple text',
+        label: 'Bio',
+        simpleTextType: 'multiline',
+      },
+      {
+        key: 'address',
+        type: 'Simple text',
+        label: 'Address',
+        component: ({ value, onChange }) => {
+          // Support old and new address format
+          const { addressString, addressJson } = parseAddress(value);
 
-        } else if (isNew) {
-            setUserData({} as any);
-        }
-
-        try {
-            const roles = await getGraphQLClient().getRoles({ pagedParams: { pageSize: 1000 } });
-            setRoles(roles?.elements ?? []);
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
-    useEffect(() => {
-        init();
-    }, []);
-
-    const refetchMeta = async () => {
-        if (!userId) return;
-        const data = await getUser(parseInt(userId));
-        return data?.customMeta;
-    };
-
-
-    const handleInputChange = (prop: keyof TUser, val: any) => {
-        if (userData) {
-            setUserData((prevData) => {
-                const newData = Object.assign({}, prevData);
-                (newData[prop] as any) = val;
-                return newData;
-            });
-        }
-    }
-
-    const getInput = async (): Promise<TUpdateUser> => ({
-        slug: userData.slug,
-        pageTitle: userData.pageTitle,
-        pageDescription: userData.pageDescription,
-        fullName: userData.fullName,
-        email: userData.email,
-        avatar: userData.avatar,
-        bio: userData.bio,
-        phone: userData.phone,
-        address: userData.address,
-        roles: userData.roles?.map(r => r.name),
-        customMeta: Object.assign({}, userData.customMeta, await getCustomMetaFor(EDBEntity.User)),
-    });
-
-    const handleSave = async () => {
-        setCanValidate(true);
-        const inputData = await getInput();
-
-        if (!inputData.email || !inputData.fullName || !inputData.roles?.length) return;
-
-        if (isNew) {
-            if (!passwordInput) return;
-            try {
-                const createInput: TCreateUser = {
-                    ...inputData,
-                    password: passwordInput
-                }
-                const newData = await client?.createUser(createInput);
-                toast.success('Created user');
-                history.replace(`${userPageInfo.baseRoute}/${newData.id}`);
-                setUserData(newData);
-            } catch (e) {
-                toast.error('Failed to create user');
-                console.error(e);
-            }
-
-        } else if (userData?.id) {
-            try {
-                await client?.updateUser(userData.id, inputData);
-                const newData = await getUser(parseInt(userId));
-                setUserData(newData);
-                toast.success('Saved!');
-
-                const currentUser: TUser | undefined = getStoreItem('userInfo');
-                if (currentUser?.id && currentUser.id === newData.id) {
-                    setStoreItem('userInfo', userData);
-                }
-
-            } catch (e) {
-                toast.error('Failed to save');
-                console.error(e);
-            }
-        }
-        setCanValidate(false);
-    }
-
-    if (notFound) {
-        return (
-            <div className={styles.UserPage}>
-                <div className={styles.notFoundPage}>
-                    <p className={styles.notFoundText}>User not found</p>
-                </div>
-            </div>
-        )
-    }
-
-    return (
-        <div className={styles.UserPage}>
-            <div className={styles.header}>
-                <div className={styles.headerLeft}>
-                    <IconButton
-                        onClick={() => window.history.back()}
-                    >
-                        <ArrowBackIcon style={{ fontSize: '18px' }} />
-                    </IconButton>
-                    <p className={commonStyles.pageTitle}>account</p>
-                </div>
-                <div className={styles.headerActions}>
-                    <Button variant="contained" color="primary"
-                        className={styles.saveBtn}
-                        size="small"
-                        onClick={handleSave}>
-                        Save</Button>
-                </div>
-            </div>
-            <div className={styles.fields}>
-                <Grid container spacing={3}>
-                    <Grid item xs={12} sm={6} style={{ display: 'flex', alignItems: 'flex-end' }}>
-                        <TextField
-                            label="Name"
-                            value={userData?.fullName || ''}
-                            fullWidth
-                            variant="standard"
-                            className={styles.field}
-                            onChange={(e) => { handleInputChange('fullName', e.target.value) }}
-                            error={canValidate && !userData?.fullName}
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <ImagePicker
-                            label="Avatar"
-                            onChange={(val) => { handleInputChange('avatar', val) }}
-                            value={userData?.avatar ?? null}
-                            className={styles.imageField}
-                            classes={{ image: styles.image }}
-                            backgroundSize='cover'
-                            width="50px"
-                            height="50px"
-                            showRemove
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <TextField
-                            label="E-mail"
-                            value={userData?.email || ''}
-                            fullWidth
-                            variant="standard"
-                            className={styles.field}
-                            onChange={(e) => { handleInputChange('email', e.target.value) }}
-                            error={canValidate && !userData?.email}
-                        />
-                    </Grid>
-                    {isNew && (
-                        <Grid item xs={12} sm={6}>
-                            <TextField
-                                label="Password"
-                                value={passwordInput || ''}
-                                type={showPassword ? 'text' : 'password'}
-                                fullWidth
-                                variant="standard"
-                                className={styles.field}
-                                onChange={(e) => { setPasswordInput(e.target.value) }}
-                                error={canValidate && !passwordInput}
-                                InputProps={{
-                                    endAdornment: (
-                                        <InputAdornment position="end">
-                                            <IconButton
-                                                aria-label="toggle password visibility"
-                                                onClick={handleClickShowPassword}
-                                                edge="end"
-                                            >
-                                                {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
-                                            </IconButton>
-                                        </InputAdornment>
-                                    ),
-                                }}
-                            />
-                        </Grid>
-                    )}
-                    <Grid item xs={12} sm={6} display="flex" alignItems="flex-end">
-                        <Select
-                            fullWidth
-                            variant="standard"
-                            label="Role"
-                            value={userData?.roles?.[0]?.name ?? ''}
-                            onChange={(event: SelectChangeEvent<unknown>) => {
-                                handleInputChange('roles', [{ name: event.target.value }])
-                            }}
-                            error={canValidate && !userData?.roles?.length}
-                            options={roles.map(role => ({ label: role.title ?? role.name, value: role.name }))}
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={12}>
-                        <TextField
-                            label="Bio"
-                            value={userData?.bio || ''}
-                            fullWidth
-                            variant="standard"
-                            multiline
-                            className={styles.field}
-                            onChange={(e) => { handleInputChange('bio', e.target.value) }}
-                        />
-                    </Grid>
-                    {!addressJson && (
-                        <Grid item xs={12} sm={12}>
-                            <TextField label="Address"
-                                value={addressString || ''}
-                                fullWidth
-                                variant="standard"
-                                className={styles.field}
-                                onChange={(e) => { handleInputChange('address', e.target.value) }}
-                            />
-                        </Grid>
-                    )}
-                    {addressJson && (
-                        Object.entries<any>(addressJson).map(([fieldKey, value]) => {
-                            return (
-                                <Grid item xs={12} sm={6} key={fieldKey}>
-                                    <TextField label={fieldKey}
-                                        value={value || ''}
-                                        fullWidth
-                                        variant="standard"
-                                        className={styles.field}
-                                        onChange={(e) => {
-                                            const newVal = e.target.value;
-                                            handleInputChange('address', JSON.stringify({
-                                                ...addressJson,
-                                                [fieldKey]: newVal,
-                                            }))
-                                        }}
-                                    />
-                                </Grid>
-                            )
-                        }))}
-                    <Grid item xs={12} sm={6}>
-                        <TextField
-                            label="Phone"
-                            value={userData?.phone || ''}
-                            fullWidth
-                            variant="standard"
-                            className={styles.field}
-                            onChange={(e) => { handleInputChange('phone', e.target.value) }}
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={12}>
-                        {userData && (
-                            <RenderCustomFields
-                                entityType={EDBEntity.User}
-                                entityData={userData}
-                                refetchMeta={refetchMeta}
-                            />
-                        )}
-                    </Grid>
+          if (addressJson) return (
+            <>{Object.entries<any>(addressJson).map(([fieldKey, value]) => {
+              return (
+                <Grid item xs={12} sm={6} key={fieldKey}>
+                  <TextField label={fieldKey}
+                    value={value || ''}
+                    fullWidth
+                    variant="standard"
+                    style={{ margin: '10px 0' }}
+                    onChange={(e) => {
+                      const newVal = e.target.value;
+                      onChange(JSON.stringify({
+                        ...addressJson,
+                        [fieldKey]: newVal,
+                      }))
+                    }}
+                  />
                 </Grid>
-            </div>
-        </div>
-    );
+              )
+            })}</>
+          )
+
+          return (
+            <TextField label="Address"
+              value={addressString || ''}
+              fullWidth
+              variant="standard"
+              style={{ margin: '10px 0' }}
+              onChange={(e) => { onChange(e.target.value) }}
+            />
+          )
+        }
+      },
+      {
+        key: 'phone',
+        type: 'Simple text',
+        label: 'Phone',
+        width: { sm: 6 }
+      },
+    ]}
+  />
 }

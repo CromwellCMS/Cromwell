@@ -6,8 +6,10 @@ import EntityEdit from '../../components/entity/entityEdit/EntityEdit';
 import { attributeListPageInfo, attributePageInfo } from '../../constants/PageInfos';
 import { AttributeValues } from './components/AttributeValues';
 
-const AttributePage = () => {
+
+export default function AttributePage() {
   const client = getGraphQLClient();
+
   return <EntityEdit
     entityCategory={EDBEntity.Attribute}
     entityListRoute={attributeListPageInfo.route}
@@ -43,7 +45,7 @@ const AttributePage = () => {
             value
             icon
           }`,
-        saveValue: (values: TAttributeValue[]): TAttributeValue[] => {
+        saveValue: (values: TAttributeValue[]): Record<'values', TAttributeValue[]> => {
           const valuesObj: Record<string, TAttributeValue> = {};
           values?.forEach(value => {
             if (!valuesObj[value.value]) valuesObj[value.value] = {
@@ -52,7 +54,9 @@ const AttributePage = () => {
               icon: value.icon,
             }
           });
-          return Object.values(valuesObj);
+          return {
+            values: Object.values(valuesObj),
+          };
         },
       },
       {
@@ -60,14 +64,13 @@ const AttributePage = () => {
         type: 'Checkbox',
         tooltip: 'A customer will be required to pick a value of this attribute to add a product to the cart',
         label: 'Required to pick',
+        saveValue: (value) => ({ required: !!value }),
       },
       {
         key: 'type',
         type: 'custom',
-        saveValue: (): TAttribute['type'] => 'radio',
+        saveValue: (): Record<'type', TAttribute['type']> => ({ type: 'radio' }),
       }
     ]}
   />
 }
-
-export default AttributePage;

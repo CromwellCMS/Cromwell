@@ -173,6 +173,13 @@ export const applyBaseFilter = <TEntity>({ qb, filter, entityType, dbType, Entit
         }
 
         filter.filters.forEach((prop, index) => {
+            if (typeof prop.value === 'boolean') {
+                prop = {
+                    ...prop,
+                    value: getSqlBoolStr(dbType, prop.value),
+                    exact: true,
+                };
+            }
             if (!prop.key || !isSimpleString(prop.key)) return;
             if (!prop.exact && prop.value === undefined) return;
             const valueName = `value_filter_${index}`;

@@ -66,12 +66,14 @@ export class MockService {
         values: [{ value: "Orange", icon: '/plugins/@cromwell/plugin-product-filter/color_orange.png' },
         { value: "Purple", icon: '/plugins/@cromwell/plugin-product-filter/color_purple.png' },
         { value: "Blue", icon: '/plugins/@cromwell/plugin-product-filter/color_blue.png' }],
-        type: 'radio'
+        type: 'radio',
+        required: false,
     },
     {
         key: 'Condition',
         values: [{ value: "New" }, { value: "Used" }],
-        type: 'radio'
+        type: 'radio',
+        required: false,
     }];
 
     // reviews

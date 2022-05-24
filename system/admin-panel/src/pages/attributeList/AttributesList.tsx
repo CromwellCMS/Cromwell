@@ -56,6 +56,13 @@ export default function AttributesList() {
                     name: 'required',
                     label: 'Required',
                     type: 'Checkbox',
+                    searchOptions: [{
+                        label: 'Required',
+                        value: true,
+                    }, {
+                        label: 'Optional',
+                        value: false,
+                    }],
                     visible: true,
                 },
                 ...baseEntityColumns.map(col => {

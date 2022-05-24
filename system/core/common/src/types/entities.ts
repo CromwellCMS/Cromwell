@@ -825,12 +825,18 @@ export type TServiceVersions = {
 export type TCustomFieldType = 'Simple text' | 'Text editor' | 'Select' | 'Image' | 'Gallery' |
     'Color' | 'Date' | 'Time' | 'Datetime' | 'Currency' | 'Rating' | 'Checkbox';
 
+export type TCustomFieldSimpleTextType = 'string' | 'multiline' | 'float' | 'integer' | 'currency' | 'password';
+
 export type TAdminCustomField = {
     entityType: EDBEntity | string;
     fieldType: TCustomFieldType;
+    simpleTextType?: TCustomFieldSimpleTextType;
     key: string;
     id: string;
-    options?: string[];
+    options?: ({
+        value: string | number | undefined;
+        label: string;
+    } | string | number | undefined)[];
     label?: string;
     order?: number;
     column?: TCustomEntityColumn;
