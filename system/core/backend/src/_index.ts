@@ -77,8 +77,9 @@ export * from './models/inputs/role.input';
 
 export * from './models/objects/attribute-instance.object';
 export * from './models/objects/custom-date.scalar';
-
+export * from './models/objects/stringified-value.scalar';
 export * from './repositories/product-category.repository';
+
 export * from './repositories/product.repository';
 export * from './repositories/attribute.repository';
 export * from './repositories/product-review.repository';

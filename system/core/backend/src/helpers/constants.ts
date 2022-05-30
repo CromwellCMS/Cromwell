@@ -542,3 +542,28 @@ export const getMigrationsDirName = (dbType: ConnectionOptions['type']) => {
   if (dbType === 'mysql' || dbType === 'mariadb') return 'migrations/mysql';
   if (dbType === 'postgres') return 'migrations/postgres';
 }
+
+
+let bcryptLib: typeof import('@node-rs/bcrypt') | typeof import('bcryptjs');
+
+export const getBcrypt = (): {
+  hashSync(password: string | Buffer, round?: number): string;
+  hash(password: string | Buffer, round?: number | string): Promise<string>;
+  compareSync(password: string | Buffer, hash: string | Buffer): boolean;
+  compare(password: string | Buffer, hash: string | Buffer): Promise<boolean>;
+} => {
+  if (!bcryptLib) {
+    try {
+      bcryptLib = require('@node-rs/bcrypt');
+    } catch (error) {
+      console.error(error);
+      bcryptLib = require('bcryptjs');
+    }
+  }
+  return {
+    hashSync: bcryptLib.hashSync,
+    hash: bcryptLib.hash,
+    compareSync: bcryptLib.compareSync,
+    compare: bcryptLib.compare,
+  }
+}

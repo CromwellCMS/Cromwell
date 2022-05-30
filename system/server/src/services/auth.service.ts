@@ -11,13 +11,13 @@ import {
     TAuthUserInfo,
     TRequestWithUser,
     TTokenInfo,
+    getBcrypt,
     TTokenPayload,
     User,
     UserRepository,
 } from '@cromwell/core-backend';
 import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import bcrypt from '@node-rs/bcrypt';
 import cryptoRandomString from 'crypto-random-string';
 import { FastifyReply } from 'fastify';
 import { getCustomRepository } from 'typeorm';
@@ -204,11 +204,11 @@ export class AuthService {
     }
 
     async hashPassword(plain: string): Promise<string> {
-        return bcrypt.hash(plain, bcryptSaltRounds);
+        return getBcrypt().hash(plain, bcryptSaltRounds);
     }
 
     async comparePassword(plain: string, hash: string): Promise<boolean> {
-        return bcrypt.compare(plain, hash);
+        return getBcrypt().compare(plain, hash);
     }
 
     payloadToUserInfo(payload: TTokenPayload): TAuthUserInfo {

@@ -518,7 +518,6 @@ export class MigrationService {
                 id: ent.id,
                 createDate: ent.createDate,
                 updateDate: ent.updateDate,
-                isEnabled: ent.isEnabled,
                 status: ent.status,
                 cart: ent.cart,
                 orderTotalPrice: ent.orderTotalPrice,
@@ -538,6 +537,7 @@ export class MigrationService {
                 couponCodes: ent.coupons?.map(coupon => coupon.code),
                 customMeta: await entityMetaRepository.getEntityMetaByKeys(EDBEntity.Order, ent.id, metaKeys),
                 views: undefined,
+                isEnabled: undefined,
             })));
 
         this.fillSheet(workbook, ESheetNames.Order, ordersSheet);

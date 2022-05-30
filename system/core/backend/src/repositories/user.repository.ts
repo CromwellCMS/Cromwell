@@ -1,9 +1,9 @@
 import { TCreateUser, TDeleteManyInput, TPagedList, TPagedParams, TUpdateUser, TUser, TUserFilter } from '@cromwell/core';
 import { HttpException, HttpStatus } from '@nestjs/common';
-import bcrypt from '@node-rs/bcrypt';
 import { Brackets, EntityRepository, getCustomRepository, SelectQueryBuilder } from 'typeorm';
 
 import { bcryptSaltRounds } from '../helpers/auth-settings';
+import { getBcrypt } from '../helpers/constants';
 import { checkEntitySlug, getPaged, handleBaseInput, handleCustomMetaInput } from '../helpers/base-queries';
 import { getLogger } from '../helpers/logger';
 import { validateEmail } from '../helpers/validation';
@@ -119,7 +119,7 @@ export class UserRepository extends BaseRepository<User> {
     }
 
     async hashPassword(password: string) {
-        return bcrypt.hash(password, bcryptSaltRounds);
+        return getBcrypt().hash(password, bcryptSaltRounds);
     }
 
     async updateUser(id: number, updateUser: TUpdateUser): Promise<User> {

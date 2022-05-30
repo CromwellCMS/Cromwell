@@ -1,6 +1,7 @@
 import { EDBEntity, getRandStr, getStoreItem, TBasePageEntityInput, TPagedList, TPagedParams } from '@cromwell/core';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { BaseEntity, ConnectionOptions, getManager, SelectQueryBuilder } from 'typeorm';
+import { DateUtils } from 'typeorm/util/DateUtils';
 
 import { entityMetaRepository } from '../helpers/entity-meta';
 import { BasePageEntity } from '../models/entities/base-page.entity';
@@ -181,20 +182,47 @@ export const applyBaseFilter = <TEntity>({ qb, filter, entityType, dbType, Entit
                 };
             }
             if (!prop.key || !isSimpleString(prop.key)) return;
-            if (!prop.exact && prop.value === undefined) return;
             const valueName = `value_filter_${index}`;
             const keyName = `key_filter_${index}`;
 
+            const getRangeValue = (value: string | number | Date | boolean) => {
+                if (value instanceof Date)
+                    return DateUtils.mixedDateToDatetimeString(value);
+                return value;
+            }
+
             if (!prop.inMeta) {
-                qb.andWhere(`${entityTablePath}.${wrapInQuotes(dbType, prop.key)} ${prop.exact ? '=' : getSqlLike(dbType)} :${valueName}`,
-                    { [valueName]: prop.exact ? prop.value : `%${prop.value}%` });
+                if (prop.from && prop.to) {
+                    const fromName = `from_filter_${index}`;
+                    const toName = `to_filter_${index}`;
+
+                    qb.andWhere(`${entityTablePath}.${wrapInQuotes(dbType, prop.key)} BETWEEN :${fromName} AND :${toName}`, {
+                        [fromName]: getRangeValue(prop.from),
+                        [toName]: getRangeValue(prop.to),
+                    });
+
+                } else {
+                    qb.andWhere(`${entityTablePath}.${wrapInQuotes(dbType, prop.key)} ${prop.exact ? '=' : getSqlLike(dbType)} :${valueName}`,
+                        { [valueName]: prop.exact ? prop.value : `%${prop.value}%` });
+                }
 
             } else if (EntityMetaClass) {
                 qb.andWhere(`${searchMetaJoinName}.${wrapInQuotes(dbType, 'key')} = :${keyName}`,
                     { [keyName]: prop.key });
 
-                qb.andWhere(`${searchMetaJoinName}.${wrapInQuotes(dbType, 'value')} ${prop.exact ? '=' : getSqlLike(dbType)} :${valueName}`,
-                    { [valueName]: prop.exact ? prop.value : `%${prop.value}%` });
+                if (prop.from && prop.to) {
+                    const fromName = `from_filter_${index}`;
+                    const toName = `to_filter_${index}`;
+
+                    qb.andWhere(`${searchMetaJoinName}.${wrapInQuotes(dbType, 'value')} BETWEEN :${fromName} AND :${toName}`, {
+                        [fromName]: getRangeValue(prop.from),
+                        [toName]: getRangeValue(prop.to),
+                    });
+                } else {
+                    qb.andWhere(`${searchMetaJoinName}.${wrapInQuotes(dbType, 'value')} ${prop.exact ? '=' : getSqlLike(dbType)} :${valueName}`,
+                        { [valueName]: prop.exact ? prop.value : `%${prop.value}%` });
+                }
+
             }
         })
     }

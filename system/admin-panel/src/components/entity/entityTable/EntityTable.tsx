@@ -29,6 +29,7 @@ import { IEntityListPage, TBaseEntityFilter, TEntityPageProps } from '../types';
 import { ColumnConfigureItem, TColumnConfigureItemData } from './components/ColumnConfigureItem';
 import DeleteSelectedButton from './components/DeleteSelectedButton';
 import EntityTableItem from './components/EntityTableItem';
+import { Datepicker } from '../../datepicker/Datepicker';
 import styles from './EntityTable.module.scss';
 
 const mapStateToProps = (state: TAppState) => {
@@ -68,7 +69,7 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
     private listId: string;
     private configureColumnsButtonRef = React.createRef<HTMLButtonElement>();
     private configuredColumnsKey = 'crw_entity_table_columns';
-    private currentSearch: string | undefined | null | number | boolean;
+    private currentSearch: string | undefined | null | number | boolean | Date;
 
     public sortedColumns: Record<string, TSavedConfiguredColumn> = {};
 
@@ -390,14 +391,33 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
             hasChanged = true;
         }
 
+        const getFilter = () => {
+            const base: TBaseFilter['filters'][0] = {
+                key: this.state.columnSearch.name,
+                inMeta: this.state.columnSearch.meta,
+                exact: this.state.columnSearch.exactSearch,
+            }
+            if (this.state.columnSearch.type === 'Date' || this.state.columnSearch.type === 'Datetime') {
+                const range: [Date, Date] = JSON.parse((value || '[]') as string);
+                const from = range[0] ? new Date(range[0]) : new Date();
+                const to = range[1] ? new Date(range[1]) : new Date();
+                from.setHours(0);
+                from.setMinutes(0);
+                to.setHours(23);
+                to.setMinutes(59);
+                base.from = from;
+                base.to = to;
+            } else {
+                base.value = value;
+            }
+            return base;
+        }
+
         if (value !== null) {
             if (prevSearch && prevSearch.value !== value) {
                 this.filters = this.filters.map(filter => {
                     if (filter.key === this.state.columnSearch.name) {
-                        return {
-                            ...filter,
-                            value
-                        }
+                        return getFilter();
                     }
                     return filter;
                 });
@@ -405,12 +425,7 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
             }
 
             if (!prevSearch) {
-                this.filters.push({
-                    key: this.state.columnSearch.name,
-                    inMeta: this.state.columnSearch.meta,
-                    exact: this.state.columnSearch.exactSearch,
-                    value: value,
-                });
+                this.filters.push(getFilter());
                 hasChanged = true;
             }
         }
@@ -438,13 +453,14 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
         this.resetList();
     }
 
-    private getAutocompleteValueFromSearch = (value: string | undefined | null | number | boolean, column?: TCustomEntityColumn): {
-        value: string;
-        label: string;
-    } | {
-        value: string;
-        label: string;
-    }[] | null => {
+    private getAutocompleteValueFromSearch = (value: string | undefined | null | number | boolean | Date,
+        column?: TCustomEntityColumn): {
+            value: string;
+            label: string;
+        } | {
+            value: string;
+            label: string;
+        }[] | null => {
         if (!column.searchOptions) return null;
         if (column?.multipleOptions && value && typeof value === 'string') {
             try {
@@ -461,6 +477,54 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
         }
         return column.searchOptions.find(opt =>
             opt.value === value);
+    }
+
+    private getSearchContent = () => {
+        if (this.state?.columnSearch?.searchOptions) {
+            // Select
+            return (
+                <Autocomplete
+                    multiple={this.state.columnSearch.multipleOptions}
+                    options={this.state.columnSearch.searchOptions}
+                    getOptionLabel={(option: any) => option?.label ?? ''}
+                    defaultValue={this.getAutocompleteValueFromSearch(this.currentSearch,
+                        this.state.columnSearch)}
+                    className={styles.filterItem}
+                    onChange={(event, newVal) => {
+                        if (Array.isArray(newVal)) newVal = JSON.stringify(newVal.map(val => typeof val === 'object' ? val?.value : val));
+                        this.currentSearch = typeof newVal === 'object' ? newVal?.value : newVal
+                    }}
+                    classes={{ popper: styles.autocompletePopper }}
+                    renderInput={(params) => <TextField
+                        {...params}
+                        variant="standard"
+                        fullWidth
+                        label={`Search ${this.state?.columnSearch?.label ?? ''}`}
+                    />}
+                />
+            );
+        }
+
+        if (this.state?.columnSearch?.type === 'Date' || this.state?.columnSearch?.type === 'Datetime') {
+            // Datepicker range
+            return (
+                <Datepicker
+                    defaultValue={JSON.parse(String(this.currentSearch || '[]'))}
+                    onChange={(value) => this.currentSearch = JSON.stringify(value)}
+                    range
+                />
+            );
+        }
+
+        return (
+            <TextField
+                fullWidth
+                onChange={(event) => this.currentSearch = event.target.value}
+                variant="standard"
+                label={`Search ${this.state?.columnSearch?.label ?? ''}`}
+                defaultValue={this.currentSearch}
+            />
+        )
     }
 
     render() {
@@ -511,6 +575,11 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
                             const columnFilter = this.filters?.find(filter => filter.key === col.name);
                             let searchQuery = columnFilter?.value !== null && columnFilter?.value !== undefined &&
                                 columnFilter.value !== '' ? columnFilter.value : null;
+
+                            if (columnFilter?.from && columnFilter.to && (col.type === 'Date' || col.type === 'Datetime')) {
+                                searchQuery = `${new Date(columnFilter.from as string).toDateString()
+                                    } - ${new Date(columnFilter.to as string).toDateString()}`;
+                            }
 
                             if (col.searchOptions) {
                                 const autocompleteVal = this.getAutocompleteValueFromSearch(searchQuery, col);
@@ -628,35 +697,7 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
                         >
                             <div className={styles.columnsConfigure}
                                 style={{ padding: '10px 15px' }}>
-                                {this.state?.columnSearch?.searchOptions ? (
-                                    <Autocomplete
-                                        multiple={this.state.columnSearch.multipleOptions}
-                                        options={this.state.columnSearch.searchOptions}
-                                        getOptionLabel={(option: any) => option?.label ?? ''}
-                                        defaultValue={this.getAutocompleteValueFromSearch(this.currentSearch,
-                                            this.state.columnSearch)}
-                                        className={styles.filterItem}
-                                        onChange={(event, newVal) => {
-                                            if (Array.isArray(newVal)) newVal = JSON.stringify(newVal.map(val => typeof val === 'object' ? val?.value : val));
-                                            this.currentSearch = typeof newVal === 'object' ? newVal?.value : newVal
-                                        }}
-                                        classes={{ popper: styles.autocompletePopper }}
-                                        renderInput={(params) => <TextField
-                                            {...params}
-                                            variant="standard"
-                                            fullWidth
-                                            label={`Search ${this.state?.columnSearch?.label ?? ''}`}
-                                        />}
-                                    />
-                                ) : (
-                                    <TextField
-                                        fullWidth
-                                        onChange={(event) => this.currentSearch = event.target.value}
-                                        variant="standard"
-                                        label={`Search ${this.state?.columnSearch?.label ?? ''}`}
-                                        defaultValue={this.currentSearch}
-                                    />
-                                )}
+                                {this.getSearchContent()}
                             </div>
                         </Popover>
                     </div>

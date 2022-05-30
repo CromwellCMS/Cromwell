@@ -1,6 +1,6 @@
 import { TBaseFilter } from '@cromwell/core';
 import { Field, InputType } from 'type-graphql';
-import { PrimitiveValueScalar } from '../objects/primitive-value.scalar';
+import { StringifiedValueScalar } from '../objects/stringified-value.scalar';
 
 @InputType()
 export class BaseFilterInput implements TBaseFilter {
@@ -16,8 +16,14 @@ export class PropertySearch {
     @Field(() => String, { nullable: true })
     key?: string;
 
-    @Field(() => PrimitiveValueScalar, { nullable: true })
-    value?: string | number | boolean | null;
+    @Field(() => StringifiedValueScalar, { nullable: true })
+    value?: string | number | boolean | Date | null;
+
+    @Field(() => StringifiedValueScalar, { nullable: true })
+    from?: string | number | boolean | Date | null;
+
+    @Field(() => StringifiedValueScalar, { nullable: true })
+    to?: string | number | boolean | Date | null;
 
     @Field(() => Boolean, { nullable: true })
     exact?: boolean;

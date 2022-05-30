@@ -106,10 +106,6 @@ export class Order extends BaseEntity implements TOrder {
     @UpdateDateColumn()
     updateDate?: Date | null;
 
-    @Field(() => Boolean, { nullable: true })
-    @Column({ type: "boolean", default: true, nullable: true })
-    isEnabled?: boolean | null;
-
     @JoinTable()
     @ManyToMany(type => Coupon)
     coupons?: Coupon[] | null;

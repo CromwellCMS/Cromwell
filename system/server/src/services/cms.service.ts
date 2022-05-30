@@ -239,6 +239,28 @@ export class CmsService {
         if (!input.url)
             throw new HttpException('URL is not provided', HttpStatus.BAD_REQUEST);
 
+        const settings = await getCmsSettings();
+
+        await this.mockService.mockRoles();
+
+        try {
+            await this.mockService.mockUsers();
+
+            if (input.modules?.blog ?? settings?.modules?.blog) {
+                await this.mockService.mockTags();
+                await this.mockService.mockPosts();
+            }
+            if (input.modules?.ecommerce ?? settings?.modules?.ecommerce) {
+                await this.mockService.mockAttributes();
+                await this.mockService.mockCategories();
+                await this.mockService.mockProducts();
+                await this.mockService.mockReviews();
+                await this.mockService.mockOrders();
+            }
+        } catch (error) {
+            logger.error(error);
+        }
+
         const cmsEntity = await getCmsEntity();
 
         cmsEntity.internalSettings = {
@@ -252,26 +274,7 @@ export class CmsService {
             modules: input.modules,
         }
         await cmsEntity.save();
-
-        const settings = await getCmsSettings();
-        if (settings) {
-            setStoreItem('cmsSettings', settings)
-        }
-
-        await this.mockService.mockRoles();
-        await this.mockService.mockUsers();
-
-        if (settings.modules?.blog) {
-            await this.mockService.mockTags();
-            await this.mockService.mockPosts();
-        }
-        if (settings.modules?.ecommerce) {
-            await this.mockService.mockAttributes();
-            await this.mockService.mockCategories();
-            await this.mockService.mockProducts();
-            await this.mockService.mockReviews();
-            await this.mockService.mockOrders();
-        }
+        await getCmsSettings();
 
         const serverDir = getServerDir();
         const publicDir = getPublicDir();

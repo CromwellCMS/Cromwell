@@ -55,9 +55,9 @@ export type TBasePageEntityInput = Omit<TBasePageEntity, TDBAuxiliaryColumns>;
 export type TBaseFilter = {
     filters?: {
         key?: string;
-        value?: string | number | boolean | null;
-        from?: string;
-        to?: string;
+        value?: string | number | boolean | Date | null;
+        from?: string | number | boolean | Date | null;
+        to?: string | number | boolean | Date | null;
         exact?: boolean;
         inMeta?: boolean;
     }[];

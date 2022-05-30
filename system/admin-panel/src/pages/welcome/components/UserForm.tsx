@@ -50,6 +50,7 @@ export function UserForm(props: {
     if (password !== passwordConfirm) {
       setError("password", { type: "manual", message: "Passwords don't match." });
       setError("passwordConfirm", { type: "manual", message: "Passwords don't match." });
+      return;
     }
 
     try {

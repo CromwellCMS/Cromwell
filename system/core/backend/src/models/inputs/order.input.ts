@@ -56,7 +56,4 @@ export class OrderInput extends BasePageInput implements TOrderInput {
 
     @Field(type => [String], { nullable: true })
     couponCodes?: string[] | null;
-
-    @Field(type => Boolean, { nullable: true })
-    isEnabled?: boolean | null;
 }
