@@ -9,8 +9,7 @@ import {
 } from '@cromwell/core';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { Autocomplete, Checkbox, FormControlLabel, FormGroup, Grid, TextField, Tooltip } from '@mui/material';
-import React, { useEffect } from 'react';
-import { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { debounce } from 'throttle-debounce';
 
 import { GalleryPicker } from '../../components/galleryPicker/GalleryPicker';
@@ -30,6 +29,7 @@ const MainInfoCard = (props: {
     const productPrevRef = React.useRef<TProductVariant | TProduct | null>(props.product);
     const cardIdRef = React.useRef<string>(getRandStr(10));
     const productRef = React.useRef<TProductVariant | TProduct | null>(props.product);
+    const [canUpdateMeta, setCanUpdateMeta] = useState(false);
     if (props.product !== productPrevRef.current) {
         productPrevRef.current = props.product;
         productRef.current = props.product;
@@ -89,9 +89,11 @@ const MainInfoCard = (props: {
 
     const onMetaChange = useMemo(() => {
         return debounce(300, async () => {
-            handleChange('customMeta', await getCustomMetaFor(EDBEntity.ProductVariant));
+            if (!canUpdateMeta) return;
+            const meta = await getCustomMetaFor(EDBEntity.ProductVariant);
+            handleChange('customMeta', meta);
         });
-    }, [])
+    }, [canUpdateMeta])
 
     if (!product) return null;
 
@@ -204,6 +206,7 @@ const MainInfoCard = (props: {
                         entityData={product}
                         refetchMeta={async () => product.customMeta}
                         onChange={onMetaChange}
+                        onDidMount={() => setTimeout(() => setCanUpdateMeta(true), 10)}
                     />
                 </Grid>
             )}

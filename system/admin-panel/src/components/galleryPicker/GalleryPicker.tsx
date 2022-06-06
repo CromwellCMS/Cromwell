@@ -102,6 +102,9 @@ export class GalleryPicker extends Component<GalleryPickerProps, {
             if (img) sortedImages.push(img);
         });
 
+        if ([...(this.props.images ?? this.uncontrolledInput)].every((img, index) => img === sortedImages[index]))
+            return;
+
         this.uncontrolledInput = sortedImages;
         this.props.onChange?.(sortedImages);
     }

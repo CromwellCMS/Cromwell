@@ -46,8 +46,9 @@ export const RenderCustomFields = (props: {
     entityData: TBasePageEntity;
     refetchMeta: () => Promise<Record<string, string> | undefined | null>;
     onChange?: (field: TRegisteredCustomField, value: any) => void;
+    onDidMount?: () => void;
 }) => {
-    const { entityType, entityData, refetchMeta, onChange } = props;
+    const { entityType, entityData, refetchMeta, onChange, onDidMount } = props;
     const forceUpdate = useForceUpdate();
     customFieldsForceUpdates[entityType] = forceUpdate;
     const [updatedMeta, setUpdatedMeta] = useState<Record<string, string> | null>(null);
@@ -61,6 +62,7 @@ export const RenderCustomFields = (props: {
         });
 
         addOnFieldRegisterEventListener(entityType, onFieldRegistered);
+        onDidMount?.();
 
         return () => {
             removeOnFieldRegisterEventListener(entityType);
