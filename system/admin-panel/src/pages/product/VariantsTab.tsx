@@ -40,15 +40,32 @@ export default function VariantsTab({ product, setProdData, forceUpdate }: {
     forceUpdate();
   }
 
+  const expandVariant = (id: number) => {
+    setExpandedVariants({
+      [id]: !expandedVariants[id],
+    });
+    setTimeout(() => {
+      document.getElementById(`variant-${id}`).scrollIntoView();
+
+      const getScrollParent = (node) => {
+        if (!node) return;
+        if (node.scrollHeight > node.clientHeight) {
+          return node;
+        } else {
+          return getScrollParent(node.parentNode);
+        }
+      }
+      const scrollParent: HTMLElement | undefined = getScrollParent(document.getElementById('product-variants-tab'));
+      if (scrollParent) scrollParent.scrollTop = scrollParent.scrollTop - 15;
+    }, 10);
+  }
+
   return (
-    <Box>
+    <Box id="product-variants-tab">
       <Box>
         {product?.variants?.map((variant) => (
-          <Box key={variant.id} className={styles.paper} sx={{ my: 2 }}>
-            <Box onClick={() => setExpandedVariants({
-              ...expandedVariants,
-              [variant.id]: !expandedVariants[variant.id]
-            })}
+          <Box key={variant.id} id={`variant-${variant.id}`} className={styles.paper} sx={{ my: 2 }}>
+            <Box onClick={() => expandVariant(variant.id)}
               sx={{
                 display: 'flex', justifyContent: 'space-between',
                 alignItems: 'center', cursor: 'pointer', p: 1,
@@ -106,7 +123,7 @@ export default function VariantsTab({ product, setProdData, forceUpdate }: {
                 </IconButton>
               </Box>
             </Box>
-            <Collapse in={expandedVariants[variant.id]} timeout="auto" unmountOnExit>
+            <Collapse in={expandedVariants[variant.id]} timeout={0} unmountOnExit>
               <Box sx={{ my: 1, p: 2 }}>
                 <MainInfoCard
                   product={variant}

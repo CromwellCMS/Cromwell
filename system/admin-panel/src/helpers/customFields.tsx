@@ -12,7 +12,7 @@ import { getEditorData, getEditorHtml, initTextEditor } from './editor/editor';
 import { useForceUpdate } from './forceUpdate';
 
 export type TRegisteredCustomField = TAdminCustomField & {
-    component: (props: { initialValue: string | undefined; entity: TBasePageEntity }) => JSX.Element;
+    component: (props: { initialValue: string | undefined; entity: TBasePageEntity; onChange?: (value: any) => void }) => JSX.Element;
     saveData: () => string | Promise<string>;
 }
 
@@ -45,8 +45,9 @@ export const RenderCustomFields = (props: {
     entityType: EDBEntity | string;
     entityData: TBasePageEntity;
     refetchMeta: () => Promise<Record<string, string> | undefined | null>;
+    onChange?: (field: TRegisteredCustomField, value: any) => void;
 }) => {
-    const { entityType, entityData, refetchMeta } = props;
+    const { entityType, entityData, refetchMeta, onChange } = props;
     const forceUpdate = useForceUpdate();
     customFieldsForceUpdates[entityType] = forceUpdate;
     const [updatedMeta, setUpdatedMeta] = useState<Record<string, string> | null>(null);
@@ -79,6 +80,7 @@ export const RenderCustomFields = (props: {
                 key={field.key}
                 initialValue={customMeta?.[field.key]}
                 entity={entityData}
+                onChange={(value) => onChange(field, value)}
             />
         })}</>
 }
@@ -131,6 +133,7 @@ export const registerSimpleTextCustomField = (settings: {
                 value={value ?? ''}
                 onChange={e => {
                     setValue(e.target.value);
+                    props.onChange(e.target.value);
                 }}
                 label={settings.label ?? settings.key}
                 fullWidth
@@ -176,6 +179,7 @@ export const registerTextEditorCustomField = (settings: {
                     htmlId: editorId,
                     data: data?.json,
                     placeholder: settings.label,
+                    onChange: () => props.onChange(null),
                 });
             }
 
@@ -230,6 +234,7 @@ export const registerSelectCustomField = (settings: {
                     value={value}
                     onChange={(event: SelectChangeEvent<string>) => {
                         setValue(event.target.value);
+                        props.onChange(event.target.value);
                     }}
                     size="small"
                     variant="standard"
@@ -265,6 +270,7 @@ export const registerImageCustomField = (settings: {
                     value={value}
                     onChange={(value) => {
                         setValue(value);
+                        props.onChange(value);
                     }}
                     showRemove
                     label={settings.label}
@@ -301,6 +307,7 @@ export const registerGalleryCustomField = (settings: {
                     onChange={(value: TImageSettings[]) => {
                         const valStr = value.map(val => val.src).join(',');
                         setValue(valStr);
+                        props.onChange(valStr);
                     }}
                     label={settings.label}
                     style={{ margin: '15px 0', border: '1px solid #ccc', borderRadius: '6px', padding: '10px' }}
@@ -335,6 +342,7 @@ export const registerColorCustomField = (settings: {
                     label={settings.label}
                     onChange={(value) => {
                         setValue(value);
+                        props.onChange(value);
                     }}
                     style={{ margin: '15px 0' }}
                     {...(settings.props ?? {})}

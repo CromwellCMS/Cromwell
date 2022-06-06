@@ -1,11 +1,21 @@
-import { getRandStr, resolvePageRoute, serviceLocator, TProduct, TProductVariant, TStockStatus } from '@cromwell/core';
+import {
+    EDBEntity,
+    getRandStr,
+    resolvePageRoute,
+    serviceLocator,
+    TProduct,
+    TProductVariant,
+    TStockStatus,
+} from '@cromwell/core';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { Autocomplete, Checkbox, FormControlLabel, FormGroup, Grid, TextField, Tooltip } from '@mui/material';
 import React, { useEffect } from 'react';
+import { useMemo } from 'react';
 import { debounce } from 'throttle-debounce';
 
 import { GalleryPicker } from '../../components/galleryPicker/GalleryPicker';
 import { Select } from '../../components/select/Select';
+import { getCustomMetaFor, RenderCustomFields } from '../../helpers/customFields';
 import { getEditorData, getEditorHtml, initTextEditor } from '../../helpers/editor/editor';
 import { useForceUpdate } from '../../helpers/forceUpdate';
 import { NumberFormatCustom } from '../../helpers/NumberFormatCustom';
@@ -34,14 +44,6 @@ const MainInfoCard = (props: {
         forceUpdate();
     }
 
-    const fullSave = async () => {
-        setProdData({
-            ...(product as TProduct),
-            description: await getEditorHtml(editorId),
-            descriptionDelta: JSON.stringify(await getEditorData(editorId)),
-        });
-    }
-
     useEffect(() => {
         init();
     }, [])
@@ -54,8 +56,15 @@ const MainInfoCard = (props: {
             } catch (e) { console.error(e) }
         }
 
-        const updateText = debounce(600, () => {
-            fullSave();
+        const updateText = debounce(300, async () => {
+            const description = await getEditorHtml(editorId);
+            const descriptionDelta = JSON.stringify(await getEditorData(editorId));
+
+            props.setProdData({
+                ...productRef.current,
+                description,
+                descriptionDelta,
+            });
         })
 
         await initTextEditor({
@@ -68,15 +77,21 @@ const MainInfoCard = (props: {
 
     const handleChange = (prop: keyof TProduct, val: any) => {
         if (product) {
-            const prod = Object.assign({}, product);
-            (prod[prop] as any) = val;
-
+            const prod = Object.assign({}, product, {
+                [prop]: val,
+            });
             if (prop === 'images') {
                 prod.mainImage = val?.[0];
             }
             setProdData(prod as TProduct);
         }
     }
+
+    const onMetaChange = useMemo(() => {
+        return debounce(300, async () => {
+            handleChange('customMeta', await getCustomMetaFor(EDBEntity.ProductVariant));
+        });
+    }, [])
 
     if (!product) return null;
 
@@ -182,6 +197,16 @@ const MainInfoCard = (props: {
                     <div style={{ minHeight: '300px' }} id={editorId}></div>
                 </div>
             </Grid>
+            {props.isProductVariant && (
+                <Grid item xs={12} sm={12}>
+                    <RenderCustomFields
+                        entityType={EDBEntity.ProductVariant}
+                        entityData={product}
+                        refetchMeta={async () => product.customMeta}
+                        onChange={onMetaChange}
+                    />
+                </Grid>
+            )}
             <Grid item xs={12} sm={12}>
                 {props.isProductVariant !== true && (
                     <TextField label="Page URL" variant="standard"

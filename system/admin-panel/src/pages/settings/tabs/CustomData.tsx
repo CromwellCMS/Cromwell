@@ -35,6 +35,10 @@ export default function CustomData(props: TTabProps) {
             label: 'Product',
         },
         {
+            entityType: EDBEntity.ProductVariant,
+            label: 'Product variation',
+        },
+        {
             entityType: EDBEntity.ProductCategory,
             label: 'Category',
         },
