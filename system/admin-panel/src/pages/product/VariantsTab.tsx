@@ -137,7 +137,6 @@ export default function VariantsTab({ product, setProdData, forceUpdate }: {
                       return v;
                     });
                     setProdData(newProduct);
-                    forceUpdate();
                   }}
                   isProductVariant
                 />

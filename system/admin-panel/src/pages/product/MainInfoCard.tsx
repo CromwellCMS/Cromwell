@@ -9,7 +9,7 @@ import {
 } from '@cromwell/core';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { Autocomplete, Checkbox, FormControlLabel, FormGroup, Grid, TextField, Tooltip } from '@mui/material';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { debounce } from 'throttle-debounce';
 
 import { GalleryPicker } from '../../components/galleryPicker/GalleryPicker';
@@ -26,10 +26,10 @@ const MainInfoCard = (props: {
     isProductVariant?: boolean;
     canValidate?: boolean;
 }) => {
-    const productPrevRef = React.useRef<TProductVariant | TProduct | null>(props.product);
-    const cardIdRef = React.useRef<string>(getRandStr(10));
-    const productRef = React.useRef<TProductVariant | TProduct | null>(props.product);
-    const [canUpdateMeta, setCanUpdateMeta] = useState(false);
+    const productPrevRef = useRef<TProductVariant | TProduct | null>(props.product);
+    const cardIdRef = useRef<string>(getRandStr(10));
+    const productRef = useRef<TProductVariant | TProduct | null>(props.product);
+    const canUpdateMeta = useRef<boolean>(false);
     if (props.product !== productPrevRef.current) {
         productPrevRef.current = props.product;
         productRef.current = props.product;
@@ -39,9 +39,8 @@ const MainInfoCard = (props: {
     const product = productRef.current;
 
     const setProdData = (data: TProduct) => {
-        Object.keys(data).forEach(key => { productRef.current[key] = data[key] })
+        Object.keys(data).forEach(key => { productRef.current[key] = data[key] });
         props.setProdData(data);
-        forceUpdate();
     }
 
     useEffect(() => {
@@ -59,6 +58,9 @@ const MainInfoCard = (props: {
         const updateText = debounce(300, async () => {
             const description = await getEditorHtml(editorId);
             const descriptionDelta = JSON.stringify(await getEditorData(editorId));
+
+            productRef.current.description = description;
+            productRef.current.descriptionDelta = descriptionDelta;
 
             props.setProdData({
                 ...productRef.current,
@@ -84,16 +86,17 @@ const MainInfoCard = (props: {
                 prod.mainImage = val?.[0];
             }
             setProdData(prod as TProduct);
+            forceUpdate();
         }
     }
 
     const onMetaChange = useMemo(() => {
         return debounce(300, async () => {
-            if (!canUpdateMeta) return;
+            if (!canUpdateMeta.current) return;
             const meta = await getCustomMetaFor(EDBEntity.ProductVariant);
-            handleChange('customMeta', meta);
+            setProdData(Object.assign({}, product, { customMeta: meta }) as TProduct);
         });
-    }, [canUpdateMeta])
+    }, []);
 
     if (!product) return null;
 
@@ -206,7 +209,7 @@ const MainInfoCard = (props: {
                         entityData={product}
                         refetchMeta={async () => product.customMeta}
                         onChange={onMetaChange}
-                        onDidMount={() => setTimeout(() => setCanUpdateMeta(true), 10)}
+                        onDidMount={() => setTimeout(() => canUpdateMeta.current = true, 10)}
                     />
                 </Grid>
             )}
