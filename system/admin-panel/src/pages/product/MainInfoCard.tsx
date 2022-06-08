@@ -1,11 +1,20 @@
-import { getRandStr, resolvePageRoute, serviceLocator, TProduct, TProductVariant, TStockStatus } from '@cromwell/core';
+import {
+    EDBEntity,
+    getRandStr,
+    resolvePageRoute,
+    serviceLocator,
+    TProduct,
+    TProductVariant,
+    TStockStatus,
+} from '@cromwell/core';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { Autocomplete, Checkbox, FormControlLabel, FormGroup, Grid, TextField, Tooltip } from '@mui/material';
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { debounce } from 'throttle-debounce';
 
 import { GalleryPicker } from '../../components/galleryPicker/GalleryPicker';
 import { Select } from '../../components/select/Select';
+import { getCustomMetaFor, RenderCustomFields } from '../../helpers/customFields';
 import { getEditorData, getEditorHtml, initTextEditor } from '../../helpers/editor/editor';
 import { useForceUpdate } from '../../helpers/forceUpdate';
 import { NumberFormatCustom } from '../../helpers/NumberFormatCustom';
@@ -17,9 +26,10 @@ const MainInfoCard = (props: {
     isProductVariant?: boolean;
     canValidate?: boolean;
 }) => {
-    const productPrevRef = React.useRef<TProductVariant | TProduct | null>(props.product);
-    const cardIdRef = React.useRef<string>(getRandStr(10));
-    const productRef = React.useRef<TProductVariant | TProduct | null>(props.product);
+    const productPrevRef = useRef<TProductVariant | TProduct | null>(props.product);
+    const cardIdRef = useRef<string>(getRandStr(10));
+    const productRef = useRef<TProductVariant | TProduct | null>(props.product);
+    const canUpdateMeta = useRef<boolean>(false);
     if (props.product !== productPrevRef.current) {
         productPrevRef.current = props.product;
         productRef.current = props.product;
@@ -29,17 +39,8 @@ const MainInfoCard = (props: {
     const product = productRef.current;
 
     const setProdData = (data: TProduct) => {
-        Object.keys(data).forEach(key => { productRef.current[key] = data[key] })
+        Object.keys(data).forEach(key => { productRef.current[key] = data[key] });
         props.setProdData(data);
-        forceUpdate();
-    }
-
-    const fullSave = async () => {
-        setProdData({
-            ...(product as TProduct),
-            description: await getEditorHtml(editorId),
-            descriptionDelta: JSON.stringify(await getEditorData(editorId)),
-        });
     }
 
     useEffect(() => {
@@ -54,8 +55,18 @@ const MainInfoCard = (props: {
             } catch (e) { console.error(e) }
         }
 
-        const updateText = debounce(600, () => {
-            fullSave();
+        const updateText = debounce(300, async () => {
+            const description = await getEditorHtml(editorId);
+            const descriptionDelta = JSON.stringify(await getEditorData(editorId));
+
+            productRef.current.description = description;
+            productRef.current.descriptionDelta = descriptionDelta;
+
+            props.setProdData({
+                ...productRef.current,
+                description,
+                descriptionDelta,
+            });
         })
 
         await initTextEditor({
@@ -68,15 +79,24 @@ const MainInfoCard = (props: {
 
     const handleChange = (prop: keyof TProduct, val: any) => {
         if (product) {
-            const prod = Object.assign({}, product);
-            (prod[prop] as any) = val;
-
+            const prod = Object.assign({}, product, {
+                [prop]: val,
+            });
             if (prop === 'images') {
                 prod.mainImage = val?.[0];
             }
             setProdData(prod as TProduct);
+            forceUpdate();
         }
     }
+
+    const onMetaChange = useMemo(() => {
+        return debounce(300, async () => {
+            if (!canUpdateMeta.current) return;
+            const meta = await getCustomMetaFor(EDBEntity.ProductVariant);
+            setProdData(Object.assign({}, product, { customMeta: meta }) as TProduct);
+        });
+    }, []);
 
     if (!product) return null;
 
@@ -182,6 +202,17 @@ const MainInfoCard = (props: {
                     <div style={{ minHeight: '300px' }} id={editorId}></div>
                 </div>
             </Grid>
+            {props.isProductVariant && (
+                <Grid item xs={12} sm={12}>
+                    <RenderCustomFields
+                        entityType={EDBEntity.ProductVariant}
+                        entityData={product}
+                        refetchMeta={async () => product.customMeta}
+                        onChange={onMetaChange}
+                        onDidMount={() => setTimeout(() => canUpdateMeta.current = true, 10)}
+                    />
+                </Grid>
+            )}
             <Grid item xs={12} sm={12}>
                 {props.isProductVariant !== true && (
                     <TextField label="Page URL" variant="standard"

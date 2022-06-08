@@ -97,6 +97,7 @@ const ProductPage = () => {
                             stockStatus
                             manageStock
                             attributes
+                            customMeta (keys: ${JSON.stringify(getCustomMetaKeysFor(EDBEntity.ProductVariant))})
                         }
                     }`, 'AdminPanelProductFragment'
                 );
@@ -202,6 +203,7 @@ const ProductPage = () => {
                     stockStatus: variant.stockStatus,
                     manageStock: variant.manageStock,
                     attributes: variant.attributes,
+                    customMeta: variant.customMeta,
                 })),
                 customMeta: Object.assign({}, product.customMeta, await getCustomMetaFor(EDBEntity.Product)),
                 isEnabled: product.isEnabled,
