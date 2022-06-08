@@ -8,11 +8,11 @@ import entityEditStyles from '../components/entity/entityEdit/EntityEdit.module.
 import { GalleryPicker, GalleryPickerProps } from '../components/galleryPicker/GalleryPicker';
 import { ImagePicker, ImagePickerProps } from '../components/imagePicker/ImagePicker';
 import { Select } from '../components/select/Select';
-import { getEditorData, getEditorHtml, initTextEditor } from './editor/editor';
+import { destroyEditor, getEditorData, getEditorHtml, initTextEditor } from './editor/editor';
 import { useForceUpdate } from './forceUpdate';
 
 export type TRegisteredCustomField = TAdminCustomField & {
-    component: (props: { initialValue: string | undefined; entity: TBasePageEntity }) => JSX.Element;
+    component: React.ComponentType<{ initialValue: string | undefined; entity: TBasePageEntity; onChange?: (value: any) => void }>;
     saveData: () => string | Promise<string>;
 }
 
@@ -45,8 +45,10 @@ export const RenderCustomFields = (props: {
     entityType: EDBEntity | string;
     entityData: TBasePageEntity;
     refetchMeta: () => Promise<Record<string, string> | undefined | null>;
+    onChange?: (field: TRegisteredCustomField, value: any) => void;
+    onDidMount?: () => void;
 }) => {
-    const { entityType, entityData, refetchMeta } = props;
+    const { entityType, entityData, refetchMeta, onChange, onDidMount } = props;
     const forceUpdate = useForceUpdate();
     customFieldsForceUpdates[entityType] = forceUpdate;
     const [updatedMeta, setUpdatedMeta] = useState<Record<string, string> | null>(null);
@@ -60,6 +62,7 @@ export const RenderCustomFields = (props: {
         });
 
         addOnFieldRegisterEventListener(entityType, onFieldRegistered);
+        onDidMount?.();
 
         return () => {
             removeOnFieldRegisterEventListener(entityType);
@@ -79,6 +82,7 @@ export const RenderCustomFields = (props: {
                 key={field.key}
                 initialValue={customMeta?.[field.key]}
                 entity={entityData}
+                onChange={(value) => onChange?.(field, value)}
             />
         })}</>
 }
@@ -131,6 +135,7 @@ export const registerSimpleTextCustomField = (settings: {
                 value={value ?? ''}
                 onChange={e => {
                     setValue(e.target.value);
+                    props.onChange(e.target.value);
                 }}
                 label={settings.label ?? settings.key}
                 fullWidth
@@ -149,54 +154,98 @@ export const registerTextEditorCustomField = (settings: {
     label?: string;
     props?: TextFieldProps;
 }) => {
-    const editorId = 'editor_' + getRandStr(12);
-
-    registerCustomField({
+    const state = {
         id: getRandStr(10),
-        fieldType: 'Text editor',
-        ...settings,
-        component: (props) => {
-            const initialValueRef = useRef<null | string>(null);
+        editorId: undefined,
+    }
 
-            const initEditor = async () => {
-                let data: {
-                    html: string;
-                    json: string;
-                } | undefined = undefined;
+    class TextEditorCustomField extends React.Component<{ initialValue: string | undefined; entity: TBasePageEntity; onChange?: (value: any) => void }> {
 
-                if (initialValueRef.current) {
-                    try {
-                        data = JSON.parse(initialValueRef.current);
-                    } catch (error) {
-                        console.error(error);
-                    }
+        public editorId: string;
+        public initialValue: string;
+        public initPromise: null | Promise<void>;
+
+        constructor(props: any) {
+            super(props);
+
+            this.editorId = 'editor_' + getRandStr(12);
+            this.initialValue = this.editorId;
+            state.editorId = this.editorId;
+        }
+
+        componentDidMount() {
+            this.checkUpdate();
+        }
+
+        componentDidUpdate() {
+            this.checkUpdate();
+        }
+
+        componentWillUnmount() {
+            destroyEditor(this.editorId);
+        }
+
+        private checkUpdate = () => {
+            if (this.props.initialValue !== this.initialValue) {
+                this.initialValue = this.props.initialValue;
+                this.initEditor();
+            }
+        }
+
+        private initEditor = async () => {
+            let data: {
+                html: string;
+                json: string;
+            } | undefined = undefined;
+            if (this.initPromise) await this.initPromise;
+            let initDone;
+            this.initPromise = new Promise(done => initDone = done);
+
+            const target = document.getElementById(this.editorId);
+            if (!target) return;
+            await destroyEditor(this.editorId);
+            target.innerHTML = '';
+
+
+            if (this.initialValue) {
+                try {
+                    data = JSON.parse(this.initialValue);
+                } catch (error) {
+                    console.error(error);
                 }
-
-                await initTextEditor({
-                    htmlId: editorId,
-                    data: data?.json,
-                    placeholder: settings.label,
-                });
             }
 
-            useEffect(() => {
-                if (props.initialValue !== initialValueRef.current) {
-                    initialValueRef.current = props.initialValue;
-                    initEditor();
-                }
+            await initTextEditor({
+                htmlId: this.editorId,
+                data: data?.json,
+                placeholder: settings.label,
+                onChange: () => {
+                    this.props.onChange(null);
+                },
             });
 
+            initDone();
+        }
+
+        render() {
             return (
                 <div style={{ margin: '15px 0' }}
                     className={entityEditStyles.descriptionEditor}>
-                    <div style={{ height: '350px' }} id={editorId}></div>
+                    <div style={{ height: '350px' }} id={this.editorId}></div>
                 </div>
             )
-        },
+        }
+    }
+
+    registerCustomField({
+        id: state.id,
+        fieldType: 'Text editor',
+        ...settings,
+        component: TextEditorCustomField,
         saveData: async () => {
-            const json = await getEditorData(editorId);
+            const json = await getEditorData(state.editorId);
             if (!json?.blocks?.length) return null;
-            const html = await getEditorHtml(editorId);
+            const html = await getEditorHtml(state.editorId);
             return JSON.stringify({
                 html,
                 json,
@@ -230,6 +279,7 @@ export const registerSelectCustomField = (settings: {
                     value={value}
                     onChange={(event: SelectChangeEvent<string>) => {
                         setValue(event.target.value);
+                        props.onChange(event.target.value);
                     }}
                     size="small"
                     variant="standard"
@@ -265,6 +315,7 @@ export const registerImageCustomField = (settings: {
                     value={value}
                     onChange={(value) => {
                         setValue(value);
+                        props.onChange(value);
                     }}
                     showRemove
                     label={settings.label}
@@ -301,6 +352,7 @@ export const registerGalleryCustomField = (settings: {
                     onChange={(value: TImageSettings[]) => {
                         const valStr = value.map(val => val.src).join(',');
                         setValue(valStr);
+                        props.onChange(valStr);
                     }}
                     label={settings.label}
                     style={{ margin: '15px 0', border: '1px solid #ccc', borderRadius: '6px', padding: '10px' }}
@@ -335,6 +387,7 @@ export const registerColorCustomField = (settings: {
                     label={settings.label}
                     onChange={(value) => {
                         setValue(value);
+                        props.onChange(value);
                     }}
                     style={{ margin: '15px 0' }}
                     {...(settings.props ?? {})}
