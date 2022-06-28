@@ -15,11 +15,10 @@ import {
     InputAdornment,
     SelectChangeEvent,
     SelectProps,
-    TextField,
-    TextFieldProps,
 } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import { debounce } from 'throttle-debounce';
+import { TextInputField, TextInputProps } from "../components/forms/inputs/textInput";
 
 import { ColorPicker, ColorPickerProps } from '../components/colorPicker/ColorPicker';
 import { Datepicker, DatepickerProps } from '../components/datepicker/Datepicker';
@@ -194,7 +193,7 @@ export const getSimpleTextField = (settings: {
     id: string;
     key?: string;
     label?: string;
-    props?: TextFieldProps;
+    props?: TextInputProps;
     simpleTextType?: TCustomFieldSimpleTextType;
 }) => {
     const { id, simpleTextType } = settings;
@@ -206,9 +205,8 @@ export const getSimpleTextField = (settings: {
             const [showPassword, setShowPassword] = useState(false);
             fieldsCache[id].value = value;
 
-            return <TextField
+            return <TextInputField
                 value={value ?? ''}
-                multiline={simpleTextType === 'multiline'}
                 type={(simpleTextType === 'password' && !showPassword) ? 'password' : 'text'}
                 onChange={e => {
                     if (simpleTextType === 'integer' || simpleTextType === 'float') {
@@ -216,30 +214,27 @@ export const getSimpleTextField = (settings: {
                             parseFloat(e.target.value);
                         if (!isNaN(val)) {
                             setValue(val as any);
-                            props.onChange(val);
+                            props.onChange?.(val);
                         }
                         return;
                     }
                     setValue(e.target.value);
-                    props.onChange(e.target.value);
+                    props.onChange?.(e.target.value);
                 }}
                 label={settings.label ?? settings.key}
-                fullWidth
-                InputProps={{
-                    inputComponent: simpleTextType === 'currency' ? NumberFormatCustom as any : undefined,
-                    endAdornment: simpleTextType === 'password' ? (
-                        <InputAdornment position="end">
-                            <IconButton
-                                aria-label="toggle password visibility"
-                                onClick={() => setShowPassword(!showPassword)}
-                                edge="end"
-                            >
-                                {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
-                            </IconButton>
-                        </InputAdornment>
-                    ) : undefined,
-                }}
-                variant="standard"
+                inputComponent={simpleTextType === 'textarea' ? 'textarea' :
+                    simpleTextType === 'currency' ? NumberFormatCustom as any : undefined}
+                endAdornment={simpleTextType === 'password' ? (
+                    <InputAdornment position="end">
+                        <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={() => setShowPassword(!showPassword)}
+                            edge="end"
+                        >
+                            {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                        </IconButton>
+                    </InputAdornment>
+                ) : undefined}
                 style={{ margin: '10px 0' }}
                 error={props.error && props.canValidate}
                 {...(settings.props ?? {})}
@@ -266,7 +261,7 @@ export const registerSimpleTextCustomField = (settings: {
     entityType: EDBEntity | string;
     key: string;
     label?: string;
-    props?: TextFieldProps;
+    props?: TextInputProps;
     simpleTextType?: TCustomFieldSimpleTextType;
 }) => {
     const id = getRandStr(12);
@@ -285,7 +280,7 @@ export const registerSimpleTextCustomField = (settings: {
 export const getTextEditorField = (settings: {
     id: string;
     label?: string;
-    props?: TextFieldProps;
+    props?: TextInputProps;
 }) => {
     const { id } = settings;
     if (fieldsCache[id]) return fieldsCache[id];
@@ -356,7 +351,7 @@ export const getTextEditorField = (settings: {
                 data: data?.json,
                 placeholder: settings.label,
                 onChange: () => {
-                    this.props.onChange(null);
+                    this.props.onChange?.(null);
                 },
             });
 
@@ -393,7 +388,7 @@ export const registerTextEditorCustomField = (settings: {
     entityType: EDBEntity | string;
     key: string;
     label?: string;
-    props?: TextFieldProps;
+    props?: TextInputProps;
 }) => {
     const id = getRandStr(12);
     const field = getTextEditorField({ id, ...settings });
@@ -431,7 +426,7 @@ export const getSelectField = (settings: {
                     value={value}
                     onChange={(event: SelectChangeEvent<string>) => {
                         setValue(event.target.value);
-                        props.onChange(event.target.value);
+                        props.onChange?.(event.target.value);
                     }}
                     size="small"
                     variant="standard"
@@ -488,7 +483,7 @@ export const getImageField = (settings: {
                     value={value}
                     onChange={(value) => {
                         setValue(value);
-                        props.onChange(value);
+                        props.onChange?.(value);
                     }}
                     showRemove
                     label={settings.label}
@@ -541,7 +536,7 @@ export const getGalleryField = (settings: {
                     onChange={(value: TImageSettings[]) => {
                         const valStr = value.map(val => val.src).join(',');
                         setValue(valStr);
-                        props.onChange(valStr);
+                        props.onChange?.(valStr);
                     }}
                     label={settings.label}
                     style={{ margin: '10px 0', border: '1px solid #ccc', borderRadius: '6px', padding: '10px' }}
@@ -591,7 +586,7 @@ export const getColorField = (settings: {
                     label={label}
                     onChange={(value) => {
                         setValue(value);
-                        props.onChange(value);
+                        props.onChange?.(value);
                     }}
                     style={{ margin: '10px 0' }}
                     {...(settings.props ?? {})}
@@ -642,7 +637,7 @@ export const getCheckboxField = (settings: {
                             checked={!!value}
                             onChange={(event, value) => {
                                 setValue(value as any);
-                                props.onChange(value);
+                                props.onChange?.(value);
                             }}
                             color="primary"
                             {...(settings.props ?? {})}
@@ -695,7 +690,7 @@ export const getDatepickerField = (settings: {
                     <Datepicker
                         onChange={(date) => {
                             setValue(date);
-                            props.onChange(date);
+                            props.onChange?.(date);
                         }}
                         value={value}
                         label={label}

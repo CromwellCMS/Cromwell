@@ -7,6 +7,7 @@ import { TEntityPageProps } from '../../components/entity/types';
 import { orderStatuses } from '../../constants/order';
 import { orderListPageInfo, orderPageInfo } from '../../constants/PageInfos';
 import { getTooltipValueView, getValueView } from '../../helpers/addressParser';
+import { formatTimeAgo } from '../../helpers/time';
 
 type TOrderItem = TOrder & { id: number };
 const EntityTableComp = EntityTable as React.ComponentType<TEntityPageProps<TOrderItem, TOrderFilter>>;
@@ -56,12 +57,14 @@ export default function OrderTable() {
                     label: 'Created',
                     type: 'Datetime',
                     visible: true,
+                    getValueView: (value) => formatTimeAgo(value),
                 },
                 {
                     name: 'updateDate',
                     label: 'Updated',
                     type: 'Datetime',
                     visible: false,
+                    getValueView: (value) => formatTimeAgo(value),
                 },
                 {
                     name: 'customerName',

@@ -89,7 +89,7 @@ export default function CouponPage() {
         key: 'description',
         type: 'Simple text',
         label: 'Description',
-        simpleTextType: 'multiline',
+        simpleTextType: 'textarea',
         width: { sm: 6 },
       },
       {
@@ -202,7 +202,7 @@ export default function CouponPage() {
             init();
           }, []);
 
-          return productIds ? (
+          return pickedProducts ? (
             <Autocomplete<TProduct>
               multiple
               style={{ margin: '10px 0' }}

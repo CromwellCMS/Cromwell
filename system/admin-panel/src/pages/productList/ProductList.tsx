@@ -1,58 +1,27 @@
-import {
-  EDBEntity,
-  TAttribute,
-  TFilteredProductList,
-  TProduct,
-  TProductFilter,
-} from "@cromwell/core";
-import { getGraphQLClient } from "@cromwell/core-frontend";
-import { Popover } from "@headlessui/react";
-import {
-  ChevronDoubleLeftIcon,
-  ChevronLeftIcon,
-  TableIcon,
-} from "@heroicons/react/outline";
-import {
-  Close as CloseIcon,
-  FilterList as FilterListIcon,
-} from "@mui/icons-material";
-import { Drawer, IconButton, Tooltip } from "@mui/material";
-import React, {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { EDBEntity, TAttribute, TFilteredProductList, TProduct, TProductFilter } from '@cromwell/core';
+import { getGraphQLClient } from '@cromwell/core-frontend';
+import { Popover } from '@headlessui/react';
+import { ChevronDoubleLeftIcon, ChevronLeftIcon, TableIcon } from '@heroicons/react/outline';
+import { Close as CloseIcon, FilterList as FilterListIcon } from '@mui/icons-material';
+import { Drawer, IconButton, Tooltip } from '@mui/material';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useHistory, useLocation } from 'react-router';
+import AutoSizer from 'react-virtualized-auto-sizer';
+import { FixedSizeList as List } from 'react-window';
 
-import ProductFilter from "../../../../../plugins/product-filter/src/frontend/components/Filter";
-import { IFrontendFilter } from "../../../../../plugins/product-filter/src/types";
-import { TBreadcrumbs } from "../../components/breadcrumbs";
-import EntityTable from "../../components/entity/entityTable/EntityTable";
-import {
-  IEntityListPage,
-  TEntityPageProps,
-} from "../../components/entity/types";
-import { CheckboxInput } from "../../components/forms/inputs/checkboxInput";
-import {
-  productListInfo,
-  productPageInfo,
-} from "../../constants/PageInfos";
-import {
-  useParams,
-  useLocation,
-  useHistory,
-} from "react-router";
-import { baseEntityColumns } from "../../helpers/customEntities";
-import {
-  ProductTableContextProvider,
-  useProductTable,
-} from "../../hooks/useProducts";
-import styles from "./ProductList.module.scss";
-import { FixedSizeList as List } from "react-window";
+import ProductFilter from '../../../../../plugins/product-filter/src/frontend/components/Filter';
+import { IFrontendFilter } from '../../../../../plugins/product-filter/src/types';
+import { TBreadcrumbs } from '../../components/breadcrumbs';
+import EntityTable from '../../components/entity/entityTable/EntityTable';
+import { IEntityListPage, TEntityPageProps } from '../../components/entity/types';
+import { CheckboxInput } from '../../components/forms/inputs/checkboxInput';
+import { InfiniteLoader } from '../../components/virtualList/infiniteLoader';
+import { productListInfo, productPageInfo } from '../../constants/PageInfos';
+import { baseEntityColumns } from '../../helpers/customEntities';
+import { ProductTableContextProvider, useProductTable } from '../../hooks/useProducts';
+import styles from './ProductList.module.scss';
+
 // import InfiniteLoader from "react-window-infinite-loader";
-import AutoSizer from "react-virtualized-auto-sizer";
-import { InfiniteLoader } from "../../components/virtualList/infiniteLoader";
-
 const EntityTableComp = EntityTable as React.ComponentType<
   TEntityPageProps<TProduct, TProductFilter>
 >;

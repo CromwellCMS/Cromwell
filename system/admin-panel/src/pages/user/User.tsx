@@ -72,10 +72,10 @@ export default function UserPage() {
         label: 'Role',
         required: true,
         customGraphQlFragment: `roles {
-                    name
-                    permissions
-                    title
-                }`,
+              name
+              permissions
+              title
+          }`,
         options: roles.map(role => ({ label: role.title ?? role.name, value: role.name })),
         saveValue: (name) => ({
           roles: name && [name],
@@ -87,7 +87,7 @@ export default function UserPage() {
         key: 'bio',
         type: 'Simple text',
         label: 'Bio',
-        simpleTextType: 'multiline',
+        simpleTextType: 'textarea',
       },
       {
         key: 'address',

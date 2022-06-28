@@ -73,7 +73,7 @@ export class CList<DataType, ListItemProps = any> extends React.PureComponent<TC
             this.wrapperRef.current.style.minHeight = this.scrollBoxRef.current.clientHeight - 20 + 'px';
 
             const lastPage = this.wrapperRef.current.querySelector(`#${getPageId(this.maxPage)}`);
-            if (lastPage) {
+            if (lastPage && this.maxPage > 1) {
                 const pad = this.scrollBoxRef.current.clientHeight - lastPage.clientHeight + 10;
                 if (pad > 0) {
                     this.wrapperRef.current.style.paddingBottom = pad + 'px';
@@ -558,7 +558,7 @@ export class CList<DataType, ListItemProps = any> extends React.PureComponent<TC
                         )}
                     </div>
                 )}
-                {props.usePagination && (
+                {props.usePagination && this.maxPage > 1 && (
                     <Pagination
                         pageNums={this.list.map(p => p.pageNum)}
                         wrapperRef={this.wrapperRef}

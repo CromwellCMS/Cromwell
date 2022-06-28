@@ -87,6 +87,7 @@
     "fastify": "3.22.0",
     "fastify-static": "4.2.3",
     "fs-extra": "10.0.0",
+    "javascript-time-ago": "2.5.5",
     "gridlex": "2.7.1",
     "middie": "5.3.0",
     "object-assign": "4.1.1",

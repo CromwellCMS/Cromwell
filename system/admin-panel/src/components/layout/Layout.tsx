@@ -47,6 +47,7 @@ function Layout() {
   document.body.classList.add(darkMode ? 'modeDark' : 'modeLight');
   document.body.classList.add(darkMode ? 'dark' : 'light');
 
+
   const theme = createTheme(darkMode ? {
     palette: {
       primary: {
@@ -63,9 +64,9 @@ function Layout() {
   } : {
     palette: {
       primary: {
-        main: '#8228c5',
-        light: '#8561c5',
-        dark: '#482880',
+        main: 'rgba(79, 70, 229, 1)',
+        light: 'rgba(99, 102, 241, 1)',
+        dark: 'rgba(99, 102, 241, 1)',
       },
       secondary: {
         main: '#910081',
@@ -81,7 +82,7 @@ function Layout() {
         <div className="flex items-start justify-between">
           <BrowserRouter basename={'admin'}>
             <SideNav />
-            <div className="flex flex-col w-full">
+            <div className={styles.main}>
               {/* <Toolbar className={styles.dummyToolbar} /> */}
               <Switch>
                 {getPageInfos().map(page => {

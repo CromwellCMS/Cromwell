@@ -9,7 +9,7 @@ import {
 } from '@cromwell/core';
 import { ArrowBack as ArrowBackIcon, OpenInNew as OpenInNewIcon } from '@mui/icons-material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import { Autocomplete as MuiAutocomplete, Button, Grid, IconButton, Skeleton, TextField, Tooltip } from '@mui/material';
+import { Autocomplete as MuiAutocomplete, Button, Grid, IconButton, Skeleton, Tooltip } from '@mui/material';
 import React from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 
@@ -29,9 +29,11 @@ import {
   TFieldDefaultComponent,
 } from '../../../helpers/customFields';
 import commonStyles from '../../../styles/common.module.scss';
+import { TextInputField } from '../../forms/inputs/textInput';
 import { toast } from '../../toast/toast';
 import { TBaseEntityFilter, TEntityPageProps } from '../types';
 import styles from './EntityEdit.module.scss';
+
 
 type TEditField<TEntityType> = {
   key: string;
@@ -431,31 +433,25 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
                 )}
               {!this.props.disableMeta && (<>
                 <Grid item xs={12}>
-                  <TextField label="Page URL"
+                  <TextInputField label="Page URL"
                     value={entityData?.slug ?? ''}
-                    fullWidth
-                    variant="standard"
                     style={{ margin: '10px 0' }}
                     className={styles.defaultField}
                     onChange={(e) => { this.handleInputChange('slug', e.target.value) }}
-                    helperText={pageFullUrl}
+                    description={pageFullUrl}
                   />
                 </Grid>
                 <Grid item xs={12}>
-                  <TextField label="Meta title"
+                  <TextInputField label="Meta title"
                     value={entityData?.pageTitle ?? ''}
-                    fullWidth
-                    variant="standard"
                     style={{ margin: '10px 0' }}
                     className={styles.defaultField}
                     onChange={(e) => { this.handleInputChange('pageTitle', e.target.value) }}
                   />
                 </Grid>
                 <Grid item xs={12}>
-                  <TextField label="Meta description"
+                  <TextInputField label="Meta description"
                     value={entityData?.pageDescription ?? ''}
-                    fullWidth
-                    variant="standard"
                     style={{ margin: '10px 0' }}
                     className={styles.defaultField}
                     onChange={(e) => { this.handleInputChange('pageDescription', e.target.value) }}
@@ -475,16 +471,23 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
                         keywords: newVal
                       })
                     }}
-                    renderInput={(params) => (
-                      <Tooltip title="Press ENTER to add">
-                        <TextField
-                          {...params}
-                          variant="standard"
-                          label="Meta keywords"
-                          style={{ margin: '10px 0' }}
-                        />
-                      </Tooltip>
-                    )}
+                    renderInput={({ size, InputProps, inputProps, ...rest }) => { // eslint-disable-line @typescript-eslint/no-unused-vars
+                      return (
+                        <Tooltip title="Press ENTER to add">
+                          <TextInputField
+                            startAdornment={InputProps.startAdornment}
+                            endAdornment={InputProps.endAdornment}
+                            ref={InputProps.ref}
+                            inputFieldClassName={InputProps.className}
+                            inputElementClassName={inputProps.className}
+                            {...inputProps}
+                            {...rest}
+                            label="Meta keywords"
+                            style={{ ...(inputProps ?? {}), margin: '10px 0' }}
+                          />
+                        </Tooltip>
+                      )
+                    }}
                   />
                 </Grid>
               </>)}

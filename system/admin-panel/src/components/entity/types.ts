@@ -104,8 +104,15 @@ export type TEntityPageProps<TEntityType extends TBasePageEntity, TFilterType ex
     customElements?: {
         listLeftActions?: JSX.Element;
         listRightActions?: JSX.Element;
-        getListItemActions?: (entity: TEntityType, itemInstance: React.Component<any>) => JSX.Element;
     }
+
+    /** 
+     * Show additional actions per record, appear near edit/delete buttons. Use together with `customActionsWidth`. 
+     */
+    getItemCustomActions?: (entity: TEntityType, itemInstance: React.Component<any>) => JSX.Element;
+
+    /** Define actions width to properly render columns (otherwise table layout will be broken) */
+    customActionsWidth?: number;
 
     /**
      * Get React class component instance

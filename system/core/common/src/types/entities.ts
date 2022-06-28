@@ -825,7 +825,7 @@ export type TServiceVersions = {
 export type TCustomFieldType = 'Simple text' | 'Text editor' | 'Select' | 'Image' | 'Gallery' |
     'Color' | 'Date' | 'Time' | 'Datetime' | 'Currency' | 'Rating' | 'Checkbox';
 
-export type TCustomFieldSimpleTextType = 'string' | 'multiline' | 'float' | 'integer' | 'currency' | 'password';
+export type TCustomFieldSimpleTextType = 'string' | 'textarea' | 'float' | 'integer' | 'currency' | 'password';
 
 export type TAdminCustomField = {
     entityType: EDBEntity | string;

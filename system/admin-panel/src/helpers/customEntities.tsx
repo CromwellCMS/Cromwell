@@ -8,6 +8,7 @@ import { TEntityPageProps } from '../components/entity/types';
 import sidebarStyles from '../components/sidebar/Sidebar.module.scss';
 import { TPageInfo, TSidebarLink } from '../constants/PageInfos';
 import { store } from '../redux/store';
+import { formatTimeAgo } from './time';
 
 const customEntities: Record<string, TAdminCustomEntity> = {};
 
@@ -135,10 +136,12 @@ export const baseEntityColumns: TCustomEntityColumn[] = [
         name: 'createDate',
         label: 'Created',
         type: 'Datetime',
+        getValueView: (value) => formatTimeAgo(value),
     },
     {
         name: 'updateDate',
         label: 'Updated',
         type: 'Datetime',
+        getValueView: (value) => formatTimeAgo(value),
     }
 ];

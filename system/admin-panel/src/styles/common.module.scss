@@ -27,8 +27,8 @@
 
 @mixin styledScrollBar {
   &::-webkit-scrollbar {
-    width: 0.5em;
-    height: 0.5em;
+    width: 5px;
+    height: 5px;
   }
 
   &::-webkit-scrollbar-track {
@@ -37,17 +37,17 @@
   }
 
   &::-webkit-scrollbar-thumb {
-    background-color: #888;
+    background-color: #aaa;
     outline: none;
     border-radius: 30px;
   }
 
   &::-webkit-scrollbar-thumb:hover {
-    background-color: #666;
+    background-color: #888;
   }
 
   &::-webkit-scrollbar-thumb:active {
-    background-color: #444;
+    background-color: #666;
   }
 }
 
@@ -55,8 +55,8 @@
   @include styledScrollBar;
 
   &::-webkit-scrollbar-track {
-    margin-top: 15px;
-    margin-bottom: 15px;
+    // margin-top: 5px;
+    margin-bottom: 5px;
   }
 }
 
@@ -100,18 +100,18 @@
   font-weight: 500;
 }
 
-.pageTitle::before {
-  content: "";
-  width: 5px;
-  height: 5px;
-  background-color: #333;
-  margin-right: 8px;
-  display: block;
-  border-radius: 100%;
-}
+// .pageTitle::before {
+//   content: "";
+//   width: 5px;
+//   height: 5px;
+//   background-color: #333;
+//   margin-right: 8px;
+//   display: block;
+//   border-radius: 100%;
+// }
 
-:global(.modeDark) {
-  .pageTitle::before {
-    background-color: #eee;
-  }
-}
+// :global(.modeDark) {
+//   .pageTitle::before {
+//     background-color: #eee;
+//   }
+// }

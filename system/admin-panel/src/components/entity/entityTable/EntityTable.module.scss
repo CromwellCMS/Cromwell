@@ -12,7 +12,7 @@
     min-height: 200px;
 }
 
-.header {
+.pageHeader {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -30,13 +30,23 @@
     margin-right: 10px;
 }
 
-.tableHeader {
-    @include paper;
+.table {
     display: flex;
-    border-radius: 9px;
+    flex-direction: column;
+    background-color: #fff;
+    padding: 20px 20px 0 20px;
+    border-radius: 10px;
+    height: 100%;
+    min-height: 300px;
+}
+
+.tableHeader {
+    display: flex;
+    border-radius: 9px 9px 0 0;
     align-items: center;
     justify-content: space-between;
     z-index: 1;
+    background-color: #fff;
 }
 
 .tableColumnNames {
@@ -50,6 +60,7 @@
     display: flex;
     flex-direction: column;
     padding-right: 15px;
+    font-size: 14px;
 }
 
 .columnNameText {
@@ -80,9 +91,10 @@
 
 .list {
     @include styledScrollBarList;
-    border-radius: 10px;
-    padding-right: 10px;
-    padding-top: 15px;
+    // padding-right: 10px;
+    // margin-right: -18px;
+    margin-right: -5px;
+    scrollbar-gutter: stable;
 }
 
 .listContent {
@@ -119,6 +131,13 @@
 .searchQuery {
     font-size: 12px;
     color: #555;
+}
+
+.headerSettings {
+    width: 68px;
+    justify-content: flex-end;
+    padding: 0 10px;
+    margin-right: 5px;
 }
 
 :global(.modeDark) {

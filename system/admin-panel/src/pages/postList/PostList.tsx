@@ -8,6 +8,7 @@ import { TEntityPageProps } from '../../components/entity/types';
 import LoadBox from '../../components/loadBox/LoadBox';
 import { postListInfo, postPageInfo } from '../../constants/PageInfos';
 import { baseEntityColumns } from '../../helpers/customEntities';
+import { formatTimeAgo } from '../../helpers/time';
 
 
 const EntityTableComp = EntityTable as React.ComponentType<TEntityPageProps<TPost, TPostFilter>>;
@@ -118,6 +119,7 @@ export default function PostTable() {
                     label: 'Published at',
                     type: 'Datetime',
                     visible: true,
+                    getValueView: (value) => formatTimeAgo(value),
                 },
                 {
                     name: 'tags',
