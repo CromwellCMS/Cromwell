@@ -6,7 +6,7 @@ import cookie from 'cookie';
 import fs from 'fs-extra';
 import { createServer } from 'http';
 import next from 'next';
-import { join } from 'path';
+import { join, normalize } from 'path';
 import send from 'send';
 import { parse } from 'url';
 
@@ -61,7 +61,14 @@ export const startNextServer = async (options?: {
         // Static file serving
         try {
             if (req.url) {
-                const filePath = join(process.cwd(), 'public', req.url);
+                let publicPath = decodeURIComponent(req.url);
+
+                if (publicPath.indexOf('\0') !== -1) {
+                    throw new Error('Poison Null Bytes');
+                }
+                publicPath = normalize(publicPath).replace(/^(\.\.(\/|\\|$))+/, '');
+                const filePath = join(process.cwd(), 'public', publicPath);
+
                 if ((await fs.lstat(filePath)).isFile()) {
                     send(req, filePath).pipe(res);
                     return;

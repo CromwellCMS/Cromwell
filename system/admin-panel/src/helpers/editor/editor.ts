@@ -231,6 +231,10 @@ export const getEditorHtml = async (htmlId: string, data?: OutputData) => {
         element.removeAttribute('data-placeholder');
     });
 
+    redactor.querySelectorAll('.embed-tool__url').forEach(el => el.remove());
+    redactor.querySelectorAll('.embed-tool__caption').forEach(el => el.remove());
+    redactor.querySelectorAll('iframe.embed-tool__content').forEach(el => el.classList.remove('embed-tool__content'));
+
     const content = redactor.outerHTML;
     return content;
 
