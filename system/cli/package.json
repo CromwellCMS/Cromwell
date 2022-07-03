@@ -1,6 +1,6 @@
 {
   "name": "@cromwell/cli",
-  "version": "2.1.12",
+  "version": "2.1.13",
   "keywords": [],
   "license": "MIT",
   "repository": "https://github.com/CromwellCMS/Cromwell",
@@ -31,7 +31,7 @@
     "yargs": "17.1.1"
   },
   "devDependencies": {
-    "@cromwell/cms": "2.1.11",
+    "@cromwell/cms": "2.1.12",
     "@cromwell/utils": "2.0.18",
     "@rollup/plugin-commonjs": "20.0.0",
     "@rollup/plugin-json": "4.1.0",
