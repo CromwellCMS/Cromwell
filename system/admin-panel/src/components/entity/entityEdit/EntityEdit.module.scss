@@ -5,6 +5,27 @@
     max-width: 900px;
     margin: 0 auto;
     width: 100%;
+
+    .header {
+        padding: 10px;
+        width: 100%;
+        margin-bottom: 15px;
+        min-height: 46px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        top: -1px;
+    }
+
+    .headerElevated {
+        box-shadow: 0 8px 15px 0 rgb(0 0 0 / 9%);
+        background-color: rgba(243, 244, 246, var(--tw-bg-opacity));
+    }
+}
+
+.pageTitle {
+    font-size: 1.5rem;
 }
 
 .notFoundPage {
@@ -18,18 +39,6 @@
     font-size: 25px;
     font-weight: 500;
 }
-
-.header {
-    @include paper;
-    padding: 0 10px 0 0;
-    width: 100%;
-    margin-bottom: 15px;
-    min-height: 46px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
 
 .headerLeft {
     display: flex;
@@ -48,6 +57,7 @@ button.openPageBtn {
     @include paper;
     padding: 20px;
     margin-bottom: 15px;
+    border: 1px solid #eee;
 }
 
 .descriptionEditor {
@@ -56,7 +66,7 @@ button.openPageBtn {
     border-radius: 5px;
     max-height: 400px;
     overflow: auto;
-    padding: 15px 40px;
+    padding: 15px 30px;
 }
 
 :global(.modeDark) {

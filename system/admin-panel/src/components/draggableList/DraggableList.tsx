@@ -1,8 +1,8 @@
 import { DragIndicator as DragIndicatorIcon } from '@mui/icons-material';
-import { IconButton } from '@mui/material';
 import React, { Component } from 'react';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 
+import { IconButton } from '../buttons/IconButton';
 import styles from './DraggableList.modules.scss';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);

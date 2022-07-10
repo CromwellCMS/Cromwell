@@ -43,7 +43,6 @@ export function UserForm(props: {
 
   const handleSubmitClick = async (data) => {
     if (loading) return;
-    setLoading(true);
 
     const { email, password, name, passwordConfirm } = data;
 
@@ -52,6 +51,8 @@ export function UserForm(props: {
       setError("passwordConfirm", { type: "manual", message: "Passwords don't match." });
       return;
     }
+
+    setLoading(true);
 
     try {
       await apiClient.login({
@@ -235,7 +236,7 @@ export function UserForm(props: {
           </span>
         </div>
 
-        <div className="flex mt-4 items-center justify-between">
+        <div className="flex mt-6 items-center justify-between">
           <button
             disabled={loading}
             className="rounded bg-gray-700 text-white py-2 px-4 transform transition-colors leading-5 duration-200 hover:bg-gray-600 focus:outline-none"

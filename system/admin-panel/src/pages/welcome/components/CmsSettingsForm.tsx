@@ -1,9 +1,9 @@
+import { setStoreItem, TCmsEnabledModules } from '@cromwell/core';
 import { getRestApiClient } from '@cromwell/core-frontend';
-import { setStoreItem } from '@cromwell/core';
 import React, { useState } from 'react';
-import { Switch } from "@headlessui/react";
-import { TCmsEnabledModules } from '@cromwell/core';
-import { LoadingStatus } from "../../../components/loadBox/LoadingStatus";
+
+import { SwitchInput } from '../../../components/forms/inputs/switchInput';
+import { LoadingStatus } from '../../../components/loadBox/LoadingStatus';
 
 export function CmsSettingsForm(props: {
   onSuccess: () => void;
@@ -40,18 +40,18 @@ export function CmsSettingsForm(props: {
 
   return (
     <div>
-      <h2 className="font-medium mt-1 text-xl text-center text-gray-600 dark:text-gray-200">
+      <h2 className="font-medium my-6 text-xl text-center text-gray-600 dark:text-gray-200">
         Choose your type of website
       </h2>
 
       <div className="my-4 ml-2">
-        <Slider value={modules.blog}
+        <SwitchInput value={modules.blog}
           onChange={() => setModules(prev => ({ ...prev, blog: !prev.blog }))}
           label="Blog"
         />
       </div>
       <div className="my-4 ml-2">
-        <Slider value={modules.ecommerce}
+        <SwitchInput value={modules.ecommerce}
           onChange={() => setModules(prev => ({ ...prev, ecommerce: !prev.ecommerce }))}
           label="eCommerce"
         />
@@ -68,37 +68,5 @@ export function CmsSettingsForm(props: {
       </div>
       <LoadingStatus isActive={loading} />
     </div>
-  )
-}
-
-const Slider = ({ value, onChange, label }: {
-  value: boolean;
-  onChange: (value: boolean) => void;
-  label: string;
-}) => {
-
-  return (
-    <Switch
-      checked={value}
-      onChange={onChange}
-      className="flex items-center">
-      <div
-        className={`mx-2 mr-4 p-3 relative`}>
-        <div
-          className={`${value ? "bg-indigo-800" : "bg-gray-500"
-            }
-      absolute right-1 top-1 inline-flex flex-shrink-0 h-[16px] w-[32px] border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus-visible:ring-2  focus-visible:ring-white focus-visible:ring-opacity-75`}>
-          <span
-            aria-hidden="true"
-            className={`${value
-              ? "translate-x-[15px]"
-              : "translate-x-0"
-              }
-          pointer-events-none inline-block h-[12px] w-[12px] rounded-full bg-white shadow-lg transform ring-0 transition ease-in-out duration-200`}
-          />
-        </div>
-      </div>
-      <p>{label}</p>
-    </Switch>
   )
 }

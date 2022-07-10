@@ -8,7 +8,7 @@ import { useAdminSettings } from "../../../hooks/useAdminSettings";
 import { ImagePicker } from "../../../components/imagePicker/ImagePicker";
 import { TAdminCustomEntity, TRoleInput } from "@cromwell/core";
 import { baseEntityColumns } from '../../../helpers/customEntities';
-import { CheckboxInput } from "../../../components/forms/inputs/checkboxInput";
+import { SwitchInput } from "../../../components/forms/inputs/switchInput";
 
 type FormType = TRoleInput;
 
@@ -109,7 +109,7 @@ export const NewRoleForm = ({
                     name="isEnabled"
                     control={control}
                     render={({ field }) => (
-                      <CheckboxInput
+                      <SwitchInput
                         value={field.value}
                         onChange={field.onChange}
                         label={{

@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import React, { ForwardedRef } from "react";
+import React, { ForwardedRef, useState } from "react";
 
 export interface InputBaseComponentProps
   extends React.HTMLAttributes<HTMLInputElement> {
@@ -14,12 +14,14 @@ export type TextInputProps =
     overlay?: any;
     description?: any;
     error?: any;
+    baseSize?: 'small' | 'medium' | 'large';
     inputComponent?: React.ElementType<InputBaseComponentProps>;
     startAdornment?: React.ReactNode;
     endAdornment?: React.ReactNode;
     rootClassName?: string;
     inputFieldClassName?: string;
     inputElementClassName?: string;
+    defaultValue?: string | number | readonly string[];
   };
 
 export const TextInputField = React.forwardRef(
@@ -30,6 +32,8 @@ export const TextInputField = React.forwardRef(
     const {
       label,
       className,
+      value,
+      defaultValue,
       rootClassName,
       inputFieldClassName,
       inputElementClassName,
@@ -43,15 +47,23 @@ export const TextInputField = React.forwardRef(
       startAdornment,
       style,
       onChange,
+      baseSize,
       ...rest
     } = props;
+    const [_value, setValue] = useState(defaultValue ?? "");
 
     const InputComponent: React.ElementType<any> = inputComponent || 'input';
 
+    const sharedClasses = `border-2 rounded-lg outline outline-0 focus:outline-[2px] outline-indigo-500 `
+      + `text-black active:text-indigo-600 w-full ${inputElementClassName} `
+      + `disabled:bg-gray-200 shadow-md shadow-indigo-50 ${error ? "border-red-500" : ""} `
+      + (baseSize === 'small' ? 'text-xs' : 'text-sm');
+
     const inputClassName =
       type === "color"
-        ? `border -p-1 pl-20 text-sm rounded-md focus:outline outline-indigo-500 ${error ? "border-red-500" : ""} disabled:bg-gray-200 shadow-md shadow-indigo-50 text-black active:text-indigo-600 w-full ${inputElementClassName}`
-        : `border text-sm ${prefix ? "pl-7" : "pl-1"} rounded-md focus:outline ${error ? "border-red-500" : ""} disabled:bg-gray-200 outline-indigo-500 shadow-md py-2 px-1 shadow-indigo-50 text-black active:text-indigo-600 w-full ${inputElementClassName}`;
+        ? `-p-1 pl-20  ${sharedClasses}`
+        : `${prefix ? "pl-7" : "pl-2"} px-2 ${sharedClasses} `
+        + (baseSize === 'small' ? 'py-1' : 'py-2')
 
     const inputField = (
       <div className={clsx(inputFieldClassName, "flex w-full relative")}>
@@ -67,7 +79,11 @@ export const TextInputField = React.forwardRef(
           ref={ref}
           className={inputClassName}
           type={type}
-          onChange={onChange}
+          onChange={(e) => {
+            setValue(e.target.value);
+            onChange(e);
+          }}
+          value={value ?? _value}
           {...rest}
         />
         {endAdornment}

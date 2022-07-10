@@ -17,6 +17,7 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 15px;
+    padding: 5px 10px;
 }
 
 .tableProperties {
@@ -28,6 +29,7 @@
     font-size: 20px;
     font-weight: 500;
     margin-right: 10px;
+    font-size: 1.5rem;
 }
 
 .table {
@@ -78,6 +80,17 @@
     min-height: 300px;
     height: 100%;
     width: 100%;
+}
+
+.columnSearch {
+    @include paperElevated;
+    @include styledScrollBarList;
+    position: relative;
+    padding: 25px;
+    overflow: auto;
+    max-height: 60vh;
+    width: 300px;
+    border-radius: 10px;
 }
 
 .columnsConfigure {

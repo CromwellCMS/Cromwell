@@ -23,7 +23,7 @@ export default function WelcomePage() {
           <img
             src="/admin/static/logo_small_black.svg"
             width="80px"
-            className="mx-auto mt-3"
+            className="mx-auto mt-3 mb-6"
           />
           <h1 className="font-bold text-center text-3xl text-gray-700 dark:text-white">
             Welcome to Cromwell CMS!

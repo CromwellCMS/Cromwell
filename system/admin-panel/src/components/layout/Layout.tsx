@@ -49,6 +49,9 @@ function Layout() {
 
 
   const theme = createTheme(darkMode ? {
+    typography: {
+      fontFamily: `ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"`,
+    },
     palette: {
       primary: {
         main: '#9747d3',
@@ -62,6 +65,9 @@ function Layout() {
       }
     },
   } : {
+    typography: {
+      fontFamily: `ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"`,
+    },
     palette: {
       primary: {
         main: 'rgba(79, 70, 229, 1)',
@@ -82,7 +88,7 @@ function Layout() {
         <div className="flex items-start justify-between">
           <BrowserRouter basename={'admin'}>
             <SideNav />
-            <div className={styles.main}>
+            <div className={styles.main} id="main-scroll-container">
               {/* <Toolbar className={styles.dummyToolbar} /> */}
               <Switch>
                 {getPageInfos().map(page => {

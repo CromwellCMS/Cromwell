@@ -7,6 +7,7 @@ import React, { useRef, useState } from 'react';
 import EntityTable from '../../components/entity/entityTable/EntityTable';
 import { IEntityListPage, TEntityPageProps } from '../../components/entity/types';
 import Modal from '../../components/modal/Modal';
+import { IconButton } from '../../components/buttons/IconButton';
 import { toast } from '../../components/toast/toast';
 import { reviewListPageInfo } from '../../constants/PageInfos';
 import { formatTimeAgo } from '../../helpers/time';
@@ -167,13 +168,19 @@ export default function ProductReviewTable() {
             <Box display="flex" alignItems="center" >
               {!entity?.approved && (
                 <Tooltip title="Approve">
-                  <BadgeCheckIcon className="h-4 text-gray-300 w-4 cursor-pointer"
-                    onClick={() => handleApproveReview(entity, inst)} />
+                  <span>
+                    <IconButton onClick={() => handleApproveReview(entity, inst)} >
+                      <BadgeCheckIcon className="h-4 text-gray-300 w-4 cursor-pointer" />
+                    </IconButton>
+                  </span>
                 </Tooltip>
               )}
               <Tooltip title="Open">
-                <BookOpenIcon className="h-4 text-gray-300 w-4 cursor-pointer ml-3"
-                  onClick={() => handleOpenReview(entity)} />
+                <span>
+                  <IconButton onClick={() => handleOpenReview(entity)}>
+                    <BookOpenIcon className="h-4 text-gray-300 w-4 cursor-pointer" />
+                  </IconButton>
+                </span>
               </Tooltip>
             </Box>
           )

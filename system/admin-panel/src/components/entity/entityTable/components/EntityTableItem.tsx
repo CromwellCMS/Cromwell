@@ -1,9 +1,8 @@
 import { TBasePageEntity } from '@cromwell/core';
 import { getCStore } from '@cromwell/core-frontend';
 import { PencilIcon, TrashIcon } from '@heroicons/react/outline';
-import CheckBoxIcon from '@mui/icons-material/CheckBox';
-import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
-import { Checkbox, Rating, Tooltip } from '@mui/material';
+import { Rating, Tooltip } from '@mui/material';
+import clsx from 'clsx';
 import React from 'react';
 import { connect, PropsType } from 'react-redux-ts';
 import { Link } from 'react-router-dom';
@@ -11,9 +10,11 @@ import { Link } from 'react-router-dom';
 import { toLocaleDateString, toLocaleDateTimeString, toLocaleTimeString } from '../../../../helpers/time';
 import { TAppState } from '../../../../redux/store';
 import commonStyles from '../../../../styles/common.module.scss';
+import { CheckboxInput } from '../../../forms/inputs/checkboxInput';
 import { TBaseEntityFilter } from '../../types';
 import { TListItemProps } from '../EntityTable';
 import styles from './EntityTableItem.module.scss';
+import { IconButton } from '../../../buttons/IconButton';
 
 const mapStateToProps = (state: TAppState) => {
   return {
@@ -25,7 +26,9 @@ const mapStateToProps = (state: TAppState) => {
 type TEntityTableItemProps<TEntityType extends TBasePageEntity, TFilterType extends TBaseEntityFilter>
   = PropsType<PropsType, {
     data?: TEntityType;
+    numberOnScreen?: number;
     listItemProps: TListItemProps<TEntityType, TFilterType>;
+    // prevItemProps?: {}
   }, ReturnType<typeof mapStateToProps>>;
 
 
@@ -33,10 +36,9 @@ class EntityTableItem<TEntityType extends TBasePageEntity, TFilterType extends T
   extends React.Component<TEntityTableItemProps<TEntityType, TFilterType>> {
 
   private columnRefs: Record<string, React.RefObject<HTMLDivElement>> = {};
-  private actionsRef: React.RefObject<HTMLDivElement> = React.createRef();
 
   render() {
-    const { data, listItemProps } = this.props;
+    const { data, listItemProps, numberOnScreen } = this.props;
     const cstore = getCStore();
     let selected = false;
     if (this.props.allSelected && !this.props.selectedItems[data.id]) selected = true;
@@ -44,13 +46,12 @@ class EntityTableItem<TEntityType extends TBasePageEntity, TFilterType extends T
     const tableColumns = this.props.listItemProps.getColumns();
 
     return (
-      <div className={styles.listItem}>
+      <div className={clsx(styles.listItem)} style={{ backgroundColor: numberOnScreen % 2 ? '#fafafa' : '#eee', }}>
         <div className={commonStyles.center}>
-          <Checkbox
-            icon={<CheckBoxOutlineBlankIcon style={{ width: '0.8em', height: '0.8em' }} />}
-            checkedIcon={<CheckBoxIcon style={{ width: '0.8em', height: '0.8em' }} />}
+          <CheckboxInput
             checked={selected}
-            onChange={() => this.props.listItemProps.toggleSelection(data)} />
+            onChange={() => this.props.listItemProps.toggleSelection(data)}
+          />
         </div>
         <div className={styles.columns}>
           {!!tableColumns?.length && tableColumns.map(col => {
@@ -81,9 +82,11 @@ class EntityTableItem<TEntityType extends TBasePageEntity, TFilterType extends T
             }
             if (col.type === 'Image') {
               content = (
-                <div className={styles.imageItem}
-                  style={{ backgroundImage: value && `url(${value})` }}
-                ></div>
+                <div className={styles.imageItemContainer}>
+                  <div className={styles.imageItem}
+                    style={{ backgroundImage: value && `url(${value})` }}
+                  ></div>
+                </div>
               )
             }
             if (col.type === 'Datetime') {
@@ -122,7 +125,7 @@ class EntityTableItem<TEntityType extends TBasePageEntity, TFilterType extends T
             }
             if (col.type === 'Checkbox') {
               content = (
-                <Checkbox checked={!!value} disabled />
+                <CheckboxInput checked={!!value} disabled />
               )
             }
 
@@ -136,7 +139,8 @@ class EntityTableItem<TEntityType extends TBasePageEntity, TFilterType extends T
 
             const TooltipContent = (props: { title: string }): any => {
               let title;
-              if (col.type === 'Color' || col.type === 'Image') title = props.title;
+              if (col.type === 'Color' || col.type === 'Image' || col.type === 'Date'
+                || col.type === 'Datetime' || col.type === 'Time') title = props.title;
               const element = this.columnRefs[col.name]?.current;
               // Ellipsis
               if (element && element.offsetWidth < element.scrollWidth) title = props.title;
@@ -151,12 +155,12 @@ class EntityTableItem<TEntityType extends TBasePageEntity, TFilterType extends T
               >
                 <Tooltip
                   classes={{ popper: styles.cellTooltipPaper }}
-                  title={<TooltipContent title={(tooltipValue ?? '')} />} enterDelay={1500}
+                  title={<TooltipContent title={(tooltipValue ?? '')} />} enterDelay={0}
                 >{content ?? <></>}</Tooltip>
               </div>
             )
           })}
-          <div className={styles.listItemActions} ref={this.actionsRef} style={{
+          <div className={styles.listItemActions} style={{
             ...listItemProps.getColumnStyles({ name: 'actions', label: 'Actions' }, tableColumns),
             minWidth: listItemProps.actionsWidth + (listItemProps.tableProps?.customActionsWidth || 0) + 'px',
           }}>
@@ -167,15 +171,19 @@ class EntityTableItem<TEntityType extends TBasePageEntity, TFilterType extends T
             )}
             {listItemProps.tableProps?.entityBaseRoute && data?.id && (
               <Link to={`${listItemProps.tableProps.entityBaseRoute}/${data?.id}`}>
-                <PencilIcon className="h-4 text-gray-300 w-4 float-right " />
+                <IconButton>
+                  <PencilIcon className="h-4 text-gray-300 w-4 float-right " />
+                </IconButton>
               </Link>
             )}
             {data?.id && (
-              <TrashIcon
-                aria-label="delete"
-                className="h-4 ml-3 text-gray-300 w-4 float-right cursor-pointer"
-                onClick={() => listItemProps.handleDeleteBtnClick(data)}
-              />
+              <IconButton className="ml-0">
+                <TrashIcon
+                  aria-label="delete"
+                  className="h-4 text-gray-300 w-4 float-right cursor-pointer"
+                  onClick={() => listItemProps.handleDeleteBtnClick(data)}
+                />
+              </IconButton>
             )}
           </div>
         </div>

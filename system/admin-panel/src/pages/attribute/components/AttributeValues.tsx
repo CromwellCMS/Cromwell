@@ -1,8 +1,9 @@
 import { TAttributeValue } from '@cromwell/core';
-import { AddCircleOutline as AddCircleOutlineIcon, Delete as DeleteIcon } from '@mui/icons-material';
-import { IconButton, Tooltip } from '@mui/material';
+import { PlusIcon, TrashIcon } from '@heroicons/react/outline';
+import { Tooltip } from '@mui/material';
 import React, { useState } from 'react';
 
+import { IconButton } from '../../../components/buttons/IconButton';
 import { CheckList } from '../../../components/transferList/CheckList';
 import { ValueItem } from './ValueItem';
 
@@ -37,12 +38,14 @@ export const AttributeValues = (props: {
       checked={checkedValues}
       setChecked={handleCheckedValuesChange}
       fullWidthToggle={false}
-      actions={<div style={{ marginLeft: 'auto', display: 'flex' }}>
+      actions={<div style={{ marginLeft: '30px', display: 'flex' }}>
         <Tooltip title="Add new value">
-          <IconButton onClick={handleAddValue}><AddCircleOutlineIcon /></IconButton>
+          <IconButton onClick={handleAddValue}>
+            <PlusIcon className="w-5 h-5" /></IconButton>
         </Tooltip>
         <Tooltip title={"Remove checked values"}>
-          <IconButton onClick={handleDeleteAttribute} disabled={!checkedValues?.length}><DeleteIcon /></IconButton>
+          <IconButton onClick={handleDeleteAttribute} disabled={!checkedValues?.length}>
+            <TrashIcon className="w-5 h-5" /></IconButton>
         </Tooltip>
       </div>}
       itemComp={ValueItem}

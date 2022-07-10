@@ -2,11 +2,12 @@ import { gql } from '@apollo/client';
 import { TOrder, TOrderInput, TStoreListItem } from '@cromwell/core';
 import { getCStore, getGraphQLClient } from '@cromwell/core-frontend';
 import { ArrowBack as ArrowBackIcon, Close as CloseIcon, DeleteForever as DeleteForeverIcon } from '@mui/icons-material';
-import { Autocomplete, Box, Button, Grid, IconButton, Skeleton, TextField } from '@mui/material';
+import { Box, Button, Grid, IconButton, Skeleton, TextField } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
 import { toast } from '../../components/toast/toast';
+import { Autocomplete } from '../../components/forms/inputs/Autocomplete';
 import { orderStatuses } from '../../constants/order';
 import { couponPageInfo, productPageInfo } from '../../constants/PageInfos';
 import { parseAddress } from '../../helpers/addressParser';
@@ -185,12 +186,6 @@ const OrderPage = () => {
                                     options={orderStatuses}
                                     getOptionLabel={(option) => option}
                                     className={styles.textField}
-                                    fullWidth
-                                    renderInput={(params) => <TextField {...params}
-                                        label="Status"
-                                        variant="standard"
-                                        fullWidth
-                                    />}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={6}>

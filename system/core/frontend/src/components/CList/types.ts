@@ -131,4 +131,8 @@ export type TListenerType = 'componentDidUpdate';
 export type TListItemProps<DataType, ListItemProps> = {
     data?: DataType;
     listItemProps?: ListItemProps;
+    pageNumber?: number;
+    numberOnPage?: number;
+    numberOnScreen?: number;
+    prevItemProps?: TListItemProps<DataType, ListItemProps>;
 }

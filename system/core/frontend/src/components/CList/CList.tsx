@@ -332,14 +332,31 @@ export class CList<DataType, ListItemProps = any> extends React.PureComponent<TC
 
         }
 
+        let elementsOnScreen = 0;
+        let prevItemProps;
+
         for (let i = this.minPageBound; i <= this.maxPageBound; i++) {
             const pageData = this.dataList[i];
             if (pageData) {
                 const pageItems: JSX.Element[] = [];
+
                 for (let j = 0; j < pageData.length; j++) {
                     const data = pageData[j];
-                    pageItems.push(<ListItem data={data} listItemProps={props.listItemProps} key={j} />);
+                    const itemProps = {
+                        data,
+                        listItemProps: props.listItemProps,
+                        key: j,
+                        pageNumber: i,
+                        numberOnPage: j,
+                        numberOnScreen: elementsOnScreen,
+                        prevItemProps,
+                    }
+                    prevItemProps = itemProps;
+                    pageItems.push(<ListItem {...itemProps} />);
+
+                    elementsOnScreen++;
                 }
+
                 this.list.push({
                     elements: pageItems,
                     pageNum: i

@@ -14,7 +14,7 @@ import { IFrontendFilter } from '../../../../../plugins/product-filter/src/types
 import { TBreadcrumbs } from '../../components/breadcrumbs';
 import EntityTable from '../../components/entity/entityTable/EntityTable';
 import { IEntityListPage, TEntityPageProps } from '../../components/entity/types';
-import { CheckboxInput } from '../../components/forms/inputs/checkboxInput';
+import { SwitchInput } from '../../components/forms/inputs/switchInput';
 import { InfiniteLoader } from '../../components/virtualList/infiniteLoader';
 import { productListInfo, productPageInfo } from '../../constants/PageInfos';
 import { baseEntityColumns } from '../../helpers/customEntities';
@@ -70,7 +70,7 @@ const ProductTableHead = () => {
                   <div className="grid gap-4 grid-cols-1">
                     {allColumns.map((col, colid) => (
                       <div className="" key={colid}>
-                        <CheckboxInput
+                        <SwitchInput
                           xs
                           label={col.Header as string}
                           value={
@@ -96,7 +96,7 @@ const ProductTableHead = () => {
             )}
           </Popover>
           <div className="mx-2">
-            <CheckboxInput
+            <SwitchInput
               xs
               label={{
                 active: "small",
@@ -444,15 +444,15 @@ export const ProductListPage = () => {
   );
 };
 
-export default () => {
-  return (
-    <ProductTableContextProvider>
-      <ProductListPage />
-    </ProductTableContextProvider>
-  );
-};
+// export default () => {
+//   return (
+//     <ProductTableContextProvider>
+//       <ProductListPage />
+//     </ProductTableContextProvider>
+//   );
+// };
 
-export function ProductTable() {
+export default function ProductTable() {
   const client = getGraphQLClient();
   const [showFilter, setShowFilter] = useState(false);
   const filterInstRef = useRef<IFrontendFilter | null>(

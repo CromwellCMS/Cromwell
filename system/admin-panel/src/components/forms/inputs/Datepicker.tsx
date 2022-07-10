@@ -1,11 +1,13 @@
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import DatePicker from '@mui/lab/DatePicker';
+import DateRangePicker, { DateRange } from '@mui/lab/DateRangePicker';
 import DateTimePicker from '@mui/lab/DateTimePicker';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import TimePicker from '@mui/lab/TimePicker';
-import { TextField, Box } from '@mui/material';
+import { Box } from '@mui/material';
 import React, { useState } from 'react';
-import DateRangePicker, { DateRange } from '@mui/lab/DateRangePicker';
+
+import { TextInputField } from './textInput';
 
 export type DatepickerProps = {
   value?: Date | DateRange<Date> | null;
@@ -46,11 +48,21 @@ export function Datepicker({ label, dateType, value, onChange, range, defaultVal
       }
       handleChange(date);
     },
-    renderInput: (params) => <TextField
-      variant="standard"
-      fullWidth
-      {...params}
-    />,
+    renderInput: (params) => {
+      return (
+        <div ref={params.ref}>
+          <TextInputField {...params} {...params.inputProps} {...params.InputProps} ref={params.inputRef}
+            endAdornment={<Box sx={{
+              '> div': {
+                height: 'auto',
+                top: '4px',
+                position: 'relative',
+                left: '-5px',
+              }
+            }}>{params.InputProps.endAdornment}</Box>} />
+        </div>
+      )
+    },
   }
 
   let content;
@@ -67,13 +79,15 @@ export function Datepicker({ label, dateType, value, onChange, range, defaultVal
       }
       content = <DateRangePicker
         {...commonProps}
-        renderInput={(startProps, endProps) => (
-          <React.Fragment>
-            <TextField {...startProps} />
-            <Box sx={{ mx: 2 }}> to </Box>
-            <TextField {...endProps} />
-          </React.Fragment>
-        )}
+        renderInput={(startProps, endProps) => {
+          return (
+            <React.Fragment>
+              <TextInputField {...startProps.inputProps} {...(startProps as any)} />
+              <Box sx={{ mx: 2 }}> to </Box>
+              <TextInputField {...endProps.inputProps} {...(endProps as any)} />
+            </React.Fragment>
+          )
+        }}
         value={v}
       />
     } else {

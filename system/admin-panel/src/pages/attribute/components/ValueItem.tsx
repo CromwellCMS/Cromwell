@@ -1,9 +1,11 @@
 import { TAttributeValue } from '@cromwell/core';
-import { Delete as DeleteIcon, Image as ImageIcon } from '@mui/icons-material';
-import { IconButton, TextField, Tooltip } from '@mui/material';
+import { PhotographIcon, TrashIcon } from '@heroicons/react/outline';
+import { Tooltip } from '@mui/material';
 import React from 'react';
 
+import { IconButton } from '../../../components/buttons/IconButton';
 import { getFileManager } from '../../../components/fileManager/helpers';
+import { TextInputField } from '../../../components/forms/inputs/textInput';
 
 export const ValueItem = (props: {
   value: string;
@@ -42,13 +44,13 @@ export const ValueItem = (props: {
 
   return (
     <div style={{ display: 'flex', alignItems: 'center' }}>
-      <TextField
-        variant="standard"
+      <TextInputField
         style={{ marginRight: '15px' }}
         defaultValue={props.value}
         onChange={handleValueNameChange}
+        baseSize={"small"}
       />
-      <Tooltip title="Change value icon">
+      <Tooltip title="Change icon">
         <IconButton onClick={handleChangeIcon}>
           {value.icon ? (
             <div style={{
@@ -58,13 +60,13 @@ export const ValueItem = (props: {
               backgroundSize: 'contain'
             }}></div>
           ) : (
-            <ImageIcon />
+            <PhotographIcon className="w-4 h-4" />
           )}
         </IconButton>
       </Tooltip>
       <Tooltip title="Delete value">
         <IconButton onClick={handleDeleteValue}>
-          <DeleteIcon />
+          <TrashIcon className="w-4 h-4" />
         </IconButton>
       </Tooltip>
     </div>

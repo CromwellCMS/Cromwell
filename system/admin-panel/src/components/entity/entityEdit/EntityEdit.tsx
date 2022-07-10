@@ -7,9 +7,13 @@ import {
   TCustomFieldSimpleTextType,
   TCustomFieldType,
 } from '@cromwell/core';
-import { ArrowBack as ArrowBackIcon, OpenInNew as OpenInNewIcon } from '@mui/icons-material';
+import { ChevronLeftIcon } from '@heroicons/react/outline';
+import { OpenInNew as OpenInNewIcon } from '@mui/icons-material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import { Autocomplete as MuiAutocomplete, Button, Grid, IconButton, Skeleton, Tooltip } from '@mui/material';
+import { Grid, Skeleton, Tooltip } from '@mui/material';
+import AppBar from '@mui/material/AppBar';
+import useScrollTrigger from '@mui/material/useScrollTrigger';
+import clsx from 'clsx';
 import React from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 
@@ -29,10 +33,14 @@ import {
   TFieldDefaultComponent,
 } from '../../../helpers/customFields';
 import commonStyles from '../../../styles/common.module.scss';
+import { IconButton } from '../../buttons/IconButton';
+import { TextButton } from '../../buttons/TextButton';
+import { Autocomplete } from '../../forms/inputs/Autocomplete';
 import { TextInputField } from '../../forms/inputs/textInput';
 import { toast } from '../../toast/toast';
 import { TBaseEntityFilter, TEntityPageProps } from '../types';
 import styles from './EntityEdit.module.scss';
+
 
 
 type TEditField<TEntityType> = {
@@ -349,40 +357,43 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
 
     return (
       <div className={styles.EntityEdit}>
-        <div className={styles.header}>
-          <div className={styles.headerLeft}>
-            <IconButton
-              onClick={() => window.history.back()}
-            >
-              <ArrowBackIcon style={{ fontSize: '18px' }} />
-            </IconButton>
-            <p className={commonStyles.pageTitle}>{(this.props.entityLabel ?? this.props.entityType
-              ?? this.props.entityCategory).toLocaleLowerCase()}</p>
-          </div>
-          <div className={styles.headerActions}>
-            {pageFullUrl && (
-              <Tooltip
-                title={`Open ${(this.props.entityType ?? this.props.entityCategory).toLocaleLowerCase()} in the new tab`}
+        <ElevationScroll>
+          <AppBar position="sticky" color="transparent" elevation={0}>
+            <div className={styles.headerLeft}>
+              <IconButton
+                onClick={() => window.history.back()}
+                className="mr-2"
               >
-                <IconButton
-                  className={styles.openPageBtn}
-                  aria-label="open"
-                  onClick={() => { window.open(pageFullUrl, '_blank'); }}
-                >
-                  <OpenInNewIcon />
-                </IconButton>
-              </Tooltip>
-            )}
-            <div className={commonStyles.center}>
-              <Button variant="contained" color="primary"
-                className={styles.saveBtn}
-                size="small"
-                disabled={this.state?.isSaving}
-                onClick={this.handleSave}
-              >Save</Button>
+                <ChevronLeftIcon className="h-6 w-6 text-gray-600 hover:text-indigo:-400" />
+              </IconButton>
+              <p className={styles.pageTitle}>{(this.props.entityLabel ?? this.props.entityType
+                ?? this.props.entityCategory)}</p>
             </div>
-          </div>
-        </div>
+            <div className={styles.headerActions}>
+              {pageFullUrl && (
+                <Tooltip
+                  title={`Open ${(this.props.entityType ?? this.props.entityCategory).toLocaleLowerCase()} in the new tab`}
+                >
+                  <IconButton
+                    className={styles.openPageBtn}
+                    aria-label="open"
+                    onClick={() => { window.open(pageFullUrl, '_blank'); }}
+                  >
+                    <OpenInNewIcon />
+                  </IconButton>
+                </Tooltip>
+              )}
+              <div className={commonStyles.center}>
+                <TextButton
+                  className={styles.saveBtn}
+                  disabled={this.state?.isSaving}
+                  onClick={this.handleSave}
+                >Save</TextButton>
+              </div>
+            </div>
+          </AppBar>
+        </ElevationScroll>
+
         <div className={styles.content}>
           {this.state?.isLoading && (
             Array(8).fill(1).map((it, index) => (
@@ -414,7 +425,7 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
                     />
                     {field?.tooltip && (
                       <Tooltip title={field?.tooltip}>
-                        <InfoOutlinedIcon />
+                        <InfoOutlinedIcon style={{ width: '1.25rem', height: '1.25rem' }} />
                       </Tooltip>
                     )}
                   </Grid>
@@ -435,7 +446,6 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
                 <Grid item xs={12}>
                   <TextInputField label="Page URL"
                     value={entityData?.slug ?? ''}
-                    style={{ margin: '10px 0' }}
                     className={styles.defaultField}
                     onChange={(e) => { this.handleInputChange('slug', e.target.value) }}
                     description={pageFullUrl}
@@ -444,7 +454,6 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
                 <Grid item xs={12}>
                   <TextInputField label="Meta title"
                     value={entityData?.pageTitle ?? ''}
-                    style={{ margin: '10px 0' }}
                     className={styles.defaultField}
                     onChange={(e) => { this.handleInputChange('pageTitle', e.target.value) }}
                   />
@@ -452,13 +461,12 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
                 <Grid item xs={12}>
                   <TextInputField label="Meta description"
                     value={entityData?.pageDescription ?? ''}
-                    style={{ margin: '10px 0' }}
                     className={styles.defaultField}
                     onChange={(e) => { this.handleInputChange('pageDescription', e.target.value) }}
                   />
                 </Grid>
                 <Grid item xs={12}>
-                  <MuiAutocomplete
+                  <Autocomplete
                     multiple
                     freeSolo
                     options={[]}
@@ -471,23 +479,8 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
                         keywords: newVal
                       })
                     }}
-                    renderInput={({ size, InputProps, inputProps, ...rest }) => { // eslint-disable-line @typescript-eslint/no-unused-vars
-                      return (
-                        <Tooltip title="Press ENTER to add">
-                          <TextInputField
-                            startAdornment={InputProps.startAdornment}
-                            endAdornment={InputProps.endAdornment}
-                            ref={InputProps.ref}
-                            inputFieldClassName={InputProps.className}
-                            inputElementClassName={inputProps.className}
-                            {...inputProps}
-                            {...rest}
-                            label="Meta keywords"
-                            style={{ ...(inputProps ?? {}), margin: '10px 0' }}
-                          />
-                        </Tooltip>
-                      )
-                    }}
+                    label="Meta keywords"
+                    tooltip="Press ENTER to add"
                   />
                 </Grid>
               </>)}
@@ -500,3 +493,17 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
 }
 
 export default withRouter(EntityEdit);
+
+function ElevationScroll(props) {
+  const trigger = useScrollTrigger({
+    disableHysteresis: true,
+    threshold: 0,
+    target: document.getElementById('main-scroll-container'),
+  });
+
+  const bgStyle = 'bg-gray-100 bg-opacity-60 w-fudropll back-filter backdrop-blur-lg';
+
+  return React.cloneElement(props.children, {
+    className: trigger ? clsx(styles.header, styles.headerElevated, bgStyle) : clsx(styles.header, bgStyle),
+  });
+}

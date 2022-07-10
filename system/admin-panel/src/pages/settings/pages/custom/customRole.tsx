@@ -10,7 +10,7 @@ import {
 import { useParams } from "react-router-dom";
 import { ActionButton } from "../../../../components/actionButton";
 import { TBreadcrumbs } from "../../../../components/breadcrumbs";
-import { CheckboxInput } from "../../../../components/forms/inputs/checkboxInput";
+import { SwitchInput } from "../../../../components/forms/inputs/switchInput";
 import { TextInputField } from "../../../../components/forms/inputs/textInput";
 import { toast } from "../../../../exports";
 import { slugify } from "../../../../helpers/slugify";
@@ -79,17 +79,15 @@ const ControlledPermissionCategory = ({
           <div
             className={`mx-2 mr-4 w-full h-full p-3 relative`}>
             <div
-              className={`${
-                value ? "bg-indigo-800" : "bg-gray-500"
-              }
+              className={`${value ? "bg-indigo-800" : "bg-gray-500"
+                }
           absolute right-1 top-1 inline-flex flex-shrink-0 h-[16px] w-[32px] border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus-visible:ring-2  focus-visible:ring-white focus-visible:ring-opacity-75`}>
               <span
                 aria-hidden="true"
-                className={`${
-                  value
+                className={`${value
                     ? "translate-x-[15px]"
                     : "translate-x-0"
-                }
+                  }
               pointer-events-none inline-block h-[12px] w-[12px] rounded-full bg-white shadow-lg transform ring-0 transition ease-in-out duration-200`}
               />
             </div>
@@ -121,24 +119,21 @@ const PermissionOption = ({
         onChange={onChange}
         className="h-full w-full">
         <div
-          className={`border rounded-lg shadow-md m-2 w-full h-full p-3 relative ${
-            value
+          className={`border rounded-lg shadow-md m-2 w-full h-full p-3 relative ${value
               ? "shadow-indigo-400 border-indigo-500"
               : "bg-white"
-          }`}>
+            }`}>
           <div
-            className={`${
-              value ? "bg-indigo-800" : "bg-gray-500"
-            }
+            className={`${value ? "bg-indigo-800" : "bg-gray-500"
+              }
           absolute right-1 top-1 inline-flex flex-shrink-0 h-[16px] w-[32px] border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus-visible:ring-2  focus-visible:ring-white focus-visible:ring-opacity-75`}>
             <span className="sr-only">{readerText}</span>
             <span
               aria-hidden="true"
-              className={`${
-                value
+              className={`${value
                   ? "translate-x-[15px]"
                   : "translate-x-0"
-              }
+                }
               pointer-events-none inline-block h-[12px] w-[12px] rounded-full bg-white shadow-lg transform ring-0 transition ease-in-out duration-200`}
             />
           </div>
@@ -291,7 +286,7 @@ export const CustomRoleSettingsPage = () => {
       title: title,
       name: name,
     }
-    
+
     try {
       await saveRole(newRole)
       toast.success(`Role saved`)
@@ -299,7 +294,7 @@ export const CustomRoleSettingsPage = () => {
       toast.error(`Could not save role.`)
     }
   };
-  
+
   const { register, setValue, formState, control } = methods;
 
   const dirtyDefinition = formState.dirtyFields.isEnabled || formState.dirtyFields.title || formState.dirtyFields.name
@@ -326,21 +321,19 @@ export const CustomRoleSettingsPage = () => {
             </h2>
             <p>Edit Role definition</p>
             <p
-              className={`${
-                dirtyDefinition
+              className={`${dirtyDefinition
                   ? "text-indigo-500"
                   : "text-transparent"
-              }`}>
+                }`}>
               You have unsaved changes
             </p>
           </div>
 
           <div
-            className={`bg-white rounded-lg shadow-lg w-full p-4 max-w-4xl ${
-              dirtyDefinition
+            className={`bg-white rounded-lg shadow-lg w-full p-4 max-w-4xl ${dirtyDefinition
                 ? "border border-indigo-600 shadow-indigo-400"
                 : "border border-white"
-            }`}>
+              }`}>
             <div className="grid gap-2 grid-cols-1 lg:grid-cols-2">
               <TextInputField
                 label="Title"
@@ -369,7 +362,7 @@ export const CustomRoleSettingsPage = () => {
                   name="isEnabled"
                   control={control}
                   render={({ field }) => (
-                    <CheckboxInput
+                    <SwitchInput
                       value={field.value}
                       onChange={field.onChange}
                       label={{
@@ -395,21 +388,19 @@ export const CustomRoleSettingsPage = () => {
               features to roles!
             </p>
             <p
-              className={`${
-                dirtyPermissions
+              className={`${dirtyPermissions
                   ? "text-indigo-500"
                   : "text-transparent"
-              }`}>
+                }`}>
               You have unsaved changes
             </p>
           </div>
 
           <div
-            className={`bg-white rounded-lg shadow-lg w-full p-4 max-w-4xl ${
-              dirtyPermissions
+            className={`bg-white rounded-lg shadow-lg w-full p-4 max-w-4xl ${dirtyPermissions
                 ? "border border-indigo-600 shadow-indigo-400"
                 : "border border-white"
-            }`}>
+              }`}>
             <div className="flex flex-wrap">
               <ControlledPermissionCategory
                 title="System"

@@ -1,12 +1,10 @@
 import { gql } from '@apollo/client';
 import { getBlockInstance, TBaseFilter, TBasePageEntity, TCustomEntityColumn, TPagedParams } from '@cromwell/core';
 import { CList, TCList } from '@cromwell/core-frontend';
-import { TableIcon } from '@heroicons/react/outline';
-import { ArrowDropDown as ArrowDropDownIcon, Close as CloseIcon } from '@mui/icons-material';
-import CheckBoxIcon from '@mui/icons-material/CheckBox';
-import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
-import ClearAllIcon from '@mui/icons-material/ClearAll';
-import { Autocomplete, Button, Checkbox, IconButton, Popover, TextField, Tooltip } from '@mui/material';
+import { ChevronDownIcon, TableIcon, XIcon } from '@heroicons/react/outline';
+import { Close as CloseIcon } from '@mui/icons-material';
+import { Popover, Theme, Tooltip } from '@mui/material';
+import { withStyles } from '@mui/styles';
 import clsx from 'clsx';
 import queryString from 'query-string';
 import React from 'react';
@@ -23,8 +21,14 @@ import {
 } from '../../../redux/helpers';
 import { TAppState } from '../../../redux/store';
 import commonStyles from '../../../styles/common.module.scss';
-import { Datepicker } from '../../datepicker/Datepicker';
+import { IconButton } from '../../buttons/IconButton';
+import { TextButton } from '../../buttons/TextButton';
+import { Datepicker } from '../../forms/inputs/Datepicker';
 import { DraggableList } from '../../draggableList/DraggableList';
+import { Autocomplete } from '../../forms/inputs/Autocomplete';
+import { CheckboxInput } from '../../forms/inputs/checkboxInput';
+import { TextInputField } from '../../forms/inputs/textInput';
+import { ClearFilterIcon } from '../../icons/clearFilter';
 import { askConfirmation } from '../../modal/Confirmation';
 import Pagination from '../../pagination/Pagination';
 import { listPreloader } from '../../skeleton/SkeletonPreloader';
@@ -35,6 +39,7 @@ import DeleteSelectedButton from './components/DeleteSelectedButton';
 import EntityTableItem from './components/EntityTableItem';
 import styles from './EntityTable.module.scss';
 
+
 const mapStateToProps = (state: TAppState) => {
   return {
     allSelected: state.allSelected,
@@ -43,7 +48,7 @@ const mapStateToProps = (state: TAppState) => {
 
 export type TEntityTableProps<TEntityType extends TBasePageEntity, TFilterType extends TBaseEntityFilter>
   = PropsType<TAppState, TEntityPageProps<TEntityType, TFilterType>,
-    ReturnType<typeof mapStateToProps>> & RouteComponentProps;
+    ReturnType<typeof mapStateToProps>> & RouteComponentProps & { theme?: Theme };
 
 export type TListItemProps<TEntityType extends TBasePageEntity, TFilterType extends TBaseEntityFilter> = {
   handleDeleteBtnClick: (item: TEntityType) => void;
@@ -491,6 +496,12 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
         <Autocomplete
           multiple={this.state.columnSearch.multipleOptions}
           options={this.state.columnSearch.searchOptions}
+          inlineOptions
+          paperStyle={{
+            // marginLeft: '-15px',
+            // marginRight: '-15px',
+            // width: 'calc(100% + 30px)',
+          }}
           getOptionLabel={(option: any) => option?.label ?? ''}
           defaultValue={this.getAutocompleteValueFromSearch(this.currentSearch,
             this.state.columnSearch)}
@@ -500,12 +511,7 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
             this.currentSearch = typeof newVal === 'object' ? newVal?.value : newVal
           }}
           classes={{ popper: styles.autocompletePopper }}
-          renderInput={(params) => <TextField
-            {...params}
-            variant="standard"
-            fullWidth
-            label={`Search ${this.state?.columnSearch?.label ?? ''}`}
-          />}
+          label={`Search ${this.state?.columnSearch?.label ?? ''}`}
         />
       );
     }
@@ -522,12 +528,10 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
     }
 
     return (
-      <TextField
-        fullWidth
+      <TextInputField
         onChange={(event) => this.currentSearch = event.target.value}
-        variant="standard"
         label={`Search ${this.state?.columnSearch?.label ?? ''}`}
-        defaultValue={this.currentSearch}
+        defaultValue={this.currentSearch as string}
       />
     )
   }
@@ -546,10 +550,12 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
             {!!(this.filters?.length || this.sortBy?.column
               || this.props.isFilterActive?.()) && (
                 <Tooltip title="Clear filters">
-                  <IconButton className={styles.iconButton}
-                    onClick={this.clearAllFilters}>
-                    <ClearAllIcon />
-                  </IconButton>
+                  <span>
+                    <IconButton className={clsx(styles.iconButton)}
+                      onClick={this.clearAllFilters}
+                    ><ClearFilterIcon className="w-5 h-5" />
+                    </IconButton>
+                  </span>
                 </Tooltip>
               )}
             <DeleteSelectedButton
@@ -558,10 +564,9 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
               totalElements={this.totalElements}
             />
             {this.props.entityBaseRoute && !this.props.hideAddNew && (
-              <Button variant="contained"
-                size="small"
+              <TextButton
                 onClick={this.handleCreate}
-              >Add new</Button>
+              >Add new</TextButton>
             )}
           </div>
         </div>
@@ -569,9 +574,7 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
           <div className={clsx(styles.tableHeader, 'shadow-lg shadow-white')}>
             <div className={commonStyles.center}>
               <Tooltip title="Select all">
-                <Checkbox
-                  icon={<CheckBoxOutlineBlankIcon style={{ width: '0.8em', height: '0.8em' }} />}
-                  checkedIcon={<CheckBoxIcon style={{ width: '0.8em', height: '0.8em' }} />}
+                <CheckboxInput
                   checked={this.props.allSelected ?? false}
                   onChange={this.handleToggleSelectAll}
                 />
@@ -598,6 +601,8 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
                   }
                 }
 
+                const isSortBy = this.sortBy?.column?.name === col.name;
+
                 return (
                   <div key={col.name}
                     id={`column_${col.name}`}
@@ -608,21 +613,22 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
                       <Tooltip title={col.disableSearch ? '' : 'Open search for ' + col.label} placement="top" enterDelay={500}>
                         <p onClick={col.disableSearch ? null : () => this.openColumnSearch(col)}
                           className={clsx(styles.ellipsis, styles.columnNameText)}
-                          style={{ cursor: !col.disableSearch ? 'pointer' : 'initial' }}
+                          style={{
+                            cursor: !col.disableSearch ? 'pointer' : 'initial',
+                            color: isSortBy ? this.props.theme?.palette?.primary?.main || '#333' : '#333',
+                          }}
                         >{col.label}</p>
                       </Tooltip>
                       {!col.disableSort && (
                         <Tooltip title="Toggle sort" placement="top" enterDelay={500}>
                           <div onClick={() => this.toggleOrderBy(col)}
                             className={styles.orderButton}>
-                            <ArrowDropDownIcon
+                            <ChevronDownIcon
+                              className={"h-3 w-3 ml-1"}
                               style={{
-                                transform: this.sortBy?.column?.name === col.name
-                                  && this.sortBy?.sort === 'ASC' ? 'rotate(180deg)' : undefined,
+                                transform: isSortBy && this.sortBy?.sort === 'ASC' ? 'rotate(180deg)' : undefined,
                                 transition: '0.3s',
-                                color: this.sortBy?.column?.name !== col.name ? '#aaa' : '#9747d3',
-                                fill: this.sortBy?.column?.name !== col.name ? '#aaa' : '#9747d3',
-                                fontSize: this.sortBy?.column?.name === col.name ? '26px' : undefined,
+                                color: isSortBy ? this.props.theme?.palette?.primary?.main || '#333' : '#333',
                               }}
                             />
                           </div>
@@ -677,10 +683,10 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
                   elevation={0}
                 >
                   <div className={styles.columnsConfigure}>
-                    <Button size="small" variant="outlined"
+                    <TextButton
                       onClick={this.resetConfiguredColumns}
-                      style={{ margin: '10px 0 0 10px' }}
-                    >Reset</Button>
+                      style={{ margin: '10px 0 10px 10px' }}
+                    >Reset</TextButton>
                     <DraggableList<TColumnConfigureItemData>
                       data={tableColumns.map(col => ({
                         id: col.name,
@@ -707,8 +713,8 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
                   }}
                   elevation={0}
                 >
-                  <div className={styles.columnsConfigure}
-                    style={{ padding: '10px 15px' }}>
+                  <div className={styles.columnSearch}>
+                    <XIcon className="w-4 h-5 absolute top-1 right-1 cursor-pointer" onClick={this.closeColumnSearch} />
                     {this.getSearchContent()}
                   </div>
                 </Popover>
@@ -746,4 +752,4 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
   }
 }
 
-export default connect(mapStateToProps)(withRouter(EntityTable));
+export default connect(mapStateToProps)(withStyles({}, { withTheme: true })(withRouter(EntityTable)));

@@ -7,26 +7,19 @@ import {
     TImageSettings,
 } from '@cromwell/core';
 import { Visibility as VisibilityIcon, VisibilityOff as VisibilityOffIcon } from '@mui/icons-material';
-import {
-    Checkbox,
-    CheckboxProps,
-    FormControlLabel,
-    IconButton,
-    InputAdornment,
-    SelectChangeEvent,
-    SelectProps,
-} from '@mui/material';
+import { CheckboxProps, IconButton, InputAdornment, SelectChangeEvent, SelectProps } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import { debounce } from 'throttle-debounce';
-import { TextInputField, TextInputProps } from "../components/forms/inputs/textInput";
 
 import { ColorPicker, ColorPickerProps } from '../components/colorPicker/ColorPicker';
-import { Datepicker, DatepickerProps } from '../components/datepicker/Datepicker';
+import { Datepicker, DatepickerProps } from '../components/forms/inputs/Datepicker';
 import entityEditStyles from '../components/entity/entityEdit/EntityEdit.module.scss';
+import { CheckboxInput } from '../components/forms/inputs/checkboxInput';
+import { TextInputField, TextInputProps } from '../components/forms/inputs/textInput';
 import { GalleryPicker, GalleryPickerProps } from '../components/galleryPicker/GalleryPicker';
 import { ImagePicker, ImagePickerProps } from '../components/imagePicker/ImagePicker';
 import { Select } from '../components/select/Select';
-import { getEditorData, getEditorHtml, initTextEditor, destroyEditor } from './editor/editor';
+import { destroyEditor, getEditorData, getEditorHtml, initTextEditor } from './editor/editor';
 import { useForceUpdate } from './forceUpdate';
 import { NumberFormatCustom } from './NumberFormatCustom';
 
@@ -235,7 +228,6 @@ export const getSimpleTextField = (settings: {
                         </IconButton>
                     </InputAdornment>
                 ) : undefined}
-                style={{ margin: '10px 0' }}
                 error={props.error && props.canValidate}
                 {...(settings.props ?? {})}
             />
@@ -422,7 +414,6 @@ export const getSelectField = (settings: {
 
             return (
                 <Select
-                    style={{ margin: '10px 0' }}
                     value={value}
                     onChange={(event: SelectChangeEvent<string>) => {
                         setValue(event.target.value);
@@ -487,7 +478,6 @@ export const getImageField = (settings: {
                     }}
                     showRemove
                     label={settings.label}
-                    style={{ margin: '10px 0' }}
                     variant="standard"
                     {...(settings.props ?? {})}
                 />
@@ -539,7 +529,7 @@ export const getGalleryField = (settings: {
                         props.onChange?.(valStr);
                     }}
                     label={settings.label}
-                    style={{ margin: '10px 0', border: '1px solid #ccc', borderRadius: '6px', padding: '10px' }}
+                    style={{ border: '1px solid #ccc', borderRadius: '6px', padding: '10px' }}
                     {...(settings.props ?? {})}
                 />
             )
@@ -588,7 +578,6 @@ export const getColorField = (settings: {
                         setValue(value);
                         props.onChange?.(value);
                     }}
-                    style={{ margin: '10px 0' }}
                     {...(settings.props ?? {})}
                 />
             )
@@ -631,19 +620,15 @@ export const getCheckboxField = (settings: {
             fieldsCache[id].value = value;
 
             return (
-                <FormControlLabel
-                    control={
-                        <Checkbox
-                            checked={!!value}
-                            onChange={(event, value) => {
-                                setValue(value as any);
-                                props.onChange?.(value);
-                            }}
-                            color="primary"
-                            {...(settings.props ?? {})}
-                        />
-                    }
+                <CheckboxInput
+                    checked={!!value}
+                    onChange={(event, value) => {
+                        setValue(value as any);
+                        props.onChange?.(value);
+                    }}
                     label={label}
+                    color="primary"
+                    {...(settings.props ?? {})}
                 />
             )
         },
@@ -686,7 +671,7 @@ export const getDatepickerField = (settings: {
             fieldsCache[id].value = value;
 
             return (
-                <div style={{ margin: '10px 0' }}>
+                <div>
                     <Datepicker
                         onChange={(date) => {
                             setValue(date);

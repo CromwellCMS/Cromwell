@@ -1,8 +1,8 @@
-import { Button } from '@mui/material';
 import React from 'react';
 
 import commonStyles from '../../styles/common.module.scss';
 import styles from './Confirmation.module.scss';
+import { TextButton } from '../buttons/TextButton';
 import Modal from './Modal';
 
 const ConfirmationModal = (props: {
@@ -23,22 +23,19 @@ const ConfirmationModal = (props: {
             <div className={styles.ConfirmationModal}>
                 <p className={styles.text}>{props.title}</p>
                 <div className={styles.actions}>
-                    <Button
+                    <TextButton
                         role="button"
                         variant="outlined"
-                        color="primary"
                         onClick={props.onClose}
                         className={styles.actionBtn}
                         disabled={props.disabled}
-                    >Cancel</Button>
-                    <Button
+                    >Cancel</TextButton>
+                    <TextButton
                         role="button"
-                        variant="contained"
-                        color="primary"
                         onClick={props.onConfirm}
                         className={styles.actionBtn}
                         disabled={props.disabled}
-                    >Ok</Button>
+                    >Ok</TextButton>
                 </div>
             </div>
         </Modal>
