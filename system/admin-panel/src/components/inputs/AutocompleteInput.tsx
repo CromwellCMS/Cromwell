@@ -3,8 +3,8 @@ import Popper from '@mui/material/Popper';
 import { styled } from '@mui/material/styles';
 import React from 'react';
 
-import commonStyles from '../../../styles/common.module.scss';
-import { TextInputField } from './textInput';
+import commonStyles from '../../styles/common.module.scss';
+import { TextInputField } from './TextInput';
 
 export function Autocomplete<T>(props: Omit<AutocompleteProps<T, boolean, boolean, boolean>, 'renderInput'> & {
   tooltip?: string;

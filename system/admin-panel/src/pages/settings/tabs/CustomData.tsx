@@ -9,7 +9,7 @@ import { Button, Grid, IconButton, Popover, TextField, Tooltip } from '@mui/mate
 import React, { useRef, useState } from 'react';
 
 import { DraggableList } from '../../../components/draggableList/DraggableList';
-import { ImagePicker } from '../../../components/imagePicker/ImagePicker';
+import { ImageInput } from '../../../components/inputs/Image/ImageInput';
 import Modal from '../../../components/modal/Modal';
 import { Select } from '../../../components/select/Select';
 import { baseEntityColumns, unregisterCustomEntity } from '../../../helpers/customEntities';
@@ -226,7 +226,7 @@ export default function CustomData(props: any) {
                     fullWidth
                     className={styles.entityToEditField}
                 />
-                <ImagePicker
+                <ImageInput
                     label="Icon"
                     value={entityToEdit?.icon}
                     className={styles.entityToEditField}

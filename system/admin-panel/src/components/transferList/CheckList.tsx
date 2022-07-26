@@ -1,7 +1,7 @@
 import { Divider, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import React from 'react';
 
-import { CheckboxInput } from '../forms/inputs/checkboxInput';
+import { CheckboxInput } from '../inputs/CheckboxInput';
 import { intersection, not, union } from './helpers';
 import styles from './TransferList.Module.scss';
 

@@ -3,7 +3,7 @@ import {
   TAdminCmsSettingsType,
   useAdminSettings,
 } from "../../../hooks/useAdminSettings";
-import { TextInputField } from "../../../components/forms/inputs/textInput";
+import { TextInputField } from "../../../components/inputs/TextInput";
 import { TBreadcrumbs } from "../../../components/breadcrumbs";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import { getCStore } from "@cromwell/core-frontend";

@@ -1,15 +1,13 @@
-import React, { CSSProperties } from "react";
-import {
-  TCromwellBlock,
-  TCromwellBlockData,
-} from "@cromwell/core";
-import { useForceUpdate } from "@cromwell/core-frontend";
-import { usePageBuilder } from "../../hooks/usePageBuilder";
-import { useThemeEditor } from "../../hooks/useThemeEditor";
-import { ImagePicker } from "../../../../exports";
-import { TextInput } from "./TextInput";
-import { StyleNumberField } from "./StyleNumberField";
-import { SelectableField } from "./SelectableField";
+import { TCromwellBlock, TCromwellBlockData } from '@cromwell/core';
+import { useForceUpdate } from '@cromwell/core-frontend';
+import React from 'react';
+
+import { ImageInput } from '../../../../components/inputs/Image/ImageInput';
+import { usePageBuilder } from '../../hooks/usePageBuilder';
+import { useThemeEditor } from '../../hooks/useThemeEditor';
+import { SelectableField } from './SelectableField';
+import { StyleNumberField } from './StyleNumberField';
+import { TextInput } from './TextInput';
 
 const fitOptions = [
   { value: "contain", title: "contain" },
@@ -25,8 +23,6 @@ export const ImageBlockEditor = ({
   block?: TCromwellBlock;
 }) => {
   const data = block?.getData();
-  const blockValue = data.html?.innerHTML as string;
-
   const rerender = useForceUpdate();
   const { createBlockProps } = usePageBuilder();
   const { forceUpdate } = useThemeEditor();
@@ -52,21 +48,21 @@ export const ImageBlockEditor = ({
 
   const handleNumberInput =
     (name: keyof TCromwellBlockData["image"]) =>
-    (value: any) => {
-      let val = parseInt(value);
-      if (isNaN(val)) val = undefined;
-      handleChange(name, val);
-    };
+      (value: any) => {
+        let val = parseInt(value);
+        if (isNaN(val)) val = undefined;
+        handleChange(name, val);
+      };
 
   const handleTextInput =
     (
       name: keyof TCromwellBlockData["image"],
     ) =>
-    (value: any) => {
-      let val = value;
-      if (val === "" || !val) val = undefined;
-      handleChange(name, val);
-    };
+      (value: any) => {
+        let val = value;
+        if (val === "" || !val) val = undefined;
+        handleChange(name, val);
+      };
 
   const objectFit =
     fitOptions.find(
@@ -80,7 +76,7 @@ export const ImageBlockEditor = ({
       </p>
       <label className="font-bold mt-3 text-xs block">
         image
-        <ImagePicker
+        <ImageInput
           value={imageData?.src}
           placeholder={"Pick an image"}
           onChange={(val) => handleChange("src", val)}

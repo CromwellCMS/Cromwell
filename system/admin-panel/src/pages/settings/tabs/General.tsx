@@ -2,7 +2,7 @@ import { EDBEntity } from '@cromwell/core';
 import { FormControl, Grid, SelectChangeEvent, TextField } from '@mui/material';
 import React from 'react';
 
-import { ImagePicker } from '../../../components/imagePicker/ImagePicker';
+import { ImageInput } from '../../../components/inputs/Image/ImageInput';
 import { Select } from '../../../components/select/Select';
 import { languages } from '../../../constants/languages';
 import { timezones } from '../../../constants/timezones';
@@ -54,7 +54,7 @@ export default function General(props: any) {
             </Grid>
             <Grid item xs={12} sm={6}></Grid>
             <Grid item xs={12} sm={6}>
-                <ImagePicker
+                <ImageInput
                     label="Logo"
                     onChange={(val) => changeSettings('logo', val)}
                     value={settings?.logo}
@@ -66,7 +66,7 @@ export default function General(props: any) {
             <Grid item xs={12} sm={6}
                 style={{ display: 'flex', alignItems: 'flex-end' }}
             >
-                <ImagePicker
+                <ImageInput
                     label="Favicon"
                     onChange={(val) => changeSettings('favicon', val)}
                     value={settings?.favicon}

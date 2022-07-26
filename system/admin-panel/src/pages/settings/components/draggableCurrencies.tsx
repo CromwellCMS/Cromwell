@@ -22,7 +22,7 @@ import {
   UseFieldArrayRemove,
   useFormContext,
 } from "react-hook-form";
-import { TextInputField } from "../../../components/forms/inputs/textInput";
+import { TextInputField } from "../../../components/inputs/TextInput";
 import { TAdminCmsSettingsType } from "../../../hooks/useAdminSettings";
 import { GrabIcon } from "../../../components/icons/grabIcon";
 import {

@@ -8,7 +8,7 @@ import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import { Autocomplete, Button, Checkbox, FormControlLabel, IconButton, Popover, TextField, Tooltip } from '@mui/material';
 import React, { useState } from 'react';
 
-import { ImagePicker } from '../../components/imagePicker/ImagePicker';
+import { ImageInput } from '../../components/inputs/Image/ImageInput';
 import { getCustomMetaFor, RenderCustomFields } from '../../helpers/customFields';
 import styles from './PostSettings.module.scss';
 
@@ -105,7 +105,7 @@ const PostSettings = (props: {
                     variant="standard"
                     helperText={pageFullUrl}
                 />
-                <ImagePicker
+                <ImageInput
                     label="Main image"
                     onChange={(val) => setMainImage(val)}
                     value={mainImage}

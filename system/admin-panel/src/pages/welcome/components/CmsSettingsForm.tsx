@@ -2,7 +2,7 @@ import { setStoreItem, TCmsEnabledModules } from '@cromwell/core';
 import { getRestApiClient } from '@cromwell/core-frontend';
 import React, { useState } from 'react';
 
-import { SwitchInput } from '../../../components/forms/inputs/switchInput';
+import { SwitchInput } from '../../../components/inputs/SwitchInput';
 import { LoadingStatus } from '../../../components/loadBox/LoadingStatus';
 
 export function CmsSettingsForm(props: {

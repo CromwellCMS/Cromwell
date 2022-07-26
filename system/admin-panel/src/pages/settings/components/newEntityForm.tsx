@@ -2,10 +2,10 @@ import { Dialog, Transition } from "@headlessui/react"
 import React, { Fragment, useState } from "react"
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { ActionButton } from "../../../components/actionButton"
-import { TextInputField } from "../../../components/forms/inputs/textInput";
+import { TextInputField } from "../../../components/inputs/TextInput";
 import { slugify } from "../../../helpers/slugify";
 import { TAdminCmsSettingsType, useAdminSettings } from "../../../hooks/useAdminSettings";
-import { ImagePicker } from "../../../components/imagePicker/ImagePicker";
+import { ImageInput } from "../../../components/inputs/Image/ImageInput";
 import { TAdminCustomEntity } from "@cromwell/core";
 import { baseEntityColumns } from '../../../helpers/customEntities';
 
@@ -127,7 +127,7 @@ export const NewEntityForm = ({
                     name="icon"
                     control={control}
                     render={({ field }) => (
-                      <ImagePicker
+                      <ImageInput
                         key={field.name}
                         onChange={(value) =>
                           field.onChange(value ?? "")

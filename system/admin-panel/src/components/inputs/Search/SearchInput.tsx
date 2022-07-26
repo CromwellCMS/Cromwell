@@ -1,32 +1,15 @@
 import { getBlockInstance, getRandStr, TPagedList, TPagedParams } from '@cromwell/core';
 import { CList, TCList } from '@cromwell/core-frontend';
-import {
-  Autocomplete as MuiAutocomplete,
-  Checkbox,
-  ClickAwayListener,
-  Fade,
-  Popper,
-  Skeleton,
-  TextField as MuiTextField,
-} from '@mui/material';
-import { withStyles } from '@mui/styles';
+import { Autocomplete, ClickAwayListener, Fade, Popper, Skeleton } from '@mui/material';
 import clsx from 'clsx';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { debounce } from 'throttle-debounce';
 
-import { useForceUpdate } from '../../helpers/forceUpdate';
-import styles from './Autocomplete.module.scss';
+import { TextInputField } from '../TextInput';
+import { ListItem, ListItemProps } from './ListItem';
+import styles from './SearchInput.module.scss';
 
-const TextField = withStyles({
-  root: {
-    paddingTop: '0',
-    paddingBottom: '0',
-    fontWeight: 300,
-    width: "100%"
-  },
-})(MuiTextField);
-
-class Autocomplete<TItemData extends { id: number | string }> extends React.Component<{
+export class SearchInput<TItemData extends { id: number | string }> extends React.Component<{
   loader: (search: string, params?: TPagedParams<TItemData>) => Promise<(TPagedList<TItemData> | TItemData[]) | undefined>;
   itemComponent?: (props: {
     data: TItemData;
@@ -222,8 +205,8 @@ class Autocomplete<TItemData extends { id: number | string }> extends React.Comp
 
     return (
       <>
-        <MuiAutocomplete
-          className={this.props.className}
+        <Autocomplete
+          className={clsx(this.props.className, styles.main)}
           multiple={multiple}
           options={pickedItems ?? []}
           getOptionLabel={(option) => option as any}
@@ -242,20 +225,23 @@ class Autocomplete<TItemData extends { id: number | string }> extends React.Comp
             }
           }}
           PopperComponent={() => <></>}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              style={this.props.style}
-              value={this.state.searchText ?? ''}
-              onChange={(event) => this.handleSearchInput(event.currentTarget.value)}
-              onFocus={() => this.handleSearchInput(this.state.searchText)}
-              onBlur={() => !multiple && this.handleSearchClose()}
-              label={this.props.label ?? "Search..."}
-              fullWidth={this.props.fullWidth}
-              ref={this.searchAnchorRef}
-              size="small"
-              variant={this.props.variant ?? 'standard'}
-            />
+          renderInput={({ size, InputProps, inputProps, ...rest }) => (
+            <div ref={this.searchAnchorRef}>
+              <TextInputField
+                startAdornment={InputProps.startAdornment}
+                endAdornment={InputProps.endAdornment}
+                inputFieldClassName={InputProps.className}
+                inputElementClassName={inputProps.className}
+                {...inputProps}
+                {...rest}
+                style={this.props.style}
+                value={this.state.searchText ?? ''}
+                onChange={(event) => this.handleSearchInput(event.currentTarget.value)}
+                onFocus={() => this.handleSearchInput(this.state.searchText)}
+                onBlur={() => !multiple && this.handleSearchClose()}
+                label={this.props.label ?? "Search..."}
+              />
+            </div>
           )}
         />
         <Popper open={searchOpen} anchorEl={this.searchAnchorRef.current}
@@ -264,6 +250,7 @@ class Autocomplete<TItemData extends { id: number | string }> extends React.Comp
           {({ TransitionProps }) => (
             <Fade {...TransitionProps} timeout={350}>
               <div className={styles.searchContent} style={{
+                top: '5px', position: 'relative',
                 width: (this.searchAnchorRef.current?.clientWidth || 470) + 'px',
               }}>
                 <ClickAwayListener onClickAway={this.handleSearchClose}>
@@ -297,57 +284,4 @@ class Autocomplete<TItemData extends { id: number | string }> extends React.Comp
   }
 }
 
-export default Autocomplete;
-
-type ListItemProps<TItemData extends { id: number | string }> = {
-  handleItemClick: (data: TItemData) => any;
-  getOptionLabel: (data: TItemData) => string;
-  getOptionValue?: (data: TItemData) => string;
-  pickedItems?: string[];
-  multiple?: boolean;
-  ItemComponent?: (props: {
-    data: TItemData;
-  }) => JSX.Element;
-  addMultiSelectListener: (id: string, listener: (pickedItems: string[]) => any) => any;
-  removeMultiSelectListener: (id: string) => any;
-}
-
-type TListItem = <TItemData extends { id: number | string }>(props: {
-  data?: TItemData;
-  listItemProps: ListItemProps<TItemData>;
-}) => JSX.Element;
-
-const ListItem: TListItem = (props) => {
-  const { pickedItems, getOptionValue, getOptionLabel, handleItemClick, multiple,
-    ItemComponent, addMultiSelectListener, removeMultiSelectListener } = props.listItemProps;
-  const pickedText = getOptionValue?.(props.data) ?? getOptionLabel(props.data);
-  const picked = pickedItems?.includes(pickedText);
-  const update = useForceUpdate();
-
-  useEffect(() => {
-    if (props.data?.id) {
-      addMultiSelectListener(props.data.id + '', (picked) => {
-        props.listItemProps.pickedItems = picked;
-        update();
-      });
-    }
-    return () => {
-      if (props.data?.id) {
-        removeMultiSelectListener(props.data.id + '');
-      }
-    }
-  }, [])
-
-  return (
-    <div onClick={() => handleItemClick(props.data)} className={styles.itemWrapper}>
-      {multiple && (
-        <Checkbox checked={picked} />
-      )}
-      {ItemComponent ? (
-        <ItemComponent data={props.data} />
-      ) : (
-        <p className={clsx(styles.itemText)}>{getOptionLabel(props.data)}</p>
-      )}
-    </div>
-  )
-}
+export default SearchInput;

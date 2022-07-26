@@ -7,7 +7,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
 import { toast } from '../../components/toast/toast';
-import { Autocomplete } from '../../components/forms/inputs/Autocomplete';
+import { Autocomplete } from '../../components/inputs/AutocompleteInput';
 import { orderStatuses } from '../../constants/order';
 import { couponPageInfo, productPageInfo } from '../../constants/PageInfos';
 import { parseAddress } from '../../helpers/addressParser';

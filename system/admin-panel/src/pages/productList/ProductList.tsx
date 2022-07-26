@@ -14,7 +14,7 @@ import { IFrontendFilter } from '../../../../../plugins/product-filter/src/types
 import { TBreadcrumbs } from '../../components/breadcrumbs';
 import EntityTable from '../../components/entity/entityTable/EntityTable';
 import { IEntityListPage, TEntityPageProps } from '../../components/entity/types';
-import { SwitchInput } from '../../components/forms/inputs/switchInput';
+import { SwitchInput } from '../../components/inputs/SwitchInput';
 import { InfiniteLoader } from '../../components/virtualList/infiniteLoader';
 import { productListInfo, productPageInfo } from '../../constants/PageInfos';
 import { baseEntityColumns } from '../../helpers/customEntities';

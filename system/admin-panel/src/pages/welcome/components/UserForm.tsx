@@ -4,7 +4,7 @@ import { KeyIcon, MailIcon, UserIcon } from '@heroicons/react/solid';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-import { ImagePicker } from '../../../components/imagePicker/ImagePicker';
+import { ImageInput } from '../../../components/inputs/Image/ImageInput';
 
 export function UserForm(props: {
   onSuccess: (user: TUser) => void;
@@ -102,7 +102,7 @@ export function UserForm(props: {
 
       {/* <p cl  */}
       <div className="flex flex-col mt-2 w-full">
-        <ImagePicker
+        <ImageInput
           toolTip="Pick avatar"
           onChange={setAvatarInput}
           value={avatarInput}

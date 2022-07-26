@@ -1,9 +1,9 @@
 import { EDBEntity, TImageSettings } from "@cromwell/core";
 import React, { useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
-import { TextInputField } from "../../../components/forms/inputs/textInput";
-import { ImagePicker } from "../../../components/imagePicker/ImagePicker";
-import { GalleryPicker } from "../../../components/galleryPicker/GalleryPicker";
+import { TextInputField } from "../../../components/inputs/TextInput";
+import { ImageInput } from "../../../components/inputs/Image/ImageInput";
+import { GalleryPicker } from "../../../components/inputs/GalleryInput/GalleryInput";
 import { useAdminSettings } from "../../../hooks/useAdminSettings";
 import { CustomTextEditorInputField } from "./customTextEditorInputField";
 import { RegisteredSelectField } from "./registeredSelectField";
@@ -51,7 +51,7 @@ export const CustomFieldSettings = (props: {
                 name={`customMeta.${field.key}`}
                 render={({ field: { value, onChange } }) => {
                   return (
-                    <ImagePicker
+                    <ImageInput
                       key={field.id}
                       id={field.id}
                       label={field.label}

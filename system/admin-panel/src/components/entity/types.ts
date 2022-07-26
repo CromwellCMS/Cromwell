@@ -7,7 +7,9 @@ import {
     TDefaultPageName,
     TDeleteManyInput,
     TPagedList,
+    TCustomFieldSimpleTextType,
     TPagedParams,
+    TCustomFieldType,
 } from '@cromwell/core';
 
 export interface IEntityListPage<TFilterType extends TBaseEntityFilter> {
@@ -129,3 +131,33 @@ export type TEntityPageProps<TEntityType extends TBasePageEntity, TFilterType ex
      */
     isFilterActive?: () => boolean;
 }
+
+
+export type TEditField<TEntityType> = {
+    key: string;
+    type: TCustomFieldType | 'custom';
+    simpleTextType?: TCustomFieldSimpleTextType;
+    label?: string;
+    tooltip?: string;
+    options?: ({
+      value: string | number | undefined;
+      label: string;
+    } | string | number | undefined)[];
+    width?: {
+      xs?: number;
+      sm?: number;
+    };
+    component?: React.ComponentType<{
+      value: any;
+      onChange: (value: any) => void;
+      entity: TBasePageEntity;
+      canValidate?: boolean;
+      error?: boolean;
+    }>;
+    customGraphQlFragment?: string;
+    saveValue?: (value: any) => any;
+    required?: boolean;
+    onlyOnCreate?: boolean;
+    getInitialValue?: (value: any, entityData: TEntityType) => any;
+  }
+  

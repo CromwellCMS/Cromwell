@@ -13,6 +13,12 @@ export function CheckboxInput(props: CheckboxInputProps) {
 
   const input = (
     <Checkbox
+      sx={{
+        ':hover': {
+          'bgcolor': 'rgba(0, 0, 0, 0.1)',
+        }
+      }}
+      disableRipple
       icon={<CheckBoxOutlineBlankIcon style={{ width: '0.8em', height: '0.8em' }} />}
       checkedIcon={<CheckBoxIcon style={{ width: '0.8em', height: '0.8em' }} />}
       indeterminateIcon={<IndeterminateCheckBoxIcon style={{ width: '0.8em', height: '0.8em' }} />}

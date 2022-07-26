@@ -2,13 +2,13 @@ import { Dialog, Transition } from "@headlessui/react"
 import React, { Fragment, useState } from "react"
 import { Controller, useForm } from "react-hook-form";
 import { ActionButton } from "../../../components/actionButton"
-import { TextInputField } from "../../../components/forms/inputs/textInput";
+import { TextInputField } from "../../../components/inputs/TextInput";
 import { slugify } from "../../../helpers/slugify";
 import { useAdminSettings } from "../../../hooks/useAdminSettings";
-import { ImagePicker } from "../../../components/imagePicker/ImagePicker";
+import { ImageInput } from "../../../components/inputs/Image/ImageInput";
 import { TAdminCustomEntity, TRoleInput } from "@cromwell/core";
 import { baseEntityColumns } from '../../../helpers/customEntities';
-import { SwitchInput } from "../../../components/forms/inputs/switchInput";
+import { SwitchInput } from "../../../components/inputs/SwitchInput";
 
 type FormType = TRoleInput;
 

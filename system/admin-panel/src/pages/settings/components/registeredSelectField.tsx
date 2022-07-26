@@ -4,9 +4,9 @@ import {
   useFormContext,
 } from "react-hook-form";
 import {
-  SelectInputField,
+  SelectInput,
   SelectInputProps,
-} from "../../../components/forms/inputs/selectInput";
+} from "../../../components/inputs/SelectInput";
 
 type PropTypes<T> = SelectInputProps<T> & {
   label?: string;
@@ -16,7 +16,7 @@ type PropTypes<T> = SelectInputProps<T> & {
 
 export const RegisteredSelectField = <T extends unknown>({
   options,
-  getLabel,
+  getDisplayValue,
   getValue,
   inferValue = (v) => v,
   label,
@@ -35,14 +35,14 @@ export const RegisteredSelectField = <T extends unknown>({
         control={control}
         render={({ field }) => {
           return (
-            <SelectInputField<T>
+            <SelectInput<T>
               disabled={disabled}
               value={inferValue(field.value)}
               onChange={(v) => {
                 field.onChange(v);
               }}
               options={options}
-              getLabel={getLabel}
+              getDisplayValue={getDisplayValue}
               getValue={getValue}
               className={className}
             />

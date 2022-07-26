@@ -4,8 +4,8 @@ import { Controller, FormProvider, useForm } from "react-hook-form";
 import { Redirect, useLocation, useParams, useHistory } from "react-router-dom";
 import { ActionButton } from "../../../../components/actionButton";
 import { TBreadcrumbs } from "../../../../components/breadcrumbs";
-import { TextInputField } from "../../../../components/forms/inputs/textInput";
-import { ImagePicker } from "../../../../exports";
+import { TextInputField } from "../../../../components/inputs/TextInput";
+import { ImageInput } from "../../../../components/inputs/Image/ImageInput";
 import { slugify } from "../../../../helpers/slugify";
 import { TAdminCmsSettingsType, useAdminSettings } from "../../../../hooks/useAdminSettings";
 import { DraggableEntityFields } from "../../components/draggableEntityFields";
@@ -191,7 +191,7 @@ const CustomEntityForm = ({
                   name="icon"
                   control={control}
                   render={({ field }) => (
-                    <ImagePicker
+                    <ImageInput
                       key={field.name}
                       onChange={(value) =>
                         field.onChange(value ?? "")

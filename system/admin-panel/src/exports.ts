@@ -1,8 +1,8 @@
 export * from './components/fileManager/helpers';
 export { ColorPicker } from './components/colorPicker/ColorPicker';
 export { DraggableList } from './components/draggableList/DraggableList';
-export { GalleryPicker } from './components/galleryPicker/GalleryPicker';
-export { ImagePicker } from './components/imagePicker/ImagePicker';
+export { GalleryPicker } from './components/inputs/GalleryInput/GalleryInput';
+export { ImageInput } from './components/inputs/Image/ImageInput';
 export { default as LoadBox } from './components/loadBox/LoadBox';
 export { LoadingStatus } from './components/loadBox/LoadingStatus';
 export { default as EntityTable } from './components/entity/entityTable/EntityTable';
@@ -12,7 +12,7 @@ export { default as ConfirmationModal, ConfirmPrompt, askConfirmation } from './
 export { default as Pagination } from './components/pagination/Pagination';
 export { default as PluginSettingsLayout } from './components/pluginSettingsLayout/PluginSettingsLayout';
 export { default as TextFieldWithTooltip } from './components/textFieldWithTooltip/TextFieldWithTooltip';
-export { Select } from './components/select/Select';
+export { SelectInput } from './components/inputs/SelectInput';
 export * from './components/toast/toast';
 export { default as TransferList } from './components/transferList/TransferList';
 export * from './components/skeleton/SkeletonPreloader';

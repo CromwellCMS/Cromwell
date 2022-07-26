@@ -10,7 +10,7 @@ import { Link } from 'react-router-dom';
 import { toLocaleDateString, toLocaleDateTimeString, toLocaleTimeString } from '../../../../helpers/time';
 import { TAppState } from '../../../../redux/store';
 import commonStyles from '../../../../styles/common.module.scss';
-import { CheckboxInput } from '../../../forms/inputs/checkboxInput';
+import { CheckboxInput } from '../../../inputs/CheckboxInput';
 import { TBaseEntityFilter } from '../../types';
 import { TListItemProps } from '../EntityTable';
 import styles from './EntityTableItem.module.scss';

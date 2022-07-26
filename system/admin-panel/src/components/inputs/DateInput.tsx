@@ -7,7 +7,7 @@ import TimePicker from '@mui/lab/TimePicker';
 import { Box } from '@mui/material';
 import React, { useState } from 'react';
 
-import { TextInputField } from './textInput';
+import { TextInputField } from './TextInput';
 
 export type DatepickerProps = {
   value?: Date | DateRange<Date> | null;

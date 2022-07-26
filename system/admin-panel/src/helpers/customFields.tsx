@@ -7,18 +7,18 @@ import {
     TImageSettings,
 } from '@cromwell/core';
 import { Visibility as VisibilityIcon, VisibilityOff as VisibilityOffIcon } from '@mui/icons-material';
-import { CheckboxProps, IconButton, InputAdornment, SelectChangeEvent, SelectProps } from '@mui/material';
+import { CheckboxProps, IconButton, InputAdornment } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import { debounce } from 'throttle-debounce';
 
 import { ColorPicker, ColorPickerProps } from '../components/colorPicker/ColorPicker';
-import { Datepicker, DatepickerProps } from '../components/forms/inputs/Datepicker';
 import entityEditStyles from '../components/entity/entityEdit/EntityEdit.module.scss';
-import { CheckboxInput } from '../components/forms/inputs/checkboxInput';
-import { TextInputField, TextInputProps } from '../components/forms/inputs/textInput';
-import { GalleryPicker, GalleryPickerProps } from '../components/galleryPicker/GalleryPicker';
-import { ImagePicker, ImagePickerProps } from '../components/imagePicker/ImagePicker';
-import { Select } from '../components/select/Select';
+import { CheckboxInput } from '../components/inputs/CheckboxInput';
+import { Datepicker, DatepickerProps } from '../components/inputs/DateInput';
+import { SelectInput, SelectInputProps } from '../components/inputs/SelectInput';
+import { TextInputField, TextInputProps } from '../components/inputs/TextInput';
+import { GalleryPicker, GalleryPickerProps } from '../components/inputs/GalleryInput/GalleryInput';
+import { ImageInput, ImageInputProps } from '../components/inputs/Image/ImageInput';
 import { destroyEditor, getEditorData, getEditorHtml, initTextEditor } from './editor/editor';
 import { useForceUpdate } from './forceUpdate';
 import { NumberFormatCustom } from './NumberFormatCustom';
@@ -174,7 +174,10 @@ export const getCustomField = (settings: {
             return <Component
                 {...props}
                 value={value}
-                onChange={value => setValue(value)}
+                onChange={value => {
+                    fieldsCache[id].value = value;
+                    setValue(value);
+                }}
             />
         },
         saveData: saveData ?? (() => (!fieldsCache[id].value) ? null : fieldsCache[id].value),
@@ -205,12 +208,15 @@ export const getSimpleTextField = (settings: {
                     if (simpleTextType === 'integer' || simpleTextType === 'float') {
                         const val = simpleTextType === 'integer' ? parseInt(e.target.value) :
                             parseFloat(e.target.value);
+
                         if (!isNaN(val)) {
+                            fieldsCache[id].value = val;
                             setValue(val as any);
                             props.onChange?.(val);
                         }
                         return;
                     }
+                    fieldsCache[id].value = e.target.value;
                     setValue(e.target.value);
                     props.onChange?.(e.target.value);
                 }}
@@ -398,7 +404,7 @@ export const registerTextEditorCustomField = (settings: {
 export const getSelectField = (settings: {
     id: string;
     label?: string;
-    props?: SelectProps<string>;
+    props?: SelectInputProps;
     options?: ({
         value: string | number | undefined;
         label: string;
@@ -413,16 +419,15 @@ export const getSelectField = (settings: {
             fieldsCache[id].value = value;
 
             return (
-                <Select
+                <SelectInput
                     value={value}
-                    onChange={(event: SelectChangeEvent<string>) => {
-                        setValue(event.target.value);
-                        props.onChange?.(event.target.value);
+                    onChange={(value) => {
+                        fieldsCache[id].value = value;
+                        setValue(value);
+                        props.onChange?.(value);
                     }}
-                    size="small"
-                    variant="standard"
-                    fullWidth
                     options={props.options ?? settings.options}
+                    label={settings.label}
                     error={props.error && props.canValidate}
                     {...(settings.props ?? {})}
                 />
@@ -441,7 +446,7 @@ export const registerSelectCustomField = (settings: {
         value: string | number | undefined;
         label: string;
     } | string | number | undefined)[];
-    props?: SelectProps<string>;
+    props?: SelectInputProps;
 }) => {
     const id = getRandStr(12);
     const field = getSelectField({ id, ...settings });
@@ -459,7 +464,7 @@ export const registerSelectCustomField = (settings: {
 export const getImageField = (settings: {
     id: string;
     label?: string;
-    props?: ImagePickerProps;
+    props?: ImageInputProps;
 }) => {
     const { id } = settings;
     if (fieldsCache[id]) return fieldsCache[id];
@@ -470,9 +475,10 @@ export const getImageField = (settings: {
             fieldsCache[id].value = value;
 
             return (
-                <ImagePicker
+                <ImageInput
                     value={value}
                     onChange={(value) => {
+                        fieldsCache[id].value = value;
                         setValue(value);
                         props.onChange?.(value);
                     }}
@@ -492,7 +498,7 @@ export const registerImageCustomField = (settings: {
     entityType: EDBEntity | string;
     key: string;
     label?: string;
-    props?: ImagePickerProps;
+    props?: ImageInputProps;
 }) => {
     const id = getRandStr(12);
     const field = getImageField({ id, ...settings });
@@ -525,6 +531,7 @@ export const getGalleryField = (settings: {
                     images={value?.split(',').map(src => ({ src })) ?? []}
                     onChange={(value: TImageSettings[]) => {
                         const valStr = value.map(val => val.src).join(',');
+                        fieldsCache[id].value = valStr;
                         setValue(valStr);
                         props.onChange?.(valStr);
                     }}
@@ -575,6 +582,7 @@ export const getColorField = (settings: {
                     value={value}
                     label={label}
                     onChange={(value) => {
+                        fieldsCache[id].value = value;
                         setValue(value);
                         props.onChange?.(value);
                     }}
@@ -623,6 +631,7 @@ export const getCheckboxField = (settings: {
                 <CheckboxInput
                     checked={!!value}
                     onChange={(event, value) => {
+                        fieldsCache[id].value = value;
                         setValue(value as any);
                         props.onChange?.(value);
                     }}
@@ -674,6 +683,7 @@ export const getDatepickerField = (settings: {
                 <div>
                     <Datepicker
                         onChange={(date) => {
+                            fieldsCache[id].value = date;
                             setValue(date);
                             props.onChange?.(date);
                         }}

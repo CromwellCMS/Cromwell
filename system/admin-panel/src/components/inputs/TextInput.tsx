@@ -1,5 +1,7 @@
-import clsx from "clsx";
-import React, { ForwardedRef, useState } from "react";
+import clsx from 'clsx';
+import React, { ForwardedRef, useState } from 'react';
+
+import { NumberFormatCustom } from '../../helpers/NumberFormatCustom';
 
 export interface InputBaseComponentProps
   extends React.HTMLAttributes<HTMLInputElement> {
@@ -52,7 +54,7 @@ export const TextInputField = React.forwardRef(
     } = props;
     const [_value, setValue] = useState(defaultValue ?? "");
 
-    const InputComponent: React.ElementType<any> = inputComponent || 'input';
+    const InputComponent: React.ElementType<any> = inputComponent || (type === 'currency' && NumberFormatCustom) || 'input';
 
     const sharedClasses = `border-2 rounded-lg outline outline-0 focus:outline-[2px] outline-indigo-500 `
       + `text-black active:text-indigo-600 w-full ${inputElementClassName} `

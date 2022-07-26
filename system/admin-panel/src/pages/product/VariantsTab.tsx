@@ -4,21 +4,17 @@ import { Box, Button, Collapse, IconButton } from '@mui/material';
 import React, { useState } from 'react';
 import clone from 'rfdc';
 
-import { Select } from '../../components/select/Select';
-import { toast } from '../../components/toast/toast';
+import { SelectInput } from '../../components/inputs/SelectInput';
 import MainInfoCard from './MainInfoCard';
 import styles from './Product.module.scss';
 
-export default function VariantsTab({ product, setProdData, forceUpdate }: {
+export function VariantsTab({ product, setProdData, forceUpdate, attributes }: {
   product: TProduct;
   attributes: TAttribute[];
   setProdData: (data: TProduct) => void;
   forceUpdate: () => void;
 }) {
   const [expandedVariants, setExpandedVariants] = useState<Record<string, boolean>>({});
-
-  const usedAttributes = (product.attributes ?? []).filter(attr => attr.values?.length && attr.key)
-    .map(attr => ({ ...attr, values: attr.values.filter(Boolean) }));
 
   if (product.variants?.length) {
     for (const variant of product.variants) {
@@ -27,10 +23,6 @@ export default function VariantsTab({ product, setProdData, forceUpdate }: {
   }
 
   const handleAddProductVariant = () => {
-    if (!usedAttributes.length) {
-      toast.warn('No attributes selected');
-      return;
-    }
     setProdData({
       ...product,
       variants: [...(product?.variants ?? []), {
@@ -56,24 +48,24 @@ export default function VariantsTab({ product, setProdData, forceUpdate }: {
         }
       }
       const scrollParent: HTMLElement | undefined = getScrollParent(document.getElementById('product-variants-tab'));
-      if (scrollParent) scrollParent.scrollTop = scrollParent.scrollTop - 15;
+      if (scrollParent) scrollParent.scrollTop = scrollParent.scrollTop - 60;
     }, 10);
   }
 
   return (
-    <Box id="product-variants-tab">
-      <Box>
+    <Box id="product-variants-tab" sx={{ width: '100%' }}>
+      <Box sx={{ width: '100%' }}>
         {product?.variants?.map((variant) => (
-          <Box key={variant.id} id={`variant-${variant.id}`} className={styles.paper} sx={{ my: 2 }}>
-            <Box onClick={() => expandVariant(variant.id)}
+          <Box key={variant.id} id={`variant-${variant.id}`} className={styles.paper} sx={{ mb: 4, width: '100%' }}>
+            <Box
               sx={{
                 display: 'flex', justifyContent: 'space-between',
-                alignItems: 'center', cursor: 'pointer', p: 1,
+                alignItems: 'center', p: 1,
                 borderBottom: expandedVariants[variant.id] && '1px solid #aaa'
               }}>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                {usedAttributes.map(attr => (
-                  <Select
+              <Box sx={{ display: 'flex', alignItems: 'center', p: 2 }} flexWrap="wrap" justifyContent="space-between">
+                {attributes?.map(attr => (
+                  <SelectInput
                     label={attr.key}
                     key={attr.key}
                     options={[...attr.values.map(value => ({
@@ -84,16 +76,14 @@ export default function VariantsTab({ product, setProdData, forceUpdate }: {
                       value: 'any'
                     }]}
                     value={variant.attributes?.[attr.key] ?? 'any'}
-                    size="small"
-                    sx={{ mr: 2 }}
-                    onClick={event => event.stopPropagation()}
-                    onChange={(event) => {
+                    style={{ marginRight: '15px', minWidth: '100px' }}
+                    onChange={(value) => {
                       const newProduct = clone({ proto: true })(product);
                       newProduct.variants = newProduct.variants.map(v => {
                         if (v.id === variant.id) {
                           v.attributes = {
                             ...(v.attributes ?? {}),
-                            [attr.key]: event.target.value,
+                            [attr.key]: value,
                           }
                         }
                         return v;
@@ -116,6 +106,7 @@ export default function VariantsTab({ product, setProdData, forceUpdate }: {
                   <DeleteForever />
                 </IconButton>
                 <IconButton
+                  onClick={() => expandVariant(variant.id)}
                   style={{ transform: expandedVariants[variant.id] ? 'rotate(180deg)' : '' }}
                   aria-label="show more"
                 >

@@ -4,7 +4,7 @@ import { SmartButton as SmartButtonIcon } from '@mui/icons-material';
 import { IconButton, InputAdornment, TextField, Tooltip } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 
-import Autocomplete from '../../components/autocomplete/Autocomplete';
+import { SearchInput } from '../../components/inputs/Search/SearchInput';
 import EntityEdit from '../../components/entity/entityEdit/EntityEdit';
 import LoadBox from '../../components/loadBox/LoadBox';
 import { couponListPageInfo, couponPageInfo } from '../../constants/PageInfos';
@@ -66,7 +66,7 @@ export default function CouponPage() {
         type: 'Select',
         label: 'Discount type',
         width: { sm: 6 },
-        getInitialValue: (value) => value ?? 'fixed',
+        // getInitialValue: (value) => value ?? 'fixed',
         options: [{
           value: 'fixed',
           label: 'Fixed'
@@ -151,7 +151,7 @@ export default function CouponPage() {
           }, []);
 
           return pickedCategories ? (
-            <Autocomplete<TProductCategory>
+            <SearchInput<TProductCategory>
               multiple
               style={{ margin: '10px 0' }}
               loader={handleSearchCategory}
@@ -203,7 +203,7 @@ export default function CouponPage() {
           }, []);
 
           return pickedProducts ? (
-            <Autocomplete<TProduct>
+            <SearchInput<TProduct>
               multiple
               style={{ margin: '10px 0' }}
               loader={handleSearchProduct}

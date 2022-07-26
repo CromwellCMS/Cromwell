@@ -6,15 +6,17 @@ export const SwitchInput = ({
   onChange = () => { },
   label = "",
   xs = false,
+  className,
 }: {
   value?: boolean;
   onChange?: (v: boolean) => any;
   label?: string | { active: string, inactive: string };
   xs?: boolean;
+  className?: string;
 }) => {
   return (
     <Switch.Group>
-      <div className="flex items-center">
+      <div className={`flex items-center ${className ?? ''}`}>
         <Switch
           checked={value}
           onChange={onChange}

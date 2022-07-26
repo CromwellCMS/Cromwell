@@ -1,13 +1,12 @@
 import { TImageSettings } from '@cromwell/core';
 import React from 'react';
 
-import { ImagePicker, ImagePickerProps } from '../imagePicker/ImagePicker';
-import styles from './GalleryPicker.module.scss';
+import { ImageInput, ImageInputProps } from '../Image/ImageInput';
 
 export const ImageItem = (props: {
     itemProps: {
         onImageChange: (index: number, value: TImageSettings | null) => void;
-        classes: ImagePickerProps['classes'];
+        classes: ImageInputProps['classes'];
         allImages: TImageSettings[];
     };
     data: TImageSettings;
@@ -18,7 +17,7 @@ export const ImageItem = (props: {
         props.itemProps.onImageChange(props.itemProps.allImages.indexOf(props.data),
             src ? Object.assign({}, props.data, { src }) : undefined);
     }
-    return (<ImagePicker
+    return (<ImageInput
         className={"w-[calc(100%-42px)] !h-36"}
         classes={props.itemProps.classes}
         value={props.data.src}

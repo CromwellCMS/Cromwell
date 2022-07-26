@@ -22,7 +22,7 @@ import {
   UseFieldArrayRemove,
   useFormContext,
 } from "react-hook-form";
-import { TextInputField } from "../../../components/forms/inputs/textInput";
+import { TextInputField } from "../../../components/inputs/TextInput";
 import { TAdminCmsSettingsType } from "../../../hooks/useAdminSettings";
 import { GrabIcon } from "../../../components/icons/grabIcon";
 import {
@@ -103,11 +103,10 @@ export function EntityFieldItem(props: {
     <div
       ref={setNodeRef}
       style={style}
-      className={`bg-white border cursor-default ${
-        isDragging
+      className={`bg-white border cursor-default ${isDragging
           ? "shadow-indigo-400 border-indigo-500 select-none"
           : ""
-      } rounded-md shadow-lg w-full p-3`}>
+        } rounded-md shadow-lg w-full p-3`}>
       <div className="flex flex-row gap-1 justify-between">
         <div className="w-full grid gap-4 grid-cols-1 justify-self-stretch lg:grid-cols-2">
           <TextInputField
@@ -130,7 +129,7 @@ export function EntityFieldItem(props: {
           />
           <RegisteredSelectField
             options={selectOptions}
-            getLabel={getLabel}
+            getDisplayValue={getLabel}
             getValue={getValue}
             inferValue={inferValue}
             label="Input Type"
@@ -174,7 +173,7 @@ export function EntityFieldItem(props: {
               </>
             )}
           </div>
-          <div/>
+          <div />
           <div
             onClick={() => remove(idx)}
             className="cursor-pointer flex mt-5 text-xs text-gray-500 justify-self-end hover:text-red-500">
@@ -237,9 +236,9 @@ export const DraggableEntityFields = ({
         </button>
       </div>
       <div className="rounded-md flex flex-col bg-gray-300 shadow-inner w-full p-2 gap-2">
-        { (!fields || fields.length === 0) && <div className="text-base text-center w-full text-gray-700 self-center">
+        {(!fields || fields.length === 0) && <div className="text-base text-center w-full text-gray-700 self-center">
           No custom fields yet. Click on + add to add new custom fields.
-        </div> }
+        </div>}
         <DndContext
           sensors={sensors}
           collisionDetection={closestCenter}

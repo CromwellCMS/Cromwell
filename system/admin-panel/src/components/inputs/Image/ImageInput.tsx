@@ -16,11 +16,10 @@ import {
   ZoomOutIcon,
 } from "@heroicons/react/outline";
 
-import { getFileManager } from "../../components/fileManager/helpers";
-import { TextInputField } from "../../components/forms/inputs/textInput";
-import styles from "./ImagePicker.module.scss";
+import { getFileManager } from "../../fileManager/helpers";
+import { TextInputField } from "../TextInput";
 
-export type ImagePickerProps = {
+export type ImageInputProps = {
   toolTip?: string;
   placeholder?: string;
   label?: string;
@@ -31,13 +30,13 @@ export type ImagePickerProps = {
   value?: string | null;
   className?: string;
   backgroundSize?:
-    | "contain"
-    | "cover"
-    | "fill"
-    | "contain"
-    | "cover"
-    | "none"
-    | "scale-down";
+  | "contain"
+  | "cover"
+  | "fill"
+  | "contain"
+  | "cover"
+  | "none"
+  | "scale-down";
   showRemove?: boolean;
   hideSrc?: boolean;
   classes?: {
@@ -49,7 +48,7 @@ export type ImagePickerProps = {
   centerImage?: boolean
 };
 
-export const ImagePicker = ({ centerImage = true, ...props }: ImagePickerProps) => {
+export const ImageInput = ({ centerImage = true, ...props }: ImageInputProps) => {
   const [internalValue, setInternalValue] = useState<
     string | undefined
   >();
@@ -91,9 +90,8 @@ export const ImagePicker = ({ centerImage = true, ...props }: ImagePickerProps) 
 
   const element = (
     <div
-      className={`relative w-full h-64 ${
-        props.className ?? ""
-      }`}
+      className={`relative w-full h-64 ${props.className ?? ""
+        }`}
       style={{ ...(props.style ?? {}) }}>
       {props.label && (
         <label
@@ -106,11 +104,10 @@ export const ImagePicker = ({ centerImage = true, ...props }: ImagePickerProps) 
         className={`rounded-md select-none overflow-hidden relative bg-gray-200 w-full h-[calc(100%-24px)] flex flex-col`}>
         {value && (
           <img
-            className={`${
-              zoom
+            className={`${zoom
                 ? "h-full top-0 w-full"
                 : "h-[calc(100%-44px)] top-2 w-[calc(100%-8px)]"
-            } left-0 absolute rounded-sm`}
+              } left-0 absolute rounded-sm`}
             src={value}
             style={{
               objectFit: objectFit,

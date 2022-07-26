@@ -8,10 +8,10 @@ import {
   FormProvider,
   Controller,
 } from "react-hook-form";
-import { TextInputField } from "../../../components/forms/inputs/textInput";
+import { TextInputField } from "../../../components/inputs/TextInput";
 import { CustomFieldSettings } from "../components/customFields";
 import { EDBEntity } from "@cromwell/core";
-import { ImagePicker } from "../../../components/imagePicker/ImagePicker";
+import { ImageInput } from "../../../components/inputs/Image/ImageInput";
 import { RegisteredSelectField } from "../components/registeredSelectField";
 import { languages } from "../../../constants/languages";
 import { timezones } from "../../../constants/timezones";
@@ -37,7 +37,7 @@ const getTZLabel = (tz?: TZ) => {
   </p>
 }
 
-const getTZValue = (tz?: TZ) =>  tz?.value;
+const getTZValue = (tz?: TZ) => tz?.value;
 
 const getLangValue = (lang?: Lang) => lang?.code;
 
@@ -65,17 +65,17 @@ export const GeneralSettingsPage = () => {
       <form
         className="relative"
         onSubmit={form.handleSubmit(onSubmit)}>
-          <div className="flex flex-row bg-gray-100 bg-opacity-60 w-full top-0 z-10 gap-2 backdrop-filter backdrop-blur-lg justify-between sticky">
-            <div className="w-full max-w-4xl px-1 lg:px-0">
-              <TBreadcrumbs path={titlePath} />
-              <button
-                  type="submit"
-                  disabled={!form.formState.isDirty}
-                  className="rounded-lg font-bold bg-indigo-600 my-2 text-sm text-white py-1 px-4 uppercase self-center float-right hover:bg-indigo-500 disabled:bg-gray-700">
-                  save
-                </button>
-            </div>
+        <div className="flex flex-row bg-gray-100 bg-opacity-60 w-full top-0 z-10 gap-2 backdrop-filter backdrop-blur-lg justify-between sticky">
+          <div className="w-full max-w-4xl px-1 lg:px-0">
+            <TBreadcrumbs path={titlePath} />
+            <button
+              type="submit"
+              disabled={!form.formState.isDirty}
+              className="rounded-lg font-bold bg-indigo-600 my-2 text-sm text-white py-1 px-4 uppercase self-center float-right hover:bg-indigo-500 disabled:bg-gray-700">
+              save
+            </button>
           </div>
+        </div>
 
         <div className="flex flex-col gap-2 relative lg:flex-row lg:gap-6">
           <div className="max-h-min my-1 lg:max-w-[13rem] top-16 self-start lg:order-2 lg:my-4 lg:sticky">
@@ -86,9 +86,9 @@ export const GeneralSettingsPage = () => {
               Configure global settings for the whole
               system.
             </p>
-            <p className={`${form.formState.isDirty ? "text-indigo-500": "text-transparent"}`}>
-                You have unsaved changes
-              </p>
+            <p className={`${form.formState.isDirty ? "text-indigo-500" : "text-transparent"}`}>
+              You have unsaved changes
+            </p>
           </div>
 
           <div className={`bg-white rounded-lg shadow-lg w-full p-4 max-w-4xl ${form.formState.isDirty ? "border border-indigo-600 shadow-indigo-400" : "border border-white"}`}>
@@ -101,7 +101,7 @@ export const GeneralSettingsPage = () => {
               />
               <RegisteredSelectField
                 options={languages}
-                getLabel={getLangLabel}
+                getDisplayValue={getLangLabel}
                 getValue={getLangValue}
                 inferValue={(v: string) => languages.find(l => l.code === v)}
                 name={`language`}
@@ -111,7 +111,7 @@ export const GeneralSettingsPage = () => {
               <div className="col-span-2">
                 <RegisteredSelectField
                   options={timezones}
-                  getLabel={getTZLabel}
+                  getDisplayValue={getTZLabel}
                   getValue={getTZValue}
                   inferValue={(v: string) => timezones.find(l => l.value === parseInt(v))}
                   name={`timezone`}
@@ -124,7 +124,7 @@ export const GeneralSettingsPage = () => {
                   name="logo"
                   control={form.control}
                   render={({ field }) => (
-                    <ImagePicker
+                    <ImageInput
                       key={field.name}
                       onChange={(value) =>
                         field.onChange(value ?? "")
@@ -142,7 +142,7 @@ export const GeneralSettingsPage = () => {
                   name="favicon"
                   control={form.control}
                   render={({ field }) => (
-                    <ImagePicker
+                    <ImageInput
                       key={field.name}
                       onChange={(value) =>
                         field.onChange(value ?? "")

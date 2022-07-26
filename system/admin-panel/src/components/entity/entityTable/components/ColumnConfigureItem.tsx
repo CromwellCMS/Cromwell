@@ -2,7 +2,7 @@ import { TCustomEntityColumn } from '@cromwell/core';
 import React, { useState } from 'react';
 
 import commonStyles from '../../../../styles/common.module.scss';
-import { SwitchInput } from '../../../forms/inputs/switchInput';
+import { SwitchInput } from '../../../inputs/SwitchInput';
 import { TSavedConfiguredColumn } from '../EntityTable';
 import styles from '../EntityTable.module.scss';
 

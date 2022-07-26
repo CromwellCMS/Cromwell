@@ -36,7 +36,13 @@ module.exports = {
         chunkFilename: 'chunks' + (isProduction ? '/[id]_[chunkhash].js' : '/[id].js'),
     },
     resolve: {
-        extensions: ['.ts', '.tsx', '.js', 'jsx']
+        extensions: ['.ts', '.tsx', '.js', 'jsx'],
+        alias: {
+            '@pages': path.resolve(__dirname, 'src/pages'),
+            '@hooks': path.resolve(__dirname, 'src/hooks'),
+            '@helpers': path.resolve(__dirname, 'src/helpers'),
+            '@components': path.resolve(__dirname, 'src/components'),
+        },
     },
     watchOptions: {
         ignored: ['build/**', '.cromwell/**', 'node_modules/**']
@@ -96,8 +102,11 @@ module.exports = {
                         }
                     },
                     {
+                        loader: postCSSLoaderPath
+                    },
+                    {
                         loader: sassLoaderPath, options: { sourceMap: isProduction ? false : true }
-                    }
+                    },
                 ],
             },
         ]

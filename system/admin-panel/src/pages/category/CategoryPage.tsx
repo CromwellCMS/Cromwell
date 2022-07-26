@@ -2,7 +2,7 @@ import { EDBEntity, TPagedParams, TProductCategory } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
 import React, { useEffect, useState } from 'react';
 
-import Autocomplete from '../../components/autocomplete/Autocomplete';
+import Autocomplete from '../../components/inputs/Search/SearchInput';
 import EntityEdit from '../../components/entity/entityEdit/EntityEdit';
 import { getInitialValueOfTextEditorField, setValueOfTextEditorField } from '../../components/entity/entityEdit/helpers';
 import { categoryListPageInfo, categoryPageInfo } from '../../constants/PageInfos';

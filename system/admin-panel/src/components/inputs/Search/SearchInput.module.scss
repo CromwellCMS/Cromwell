@@ -1,4 +1,4 @@
-@import "../../styles/common.module.scss";
+@import "../../../styles/common.module.scss";
 
 .searchContent {
     @include paperElevated;
@@ -33,6 +33,7 @@
 
 .itemWrapper:hover {
     background-color: rgba(0, 0, 0, 0.15);
+    @apply bg-indigo-100;
 }
 
 .list {
