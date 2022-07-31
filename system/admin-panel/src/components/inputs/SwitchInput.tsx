@@ -14,6 +14,7 @@ export const SwitchInput = ({
   xs?: boolean;
   className?: string;
 }) => {
+  const displayLabel = typeof label === "string" ? label : (value ? label.active : label.inactive);
   return (
     <Switch.Group>
       <div className={`flex items-center ${className ?? ''}`}>
@@ -28,9 +29,9 @@ export const SwitchInput = ({
               } inline-block ${xs ? "h-2 w-2" : "w-4 h-4"} transform bg-white rounded-full transition-transform`}
           />
         </Switch>
-        <Switch.Label className={`${xs ? "ml-1" : "ml-4"}`}>{
-          typeof label === "string" ? label : (value ? label.active : label.inactive)
-        }</Switch.Label>
+        {displayLabel && (
+          <Switch.Label className={`${xs ? "ml-1" : "ml-4"}`}>{displayLabel}</Switch.Label>
+        )}
       </div>
     </Switch.Group>
   )

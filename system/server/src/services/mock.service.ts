@@ -57,12 +57,14 @@ export class MockService {
     // attributes
     private attributesMock: TAttributeInput[] = [{
         key: "Size",
+        title: "Size",
         required: true,
         values: [{ value: "35" }, { value: "36" }, { value: "37" }, { value: "38" }, { value: "39" }, { value: "40" }, { value: "41" }, { value: "42" }, { value: "43" }, { value: "44" }, { value: "45" }],
         type: 'radio'
     },
     {
         key: 'Color',
+        title: "Color",
         values: [{ value: "Orange", icon: '/plugins/@cromwell/plugin-product-filter/color_orange.png' },
         { value: "Purple", icon: '/plugins/@cromwell/plugin-product-filter/color_purple.png' },
         { value: "Blue", icon: '/plugins/@cromwell/plugin-product-filter/color_blue.png' }],
@@ -71,6 +73,7 @@ export class MockService {
     },
     {
         key: 'Condition',
+        title: "Condition",
         values: [{ value: "New" }, { value: "Used" }],
         type: 'radio',
         required: false,

@@ -14,6 +14,7 @@ export const CheckList = (props: {
   setChecked: (items: string[]) => any;
   actions?: React.ReactNode;
   fullWidthToggle?: boolean;
+  className?: string;
 }) => {
   const { title, items, checked, setChecked, fullWidthToggle } = props;
 
@@ -41,7 +42,7 @@ export const CheckList = (props: {
   };
 
   return (
-    <div>
+    <div className={props.className}>
       <div
         style={{ padding: '16px', display: 'flex', alignItems: 'center' }}
         className={styles.cardHeader}
@@ -69,7 +70,7 @@ export const CheckList = (props: {
           const labelId = `transfer-list-all-item-${value}-label`;
 
           return (
-            <ListItem key={index}
+            <ListItem key={index} disableRipple
               role="listitem" onClick={() => {
                 if (fullWidthToggle !== false) handleToggle(value)();
               }}

@@ -225,24 +225,34 @@ export class SearchInput<TItemData extends { id: number | string }> extends Reac
             }
           }}
           PopperComponent={() => <></>}
-          renderInput={({ size, InputProps, inputProps, ...rest }) => (
-            <div ref={this.searchAnchorRef}>
-              <TextInputField
-                startAdornment={InputProps.startAdornment}
-                endAdornment={InputProps.endAdornment}
-                inputFieldClassName={InputProps.className}
-                inputElementClassName={inputProps.className}
-                {...inputProps}
-                {...rest}
-                style={this.props.style}
-                value={this.state.searchText ?? ''}
-                onChange={(event) => this.handleSearchInput(event.currentTarget.value)}
-                onFocus={() => this.handleSearchInput(this.state.searchText)}
-                onBlur={() => !multiple && this.handleSearchClose()}
-                label={this.props.label ?? "Search..."}
-              />
-            </div>
-          )}
+          renderInput={({ size, InputProps, inputProps, ...rest }) => {
+            return (
+              <div ref={this.searchAnchorRef}>
+                <div ref={InputProps.ref}>
+                  <TextInputField
+                    startAdornment={InputProps.startAdornment}
+                    endAdornment={InputProps.endAdornment}
+                    inputFieldClassName={InputProps.className}
+                    inputElementClassName={inputProps.className}
+                    {...inputProps}
+                    {...rest}
+                    onKeyDown={(event: any) => {
+                      if (event.key === 'Backspace') {
+                        if (event.target.value.length >= 1)
+                          event.stopPropagation();
+                      }
+                    }}
+                    style={this.props.style}
+                    value={this.state.searchText ?? ''}
+                    onChange={(event) => this.handleSearchInput(event.currentTarget.value)}
+                    onFocus={() => this.handleSearchInput(this.state.searchText)}
+                    onBlur={() => !multiple && this.handleSearchClose()}
+                    label={this.props.label ?? "Search..."}
+                  />
+                </div>
+              </div>
+            )
+          }}
         />
         <Popper open={searchOpen} anchorEl={this.searchAnchorRef.current}
           style={{ zIndex: 9999 }}

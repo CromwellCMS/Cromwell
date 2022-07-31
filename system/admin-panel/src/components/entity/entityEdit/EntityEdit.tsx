@@ -60,6 +60,8 @@ type TEntityEditProps<TEntityType extends TBasePageEntity, TFilterType extends T
 class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseEntityFilter>
   extends React.Component<TEntityEditProps<TEntityType, TFilterType>, EntityEditState<TEntityType>> {
 
+  private prevRoute: string;
+
   componentDidMount() {
     this.init();
   }
@@ -69,6 +71,7 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
       console.error('this.props.match in not defined, you must provide "react-router" props for entity to be displayed');
       return;
     }
+    this.prevRoute = (this.props.history.location.state as any)?.prevRoute;
     this.setState({ isLoading: true });
     const entityId = this.props.match.params?.id;
     let entityData: TEntityType;
@@ -309,6 +312,12 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
     }
   }
 
+  public goBack = () => {
+    if (this.prevRoute) this.props.history.push(this.prevRoute);
+    else if (this.props.entityListRoute) this.props.history.push(this.props.entityListRoute);
+    else this.props.history.goBack();
+  }
+
   render() {
     const { FieldsComponent, entityType, entityCategory, entityLabel, HeaderComponent, classes = {} } = this.props;
     const { entityData, notFound, isLoading, isSaving } = this.state ?? {};
@@ -334,14 +343,13 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
       }
     }
 
-
     return (
       <div className={styles.EntityEdit}>
         <ElevationScroll>
           <AppBar position="sticky" color="transparent" elevation={0}>
             <div className={styles.headerLeft}>
               <IconButton
-                onClick={() => window.history.back()}
+                onClick={this.goBack}
                 className="mr-2"
               >
                 <ChevronLeftIcon className="h-6 w-6 text-gray-600 hover:text-indigo:-400" />
@@ -382,26 +390,31 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
               <Skeleton style={{ marginBottom: '10px' }} key={index} height={"50px"} />
             ))
           )}
-          {!isLoading && (
-            <Grid container spacing={3}>
-              {entityData && !FieldsComponent && this.props?.fields?.map(field => {
-                const fieldCache = this.getCachedField(field);
-                return (
-                  <InputField
-                    key={field.key}
-                    fieldCache={fieldCache}
-                    field={field}
-                    canValidate={this.state?.canValidate}
-                    entityData={entityData}
-                  />
-                )
-              })}
-              {entityData && FieldsComponent && (
-                <FieldsComponent {...this.state} />
-              )}
-              {entityData && this.props.renderFields?.(entityData)}
-              {entityData &&
-                !!getCustomMetaKeysFor(entityType ?? entityCategory).length && (
+          {!isLoading && (<>
+            {entityData && !FieldsComponent && !!this.props?.fields?.length && (
+              <Grid container spacing={3}>
+                {this.props.fields.map(field => {
+                  const fieldCache = this.getCachedField(field);
+                  return (
+                    <InputField
+                      key={field.key}
+                      fieldCache={fieldCache}
+                      field={field}
+                      canValidate={this.state?.canValidate}
+                      entityData={entityData}
+                    />
+                  )
+                })}
+                <Grid item xs={12}></Grid>
+              </Grid>
+            )}
+            {entityData && FieldsComponent && (
+              <FieldsComponent {...this.state} />
+            )}
+            {entityData && this.props.renderFields?.(entityData)}
+            {entityData &&
+              !!getCustomMetaKeysFor(entityType ?? entityCategory).length && (
+                <Grid container spacing={3}>
                   <Grid item xs={12} >
                     <RenderCustomFields
                       entityType={entityType ?? entityCategory}
@@ -409,8 +422,10 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
                       refetchMeta={this.refetchMeta}
                     />
                   </Grid>
-                )}
-              {!this.props.disableMeta && (<>
+                </Grid>
+              )}
+            {!this.props.disableMeta && (
+              <Grid container spacing={3}>
                 <Grid item xs={12}>
                   <TextInputField label="Page URL"
                     value={entityData?.slug ?? ''}
@@ -451,9 +466,9 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
                     tooltip="Press ENTER to add"
                   />
                 </Grid>
-              </>)}
-            </Grid>
-          )}
+              </Grid>
+            )}
+          </>)}
         </div>
       </div >
     )

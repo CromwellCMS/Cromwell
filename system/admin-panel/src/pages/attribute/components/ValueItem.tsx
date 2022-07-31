@@ -54,8 +54,8 @@ export const ValueItem = (props: {
         <IconButton onClick={handleChangeIcon}>
           {value.icon ? (
             <div style={{
-              width: '30px',
-              height: '30px',
+              width: '20px',
+              height: '20px',
               background: `url("${value.icon}") center center no-repeat`,
               backgroundSize: 'contain'
             }}></div>

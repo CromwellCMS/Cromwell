@@ -19,6 +19,9 @@ export function TextButton(props: React.PropsWithChildren<React.ButtonHTMLAttrib
       transition: '0.3s',
       border: '3px solid',
       borderColor: 'primary.main',
+      display: 'flex',
+      alignItems: 'center',
+      opacity: props?.disabled ? 0.3 : undefined,
       '&:hover': {
         backgroundColor: variant === 'outlined' ? 'transparent' : 'primary.light',
         boxShadow: variant === 'outlined' ? '0 2px 3px 0 rgb(79 70 229 / 30%), 0 0 20px 4px rgb(79 70 229 / 15%)' :

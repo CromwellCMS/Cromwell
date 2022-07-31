@@ -1,27 +1,43 @@
-import { TPagedParams, TProduct, TProductCategory, TAttribute } from '@cromwell/core';
+import { TAttribute, TPagedParams, TProduct, TProductCategory } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
 import { Box } from '@mui/material';
-import React, { useEffect, useState } from 'react';
-import { useForceUpdate } from '../../helpers/forceUpdate';
+import queryString from 'query-string';
+import React, { useContext, useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 
-import { TFieldsComponentProps } from '../../components/entity/entityEdit/EntityEdit';
-import { SearchInput } from '../../components/inputs/Search/SearchInput';
-import { useTabs } from './Header';
+import { TFieldsComponentProps } from '../../../components/entity/entityEdit/EntityEdit';
+import { SearchInput } from '../../../components/inputs/Search/SearchInput';
+import { useForceUpdate } from '../../../helpers/forceUpdate';
+import { ProductContext } from '../contexts/Product';
+import { useTabs } from '../hooks/useTabs';
+import styles from '../Product.module.scss';
+import { AttributesTab } from './AttributesTab';
 import MainInfoCard from './MainInfoCard';
-import { store } from './Product';
 import { VariantsTab } from './VariantsTab';
 
 export const PageContent = ({ entityData, canValidate }: TFieldsComponentProps<TProduct>) => {
   const client = getGraphQLClient();
+  const history = useHistory();
   const productRef = React.useRef<TProduct | null>(entityData);
+  const context = useContext(ProductContext);
   const [mainCategory, setMainCategory] = useState<TProductCategory | null>(null);
-  const [activeTabNum] = useTabs();
+  const [activeTabNum, changeTab] = useTabs();
   const [attributes, setAttributes] = useState<TAttribute[]>([]);
+  const [usedVariantAttributes, setUsedVariantAttributes] = useState<string[]>(entityData.variants?.reduce((prev, curr) => {
+    Object.entries(curr.attributes ?? {}).forEach(([key]) => {
+      if (!prev.includes(key)) prev.push(key);
+    });
+    return prev;
+  }, []));
   const forceUpdate = useForceUpdate();
+
+  if (!context.store.productRef.data) {
+    context.store.productRef.data = productRef.current;
+  }
 
   const setProdData = (data: Partial<TProduct>) => {
     productRef.current = Object.assign({}, productRef.current, data);
-    store.product = productRef.current;
+    context.store.productRef.data = productRef.current;
   }
 
   const handleSearchCategory = async (text: string, params: TPagedParams<TProductCategory>) => {
@@ -48,6 +64,17 @@ export const PageContent = ({ entityData, canValidate }: TFieldsComponentProps<T
     getAttributes();
   }, []);
 
+  useEffect(() => {
+    const unlisten = history.listen((location) => {
+      const parsed = queryString.parse(location.search);
+      changeTab(Number(parsed.tab ?? '0'));
+    });
+
+    return () => {
+      unlisten();
+    }
+  }, [changeTab]);
+
   const getMainCategory = async () => {
     if (productRef.current?.mainCategoryId) {
       try {
@@ -69,7 +96,7 @@ export const PageContent = ({ entityData, canValidate }: TFieldsComponentProps<T
   }
 
   return (
-    <Box sx={{ p: 3, pb: 0, width: '100%' }}>
+    <Box className={styles.PageContent}>
       {activeTabNum === 0 && (<>
         <MainInfoCard
           product={productRef.current}
@@ -99,14 +126,23 @@ export const PageContent = ({ entityData, canValidate }: TFieldsComponentProps<T
         />
       </>)}
       {activeTabNum === 1 && (<>
-        <VariantsTab
+        <AttributesTab
           forceUpdate={forceUpdate}
           product={productRef.current}
           setProdData={setProdData}
           attributes={attributes}
         />
       </>)}
+      {activeTabNum === 2 && (<>
+        <VariantsTab
+          forceUpdate={forceUpdate}
+          product={productRef.current}
+          setProdData={setProdData}
+          attributes={attributes}
+          usedVariantAttributes={usedVariantAttributes}
+          setUsedVariantAttributes={setUsedVariantAttributes}
+        />
+      </>)}
     </Box>
-  )
-
+  );
 }

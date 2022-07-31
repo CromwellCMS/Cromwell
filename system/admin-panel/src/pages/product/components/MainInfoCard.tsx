@@ -4,14 +4,14 @@ import { Grid, Tooltip } from '@mui/material';
 import React, { useEffect, useMemo, useRef } from 'react';
 import { debounce } from 'throttle-debounce';
 
-import { GalleryPicker } from '../../components/inputs/GalleryInput/GalleryInput';
-import { SelectInput } from '../../components/inputs/SelectInput';
-import { SwitchInput } from '../../components/inputs/SwitchInput';
-import { TextInputField } from '../../components/inputs/TextInput';
-import { getCustomMetaFor, RenderCustomFields } from '../../helpers/customFields';
-import { getEditorData, getEditorHtml, initTextEditor } from '../../helpers/editor/editor';
-import { useForceUpdate } from '../../helpers/forceUpdate';
-import styles from './Product.module.scss';
+import { GalleryPicker } from '../../../components/inputs/GalleryInput/GalleryInput';
+import { SelectInput } from '../../../components/inputs/SelectInput';
+import { SwitchInput } from '../../../components/inputs/SwitchInput';
+import { TextInputField } from '../../../components/inputs/TextInput';
+import { getCustomMetaFor, RenderCustomFields } from '../../../helpers/customFields';
+import { getEditorData, getEditorHtml, initTextEditor } from '../../../helpers/editor/editor';
+import { useForceUpdate } from '../../../helpers/forceUpdate';
+import styles from '../Product.module.scss';
 
 const MainInfoCard = (props: {
   product: TProduct | TProductVariant,

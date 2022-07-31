@@ -1,23 +1,8 @@
-import {
-  AddPhotoAlternateOutlined as AddPhotoAlternateOutlinedIcon,
-  HighlightOffOutlined,
-} from "@mui/icons-material";
-import {
-  IconButton,
-  MenuItem,
-  TextField,
-  Tooltip,
-} from "@mui/material";
-import React, { useCallback, useState } from "react";
-import {
-  PhotographIcon,
-  XIcon,
-  ZoomInIcon,
-  ZoomOutIcon,
-} from "@heroicons/react/outline";
+import { PhotographIcon, XIcon, ZoomInIcon, ZoomOutIcon } from '@heroicons/react/outline';
+import React, { useCallback, useState } from 'react';
 
-import { getFileManager } from "../../fileManager/helpers";
-import { TextInputField } from "../TextInput";
+import { getFileManager } from '../../fileManager/helpers';
+import { TextInputField } from '../TextInput';
 
 export type ImageInputProps = {
   toolTip?: string;
