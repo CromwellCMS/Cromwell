@@ -177,28 +177,28 @@ export class UserRepository extends BaseRepository<User> {
         }
 
         // Search by fullName
-        if (filterParams?.fullName && filterParams.fullName !== '') {
+        if (filterParams?.fullName) {
             const fullNameSearch = `%${filterParams.fullName}%`;
             const query = `${this.metadata.tablePath}.${this.quote('fullName')} ${this.getSqlLike()} :fullNameSearch`;
             qb.andWhere(query, { fullNameSearch });
         }
 
         // Search by email
-        if (filterParams?.email && filterParams.email !== '') {
+        if (filterParams?.email) {
             const emailSearch = `%${filterParams.email}%`;
             const query = `${this.metadata.tablePath}.email ${this.getSqlLike()} :emailSearch`;
             qb.andWhere(query, { emailSearch });
         }
 
         // Search by phone
-        if (filterParams?.phone && filterParams.phone !== '') {
+        if (filterParams?.phone) {
             const phoneSearch = `%${filterParams.phone}%`;
             const query = `${this.metadata.tablePath}.phone ${this.getSqlLike()} :phoneSearch`;
             qb.andWhere(query, { phoneSearch });
         }
 
         // Search by address
-        if (filterParams?.address && filterParams.address !== '') {
+        if (filterParams?.address) {
             const addressSearch = `%${filterParams.address}%`;
             const query = `${this.metadata.tablePath}.address ${this.getSqlLike()} :addressSearch`;
             qb.andWhere(query, { addressSearch });

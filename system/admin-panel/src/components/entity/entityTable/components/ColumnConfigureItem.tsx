@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 
 import commonStyles from '../../../../styles/common.module.scss';
 import { SwitchInput } from '../../../inputs/SwitchInput';
-import { TSavedConfiguredColumn } from '../EntityTable';
+import { TSavedConfiguredColumn } from '../../types';
 import styles from '../EntityTable.module.scss';
 
 export type TColumnConfigureItemData = {
@@ -28,7 +28,7 @@ export const ColumnConfigureItem = (props: {
   return (
     <div style={{
       display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-      width: '100%', minWidth: '20px'
+      width: '100%', minWidth: '20px', paddingRight: '15px',
     }}>
       <p className={styles.ellipsis} style={{ minWidth: '20px' }}>{props.data.column.label}</p>
       <div className={commonStyles.center}>

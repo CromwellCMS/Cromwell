@@ -37,9 +37,8 @@ export const sendEmail = async (addresses: string[], subject: string, htmlConten
 
     const { sendFromEmail, smtpConnectionString } = cmsSettings ?? {};
 
-    const sendFrom = (sendFromEmail && sendFromEmail !== '') ? sendFromEmail : 'Service@CromwellCMS.com';
     const messageContent = {
-        from: sendFrom,
+        from: sendFromEmail || 'Service@CromwellCMS.com',
         to: addresses.join(', '),
         subject: subject,
         html: htmlContent,
@@ -47,7 +46,7 @@ export const sendEmail = async (addresses: string[], subject: string, htmlConten
 
     // Define sender service.
     // If SMTP connection string provided, use nodemailer
-    if (smtpConnectionString && smtpConnectionString !== '') {
+    if (smtpConnectionString) {
         if (!nodemailerTransporter) {
             nodemailerTransporter = nodemailer.createTransport(smtpConnectionString);
         }

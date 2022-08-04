@@ -330,7 +330,7 @@ export class CBlock<TContentBlock = React.Component> extends
             + (this.data && this.data.type && this.data.type === 'plugin' && this.data.plugin && this.data.plugin.pluginName
                 ? ` ${getHtmlPluginBlockName(this.data.plugin.pluginName)}` : '')
             + (className ? ' ' + className : '')
-            + (customBlockClasses && customBlockClasses !== '' ? ' ' + customBlockClasses : '');
+            + (customBlockClasses ? ' ' + customBlockClasses : '');
 
         let blockStyles: React.CSSProperties = {};
 

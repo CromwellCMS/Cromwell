@@ -8,6 +8,7 @@ import { useHistory } from 'react-router-dom';
 import { TFieldsComponentProps } from '../../../components/entity/entityEdit/EntityEdit';
 import { SearchInput } from '../../../components/inputs/Search/SearchInput';
 import { useForceUpdate } from '../../../helpers/forceUpdate';
+import { productPageInfo } from '../../../constants/PageInfos';
 import { ProductContext } from '../contexts/Product';
 import { useTabs } from '../hooks/useTabs';
 import styles from '../Product.module.scss';
@@ -67,9 +68,10 @@ export const PageContent = ({ entityData, canValidate }: TFieldsComponentProps<T
   useEffect(() => {
     const unlisten = history.listen((location) => {
       const parsed = queryString.parse(location.search);
-      changeTab(Number(parsed.tab ?? '0'));
+      if (location.pathname.startsWith(productPageInfo.baseRoute + '/'))
+        changeTab(Number(parsed.tab ?? '0'));
     });
-
+    
     return () => {
       unlisten();
     }

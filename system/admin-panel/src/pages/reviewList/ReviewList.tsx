@@ -4,17 +4,16 @@ import { BadgeCheckIcon, BookOpenIcon, CheckIcon, ClockIcon } from '@heroicons/r
 import { Box, Rating, Tooltip } from '@mui/material';
 import React, { useRef, useState } from 'react';
 
-import EntityTable from '../../components/entity/entityTable/EntityTable';
-import { IEntityListPage, TEntityPageProps } from '../../components/entity/types';
-import Modal from '../../components/modal/Modal';
 import { IconButton } from '../../components/buttons/IconButton';
+import EntityTable from '../../components/entity/entityTable/EntityTable';
+import { IEntityListPage } from '../../components/entity/types';
+import Modal from '../../components/modal/Modal';
 import { toast } from '../../components/toast/toast';
 import { reviewListPageInfo } from '../../constants/PageInfos';
 import { formatTimeAgo } from '../../helpers/time';
 import ProductListItem from '../productList/ProductListItem';
 import styles from './ReviewListItem.module.scss';
 
-const EntityTableComp = EntityTable as React.ComponentType<TEntityPageProps<TProductReview, TProductReviewFilter>>;
 
 export default function ProductReviewTable() {
   const client = getGraphQLClient();
@@ -69,7 +68,7 @@ export default function ProductReviewTable() {
 
   return (
     <>
-      <EntityTableComp
+      <EntityTable
         entityCategory={EDBEntity.ProductReview}
         entityListRoute={reviewListPageInfo.route}
         listLabel="Product reviews"

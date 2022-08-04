@@ -135,7 +135,7 @@ export default function Sidebar() {
             </div>
             <div className={styles.sidebarBottom}>
                 <div className={styles.bottomBlock} style={{ overflow: 'hidden' }}>
-                    {(userInfo?.avatar && userInfo?.avatar !== '') ? (
+                    {(userInfo?.avatar) ? (
                         <div className={styles.avatar} style={{ backgroundImage: `url(${userInfo.avatar})` }}></div>
                     ) : <AccountCircleIcon className={styles.avatar} />}
                     <div className={styles.textBlock}>

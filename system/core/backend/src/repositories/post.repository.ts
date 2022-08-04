@@ -118,7 +118,7 @@ export class PostRepository extends BaseRepository<Post> {
             qb.andWhere(`${getCustomRepository(TagRepository).metadata.tablePath}.id IN (:...ids)`, { ids: filterParams.tagIds });
         }
         // Search by title
-        if (filterParams?.titleSearch && filterParams.titleSearch !== '') {
+        if (filterParams?.titleSearch) {
             const titleSearch = `%${filterParams.titleSearch}%`;
             const query = `${this.metadata.tablePath}.title ${this.getSqlLike()} :titleSearch`;
             qb.andWhere(query, { titleSearch });
@@ -173,7 +173,7 @@ export class PostRepository extends BaseRepository<Post> {
 
     async deleteManyFilteredPosts(input: TDeleteManyInput, filterParams?: TPostFilter): Promise<boolean> {
         if (!filterParams) return this.deleteMany(input);
-        
+
         const qbSelect = this.createQueryBuilder(this.metadata.tablePath).select([`${this.metadata.tablePath}.id`]);
         this.applyPostFilter(qbSelect, filterParams);
         this.applyDeleteMany(qbSelect, input);

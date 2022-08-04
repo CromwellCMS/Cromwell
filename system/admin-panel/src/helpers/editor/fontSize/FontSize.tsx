@@ -125,7 +125,7 @@ export class FontSize implements InlineTool {
                 // If has inner span tags, replace them by text nodes
                 if ((child as HTMLElement)?.classList?.contains('fontSize')) {
                     const text = (child as HTMLElement).innerText;
-                    if (text && text !== '') {
+                    if (text) {
                         this.currentSpan.replaceChild(document.createTextNode(text), child)
                     } else {
                         // Remove empty spans

@@ -49,7 +49,7 @@ export const getCmsConfigPath = async (dir?: string) => {
 
         confPath = join(dirPath, cmsConfigFileName);
         if (! await fs.pathExists(confPath)
-            && dirPath.split('/').filter(it => it !== '').length > 1) {
+            && dirPath.split('/').filter(Boolean).length > 1) {
             await getUp(++level);
         }
     }
@@ -65,7 +65,7 @@ export const getCmsConfigPathSync = (dir?: string) => {
 
         confPath = join(dirPath, cmsConfigFileName);
         if (!fs.pathExistsSync(confPath)
-            && dirPath.split('/').filter(it => it !== '').length > 1) {
+            && dirPath.split('/').filter(Boolean).length > 1) {
             getUp(++level);
         }
     }

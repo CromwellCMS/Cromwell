@@ -103,7 +103,7 @@ export const Header = () => {
                   <div className={styles.userBox} ref={popperAnchorEl}
                     onClick={() => setUserOptionsOpen(true)}
                   >
-                    {(userInfo?.avatar && userInfo?.avatar !== '') ? (
+                    {(userInfo?.avatar) ? (
                       <div className={styles.avatar} style={{ backgroundImage: `url(${userInfo.avatar})` }}></div>
                     ) : <AccountCircleIcon className={styles.avatar} />}
                     <p className={clsx(styles.userName)}>{userInfo.fullName ?? ''}</p>

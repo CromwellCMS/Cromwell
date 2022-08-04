@@ -92,7 +92,7 @@ export const PostInfo = (props: { data?: TPost }) => {
 
   return (
     <div className={styles.authorBlock}>
-      {(avatar && avatar !== '') ? (
+      {(avatar) ? (
         <div className={styles.avatar} style={{ backgroundImage: `url(${avatar})` }}></div>
       ) : <AccountCircleIcon className={styles.avatar} />}
       <div>

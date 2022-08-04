@@ -111,11 +111,9 @@ export default function CustomData(props: any) {
         })
     }
 
-    const checkProp = (prop) => prop && prop !== '';
-
     const saveCustomEntity = () => {
         setCanShowInvalid(true);
-        if (!checkProp(entityToEdit?.entityType) || !checkProp(entityToEdit?.listLabel)) return;
+        if (!entityToEdit?.entityType || !entityToEdit?.listLabel) return;
 
         if (settings?.customEntities?.find(ent => ent.entityType === entityToEdit.entityType)) {
             changeSettings('customEntities', [...settings.customEntities].map(ent => {
@@ -207,7 +205,7 @@ export default function CustomData(props: any) {
                     variant="standard"
                     fullWidth
                     className={styles.entityToEditField}
-                    error={canShowInvalid && !checkProp(entityToEdit?.entityType)}
+                    error={canShowInvalid && !entityToEdit?.entityType}
                 />
                 <TextField
                     label="List label"
@@ -216,7 +214,7 @@ export default function CustomData(props: any) {
                     variant="standard"
                     fullWidth
                     className={styles.entityToEditField}
-                    error={canShowInvalid && !checkProp(entityToEdit?.listLabel)}
+                    error={canShowInvalid && !entityToEdit?.listLabel}
                 />
                 <TextField
                     label="Entity label"

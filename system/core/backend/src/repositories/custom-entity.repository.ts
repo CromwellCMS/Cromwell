@@ -91,13 +91,13 @@ export class CustomEntityRepository extends BaseRepository<CustomEntity> {
         this.applyBaseFilter(qb, filterParams);
 
         const entityType = filterParams.entityType;
-        if (entityType && entityType !== '') {
+        if (entityType) {
             const query = `${this.metadata.tablePath}.${this.quote('entityType')} = :entityType`;
             qb.andWhere(query, { entityType });
         }
 
         const entityName = filterParams.name;
-        if (entityName && entityName !== '') {
+        if (entityName) {
             const query = `${this.metadata.tablePath}.${this.quote('name')} = :entityName`;
             qb.andWhere(query, { entityName });
         }
@@ -114,7 +114,7 @@ export class CustomEntityRepository extends BaseRepository<CustomEntity> {
 
     async deleteManyFilteredCustomEntities(input: TDeleteManyInput, filterParams?: TCustomEntityFilter): Promise<boolean> {
         if (!filterParams) return this.deleteMany(input);
-        
+
         const qbSelect = this.createQueryBuilder(this.metadata.tablePath).select([`${this.metadata.tablePath}.id`]);
         this.applyCustomEntityFilter(qbSelect, filterParams);
         this.applyDeleteMany(qbSelect, input);

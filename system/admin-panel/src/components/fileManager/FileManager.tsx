@@ -148,9 +148,9 @@ class FileManager extends React.Component<{
     }
 
     public open: IFileManager['open'] = async (settings) => {
-        if (settings?.initialPath && settings.initialPath !== '') {
+        if (settings?.initialPath) {
             this.openPath(settings.initialPath);
-        } else if (settings?.initialFileLocation && settings.initialFileLocation !== '') {
+        } else if (settings?.initialFileLocation) {
             this.openFileLocation(settings.initialFileLocation, true);
         } else {
             this.openHome();
@@ -351,7 +351,7 @@ class FileManager extends React.Component<{
         this.handleCloseCreateFolder();
 
         this.setState({ isLoading: true });
-        if (input && input.value && input.value !== '') {
+        if (input?.value) {
             try {
                 await this.createFolder(input.value);
                 await this.fetchCurrentItems();
@@ -419,7 +419,7 @@ class FileManager extends React.Component<{
     }
 
     render() {
-        const breadcrumbsPath = this.currentPath.split('/').filter(pathChunk => pathChunk !== '').join('/');
+        const breadcrumbsPath = this.currentPath.split('/').filter(Boolean).join('/');
 
         return (
             <Modal

@@ -129,7 +129,7 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
       })),
       minPrice: this.priceRange[0],
       maxPrice: this.priceRange[1],
-      nameSearch: (this.search && this.search !== '') ? this.search : undefined,
+      nameSearch: (this.search) ? this.search : undefined,
     }
   }
 

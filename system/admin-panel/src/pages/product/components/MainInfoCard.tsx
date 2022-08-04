@@ -159,7 +159,7 @@ const MainInfoCard = (props: {
           className={styles.textField}
           onChange={(e) => {
             const val = e.target.value;
-            handleChange('oldPrice', (val && val !== '') ? val : null);
+            handleChange('oldPrice', val ? val : null);
           }}
         />
       </Grid>

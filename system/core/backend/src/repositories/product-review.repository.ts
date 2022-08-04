@@ -125,7 +125,7 @@ export class ProductReviewRepository extends BaseRepository<ProductReview> {
         }
 
         // Search by userName
-        if (filterParams?.userName && filterParams.userName !== '') {
+        if (filterParams?.userName) {
             const userNameSearch = `%${filterParams.userName}%`;
             const query = `${this.metadata.tablePath}.${this.quote('userName')} ${this.getSqlLike()} :userNameSearch`;
             qb.andWhere(query, { userNameSearch });

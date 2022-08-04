@@ -5,17 +5,15 @@ import { Rating, Tooltip } from '@mui/material';
 import clsx from 'clsx';
 import React from 'react';
 import { connect, PropsType } from 'react-redux-ts';
-import { Link } from 'react-router-dom';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
+import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
 
 import { toLocaleDateString, toLocaleDateTimeString, toLocaleTimeString } from '../../../../helpers/time';
 import { TAppState } from '../../../../redux/store';
 import commonStyles from '../../../../styles/common.module.scss';
-import { CheckboxInput } from '../../../inputs/CheckboxInput';
-import { TBaseEntityFilter } from '../../types';
-import { TListItemProps } from '../EntityTable';
-import styles from './EntityTableItem.module.scss';
 import { IconButton } from '../../../buttons/IconButton';
+import { CheckboxInput } from '../../../inputs/CheckboxInput';
+import { TBaseEntityFilter, TListItemProps } from '../../types';
+import styles from './EntityTableItem.module.scss';
 
 const mapStateToProps = (state: TAppState) => {
   return {

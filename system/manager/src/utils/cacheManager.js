@@ -41,7 +41,7 @@ const getProcessPid = (title, cb) => {
         if (data && data.data && data.data.toString) {
             try {
                 let c = data.data.toString();
-                if (c && typeof c === 'string' && c !== '') {
+                if (c && typeof c === 'string') {
                     c = parseInt(c);
                     if (c != null && !isNaN(c)) {
                         cache = c;

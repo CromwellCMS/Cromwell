@@ -1,17 +1,14 @@
-import { EDBEntity, TPost, TPostFilter, TTag, TUser } from '@cromwell/core';
+import { EDBEntity, TPostFilter, TTag, TUser } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
 import { Tooltip } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 
 import EntityTable from '../../components/entity/entityTable/EntityTable';
-import { TEntityPageProps } from '../../components/entity/types';
 import LoadBox from '../../components/loadBox/LoadBox';
 import { postListInfo, postPageInfo } from '../../constants/PageInfos';
 import { baseEntityColumns } from '../../helpers/customEntities';
 import { formatTimeAgo } from '../../helpers/time';
 
-
-const EntityTableComp = EntityTable as React.ComponentType<TEntityPageProps<TPost, TPostFilter>>;
 
 export default function PostTable() {
     const client = getGraphQLClient();
@@ -53,7 +50,7 @@ export default function PostTable() {
     if (!users || !tags) return <LoadBox />
 
     return (
-        <EntityTableComp
+        <EntityTable
             entityCategory={EDBEntity.Post}
             entityListRoute={postListInfo.route}
             entityBaseRoute={postPageInfo.baseRoute}

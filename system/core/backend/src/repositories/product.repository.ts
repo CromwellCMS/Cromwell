@@ -341,7 +341,7 @@ export class ProductRepository extends BaseRepository<Product> {
         }
 
         // Search by product name or sku or id
-        if (filterParams.nameSearch && filterParams.nameSearch !== '') {
+        if (filterParams.nameSearch) {
             const nameLikeStr = `%${filterParams.nameSearch}%`;
 
             const brackets = new Brackets(subQb => {

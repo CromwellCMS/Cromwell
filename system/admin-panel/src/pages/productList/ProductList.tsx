@@ -1,4 +1,4 @@
-import { EDBEntity, TAttribute, TFilteredProductList, TProduct, TProductFilter } from '@cromwell/core';
+import { EDBEntity, TAttribute, TFilteredProductList, TProductFilter } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
 import { Popover } from '@headlessui/react';
 import { ChevronDoubleLeftIcon, ChevronLeftIcon, TableIcon } from '@heroicons/react/outline';
@@ -13,18 +13,14 @@ import ProductFilter from '../../../../../plugins/product-filter/src/frontend/co
 import { IFrontendFilter } from '../../../../../plugins/product-filter/src/types';
 import { TBreadcrumbs } from '../../components/breadcrumbs';
 import EntityTable from '../../components/entity/entityTable/EntityTable';
-import { IEntityListPage, TEntityPageProps } from '../../components/entity/types';
+import { IEntityListPage } from '../../components/entity/types';
 import { SwitchInput } from '../../components/inputs/SwitchInput';
 import { InfiniteLoader } from '../../components/virtualList/infiniteLoader';
 import { productListInfo, productPageInfo } from '../../constants/PageInfos';
 import { baseEntityColumns } from '../../helpers/customEntities';
-import { ProductTableContextProvider, useProductTable } from '../../hooks/useProducts';
+import { useProductTable } from '../../hooks/useProducts';
 import styles from './ProductList.module.scss';
 
-// import InfiniteLoader from "react-window-infinite-loader";
-const EntityTableComp = EntityTable as React.ComponentType<
-  TEntityPageProps<TProduct, TProductFilter>
->;
 
 const titlePath = [
   { title: "Products", link: "/products/" },
@@ -511,7 +507,7 @@ export default function ProductTable() {
 
   return (
     <>
-      <EntityTableComp
+      <EntityTable
         entityCategory={EDBEntity.Product}
         entityListRoute={productListInfo.route}
         entityBaseRoute={productPageInfo.baseRoute}
