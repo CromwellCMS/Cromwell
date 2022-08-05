@@ -11,15 +11,12 @@ import {
   TPagedList,
   TPagedParams,
 } from '@cromwell/core';
-import { PropsType } from 'react-redux-ts';
-import { RouteComponentProps } from 'react-router-dom';
 
-import { TAppState } from '../../redux/store';
-
-export interface IEntityListPage<TFilterType extends TBaseEntityFilter> {
+export interface IEntityListPage<TEntityType extends TBasePageEntity, TFilterType extends TBaseEntityFilter> {
   resetList: () => void;
   updateList: () => void;
   forceUpdate: () => void;
+  handleDeleteItem: (itemToDelete: TEntityType) => Promise<boolean>;
   getColumns: () => TCustomEntityColumn[];
   getFilterInput: () => TFilterType;
 }
@@ -108,8 +105,9 @@ export type TEntityPageProps<TEntityType extends TBasePageEntity, TFilterType ex
   }) => Promise<TPagedList<TEntityType> | undefined>;
 
   customElements?: {
-    listLeftActions?: JSX.Element;
-    listRightActions?: JSX.Element;
+    getHeaderLeftActions?: (props: TListItemProps<TEntityType, TFilterType>) => JSX.Element;
+    getHeaderRightActions?: (props: TListItemProps<TEntityType, TFilterType>) => JSX.Element;
+    getTableContent?: (props: TListItemProps<TEntityType, TFilterType>) => JSX.Element;
   }
 
   /** 
@@ -123,7 +121,7 @@ export type TEntityPageProps<TEntityType extends TBasePageEntity, TFilterType ex
   /**
    * Get React class component instance
    */
-  getPageListInstance?: (inst: IEntityListPage<TFilterType>) => any;
+  getPageListInstance?: (inst: IEntityListPage<TEntityType, TFilterType>) => any;
 
   /**
    * When user presses "clear filters" button
@@ -167,18 +165,18 @@ export type TEditField<TEntityType> = {
 
 export type TListItemProps<TEntityType extends TBasePageEntity, TFilterType extends TBaseEntityFilter> = {
   searchStore: TSearchStore;
-  tableProps: TEntityTableProps<TEntityType, TFilterType>;
+  tableProps: TEntityPageProps<TEntityType, TFilterType>;
   actionsWidth: number;
+  totalElements: number;
   handleDeleteBtnClick: (item: TEntityType) => void;
   toggleSelection?: (item: TEntityType) => void;
   getColumns: () => TCustomEntityColumn[];
   getColumnStyles: (column: TCustomEntityColumn, allColumns: TCustomEntityColumn[]) => React.CSSProperties;
   resetList: () => void;
   loadConfiguredColumns: () => Record<string, TSearchStore['sortedColumns']>;
+  handleDeleteSelected: () => void;
+  clearAllFilters: () => void;
 }
-
-export type TEntityTableProps<TEntityType extends TBasePageEntity, TFilterType extends TBaseEntityFilter>
-  = PropsType<TAppState, TEntityPageProps<TEntityType, TFilterType>> & RouteComponentProps;
 
 export type TSavedConfiguredColumn = {
   name: string;

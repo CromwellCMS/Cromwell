@@ -222,7 +222,7 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
         this.applyBaseFilter(qb, filterParams);
 
         // Search by category name or id
-        if (filterParams?.nameSearch && filterParams.nameSearch !== '') {
+        if (filterParams?.nameSearch) {
             const likeStr = `%${filterParams.nameSearch}%`;
 
             const brackets = new Brackets(subQb => {
@@ -234,6 +234,15 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
                     });
             });
             qb.andWhere(brackets);
+        }
+
+        if (filterParams?.parentName) {
+            const parentLikeStr = `%${filterParams.parentName}%`;
+            const parentColumn = this.metadata.treeParentRelation?.joinColumns[0].databaseName as string;
+
+            qb.leftJoin(ProductCategory, 'parent_category_table',
+                `parent_category_table.id = ${this.metadata.tablePath}.${this.quote(parentColumn)}`);
+            qb.andWhere(`parent_category_table.name ${this.getSqlLike()} :parentLikeStr`, { parentLikeStr });
         }
     }
 

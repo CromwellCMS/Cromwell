@@ -6,9 +6,9 @@ import React from 'react';
 
 export type CheckboxInputProps = CheckboxProps & {
   label?: string;
-};
+}
 
-export function CheckboxInput(props: CheckboxInputProps) {
+export const CheckboxInput = React.forwardRef<HTMLButtonElement, CheckboxInputProps>((props, ref) => {
   const { label, ...checkboxProps } = props;
 
   const input = (
@@ -18,10 +18,14 @@ export function CheckboxInput(props: CheckboxInputProps) {
           'bgcolor': 'rgba(0, 0, 0, 0.1)',
         }
       }}
+      ref={ref}
       disableRipple
-      icon={<CheckBoxOutlineBlankIcon style={{ width: '0.8em', height: '0.8em' }} />}
-      checkedIcon={<CheckBoxIcon style={{ width: '0.8em', height: '0.8em' }} />}
-      indeterminateIcon={<IndeterminateCheckBoxIcon style={{ width: '0.8em', height: '0.8em' }} />}
+      icon={<CheckBoxOutlineBlankIcon style={{
+        width: '0.8em', height: '0.8em',
+        color: !checkboxProps?.disabled ? '#111' : undefined,
+      }} />}
+      checkedIcon={<CheckBoxIcon style={{ width: '0.8em', height: '0.8em', }} />}
+      indeterminateIcon={<IndeterminateCheckBoxIcon style={{ width: '0.8em', height: '0.8em', }} />}
       {...checkboxProps}
     />
   );
@@ -34,4 +38,4 @@ export function CheckboxInput(props: CheckboxInputProps) {
   )
 
   return input;
-}
+})

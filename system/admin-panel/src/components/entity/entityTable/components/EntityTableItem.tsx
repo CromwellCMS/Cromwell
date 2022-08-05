@@ -174,17 +174,13 @@ class EntityTableItem<TEntityType extends TBasePageEntity, TFilterType extends T
                 state: { prevRoute: this.props.history.location.pathname + window.location.search }
               }}>
                 <IconButton>
-                  <PencilIcon className="h-4 text-gray-300 w-4 float-right " />
+                  <PencilIcon className="h-4 text-gray-300 w-4" />
                 </IconButton>
               </Link>
             )}
             {data?.id && (
-              <IconButton className="ml-0">
-                <TrashIcon
-                  aria-label="delete"
-                  className="h-4 text-gray-300 w-4 float-right cursor-pointer"
-                  onClick={() => listItemProps.handleDeleteBtnClick(data)}
-                />
+              <IconButton className="ml-0" onClick={() => listItemProps.handleDeleteBtnClick(data)}>
+                <TrashIcon aria-label="delete" className="h-4 text-gray-300 w-4" />
               </IconButton>
             )}
           </div>

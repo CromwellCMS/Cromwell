@@ -1,11 +1,12 @@
 import { alpha, Box, useTheme } from '@mui/material';
 import React from 'react';
 
-export function IconButton(props: React.PropsWithChildren<React.ButtonHTMLAttributes<HTMLButtonElement>>) {
+export const IconButton = React.forwardRef((props: React.PropsWithChildren<React.ButtonHTMLAttributes<HTMLButtonElement>>, ref) => {
   const { children, ...buttonProps } = props;
   const theme = useTheme();
   return (
     <Box component="button" {...buttonProps}
+      ref={ref}
       sx={{
         border: '2px solid transparent',
         borderRadius: '100%',
@@ -23,4 +24,4 @@ export function IconButton(props: React.PropsWithChildren<React.ButtonHTMLAttrib
       }}
     >{children}</Box>
   )
-}
+});

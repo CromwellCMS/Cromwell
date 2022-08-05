@@ -17,7 +17,6 @@
     @include paper;
     display: flex;
     justify-content: space-between;
-    min-height: 50px;
     margin-bottom: 15px;
     padding: 0 10px;
 }
@@ -39,6 +38,8 @@
     flex-direction: column;
     height: 100%;
     overflow: auto;
+    padding-bottom: 50px;
+    margin-bottom: 20px;
 }
 
 .pageActions {
@@ -70,6 +71,17 @@
 
 .pageTitle {
     font-size: 20px;
+}
+
+.switchViewIcon {
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+
+.HeaderActions {
+    display: flex;
+    align-items: center;
 }
 
 :global(.modeDark) {

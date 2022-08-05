@@ -7,5 +7,8 @@ import { BaseFilterInput } from './base-filter.filter';
 export class ProductCategoryFilterInput extends BaseFilterInput implements TProductCategoryFilter {
 
     @Field(type => String, { nullable: true })
-    nameSearch: string;
+    nameSearch?: string;
+
+    @Field(type => String, { nullable: true })
+    parentName?: string;
 }

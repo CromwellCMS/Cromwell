@@ -119,6 +119,7 @@ export type TProductCategoryInput = TBasePageEntityInput & Omit<TProductCategory
 
 export type TProductCategoryFilter = TBaseFilter & {
     nameSearch?: string;
+    parentName?: string;
 }
 
 

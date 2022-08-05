@@ -11,7 +11,7 @@ import Modal from '../../components/modal/Modal';
 import { toast } from '../../components/toast/toast';
 import { reviewListPageInfo } from '../../constants/PageInfos';
 import { formatTimeAgo } from '../../helpers/time';
-import ProductListItem from '../productList/ProductListItem';
+import ProductListItem from './ProductListItem';
 import styles from './ReviewListItem.module.scss';
 
 
@@ -20,7 +20,7 @@ export default function ProductReviewTable() {
   const [itemToView, setItemToView] = useState<TProductReview | null>(null);
   const approvedToast = useRef<number | string | null>(null);
   const [productToView, setProductToView] = useState<TProduct | null>(null);
-  const entityListPageRef = useRef<IEntityListPage<TProductReviewFilter> | null>(null);
+  const entityListPageRef = useRef<IEntityListPage<TProductReview, TProductReviewFilter> | null>(null);
 
   const ellipsisStyle: React.CSSProperties = {
     whiteSpace: 'nowrap',

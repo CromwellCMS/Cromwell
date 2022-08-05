@@ -1,37 +1,31 @@
 import { gql } from '@apollo/client';
 import { getBlockInstance, TBasePageEntity, TCustomEntityColumn, TPagedParams } from '@cromwell/core';
 import { CList, TCList } from '@cromwell/core-frontend';
-import { Tooltip } from '@mui/material';
-import clsx from 'clsx';
 import queryString from 'query-string';
 import React from 'react';
-import { withRouter } from 'react-router-dom';
 
 import { getCustomFieldsFor } from '../../../helpers/customFields';
 import { countSelectedItems, getSelectedInput, resetSelected, toggleItemSelection } from '../../../redux/helpers';
-import { IconButton } from '../../buttons/IconButton';
-import { TextButton } from '../../buttons/TextButton';
-import { ClearFilterIcon } from '../../icons/clearFilter';
 import { askConfirmation } from '../../modal/Confirmation';
 import Pagination from '../../pagination/Pagination';
 import { listPreloader } from '../../skeleton/SkeletonPreloader';
 import { toast } from '../../toast/toast';
-import { IEntityListPage, TBaseEntityFilter, TEntityTableProps, TListItemProps, TSearchStore } from '../types';
-import DeleteSelectedButton from './components/DeleteSelectedButton';
+import { IEntityListPage, TBaseEntityFilter, TEntityPageProps, TListItemProps, TSearchStore } from '../types';
 import EntityTableItem from './components/EntityTableItem';
 import { TableHeader } from './components/TableHeader';
+import { PageHeader } from './components/PageHeader';
 import styles from './EntityTable.module.scss';
 
 export const configuredColumnsKey = 'crw_entity_table_columns';
 
 
 class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBaseEntityFilter>
-  extends React.Component<TEntityTableProps<TEntityType, TFilterType>, {
+  extends React.Component<TEntityPageProps<TEntityType, TFilterType>, {
     isLoading: boolean;
     deleteSelectedOpen: boolean;
     configureColumnsOpen: boolean;
     columnSearch?: TCustomEntityColumn | null;
-  }> implements IEntityListPage<TFilterType> {
+  }> implements IEntityListPage<TEntityType, TFilterType> {
 
   private totalElements: number | null;
   private listId: string;
@@ -82,13 +76,13 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
     list?.updateData();
   }
 
-  private handleDeleteItem = async (itemToDelete: TEntityType) => {
+  public handleDeleteItem = async (itemToDelete: TEntityType): Promise<boolean> => {
     const confirm = await askConfirmation({
       title: `Delete ${(this.props.entityLabel ?? 'item').toLocaleLowerCase()} ${itemToDelete?.[
         this.props.nameProperty ?? 'id'] ?? ''}?`
     });
-    if (!confirm) return;
-    if (!itemToDelete?.id) return;
+    if (!confirm) return false;
+    if (!itemToDelete?.id) return false;
 
     try {
       await this.props.deleteOne(itemToDelete.id)
@@ -98,12 +92,12 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
       toast.error(`Failed to delete ${this.props.entityLabel?.toLowerCase() ?? 'item'}`);
     }
     this.updateList();
+    return true;
   }
 
   private handleToggleItemSelection = (data: TEntityType) => {
     toggleItemSelection(data.id);
   }
-
 
   private handleDeleteSelected = async () => {
     if (countSelectedItems(this.totalElements) <= 0) return;
@@ -128,10 +122,6 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
     resetSelected();
     this.updateList();
     this.setState({ isLoading: false, deleteSelectedOpen: false });
-  }
-
-  private handleCreate = () => {
-    this.props.history.push(`${this.props.entityBaseRoute}/new`)
   }
 
   public getFilterInput = (tableColumns?: TCustomEntityColumn[]): TFilterType => {
@@ -293,76 +283,50 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
   }
 
   render() {
-    const { filters, sortBy } = this.searchStore;
-
     const itemProps: TListItemProps<TEntityType, TFilterType> = {
       tableProps: this.props,
       actionsWidth: this.actionsWidth,
       searchStore: this.searchStore,
+      totalElements: this.totalElements,
       getColumns: this.getColumns,
       loadConfiguredColumns: this.loadConfiguredColumns,
       resetList: this.resetList,
       getColumnStyles: this.getColumnStyles,
       handleDeleteBtnClick: this.handleDeleteItem,
       toggleSelection: this.handleToggleItemSelection,
+      handleDeleteSelected: this.handleDeleteSelected,
+      clearAllFilters: this.clearAllFilters,
     }
 
     return (
       <div className={styles.EntityTable}>
-        <div className={styles.pageHeader}>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <h1 className={styles.pageTitle}>{this.props.listLabel}</h1>
-            {this.props.customElements?.listLeftActions}
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            {this.props.customElements?.listRightActions}
-            {!!(filters?.length || sortBy?.column
-              || this.props.isFilterActive?.()) && (
-                <Tooltip title="Clear filters">
-                  <span>
-                    <IconButton className={clsx(styles.iconButton)}
-                      onClick={this.clearAllFilters}
-                    ><ClearFilterIcon className="w-5 h-5" />
-                    </IconButton>
-                  </span>
-                </Tooltip>
-              )}
-            <DeleteSelectedButton
-              style={{ marginRight: '10px' }}
-              onClick={this.handleDeleteSelected}
-              totalElements={this.totalElements}
+        <PageHeader {...itemProps} />
+        {this.props.customElements?.getTableContent?.(itemProps) || (
+          <div className={styles.table}>
+            <TableHeader<TEntityType, TFilterType> {...itemProps} />
+            <CList<TEntityType, TListItemProps<TEntityType, TFilterType>>
+              className={styles.listWrapper}
+              id={this.listId}
+              ListItem={EntityTableItem}
+              useAutoLoading
+              usePagination
+              listItemProps={{ ...itemProps }}
+              useQueryPagination
+              loader={this.getManyFilteredItems}
+              cssClasses={{
+                scrollBox: styles.list,
+                contentWrapper: styles.listContent,
+              }}
+              elements={{
+                pagination: Pagination,
+                preloader: listPreloader
+              }}
             />
-            {this.props.entityBaseRoute && !this.props.hideAddNew && (
-              <TextButton
-                onClick={this.handleCreate}
-              >Add new</TextButton>
-            )}
           </div>
-        </div>
-        <div className={styles.table}>
-          <TableHeader<TEntityType, TFilterType> {...itemProps} />
-          <CList<TEntityType, TListItemProps<TEntityType, TFilterType>>
-            className={styles.listWrapper}
-            id={this.listId}
-            ListItem={EntityTableItem}
-            useAutoLoading
-            usePagination
-            listItemProps={{ ...itemProps }}
-            useQueryPagination
-            loader={this.getManyFilteredItems}
-            cssClasses={{
-              scrollBox: styles.list,
-              contentWrapper: styles.listContent,
-            }}
-            elements={{
-              pagination: Pagination,
-              preloader: listPreloader
-            }}
-          />
-        </div>
+        )}
       </div>
     )
   }
 }
 
-export default withRouter(EntityTable);
+export default EntityTable;

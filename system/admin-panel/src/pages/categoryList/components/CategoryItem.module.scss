@@ -1,36 +1,30 @@
-@import "../../styles/common.module.scss";
-
-.CategoryItem {
-    position: relative;
-}
+@import "../../../styles/common.module.scss";
 
 .none {
     display: none !important;
 }
 
-.listItem {
-    @include paper;
-    border-bottom: 1px solid #ddd;
-    margin-bottom: 3px;
+.CategoryItem {
+    position: relative;
+    font-size: 0.85rem;
     transition: 0.3s;
-}
-
-.listItem:hover {
-    background-color: #eee;
 }
 
 .header {
     // display: flex;
     // justify-content: space-between;
     // align-items: center;
-    min-height: 50px;
     background-color: transparent;
-    padding: 0 10px;
+    padding: 3px 10px;
     transition: 0.3s;
 }
 
 .header:hover {
-    background-color: rgba($color: #000000, $alpha: 0.05);
+    background-color: rgba(224, 231, 255, var(--tw-bg-opacity));
+
+    .itemActions * {
+        color: rgba(67, 56, 202, var(--tw-text-opacity));
+    }
 
     .itemActions {
         display: flex;
@@ -65,7 +59,8 @@
     position: absolute;
     border-left: 1px solid #bbb;
     height: 100%;
-    left: 13px;
+    left: 9px;
+    z-index: 10;
 }
 
 .expandMoreIcon {
@@ -79,9 +74,9 @@
 
 .itemActions {
     display: flex;
-    display: none;
     flex-wrap: wrap;
     justify-content: flex-end;
+    align-items: center;
 
     a {
         display: flex;
@@ -92,7 +87,7 @@
 .treeInfo {
     display: flex;
     flex-direction: column;
-    font-size: 14px;
+    font-size: 0.85rem;
     justify-content: center;
     align-items: flex-end;
 }
