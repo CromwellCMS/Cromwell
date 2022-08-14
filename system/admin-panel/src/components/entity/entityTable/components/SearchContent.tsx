@@ -3,7 +3,7 @@ import React from 'react';
 
 import { Autocomplete } from '../../../inputs/AutocompleteInput';
 import { Datepicker } from '../../../inputs/DateInput';
-import { TextInputField } from '../../../inputs/TextInput';
+import { TextInput } from '../../../inputs/TextInput';
 import styles from '../EntityTable.module.scss';
 import { TGetAutocompleteValueFromSearch } from './TableHeader';
 
@@ -46,7 +46,7 @@ export function SearchContent(props: {
   }
 
   return (
-    <TextInputField
+    <TextInput
       onChange={(event) => currentSearchRef.current = event.target.value}
       label={`Search ${columnSearch?.label ?? ''}`}
       defaultValue={currentSearchRef.current as string}

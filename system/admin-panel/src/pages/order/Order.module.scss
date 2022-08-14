@@ -1,7 +1,6 @@
 @import "../../styles/common.module.scss";
 
 .OrderPage {
-    padding: 20px 20px 0 20px;
     max-width: 900px;
     margin: 0 auto;
     width: 100%;
@@ -40,9 +39,6 @@
     min-height: 300px;
     height: 100%;
     overflow: auto;
-    padding: 15px 10px 0 0;
-    padding-left: 15px;
-    margin-left: -15px;
 }
 
 .headerLeft {
@@ -53,7 +49,7 @@
 .fields {
     @include paper;
     padding: 20px;
-    margin-bottom: 15px;
+    margin-bottom: 25px;
 }
 
 .textField {
@@ -62,7 +58,7 @@
 
 .sums {
     @include paper;
-    margin-bottom: 15px;
+    margin-bottom: 25px;
     padding: 20px;
 
     p {

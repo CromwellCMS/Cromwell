@@ -7,7 +7,7 @@ import { debounce } from 'throttle-debounce';
 import { GalleryPicker } from '../../../components/inputs/GalleryInput/GalleryInput';
 import { SelectInput } from '../../../components/inputs/SelectInput';
 import { SwitchInput } from '../../../components/inputs/SwitchInput';
-import { TextInputField } from '../../../components/inputs/TextInput';
+import { TextInput } from '../../../components/inputs/TextInput';
 import { getCustomMetaFor, RenderCustomFields } from '../../../helpers/customFields';
 import { getEditorData, getEditorHtml, initTextEditor } from '../../../helpers/editor/editor';
 import { useForceUpdate } from '../../../helpers/forceUpdate';
@@ -96,7 +96,7 @@ const MainInfoCard = (props: {
   return (
     <Grid container spacing={3}>
       <Grid item xs={12} sm={12}>
-        <TextInputField label="Name"
+        <TextInput label="Name"
           value={product.name ?? ''}
           className={styles.textField}
           onChange={(e) => { handleChange('name', e.target.value) }}
@@ -104,7 +104,7 @@ const MainInfoCard = (props: {
         />
       </Grid>
       <Grid item xs={12} sm={6}>
-        <TextInputField label="SKU"
+        <TextInput label="SKU"
           value={product.sku ?? ''}
           className={styles.textField}
           onChange={(e) => { handleChange('sku', e.target.value) }}
@@ -120,7 +120,7 @@ const MainInfoCard = (props: {
         />
       </Grid>
       <Grid item xs={12} sm={6}>
-        <TextInputField label="Stock amount"
+        <TextInput label="Stock amount"
           value={product.stockAmount ?? ''}
           className={styles.textField}
           type="number"
@@ -143,7 +143,7 @@ const MainInfoCard = (props: {
         </Tooltip>
       </Grid>
       <Grid item xs={12} sm={6}>
-        <TextInputField
+        <TextInput
           label="Price"
           type="currency"
           value={product.price ?? ''}
@@ -152,7 +152,7 @@ const MainInfoCard = (props: {
         />
       </Grid>
       <Grid item xs={12} sm={6}>
-        <TextInputField
+        <TextInput
           label="Old price"
           type="currency"
           value={product.oldPrice ?? ''}

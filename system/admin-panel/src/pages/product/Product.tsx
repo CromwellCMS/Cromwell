@@ -146,8 +146,10 @@ export default function ProductPage() {
         update={client.updateProduct}
         create={client.createProduct}
         deleteOne={client.deleteProduct}
-        FieldsComponent={PageContent}
-        HeaderComponent={Header}
+        customElements={{
+          getEntityFields: (props) => <PageContent {...props} />,
+          getEntityHeaderCenter: () => <Header />,
+        }}
         disableMeta={activeTabNum !== 0}
         classes={{ content: activeTabNum !== 0 ? 'bg-transparent border-0' : '' }}
       />

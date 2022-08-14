@@ -8,7 +8,7 @@ import {
   FormProvider,
   Controller,
 } from "react-hook-form";
-import { TextInputField } from "../../../components/inputs/TextInput";
+import { TextInput } from "../../../components/inputs/TextInput";
 import { CustomFieldSettings } from "../components/customFields";
 import { EDBEntity } from "@cromwell/core";
 import { ImageInput } from "../../../components/inputs/Image/ImageInput";
@@ -93,7 +93,7 @@ export const GeneralSettingsPage = () => {
 
           <div className={`bg-white rounded-lg shadow-lg w-full p-4 max-w-4xl ${form.formState.isDirty ? "border border-indigo-600 shadow-indigo-400" : "border border-white"}`}>
             <div className="grid gap-2 grid-cols-1 lg:grid-cols-2">
-              <TextInputField
+              <TextInput
                 label="Website URL"
                 placeholder="https://your-website.com"
                 //@ts-ignore

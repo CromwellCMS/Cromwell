@@ -3,6 +3,7 @@ import {
     TAttributeInput,
     TCreateUser,
     TOrderInput,
+    TOrderStatus,
     TPermissionName,
     TPost,
     TProduct,
@@ -10,6 +11,7 @@ import {
     TProductReview,
     TProductReviewInput,
     TRoleInput,
+    TStoreListItem,
     TTag,
 } from '@cromwell/core';
 import {
@@ -258,6 +260,16 @@ export class MockService {
         const maxAmount = amount ?? 40;
         const categoriesMock: TProductCategoryInput[] = [];
         const firstLevelAmount = Math.floor((maxAmount) / 6);
+
+        const images = [
+            'https://images.pexels.com/photos/572897/pexels-photo-572897.jpeg',
+            'https://images.pexels.com/photos/2662116/pexels-photo-2662116.jpeg',
+            'https://images.pexels.com/photos/3225517/pexels-photo-3225517.jpeg',
+            'https://images.pexels.com/photos/534164/pexels-photo-534164.jpeg',
+            'https://images.pexels.com/photos/414122/pexels-photo-414122.jpeg'
+        ];
+        const getRandImg = () => images[Math.floor(Math.random() * (images.length + 2))] || null;
+
         for (let i = 0; i < firstLevelAmount; i++) {
             const name = this.getRandomName();
             categoriesMock.push({
@@ -279,6 +291,7 @@ export class MockService {
                 const name = this.getRandomName();
                 const subcatIput1 = {
                     name,
+                    mainImage: getRandImg(),
                     description: name + ' description',
                     parentId: catEntity.id
                 } as TProductCategoryInput;
@@ -291,6 +304,7 @@ export class MockService {
                     const name = this.getRandomName();
                     const subcatIput2 = {
                         name,
+                        mainImage: getRandImg(),
                         description: name + ' description',
                         parentId: subcatLevel1.id
                     } as TProductCategoryInput;
@@ -303,6 +317,7 @@ export class MockService {
                         const name = this.getRandomName();
                         const subcatIput3 = {
                             name,
+                            mainImage: getRandImg(),
                             description: name + ' description',
                             parentId: subcatLevel2.id
                         } as TProductCategoryInput;
@@ -552,77 +567,29 @@ export class MockService {
     }
 
     public async mockOrders(amount?: number) {
+        const products = await this.productRepo.getProducts({ pageSize: 100 });
+        const statuses: TOrderStatus[] = ['Pending', 'Awaiting shipment', 'Shipped', 'Cancelled'];
 
         const mockedOrders: TOrderInput[] = [
             {
                 customerName: 'Kevin',
                 customerAddress: '976 Sunburst Drive',
                 customerPhone: '786-603-4232',
-                cartTotalPrice: 279,
-                orderTotalPrice: 279,
-                shippingPrice: 0,
-                totalQnt: 3,
-                status: 'Pending',
-                cart: [{
-                    product: {
-                        id: 1,
-                    },
-                    amount: 2
-                }, {
-                    product: {
-                        id: 2,
-                    },
-                }],
             },
             {
                 customerName: 'Michael',
                 customerAddress: '4650 Watson Lane',
                 customerPhone: '704-408-1669',
-                status: 'Cancelled',
-                cartTotalPrice: 59,
-                orderTotalPrice: 69,
-                shippingPrice: 10,
-                totalQnt: 2,
-                cart: [{
-                    product: {
-                        id: 3,
-                    },
-                    amount: 1
-                }, {
-                    product: {
-                        id: 4,
-                    },
-                }]
             },
             {
                 customerName: 'Kelly',
                 customerAddress: '957 Whitman Court',
                 customerPhone: '206-610-2907',
-                status: 'Shipped',
-                cartTotalPrice: 110,
-                orderTotalPrice: 120,
-                shippingPrice: 10,
-                totalQnt: 3,
-                cart: [{
-                    product: {
-                        id: 5,
-                    },
-                    amount: 3
-                }]
             },
             {
                 customerName: 'Pam',
                 customerAddress: '304 Norman Street',
                 customerPhone: '203-980-3109',
-                status: 'Awaiting shipment',
-                cartTotalPrice: 10,
-                orderTotalPrice: 15,
-                shippingPrice: 5,
-                cart: [{
-                    product: {
-                        id: 6,
-                    },
-                }]
             },
         ];
 
@@ -640,11 +607,33 @@ export class MockService {
                 }
 
                 const createOrder = async () => {
-                    const order = await this.orderRepo.createOrder({
-                        ...(this.shuffleArray([...mockedOrders])[0])
-                    });
-                    order.createDate = dateFrom;
-                    await order.save();
+                    const cart: TStoreListItem[] = this.getRandomElementsFromArray(products.elements!, 3)
+                        .map((product): TStoreListItem => {
+                            return {
+                                amount: Math.floor(Math.random() * 2 + 1),
+                                product: {
+                                    id: product.id,
+                                    name: product.name,
+                                    price: product.price,
+                                    oldPrice: product.oldPrice,
+                                    sku: product.sku,
+                                    mainImage: product.mainImage,
+                                    images: product.images?.slice(0, 3),
+                                },
+                            }
+                        });
+
+                    const order: TOrderInput = { ...this.shuffleArray([...mockedOrders])[0] };
+                    order.cart = JSON.stringify(cart);
+                    order.shippingPrice = 10;
+                    order.cartTotalPrice = cart.reduce((acc, cur) => acc + (cur.amount || 1) * (cur.product?.price || 0), 0);
+                    order.orderTotalPrice = order.cartTotalPrice + order.shippingPrice;
+                    order.totalQnt = cart.reduce((acc, cur) => acc + (cur.amount || 1), 0);
+                    order.status = this.shuffleArray([...statuses])[0];
+
+                    const orderEnt = await this.orderRepo.createOrder(order);
+                    orderEnt.createDate = dateFrom;
+                    await orderEnt.save();
                 }
                 promises.push(createOrder());
             }

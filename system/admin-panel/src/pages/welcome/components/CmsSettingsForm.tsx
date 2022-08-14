@@ -39,25 +39,25 @@ export function CmsSettingsForm(props: {
   }
 
   return (
-    <div>
-      <h2 className="font-medium my-6 text-xl text-center text-gray-600 dark:text-gray-200">
-        Choose your type of website
+    <div className="flex flex-col">
+      <h2 className="font-medium my-4 text-xl ml-2 text-gray-600 dark:text-gray-200">
+        Choose your type of website:
       </h2>
 
-      <div className="my-4 ml-2">
+      <div className="my-2 ml-2">
         <SwitchInput value={modules.blog}
           onChange={() => setModules(prev => ({ ...prev, blog: !prev.blog }))}
           label="Blog"
         />
       </div>
-      <div className="my-4 ml-2">
+      <div className="my-2 ml-2">
         <SwitchInput value={modules.ecommerce}
           onChange={() => setModules(prev => ({ ...prev, ecommerce: !prev.ecommerce }))}
           label="eCommerce"
         />
       </div>
 
-      <div className="flex mt-4 items-center justify-between">
+      <div className="flex mt-6 items-center justify-between">
         <button
           onClick={handleSubmitClick}
           disabled={loading}

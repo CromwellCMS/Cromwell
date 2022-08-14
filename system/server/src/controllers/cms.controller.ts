@@ -164,7 +164,9 @@ export class CmsController {
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async readPublicDir(@Query('path') path: string): Promise<string[] | null> {
         const fullPath = join(getPublicDir(), path ?? '');
-        if (! await fs.pathExists(fullPath)) return null;
+        if (! await fs.pathExists(fullPath)) {
+            throw new HttpException(`Path not exists`, HttpStatus.NOT_FOUND);
+        }
         return (await fs.readdir(fullPath)).filter(dir => !publicSystemDirs.includes(dir));
     }
 

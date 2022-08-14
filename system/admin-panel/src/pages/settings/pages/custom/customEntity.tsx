@@ -1,14 +1,15 @@
-import { TAdminCustomEntity } from "@cromwell/core";
-import React, { useState } from "react";
-import { Controller, FormProvider, useForm } from "react-hook-form";
-import { Redirect, useLocation, useParams, useHistory } from "react-router-dom";
-import { ActionButton } from "../../../../components/actionButton";
-import { TBreadcrumbs } from "../../../../components/breadcrumbs";
-import { TextInputField } from "../../../../components/inputs/TextInput";
-import { ImageInput } from "../../../../components/inputs/Image/ImageInput";
-import { slugify } from "../../../../helpers/slugify";
-import { TAdminCmsSettingsType, useAdminSettings } from "../../../../hooks/useAdminSettings";
-import { DraggableEntityFields } from "../../components/draggableEntityFields";
+import { TAdminCustomEntity } from '@cromwell/core';
+import React, { useState } from 'react';
+import { Controller, FormProvider, useForm } from 'react-hook-form';
+import { Redirect, useHistory, useParams } from 'react-router-dom';
+
+import { ActionButton } from '../../../../components/actionButton';
+import { TBreadcrumbs } from '../../../../components/breadcrumbs';
+import { ImageInput } from '../../../../components/inputs/Image/ImageInput';
+import { TextInput } from '../../../../components/inputs/TextInput';
+import { slugify } from '../../../../helpers/slugify';
+import { TAdminCmsSettingsType, useAdminSettings } from '../../../../hooks/useAdminSettings';
+import { DraggableEntityFields } from '../../components/draggableEntityFields';
 
 const titlePath = [
   { title: "Settings", link: "/settings/" },
@@ -144,7 +145,7 @@ const CustomEntityForm = ({
                 : "border border-white"
             }`}>
             <div className="grid gap-2 grid-cols-1 lg:grid-cols-2">
-              <TextInputField
+              <TextInput
                 label="Entity Label"
                 placeholder="My Custom Entity"
                 required
@@ -157,7 +158,7 @@ const CustomEntityForm = ({
                   },
                 })}
               />
-              <TextInputField
+              <TextInput
                 label="Plural label"
                 placeholder="My Custom Entities"
                 required
@@ -166,7 +167,7 @@ const CustomEntityForm = ({
                   required: true,
                 })}
               />
-              <TextInputField
+              <TextInput
                 label="Entity Type"
                 placeholder="my-custom-entity"
                 required

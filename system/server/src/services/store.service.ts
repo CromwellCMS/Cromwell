@@ -118,7 +118,8 @@ export class StoreService {
 
     async placeOrder(input: CreateOrderDto): Promise<TOrder | undefined> {
         const orderTotal = await this.calcOrderTotal(input);
-        if (!orderTotal.cart?.length) throw new HttpException('Cart is invalid or empty', HttpStatus.BAD_REQUEST);
+        if (!Array.isArray(orderTotal.cart) || !orderTotal.cart?.length)
+            throw new HttpException('Cart is invalid or empty', HttpStatus.BAD_REQUEST);
 
         const settings = await getCmsSettings();
         const { themeConfig } = (settings?.themeName && await getThemeConfigs(settings?.themeName)) || {};
@@ -127,18 +128,17 @@ export class StoreService {
         if (orderTotal.cart?.length) {
             orderTotal.cart = orderTotal.cart.map(item => {
                 if (item.pickedAttributes) {
-                    if (Object.keys(item.pickedAttributes).length > 1000) item.pickedAttributes = undefined;
+                    const pickedAttributes = {};
+                    Object.keys(item.pickedAttributes).forEach((key, index) => {
+                        if (index > 100) return;
+                        if (!item.pickedAttributes![key]?.length) return;
+                        if (item.pickedAttributes![key].length > 100) return;
+                        pickedAttributes[key] = item.pickedAttributes![key];
+                    });
+                    if (JSON.stringify(pickedAttributes).length < 10000)
+                        item.pickedAttributes = pickedAttributes;
                 }
-                if (item.pickedAttributes) {
-                    Object.keys(item.pickedAttributes).forEach(key => {
-                        if (!item.pickedAttributes![key]?.length) {
-                            delete item.pickedAttributes![key];
-                        }
-                        if (item.pickedAttributes![key].length > 1000) {
-                            delete item.pickedAttributes![key];
-                        }
-                    })
-                }
+
                 if (item.product) item.product = {
                     id: item.product.id,
                     createDate: item.product.createDate,
@@ -149,21 +149,19 @@ export class StoreService {
                     oldPrice: item.product.oldPrice,
                     sku: item.product.sku,
                     mainImage: item.product.mainImage,
-                    images: item.product.images,
+                    images: item.product.images?.slice(0, 3),
                     attributes: item.product.attributes,
                     stockAmount: item.product.stockAmount,
                     stockStatus: item.product.stockStatus,
-                    categories: item.product.categories?.map(cat => ({
-                        id: cat.id,
-                        name: cat.name,
-                    })),
                 }
-                return {
+                const pureItem: TStoreListItem = {
                     amount: item.amount,
                     pickedAttributes: item.pickedAttributes,
                     product: item.product,
                 }
-            });
+                if (JSON.stringify(pureItem).length > 20000) return null;
+                return pureItem;
+            }).filter(Boolean) as TStoreListItem[];
         }
 
         const attributes = await getCustomRepository(AttributeRepository).getAll();
@@ -266,6 +264,10 @@ export class StoreService {
             customMeta,
         }
 
+        if (JSON.stringify(createOrder).length > 20000) {
+            throw new HttpException('Some input field is too long', HttpStatus.BAD_REQUEST);
+        }
+
         const fromUrl = input.fromUrl;
         const cstore = getCStore({ local: true });
         if (createOrder.currency) {
@@ -316,6 +318,9 @@ export class StoreService {
     }
 
     async placeProductReview(input: ProductReviewInput): Promise<TProductReview> {
+        if (JSON.stringify(input).length > 10000) {
+            throw new HttpException('Some input field is too long', HttpStatus.BAD_REQUEST);
+        }
         const inputFiltered = (await applyDataFilters('ProductReview', 'createInput', {
             data: input,
             permissions: []

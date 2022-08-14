@@ -143,6 +143,9 @@ class FileManager extends React.Component<{
             ];
         } catch (e) {
             console.error(e);
+            if (this.currentPath !== '/') { // Path not found
+                await this.openHome();
+            }
         }
         this.setState({ isLoading: false });
     }
@@ -168,7 +171,7 @@ class FileManager extends React.Component<{
     }
 
     private getFilesInPath = (path?: string) => {
-        return getRestApiClient()?.readPublicDir(path);
+        return getRestApiClient()?.readPublicDir(path, { disableLog: true });
     }
 
     private createFolder = async (dirName?: string) => {

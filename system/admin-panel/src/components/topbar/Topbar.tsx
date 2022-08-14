@@ -302,7 +302,7 @@ const UserMenu = ({
                 text-black group bg-white-700 hover:bg-gray-50 px-3 py-2 rounded-md inline-flex items-center text-base font-medium hover:text-opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75`}>
             {userInfo?.avatar && userInfo?.avatar !== "" ? (
               <div
-                className="w-8 h-8 rounded-xl border border-indigo-100 bg-gradient-to-tr from-indigo-900 to-pink-900"
+                className="w-8 h-8 rounded-xl border border-indigo-100 bg-gradient-to-tr bg-cover bg-center from-indigo-900 to-pink-900"
                 style={{
                   backgroundImage: `url(${userInfo.avatar})`,
                 }}></div>

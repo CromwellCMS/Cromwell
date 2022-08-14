@@ -26,7 +26,7 @@ export type TextInputProps =
     defaultValue?: string | number | readonly string[];
   };
 
-export const TextInputField = React.forwardRef(
+export const TextInput = React.forwardRef(
   (
     props: TextInputProps,
     ref: ForwardedRef<HTMLInputElement | HTMLTextAreaElement>,
@@ -44,7 +44,7 @@ export const TextInputField = React.forwardRef(
       prefix,
       description,
       error,
-      inputComponent = 'input',
+      inputComponent,
       endAdornment,
       startAdornment,
       style,

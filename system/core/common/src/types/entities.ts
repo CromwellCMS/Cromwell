@@ -442,7 +442,7 @@ export type TProductReviewFilter = TBaseFilter & {
  * Store order
  */
 export type TOrderCore = {
-    id?: number | null;
+    id: number;
     createDate?: Date | null;
     updateDate?: Date | null;
     isEnabled?: boolean | null;
@@ -472,7 +472,7 @@ export type TOrder = TOrderCore & {
 
 export type TOrderStatus = 'Pending' | 'Awaiting shipment' | 'Shipped' | 'Refunded' | 'Cancelled' | 'Completed';
 
-export type TOrderInput = TOrderCore & {
+export type TOrderInput = Omit<TOrderCore, 'id'> & {
     couponCodes?: string[] | null;
 };
 

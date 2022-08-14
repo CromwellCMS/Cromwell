@@ -7,7 +7,6 @@ import {
   useSensor,
   useSensors,
   DragEndEvent,
-  TouchSensor,
 } from "@dnd-kit/core";
 import {
   SortableContext,
@@ -22,7 +21,7 @@ import {
   UseFieldArrayRemove,
   useFormContext,
 } from "react-hook-form";
-import { TextInputField } from "../../../components/inputs/TextInput";
+import { TextInput } from "../../../components/inputs/TextInput";
 import { TAdminCmsSettingsType } from "../../../hooks/useAdminSettings";
 import { GrabIcon } from "../../../components/icons/grabIcon";
 import {
@@ -109,12 +108,12 @@ export function EntityFieldItem(props: {
         } rounded-md shadow-lg w-full p-3`}>
       <div className="flex flex-row gap-1 justify-between">
         <div className="w-full grid gap-4 grid-cols-1 justify-self-stretch lg:grid-cols-2">
-          <TextInputField
+          <TextInput
             label="ID"
             disabled
             {...register(`customFields.${idx}.id`)}
           />
-          <TextInputField
+          <TextInput
             label="Label"
             {...register(`customFields.${idx}.label`, {
               onChange: (e) => {
@@ -123,7 +122,7 @@ export function EntityFieldItem(props: {
               }
             })}
           />
-          <TextInputField
+          <TextInput
             label="Key (internal)"
             {...register(`customFields.${idx}.key`)}
           />
@@ -155,7 +154,7 @@ export function EntityFieldItem(props: {
                   {
                     optionMethods.fields.map((option, oIdx) => (
                       <div key={oIdx} className="flex flex-row w-full gap-1">
-                        <TextInputField
+                        <TextInput
                           key={oIdx}
                           label={<span className="text-xs">Option {oIdx + 1}</span>}
                           className="!text-xs"

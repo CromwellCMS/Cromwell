@@ -1,7 +1,7 @@
 import { EDBEntity, TImageSettings } from "@cromwell/core";
 import React, { useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
-import { TextInputField } from "../../../components/inputs/TextInput";
+import { TextInput } from "../../../components/inputs/TextInput";
 import { ImageInput } from "../../../components/inputs/Image/ImageInput";
 import { GalleryPicker } from "../../../components/inputs/GalleryInput/GalleryInput";
 import { useAdminSettings } from "../../../hooks/useAdminSettings";
@@ -36,7 +36,7 @@ export const CustomFieldSettings = (props: {
         .map((field) => {
           if (field.fieldType === "Simple text") {
             return (
-              <TextInputField
+              <TextInput
                 key={field.id}
                 label={field.label}
                 {...register(`customMeta.${field.key}`)}
@@ -84,7 +84,7 @@ export const CustomFieldSettings = (props: {
               `customMeta.${field.key}`,
             );
             return (
-              <TextInputField
+              <TextInput
                 key={field.id}
                 label={field.label}
                 overlay={overlay}

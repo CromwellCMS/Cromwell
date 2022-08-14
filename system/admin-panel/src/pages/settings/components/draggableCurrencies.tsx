@@ -22,7 +22,7 @@ import {
   UseFieldArrayRemove,
   useFormContext,
 } from "react-hook-form";
-import { TextInputField } from "../../../components/inputs/TextInput";
+import { TextInput } from "../../../components/inputs/TextInput";
 import { TAdminCmsSettingsType } from "../../../hooks/useAdminSettings";
 import { GrabIcon } from "../../../components/icons/grabIcon";
 import {
@@ -87,19 +87,19 @@ export function CurrencyItem(props: {
           {symbol}
         </div>
         <div className="w-full grid gap-4 grid-cols-1 justify-self-stretch lg:grid-cols-2">
-          <TextInputField
+          <TextInput
             label="Title"
             {...register(`currencies.${idx}.title`)}
           />
-          <TextInputField
+          <TextInput
             label="Tag (Short Code)"
             {...register(`currencies.${idx}.tag`)}
           />
-          <TextInputField
+          <TextInput
             label="Ratio"
             {...register(`currencies.${idx}.ratio`)}
           />
-          <TextInputField
+          <TextInput
             label="Symbol"
             {...register(`currencies.${idx}.symbol`)}
           />

@@ -8,7 +8,6 @@ import { IconButton } from '../../../components/buttons/IconButton';
 import { TView } from '../CategoryList';
 import styles from '../CategoryList.module.scss';
 
-
 export function HeaderActions({ view, setView, collapseAll, expandAll }: {
   view: TView;
   setView: (value: TView) => void;

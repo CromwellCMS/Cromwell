@@ -7,7 +7,7 @@ import TimePicker from '@mui/lab/TimePicker';
 import { Box } from '@mui/material';
 import React, { useState } from 'react';
 
-import { TextInputField } from './TextInput';
+import { TextInput } from './TextInput';
 
 export type DatepickerProps = {
   value?: Date | DateRange<Date> | null;
@@ -51,7 +51,7 @@ export function Datepicker({ label, dateType, value, onChange, range, defaultVal
     renderInput: (params) => {
       return (
         <div ref={params.ref}>
-          <TextInputField {...params} {...params.inputProps} {...params.InputProps} ref={params.inputRef}
+          <TextInput {...params} {...params.inputProps} {...params.InputProps} ref={params.inputRef}
             endAdornment={<Box sx={{
               '> div': {
                 height: 'auto',
@@ -82,9 +82,9 @@ export function Datepicker({ label, dateType, value, onChange, range, defaultVal
         renderInput={(startProps, endProps) => {
           return (
             <React.Fragment>
-              <TextInputField {...startProps.inputProps} {...(startProps as any)} />
+              <TextInput {...startProps.inputProps} {...(startProps as any)} />
               <Box sx={{ mx: 2 }}> to </Box>
-              <TextInputField {...endProps.inputProps} {...(endProps as any)} />
+              <TextInput {...endProps.inputProps} {...(endProps as any)} />
             </React.Fragment>
           )
         }}

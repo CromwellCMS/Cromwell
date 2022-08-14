@@ -96,6 +96,9 @@ export function UserForm(props: {
 
   return (
     <div>
+      <h1 className="font-bold text-center text-3xl text-gray-700 dark:text-white">
+        Welcome to Cromwell CMS!
+      </h1>
       <h2 className="font-medium mt-1 text-xl text-center text-gray-600 dark:text-gray-200">
         Let&apos;s create your account.
       </h2>

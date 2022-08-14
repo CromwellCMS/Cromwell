@@ -1,20 +1,16 @@
-import { TPermission, TPermissionName } from "@cromwell/core";
-import { Switch } from "@headlessui/react";
-import React, { useMemo } from "react";
-import {
-  Controller,
-  FormProvider,
-  useForm,
-  useFormContext,
-} from "react-hook-form";
-import { useParams } from "react-router-dom";
-import { ActionButton } from "../../../../components/actionButton";
-import { TBreadcrumbs } from "../../../../components/breadcrumbs";
-import { SwitchInput } from "../../../../components/inputs/SwitchInput";
-import { TextInputField } from "../../../../components/inputs/TextInput";
-import { toast } from "../../../../exports";
-import { slugify } from "../../../../helpers/slugify";
-import { useAdminSettings } from "../../../../hooks/useAdminSettings";
+import { TPermission, TPermissionName } from '@cromwell/core';
+import { Switch } from '@headlessui/react';
+import React, { useMemo } from 'react';
+import { Controller, FormProvider, useForm, useFormContext } from 'react-hook-form';
+import { useParams } from 'react-router-dom';
+
+import { ActionButton } from '../../../../components/actionButton';
+import { TBreadcrumbs } from '../../../../components/breadcrumbs';
+import { SwitchInput } from '../../../../components/inputs/SwitchInput';
+import { TextInput } from '../../../../components/inputs/TextInput';
+import { toast } from '../../../../exports';
+import { slugify } from '../../../../helpers/slugify';
+import { useAdminSettings } from '../../../../hooks/useAdminSettings';
 
 const path = [
   { title: "Settings", link: "/settings/" },
@@ -335,7 +331,7 @@ export const CustomRoleSettingsPage = () => {
                 : "border border-white"
               }`}>
             <div className="grid gap-2 grid-cols-1 lg:grid-cols-2">
-              <TextInputField
+              <TextInput
                 label="Title"
                 placeholder="Custom Role"
                 required
@@ -348,7 +344,7 @@ export const CustomRoleSettingsPage = () => {
                   },
                 })}
               />
-              <TextInputField
+              <TextInput
                 label="Name key"
                 placeholder="Will be filled automatically"
                 required

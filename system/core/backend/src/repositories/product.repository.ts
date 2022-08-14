@@ -137,7 +137,6 @@ export class ProductRepository extends BaseRepository<Product> {
         product.sku = input.sku;
         product.mainImage = input.mainImage;
         product.images = input.images;
-        product.mainCategoryId = input.mainCategoryId;
         product.description = input.description;
         product.descriptionDelta = input.descriptionDelta;
         product.stockAmount = input.stockAmount;
@@ -220,6 +219,23 @@ export class ProductRepository extends BaseRepository<Product> {
                 }
             }
             product.attributeValues = updatedValues;
+        }
+
+        // Check main category 
+        if (input.mainCategoryId) {
+            try {
+                const main = await getCustomRepository(ProductCategoryRepository).getProductCategoryById(input.mainCategoryId);
+                product.mainCategory = main;
+            } catch (error) {
+                throw new HttpException(`Main category ${input.mainCategoryId} not found!`, HttpStatus.NOT_FOUND);
+            }
+
+            if (input.categoryIds && !input.categoryIds.includes(input.mainCategoryId)) {
+                input.categoryIds.push(input.mainCategoryId);
+            }
+        }
+        if (input.mainCategoryId === null) {
+            product.mainCategory = null;
         }
 
         if (input.categoryIds) {

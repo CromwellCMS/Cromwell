@@ -5,7 +5,7 @@ import clsx from 'clsx';
 import React from 'react';
 import { debounce } from 'throttle-debounce';
 
-import { TextInputField } from '../TextInput';
+import { TextInput } from '../TextInput';
 import { ListItem, ListItemProps } from './ListItem';
 import styles from './SearchInput.module.scss';
 
@@ -229,7 +229,7 @@ export class SearchInput<TItemData extends { id: number | string }> extends Reac
             return (
               <div ref={this.searchAnchorRef}>
                 <div ref={InputProps.ref}>
-                  <TextInputField
+                  <TextInput
                     startAdornment={InputProps.startAdornment}
                     endAdornment={InputProps.endAdornment}
                     inputFieldClassName={InputProps.className}

@@ -5,7 +5,7 @@ import React from 'react';
 
 import { IconButton } from '../../../components/buttons/IconButton';
 import { getFileManager } from '../../../components/fileManager/helpers';
-import { TextInputField } from '../../../components/inputs/TextInput';
+import { TextInput } from '../../../components/inputs/TextInput';
 
 export const ValueItem = (props: {
   value: string;
@@ -44,7 +44,7 @@ export const ValueItem = (props: {
 
   return (
     <div style={{ display: 'flex', alignItems: 'center' }}>
-      <TextInputField
+      <TextInput
         style={{ marginRight: '15px' }}
         defaultValue={props.value}
         onChange={handleValueNameChange}

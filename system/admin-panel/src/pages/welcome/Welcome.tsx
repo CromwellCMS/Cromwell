@@ -17,7 +17,7 @@ export default function WelcomePage() {
   }
 
   return (
-    <div className="flex h-full bg-gray-200 w-screen top-0 right-0 bottom-0 left-0 z-999 items-center fixed dark:bg-black">
+    <div className="dark:bg-black py-8 my-auto">
       <div className="bg-white rounded-lg mx-auto max-w-sm shadow-md w-full overflow-hidden dark:bg-gray-800">
         <div className="py-4 px-6">
           <img
@@ -25,9 +25,6 @@ export default function WelcomePage() {
             width="80px"
             className="mx-auto mt-3 mb-6"
           />
-          <h1 className="font-bold text-center text-3xl text-gray-700 dark:text-white">
-            Welcome to Cromwell CMS!
-          </h1>
           {step === 'account' && (
             <UserForm
               onSuccess={onAccountSuccess}

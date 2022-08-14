@@ -4,7 +4,7 @@ import { styled } from '@mui/material/styles';
 import React from 'react';
 
 import commonStyles from '../../styles/common.module.scss';
-import { TextInputField } from './TextInput';
+import { TextInput } from './TextInput';
 
 export function Autocomplete<T>(props: Omit<AutocompleteProps<T, boolean, boolean, boolean>, 'renderInput'> & {
   tooltip?: string;
@@ -21,7 +21,7 @@ export function Autocomplete<T>(props: Omit<AutocompleteProps<T, boolean, boolea
       renderInput={({ size, InputProps, inputProps, ...rest }) => { // eslint-disable-line @typescript-eslint/no-unused-vars
         const content = (
           <div ref={InputProps.ref}>
-            <TextInputField
+            <TextInput
               startAdornment={InputProps.startAdornment}
               endAdornment={InputProps.endAdornment}
               inputFieldClassName={InputProps.className}

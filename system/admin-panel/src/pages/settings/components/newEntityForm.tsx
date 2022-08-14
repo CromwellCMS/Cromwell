@@ -1,13 +1,14 @@
-import { Dialog, Transition } from "@headlessui/react"
-import React, { Fragment, useState } from "react"
-import { Controller, useFieldArray, useForm } from "react-hook-form";
-import { ActionButton } from "../../../components/actionButton"
-import { TextInputField } from "../../../components/inputs/TextInput";
-import { slugify } from "../../../helpers/slugify";
-import { TAdminCmsSettingsType, useAdminSettings } from "../../../hooks/useAdminSettings";
-import { ImageInput } from "../../../components/inputs/Image/ImageInput";
-import { TAdminCustomEntity } from "@cromwell/core";
+import { TAdminCustomEntity } from '@cromwell/core';
+import { Dialog, Transition } from '@headlessui/react';
+import React, { Fragment, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+
+import { ActionButton } from '../../../components/actionButton';
+import { ImageInput } from '../../../components/inputs/Image/ImageInput';
+import { TextInput } from '../../../components/inputs/TextInput';
 import { baseEntityColumns } from '../../../helpers/customEntities';
+import { slugify } from '../../../helpers/slugify';
+import { useAdminSettings } from '../../../hooks/useAdminSettings';
 
 type FormType = TAdminCustomEntity;
 
@@ -95,7 +96,7 @@ export const NewEntityForm = ({
                   </div>
 
                   <div className="grid gap-2 grid-cols-1">
-                    <TextInputField
+                    <TextInput
                       label="Entity Label"
                       placeholder="My Custom Entity"
                       required
@@ -105,14 +106,14 @@ export const NewEntityForm = ({
                         setValue("entityType", slugify(val))
                       }})}
                     />
-                    <TextInputField
+                    <TextInput
                       label="Plural label"
                       placeholder="My Custom Entities"
                       required
                       description="Plural title for the entity."
                       {...register("listLabel", { required: true })}
                     />
-                    <TextInputField
+                    <TextInput
                       label="Entity Type"
                       placeholder="my-custom-entity"
                       required

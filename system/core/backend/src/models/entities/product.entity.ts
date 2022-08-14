@@ -7,7 +7,7 @@ import {
     TStockStatus,
 } from '@cromwell/core';
 import { Field, Int, ObjectType } from 'type-graphql';
-import { Column, Entity, Index, JoinTable, ManyToMany, OneToMany } from 'typeorm';
+import { Column, Entity, Index, JoinTable, ManyToMany, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
 
 import { AttributeToProduct } from './attribute-product.entity';
 import { BasePageEntity } from './base-page.entity';
@@ -33,6 +33,10 @@ export class Product extends BasePageEntity implements TProduct {
     @Column({ type: "int", nullable: true })
     @Index()
     mainCategoryId?: number | null;
+
+    @ManyToOne(type => ProductCategory, category => category.mainProducts, { onDelete: 'SET NULL' })
+    @JoinColumn({ name: "mainCategoryId" })
+    mainCategory?: ProductCategory | null;
 
     @Field(type => Number, { nullable: true })
     @Column({ type: "float", nullable: true })

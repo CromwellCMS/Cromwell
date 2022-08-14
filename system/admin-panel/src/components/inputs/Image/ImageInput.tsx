@@ -1,8 +1,8 @@
-import { PhotographIcon, XIcon, ZoomInIcon, ZoomOutIcon } from '@heroicons/react/outline';
+import { PhotographIcon, XIcon, ZoomInIcon, ZoomOutIcon, ExternalLinkIcon } from '@heroicons/react/outline';
 import React, { useCallback, useState } from 'react';
 
 import { getFileManager } from '../../fileManager/helpers';
-import { TextInputField } from '../TextInput';
+import { TextInput } from '../TextInput';
 
 export type ImageInputProps = {
   toolTip?: string;
@@ -90,8 +90,8 @@ export const ImageInput = ({ centerImage = true, ...props }: ImageInputProps) =>
         {value && (
           <img
             className={`${zoom
-                ? "h-full top-0 w-full"
-                : "h-[calc(100%-44px)] top-2 w-[calc(100%-8px)]"
+              ? "h-full top-0 w-full"
+              : "h-[calc(100%-44px)] top-2 w-[calc(100%-8px)]"
               } left-0 absolute rounded-sm`}
             src={value}
             style={{
@@ -104,7 +104,7 @@ export const ImageInput = ({ centerImage = true, ...props }: ImageInputProps) =>
           className={`bg-black bg-opacity-0 h-[calc(100%-16px)] w-full group block group-hover:bg-opacity-10`}>
           <div className="bg-black cursor-pointer flex h-full mx-auto bg-opacity-0 w-full self-center relative group-hover:bg-opacity-10">
             <span className="bg-black rounded-lg mx-auto bg-opacity-30 text-center text-xs text-white opacity-0 py-1 transform px-2 transition-all left-1/2 -translate-x-1/2 absolute self-center backdrop-filter backdrop-blur-md group-hover:opacity-100 ">
-              Tap to choose image
+              Tap to choose image or copy link below
             </span>
             {value && props.showRemove && (
               <span
@@ -131,13 +131,23 @@ export const ImageInput = ({ centerImage = true, ...props }: ImageInputProps) =>
                 )}
               </span>
             )}
+            {value && (
+              <span
+                onClick={(e) => {
+                  e.stopPropagation();
+                  window.open(value, '_balnk')
+                }}
+                className="rounded-full mx-auto text-center text-white opacity-0 py-1 transform px-1 transition-all top-1 left-6 absolute self-center hover:bg-opacity-100 group-hover:opacity-100 ">
+                <ExternalLinkIcon className="h-4 w-4" />
+              </span>
+            )}
             {!value && (
               <PhotographIcon className="mx-auto h-24 w-full text-indigo-300 self-center" />
             )}
           </div>
         </div>
         {!props.hideSrc && (
-          <TextInputField
+          <TextInput
             id={props.id}
             name={props.id}
             value={value ?? ""}

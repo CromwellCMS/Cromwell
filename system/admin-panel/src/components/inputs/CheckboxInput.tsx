@@ -33,7 +33,7 @@ export const CheckboxInput = React.forwardRef<HTMLButtonElement, CheckboxInputPr
   if (label) return (
     <FormControlLabel
       control={input}
-      label={<p className="font-bold pb-1 pl-[2px] text-gray-700">{label}</p>}
+      label={<p className="font-bold pl-[2px] text-gray-700">{label}</p>}
     />
   )
 

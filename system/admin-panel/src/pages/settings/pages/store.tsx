@@ -1,14 +1,12 @@
-import React from "react";
-import {
-  TAdminCmsSettingsType,
-  useAdminSettings,
-} from "../../../hooks/useAdminSettings";
-import { TextInputField } from "../../../components/inputs/TextInput";
-import { TBreadcrumbs } from "../../../components/breadcrumbs";
-import { FormProvider, useForm } from "react-hook-form";
-import { getCStore } from "@cromwell/core-frontend";
-import { DraggableCurrenciesList } from "../components/draggableCurrencies";
-import { GrabIcon } from "../../../components/icons/grabIcon";
+import { getCStore } from '@cromwell/core-frontend';
+import React from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
+
+import { TBreadcrumbs } from '../../../components/breadcrumbs';
+import { GrabIcon } from '../../../components/icons/grabIcon';
+import { TextInput } from '../../../components/inputs/TextInput';
+import { TAdminCmsSettingsType, useAdminSettings } from '../../../hooks/useAdminSettings';
+import { DraggableCurrenciesList } from '../components/draggableCurrencies';
 
 type FormType = Pick<
   TAdminCmsSettingsType,
@@ -95,7 +93,7 @@ export const StoreSettingsPage = () => {
                 : "border border-white"
             }`}>
             <div className="grid gap-2 grid-cols-1 lg:grid-cols-2">
-              <TextInputField
+              <TextInput
                 label="Standard shipping price"
                 placeholder="Enter shipping price"
                 prefix={

@@ -905,6 +905,65 @@ export class CGraphQLClient {
     // </Role>
 
 
+
+    // <Coupon>
+
+    public CouponFragment = gql`
+    fragment CouponFragment on Coupon {
+        id
+        createDate
+        updateDate
+        pageTitle
+        pageDescription
+        meta {
+            keywords
+        }
+        isEnabled
+        discountType
+        value
+        code
+        description
+        allowFreeShipping
+        minimumSpend
+        maximumSpend
+        categoryIds
+        productIds
+        expiryDate
+        usageLimit
+    }`;
+
+    public getCoupons = this.createGetMany<TCoupon, TBaseFilter>('Coupon', this.CouponFragment, 'CouponFragment', 'BaseFilterInput');
+    public getCouponById = this.createGetById<TCoupon>('Coupon', this.CouponFragment, 'CouponFragment');
+    public getCouponBySlug = this.createGetBySlug<TCoupon>('Coupon', this.CouponFragment, 'CouponFragment');
+    public updateCoupon = this.createUpdateEntity<TCoupon, TCouponInput>('Coupon', 'CouponInput', this.CouponFragment, 'CouponFragment')
+    public createCoupon = this.createCreateEntity<TCoupon, TCouponInput>('Coupon', 'CouponInput', this.CouponFragment, 'CouponFragment');
+    public deleteCoupon = this.createDeleteEntity('Coupon');
+    public deleteManyCoupons = this.createDeleteMany<TBaseFilter>('Coupon', 'BaseFilterInput');
+
+    public getCouponsByCodes = async (codes: string[],
+        customFragment?: DocumentNode, customFragmentName?: string): Promise<TCoupon[] | undefined> => {
+        const path = GraphQLPaths.Coupon.getCouponsByCodes;
+        const fragment = customFragment ?? this.CouponFragment;
+        const fragmentName = customFragmentName ?? 'CouponFragment';
+
+        return this.query({
+            query: gql`
+                query coreGetCouponsByCodes($codes: String[]!) {
+                    ${path}(codes: $codes, pagedParams: $pagedParams) {
+                        ...${fragmentName}
+                    }
+                }
+                ${fragment}
+            `,
+            variables: {
+                codes,
+            }
+        }, path);
+    }
+
+    // </Coupon>
+
+
     // <Order>
 
     public OrderFragment = gql`
@@ -1129,62 +1188,6 @@ export class CGraphQLClient {
     public deleteManyCustomEntities = this.createDeleteMany<TCustomEntityFilter>('CustomEntity', 'CustomEntityFilterInput');
 
     // </CustomEntity>
-
-
-    // <Coupon>
-
-    public CouponFragment = gql`
-    fragment CouponFragment on Coupon {
-        id
-        createDate
-        updateDate
-        pageTitle
-        pageDescription
-        meta {
-            keywords
-        }
-        isEnabled
-        discountType
-        value
-        code
-        description
-        allowFreeShipping
-        minimumSpend
-        maximumSpend
-        categoryIds
-        productIds
-        expiryDate
-        usageLimit
-    }`;
-
-    public getCoupons = this.createGetMany<TCoupon, TBaseFilter>('Coupon', this.CouponFragment, 'CouponFragment', 'BaseFilterInput');
-    public getCouponById = this.createGetById<TCoupon>('Coupon', this.CouponFragment, 'CouponFragment');
-    public getCouponBySlug = this.createGetBySlug<TCoupon>('Coupon', this.CouponFragment, 'CouponFragment');
-    public updateCoupon = this.createUpdateEntity<TCoupon, TCouponInput>('Coupon', 'CouponInput', this.CouponFragment, 'CouponFragment')
-    public createCoupon = this.createCreateEntity<TCoupon, TCouponInput>('Coupon', 'CouponInput', this.CouponFragment, 'CouponFragment');
-    public deleteCoupon = this.createDeleteEntity('Coupon');
-    public deleteManyCoupons = this.createDeleteMany<TBaseFilter>('Coupon', 'BaseFilterInput');
-
-    public getCouponsByCodes = async (codes: string[],
-        customFragment?: DocumentNode, customFragmentName?: string): Promise<TCoupon[] | undefined> => {
-        const path = GraphQLPaths.Coupon.getCouponsByCodes;
-        const fragment = customFragment ?? this.CouponFragment;
-        const fragmentName = customFragmentName ?? 'CouponFragment';
-
-        return this.query({
-            query: gql`
-                query coreGetCouponsByCodes($codes: String[]!) {
-                    ${path}(codes: $codes, pagedParams: $pagedParams) {
-                        ...${fragmentName}
-                    }
-                }
-                ${fragment}
-            `,
-            variables: {
-                codes,
-            }
-        }, path);
-    }
 }
 
 export type TCGraphQLClient = CGraphQLClient;

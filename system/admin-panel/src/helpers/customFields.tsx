@@ -16,7 +16,7 @@ import entityEditStyles from '../components/entity/entityEdit/EntityEdit.module.
 import { CheckboxInput } from '../components/inputs/CheckboxInput';
 import { Datepicker, DatepickerProps } from '../components/inputs/DateInput';
 import { SelectInput, SelectInputProps } from '../components/inputs/SelectInput';
-import { TextInputField, TextInputProps } from '../components/inputs/TextInput';
+import { TextInput, TextInputProps } from '../components/inputs/TextInput';
 import { GalleryPicker, GalleryPickerProps } from '../components/inputs/GalleryInput/GalleryInput';
 import { ImageInput, ImageInputProps } from '../components/inputs/Image/ImageInput';
 import { destroyEditor, getEditorData, getEditorHtml, initTextEditor } from './editor/editor';
@@ -201,7 +201,7 @@ export const getSimpleTextField = (settings: {
             const [showPassword, setShowPassword] = useState(false);
             fieldsCache[id].value = value;
 
-            return <TextInputField
+            return <TextInput
                 value={value ?? ''}
                 type={(simpleTextType === 'password' && !showPassword) ? 'password' : 'text'}
                 onChange={e => {

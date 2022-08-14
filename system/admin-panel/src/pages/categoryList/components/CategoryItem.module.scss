@@ -50,7 +50,7 @@
 .subList {
     display: flex;
     flex-direction: column;
-    margin-left: 20px;
+    margin-left: 38px;
     position: relative;
 }
 
@@ -59,7 +59,7 @@
     position: absolute;
     border-left: 1px solid #bbb;
     height: 100%;
-    left: 9px;
+    left: -9px;
     z-index: 10;
 }
 

@@ -1,14 +1,13 @@
-import { Dialog, Transition } from "@headlessui/react"
-import React, { Fragment, useState } from "react"
-import { Controller, useForm } from "react-hook-form";
-import { ActionButton } from "../../../components/actionButton"
-import { TextInputField } from "../../../components/inputs/TextInput";
-import { slugify } from "../../../helpers/slugify";
-import { useAdminSettings } from "../../../hooks/useAdminSettings";
-import { ImageInput } from "../../../components/inputs/Image/ImageInput";
-import { TAdminCustomEntity, TRoleInput } from "@cromwell/core";
-import { baseEntityColumns } from '../../../helpers/customEntities';
-import { SwitchInput } from "../../../components/inputs/SwitchInput";
+import { TRoleInput } from '@cromwell/core';
+import { Dialog, Transition } from '@headlessui/react';
+import React, { Fragment } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+
+import { ActionButton } from '../../../components/actionButton';
+import { SwitchInput } from '../../../components/inputs/SwitchInput';
+import { TextInput } from '../../../components/inputs/TextInput';
+import { slugify } from '../../../helpers/slugify';
+import { useAdminSettings } from '../../../hooks/useAdminSettings';
 
 type FormType = TRoleInput;
 
@@ -86,7 +85,7 @@ export const NewRoleForm = ({
                   </div>
 
                   <div className="grid gap-2 grid-cols-1">
-                    <TextInputField
+                    <TextInput
                       label="Role Title"
                       placeholder="My Custom Role"
                       required
@@ -96,7 +95,7 @@ export const NewRoleForm = ({
                         setValue("name", slugify(val))
                       }})}
                     />
-                    <TextInputField
+                    <TextInput
                       label="Name key"
                       placeholder="Will be filled automatically"
                       required

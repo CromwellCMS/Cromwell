@@ -80,6 +80,11 @@ export type TEntityPageProps<TEntityType extends TBasePageEntity, TFilterType ex
   hideAddNew?: boolean;
 
   /**
+   * Disable meta fields such as title, description, etc.
+   */
+  disableMeta?: boolean;
+
+  /**
    * Get JSX input fields for entity properties
    */
   renderFields?: (data: TEntityType) => JSX.Element;
@@ -108,6 +113,8 @@ export type TEntityPageProps<TEntityType extends TBasePageEntity, TFilterType ex
     getHeaderLeftActions?: (props: TListItemProps<TEntityType, TFilterType>) => JSX.Element;
     getHeaderRightActions?: (props: TListItemProps<TEntityType, TFilterType>) => JSX.Element;
     getTableContent?: (props: TListItemProps<TEntityType, TFilterType>) => JSX.Element;
+    getEntityFields?: (props: TFieldsComponentProps<TEntityType>) => JSX.Element;
+    getEntityHeaderCenter?: (props: TFieldsComponentProps<TEntityType>) => JSX.Element;
   }
 
   /** 
@@ -192,3 +199,13 @@ export type TSearchStore = {
   filters?: TBaseFilter['filters'];
   sortedColumns?: Record<string, TSavedConfiguredColumn>;
 }
+
+export type TEntityEditState<TEntityType> = {
+  entityData?: TEntityType;
+  isLoading: boolean;
+  notFound: boolean;
+  isSaving: boolean;
+  canValidate: boolean;
+}
+
+export type TFieldsComponentProps<TEntityType> = TEntityEditState<TEntityType>;
