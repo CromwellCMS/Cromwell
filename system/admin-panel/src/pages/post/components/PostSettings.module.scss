@@ -1,7 +1,7 @@
-@import "../../styles/common.module.scss";
+@import "../../../styles/common.module.scss";
 
 div.popover {
-    @include paper;
+    @include paperElevated;
 }
 
 .PostSettings {

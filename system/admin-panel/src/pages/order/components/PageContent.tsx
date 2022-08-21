@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 
 import { TFieldsComponentProps } from '../../../components/entity/types';
-import { Autocomplete } from '../../../components/inputs/AutocompleteInput';
+import { AutocompleteInput } from '../../../components/inputs/AutocompleteInput';
 import { TextInput } from '../../../components/inputs/TextInput';
 import { orderStatuses } from '../../../constants/order';
 import { couponPageInfo, productPageInfo } from '../../../constants/PageInfos';
@@ -105,7 +105,7 @@ export function PageContent(props: TFieldsComponentProps<TOrder> & {
         <div className={styles.fields}>
           <Grid container spacing={3}>
             <Grid item xs={12} sm={6}>
-              <Autocomplete
+              <AutocompleteInput
                 value={data?.status ?? orderStatuses[0]}
                 onChange={(event: any, newValue: string | null) => {
                   handleInputChange('status', newValue);

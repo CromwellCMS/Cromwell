@@ -72,8 +72,8 @@ class EntityTableItem<TEntityType extends TBasePageEntity, TFilterType extends T
             if (col.type === 'Color') {
               content = (
                 <div style={{
-                  width: '30px',
-                  height: '30px',
+                  width: '20px',
+                  height: '20px',
                   backgroundColor: value,
                   borderRadius: '100%',
                 }}></div>

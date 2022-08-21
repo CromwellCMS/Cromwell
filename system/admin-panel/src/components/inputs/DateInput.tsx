@@ -9,16 +9,17 @@ import React, { useState } from 'react';
 
 import { TextInput } from './TextInput';
 
-export type DatepickerProps = {
+export type DateInputProps = {
   value?: Date | DateRange<Date> | null;
   defaultValue?: Date | DateRange<Date> | null;
   onChange?: (date: Date | DateRange<Date> | null) => void;
   label?: string;
   dateType?: 'date' | 'datetime' | 'time';
   range?: boolean;
+  className?: string;
 }
 
-export function Datepicker({ label, dateType, value, onChange, range, defaultValue }: DatepickerProps) {
+export function DateInput({ label, dateType, value, onChange, range, defaultValue, className }: DateInputProps) {
   const [internalValue, setInternalValue] = useState(defaultValue);
 
   const handleChange = (newValue) => {
@@ -96,8 +97,10 @@ export function Datepicker({ label, dateType, value, onChange, range, defaultVal
   }
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDateFns}>
-      {content}
-    </LocalizationProvider>
+    <Box className={className}>
+      <LocalizationProvider dateAdapter={AdapterDateFns}>
+        {content}
+      </LocalizationProvider>
+    </Box>
   )
 }

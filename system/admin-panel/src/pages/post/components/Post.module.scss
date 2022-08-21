@@ -1,4 +1,18 @@
-@import "../../styles/common.module.scss";
+@import "../../../styles/common.module.scss";
+
+.postTitle {
+    font-weight: 500;
+    font-size: 1.5rem;
+    margin-left: 15px;
+    margin-right: 5px;
+    background: transparent;
+    margin: 0;
+    width: 100%;
+}
+
+.postTitle:focus {
+    outline: none;
+}
 
 .Post {
     @include paper;
@@ -33,14 +47,6 @@
     .headerLeft {
         display: flex;
         align-items: center;
-    }
-
-    .title {
-        font-weight: 500;
-        font-size: 18px;
-        margin-left: 15px;
-        margin-right: 5px;
-        cursor: pointer;
     }
 
     .backIcon {

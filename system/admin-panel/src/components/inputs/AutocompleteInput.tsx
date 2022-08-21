@@ -6,20 +6,21 @@ import React from 'react';
 import commonStyles from '../../styles/common.module.scss';
 import { TextInput } from './TextInput';
 
-export function Autocomplete<T>(props: Omit<AutocompleteProps<T, boolean, boolean, boolean>, 'renderInput'> & {
+export function AutocompleteInput<T>(props: Omit<AutocompleteProps<T, boolean, boolean, boolean>, 'renderInput'> & {
   tooltip?: string;
   label?: string;
   inlineOptions?: boolean;
   paperStyle?: React.CSSProperties;
+  inputWrapper?: (content: React.ReactNode) => JSX.Element;
 }): JSX.Element {
-  const { tooltip, label, inlineOptions, paperStyle, ...rest } = props;
+  const { tooltip, label, inlineOptions, paperStyle, inputWrapper, ...rest } = props;
   return (
     <MuiAutocomplete
       PopperComponent={inlineOptions ? InlinePopperComponent({ paperStyle }) : StyledPopper}
       ListboxProps={{ className: commonStyles.styledScrollBarList }}
       {...rest}
       renderInput={({ size, InputProps, inputProps, ...rest }) => { // eslint-disable-line @typescript-eslint/no-unused-vars
-        const content = (
+        let content: JSX.Element = (
           <div ref={InputProps.ref}>
             <TextInput
               startAdornment={InputProps.startAdornment}
@@ -32,8 +33,11 @@ export function Autocomplete<T>(props: Omit<AutocompleteProps<T, boolean, boolea
             />
           </div>
         );
+        if (inputWrapper) {
+          content = inputWrapper(content);
+        }
         if (tooltip) {
-          return (<Tooltip title={tooltip}>{content}</Tooltip>)
+          content = <Tooltip title={tooltip}>{content}</Tooltip>;
         }
         return content;
       }}

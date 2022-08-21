@@ -1,8 +1,8 @@
 import { TCustomEntityColumn } from '@cromwell/core';
 import React from 'react';
 
-import { Autocomplete } from '../../../inputs/AutocompleteInput';
-import { Datepicker } from '../../../inputs/DateInput';
+import { AutocompleteInput } from '../../../inputs/AutocompleteInput';
+import { DateInput } from '../../../inputs/DateInput';
 import { TextInput } from '../../../inputs/TextInput';
 import styles from '../EntityTable.module.scss';
 import { TGetAutocompleteValueFromSearch } from './TableHeader';
@@ -17,7 +17,7 @@ export function SearchContent(props: {
   if (columnSearch?.searchOptions) {
     // Select
     return (
-      <Autocomplete
+      <AutocompleteInput
         multiple={columnSearch.multipleOptions}
         options={columnSearch.searchOptions}
         inlineOptions
@@ -37,7 +37,7 @@ export function SearchContent(props: {
   if (columnSearch?.type === 'Date' || columnSearch?.type === 'Datetime') {
     // Datepicker range
     return (
-      <Datepicker
+      <DateInput
         defaultValue={JSON.parse(String(currentSearchRef.current || '[]'))}
         onChange={(value) => currentSearchRef.current = JSON.stringify(value)}
         range

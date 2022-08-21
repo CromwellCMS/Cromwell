@@ -1,11 +1,13 @@
 import { EDBEntity, getRandStr, TPagedParams, TProduct, TProductCategory } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
-import { SmartButton as SmartButtonIcon } from '@mui/icons-material';
-import { IconButton, InputAdornment, TextField, Tooltip } from '@mui/material';
+import { SparklesIcon } from "@heroicons/react/outline";
+import { Tooltip } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 
-import { SearchInput } from '../../components/inputs/Search/SearchInput';
+import { IconButton } from '../../components/buttons/IconButton';
 import EntityEdit from '../../components/entity/entityEdit/EntityEdit';
+import { SearchInput } from '../../components/inputs/Search/SearchInput';
+import { TextInput } from '../../components/inputs/TextInput';
 import LoadBox from '../../components/loadBox/LoadBox';
 import { couponListPageInfo, couponPageInfo } from '../../constants/PageInfos';
 
@@ -36,28 +38,21 @@ export default function CouponPage() {
             onChange(getRandStr(8).toUpperCase());
           }
 
-          return <TextField label="Code"
+          return <TextInput label="Code"
             value={value || ''}
-            fullWidth
-            style={{ margin: '10px 0' }}
-            variant="standard"
             onChange={(e) => { onChange(e.target.value) }}
             error={canValidate && error}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <Tooltip title="Generate code">
-                    <IconButton
-                      aria-label="Generate code"
-                      onClick={handleGenerateCode}
-                      edge="end"
-                    >
-                      {<SmartButtonIcon />}
-                    </IconButton>
-                  </Tooltip>
-                </InputAdornment>
-              ),
-            }}
+            endAdornment={(
+              <div className="flex items-center">
+                <Tooltip title="Generate code">
+                  <IconButton
+                    aria-label="Generate code"
+                    onClick={handleGenerateCode}>
+                    <SparklesIcon className="w-5 h-5" />
+                  </IconButton>
+                </Tooltip>
+              </div>
+            )}
           />
         }
       },
@@ -168,7 +163,6 @@ export default function CouponPage() {
           ) : <LoadBox size={30} />
         }
       },
-
       {
         key: 'productIds',
         type: 'custom',

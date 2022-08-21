@@ -27,10 +27,10 @@ import {
 import commonStyles from '../../../styles/common.module.scss';
 import { IconButton } from '../../buttons/IconButton';
 import { TextButton } from '../../buttons/TextButton';
-import { Autocomplete } from '../../inputs/AutocompleteInput';
+import { AutocompleteInput } from '../../inputs/AutocompleteInput';
 import { TextInput } from '../../inputs/TextInput';
 import { toast } from '../../toast/toast';
-import { TBaseEntityFilter, TEditField, TEntityEditState, TEntityPageProps } from '../types';
+import { TBaseEntityFilter, TEditField, TEntityEditState, TEntityPageProps, TFieldsComponentProps } from '../types';
 import styles from './EntityEdit.module.scss';
 import { InputField } from './InputField';
 
@@ -150,7 +150,10 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
     this.setState({ canValidate: true });
 
     const entityData = this.state?.entityData;
-    if (!entityData) return;
+    if (!entityData) {
+      console.warn('handleSave: !entityData')
+      return;
+    }
 
     let inputData: Omit<TEntityType, 'id'> = {
       slug: entityData.slug,
@@ -190,7 +193,10 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
 
     if (this.props.onSave) {
       inputData = await this.props.onSave(inputData);
-      if (!inputData) return;
+      if (!inputData) {
+        console.warn('No data was returned from `onSave` prop')
+        return;
+      }
     }
 
     this.setState({ isSaving: true });
@@ -334,6 +340,12 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
       }
     }
 
+    const elementProps: TFieldsComponentProps<TEntityType> = {
+      ...(this.state ?? {}),
+      refetchMeta: this.refetchMeta,
+      onSave: this.handleSave,
+    }
+
     return (
       <div className={styles.EntityEdit}>
         <ElevationScroll>
@@ -347,7 +359,7 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
               </IconButton>
               <p className={styles.pageTitle}>{(entityLabel ?? entityType ?? entityCategory)}</p>
             </div>
-            {customElements?.getEntityHeaderCenter?.(this.state)}
+            {customElements?.getEntityHeaderCenter?.(elementProps)}
             <div className={styles.headerActions}>
               {pageFullUrl && (
                 <Tooltip
@@ -380,7 +392,7 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
             ))
           )}
           {!isLoading && (<>
-            {(entityData && customElements?.getEntityFields?.(this.state))
+            {(entityData && customElements?.getEntityFields?.(elementProps))
               || (entityData && !!this.props?.fields?.length && (
                 <Grid container spacing={3}>
                   {this.props.fields.map(field => {
@@ -436,7 +448,7 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
                   />
                 </Grid>
                 <Grid item xs={12}>
-                  <Autocomplete
+                  <AutocompleteInput
                     multiple
                     freeSolo
                     options={[]}

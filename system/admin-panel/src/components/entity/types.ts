@@ -202,10 +202,13 @@ export type TSearchStore = {
 
 export type TEntityEditState<TEntityType> = {
   entityData?: TEntityType;
-  isLoading: boolean;
-  notFound: boolean;
-  isSaving: boolean;
-  canValidate: boolean;
+  isLoading?: boolean;
+  notFound?: boolean;
+  isSaving?: boolean;
+  canValidate?: boolean;
 }
 
-export type TFieldsComponentProps<TEntityType> = TEntityEditState<TEntityType>;
+export type TFieldsComponentProps<TEntityType> = TEntityEditState<TEntityType> & {
+  refetchMeta: () => Promise<Record<string, string>>;
+  onSave: () => Promise<void>;
+};

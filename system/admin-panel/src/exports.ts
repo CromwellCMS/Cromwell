@@ -1,5 +1,5 @@
 export * from './components/fileManager/helpers';
-export { ColorPicker } from './components/colorPicker/ColorPicker';
+export { ColorInput } from './components/inputs/ColorInput';
 export { DraggableList } from './components/draggableList/DraggableList';
 export { GalleryPicker } from './components/inputs/GalleryInput/GalleryInput';
 export { ImageInput } from './components/inputs/Image/ImageInput';
