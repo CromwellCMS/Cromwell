@@ -877,12 +877,16 @@ export type TCustomEntityColumn = {
         label: string;
     }[];
     customGraphQlFragment?: string;
+    // Uses json-to-graphql-query to translate object into graphql fragment
+    customGraphQlProperty?: TCustomGraphQlProperty;
     disableSort?: boolean;
     disableSearch?: boolean;
     getValueView?: (value: any) => React.ReactNode;
     getTooltipValueView?: (value: any) => React.ReactNode;
     applyFilter?: <TFilter extends TBaseFilter>(value: any, filter: TFilter) => TFilter;
 }
+
+export type TCustomGraphQlProperty = { [k: string]: TCustomGraphQlProperty | boolean } | string;
 
 export type TCmsEntity = TCmsEntityCore & TBasePageEntity;
 

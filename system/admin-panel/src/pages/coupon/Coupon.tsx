@@ -7,7 +7,7 @@ import React, { useEffect, useState } from 'react';
 import { IconButton } from '../../components/buttons/IconButton';
 import EntityEdit from '../../components/entity/entityEdit/EntityEdit';
 import { SearchInput } from '../../components/inputs/Search/SearchInput';
-import { TextInput } from '../../components/inputs/TextInput';
+import { TextInput } from '../../components/inputs/TextInput/TextInput';
 import LoadBox from '../../components/loadBox/LoadBox';
 import { couponListPageInfo, couponPageInfo } from '../../constants/PageInfos';
 

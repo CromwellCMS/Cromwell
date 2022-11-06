@@ -3,9 +3,9 @@ import 'date-fns';
 import { IconButton } from '@components/buttons/IconButton';
 import { TextButton } from '@components/buttons/TextButton';
 import { AutocompleteInput } from '@components/inputs/AutocompleteInput';
-import { DateInput } from '@components/inputs/DateInput';
+import { DateInput } from '@components/inputs/DateInput/DateInput';
 import { SwitchInput } from '@components/inputs/SwitchInput';
-import { TextInput } from '@components/inputs/TextInput';
+import { TextInput } from '@components/inputs/TextInput/TextInput';
 import { EDBEntity, resolvePageRoute, serviceLocator, TPost, TTag } from '@cromwell/core';
 import { Close as CloseIcon } from '@mui/icons-material';
 import { Popover, Tooltip } from '@mui/material';
@@ -130,6 +130,7 @@ const PostSettings = (props: {
         />
         <DateInput
           label="Publish date"
+          dateType="datetime"
           value={getValue('publishDate')}
           onChange={handleChangePublishDate}
           className={styles.settingItem}

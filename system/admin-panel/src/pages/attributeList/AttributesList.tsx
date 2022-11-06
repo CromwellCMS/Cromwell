@@ -39,7 +39,13 @@ export default function AttributesList() {
           visible: true,
           disableSearch: true,
           disableSort: true,
-          customGraphQlFragment: 'values {\n id\n value\n title\n }\n',
+          customGraphQlProperty: {
+            values: {
+              id: true,
+              value: true,
+              title: true,
+            },
+          },
           getValueView: (value: TAttributeValue[]) => value?.map(r => r.title ?? r.value).join(', '),
           getTooltipValueView: (value: any) => value?.map(r => r.title ?? r.value).join(', '),
         },

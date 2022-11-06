@@ -346,7 +346,9 @@ export function TableHeader<TEntityType extends TBasePageEntity, TFilterType ext
             }}
             elevation={0}
           >
-            <div className={styles.columnSearch}>
+            <div className={styles.columnSearch} style={{
+              width: columnSearch?.type === "Date" || columnSearch?.type === "Datetime" ? '400px' : '300px',
+            }}>
               <XIcon className="w-4 h-5 absolute top-1 right-1 cursor-pointer" onClick={closeColumnSearch} />
               <SearchContent
                 getAutocompleteValueFromSearch={getAutocompleteValueFromSearch}

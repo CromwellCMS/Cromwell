@@ -14,9 +14,9 @@ import { debounce } from 'throttle-debounce';
 import { ColorInput, ColorInputProps } from '../components/inputs/ColorInput';
 import entityEditStyles from '../components/entity/entityEdit/EntityEdit.module.scss';
 import { CheckboxInput } from '../components/inputs/CheckboxInput';
-import { DateInput, DateInputProps } from '../components/inputs/DateInput';
+import { DateInput, DateInputProps, DateInputType } from '../components/inputs/DateInput/DateInput';
 import { SelectInput, SelectInputProps } from '../components/inputs/SelectInput';
-import { TextInput, TextInputProps } from '../components/inputs/TextInput';
+import { TextInput, TextInputProps } from '../components/inputs/TextInput/TextInput';
 import { GalleryPicker, GalleryPickerProps } from '../components/inputs/GalleryInput/GalleryInput';
 import { ImageInput, ImageInputProps } from '../components/inputs/Image/ImageInput';
 import { destroyEditor, getEditorData, getEditorHtml, initTextEditor } from './editor/editor';
@@ -669,7 +669,7 @@ export const getDatepickerField = (settings: {
   id: string;
   label?: string;
   props?: DateInputProps;
-  dateType?: 'date' | 'datetime' | 'time';
+  dateType?: DateInputType;
 }) => {
   const { id, label, dateType } = settings;
   if (fieldsCache[id]) return fieldsCache[id];
@@ -705,7 +705,7 @@ export const registerDatepickerCustomField = (settings: {
   key: string;
   label?: string;
   props?: DateInputProps;
-  dateType?: 'date' | 'datetime' | 'time';
+  dateType?: DateInputType;
 }) => {
   const id = getRandStr(12);
   const field = getDatepickerField({ id, ...settings });

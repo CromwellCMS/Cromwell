@@ -1,4 +1,5 @@
 import { getStoreItem, matchPermissions, onStoreChange, setStoreItem } from '@cromwell/core';
+import { getPalette } from '@helpers/getPalette';
 import { ThemeProvider } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
 import deepEqual from 'fast-deep-equal/es6';
@@ -48,38 +49,11 @@ function Layout() {
   document.body.classList.add(darkMode ? 'dark' : 'light');
 
 
-  const theme = createTheme(darkMode ? {
+  const theme = createTheme({
     typography: {
-      fontFamily: `ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"`,
+      fontFamily: `Roboto, ui-sans-serif, system-ui, -apple-system, Segoe UI, Ubuntu, Cantarell, Noto Sans, sans-serif, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"`,
     },
-    palette: {
-      primary: {
-        main: '#9747d3',
-        light: '#9747d3',
-        dark: '#8228c5',
-      },
-      secondary: {
-        main: '#910081',
-        light: '#910081',
-        dark: '#910081',
-      }
-    },
-  } : {
-    typography: {
-      fontFamily: `ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"`,
-    },
-    palette: {
-      primary: {
-        main: 'rgba(79, 70, 229, 1)',
-        light: 'rgba(99, 102, 241, 1)',
-        dark: 'rgba(99, 102, 241, 1)',
-      },
-      secondary: {
-        main: '#910081',
-        light: '#910081',
-        dark: '#910081',
-      }
-    },
+    palette: getPalette(),
   });
 
   return (

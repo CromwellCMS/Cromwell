@@ -108,10 +108,28 @@ export default function CategoryList() {
             return filter;
           },
           getValueView: (parent) => parent?.name,
-          customGraphQlFragment: `parent { 
-              id
-              name
-          }`,
+          customGraphQlProperty: {
+            parent: {
+              name: true
+            }
+          },
+        },
+        {
+          name: 'parent',
+          label: 'Parent ID',
+          type: 'Simple text',
+          visible: false,
+          applyFilter: (value: string, filter) => {
+            //@ts-ignore
+            (filter as TProductCategoryFilter).parentId = value;
+            return filter;
+          },
+          getValueView: (parent) => parent?.id,
+          customGraphQlProperty: {
+            parent: {
+              id: true,
+            }
+          },
         },
         ...baseEntityColumns.map(col => {
           if (col.name === 'createDate') return { ...col, visible: true }

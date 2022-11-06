@@ -5,7 +5,7 @@ import { Controller, useForm } from 'react-hook-form';
 
 import { ActionButton } from '../../../components/actionButton';
 import { ImageInput } from '../../../components/inputs/Image/ImageInput';
-import { TextInput } from '../../../components/inputs/TextInput';
+import { TextInput } from '../../../components/inputs/TextInput/TextInput';
 import { baseEntityColumns } from '../../../helpers/customEntities';
 import { slugify } from '../../../helpers/slugify';
 import { useAdminSettings } from '../../../hooks/useAdminSettings';

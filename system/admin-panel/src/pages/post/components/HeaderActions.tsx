@@ -1,11 +1,11 @@
+import { IconButton } from '@components/buttons/IconButton';
+import { TextButton } from '@components/buttons/TextButton';
 import { TPost, TTag } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
+import { useForceUpdate } from '@helpers/forceUpdate';
 import { MoreHoriz as MoreHorizIcon } from '@mui/icons-material';
 import { Box, Tooltip } from '@mui/material';
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { IconButton } from '@components/buttons/IconButton';
-import { TextButton } from '@components/buttons/TextButton';
-import { useForceUpdate } from '@helpers/forceUpdate';
 
 import { TFieldsComponentProps } from '../../../components/entity/types';
 import { PostContext } from '../contexts/PostContext';
@@ -76,10 +76,10 @@ export function HeaderActions(props: TFieldsComponentProps<TPost>) {
       display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%',
       paddingRight: '15px'
     }}>
-        <input className={styles.postTitle}
-          value={data?.title ?? ''}
-          onChange={handleChangeTitle}
-        />
+      <input className={styles.postTitle}
+        value={data?.title ?? ''}
+        onChange={handleChangeTitle}
+      />
       <Box ref={actionsRef} sx={{ display: 'flex', alignItems: 'center', }}>
         <Tooltip title="Post meta info">
           <IconButton onClick={handleToggleSettings}

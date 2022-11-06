@@ -5,7 +5,7 @@ import React from 'react';
 
 import { IconButton } from '../../../components/buttons/IconButton';
 import { getFileManager } from '../../../components/fileManager/helpers';
-import { TextInput } from '../../../components/inputs/TextInput';
+import { TextInput } from '../../../components/inputs/TextInput/TextInput';
 
 export const ValueItem = (props: {
   value: string;

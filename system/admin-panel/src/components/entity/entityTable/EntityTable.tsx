@@ -11,9 +11,10 @@ import Pagination from '../../pagination/Pagination';
 import { listPreloader } from '../../skeleton/SkeletonPreloader';
 import { toast } from '../../toast/toast';
 import { IEntityListPage, TBaseEntityFilter, TEntityPageProps, TListItemProps, TSearchStore } from '../types';
+import { customGraphQlPropertyToFragment } from '../utils';
 import EntityTableItem from './components/EntityTableItem';
-import { TableHeader } from './components/TableHeader';
 import { PageHeader } from './components/PageHeader';
+import { TableHeader } from './components/TableHeader';
 import styles from './EntityTable.module.scss';
 
 export const configuredColumnsKey = 'crw_entity_table_columns';
@@ -181,26 +182,30 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
       'id',
       ...['slug', 'isEnabled', this.props.entityType && 'entityType', 'createDate', 'updateDate']
         .filter(prop => tableColumns.find(col => col.name === prop)?.visible),
-      ...tableColumns.filter(col => !col.meta && col.visible && !col.customGraphQlFragment).map(col => col.name),
+      ...tableColumns.filter(col => !col.meta && col.visible && !col.customGraphQlFragment
+        && !col.customGraphQlProperty).map(col => col.name),
     ])].filter(Boolean);
 
     const metaProperties = [...new Set([
-      ...tableColumns.filter(col => col.meta && col.visible && !col.customGraphQlFragment).map(col => col.name)
+      ...tableColumns.filter(col => col.meta && col.visible && !col.customGraphQlFragment
+        && !col.customGraphQlProperty).map(col => col.name)
     ])].filter(Boolean);
 
     const customFragments = tableColumns.filter(col => col.visible && col.customGraphQlFragment)
       .map(col => col.customGraphQlFragment);
 
+    const customProperties = customGraphQlPropertyToFragment(tableColumns.map(c => c.customGraphQlProperty).filter(Boolean));
+
     const data = (await this.props.getMany({
       pagedParams: params,
       customFragment: gql`
-                fragment ${this.props.entityCategory}ListFragment on ${this.props.entityCategory} {
-                    ${customFragments.join('\n')}
-                    ${entityProperties.join('\n')}
-
-                    ${metaProperties?.length ? `customMeta(keys: ${JSON.stringify(metaProperties)})` : ''}
-                }
-            `,
+        fragment ${this.props.entityCategory}ListFragment on ${this.props.entityCategory} {
+          ${customFragments.join('\n')}
+          ${entityProperties.join('\n')}
+          ${customProperties}
+          ${metaProperties?.length ? `customMeta(keys: ${JSON.stringify(metaProperties)})` : ''}
+        }
+      `,
       customFragmentName: `${this.props.entityCategory}ListFragment`,
       filterParams: filterInput,
     }).catch(err => console.error(err))) || undefined;

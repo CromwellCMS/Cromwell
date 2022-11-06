@@ -2,6 +2,7 @@ import './helpers/Draggable/Draggable.css';
 import './helpers/importDependencies';
 import './styles/global.scss';
 import '@cromwell/core-frontend/dist/_index.css';
+import 'rsuite/dist/rsuite.min.css';
 import 'pure-react-carousel/dist/react-carousel.es.css';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
@@ -167,7 +168,3 @@ import { store } from './redux/store';
         document.getElementById('root')
     );
 })();
-
-
-
-

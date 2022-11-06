@@ -7,7 +7,7 @@ import { Link, useHistory } from 'react-router-dom';
 
 import { TFieldsComponentProps } from '../../../components/entity/types';
 import { AutocompleteInput } from '../../../components/inputs/AutocompleteInput';
-import { TextInput } from '../../../components/inputs/TextInput';
+import { TextInput } from '../../../components/inputs/TextInput/TextInput';
 import { orderStatuses } from '../../../constants/order';
 import { couponPageInfo, productPageInfo } from '../../../constants/PageInfos';
 import { parseAddress } from '../../../helpers/addressParser';

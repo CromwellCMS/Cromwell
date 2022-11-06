@@ -41,10 +41,12 @@ export default function AttributePage() {
         key: 'values',
         type: 'custom',
         component: ({ value, onChange }) => <AttributeValues values={value} changeValues={onChange} />,
-        customGraphQlFragment: `values {
-            value
-            icon
-          }`,
+        customGraphQlProperty: {
+          values: {
+            value: true,
+            icon: true,
+          }
+        },
         saveValue: (values: TAttributeValue[]): Record<'values', TAttributeValue[]> => {
           const valuesObj: Record<string, TAttributeValue> = {};
           values?.forEach(value => {

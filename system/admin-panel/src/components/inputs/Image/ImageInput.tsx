@@ -2,7 +2,7 @@ import { PhotographIcon, XIcon, ZoomInIcon, ZoomOutIcon, ExternalLinkIcon } from
 import React, { useCallback, useState } from 'react';
 
 import { getFileManager } from '../../fileManager/helpers';
-import { TextInput } from '../TextInput';
+import { TextInput } from '../TextInput/TextInput';
 
 export type ImageInputProps = {
   toolTip?: string;

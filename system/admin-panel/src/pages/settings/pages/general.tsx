@@ -8,7 +8,7 @@ import {
   FormProvider,
   Controller,
 } from "react-hook-form";
-import { TextInput } from "../../../components/inputs/TextInput";
+import { TextInput } from "../../../components/inputs/TextInput/TextInput";
 import { CustomFieldSettings } from "../components/customFields";
 import { EDBEntity } from "@cromwell/core";
 import { ImageInput } from "../../../components/inputs/Image/ImageInput";

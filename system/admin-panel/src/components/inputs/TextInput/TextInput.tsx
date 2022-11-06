@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import React, { ForwardedRef, useState } from 'react';
 
-import { NumberFormatCustom } from '../../helpers/NumberFormatCustom';
+import { NumberFormatCustom } from '../../../helpers/NumberFormatCustom';
 
 export interface InputBaseComponentProps
   extends React.HTMLAttributes<HTMLInputElement> {

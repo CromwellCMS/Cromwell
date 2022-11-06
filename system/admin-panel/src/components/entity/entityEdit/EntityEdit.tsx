@@ -28,7 +28,8 @@ import commonStyles from '../../../styles/common.module.scss';
 import { IconButton } from '../../buttons/IconButton';
 import { TextButton } from '../../buttons/TextButton';
 import { AutocompleteInput } from '../../inputs/AutocompleteInput';
-import { TextInput } from '../../inputs/TextInput';
+import { customGraphQlPropertyToFragment } from '../utils';
+import { TextInput } from '../../inputs/TextInput/TextInput';
 import { toast } from '../../toast/toast';
 import { TBaseEntityFilter, TEditField, TEntityEditState, TEntityPageProps, TFieldsComponentProps } from '../types';
 import styles from './EntityEdit.module.scss';
@@ -93,18 +94,19 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
       return;
     }
 
+    const fields = this.props.fields ?? [];
+
     const entityProperties = [...new Set([
       'id', this.props.entityType && 'entityType', 'createDate', 'updateDate',
       ...(!this.props.disableMeta ? [
         'slug', 'isEnabled', 'pageTitle', 'pageDescription', 'meta { \nkeywords \n}'
       ] : []),
-      ...((this.props.fields ?? [])
-        .filter(field => !field.customGraphQlFragment && !field.onlyOnCreate).map(field => field.key)),
+      ...(fields.filter(field => !field.customGraphQlFragment && !field.customGraphQlProperty
+        && !field.onlyOnCreate).map(field => field.key)),
     ])].filter(Boolean);
 
-    const customFragments = (this.props.fields ?? []).filter(field => field.customGraphQlFragment)
-      .map(field => field.customGraphQlFragment);
-
+    const customFragments = fields.map(field => field.customGraphQlFragment).filter(Boolean);
+    const customProperties = customGraphQlPropertyToFragment(fields.map(c => c.customGraphQlProperty).filter(Boolean));
     const metaKeys = getCustomMetaKeysFor(this.props.entityType ?? this.props.entityCategory);
 
     try {
@@ -113,6 +115,7 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
           fragment ${this.props.entityCategory}AdminPanelFragment on ${this.props.entityCategory} {
             ${customFragments.join('\n')}
             ${entityProperties.join('\n')}
+            ${customProperties}
             ${metaKeys?.length ? `customMeta (keys: ${JSON.stringify(metaKeys)})` : ''}
           }`, `${this.props.entityCategory}AdminPanelFragment`
       );

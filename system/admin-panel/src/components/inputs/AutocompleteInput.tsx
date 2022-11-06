@@ -4,7 +4,7 @@ import { styled } from '@mui/material/styles';
 import React from 'react';
 
 import commonStyles from '../../styles/common.module.scss';
-import { TextInput } from './TextInput';
+import { TextInput } from './TextInput/TextInput';
 
 export function AutocompleteInput<T>(props: Omit<AutocompleteProps<T, boolean, boolean, boolean>, 'renderInput'> & {
   tooltip?: string;
@@ -52,6 +52,7 @@ interface PopperComponentProps {
 }
 
 const InlinePopperComponent = ({ paperStyle }) => (props: PopperComponentProps) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { disablePortal, anchorEl, open, ...other } = props;
   return <InlinePopper {...other} style={{ ...((other as any)?.style ?? {}), ...(paperStyle ?? {}) }} />;
 }

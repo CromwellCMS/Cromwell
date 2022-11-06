@@ -4,7 +4,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 
 import { TBreadcrumbs } from '../../../components/breadcrumbs';
 import { GrabIcon } from '../../../components/icons/grabIcon';
-import { TextInput } from '../../../components/inputs/TextInput';
+import { TextInput } from '../../../components/inputs/TextInput/TextInput';
 import { TAdminCmsSettingsType, useAdminSettings } from '../../../hooks/useAdminSettings';
 import { DraggableCurrenciesList } from '../components/draggableCurrencies';
 

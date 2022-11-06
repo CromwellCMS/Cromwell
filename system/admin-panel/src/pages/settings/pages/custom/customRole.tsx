@@ -7,7 +7,7 @@ import { useParams } from 'react-router-dom';
 import { ActionButton } from '../../../../components/actionButton';
 import { TBreadcrumbs } from '../../../../components/breadcrumbs';
 import { SwitchInput } from '../../../../components/inputs/SwitchInput';
-import { TextInput } from '../../../../components/inputs/TextInput';
+import { TextInput } from '../../../../components/inputs/TextInput/TextInput';
 import { toast } from '../../../../exports';
 import { slugify } from '../../../../helpers/slugify';
 import { useAdminSettings } from '../../../../hooks/useAdminSettings';

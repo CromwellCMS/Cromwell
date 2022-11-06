@@ -6,7 +6,7 @@ import { Redirect, useHistory, useParams } from 'react-router-dom';
 import { ActionButton } from '../../../../components/actionButton';
 import { TBreadcrumbs } from '../../../../components/breadcrumbs';
 import { ImageInput } from '../../../../components/inputs/Image/ImageInput';
-import { TextInput } from '../../../../components/inputs/TextInput';
+import { TextInput } from '../../../../components/inputs/TextInput/TextInput';
 import { slugify } from '../../../../helpers/slugify';
 import { TAdminCmsSettingsType, useAdminSettings } from '../../../../hooks/useAdminSettings';
 import { DraggableEntityFields } from '../../components/draggableEntityFields';

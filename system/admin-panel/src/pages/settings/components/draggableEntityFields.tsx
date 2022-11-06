@@ -21,7 +21,7 @@ import {
   UseFieldArrayRemove,
   useFormContext,
 } from "react-hook-form";
-import { TextInput } from "../../../components/inputs/TextInput";
+import { TextInput } from "../../../components/inputs/TextInput/TextInput";
 import { TAdminCmsSettingsType } from "../../../hooks/useAdminSettings";
 import { GrabIcon } from "../../../components/icons/grabIcon";
 import {

@@ -3,7 +3,7 @@ import React, { useRef, useState } from 'react';
 import { SketchPicker } from 'react-color';
 
 import { useForceUpdate } from '../../helpers/forceUpdate';
-import { TextInput } from './TextInput';
+import { TextInput } from './TextInput/TextInput';
 
 export type ColorInputProps = {
   label?: string;

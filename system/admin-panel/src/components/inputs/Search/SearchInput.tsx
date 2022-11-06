@@ -5,7 +5,7 @@ import clsx from 'clsx';
 import React from 'react';
 import { debounce } from 'throttle-debounce';
 
-import { TextInput } from '../TextInput';
+import { TextInput } from '../TextInput/TextInput';
 import { ListItem, ListItemProps } from './ListItem';
 import styles from './SearchInput.module.scss';
 

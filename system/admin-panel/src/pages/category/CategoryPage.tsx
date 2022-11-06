@@ -32,10 +32,12 @@ export default function CategoryPage() {
       {
         key: 'parent',
         type: 'custom',
-        customGraphQlFragment: `parent {
-          id
-          slug
-        }`,
+        customGraphQlProperty: {
+          parent: {
+            id: true,
+            slug: true,
+          }
+        },
         saveValue: (parent) => {
           return {
             parentId: parent?.id,
@@ -107,7 +109,10 @@ export default function CategoryPage() {
         label: 'Description',
         saveValue: setValueOfTextEditorField,
         getInitialValue: getInitialValueOfTextEditorField,
-        customGraphQlFragment: `description \n descriptionDelta`
+        customGraphQlProperty: {
+          description: true,
+          descriptionDelta: true,
+        },
       },
     ]}
   />

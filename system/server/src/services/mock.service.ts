@@ -349,7 +349,7 @@ export class MockService {
             const idx = Math.round(Math.random() * array.length);
             result.push(array[idx]);
         }
-        return result;
+        return result.filter(Boolean);
     }
 
 

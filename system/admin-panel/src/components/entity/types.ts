@@ -6,6 +6,7 @@ import {
   TCustomEntityColumn,
   TCustomFieldSimpleTextType,
   TCustomFieldType,
+  TCustomGraphQlProperty,
   TDefaultPageName,
   TDeleteManyInput,
   TPagedList,
@@ -164,6 +165,8 @@ export type TEditField<TEntityType> = {
     error?: boolean;
   }>;
   customGraphQlFragment?: string;
+  // Uses json-to-graphql-query to translate object into graphql fragment
+  customGraphQlProperty?: TCustomGraphQlProperty;
   saveValue?: (value: any) => any;
   required?: boolean;
   onlyOnCreate?: boolean;
