@@ -22,7 +22,8 @@
     "build": "npx rollup -c",
     "buildService": "node startup.js buildService",
     "test": "npx --no-install jest",
-    "watch": "npx rollup -cw"
+    "watch": "npx rollup -cw",
+    "format": "prettier --write --ignore-unknown \"**/*.+(js|jsx|json|css|md|ts|tsx)\""
   },
   "dependencies": {
     "fs-extra": "10.0.0",

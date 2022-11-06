@@ -6,9 +6,9 @@ import { PagedMeta } from './meta.paged';
 
 @ObjectType()
 export class PagedCoupon implements TPagedList<TCoupon> {
-    @Field(() => PagedMeta, { nullable: true })
-    pagedMeta?: PagedMeta;
+  @Field(() => PagedMeta, { nullable: true })
+  pagedMeta?: PagedMeta;
 
-    @Field(() => [Coupon], { nullable: true })
-    elements?: Coupon[];
+  @Field(() => [Coupon], { nullable: true })
+  elements?: Coupon[];
 }

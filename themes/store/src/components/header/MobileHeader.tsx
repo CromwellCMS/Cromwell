@@ -9,11 +9,10 @@ import { appState } from '../../helpers/AppState';
 import { CloseIcon, FavoriteIcon, MenuIcon, ShoppingCartIcon, VisibilityIcon } from '../icons';
 import styles from './MobileHeader.module.scss';
 
-
 let globalCloseMenu;
 Router?.events?.on('routeChangeStart', () => {
   globalCloseMenu?.();
-})
+});
 
 export const MobileHeader = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -21,32 +20,29 @@ export const MobileHeader = () => {
 
   const handleCloseMenu = () => {
     setMenuOpen(false);
-  }
+  };
   const handleOpenMenu = () => {
     setMenuOpen(true);
     globalCloseMenu = () => setMenuOpen(false);
-  }
+  };
 
   const handleOpenCart = () => {
     appState.isCartOpen = true;
-  }
+  };
 
   const handleOpenWishlist = () => {
     appState.isWishlistOpen = true;
-  }
+  };
 
   const handleOpenWatched = () => {
     appState.isWatchedOpen = true;
-  }
+  };
 
   return (
     <>
       <Toolbar className={styles.dummyToolbar} />
       <HideOnScroll>
-        <AppBar
-          className={styles.appBar}
-          color="transparent"
-        >
+        <AppBar className={styles.appBar} color="transparent">
           <Toolbar>
             <div className={styles.appBarContent}>
               <div className={styles.leftActions}>
@@ -55,22 +51,15 @@ export const MobileHeader = () => {
                     <img className={styles.logo} src={cmsConfig?.logo} alt="logo" />
                   </Link>
                 </div>
-
               </div>
               <div className={styles.rightActions}>
-                <IconButton
-                  aria-label="Open wishlist"
-                  onClick={handleOpenWishlist}>
+                <IconButton aria-label="Open wishlist" onClick={handleOpenWishlist}>
                   <FavoriteIcon />
                 </IconButton>
-                <IconButton
-                  aria-label="Open cart"
-                  onClick={handleOpenCart}>
+                <IconButton aria-label="Open cart" onClick={handleOpenCart}>
                   <ShoppingCartIcon />
                 </IconButton>
-                <IconButton
-                  aria-label="Open main menu"
-                  onClick={handleOpenMenu}>
+                <IconButton aria-label="Open main menu" onClick={handleOpenMenu}>
                   <MenuIcon />
                 </IconButton>
               </div>
@@ -78,37 +67,25 @@ export const MobileHeader = () => {
           </Toolbar>
         </AppBar>
       </HideOnScroll>
-      <SwipeableDrawer
-        open={menuOpen}
-        onClose={handleCloseMenu}
-        onOpen={handleOpenMenu}
-      >
+      <SwipeableDrawer open={menuOpen} onClose={handleCloseMenu} onOpen={handleOpenMenu}>
         <div className={styles.drawer}>
           <div className={styles.menuActions}>
             <div className={styles.currencyOption}>
               <MuiCurrencySwitch />
             </div>
-            <IconButton
-              aria-label="Open recently viewed items"
-              onClick={handleOpenWatched}>
+            <IconButton aria-label="Open recently viewed items" onClick={handleOpenWatched}>
               <VisibilityIcon />
             </IconButton>
             {/* <IconButton onClick={handleOpenCompare}>
                             <EqualizerIcon />
                         </IconButton> */}
-            <IconButton
-              aria-label="Open wishlist"
-              onClick={handleOpenWishlist}>
+            <IconButton aria-label="Open wishlist" onClick={handleOpenWishlist}>
               <FavoriteIcon />
             </IconButton>
-            <IconButton
-              aria-label="Open shopping cart"
-              onClick={handleOpenCart}>
+            <IconButton aria-label="Open shopping cart" onClick={handleOpenCart}>
               <ShoppingCartIcon />
             </IconButton>
-            <IconButton
-              aria-label="Close main menu"
-              onClick={handleCloseMenu}>
+            <IconButton aria-label="Close main menu" onClick={handleCloseMenu}>
               <CloseIcon />
             </IconButton>
           </div>
@@ -117,12 +94,13 @@ export const MobileHeader = () => {
             <MuiProductSearch />
           </div>
           <CContainer id="mobile_header_13">
-            <CPlugin id="header_main_menu"
+            <CPlugin
+              id="header_main_menu"
               plugin={{
                 instanceSettings: {
-                  mobile: true
+                  mobile: true,
                 },
-                pluginName: "@cromwell/plugin-main-menu"
+                pluginName: '@cromwell/plugin-main-menu',
               }}
               blockName="Main menu"
             />
@@ -131,7 +109,7 @@ export const MobileHeader = () => {
       </SwipeableDrawer>
     </>
   );
-}
+};
 
 function HideOnScroll(props: { children: React.ReactElement }) {
   const trigger = useScrollTrigger();

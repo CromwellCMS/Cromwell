@@ -10,7 +10,7 @@ import styles from './ProductSearch.module.scss';
 export type ListItemProps = {
   product: TProduct;
   searchProps: ProductSearchProps;
-}
+};
 
 /** @internal */
 export const DefaultListItem = (props: ListItemProps) => {
@@ -18,22 +18,20 @@ export const DefaultListItem = (props: ListItemProps) => {
   const { classes } = searchProps;
   const cstore = getCStore();
   return (
-    <Link href={`/product/${product.slug}`}
-      key={product.id}
-      className={clsx(styles.searchItem, classes?.item)}
-    >
-      <div style={{ backgroundImage: `url(${product?.mainImage})` }}
+    <Link href={`/product/${product.slug}`} key={product.id} className={clsx(styles.searchItem, classes?.item)}>
+      <div
+        style={{ backgroundImage: `url(${product?.mainImage})` }}
         className={clsx(styles.searchItemImage, classes?.itemImage)}
       ></div>
       <p className={clsx(styles.searchItemTitle, classes?.itemTitle)}>{product.name}</p>
       <div className={clsx(styles.searchPriceBlock, classes?.priceBlock)}>
         {!!product.oldPrice && (
-          <p className={clsx(styles.searchItemOldPrice, classes?.oldPrice)}
-          >{cstore.getPriceWithCurrency(product.oldPrice)}</p>
+          <p className={clsx(styles.searchItemOldPrice, classes?.oldPrice)}>
+            {cstore.getPriceWithCurrency(product.oldPrice)}
+          </p>
         )}
-        <p className={clsx(styles.searchItemPrice, classes?.price)}
-        >{cstore.getPriceWithCurrency(product.price)}</p>
+        <p className={clsx(styles.searchItemPrice, classes?.price)}>{cstore.getPriceWithCurrency(product.price)}</p>
       </div>
     </Link>
   );
-}
+};

@@ -10,7 +10,7 @@ import styles from './ReviewItem.module.scss';
 export type ReviewItemProps = {
   data?: TProductReview;
   parentProps: ProductReviewsProps;
-}
+};
 
 /** @internal */
 export const ReviewItem = (props: ReviewItemProps) => {
@@ -24,12 +24,14 @@ export const ReviewItem = (props: ReviewItemProps) => {
           <Rating name="read-only" value={data.rating} precision={0.5} readOnly />
           <div className={clsx(styles.itemHeader, classes?.itemHeader)}>
             <p className={clsx(styles.itemUsername, classes?.itemUsername)}>{data.userName}</p>
-            <p className={clsx(styles.itemCreateDate, classes?.itemCreateDate)}>{data?.createDate ? format(Date.parse(String(data.createDate)), 'd MMMM yyyy') : ''}</p>
+            <p className={clsx(styles.itemCreateDate, classes?.itemCreateDate)}>
+              {data?.createDate ? format(Date.parse(String(data.createDate)), 'd MMMM yyyy') : ''}
+            </p>
           </div>
           <h4 className={clsx(styles.itemTitle, classes?.itemTitle)}>{data.title}</h4>
           <p className={clsx(styles.itemDescription, classes?.itemDescription)}>{data.description}</p>
         </>
       )}
-    </div >
-  )
-}
+    </div>
+  );
+};

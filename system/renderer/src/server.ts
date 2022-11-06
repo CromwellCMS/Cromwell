@@ -17,120 +17,126 @@ export { purgeNextJsFileCache } from './helpers/cacheManager';
 const logger = getLogger();
 
 export const startNextServer = async (options?: {
-    dev?: boolean;
-    port?: number;
-    dir?: string;
-    targetThemeName?: string;
+  dev?: boolean;
+  port?: number;
+  dir?: string;
+  targetThemeName?: string;
 }) => {
-    const config = await readCMSConfig();
-    const authSettings = await getAuthSettings();
-    setStoreItem('cmsSettings', config);
+  const config = await readCMSConfig();
+  const authSettings = await getAuthSettings();
+  setStoreItem('cmsSettings', config);
 
-    const themeName = options?.targetThemeName ?? config?.defaultSettings?.publicSettings?.themeName;
-    if (!themeName) {
-        logger.error('No theme name provided');
-        return;
+  const themeName = options?.targetThemeName ?? config?.defaultSettings?.publicSettings?.themeName;
+  if (!themeName) {
+    logger.error('No theme name provided');
+    return;
+  }
+
+  const port = options?.port ?? 3000;
+  const app = next({
+    dev: options?.dev ?? false,
+    dir: options?.dir,
+  });
+
+  if (config.monolith) {
+    try {
+      const dbConnector: typeof import('@cromwell/core-backend/dist/helpers/connect-database') = require('@cromwell/core-backend/dist/helpers/connect-database');
+
+      await dbConnector.connectDatabase({
+        development: config.env === 'dev',
+      });
+    } catch (error) {
+      logger.error(error);
+    }
+  }
+
+  const handle = app.getRequestHandler();
+  await app.prepare();
+
+  const server = createServer(async (req, res) => {
+    const parsedUrl = parse(req.url!, true);
+    const { pathname, search } = parsedUrl;
+
+    // Static file serving
+    try {
+      if (req.url) {
+        let publicPath = decodeURIComponent(req.url);
+
+        if (publicPath.indexOf('\0') !== -1) {
+          throw new Error('Poison Null Bytes');
+        }
+        publicPath = normalize(publicPath).replace(/^(\.\.(\/|\\|$))+/, '');
+        const filePath = join(process.cwd(), 'public', publicPath);
+
+        if ((await fs.lstat(filePath)).isFile()) {
+          send(req, filePath).pipe(res);
+          return;
+        }
+      }
+    } catch (err) {}
+
+    // Pass settings to frontend via cookies
+    res.setHeader(
+      'Set-Cookie',
+      cookie.serialize(
+        'crw_cms_config',
+        JSON.stringify({
+          apiUrl: config.apiUrl,
+          adminUrl: config.adminUrl,
+          frontendUrl: config.frontendUrl,
+          centralServerUrl: config.centralServerUrl,
+        } as TCmsSettings),
+        {
+          maxAge: 60 * 60 * 24 * 7, // 1 week
+          path: '/',
+        },
+      ),
+    );
+
+    await processCacheRequest({ app: app as any, req, res, authSettings, port, themeName });
+
+    if (!pathname) {
+      handle(req, res, parsedUrl);
+      return;
     }
 
-    const port = options?.port ?? 3000;
-    const app = next({
-        dev: options?.dev ?? false,
-        dir: options?.dir,
+    // Handle redirects
+    const redirect = findRedirect(pathname, search);
+
+    if (redirect) {
+      if (redirect.type === 'redirect' && redirect.to) {
+        res.writeHead(redirect?.statusCode ?? redirect?.permanent ? 301 : 307, {
+          Location: redirect.to,
+        });
+        res.end();
+        return;
+      }
+
+      if (redirect.type === 'rewrite' && redirect.from) {
+        parsedUrl.pathname = redirect.from;
+        req.url = redirect.from;
+        app.render(req, res, redirect.from);
+        return;
+      }
+    }
+
+    // Default handle
+    handle(req, res, parsedUrl);
+  });
+
+  const success = await new Promise((done) => {
+    server.on('error', (err) => {
+      logger.error(err);
+      done(false);
     });
 
-    if (config.monolith) {
-        try {
-            const dbConnector: typeof import('@cromwell/core-backend/dist/helpers/connect-database')
-                = require('@cromwell/core-backend/dist/helpers/connect-database');
+    server.listen(port, () => {
+      done(true);
+      logger.log(`> Next.js server ready on http://localhost:${port}`);
+    });
 
-            await dbConnector.connectDatabase({
-                development: config.env === 'dev',
-            });
-        } catch (error) {
-            logger.error(error);
-        }
-    }
+    setTimeout(() => done(false), 45000);
+  });
 
-    const handle = app.getRequestHandler();
-    await app.prepare();
-
-    const server = createServer(async (req, res) => {
-        const parsedUrl = parse(req.url!, true);
-        const { pathname, search } = parsedUrl;
-
-        // Static file serving
-        try {
-            if (req.url) {
-                let publicPath = decodeURIComponent(req.url);
-
-                if (publicPath.indexOf('\0') !== -1) {
-                    throw new Error('Poison Null Bytes');
-                }
-                publicPath = normalize(publicPath).replace(/^(\.\.(\/|\\|$))+/, '');
-                const filePath = join(process.cwd(), 'public', publicPath);
-
-                if ((await fs.lstat(filePath)).isFile()) {
-                    send(req, filePath).pipe(res);
-                    return;
-                }
-            }
-        } catch (err) { }
-
-        // Pass settings to frontend via cookies
-        res.setHeader('Set-Cookie', cookie.serialize('crw_cms_config', JSON.stringify({
-            apiUrl: config.apiUrl,
-            adminUrl: config.adminUrl,
-            frontendUrl: config.frontendUrl,
-            centralServerUrl: config.centralServerUrl,
-        } as TCmsSettings), {
-            maxAge: 60 * 60 * 24 * 7, // 1 week
-            path: '/',
-        }));
-
-        await processCacheRequest({ app: app as any, req, res, authSettings, port, themeName });
-
-        if (!pathname) {
-            handle(req, res, parsedUrl);
-            return;
-        }
-
-        // Handle redirects
-        const redirect = findRedirect(pathname, search);
-
-        if (redirect) {
-            if (redirect.type === 'redirect' && redirect.to) {
-                res.writeHead(redirect?.statusCode ?? redirect?.permanent ? 301 : 307, {
-                    Location: redirect.to,
-                });
-                res.end();
-                return;
-            }
-
-            if (redirect.type === 'rewrite' && redirect.from) {
-                parsedUrl.pathname = redirect.from;
-                req.url = redirect.from;
-                app.render(req, res, redirect.from);
-                return;
-            }
-        }
-
-        // Default handle
-        handle(req, res, parsedUrl);
-    })
-
-    const success = await new Promise(done => {
-        server.on('error', (err) => {
-            logger.error(err);
-            done(false);
-        });
-
-        server.listen(port, () => {
-            done(true);
-            logger.log(`> Next.js server ready on http://localhost:${port}`)
-        })
-
-        setTimeout(() => done(false), 45000);
-    })
-
-    return success;
-}
+  return success;
+};

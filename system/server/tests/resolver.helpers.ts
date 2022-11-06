@@ -7,33 +7,33 @@ import { getResolvers } from '../src/helpers/get-resolvers';
 import { setupConnection } from './helpers';
 
 export const setupResolver = async (name: string): Promise<ApolloServer> => {
-    await setupConnection(name);
+  await setupConnection(name);
 
-    const schema = await buildSchema({
-        resolvers: [...(await getResolvers())] as any,
-        validate: false,
-        authChecker: () => true,
-    });
+  const schema = await buildSchema({
+    resolvers: [...(await getResolvers())] as any,
+    validate: false,
+    authChecker: () => true,
+  });
 
-    const apolloServer = new ApolloServer({
-        schema,
-        context: (): TGraphQLContext => {
-            return {
-                user: {
-                    id: 1,
-                    email: 'test@test.org',
-                    roles: [{ name: 'administrator', permissions: ['all'], id: 1 }],
-                }
-            }
-        }
-    });
+  const apolloServer = new ApolloServer({
+    schema,
+    context: (): TGraphQLContext => {
+      return {
+        user: {
+          id: 1,
+          email: 'test@test.org',
+          roles: [{ name: 'administrator', permissions: ['all'], id: 1 }],
+        },
+      };
+    },
+  });
 
-    return apolloServer;
-}
+  return apolloServer;
+};
 
 export const tearDownResolver = async (server: ApolloServer) => {
-    // await server.stop()
-    // await closeConnection();
-    // await new Promise(done => setTimeout(done, 100));
-    return server;
-}
+  // await server.stop()
+  // await closeConnection();
+  // await new Promise(done => setTimeout(done, 100));
+  return server;
+};

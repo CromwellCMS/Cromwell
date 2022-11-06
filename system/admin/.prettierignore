@@ -1,7 +1,7 @@
 node_modules
-.next
-.vscode
-.cromwell
+dist
 build
+.next
+.cromwell
 static
 .tsbuildinfo

@@ -11,8 +11,8 @@ export type ViewedItemsProps = {
   elements?: {
     ProductCard?: React.ComponentType<ProductCardProps>;
     Loadbox?: React.ComponentType;
-  }
-}
+  };
+};
 
 /**
  * List of products that have been added into `ViewedItems` of `CStore`
@@ -28,8 +28,8 @@ export function ViewedItems(props: ViewedItemsProps) {
 
   useEffect(() => {
     /**
-     * Since getCart method wll retrieve products from local storage and 
-     * after a while products can be modified at the server, we need to refresh items first  
+     * Since getCart method wll retrieve products from local storage and
+     * after a while products can be modified at the server, we need to refresh items first
      */
     (async () => {
       setIsLoading(true);
@@ -40,22 +40,16 @@ export function ViewedItems(props: ViewedItemsProps) {
 
   return (
     <div className={clsx(styles.ViewedItems, classes?.root)}>
-      {isLoading && (
-        <Loadbox />
-      )}
-      {!isLoading && ([...list].reverse().map((it, i) => {
-        if (!it.product) return null;
-        return (
-          <div key={i}
-            className={clsx(styles.viewedItemsProduct, classes?.product)}
-          ><ProductCard
-              attributes={attributes}
-              product={it.product}
-              variant='horizontal'
-            />
-          </div>
-        )
-      }))}
+      {isLoading && <Loadbox />}
+      {!isLoading &&
+        [...list].reverse().map((it, i) => {
+          if (!it.product) return null;
+          return (
+            <div key={i} className={clsx(styles.viewedItemsProduct, classes?.product)}>
+              <ProductCard attributes={attributes} product={it.product} variant="horizontal" />
+            </div>
+          );
+        })}
     </div>
-  )
+  );
 }

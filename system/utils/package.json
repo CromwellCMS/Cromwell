@@ -17,7 +17,8 @@
   "scripts": {
     "build": "npx rollup -c",
     "test": "npx --no-install jest",
-    "watch": "npx rollup -cw"
+    "watch": "npx rollup -cw",
+    "format": "prettier --write --ignore-unknown \"**/*.+(js|jsx|json|css|md|ts|tsx)\""
   },
   "dependencies": {
     "@babel/preset-react": "7.14.5",

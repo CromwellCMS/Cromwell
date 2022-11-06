@@ -30,141 +30,158 @@ import { User } from '../models/entities/user.entity';
 type TEntityMetaModel = BaseEntityMeta & TEntityMeta;
 
 class EntityMetaRepository {
-    getMetaClass(entityType: EDBEntity): (new (...args: any[]) => TEntityMetaModel) & typeof BaseEntity | undefined {
-        if (entityType === EDBEntity.Attribute) return AttributeMeta;
-        if (entityType === EDBEntity.Order) return OrderMeta;
-        if (entityType === EDBEntity.Post) return PostMeta;
-        if (entityType === EDBEntity.ProductCategory) return ProductCategoryMeta;
-        if (entityType === EDBEntity.Product) return ProductMeta;
-        if (entityType === EDBEntity.Tag) return TagMeta;
-        if (entityType === EDBEntity.User) return UserMeta;
-        if (entityType === EDBEntity.CustomEntity) return CustomEntityMeta;
-        if (entityType === EDBEntity.Coupon) return CouponMeta;
-        if (entityType === EDBEntity.ProductVariant) return ProductVariantMeta;
-        if (entityType === EDBEntity.Role) return RoleMeta;
-    }
+  getMetaClass(entityType: EDBEntity): ((new (...args: any[]) => TEntityMetaModel) & typeof BaseEntity) | undefined {
+    if (entityType === EDBEntity.Attribute) return AttributeMeta;
+    if (entityType === EDBEntity.Order) return OrderMeta;
+    if (entityType === EDBEntity.Post) return PostMeta;
+    if (entityType === EDBEntity.ProductCategory) return ProductCategoryMeta;
+    if (entityType === EDBEntity.Product) return ProductMeta;
+    if (entityType === EDBEntity.Tag) return TagMeta;
+    if (entityType === EDBEntity.User) return UserMeta;
+    if (entityType === EDBEntity.CustomEntity) return CustomEntityMeta;
+    if (entityType === EDBEntity.Coupon) return CouponMeta;
+    if (entityType === EDBEntity.ProductVariant) return ProductVariantMeta;
+    if (entityType === EDBEntity.Role) return RoleMeta;
+  }
 
-    getEntityClass(entityType: EDBEntity): (new (...args: any[]) => BasePageEntity) & typeof BaseEntity | undefined {
-        if (entityType === EDBEntity.Attribute) return Attribute;
-        if (entityType === EDBEntity.Order) return Order as any;
-        if (entityType === EDBEntity.Post) return Post;
-        if (entityType === EDBEntity.ProductCategory) return ProductCategory;
-        if (entityType === EDBEntity.Product) return Product;
-        if (entityType === EDBEntity.ProductReview) return ProductReview;
-        if (entityType === EDBEntity.Tag) return Tag;
-        if (entityType === EDBEntity.User) return User;
-        if (entityType === EDBEntity.CustomEntity) return CustomEntity;
-        if (entityType === EDBEntity.Coupon) return Coupon;
-        if (entityType === EDBEntity.ProductVariant) return ProductVariant;
-        if (entityType === EDBEntity.Role) return Role;
-    }
+  getEntityClass(entityType: EDBEntity): ((new (...args: any[]) => BasePageEntity) & typeof BaseEntity) | undefined {
+    if (entityType === EDBEntity.Attribute) return Attribute;
+    if (entityType === EDBEntity.Order) return Order as any;
+    if (entityType === EDBEntity.Post) return Post;
+    if (entityType === EDBEntity.ProductCategory) return ProductCategory;
+    if (entityType === EDBEntity.Product) return Product;
+    if (entityType === EDBEntity.ProductReview) return ProductReview;
+    if (entityType === EDBEntity.Tag) return Tag;
+    if (entityType === EDBEntity.User) return User;
+    if (entityType === EDBEntity.CustomEntity) return CustomEntity;
+    if (entityType === EDBEntity.Coupon) return Coupon;
+    if (entityType === EDBEntity.ProductVariant) return ProductVariant;
+    if (entityType === EDBEntity.Role) return Role;
+  }
 
-    getEntityType(entityClass: any): EDBEntity | undefined {
-        if (entityClass instanceof Attribute || entityClass === Attribute) return EDBEntity.Attribute;
-        if (entityClass instanceof Order || entityClass === Order) return EDBEntity.Order;
-        if (entityClass instanceof Post || entityClass === Post) return EDBEntity.Post;
-        if (entityClass instanceof ProductCategory || entityClass === ProductCategory) return EDBEntity.ProductCategory;
-        if (entityClass instanceof Product || entityClass === Product) return EDBEntity.Product;
-        if (entityClass instanceof ProductReview || entityClass === ProductReview) return EDBEntity.ProductReview;
-        if (entityClass instanceof Tag || entityClass === Tag) return EDBEntity.Tag;
-        if (entityClass instanceof User || entityClass === User) return EDBEntity.User;
-        if (entityClass instanceof CustomEntity || entityClass === CustomEntity) return EDBEntity.CustomEntity;
-        if (entityClass instanceof Coupon || entityClass === Coupon) return EDBEntity.Coupon;
-        if (entityClass instanceof ProductVariant || entityClass === ProductVariant) return EDBEntity.ProductVariant;
-        if (entityClass instanceof Role || entityClass === Role) return EDBEntity.Role;
-    }
+  getEntityType(entityClass: any): EDBEntity | undefined {
+    if (entityClass instanceof Attribute || entityClass === Attribute) return EDBEntity.Attribute;
+    if (entityClass instanceof Order || entityClass === Order) return EDBEntity.Order;
+    if (entityClass instanceof Post || entityClass === Post) return EDBEntity.Post;
+    if (entityClass instanceof ProductCategory || entityClass === ProductCategory) return EDBEntity.ProductCategory;
+    if (entityClass instanceof Product || entityClass === Product) return EDBEntity.Product;
+    if (entityClass instanceof ProductReview || entityClass === ProductReview) return EDBEntity.ProductReview;
+    if (entityClass instanceof Tag || entityClass === Tag) return EDBEntity.Tag;
+    if (entityClass instanceof User || entityClass === User) return EDBEntity.User;
+    if (entityClass instanceof CustomEntity || entityClass === CustomEntity) return EDBEntity.CustomEntity;
+    if (entityClass instanceof Coupon || entityClass === Coupon) return EDBEntity.Coupon;
+    if (entityClass instanceof ProductVariant || entityClass === ProductVariant) return EDBEntity.ProductVariant;
+    if (entityClass instanceof Role || entityClass === Role) return EDBEntity.Role;
+  }
 
-    async getEntityMetaByKey(type: EDBEntity, id: number, key: string): Promise<TEntityMetaModel | undefined | null> {
-        return this.getMetaClass(type)?.getRepository()?.findOne({ entityId: id, key });
-    }
+  async getEntityMetaByKey(type: EDBEntity, id: number, key: string): Promise<TEntityMetaModel | undefined | null> {
+    return this.getMetaClass(type)?.getRepository()?.findOne({ entityId: id, key });
+  }
 
-    async getEntityMetaValueByKey(type: EDBEntity, id: number, key: string): Promise<string | undefined | null> {
-        return (await this.getEntityMetaByKey(type, id, key))?.value;
-    }
+  async getEntityMetaValueByKey(type: EDBEntity, id: number, key: string): Promise<string | undefined | null> {
+    return (await this.getEntityMetaByKey(type, id, key))?.value;
+  }
 
-    async getEntityMetaByKeys(type: EDBEntity, id: number, keys?: string[]): Promise<Record<string, string> | undefined | null> {
-        if (!keys?.length || !id) return;
-        keys = keys.filter(Boolean);
-        if (!keys.length) return;
-        const repo = this.getMetaClass(type)?.getRepository();
-        if (!repo) return;
+  async getEntityMetaByKeys(
+    type: EDBEntity,
+    id: number,
+    keys?: string[],
+  ): Promise<Record<string, string> | undefined | null> {
+    if (!keys?.length || !id) return;
+    keys = keys.filter(Boolean);
+    if (!keys.length) return;
+    const repo = this.getMetaClass(type)?.getRepository();
+    if (!repo) return;
 
-        const qb = repo.createQueryBuilder().select();
-        keys.forEach(key => {
-            if (!key) return;
-            const brackets = new Brackets(subQb => {
-                subQb.where({ entityId: id });
-                subQb.andWhere({ key });
-            });
-            qb.orWhere(brackets);
-        })
-        const metaRecords = await qb.getMany();
+    const qb = repo.createQueryBuilder().select();
+    keys.forEach((key) => {
+      if (!key) return;
+      const brackets = new Brackets((subQb) => {
+        subQb.where({ entityId: id });
+        subQb.andWhere({ key });
+      });
+      qb.orWhere(brackets);
+    });
+    const metaRecords = await qb.getMany();
 
-        const meta = Object.assign({}, ...(metaRecords.map(record => {
-            if (!record.key || !record.value) return {};
-            return {
-                [record.key]: record.value
-            }
-        })));
-        if (!Object.keys(meta)?.length) return null;
-        return meta;
-    }
+    const meta = Object.assign(
+      {},
+      ...metaRecords.map((record) => {
+        if (!record.key || !record.value) return {};
+        return {
+          [record.key]: record.value,
+        };
+      }),
+    );
+    if (!Object.keys(meta)?.length) return null;
+    return meta;
+  }
 
-    async createEntityMeta(type: EDBEntity, entityId: number, key?: string, value?: string | null): Promise<TEntityMeta | undefined> {
-        if (!value) return;
-        if (!key) return;
-        if (entityId === undefined || entityId === null) return;
-        const EntityMetaClass = this.getMetaClass(type);
-        if (!EntityMetaClass) return;
+  async createEntityMeta(
+    type: EDBEntity,
+    entityId: number,
+    key?: string,
+    value?: string | null,
+  ): Promise<TEntityMeta | undefined> {
+    if (!value) return;
+    if (!key) return;
+    if (entityId === undefined || entityId === null) return;
+    const EntityMetaClass = this.getMetaClass(type);
+    if (!EntityMetaClass) return;
 
-        const meta = new EntityMetaClass();
-        meta.entityId = entityId;
-        meta.key = key;
+    const meta = new EntityMetaClass();
+    meta.entityId = entityId;
+    meta.key = key;
+    meta.value = value;
+    await meta.save();
+    return meta;
+  }
+
+  /**
+   * Set (create or update) meta record for provided entity or entity meta id
+   * @param entity ORM Entity or entityMetaId
+   * @param key Meta key
+   * @param value Meta value
+   * @returns Meta DB record
+   */
+  async setEntityMeta(
+    type?: EDBEntity,
+    entityId?: number,
+    key?: string,
+    value?: string | null,
+  ): Promise<TEntityMeta | undefined> {
+    if (!type) return;
+    if (!key) return;
+    if (entityId === undefined || entityId === null) return;
+    const repo = this.getMetaClass(type)?.getRepository();
+    if (!repo) return;
+
+    const meta = await this.getEntityMetaByKey(type, entityId, key).catch(() => null);
+    if (meta) {
+      if (!value) {
+        await repo.delete(meta.id);
+        return;
+      } else {
         meta.value = value;
         await meta.save();
         return meta;
+      }
+    } else {
+      return this.createEntityMeta(type, entityId, key, value);
     }
+  }
 
-    /**
-     * Set (create or update) meta record for provided entity or entity meta id
-     * @param entity ORM Entity or entityMetaId 
-     * @param key Meta key
-     * @param value Meta value
-     * @returns Meta DB record
-     */
-    async setEntityMeta(type?: EDBEntity, entityId?: number, key?: string, value?: string | null): Promise<TEntityMeta | undefined> {
-        if (!type) return;
-        if (!key) return;
-        if (entityId === undefined || entityId === null) return;
-        const repo = this.getMetaClass(type)?.getRepository();
-        if (!repo) return;
-
-        const meta = await this.getEntityMetaByKey(type, entityId, key).catch(() => null);
-        if (meta) {
-            if (!value) {
-                await repo.delete(meta.id);
-                return;
-            } else {
-                meta.value = value;
-                await meta.save();
-                return meta;
-            }
-        } else {
-            return this.createEntityMeta(type, entityId, key, value);
-        }
-    }
-
-    async getAllEntityMetaKeys(type: EDBEntity): Promise<string[] | undefined> {
-        const MetaClass = this.getMetaClass(type);
-        if (!MetaClass) return;
-        const repo = MetaClass.getRepository();
-        const qb = repo.createQueryBuilder(repo.metadata.tablePath)
-            .select(`${repo.metadata.tablePath}.key`, 'key')
-            .distinct(true);
-        const rawRes = await qb.getRawMany();
-        return rawRes.map(raw => raw.key);
-    }
-
+  async getAllEntityMetaKeys(type: EDBEntity): Promise<string[] | undefined> {
+    const MetaClass = this.getMetaClass(type);
+    if (!MetaClass) return;
+    const repo = MetaClass.getRepository();
+    const qb = repo
+      .createQueryBuilder(repo.metadata.tablePath)
+      .select(`${repo.metadata.tablePath}.key`, 'key')
+      .distinct(true);
+    const rawRes = await qb.getRawMany();
+    return rawRes.map((raw) => raw.key);
+  }
 }
 
 export const entityMetaRepository = new EntityMetaRepository();

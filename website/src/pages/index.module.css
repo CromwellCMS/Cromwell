@@ -37,7 +37,7 @@
   transform: rotate(231deg);
 }
 
-html[data-theme="dark"] .moon {
+html[data-theme='dark'] .moon {
   box-shadow: inset -5px 7px 0 5px #fff;
 }
 
@@ -70,7 +70,7 @@ p.quote {
 }
 
 p.quote::before {
-  content: "";
+  content: '';
   width: 4px;
   height: 94%;
   position: absolute;
@@ -79,7 +79,7 @@ p.quote::before {
   background-color: #333;
 }
 
-html[data-theme="dark"] .quote {
+html[data-theme='dark'] .quote {
   border-left: 2px solid #fff;
 }
 
@@ -213,7 +213,6 @@ p.sectionSubHeader {
   height: auto;
   border-radius: 10px;
 }
-
 
 @media screen and (max-width: 700px) {
   .feature {

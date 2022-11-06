@@ -1,4 +1,3 @@
-
 # Attribution
 
 ### Images and icons

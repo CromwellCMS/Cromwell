@@ -1,17 +1,13 @@
 {
-    "type": "sqlite",
-    "database": "./.cromwell/server/db.sqlite3",
-    "synchronize": false,
-    "entityPrefix": "crw_",
-    "migrationsRun": true,
-    "entities": [
-        "../core/backend/dist/models/**/*.js"
-    ],
-    "migrationsTableName": "crw_migrations",
-    "migrations": [
-        "migrations/sqlite/*.js"
-    ],
-    "cli": {
-        "migrationsDir": "migrations/sqlite"
-    }
+  "type": "sqlite",
+  "database": "./.cromwell/server/db.sqlite3",
+  "synchronize": false,
+  "entityPrefix": "crw_",
+  "migrationsRun": true,
+  "entities": ["../core/backend/dist/models/**/*.js"],
+  "migrationsTableName": "crw_migrations",
+  "migrations": ["migrations/sqlite/*.js"],
+  "cli": {
+    "migrationsDir": "migrations/sqlite"
+  }
 }

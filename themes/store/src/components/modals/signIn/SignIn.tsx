@@ -11,7 +11,6 @@ import Modal from '../baseModal/Modal';
 import { PasswordField } from './PasswordField';
 import styles from './SignIn.module.scss';
 
-
 export const SignInModal = observer(() => {
   const authClient = useAuthClient();
   const formType = appState.signInFormType;
@@ -24,43 +23,31 @@ export const SignInModal = observer(() => {
 
   const onSignUpSuccess = async (user: TUser, password: string) => {
     if (!user.email) return;
-    // Automatic sign-in after sign-up 
+    // Automatic sign-in after sign-up
     const result = await authClient.signIn(user.email, password);
     if (result.success) {
-      toast.success('You have been registered')
+      toast.success('You have been registered');
       handleClose();
     } else {
       toast.error(result.message);
     }
-  }
+  };
 
   const handleClose = () => {
     appState.isSignInOpen = false;
     appState.signInFormType = 'sign-in';
-  }
+  };
 
   const signInElements: SignInProps['elements'] = {
-    TextField: (props) => <TextField fullWidth
-      variant="standard"
-      size="small"
-      className={styles.textField}
-      {...props}
-    />,
+    TextField: (props) => (
+      <TextField fullWidth variant="standard" size="small" className={styles.textField} {...props} />
+    ),
     PasswordField,
-    Button: (props: any) => <Button
-      color="primary"
-      variant="contained"
-      className={styles.loginBtn}
-      {...props} />
-  }
+    Button: (props: any) => <Button color="primary" variant="contained" className={styles.loginBtn} {...props} />,
+  };
 
   return (
-    <Modal
-      className={commonStyles.center}
-      open={appState.isSignInOpen}
-      onClose={handleClose}
-      blurSelector={"#CB_root"}
-    >
+    <Modal className={commonStyles.center} open={appState.isSignInOpen} onClose={handleClose} blurSelector={'#CB_root'}>
       <div className={styles.SingIn}>
         <Tabs
           className={styles.tabs}
@@ -69,12 +56,8 @@ export const SignInModal = observer(() => {
           textColor="primary"
           onChange={handleTabChange}
         >
-          <Tab
-            className={styles.tab}
-            label="Sign in" />
-          <Tab
-            className={styles.tab}
-            label="Sign up" />
+          <Tab className={styles.tab} label="Sign in" />
+          <Tab className={styles.tab} label="Sign up" />
         </Tabs>
         {formType === 'sign-in' && (
           <SignIn
@@ -102,6 +85,6 @@ export const SignInModal = observer(() => {
           />
         )}
       </div>
-    </Modal >
-  )
+    </Modal>
+  );
 });

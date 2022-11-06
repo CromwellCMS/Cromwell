@@ -1,4 +1,7 @@
 node_modules
 dist
-coverage
 build
+.next
+.cromwell
+static
+.tsbuildinfo

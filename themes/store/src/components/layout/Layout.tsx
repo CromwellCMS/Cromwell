@@ -13,7 +13,7 @@ import styles from './Layout.module.scss';
 
 type TProps = {
   children: React.ReactNode;
-}
+};
 
 export default function Layout(props: TProps | undefined) {
   const router = useRouter?.();
@@ -30,10 +30,8 @@ export default function Layout(props: TProps | undefined) {
       <ViewedModal />
       <ProductQuickView />
       <SignInModal />
-      <div className={styles.main}>
-        {props?.children}
-      </div>
+      <div className={styles.main}>{props?.children}</div>
       <Footer />
     </div>
-  )
+  );
 }

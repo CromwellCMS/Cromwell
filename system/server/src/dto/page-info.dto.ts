@@ -2,21 +2,21 @@ import { ApiProperty } from '@nestjs/swagger';
 import { TPageInfo } from '@cromwell/core';
 
 export class PageInfoDto implements TPageInfo {
-    @ApiProperty()
-    id: string;
-    
-    @ApiProperty()
-    route: string;
+  @ApiProperty()
+  id: string;
 
-    @ApiProperty()
-    name: string;
+  @ApiProperty()
+  route: string;
 
-    @ApiProperty()
-    title?: string;
+  @ApiProperty()
+  name: string;
 
-    @ApiProperty()
-    description?: string;
+  @ApiProperty()
+  title?: string;
 
-    @ApiProperty()
-    isVirtual?: boolean;
+  @ApiProperty()
+  description?: string;
+
+  @ApiProperty()
+  isVirtual?: boolean;
 }

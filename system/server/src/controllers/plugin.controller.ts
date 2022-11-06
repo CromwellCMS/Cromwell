@@ -1,11 +1,11 @@
 import { TFrontendBundle } from '@cromwell/core';
 import {
-    findPlugin,
-    getLogger,
-    getPluginSettings,
-    JwtAuthGuard,
-    DefaultPermissions,
-    savePluginSettings,
+  findPlugin,
+  getLogger,
+  getPluginSettings,
+  JwtAuthGuard,
+  DefaultPermissions,
+  savePluginSettings,
 } from '@cromwell/core-backend';
 import { Body, Controller, Get, HttpException, HttpStatus, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -21,196 +21,176 @@ const logger = getLogger();
 @ApiTags('Plugins')
 @Controller('v1/plugin')
 export class PluginController {
+  constructor(private readonly pluginService: PluginService) {}
 
-    constructor(private readonly pluginService: PluginService) { }
+  @Get('settings')
+  @UseGuards(JwtAuthGuard)
+  @DefaultPermissions('read_plugin_settings')
+  @ApiOperation({
+    description: 'Returns JSON settings of a plugin by pluginName.',
+    parameters: [{ name: 'pluginName', in: 'query', required: true }],
+  })
+  @ApiResponse({
+    status: 200,
+  })
+  @ApiForbiddenResponse({ description: 'Forbidden.' })
+  async getPluginSettings(@Query('pluginName') pluginName: string): Promise<any | undefined> {
+    logger.log('PluginController::getPluginSettings ' + pluginName);
 
-    @Get('settings')
-    @UseGuards(JwtAuthGuard)
-    @DefaultPermissions('read_plugin_settings')
-    @ApiOperation({
-        description: 'Returns JSON settings of a plugin by pluginName.',
-        parameters: [{ name: 'pluginName', in: 'query', required: true }]
-    })
-    @ApiResponse({
-        status: 200,
-    })
-    @ApiForbiddenResponse({ description: 'Forbidden.' })
-    async getPluginSettings(@Query('pluginName') pluginName: string): Promise<any | undefined> {
-        logger.log('PluginController::getPluginSettings ' + pluginName);
+    if (!pluginName) throw new HttpException(`Invalid plugin name: ${pluginName}`, HttpStatus.NOT_ACCEPTABLE);
 
-        if (!pluginName)
-            throw new HttpException(`Invalid plugin name: ${pluginName}`, HttpStatus.NOT_ACCEPTABLE);
+    return getPluginSettings(pluginName);
+  }
 
-        return getPluginSettings(pluginName);
-    }
+  @Post('settings')
+  @UseGuards(JwtAuthGuard)
+  @DefaultPermissions('update_plugin_settings')
+  @ApiOperation({
+    description: 'Saves JSON settings of a plugin by pluginName.',
+    parameters: [{ name: 'pluginName', in: 'query', required: true }],
+  })
+  @ApiResponse({
+    status: 200,
+    type: Boolean,
+  })
+  @ApiForbiddenResponse({ description: 'Forbidden.' })
+  async savePluginSettings(@Query('pluginName') pluginName: string, @Body() input): Promise<boolean> {
+    logger.log('PluginController::savePluginSettings');
 
+    if (!pluginName) throw new HttpException(`Invalid plugin name: ${pluginName}`, HttpStatus.NOT_ACCEPTABLE);
 
-    @Post('settings')
-    @UseGuards(JwtAuthGuard)
-    @DefaultPermissions('update_plugin_settings')
-    @ApiOperation({
-        description: 'Saves JSON settings of a plugin by pluginName.',
-        parameters: [{ name: 'pluginName', in: 'query', required: true }]
-    })
-    @ApiResponse({
-        status: 200,
-        type: Boolean
-    })
-    @ApiForbiddenResponse({ description: 'Forbidden.' })
-    async savePluginSettings(@Query('pluginName') pluginName: string, @Body() input): Promise<boolean> {
-        logger.log('PluginController::savePluginSettings');
+    return savePluginSettings(pluginName, input);
+  }
 
-        if (!pluginName)
-            throw new HttpException(`Invalid plugin name: ${pluginName}`, HttpStatus.NOT_ACCEPTABLE);
+  @Get('entity')
+  @UseGuards(JwtAuthGuard)
+  @DefaultPermissions('read_plugins')
+  @ApiOperation({
+    description: 'Returns DB record of a plugin by pluginName.',
+    parameters: [{ name: 'pluginName', in: 'query', required: true }],
+  })
+  @ApiResponse({
+    status: 200,
+    type: PluginEntityDto,
+  })
+  @ApiForbiddenResponse({ description: 'Forbidden.' })
+  async getPluginEntity(@Query('pluginName') pluginName: string): Promise<PluginEntityDto | undefined> {
+    logger.log('PluginController::getPluginEntity ' + pluginName);
 
-        return savePluginSettings(pluginName, input);
-    }
+    if (!pluginName) throw new HttpException(`Invalid plugin name: ${pluginName}`, HttpStatus.NOT_ACCEPTABLE);
 
+    return new PluginEntityDto().parse(await findPlugin(pluginName));
+  }
 
-    @Get('entity')
-    @UseGuards(JwtAuthGuard)
-    @DefaultPermissions('read_plugins')
-    @ApiOperation({
-        description: 'Returns DB record of a plugin by pluginName.',
-        parameters: [{ name: 'pluginName', in: 'query', required: true }]
-    })
-    @ApiResponse({
-        status: 200,
-        type: PluginEntityDto
-    })
-    @ApiForbiddenResponse({ description: 'Forbidden.' })
-    async getPluginEntity(@Query('pluginName') pluginName: string): Promise<PluginEntityDto | undefined> {
-        logger.log('PluginController::getPluginEntity ' + pluginName);
+  @Get('frontend-bundle')
+  @ApiOperation({
+    description: `Returns plugin's JS frontend bundle info.`,
+    parameters: [{ name: 'pluginName', in: 'query', required: true }],
+  })
+  @ApiResponse({
+    status: 200,
+    type: FrontendBundleDto,
+  })
+  async getPluginFrontendBundle(@Query('pluginName') pluginName: string): Promise<TFrontendBundle | undefined> {
+    logger.log('PluginController::getPluginFrontendBundle');
 
-        if (!pluginName)
-            throw new HttpException(`Invalid plugin name: ${pluginName}`, HttpStatus.NOT_ACCEPTABLE);
+    if (!pluginName) throw new HttpException(`Invalid plugin name: ${pluginName}`, HttpStatus.NOT_ACCEPTABLE);
 
-        return new PluginEntityDto().parse(await findPlugin(pluginName));
-    }
+    const bundle = await this.pluginService.getPluginBundle(pluginName, 'frontend');
+    if (!bundle) throw new HttpException(`Frontend bundle not found for: ${pluginName}`, HttpStatus.NOT_FOUND);
 
+    return bundle;
+  }
 
-    @Get('frontend-bundle')
-    @ApiOperation({
-        description: `Returns plugin's JS frontend bundle info.`,
-        parameters: [{ name: 'pluginName', in: 'query', required: true }]
-    })
-    @ApiResponse({
-        status: 200,
-        type: FrontendBundleDto
-    })
-    async getPluginFrontendBundle(@Query('pluginName') pluginName: string): Promise<TFrontendBundle | undefined> {
-        logger.log('PluginController::getPluginFrontendBundle');
+  @Get('admin-bundle')
+  @UseGuards(JwtAuthGuard)
+  @DefaultPermissions('read_plugins')
+  @ApiOperation({
+    description: `Returns plugin's JS admin bundle info.`,
+    parameters: [{ name: 'pluginName', in: 'query', required: true }],
+  })
+  @ApiResponse({
+    status: 200,
+    type: FrontendBundleDto,
+  })
+  async getPluginAdminBundle(@Query('pluginName') pluginName: string): Promise<TFrontendBundle | undefined> {
+    logger.log('PluginController::getPluginAdminBundle');
 
-        if (!pluginName)
-            throw new HttpException(`Invalid plugin name: ${pluginName}`, HttpStatus.NOT_ACCEPTABLE);
+    if (!pluginName) throw new HttpException(`Invalid plugin name: ${pluginName}`, HttpStatus.NOT_ACCEPTABLE);
 
-        const bundle = await this.pluginService.getPluginBundle(pluginName, 'frontend');
-        if (!bundle)
-            throw new HttpException(`Frontend bundle not found for: ${pluginName}`, HttpStatus.NOT_FOUND);
+    const bundle = await this.pluginService.getPluginBundle(pluginName, 'admin');
+    if (!bundle) throw new HttpException(`Bundle for plugin ${pluginName} was not found`, HttpStatus.NOT_FOUND);
 
-        return bundle;
-    }
+    return bundle;
+  }
 
+  @Get('check-update')
+  @UseGuards(JwtAuthGuard)
+  @DefaultPermissions('read_plugins')
+  @ApiOperation({
+    description: `Returns available Update for sepcified Plugin`,
+    parameters: [{ name: 'pluginName', in: 'query', required: true }],
+  })
+  @ApiResponse({
+    status: 200,
+    type: UpdateInfoDto,
+  })
+  async checkUpdate(@Query('pluginName') pluginName: string): Promise<UpdateInfoDto | boolean | undefined> {
+    if (!pluginName) throw new HttpException(`Invalid plugin name: ${pluginName}`, HttpStatus.NOT_ACCEPTABLE);
 
-    @Get('admin-bundle')
-    @UseGuards(JwtAuthGuard)
-    @DefaultPermissions('read_plugins')
-    @ApiOperation({
-        description: `Returns plugin's JS admin bundle info.`,
-        parameters: [{ name: 'pluginName', in: 'query', required: true }]
-    })
-    @ApiResponse({
-        status: 200,
-        type: FrontendBundleDto
-    })
-    async getPluginAdminBundle(@Query('pluginName') pluginName: string): Promise<TFrontendBundle | undefined> {
-        logger.log('PluginController::getPluginAdminBundle');
+    const update = await this.pluginService.checkPluginUpdate(pluginName);
+    if (update) return new UpdateInfoDto()?.parseVersion?.(update);
+    return false;
+  }
 
-        if (!pluginName)
-            throw new HttpException(`Invalid plugin name: ${pluginName}`, HttpStatus.NOT_ACCEPTABLE);
+  @Get('update')
+  @UseGuards(JwtAuthGuard)
+  @DefaultPermissions('update_plugin')
+  @ApiOperation({
+    description: `Updates a Plugin to latest version`,
+    parameters: [{ name: 'pluginName', in: 'query', required: true }],
+  })
+  @ApiResponse({
+    status: 200,
+    type: Boolean,
+  })
+  async updatePlugin(@Query('pluginName') pluginName: string): Promise<boolean | undefined> {
+    if (!pluginName) throw new HttpException(`Invalid plugin name: ${pluginName}`, HttpStatus.NOT_ACCEPTABLE);
 
-        const bundle = await this.pluginService.getPluginBundle(pluginName, 'admin');
-        if (!bundle)
-            throw new HttpException(`Bundle for plugin ${pluginName} was not found`, HttpStatus.NOT_FOUND);
+    return this.pluginService.handlePluginUpdate(pluginName);
+  }
 
-        return bundle;
-    }
+  @Get('install')
+  @UseGuards(JwtAuthGuard)
+  @DefaultPermissions('install_plugin')
+  @ApiOperation({
+    description: `Installs a Plugin`,
+    parameters: [{ name: 'pluginName', in: 'query', required: true }],
+  })
+  @ApiResponse({
+    status: 200,
+    type: Boolean,
+  })
+  async installPlugin(@Query('pluginName') pluginName: string): Promise<boolean | undefined> {
+    if (!pluginName) throw new HttpException(`Invalid plugin name: ${pluginName}`, HttpStatus.NOT_ACCEPTABLE);
 
+    return this.pluginService.handleInstallPlugin(pluginName);
+  }
 
-    @Get('check-update')
-    @UseGuards(JwtAuthGuard)
-    @DefaultPermissions('read_plugins')
-    @ApiOperation({
-        description: `Returns available Update for sepcified Plugin`,
-        parameters: [{ name: 'pluginName', in: 'query', required: true }]
-    })
-    @ApiResponse({
-        status: 200,
-        type: UpdateInfoDto,
-    })
-    async checkUpdate(@Query('pluginName') pluginName: string): Promise<UpdateInfoDto | boolean | undefined> {
-        if (!pluginName)
-            throw new HttpException(`Invalid plugin name: ${pluginName}`, HttpStatus.NOT_ACCEPTABLE);
+  @Get('delete')
+  @UseGuards(JwtAuthGuard)
+  @DefaultPermissions('uninstall_plugin')
+  @ApiOperation({
+    description: `Uninstall a Plugin`,
+    parameters: [{ name: 'pluginName', in: 'query', required: true }],
+  })
+  @ApiResponse({
+    status: 200,
+    type: Boolean,
+  })
+  async deletePlugin(@Query('pluginName') pluginName: string): Promise<boolean | undefined> {
+    if (!pluginName) throw new HttpException(`Invalid plugin name: ${pluginName}`, HttpStatus.NOT_ACCEPTABLE);
 
-        const update = await this.pluginService.checkPluginUpdate(pluginName);
-        if (update) return new UpdateInfoDto()?.parseVersion?.(update);
-        return false;
-    }
-
-
-    @Get('update')
-    @UseGuards(JwtAuthGuard)
-    @DefaultPermissions('update_plugin')
-    @ApiOperation({
-        description: `Updates a Plugin to latest version`,
-        parameters: [{ name: 'pluginName', in: 'query', required: true }]
-    })
-    @ApiResponse({
-        status: 200,
-        type: Boolean,
-    })
-    async updatePlugin(@Query('pluginName') pluginName: string): Promise<boolean | undefined> {
-        if (!pluginName)
-            throw new HttpException(`Invalid plugin name: ${pluginName}`, HttpStatus.NOT_ACCEPTABLE);
-
-        return this.pluginService.handlePluginUpdate(pluginName);
-    }
-
-
-    @Get('install')
-    @UseGuards(JwtAuthGuard)
-    @DefaultPermissions('install_plugin')
-    @ApiOperation({
-        description: `Installs a Plugin`,
-        parameters: [{ name: 'pluginName', in: 'query', required: true }]
-    })
-    @ApiResponse({
-        status: 200,
-        type: Boolean,
-    })
-    async installPlugin(@Query('pluginName') pluginName: string): Promise<boolean | undefined> {
-        if (!pluginName)
-            throw new HttpException(`Invalid plugin name: ${pluginName}`, HttpStatus.NOT_ACCEPTABLE);
-
-        return this.pluginService.handleInstallPlugin(pluginName);
-    }
-
-
-    @Get('delete')
-    @UseGuards(JwtAuthGuard)
-    @DefaultPermissions('uninstall_plugin')
-    @ApiOperation({
-        description: `Uninstall a Plugin`,
-        parameters: [{ name: 'pluginName', in: 'query', required: true }]
-    })
-    @ApiResponse({
-        status: 200,
-        type: Boolean,
-    })
-    async deletePlugin(@Query('pluginName') pluginName: string): Promise<boolean | undefined> {
-        if (!pluginName)
-            throw new HttpException(`Invalid plugin name: ${pluginName}`, HttpStatus.NOT_ACCEPTABLE);
-
-        return this.pluginService.handleDeletePlugin(pluginName);
-    }
+    return this.pluginService.handleDeletePlugin(pluginName);
+  }
 }

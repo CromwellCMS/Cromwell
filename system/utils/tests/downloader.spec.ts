@@ -10,34 +10,31 @@ const testDir = mockWorkingDirectory('downloader');
 const moduleToDownload = 'object-assign';
 const pckg: TPackageJson = require(`${moduleToDownload}/package.json`);
 if (!pckg) {
-    console.error('Failed to require package of module: ' + moduleToDownload);
+  console.error('Failed to require package of module: ' + moduleToDownload);
 }
 
 describe('downloader', () => {
+  it('downloads package', async () => {
+    const buildDir = getBundledModulesDir();
+    const moduleBuildDir = resolve(buildDir, `${pckg.name}@${pckg.version}`);
 
-    it("downloads package", async () => {
+    if (await fs.pathExists(moduleBuildDir)) {
+      await fs.remove(moduleBuildDir);
+    }
 
-        const buildDir = getBundledModulesDir()
-        const moduleBuildDir = resolve(buildDir, `${pckg.name}@${pckg.version}`);
-
-        if (await fs.pathExists(moduleBuildDir)) {
-            await fs.remove(moduleBuildDir);
-        }
-
-        await downloader({
-            targetModule: {
-                name: moduleToDownload,
-                version: '4.1.1',
-            }
-        })
-        expect(await fs.pathExists(moduleBuildDir)).toBeTruthy();
-        expect(await fs.pathExists(join(moduleBuildDir, moduleArchiveFileName))).toBeTruthy();
-        expect(await fs.pathExists(join(moduleBuildDir, moduleMetaInfoFileName))).toBeTruthy();
-        expect(await fs.pathExists(join(moduleBuildDir, moduleLibBuildFileName))).toBeTruthy();
+    await downloader({
+      targetModule: {
+        name: moduleToDownload,
+        version: '4.1.1',
+      },
     });
+    expect(await fs.pathExists(moduleBuildDir)).toBeTruthy();
+    expect(await fs.pathExists(join(moduleBuildDir, moduleArchiveFileName))).toBeTruthy();
+    expect(await fs.pathExists(join(moduleBuildDir, moduleMetaInfoFileName))).toBeTruthy();
+    expect(await fs.pathExists(join(moduleBuildDir, moduleLibBuildFileName))).toBeTruthy();
+  });
 
-
-    afterAll(async () => {
-        await tearDown(testDir);
-    });
-})
+  afterAll(async () => {
+    await tearDown(testDir);
+  });
+});

@@ -11,7 +11,8 @@ type CompType = Required<Required<ProductAttributesProps>['elements']>['Attribut
 export const AttributeTitle: CompType = (props) => {
   const { valid, canValidate } = props;
   return (
-    <p className={clsx(styles.attrTitle, canValidate && !valid && styles.invalidAttributeTitle)}
-    >{props.attribute?.title || props.attribute?.key}</p>
+    <p className={clsx(styles.attrTitle, canValidate && !valid && styles.invalidAttributeTitle)}>
+      {props.attribute?.title || props.attribute?.key}
+    </p>
   );
-}
+};

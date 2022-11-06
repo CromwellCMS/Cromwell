@@ -11,16 +11,8 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "moduleResolution": "node",
-    "skipLibCheck": true,
+    "skipLibCheck": true
   },
-  "exclude": [
-    "node_modules",
-    "build"
-  ],
-  "include": [
-    "src/**/*.ts",
-    "src/utils/cacheManager.js",
-    "src/utils/windowsDev.js",
-    "src/config.ts"
-  ],
+  "exclude": ["node_modules", "build"],
+  "include": ["src/**/*.ts", "src/utils/cacheManager.js", "src/utils/windowsDev.js", "src/config.ts"]
 }

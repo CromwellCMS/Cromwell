@@ -1,39 +1,39 @@
 .swiper {
-    overflow: visible;
+  overflow: visible;
 }
 
 .screenshots {
-    position: relative;
-    padding-left: calc((100vw - 1000px) / 2);
-    padding-right: 6vw;
+  position: relative;
+  padding-left: calc((100vw - 1000px) / 2);
+  padding-right: 6vw;
 }
 
 .slide {
-    width: 80%;
-    /* height: 450px; */
+  width: 80%;
+  /* height: 450px; */
 }
 
 .content {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 0 20px;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 20px;
 }
 
 .slide img,
 .slide video {
-    border-radius: 10px;
-    box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.05), 0 0 20px 4px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    height: auto;
-    object-fit: cover;
-    /* border: 6px solid #e4e4e4; */
-    /* border-style: double; */
+  border-radius: 10px;
+  box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.05), 0 0 20px 4px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  /* border: 6px solid #e4e4e4; */
+  /* border-style: double; */
 }
 
 .image {
-    user-select: none;
-    cursor: zoom-in;
+  user-select: none;
+  cursor: zoom-in;
 }
 .video {
-    user-select: none;
+  user-select: none;
 }

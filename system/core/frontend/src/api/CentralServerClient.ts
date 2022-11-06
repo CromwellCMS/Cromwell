@@ -1,206 +1,223 @@
 import { fetch } from '../helpers/isomorphicFetch';
-import { getStoreItem, TCCSVersion, TCCSModuleShortInfo, TCCSModuleInfo, TPagedParams, TPagedList } from '@cromwell/core';
-import { TRestApiErrorInfo, TRequestOptions } from './CRestApiClient'
+import {
+  getStoreItem,
+  TCCSVersion,
+  TCCSModuleShortInfo,
+  TCCSModuleInfo,
+  TPagedParams,
+  TPagedList,
+} from '@cromwell/core';
+import { TRestApiErrorInfo, TRequestOptions } from './CRestApiClient';
 
 /**
  * CentralServerClient - CromwellCMS Central Server API Client
- * CromwellCMS Central Server is official server at ... 
+ * CromwellCMS Central Server is official server at ...
  * API used to check local CMS updates.
  */
 export class CentralServerClient {
+  public getBaseUrl = () => {
+    return getStoreItem('cmsSettings')?.centralServerUrl;
+  };
 
-    public getBaseUrl = () => {
-        return getStoreItem('cmsSettings')?.centralServerUrl;
+  private handleError = async (
+    response: Response,
+    data: any,
+    route: string,
+    disableLog?: boolean,
+  ): Promise<[any, TRestApiErrorInfo | null]> => {
+    if (response.status >= 400) {
+      const errorInfo: TRestApiErrorInfo = {
+        statusCode: response.status,
+        message: data?.message,
+        route,
+        disableLog,
+      };
+      return [data, errorInfo];
+    }
+    return [data, null];
+  };
+
+  public fetch = async <T>(route: string, options?: TRequestOptions): Promise<T | undefined> => {
+    const input = options?.input;
+    let data;
+    let errorInfo: TRestApiErrorInfo | null = null;
+    const baseUrl = this.getBaseUrl();
+    if (!baseUrl) throw new Error('CentralServer URL is not defined');
+
+    try {
+      const res = await fetch(`${baseUrl}/api/${route}`, {
+        method: options?.method ?? 'get',
+        credentials: 'include',
+        body: typeof input === 'string' ? input : input ? JSON.stringify(input) : undefined,
+        headers: { 'Content-Type': 'application/json' },
+      });
+      const dataParsed = await res.json();
+      [data, errorInfo] = await this.handleError(res, dataParsed, route, options?.disableLog);
+    } catch (e) {
+      errorInfo = {
+        route,
+        statusCode: 0,
+        message: 'Could not connect to the Server. ' + String(e),
+        disableLog: options?.disableLog,
+      };
     }
 
-    private handleError = async (response: Response, data: any, route: string, disableLog?: boolean): Promise<[any, TRestApiErrorInfo | null]> => {
-        if (response.status >= 400) {
-            const errorInfo: TRestApiErrorInfo = {
-                statusCode: response.status,
-                message: data?.message,
-                route,
-                disableLog,
-            };
-            return [data, errorInfo];
-        }
-        return [data, null];
+    if (errorInfo) {
+      throw Object.assign(new Error(), errorInfo);
     }
 
-    public fetch = async <T>(route: string, options?: TRequestOptions): Promise<T | undefined> => {
-        const input = options?.input;
-        let data;
-        let errorInfo: TRestApiErrorInfo | null = null;
-        const baseUrl = this.getBaseUrl();
-        if (!baseUrl) throw new Error('CentralServer URL is not defined');
+    return data;
+  };
 
-        try {
-            const res = await fetch(`${baseUrl}/api/${route}`, {
-                method: options?.method ?? 'get',
-                credentials: 'include',
-                body: typeof input === 'string' ? input : input ? JSON.stringify(input) : undefined,
-                headers: { 'Content-Type': 'application/json' },
-            });
-            const dataParsed = await res.json();
-            [data, errorInfo] = await this.handleError(res, dataParsed, route, options?.disableLog);
-        } catch (e) {
-            errorInfo = {
-                route,
-                statusCode: 0,
-                message: 'Could not connect to the Server. ' + String(e),
-                disableLog: options?.disableLog,
-            }
-        }
+  public get = async <T>(route: string, options?: TRequestOptions): Promise<T | undefined> => {
+    return this.fetch(route, options);
+  };
 
-        if (errorInfo) {
-            throw Object.assign(new Error(), errorInfo);
-        }
+  public post = async <T>(route: string, input?: any, options?: TRequestOptions): Promise<T | undefined> => {
+    return this.fetch(route, {
+      method: 'post',
+      input,
+      ...(options ?? {}),
+    });
+  };
 
-        return data;
-    }
+  async makeRequestToGitHub(url) {
+    const response = await fetch(url);
 
-    public get = async <T>(route: string, options?: TRequestOptions): Promise<T | undefined> => {
-        return this.fetch(route, options);
-    }
+    switch (response.status) {
+      case 401:
+        console.log('⚠ The token provided is invalid or has been revoked.', url);
+        throw new Error('Invalid token');
 
-    public post = async <T>(route: string, input?: any, options?: TRequestOptions): Promise<T | undefined> => {
-        return this.fetch(route, {
-            method: 'post',
-            input,
-            ...(options ?? {}),
-        });
-    }
-
-    async makeRequestToGitHub(url) {
-        const response = await fetch(url);
-
-        switch (response.status) {
-            case 401:
-                console.log('⚠ The token provided is invalid or has been revoked.', url);
-                throw new Error('Invalid token');
-
-            case 403:
-                // See https://developer.github.com/v3/#rate-limiting
-                if (response.headers.get('X-RateLimit-Remaining') === '0') {
-                    console.log('⚠ Your token rate limit has been exceeded.', url);
-                    throw new Error('Rate limit exceeded');
-                }
-
-                break;
-
-            case 404:
-                console.log('⚠ Repository was not found.', url);
-                throw new Error('Repository not found');
-
-            default:
+      case 403:
+        // See https://developer.github.com/v3/#rate-limiting
+        if (response.headers.get('X-RateLimit-Remaining') === '0') {
+          console.log('⚠ Your token rate limit has been exceeded.', url);
+          throw new Error('Rate limit exceeded');
         }
 
-        if (!response.ok) {
-            console.log('⚠ Could not obtain repository data from the GitHub API.', { response, url });
-            throw new Error('Fetch error');
-        }
+        break;
 
-        return response;
+      case 404:
+        console.log('⚠ Repository was not found.', url);
+        throw new Error('Repository not found');
+
+      default:
     }
 
-    // < CMS >
-    async getCmsInfo(): Promise<TCCSModuleShortInfo | undefined> {
-        return this.get('cms/info');
+    if (!response.ok) {
+      console.log('⚠ Could not obtain repository data from the GitHub API.', { response, url });
+      throw new Error('Fetch error');
     }
 
-    async getCmsFullInfo(): Promise<TCCSModuleInfo | undefined> {
-        return this.get('cms/full-info');
-    }
+    return response;
+  }
 
-    async getVersionByPackage(packageVersion: string): Promise<TCCSVersion | undefined> {
-        return this.get(`cms/version-by-package/${packageVersion}`);
-    }
+  // < CMS >
+  async getCmsInfo(): Promise<TCCSModuleShortInfo | undefined> {
+    return this.get('cms/info');
+  }
 
-    async checkCmsUpdate(version: string, beta?: boolean): Promise<TCCSVersion | undefined> {
-        return this.get(`cms/check-update/${version}?beta=${beta ? 'true' : 'false'}`);
-    }
+  async getCmsFullInfo(): Promise<TCCSModuleInfo | undefined> {
+    return this.get('cms/full-info');
+  }
 
-    async getAllCmsVersions(): Promise<TCCSModuleShortInfo | undefined> {
-        return this.get('cms/all-versions');
-    }
+  async getVersionByPackage(packageVersion: string): Promise<TCCSVersion | undefined> {
+    return this.get(`cms/version-by-package/${packageVersion}`);
+  }
 
-    async getFrontendDependenciesBindings() {
-        const files = await (await this.makeRequestToGitHub(
-            'https://api.github.com/repos/CromwellCMS/bundled-modules/git/trees/master?recursive=1'
-        )).json();
-        return files.tree.filter(file =>
-            file.path.startsWith('versions/') && file.path.endsWith('.json'))
-            .map(file => file.path.replace('.json', '').replace('versions/', ''));
-    }
+  async checkCmsUpdate(version: string, beta?: boolean): Promise<TCCSVersion | undefined> {
+    return this.get(`cms/check-update/${version}?beta=${beta ? 'true' : 'false'}`);
+  }
 
-    async getFrontendDependenciesList(version: string) {
-        return await (await this.makeRequestToGitHub(
-            `https://raw.githubusercontent.com/CromwellCMS/bundled-modules/master/versions/${version}.json`
-        )).json();
-    }
+  async getAllCmsVersions(): Promise<TCCSModuleShortInfo | undefined> {
+    return this.get('cms/all-versions');
+  }
 
+  async getFrontendDependenciesBindings() {
+    const files = await (
+      await this.makeRequestToGitHub(
+        'https://api.github.com/repos/CromwellCMS/bundled-modules/git/trees/master?recursive=1',
+      )
+    ).json();
+    return files.tree
+      .filter((file) => file.path.startsWith('versions/') && file.path.endsWith('.json'))
+      .map((file) => file.path.replace('.json', '').replace('versions/', ''));
+  }
 
-    // < / CMS >
+  async getFrontendDependenciesList(version: string) {
+    return await (
+      await this.makeRequestToGitHub(
+        `https://raw.githubusercontent.com/CromwellCMS/bundled-modules/master/versions/${version}.json`,
+      )
+    ).json();
+  }
 
+  // < / CMS >
 
-    // < Plugin >
+  // < Plugin >
 
-    async getPluginInfo(name: string): Promise<TCCSModuleShortInfo | undefined> {
-        return this.get(`plugin/info?name=${name}`);
-    }
+  async getPluginInfo(name: string): Promise<TCCSModuleShortInfo | undefined> {
+    return this.get(`plugin/info?name=${name}`);
+  }
 
-    async getPluginList(params?: TPagedParams<TCCSModuleInfo>, filter?: {
-        search?: string;
-    }): Promise<TPagedList<TCCSModuleInfo> | undefined> {
-        return this.post(`plugin/list`, {
-            params,
-            filter,
-        });
-    }
+  async getPluginList(
+    params?: TPagedParams<TCCSModuleInfo>,
+    filter?: {
+      search?: string;
+    },
+  ): Promise<TPagedList<TCCSModuleInfo> | undefined> {
+    return this.post(`plugin/list`, {
+      params,
+      filter,
+    });
+  }
 
-    async getPluginFullInfo(name: string): Promise<TCCSModuleInfo | undefined> {
-        return this.get(`plugin?name=${name}`);
-    }
+  async getPluginFullInfo(name: string): Promise<TCCSModuleInfo | undefined> {
+    return this.get(`plugin?name=${name}`);
+  }
 
-    async getPluginAllVersions(name: string): Promise<TCCSVersion[] | undefined> {
-        return this.get(`plugin/all-versions?name=${name}`);
-    }
+  async getPluginAllVersions(name: string): Promise<TCCSVersion[] | undefined> {
+    return this.get(`plugin/all-versions?name=${name}`);
+  }
 
-    async checkPluginUpdate(name: string, version: string, beta?: boolean): Promise<TCCSVersion | undefined> {
-        return this.get(`plugin/check-update/${version}?name=${name}&beta=${beta ? 'true' : 'false'}`);
-    }
+  async checkPluginUpdate(name: string, version: string, beta?: boolean): Promise<TCCSVersion | undefined> {
+    return this.get(`plugin/check-update/${version}?name=${name}&beta=${beta ? 'true' : 'false'}`);
+  }
 
-    // < / Plugin >
+  // < / Plugin >
 
+  // < Theme >
 
-    // < Theme >
+  async getThemeInfo(name: string): Promise<TCCSModuleShortInfo | undefined> {
+    return this.get(`theme/info?name=${name}`);
+  }
 
-    async getThemeInfo(name: string): Promise<TCCSModuleShortInfo | undefined> {
-        return this.get(`theme/info?name=${name}`);
-    }
+  async getThemeList(
+    params?: TPagedParams<TCCSModuleInfo>,
+    filter?: {
+      search?: string;
+    },
+  ): Promise<TPagedList<TCCSModuleInfo> | undefined> {
+    return this.post(`theme/list`, {
+      params,
+      filter,
+    });
+  }
 
-    async getThemeList(params?: TPagedParams<TCCSModuleInfo>, filter?: {
-        search?: string;
-    }): Promise<TPagedList<TCCSModuleInfo> | undefined> {
-        return this.post(`theme/list`, {
-            params,
-            filter,
-        });
-    }
+  async getThemeFullInfo(name: string): Promise<TCCSModuleInfo | undefined> {
+    return this.get(`theme?name=${name}`);
+  }
 
-    async getThemeFullInfo(name: string): Promise<TCCSModuleInfo | undefined> {
-        return this.get(`theme?name=${name}`);
-    }
+  async getThemeAllVersions(name: string): Promise<TCCSVersion[] | undefined> {
+    return this.get(`theme/all-versions?name=${name}`);
+  }
 
-    async getThemeAllVersions(name: string): Promise<TCCSVersion[] | undefined> {
-        return this.get(`theme/all-versions?name=${name}`);
-    }
+  async checkThemeUpdate(name: string, version: string, beta?: boolean): Promise<TCCSVersion | undefined> {
+    return this.get(`theme/check-update/${version}?name=${name}&beta=${beta ? 'true' : 'false'}`);
+  }
 
-    async checkThemeUpdate(name: string, version: string, beta?: boolean): Promise<TCCSVersion | undefined> {
-        return this.get(`theme/check-update/${version}?name=${name}&beta=${beta ? 'true' : 'false'}`);
-    }
-
-    // < / Theme >
-
+  // < / Theme >
 }
 
 /**

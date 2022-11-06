@@ -6,16 +6,15 @@ import { getErrorLogPath } from '../../src/helpers/paths';
 import { mockWorkingDirectory } from '../helpers';
 
 describe('logger', () => {
+  beforeAll(async () => {
+    await mockWorkingDirectory('logger');
+  });
 
-    beforeAll(async () => {
-        await mockWorkingDirectory('logger');
-    });
+  it('logs into file', async () => {
+    const logger = getLogger();
+    logger.error('test');
+    await sleep(1);
 
-    it('logs into file', async () => {
-        const logger = getLogger();
-        logger.error('test');
-        await sleep(1);
-
-        expect(await fs.pathExists(getErrorLogPath())).toBeTruthy();
-    });
-})
+    expect(await fs.pathExists(getErrorLogPath())).toBeTruthy();
+  });
+});

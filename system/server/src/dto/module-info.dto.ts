@@ -2,39 +2,39 @@ import { TPackageCromwellConfig } from '@cromwell/core';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class ModuleInfoDto implements TPackageCromwellConfig {
-    @ApiProperty()
-    name: string;
+  @ApiProperty()
+  name: string;
 
-    @ApiProperty({ type: String })
-    type?: "plugin" | "theme";
+  @ApiProperty({ type: String })
+  type?: 'plugin' | 'theme';
 
-    @ApiProperty()
-    title?: string;
+  @ApiProperty()
+  title?: string;
 
-    @ApiProperty()
-    description?: string;
-    
-    @ApiProperty()
-    excerpt?: string;
+  @ApiProperty()
+  description?: string;
 
-    @ApiProperty()
-    icon?: string;
+  @ApiProperty()
+  excerpt?: string;
 
-    @ApiProperty()
-    image?: string;
+  @ApiProperty()
+  icon?: string;
 
-    @ApiProperty()
-    images?: string[];
+  @ApiProperty()
+  image?: string;
 
-    @ApiProperty()
-    themes?: string[];
+  @ApiProperty()
+  images?: string[];
 
-    @ApiProperty()
-    plugins?: string[];
+  @ApiProperty()
+  themes?: string[];
 
-    @ApiProperty()
-    packageName?: string;
+  @ApiProperty()
+  plugins?: string[];
 
-    @ApiProperty()
-    tags?: string[];
+  @ApiProperty()
+  packageName?: string;
+
+  @ApiProperty()
+  tags?: string[];
 }

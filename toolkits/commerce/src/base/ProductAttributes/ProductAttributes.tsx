@@ -8,9 +8,20 @@ import { useStoreAttributes } from '../../helpers/useStoreAttributes';
 import styles from './ProductAttributes.module.scss';
 
 export type ProductAttributesProps = {
-  classes?: Partial<Record<'root' | 'attribute' | 'headerWrapper' | 'valuesWrapper'
-    | 'attributeValueIcon' | 'attributeValueText' | 'productAttributesValidate' | 'attributeValueChecked'
-    | 'invalidAttributeValue', string>>;
+  classes?: Partial<
+    Record<
+      | 'root'
+      | 'attribute'
+      | 'headerWrapper'
+      | 'valuesWrapper'
+      | 'attributeValueIcon'
+      | 'attributeValueText'
+      | 'productAttributesValidate'
+      | 'attributeValueChecked'
+      | 'invalidAttributeValue',
+      string
+    >
+  >;
 
   /** UI elements to replace default ones */
   elements?: {
@@ -31,7 +42,7 @@ export type ProductAttributesProps = {
       valid?: boolean;
       canValidate?: boolean;
     }>;
-  }
+  };
 
   /** Product data. Required */
   product: TProduct;
@@ -39,7 +50,7 @@ export type ProductAttributesProps = {
   /** All available attributes */
   attributes?: TAttribute[];
 
-  /** 
+  /**
    * Called when user picks any attribute. If picked value of an attribute has assigned
    * product variant, it applies modifications of variant to original "product" prop
    * and calls this method. *Prefer to use `useProductVariants` hook instead.*
@@ -50,17 +61,21 @@ export type ProductAttributesProps = {
    * Show error if some required attributes weren't selected?
    */
   canValidate?: boolean;
-}
+};
 
 /**
- * Displays product's attributes.  
+ * Displays product's attributes.
  * When user picks an attribute applies product variant and returns modified
  * product from `onChange` function prop.
  */
 export function ProductAttributes(props: ProductAttributesProps): JSX.Element {
   const moduleState = useModuleState();
-  const { product, onChange, classes,
-    canValidate = product?.id ? moduleState.products[product.id]?.canValidate : undefined } = props;
+  const {
+    product,
+    onChange,
+    classes,
+    canValidate = product?.id ? moduleState.products[product.id]?.canValidate : undefined,
+  } = props;
   const attributes = useStoreAttributes(props.attributes);
   const productAttributes = product?.attributes;
   const [checkedAttrs, setCheckedAttrs] = useState<Record<string, string[]>>({});
@@ -70,9 +85,11 @@ export function ProductAttributes(props: ProductAttributesProps): JSX.Element {
   const forceUpdate = useForceUpdate();
 
   useEffect(() => {
-    const onUpdateId = product?.id && moduleState.addOnProductUpdateListener(product.id, () => {
-      forceUpdate();
-    });
+    const onUpdateId =
+      product?.id &&
+      moduleState.addOnProductUpdateListener(product.id, () => {
+        forceUpdate();
+      });
 
     return () => {
       if (product?.id) {
@@ -81,36 +98,39 @@ export function ProductAttributes(props: ProductAttributesProps): JSX.Element {
           moduleState.removeOnProductUpdateListener(product?.id, onUpdateId);
         }
       }
-    }
+    };
   }, []);
 
   const handleSetAttribute = (key: string, checks: string[]) => {
     if (!product) return;
-    setCheckedAttrs(prev => {
+    setCheckedAttrs((prev) => {
       const newCheckedAttrs: Record<string, string[]> = Object.assign({}, prev);
       newCheckedAttrs[key] = checks;
-      const modifiedProduct = cstore.applyProductVariants(product, newCheckedAttrs)
+      const modifiedProduct = cstore.applyProductVariants(product, newCheckedAttrs);
 
       onChange?.(newCheckedAttrs, modifiedProduct);
       moduleState.setCheckedAttributes(product.id, newCheckedAttrs, modifiedProduct);
 
       return newCheckedAttrs;
-    })
+    });
   };
 
   return (
-    <div className={clsx(styles.ProductAttributes, classes?.root,
-      !!canValidate && styles.productAttributesValidate,
-      !!canValidate && classes?.productAttributesValidate)}
+    <div
+      className={clsx(
+        styles.ProductAttributes,
+        classes?.root,
+        !!canValidate && styles.productAttributesValidate,
+        !!canValidate && classes?.productAttributesValidate,
+      )}
     >
-      {productAttributes?.map(attr => {
+      {productAttributes?.map((attr) => {
         const checked: string[] | undefined = checkedAttrs[attr.key];
-        const origAttribute = attributes?.find(a => a.key === attr.key);
+        const origAttribute = attributes?.find((a) => a.key === attr.key);
         let isValid = true;
 
         if (origAttribute?.required && origAttribute.key) {
-          if (!checkedAttrs || !checkedAttrs[origAttribute.key]
-            || !checkedAttrs[origAttribute.key].length)
+          if (!checkedAttrs || !checkedAttrs[origAttribute.key] || !checkedAttrs[origAttribute.key].length)
             isValid = false;
         }
 
@@ -118,16 +138,12 @@ export function ProductAttributes(props: ProductAttributesProps): JSX.Element {
           return (
             <div key={attr.key} className={clsx(styles.attribute, classes?.attribute)}>
               <div className={clsx(styles.headerWrapper, classes?.headerWrapper)}>
-                <TitleComp
-                  attribute={origAttribute}
-                  valid={isValid}
-                  canValidate={canValidate}
-                />
+                <TitleComp attribute={origAttribute} valid={isValid} canValidate={canValidate} />
               </div>
               <div className={clsx(styles.valuesWrapper, classes?.valuesWrapper)}>
                 {attr.values.map((attrValue: TAttributeInstanceValue) => {
-                  const value = attrValue.value
-                  const origValue = origAttribute?.values?.find(v => v.value === value);
+                  const value = attrValue.value;
+                  const origValue = origAttribute?.values?.find((v) => v.value === value);
                   const isChecked = Boolean(checked ? checked.indexOf(value) !== -1 : false);
 
                   if (origValue) {
@@ -149,25 +165,29 @@ export function ProductAttributes(props: ProductAttributesProps): JSX.Element {
                         }
                         handleSetAttribute(attr.key, newChecked);
                       }
-                    }
+                    };
 
                     if (ValueComp) {
-                      return <ValueComp
-                        key={value}
-                        onClick={handleClick}
-                        value={value}
-                        icon={origValue.icon}
-                        checked={isChecked}
-                        valid={isValid}
-                        attribute={origAttribute}
-                        attributeInstance={attr}
-                        canValidate={canValidate}
-                      />
+                      return (
+                        <ValueComp
+                          key={value}
+                          onClick={handleClick}
+                          value={value}
+                          icon={origValue.icon}
+                          checked={isChecked}
+                          valid={isValid}
+                          attribute={origAttribute}
+                          attributeInstance={attr}
+                          canValidate={canValidate}
+                        />
+                      );
                     }
 
                     return (
-                      <div key={value}
-                        className={clsx(styles.attributeValue,
+                      <div
+                        key={value}
+                        className={clsx(
+                          styles.attributeValue,
                           isChecked && styles.attributeValueChecked,
                           isChecked && classes?.attributeValueChecked,
                           !isValid && styles.invalidAttributeValue,
@@ -178,22 +198,28 @@ export function ProductAttributes(props: ProductAttributesProps): JSX.Element {
                         {origValue && origValue.icon && (
                           <div
                             style={{ backgroundImage: `url(${origValue.icon}` }}
-                            className={clsx(styles.attributeValueIcon, classes?.attributeValueIcon)}></div>
+                            className={clsx(styles.attributeValueIcon, classes?.attributeValueIcon)}
+                          ></div>
                         )}
-                        <p className={clsx(styles.attributeValueText, classes?.attributeValueText)}
-                          style={{ textTransform: 'none' }}>{value}</p>
+                        <p
+                          className={clsx(styles.attributeValueText, classes?.attributeValueText)}
+                          style={{ textTransform: 'none' }}
+                        >
+                          {value}
+                        </p>
                       </div>
                     );
                   }
                 })}
               </div>
             </div>
-          )
+          );
         }
       })}
     </div>
-  )
+  );
 }
 
-const DefaultTitleComp: Required<Required<ProductAttributesProps>['elements']>['AttributeTitle']
-  = (props) => <p style={{ margin: 0 }}>{props.attribute?.key}</p>
+const DefaultTitleComp: Required<Required<ProductAttributesProps>['elements']>['AttributeTitle'] = (props) => (
+  <p style={{ margin: 0 }}>{props.attribute?.key}</p>
+);

@@ -15,21 +15,21 @@ export type AccountInfoProps = {
   elements?: {
     Button?: TBaseButton;
     TextField?: TBaseTextField;
-  }
+  };
 
   text?: {
     invalidEmail?: string;
     fieldIsRequired?: string;
     failedToSave?: string;
     saved?: string;
-  }
+  };
 
   /**
-  * User fields to display. Key can be one of enum `DefaultAccountFields` or any string.  
-  * If key is not part of enum, then it will be treated as part
-  * of JSON `address`. If flag `meta` is provided then key will
-  * be treated as part of `customMeta`.  
-  */
+   * User fields to display. Key can be one of enum `DefaultAccountFields` or any string.
+   * If key is not part of enum, then it will be treated as part
+   * of JSON `address`. If flag `meta` is provided then key will
+   * be treated as part of `customMeta`.
+   */
   fields?: AccountFieldConfig[];
 
   /**
@@ -40,13 +40,13 @@ export type AccountInfoProps = {
    * Notifier options
    */
   notifierOptions?: NotifierActionOptions;
-}
+};
 
 export type AccountFieldProps = Omit<TBaseTextFieldProps, 'onChange'> & {
   onChange: (value: any) => any;
   accountInfoProps?: AccountInfoProps;
   actions?: ReturnType<typeof useAccountActions>;
-}
+};
 
 export type AccountFieldConfig = {
   key: keyof typeof DefaultAccountFields | string;
@@ -55,13 +55,13 @@ export type AccountFieldConfig = {
   required?: boolean;
   Component?: React.ComponentType<AccountFieldProps>;
   meta?: boolean;
-}
+};
 
 /**
- * Displays account fields (such as phone, address, email, etc) 
+ * Displays account fields (such as phone, address, email, etc)
  * and allows users to change them. User must be logged in via `SignIn` component
  * of `@cromwell/core-frontend` or via `AuthClient` (`getAuthClient`) for this
- * component to work.  
+ * component to work.
  */
 export function AccountInfo(props: AccountInfoProps) {
   const { fields = getDefaultAccountFields(props), elements, classes } = props;
@@ -72,30 +72,35 @@ export function AccountInfo(props: AccountInfoProps) {
 
   return (
     <div className={clsx(styles.AccountInfo, classes?.root)}>
-      {fields?.map(field => {
+      {fields?.map((field) => {
         const Component = field.Component ?? DefaultField;
         const value = actions.getFieldValue(field.key) ?? '';
         const validation = actions.isFieldValid(field.key);
 
         return (
-          <Component value={value}
+          <Component
+            value={value}
             key={field.key}
             actions={actions}
             accountInfoProps={props}
             label={field.label}
             onChange={(newValue) => {
-              actions.setFieldValue(field.key, newValue)
+              actions.setFieldValue(field.key, newValue);
             }}
             error={actions.canShowValidation && !validation.valid}
-            helperText={(actions.canShowValidation && !validation.valid) ? validation.message : undefined}
+            helperText={actions.canShowValidation && !validation.valid ? validation.message : undefined}
           />
-        )
+        );
       })}
-      <Button variant="contained" color="primary"
+      <Button
+        variant="contained"
+        color="primary"
         className={clsx(styles.saveButton, classes?.saveButton)}
         size="small"
         onClick={actions.saveInfo}
-      >Update</Button>
+      >
+        Update
+      </Button>
     </div>
-  )
+  );
 }

@@ -1,5 +1,12 @@
 import { DocumentNode, gql } from '@apollo/client';
-import { removeUndefined, TCromwellBlock, TGetStaticProps, TPagedList, TProduct, TProductCategory } from '@cromwell/core';
+import {
+  removeUndefined,
+  TCromwellBlock,
+  TGetStaticProps,
+  TPagedList,
+  TProduct,
+  TProductCategory,
+} from '@cromwell/core';
 import {
   CList,
   getGraphQLClient,
@@ -21,12 +28,12 @@ import styles from './CategoryList.module.scss';
 export type CategoryListData = {
   firstPage?: TPagedList<TProduct> | null;
   category: TProductCategory | null;
-}
+};
 
 /** @internal */
 type GetStaticPropsData = {
-  'ccom_category_list'?: CategoryListData;
-}
+  ccom_category_list?: CategoryListData;
+};
 
 export type CategoryListProps = {
   classes?: Partial<Record<'root' | 'list', string>>;
@@ -34,12 +41,12 @@ export type CategoryListProps = {
   elements?: {
     ProductCard?: React.ComponentType<ProductCardProps>;
     Pagination?: React.ComponentType<TPaginationProps>;
-  }
+  };
 
   data?: CategoryListData;
 
   /**
-   * Provide custom CBlock id to use for underlying CList 
+   * Provide custom CBlock id to use for underlying CList
    */
   listId?: string;
 
@@ -52,12 +59,12 @@ export type CategoryListProps = {
    * Override product card props
    */
   cardProps?: Partial<ProductCardProps>;
-}
+};
 
 /**
- * Renders product list on category page  
- * 
- * - `withGetProps` - required. Data on the frontend can be overridden  
+ * Renders product list on category page
+ *
+ * - `withGetProps` - required. Data on the frontend can be overridden
  * - `useData` - available
  */
 export function CategoryList(props: CategoryListProps) {
@@ -88,24 +95,18 @@ export function CategoryList(props: CategoryListProps) {
   }, [router?.asPath]);
 
   return (
-    <div
-      className={clsx(styles.CategoryList, props.classes?.root)}
-    >
+    <div className={clsx(styles.CategoryList, props.classes?.root)}>
       {category && (
         <CList<TProduct>
           editorHidden
           className={clsx(props.classes?.list)}
           id={listId.current}
-          blockRef={(block) => listInst.current = block}
+          blockRef={(block) => (listInst.current = block)}
           ListItem={(p) => {
             if (!p.data) return null;
             return (
               <div className={styles.productWrapper} key={p.data?.id}>
-                <ProductCard
-                  product={p.data}
-                  attributes={attributes}
-                  {...cardProps}
-                />
+                <ProductCard product={p.data} attributes={attributes} {...cardProps} />
               </div>
             );
           }}
@@ -118,61 +119,74 @@ export function CategoryList(props: CategoryListProps) {
             return client.getProducts({ pagedParams: params, filterParams: { categoryId: category.id } });
           }}
           cssClasses={{
-            page: styles.productList
+            page: styles.productList,
           }}
           elements={{
-            pagination: Pagination
+            pagination: Pagination,
           }}
           {...(listProps ?? {})}
         />
       )}
     </div>
-  )
+  );
 }
 
-CategoryList.withGetProps = (originalGetProps?: TGetStaticProps, options?: {
-  customFragment?: DocumentNode;
-  customFragmentName?: string;
-}) => {
+CategoryList.withGetProps = (
+  originalGetProps?: TGetStaticProps,
+  options?: {
+    customFragment?: DocumentNode;
+    customFragmentName?: string;
+  },
+) => {
   const getProps: TGetStaticProps<GetStaticPropsData> = async (context) => {
     const originProps: any = (await originalGetProps?.(context)) ?? {};
     const contextSlug = context?.params?.slug;
-    const slug = (contextSlug && typeof contextSlug === 'string') && contextSlug;
+    const slug = contextSlug && typeof contextSlug === 'string' && contextSlug;
     const client = getGraphQLClient();
 
-    const category = slug && (await client?.getProductCategoryBySlug(slug).catch((e: TGraphQLErrorInfo) => {
-      if (e.statusCode !== 404)
-        console.error(`CategoryList::getProps for slug ${slug} get category error: `, e);
-    })) || null;
+    const category =
+      (slug &&
+        (await client?.getProductCategoryBySlug(slug).catch((e: TGraphQLErrorInfo) => {
+          if (e.statusCode !== 404) console.error(`CategoryList::getProps for slug ${slug} get category error: `, e);
+        }))) ||
+      null;
 
     if (!category) {
       return {
         notFound: true,
-      }
+      };
     }
 
-    const firstPage = category?.id && (await client.getProducts({
-      pagedParams: { pageSize: 20 },
-      filterParams: { categoryId: category.id },
-      customFragment: options?.customFragment ?? gql`
-      fragment ProductShortFragment on Product {
-        id
-        slug
-        isEnabled
-        name
-        price
-        oldPrice
-        sku
-        mainImage
-        rating {
-          average
-          reviewsNumber
-        }
-      }`,
-      customFragmentName: options?.customFragmentName ?? 'ProductShortFragment',
-    }).catch(e => {
-      console.error(`CategoryList::getProps for slug ${slug} get firstPage error: `, e);
-    })) || null;
+    const firstPage =
+      (category?.id &&
+        (await client
+          .getProducts({
+            pagedParams: { pageSize: 20 },
+            filterParams: { categoryId: category.id },
+            customFragment:
+              options?.customFragment ??
+              gql`
+                fragment ProductShortFragment on Product {
+                  id
+                  slug
+                  isEnabled
+                  name
+                  price
+                  oldPrice
+                  sku
+                  mainImage
+                  rating {
+                    average
+                    reviewsNumber
+                  }
+                }
+              `,
+            customFragmentName: options?.customFragmentName ?? 'ProductShortFragment',
+          })
+          .catch((e) => {
+            console.error(`CategoryList::getProps for slug ${slug} get firstPage error: `, e);
+          }))) ||
+      null;
 
     return {
       ...originProps,
@@ -182,15 +196,15 @@ CategoryList.withGetProps = (originalGetProps?: TGetStaticProps, options?: {
           category,
           firstPage,
           slug,
-        })
-      }
-    }
-  }
+        }),
+      },
+    };
+  };
 
   return getProps;
-}
+};
 
 CategoryList.useData = (): CategoryListData | undefined => {
   const appProps = useAppPropsContext<GetStaticPropsData>();
   return appProps.pageProps?.ccom_category_list;
-}
+};

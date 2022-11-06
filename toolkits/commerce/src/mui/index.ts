@@ -41,7 +41,8 @@ export const MuiPagination = Pagination;
 
 export const MuiBreadcrumbs = withElements(BaseBreadcrumbs, {
   Wrapper: MuiLibBreadcrumbs,
-  Breadcrumb: (props) => React.createElement(StyledBreadcrumb, { onClick: () => '', component: "div", ...props, } as any),
+  Breadcrumb: (props) =>
+    React.createElement(StyledBreadcrumb, { onClick: () => '', component: 'div', ...props } as any),
 } as BreadcrumbsProps['elements']);
 
 export const MuiProductAttributes = withElements(BaseProductAttributes, {
@@ -58,33 +59,41 @@ export const MuiProductReviews = withElements(BaseProductReviews, {
   Tooltip: Tooltip as any,
 } as ProductReviewsProps['elements']);
 
-export const MuiProductActions = withElements(BaseProductActions, {
-  Button: ActionButton,
-  Alert,
-  QuantityField,
-} as ProductActionsProps['elements'], {
-  notifierOptions: {
-    position: toastify.POSITION.TOP_RIGHT,
-    className: notifierStyles.muiToast,
-    Wrapper: NotifierWrapper,
-  }
-} as ProductActionsProps);
+export const MuiProductActions = withElements(
+  BaseProductActions,
+  {
+    Button: ActionButton,
+    Alert,
+    QuantityField,
+  } as ProductActionsProps['elements'],
+  {
+    notifierOptions: {
+      position: toastify.POSITION.TOP_RIGHT,
+      className: notifierStyles.muiToast,
+      Wrapper: NotifierWrapper,
+    },
+  } as ProductActionsProps,
+);
 
-export const MuiProductCard = withElements(BaseProductCard, {
-  Button: IconButton,
-  AddCartButton: IconButton,
-  AddWishlistButton: IconButton,
-  Alert,
-  Rating,
-  QuantityField,
-  Tooltip: Tooltip,
-} as ProductCardProps['elements'], {
-  notifierOptions: {
-    position: toastify.POSITION.TOP_RIGHT,
-    className: notifierStyles.muiToast,
-    Wrapper: NotifierWrapper,
-  }
-} as ProductCardProps);
+export const MuiProductCard = withElements(
+  BaseProductCard,
+  {
+    Button: IconButton,
+    AddCartButton: IconButton,
+    AddWishlistButton: IconButton,
+    Alert,
+    Rating,
+    QuantityField,
+    Tooltip: Tooltip,
+  } as ProductCardProps['elements'],
+  {
+    notifierOptions: {
+      position: toastify.POSITION.TOP_RIGHT,
+      className: notifierStyles.muiToast,
+      Wrapper: NotifierWrapper,
+    },
+  } as ProductCardProps,
+);
 
 export const MuiCategoryList = withElements(BaseCategoryList, {
   Pagination,
@@ -97,12 +106,13 @@ export const MuiCategorySort = withElements(BaseCategorySort, {
 
 export const MuiProductSearch = withElements(BaseProductSearch, {
   Popper,
-  TextField: (props) => React.createElement(TextField, {
-    variant: 'outlined',
-    fullWidth: true,
-    size: 'small',
-    ...props,
-  }),
+  TextField: (props) =>
+    React.createElement(TextField, {
+      variant: 'outlined',
+      fullWidth: true,
+      size: 'small',
+      ...props,
+    }),
 } as ProductSearchProps['elements']);
 
 export const MuiWishlist = withElements(Wishlist, {
@@ -116,12 +126,13 @@ export const MuiViewedItems = withElements(ViewedItems, {
 } as ViewedItemsProps['elements']);
 
 export const MuiCurrencySwitch = withElements(CurrencySwitch, {
-  Select: (props) => React.createElement(Select, {
-    variant: 'standard',
-    color: 'primary',
-    onChange: props.onChange as any,
-    ...props,
-  }),
+  Select: (props) =>
+    React.createElement(Select, {
+      variant: 'standard',
+      color: 'primary',
+      onChange: props.onChange as any,
+      ...props,
+    }),
 } as CurrencySwitchProps['elements']);
 
 export const MuiCartList = withElements(CartList, {
@@ -129,56 +140,67 @@ export const MuiCartList = withElements(CartList, {
   Button: IconButton,
 } as CartListProps['elements']);
 
+export const MuiCheckout = withElements(
+  Checkout,
+  {
+    Loadbox,
+    PlacedOrder: (props) => React.createElement(Alert, { severity: 'success' }, props.children),
+    RadioGroup: RadioGroup,
+    Button: Button,
+    AddCouponButton: (props) => React.createElement(Button, { style: { marginRight: '15px' }, ...props }),
+    RemoveCouponButton: (props) => React.createElement(IconButton, { style: { marginLeft: '10px' }, ...props }),
+    CouponAppliedIcon: () =>
+      React.createElement(CheckCircleOutlineIcon, {
+        style: {
+          color: '#357a38',
+          marginRight: '15px',
+        },
+      }),
+    CouponProblemIcon: () =>
+      React.createElement(GppBadIcon, {
+        style: {
+          color: '#b2102f',
+          marginRight: '15px',
+        },
+      }),
+    RemoveCouponIcon: CloseIcon,
+    TextField: (props) =>
+      React.createElement(TextField, {
+        size: 'small',
+        fullWidth: true,
+        style: { margin: '10px 0' },
+        ...props,
+      }),
+  } as CheckoutProps['elements'],
+  {
+    notifierOptions: {
+      position: toastify.POSITION.TOP_RIGHT,
+      className: notifierStyles.muiToast,
+      Wrapper: NotifierWrapper,
+    },
+  } as CheckoutProps,
+);
 
-export const MuiCheckout = withElements(Checkout, {
-  Loadbox,
-  PlacedOrder: (props) => React.createElement(Alert, { severity: "success" }, props.children),
-  RadioGroup: RadioGroup,
-  Button: Button,
-  AddCouponButton: (props) => React.createElement(Button, { style: { marginRight: '15px' }, ...props }),
-  RemoveCouponButton: (props) => React.createElement(IconButton, { style: { marginLeft: '10px' }, ...props }),
-  CouponAppliedIcon: () => React.createElement(CheckCircleOutlineIcon, {
-    style: {
-      color: '#357a38',
-      marginRight: '15px',
-    }
-  }),
-  CouponProblemIcon: () => React.createElement(GppBadIcon, {
-    style: {
-      color: '#b2102f',
-      marginRight: '15px',
-    }
-  }),
-  RemoveCouponIcon: CloseIcon,
-  TextField: (props) => React.createElement(TextField, {
-    size: 'small',
-    fullWidth: true,
-    style: { margin: '10px 0' },
-    ...props,
-  }),
-} as CheckoutProps['elements'], {
-  notifierOptions: {
-    position: toastify.POSITION.TOP_RIGHT,
-    className: notifierStyles.muiToast,
-    Wrapper: NotifierWrapper,
-  }
-} as CheckoutProps);
-
-export const MuiAccountInfo = withElements(AccountInfo, {
-  Button: Button,
-  TextField: (props) => React.createElement(TextField, {
-    size: 'small',
-    fullWidth: true,
-    style: { margin: '10px 0' },
-    ...props,
-  }),
-}, {
-  notifierOptions: {
-    position: toastify.POSITION.TOP_RIGHT,
-    className: notifierStyles.muiToast,
-    Wrapper: NotifierWrapper,
-  }
-} as AccountInfoProps);
+export const MuiAccountInfo = withElements(
+  AccountInfo,
+  {
+    Button: Button,
+    TextField: (props) =>
+      React.createElement(TextField, {
+        size: 'small',
+        fullWidth: true,
+        style: { margin: '10px 0' },
+        ...props,
+      }),
+  },
+  {
+    notifierOptions: {
+      position: toastify.POSITION.TOP_RIGHT,
+      className: notifierStyles.muiToast,
+      Wrapper: NotifierWrapper,
+    },
+  } as AccountInfoProps,
+);
 
 export const MuiAccountOrders = withElements(AccountOrders, {
   CartList: MuiCartList,

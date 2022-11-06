@@ -10,15 +10,15 @@ const useStylesLoadBox = makeStyles(() =>
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
-      padding: '40px'
-    }
+      padding: '40px',
+    },
   }),
 );
 export const LoadBox = (props: { size?: number }) => {
   const classes = useStylesLoadBox();
   return (
-    <div className={classes.loadBox} >
-      <CircularProgress size={(props.size ? props.size : 150)} />
+    <div className={classes.loadBox}>
+      <CircularProgress size={props.size ? props.size : 150} />
     </div>
-  )
-}
+  );
+};

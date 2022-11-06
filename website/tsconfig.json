@@ -1,10 +1,8 @@
 {
-    "extends": "@tsconfig/docusaurus/tsconfig.json",
-    "compilerOptions": {
-        "skipLibCheck": true,
-        "target": "es5"
-    },
-    "include": [
-        "src/",
-    ]
+  "extends": "@tsconfig/docusaurus/tsconfig.json",
+  "compilerOptions": {
+    "skipLibCheck": true,
+    "target": "es5"
+  },
+  "include": ["src/"]
 }

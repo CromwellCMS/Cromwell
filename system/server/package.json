@@ -23,6 +23,7 @@
     "prod": "node startup.js prod",
     "test": "npx --no-install jest --config tests/jest.config.ts",
     "dev": "node startup.js dev -- --env=dev",
+    "format": "prettier --write --ignore-unknown \"**/*.+(js|jsx|json|css|md|ts|tsx)\"",
     "migration:generate:mysql": "npx typeorm migration:generate -o -f migration-mysql -n %npm_config_name%",
     "migration:generate:postgres": "npx typeorm migration:generate -o -f migration-postgres -n %npm_config_name%",
     "migration:generate:sqlite": "npx typeorm migration:generate -o -f migration-sqlite -n %npm_config_name%",

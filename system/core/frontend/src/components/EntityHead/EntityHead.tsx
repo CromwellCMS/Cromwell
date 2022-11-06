@@ -6,7 +6,11 @@ import { useAppPropsContext } from '../../constants';
 /**
  * Creates a default head (SEO meta tags) for any BaseEntity (e.g. Post, Product, etc. See EDBEntity)
  */
-export function EntityHead({ entity, image, useFallback }: {
+export function EntityHead({
+  entity,
+  image,
+  useFallback,
+}: {
   entity?: TBasePageEntity | null;
   image?: string | null;
   /**
@@ -37,21 +41,15 @@ export function EntityHead({ entity, image, useFallback }: {
           <meta property="og:title" content={entity.pageTitle} />
         </>
       )}
-      {documentContext?.fullUrl && (
-        <meta property="og:url" content={documentContext?.fullUrl} />
-      )}
+      {documentContext?.fullUrl && <meta property="og:url" content={documentContext?.fullUrl} />}
       {entity?.pageDescription && (
         <>
           <meta name="description" content={entity.pageDescription} />
           <meta property="og:description" content={entity.pageDescription} />
         </>
       )}
-      {image && documentContext?.origin && (
-        <meta property="og:image" content={documentContext.origin + image} />
-      )}
-      {keywords?.length && (
-        <meta name="keywords" content={keywords.join(',')} />
-      )}
+      {image && documentContext?.origin && <meta property="og:image" content={documentContext.origin + image} />}
+      {keywords?.length && <meta name="keywords" content={keywords.join(',')} />}
     </NextHead>
-  )
+  );
 }

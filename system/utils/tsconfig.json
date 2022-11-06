@@ -2,12 +2,7 @@
   "compilerOptions": {
     "module": "commonjs",
     "target": "ES2019",
-    "lib": [
-      "dom",
-      "es2015",
-      "es2016",
-      "es2017"
-    ],
+    "lib": ["dom", "es2015", "es2016", "es2017"],
     "baseUrl": ".",
     "strict": true,
     "experimentalDecorators": true,
@@ -19,23 +14,14 @@
     "esModuleInterop": true,
     "moduleResolution": "node",
     "skipLibCheck": true,
-    "types": [
-      "jest",
-      "node",
-    ],
+    "types": ["jest", "node"],
     "paths": {
-      "@App/*": [
-        "src/*"
-      ],
-    },
+      "@App/*": ["src/*"]
+    }
   },
-  "exclude": [
-    "node_modules",
-    ".cromwell",
-    "build"
-  ],
+  "exclude": ["node_modules", ".cromwell", "build"],
   "include": [
-    "src/**/*.ts",
+    "src/**/*.ts"
     // "tests/**/*.ts",
-  ],
+  ]
 }

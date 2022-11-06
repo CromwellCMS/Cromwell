@@ -7,15 +7,15 @@ import { RestApiModule } from './restapi.module';
 
 @Global()
 @Module({
-    imports: [
-        JwtModule.register({
-            signOptions: {
-                algorithm: 'HS256'
-            },
-        }),
-        RestApiModule,
-    ],
-    providers: [AuthService, JwtAuthGuard],
-    exports: [AuthService],
+  imports: [
+    JwtModule.register({
+      signOptions: {
+        algorithm: 'HS256',
+      },
+    }),
+    RestApiModule,
+  ],
+  providers: [AuthService, JwtAuthGuard],
+  exports: [AuthService],
 })
-export class AuthModule { }
+export class AuthModule {}

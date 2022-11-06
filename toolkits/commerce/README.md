@@ -1,5 +1,5 @@
 # Commerce toolkit
- 
+
 > A toolkit for building e-commerce websites with Cromwell CMS
 
 ### Links
@@ -15,6 +15,7 @@ npm i @cromwell/toolkit-commerce
 ```
 
 Some components of this package use `react-toastify`. If you need notifications add `ToastContainer` into your custom app:
+
 ```tsx title="_app.tsx"
 import React from 'react';
 import { ToastContainer } from 'react-toastify';
@@ -30,27 +31,23 @@ export default function App() {
 ```
 
 Add global CSS in `cromwell.config.js`:
+
 ```js title="cromwell.config.js"
 module.exports = {
-  globalCss: [
-    '@cromwell/toolkit-commerce/dist/_index.css',
-    'react-toastify/dist/ReactToastify.css'
-  ],
-}
+  globalCss: ['@cromwell/toolkit-commerce/dist/_index.css', 'react-toastify/dist/ReactToastify.css'],
+};
 ```
 
 ### Use
 
-Example of usage of a component for product category:  
+Example of usage of a component for product category:
 
 ```tsx title="category/[slug].tsx"
 import { MuiCategoryList } from '@cromwell/toolkit-commerce';
 import React from 'react';
 
 export default function CategoryPage() {
-  return (
-      <MuiCategoryList />
-  )
+  return <MuiCategoryList />;
 }
 
 export const getStaticProps = MuiCategoryList.withGetProps();

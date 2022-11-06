@@ -3,13 +3,13 @@ import * as fs from 'fs-extra';
 import { join } from 'path';
 
 export const mockWorkingDirectory = (name: string): string => {
-    const testDir = join(getUtilsTempDir(), 'test', name);
+  const testDir = join(getUtilsTempDir(), 'test', name);
 
-    const spy = jest.spyOn(process, 'cwd');
-    spy.mockReturnValue(testDir);
-    return testDir;
-}
+  const spy = jest.spyOn(process, 'cwd');
+  spy.mockReturnValue(testDir);
+  return testDir;
+};
 
 export const tearDown = async (testDir: string) => {
-    await fs.remove(testDir);
-}
+  await fs.remove(testDir);
+};

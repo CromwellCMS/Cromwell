@@ -9,19 +9,21 @@ import { appState } from '../../helpers/AppState';
 import commonStyles from '../../styles/common.module.scss';
 import styles from './ProductCard.module.scss';
 
-export const ProductCard = (props?: ProductCardProps & {
-  className?: string;
-}) => {
+export const ProductCard = (
+  props?: ProductCardProps & {
+    className?: string;
+  },
+) => {
   const { product } = props ?? {};
   const router = useRouter();
   const isMobile = useMediaQuery<Theme>((theme) => theme.breakpoints.down('sm'));
-  const variant = (props?.variant === 'horizontal' && !isMobile) ? 'horizontal' : 'vertical';
+  const variant = props?.variant === 'horizontal' && !isMobile ? 'horizontal' : 'vertical';
 
   const handleOpenQuickView = () => {
     if (!product?.id) return;
     appState.isQuickViewOpen = true;
     appState.quickViewProductId = product?.id;
-  }
+  };
 
   if (!product) return null;
 
@@ -33,8 +35,8 @@ export const ProductCard = (props?: ProductCardProps & {
         root: clsx(props?.className, commonStyles.onHoverLinkContainer, styles.Product),
         title: commonStyles.onHoverLink,
       }}
-      onOpenCart={() => appState.isCartOpen = true}
-      onOpenWishlist={() => appState.isWishlistOpen = true}
+      onOpenCart={() => (appState.isCartOpen = true)}
+      onOpenWishlist={() => (appState.isWishlistOpen = true)}
       noImagePlaceholderUrl={'/themes/@cromwell/theme-store/no-photos.png'}
       variant={variant}
       onFailedAddToCart={(item, result) => {
@@ -49,15 +51,16 @@ export const ProductCard = (props?: ProductCardProps & {
               <IconButton
                 aria-label="Open product in quick view"
                 className={styles.actionBtn}
-                onClick={handleOpenQuickView}>
+                onClick={handleOpenQuickView}
+              >
                 <SearchIcon />
               </IconButton>
             </Tooltip>
-          )
+          );
         },
       }}
       onProductLinkClick={(event, link) => router?.push(link)}
       imageProps={{ unoptimized: true }}
     />
   );
-}
+};

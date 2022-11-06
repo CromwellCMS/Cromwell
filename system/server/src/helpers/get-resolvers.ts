@@ -14,33 +14,24 @@ import { TagResolver } from '../resolvers/tag.resolver';
 import { UserResolver } from '../resolvers/user.resolver';
 
 export const getResolvers = async (): Promise<any> => {
-    const ecommerce = [
-        AttributeResolver,
-        ProductCategoryResolver,
-        ProductResolver,
-        ProductReviewResolver,
-        OrderResolver,
-        CouponResolver,
-        ProductVariantResolver,
-    ];
-    const blog = [
-        PostResolver,
-        TagResolver,
-    ];
-    const core = [
-        UserResolver,
-        RoleResolver,
-        GenericPluginResolver,
-        GenericThemeResolver,
-        CustomEntityResolver,
-    ];
+  const ecommerce = [
+    AttributeResolver,
+    ProductCategoryResolver,
+    ProductResolver,
+    ProductReviewResolver,
+    OrderResolver,
+    CouponResolver,
+    ProductVariantResolver,
+  ];
+  const blog = [PostResolver, TagResolver];
+  const core = [UserResolver, RoleResolver, GenericPluginResolver, GenericThemeResolver, CustomEntityResolver];
 
-    const settings = await getCmsSettings();
+  const settings = await getCmsSettings();
 
-    return [
-        ...core,
-        ...(settings?.modules?.ecommerce ? ecommerce : []),
-        ...(settings?.modules?.blog ? blog : []),
-        ...((await collectPlugins()).resolvers ?? []),
-    ];
-}
+  return [
+    ...core,
+    ...(settings?.modules?.ecommerce ? ecommerce : []),
+    ...(settings?.modules?.blog ? blog : []),
+    ...((await collectPlugins()).resolvers ?? []),
+  ];
+};

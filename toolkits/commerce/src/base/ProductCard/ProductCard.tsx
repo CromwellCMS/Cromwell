@@ -26,8 +26,21 @@ import styles from './ProductCard.module.scss';
 const Empty = (props) => props?.children ?? null;
 
 export type ProductCardProps = {
-  classes?: Partial<Record<'root' | 'horizontal_variant' | 'image' | 'image_container' | 'actions' | 'action_button'
-    | 'title' | 'price_block' | 'description' | 'rating', string>>;
+  classes?: Partial<
+    Record<
+      | 'root'
+      | 'horizontal_variant'
+      | 'image'
+      | 'image_container'
+      | 'actions'
+      | 'action_button'
+      | 'title'
+      | 'price_block'
+      | 'description'
+      | 'rating',
+      string
+    >
+  >;
 
   elements?: {
     OtherActions?: React.ComponentType<{ cardProps: ProductCardProps }>;
@@ -35,7 +48,7 @@ export type ProductCardProps = {
     AddCartButton?: React.ComponentType<TBaseButtonProps>;
     AddWishlistButton?: React.ComponentType<TBaseButtonProps>;
     Tooltip?: React.ComponentType<TBaseTooltipProps>;
-  }
+  };
 
   text?: {
     addToCart?: string;
@@ -45,7 +58,7 @@ export type ProductCardProps = {
     openCart?: string;
     reviews?: string;
     clickToOpenCart?: string;
-  }
+  };
 
   /** Product data. Required */
   product: TProduct;
@@ -99,18 +112,30 @@ export type ProductCardProps = {
    * Product link click (image or title). You can prevent navigation event.
    */
   onProductLinkClick?: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, link: string) => any;
-}
+};
 
 /**
  * Displays product cart with short product info. Used to display in product list
- * of a product category 
+ * of a product category
  */
 export function ProductCard(props: ProductCardProps) {
-  const { product, onOpenCart, notifier = baseNotifier, notifierOptions = {},
-    elements = {}, imageProps, classes, text } = props ?? {};
-  const { OtherActions = Empty, Rating = BaseRating,
-    AddCartButton = BaseButton, AddWishlistButton = BaseButton,
-    Tooltip = BaseTooltip } = elements;
+  const {
+    product,
+    onOpenCart,
+    notifier = baseNotifier,
+    notifierOptions = {},
+    elements = {},
+    imageProps,
+    classes,
+    text,
+  } = props ?? {};
+  const {
+    OtherActions = Empty,
+    Rating = BaseRating,
+    AddCartButton = BaseButton,
+    AddWishlistButton = BaseButton,
+    Tooltip = BaseTooltip,
+  } = elements;
   const cstore = getCStore();
 
   const attributes = useStoreAttributes(props.attributes);
@@ -125,7 +150,7 @@ export function ProductCard(props: ProductCardProps) {
     product: product ?? undefined,
     pickedAttributes: {},
     amount: 1,
-  }
+  };
   const inCart = cstore.isInCart(item);
   const inWishlist = cstore.isInWishlist({ product });
 
@@ -136,7 +161,7 @@ export function ProductCard(props: ProductCardProps) {
       const result = cstore.addToCart(item, attributes);
       if (result.success) {
         props?.onAddedToCart?.(item, result);
-        notifier?.success?.("Added! Click here to open cart", {
+        notifier?.success?.('Added! Click here to open cart', {
           onClick: () => {
             onOpenCart?.();
           },
@@ -146,32 +171,37 @@ export function ProductCard(props: ProductCardProps) {
         props?.onFailedAddToCart?.(item, result);
       }
       if (result.code === 1) {
-        notifier?.warning?.("Product is already in your cart!", {
+        notifier?.warning?.('Product is already in your cart!', {
           ...notifierOptions,
         });
       }
       if (result.missingAttributes?.length) {
         props?.onFailedAddToCart?.(item, result);
-        notifier?.error?.(`Please pick following attributes: ${result.missingAttributes.map(attr => attr?.title || attr.key).join(', ')}`, {
-          ...notifierOptions,
-        });
+        notifier?.error?.(
+          `Please pick following attributes: ${result.missingAttributes
+            .map((attr) => attr?.title || attr.key)
+            .join(', ')}`,
+          {
+            ...notifierOptions,
+          },
+        );
       }
       forceUpdate();
     }
-  }
+  };
 
   const handleAddToWishlist = () => {
     if (inWishlist) {
       const result = cstore.removeFromWishlist({ product });
       if (result.success) {
-        notifier?.info?.("Removed", {
+        notifier?.info?.('Removed', {
           ...notifierOptions,
         });
       }
     } else {
       const result = cstore.addToWishlist({ product });
       if (result.success) {
-        notifier?.success?.("Added! Click here to open wishlist", {
+        notifier?.success?.('Added! Click here to open wishlist', {
           onClick: () => {
             props?.onOpenWishlist?.();
           },
@@ -179,30 +209,36 @@ export function ProductCard(props: ProductCardProps) {
         });
       }
       if (result.code === 1) {
-        notifier?.warning?.("Product is already in your wishlist!", {
+        notifier?.warning?.('Product is already in your wishlist!', {
           ...notifierOptions,
         });
       }
     }
     forceUpdate();
-  }
+  };
 
-  const mainImage = imageProps?.src !== undefined ? imageProps?.src :
-    (product?.mainImage ?? product?.images?.[0] ?? props?.noImagePlaceholderUrl);
+  const mainImage =
+    imageProps?.src !== undefined
+      ? imageProps?.src
+      : product?.mainImage ?? product?.images?.[0] ?? props?.noImagePlaceholderUrl;
 
   const WishlistIcon = inWishlist ? FavoriteActiveIcon : FavoriteHollowIcon;
 
   return (
-    <div className={clsx(styles.ProductCard, classes?.root,
-      props?.variant === 'horizontal' && styles.horizontalVariant,
-      props?.variant === 'horizontal' && classes?.horizontal_variant,
-    )}
+    <div
+      className={clsx(
+        styles.ProductCard,
+        classes?.root,
+        props?.variant === 'horizontal' && styles.horizontalVariant,
+        props?.variant === 'horizontal' && classes?.horizontal_variant,
+      )}
     >
       {mainImage !== undefined && mainImage !== null && (
         <div className={clsx(styles.imageBlock, classes?.image_container)}>
-          <Link href={productLink}
+          <Link
+            href={productLink}
             style={{ position: 'relative' }}
-            onClick={e => productLink && props.onProductLinkClick?.(e, productLink)}
+            onClick={(e) => productLink && props.onProductLinkClick?.(e, productLink)}
           >
             <Image
               alt={product?.name ?? undefined}
@@ -219,10 +255,13 @@ export function ProductCard(props: ProductCardProps) {
       )}
       <div className={styles.caption}>
         <div className={styles.productNameContainer}>
-          <Link href={productLink}
-            onClick={e => productLink && props.onProductLinkClick?.(e, productLink)}
+          <Link
+            href={productLink}
+            onClick={(e) => productLink && props.onProductLinkClick?.(e, productLink)}
             className={clsx(styles.productName, classes?.title)}
-          >{product?.name}</Link>
+          >
+            {product?.name}
+          </Link>
         </div>
         {product?.description && (
           <div className={clsx(styles.description, classes?.description)}>
@@ -231,49 +270,48 @@ export function ProductCard(props: ProductCardProps) {
           </div>
         )}
         <div className={styles.priceBlock}>
-          {(product?.oldPrice !== undefined && product?.oldPrice !== null) && (
+          {product?.oldPrice !== undefined && product?.oldPrice !== null && (
             <p className={styles.oldPrice}>{cstore.getPriceWithCurrency(product.oldPrice)}</p>
           )}
           <p className={styles.price}>{cstore.getPriceWithCurrency(product?.price)}</p>
         </div>
         <div className={clsx(styles.actions, classes?.actions)}>
-          <Tooltip
-            title={inCart ? (text?.openCart ?? 'Open cart') : (text?.addToCart ?? 'Add to cart')}>
+          <Tooltip title={inCart ? text?.openCart ?? 'Open cart' : text?.addToCart ?? 'Add to cart'}>
             <AddCartButton
               onClick={handleAddToCart}
-              aria-label={text?.addToCart ?? "Add product to cart"}
+              aria-label={text?.addToCart ?? 'Add product to cart'}
               className={clsx(styles.actionBtn, classes?.action_button)}
             >
               {inCart ? <ShoppingCartIcon /> : <AddShoppingCartIcon />}
             </AddCartButton>
           </Tooltip>
-          <Tooltip title={text?.addToWishlist ?? "Add to wishlist"}>
+          <Tooltip title={text?.addToWishlist ?? 'Add to wishlist'}>
             <AddWishlistButton
               onClick={handleAddToWishlist}
-              aria-label={text?.addToWishlist ?? "Add product to wishlist"}
+              aria-label={text?.addToWishlist ?? 'Add product to wishlist'}
               className={clsx(styles.actionBtn, classes?.action_button)}
             >
-              {!isServer() && (
-                <WishlistIcon />
-              )}
+              {!isServer() && <WishlistIcon />}
             </AddWishlistButton>
           </Tooltip>
           <OtherActions cardProps={props} />
         </div>
         <div className={clsx(styles.ratingBlock, classes?.rating)}>
-          <Rating name="read-only"
-            value={product?.rating?.average}
-            precision={0.5}
-            readOnly
-          />
-          {!!((product?.rating?.reviewsNumber !== undefined && props?.variant === 'horizontal'
-            && product?.rating?.reviewsNumber) && (
-              <p className={styles.ratingCaption}>
-                ({product?.rating?.average ? product?.rating?.average.toFixed(2)
-                  : ''}) {product?.rating?.reviewsNumber} {text?.reviews ?? 'reviews'}</p>
-            ))}
+          <Rating name="read-only" value={product?.rating?.average} precision={0.5} readOnly />
+          {
+            !!(
+              product?.rating?.reviewsNumber !== undefined &&
+              props?.variant === 'horizontal' &&
+              product?.rating?.reviewsNumber && (
+                <p className={styles.ratingCaption}>
+                  ({product?.rating?.average ? product?.rating?.average.toFixed(2) : ''}){' '}
+                  {product?.rating?.reviewsNumber} {text?.reviews ?? 'reviews'}
+                </p>
+              )
+            )
+          }
         </div>
       </div>
     </div>
-  )
+  );
 }

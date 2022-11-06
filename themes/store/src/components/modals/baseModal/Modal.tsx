@@ -26,7 +26,7 @@ const Modal = (props: {
         }
       }
     }
-  }
+  };
 
   useEffect(() => {
     if (props.open) {
@@ -41,8 +41,8 @@ const Modal = (props: {
       if (blurred.current) {
         setBlur(false);
       }
-    }
-  }, [])
+    };
+  }, []);
 
   return (
     <MuiModal
@@ -51,11 +51,9 @@ const Modal = (props: {
       onClose={props.onClose}
       className={styles.Modal}
     >
-      <div className={`${styles.modalContent} ${props.className ?? ''}`}>
-        {props.children}
-      </div>
+      <div className={`${styles.modalContent} ${props.className ?? ''}`}>{props.children}</div>
     </MuiModal>
   );
-}
+};
 
 export default Modal;

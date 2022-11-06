@@ -14,22 +14,11 @@
     "noImplicitAny": false,
     "removeComments": false,
     "moduleResolution": "node",
-    "types": [
-      "node",
-      "jest",
-    ],
+    "types": ["node", "jest"],
     "paths": {
-      "@App/*": [
-        "src/*"
-      ],
-    },
+      "@App/*": ["src/*"]
+    }
   },
-  "include": [
-    "src/**/*.ts",
-  ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "es"
-  ]
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist", "es"]
 }

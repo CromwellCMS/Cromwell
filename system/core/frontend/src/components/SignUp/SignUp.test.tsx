@@ -4,9 +4,8 @@ import React from 'react';
 import { SignUp } from './SignUp';
 
 describe('SignUp', () => {
-
-    it("renders SignUp", async () => {
-        render(<SignUp />);
-        await screen.findByText('Sign up');
-    });
-})
+  it('renders SignUp', async () => {
+    render(<SignUp />);
+    await screen.findByText('Sign up');
+  });
+});

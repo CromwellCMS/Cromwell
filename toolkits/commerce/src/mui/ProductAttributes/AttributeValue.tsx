@@ -17,15 +17,16 @@ export const AttributeValue: CompType = (props) => {
       onClick={props.onClick}
       aria-label={`Attribute ${props?.attribute?.key} - value: ${props?.value}`}
       variant={checked ? 'contained' : 'outlined'}
-      className={clsx(styles.attributeValue, canValidate && !valid && styles.invalidAttributeValue,
-        checked && styles.attributeValueChecked)}
-    >
-      {props.icon && (
-        <div
-          style={{ backgroundImage: `url(${props.icon}` }}
-          className={styles.attributeValueIcon}></div>
+      className={clsx(
+        styles.attributeValue,
+        canValidate && !valid && styles.invalidAttributeValue,
+        checked && styles.attributeValueChecked,
       )}
-      <p className={styles.attributeValueText} style={{ textTransform: 'none' }}>{props.value}</p>
+    >
+      {props.icon && <div style={{ backgroundImage: `url(${props.icon}` }} className={styles.attributeValueIcon}></div>}
+      <p className={styles.attributeValueText} style={{ textTransform: 'none' }}>
+        {props.value}
+      </p>
     </Button>
-  )
-}
+  );
+};

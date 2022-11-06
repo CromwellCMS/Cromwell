@@ -20,7 +20,8 @@
     "dev": "node startup.js dev",
     "gen": "node startup.js gen",
     "start": "node startup.js prod",
-    "watch": "npx rollup -cw"
+    "watch": "npx rollup -cw",
+    "format": "prettier --write --ignore-unknown \"**/*.+(js|jsx|json|css|md|ts|tsx)\""
   },
   "dependencies": {
     "@cromwell/core": "2.0.13",

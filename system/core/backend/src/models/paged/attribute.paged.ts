@@ -6,9 +6,9 @@ import { PagedMeta } from './meta.paged';
 
 @ObjectType()
 export class PagedAttribute implements TPagedList<TAttribute> {
-    @Field(() => PagedMeta, { nullable: true })
-    pagedMeta?: PagedMeta;
+  @Field(() => PagedMeta, { nullable: true })
+  pagedMeta?: PagedMeta;
 
-    @Field(() => [Attribute], { nullable: true })
-    elements?: Attribute[];
+  @Field(() => [Attribute], { nullable: true })
+  elements?: Attribute[];
 }

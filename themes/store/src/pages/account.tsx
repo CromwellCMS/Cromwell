@@ -11,19 +11,18 @@ import styles from '../styles/pages/account.module.scss';
 
 import type { TPageWithLayout } from './_app';
 
-
 const Account: TPageWithLayout = () => {
   const userInfo = useUserInfo();
 
   const handleSignInOpen = () => {
     appState.signInFormType = 'sign-in';
     appState.isSignInOpen = true;
-  }
+  };
 
   const handleSignUpOpen = () => {
-    appState.signInFormType = 'sign-up'
+    appState.signInFormType = 'sign-up';
     appState.isSignInOpen = true;
-  }
+  };
 
   return (
     <CContainer className={clsx(commonStyles.content, styles.AccountPage)} id="account_root">
@@ -42,33 +41,37 @@ const Account: TPageWithLayout = () => {
       )}
       {!userInfo && (
         <CContainer style={{ padding: '20px 15px' }} id="account_login">
-          <CText className={styles.subheader} id="account_login_text" element="h2">Log in</CText>
+          <CText className={styles.subheader} id="account_login_text" element="h2">
+            Log in
+          </CText>
           <CContainer className={styles.signInBlock} id="account_login_btns">
-            <Button variant="outlined"
+            <Button
+              variant="outlined"
               color="primary"
               size="small"
               className={styles.signInBtn}
               onClick={handleSignInOpen}
-            >Sign in</Button>
-            <Button variant="outlined"
+            >
+              Sign in
+            </Button>
+            <Button
+              variant="outlined"
               color="primary"
               size="small"
               className={styles.signInBtn}
               onClick={handleSignUpOpen}
-            >Sign up</Button>
+            >
+              Sign up
+            </Button>
           </CContainer>
         </CContainer>
       )}
     </CContainer>
   );
-}
+};
 
 Account.getLayout = (page) => {
-  return (
-    <Layout>
-      {page}
-    </Layout >
-  )
-}
+  return <Layout>{page}</Layout>;
+};
 
 export default Account;

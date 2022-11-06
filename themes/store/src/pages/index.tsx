@@ -18,22 +18,28 @@ const Index: TPageWithLayout = () => {
           <CContainer id="main_02" className={styles.advantageItem}>
             <CImage id="main_09" src="/themes/@cromwell/theme-store/free_shipping.png" />
             <CContainer id="main_11" className={styles.advantageItemText}>
-              <CText id="main_06" className={styles.advantageItemHeader}>FREE SHIPPING & RETURN</CText>
+              <CText id="main_06" className={styles.advantageItemHeader}>
+                FREE SHIPPING & RETURN
+              </CText>
               <CText id="main_12">Free shipping for orders over $9</CText>
             </CContainer>
           </CContainer>
           <CContainer id="main_03" className={styles.advantageItem}>
             <CImage id="main_33" src="/themes/@cromwell/theme-store/wallet.png" />
             <CContainer id="main_13" className={styles.advantageItemText}>
-              <CText id="main_07" className={styles.advantageItemHeader}>MONEY BACK GUARANTEE</CText>
+              <CText id="main_07" className={styles.advantageItemHeader}>
+                MONEY BACK GUARANTEE
+              </CText>
               <CText id="main_014">100% money back guarantee</CText>
             </CContainer>
           </CContainer>
           <CContainer id="main_04" className={styles.advantageItem}>
             <CImage id="main_34" src="/themes/@cromwell/theme-store/technical-support.png" />
             <CContainer id="main_10" className={styles.advantageItemText}>
-              <CText id="main_08" className={styles.advantageItemHeader} >ONLINE SUPPORT 24/7</CText>
-              <CText id="main_35" >24/7 online support</CText>
+              <CText id="main_08" className={styles.advantageItemHeader}>
+                ONLINE SUPPORT 24/7
+              </CText>
+              <CText id="main_35">24/7 online support</CText>
             </CContainer>
           </CContainer>
         </CContainer>
@@ -51,30 +57,37 @@ const Index: TPageWithLayout = () => {
             <CContainer id="main_23" className={styles.mainSubBanners}>
               <CImage
                 src="/themes/@cromwell/theme-store/sub_banner_1.jpg"
-                id="main_sub_banner_1" className={styles.mainSubBanner} />
+                id="main_sub_banner_1"
+                className={styles.mainSubBanner}
+              />
               <CImage
                 src="/themes/@cromwell/theme-store/sub_banner_2.jpg"
-                id="main_sub_banner_2" className={styles.mainSubBanner} />
+                id="main_sub_banner_2"
+                className={styles.mainSubBanner}
+              />
               <CImage
                 src="/themes/@cromwell/theme-store/sub_banner_3.jpg"
-                id="main_sub_banner_3" className={styles.mainSubBanner} />
+                id="main_sub_banner_3"
+                className={styles.mainSubBanner}
+              />
             </CContainer>
             <CContainer id="main_24" className={styles.mainShowcaseWrapper}>
-              <CPlugin id="main_showcase" pluginName={"@cromwell/plugin-product-showcase"} blockName="Product showcase" style={{ height: '440px' }} />
+              <CPlugin
+                id="main_showcase"
+                pluginName={'@cromwell/plugin-product-showcase'}
+                blockName="Product showcase"
+                style={{ height: '440px' }}
+              />
             </CContainer>
           </CContainer>
         </CContainer>
       </CContainer>
     </CContainer>
   );
-}
+};
 
 Index.getLayout = (page) => {
-  return (
-    <Layout>
-      {page}
-    </Layout>
-  )
-}
+  return <Layout>{page}</Layout>;
+};
 
 export default Index;

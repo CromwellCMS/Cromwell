@@ -8,16 +8,16 @@ jest.mock('react-resize-detector', () => {
 import { ProductGallery } from './ProductGallery';
 
 describe('ProductGallery', () => {
-
-  it("renders", async () => {
-    const { container } = render(<ProductGallery
-      product={{
-        id: 1,
-        name: '_test1_',
-        images: ['_test2_']
-      }}
-    />);
+  it('renders', async () => {
+    const { container } = render(
+      <ProductGallery
+        product={{
+          id: 1,
+          name: '_test1_',
+          images: ['_test2_'],
+        }}
+      />,
+    );
     expect(container.innerHTML.includes('_test2_')).toBeTruthy();
   });
-
-})
+});

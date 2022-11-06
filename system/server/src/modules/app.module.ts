@@ -4,13 +4,13 @@ import { RestApiModule } from './restapi.module';
 import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
-    imports: [
-        RestApiModule.forRoot(),
-        AuthModule,
-        ThrottlerModule.forRoot({
-            ttl: 30,
-            limit: 100,
-        }),
-    ],
+  imports: [
+    RestApiModule.forRoot(),
+    AuthModule,
+    ThrottlerModule.forRoot({
+      ttl: 30,
+      limit: 100,
+    }),
+  ],
 })
-export class AppModule { }
+export class AppModule {}

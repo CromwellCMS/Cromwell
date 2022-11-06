@@ -6,9 +6,9 @@ import { PagedMeta } from './meta.paged';
 
 @ObjectType()
 export class PagedUser implements TPagedList<TUser> {
-    @Field(() => PagedMeta, { nullable: true })
-    pagedMeta?: PagedMeta;
+  @Field(() => PagedMeta, { nullable: true })
+  pagedMeta?: PagedMeta;
 
-    @Field(() => [User], { nullable: true })
-    elements?: User[];
+  @Field(() => [User], { nullable: true })
+  elements?: User[];
 }

@@ -2,10 +2,7 @@
   "compilerOptions": {
     "target": "ES2019",
     "module": "esnext",
-    "lib": [
-      "DOM",
-      "ES2019"
-    ],
+    "lib": ["DOM", "ES2019"],
     "baseUrl": ".",
     "allowJs": true,
     "jsx": "react",
@@ -20,15 +17,8 @@
     "forceConsistentCasingInFileNames": true,
     "noEmit": false,
     "moduleResolution": "node",
-    "isolatedModules": true,
+    "isolatedModules": true
   },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.tsx"
-  ],
-  "exclude": [
-    "node_modules",
-    ".cromwell",
-    "build"
-  ]
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "exclude": ["node_modules", ".cromwell", "build"]
 }

@@ -2,14 +2,7 @@
   "compilerOptions": {
     "target": "es5",
     "module": "ESNext",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext",
-      "es2015",
-      "es2016",
-      "es2017"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext", "es2015", "es2016", "es2017"],
     "baseUrl": ".",
     "allowJs": false,
     "jsx": "preserve",
@@ -26,12 +19,6 @@
     "forceConsistentCasingInFileNames": true,
     "noEmit": true
   },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.tsx"
-  ],
-  "exclude": [
-    "build",
-    "node_modules"
-  ]
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "exclude": ["build", "node_modules"]
 }

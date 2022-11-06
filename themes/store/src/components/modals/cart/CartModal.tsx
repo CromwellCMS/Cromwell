@@ -13,18 +13,16 @@ import styles from './CartModal.module.scss';
 export const CartModal = observer(() => {
   const handleCartClose = () => {
     appState.isCartOpen = false;
-  }
+  };
   return (
     <Modal
       className={commonStyles.center}
       open={appState.isCartOpen}
       onClose={handleCartClose}
-      blurSelector={"#CB_root"}
+      blurSelector={'#CB_root'}
     >
       <div className={styles.cartModal}>
-        <IconButton
-          aria-label="Close shopping cart"
-          onClick={handleCartClose} className={styles.closeBtn}>
+        <IconButton aria-label="Close shopping cart" onClick={handleCartClose} className={styles.closeBtn}>
           <CloseIcon />
         </IconButton>
         <div className={styles.cartList}>
@@ -32,15 +30,17 @@ export const CartModal = observer(() => {
         </div>
         <Link href="/checkout" onClick={handleCartClose} style={{ display: 'flex' }}>
           <Button
-            aria-label={"Open checkout"}
+            aria-label={'Open checkout'}
             className={styles.checkoutBtn}
             variant="contained"
             color="primary"
             size="large"
             startIcon={<ShoppingCartIcon />}
-          >Checkout</Button>
+          >
+            Checkout
+          </Button>
         </Link>
       </div>
     </Modal>
-  )
+  );
 });

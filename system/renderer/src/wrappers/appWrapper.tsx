@@ -29,18 +29,18 @@ import { useForceUpdate } from '../helpers/helpers';
 import { initRenderer } from '../helpers/initRenderer';
 import { usePatchForRedirects } from '../helpers/redirects';
 
-const DefaultRootComp = ((props: any) => props.children);
+const DefaultRootComp = (props: any) => props.children;
 
 type TPageProps = Partial<TCromwellPageCoreProps> & {
   router?: NextRouter;
   children?: ReactNode;
-}
+};
 
 type TAppProps = Omit<AppProps<TPageProps>, 'pageProps'> & {
-  pageProps: TPageProps
-}
+  pageProps: TPageProps;
+};
 
-export const withCromwellApp = (App: ((props: TAppProps) => JSX.Element | null)) => {
+export const withCromwellApp = (App: (props: TAppProps) => JSX.Element | null) => {
   patchDocument();
   initRenderer();
 
@@ -49,18 +49,27 @@ export const withCromwellApp = (App: ((props: TAppProps) => JSX.Element | null))
     const Page = props.Component;
     const pageProps = props.pageProps;
 
-    const { plugins, pageConfig, themeCustomConfig,
-      cmsSettings, themeHeadHtml,
-      themeFooterHtml, documentContext,
-      palette, defaultPages, pageConfigRoute,
-      resolvedPageRoute, slug } = pageProps?.cmsProps ?? {};
+    const {
+      plugins,
+      pageConfig,
+      themeCustomConfig,
+      cmsSettings,
+      themeHeadHtml,
+      themeFooterHtml,
+      documentContext,
+      palette,
+      defaultPages,
+      pageConfigRoute,
+      resolvedPageRoute,
+      slug,
+    } = pageProps?.cmsProps ?? {};
 
     const title = pageConfig?.title;
     const description = pageConfig?.description;
     const keywords = pageConfig?.keywords?.length && pageConfig.keywords;
 
     const Head = getModuleImporter()?.modules?.['next/head']?.default;
-    const pageId = documentContext?.fullUrl ?? resolvedPageRoute as string;
+    const pageId = documentContext?.fullUrl ?? (resolvedPageRoute as string);
 
     const RootComp: React.ComponentType = getStoreItem('rendererComponents')?.root ?? DefaultRootComp;
 
@@ -80,11 +89,9 @@ export const withCromwellApp = (App: ((props: TAppProps) => JSX.Element | null))
 
     // Set URL parameters
     if (!isServer() && documentContext) {
-      if (!documentContext.fullUrl)
-        documentContext.fullUrl = window.location.href;
+      if (!documentContext.fullUrl) documentContext.fullUrl = window.location.href;
 
-      if (!documentContext.origin)
-        documentContext.origin = window.location.origin;
+      if (!documentContext.origin) documentContext.origin = window.location.origin;
 
       if (documentContext.origin.endsWith('/'))
         documentContext.origin = documentContext.origin.slice(0, documentContext.origin.length - 2);
@@ -93,12 +100,12 @@ export const withCromwellApp = (App: ((props: TAppProps) => JSX.Element | null))
     const routeInfo = {
       origin: documentContext?.origin,
       fullUrl: documentContext?.fullUrl,
-    }
+    };
 
     const forceUpdate = useForceUpdate();
     const forceUpdatePage = () => {
       forceUpdate();
-    }
+    };
     setStoreItem('forceUpdatePage', forceUpdatePage);
 
     let favicon = cmsSettings?.favicon;
@@ -121,17 +128,17 @@ export const withCromwellApp = (App: ((props: TAppProps) => JSX.Element | null))
             ...(props.pageProps?.cmsProps ?? {}),
             documentContext,
             router: props.router,
-          }
-        }
-      }
-    }
+          },
+        },
+      };
+    };
 
     // When URL changes make page viewed request
     useEffect(() => {
       if (!isServer()) {
         let pageDefaultName: TDefaultPageName | undefined;
         if (defaultPages) {
-          Object.entries(defaultPages).forEach(entry => {
+          Object.entries(defaultPages).forEach((entry) => {
             if (entry[1] === pageConfigRoute) pageDefaultName = entry[0] as TDefaultPageName;
           });
         }
@@ -148,7 +155,7 @@ export const withCromwellApp = (App: ((props: TAppProps) => JSX.Element | null))
           pageName: pageConfigRoute,
           entityType,
           slug: Array.isArray(slug) ? JSON.stringify(slug) : slug,
-        }
+        };
         apiClient.post(`v1/cms/view-page`, pageStats, { disableLog: true }).catch(() => null);
 
         getAuthClient().reviveAuth();
@@ -158,7 +165,7 @@ export const withCromwellApp = (App: ((props: TAppProps) => JSX.Element | null))
     const content = (
       <BlockStoreProvider value={{ instances: pageInstances.current }}>
         <CrwDocumentContext.Consumer>
-          {documentContext => {
+          {(documentContext) => {
             const appProps = getChildAppProps(documentContext);
             return (
               <AppPropsContext.Provider
@@ -167,11 +174,13 @@ export const withCromwellApp = (App: ((props: TAppProps) => JSX.Element | null))
                   router: appProps.router,
                   routeInfo,
                   forceUpdatePage,
-                }}>
+                }}
+              >
                 <RootComp>
                   <Head>
                     {favicon && (
-                      <link rel="shortcut icon"
+                      <link
+                        rel="shortcut icon"
                         type={favicon.endsWith('.png') ? 'image/png' : 'image/jpg'}
                         href={favicon}
                       />
@@ -198,14 +207,12 @@ export const withCromwellApp = (App: ((props: TAppProps) => JSX.Element | null))
                         <meta property="og:description" content={description} />
                       </>
                     )}
-                    {keywords && (
-                      <meta name="keywords" content={keywords.join(',')} />
-                    )}
+                    {keywords && <meta name="keywords" content={keywords.join(',')} />}
                     {pageConfig?.headHtml && parseHtml(pageConfig?.headHtml)}
                   </Head>
-                </RootComp >
+                </RootComp>
               </AppPropsContext.Provider>
-            )
+            );
           }}
         </CrwDocumentContext.Consumer>
       </BlockStoreProvider>
@@ -213,5 +220,5 @@ export const withCromwellApp = (App: ((props: TAppProps) => JSX.Element | null))
 
     cleanParseContext(pageId);
     return content;
-  }
-}
+  };
+};
