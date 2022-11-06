@@ -6,7 +6,6 @@ import EntityTable from '../../components/entity/entityTable/EntityTable';
 import { attributeListPageInfo, attributePageInfo } from '../../constants/PageInfos';
 import { baseEntityColumns } from '../../helpers/customEntities';
 
-
 export default function AttributesList() {
   const client = getGraphQLClient();
   return (
@@ -46,8 +45,8 @@ export default function AttributesList() {
               title: true,
             },
           },
-          getValueView: (value: TAttributeValue[]) => value?.map(r => r.title ?? r.value).join(', '),
-          getTooltipValueView: (value: any) => value?.map(r => r.title ?? r.value).join(', '),
+          getValueView: (value: TAttributeValue[]) => value?.map((r) => r.title ?? r.value).join(', '),
+          getTooltipValueView: (value: any) => value?.map((r) => r.title ?? r.value).join(', '),
         },
         {
           name: 'icon',
@@ -59,20 +58,23 @@ export default function AttributesList() {
           name: 'required',
           label: 'Required',
           type: 'Checkbox',
-          searchOptions: [{
-            label: 'Required',
-            value: true,
-          }, {
-            label: 'Optional',
-            value: false,
-          }],
+          searchOptions: [
+            {
+              label: 'Required',
+              value: true,
+            },
+            {
+              label: 'Optional',
+              value: false,
+            },
+          ],
           visible: true,
         },
-        ...baseEntityColumns.map(col => {
-          if (col.name === 'createDate') return { ...col, visible: true }
-          return { ...col, visible: false }
+        ...baseEntityColumns.map((col) => {
+          if (col.name === 'createDate') return { ...col, visible: true };
+          return { ...col, visible: false };
         }),
       ]}
     />
-  )
+  );
 }

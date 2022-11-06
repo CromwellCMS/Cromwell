@@ -22,7 +22,7 @@ export default function TransferList(props: {
   classes?: {
     checklist?: string;
     root?: string;
-  }
+  };
 }) {
   const [checked, setChecked] = React.useState<string[]>([]);
   const { left, setLeft, right, setRight, text } = props;
@@ -43,10 +43,16 @@ export default function TransferList(props: {
   };
 
   return (
-    <Grid container spacing={2} justifyContent="center" alignItems="center"
-      className={clsx(styles.root, props.classes?.root)}>
+    <Grid
+      container
+      spacing={2}
+      justifyContent="center"
+      alignItems="center"
+      className={clsx(styles.root, props.classes?.root)}
+    >
       <Grid item sx={{ mb: 'auto' }}>
-        <CheckList title={text?.choices ?? 'Choices'}
+        <CheckList
+          title={text?.choices ?? 'Choices'}
           items={left}
           checked={checked}
           setChecked={setChecked}
@@ -75,7 +81,8 @@ export default function TransferList(props: {
         </TextButton>
       </Grid>
       <Grid item sx={{ mb: 'auto' }}>
-        <CheckList title={text?.chosen ?? 'Chosen'}
+        <CheckList
+          title={text?.chosen ?? 'Chosen'}
           items={right}
           checked={checked}
           setChecked={setChecked}

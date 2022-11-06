@@ -1,32 +1,18 @@
-import {
-  TCmsDashboardLayout,
-  TCmsStats,
-  TProductReview,
-} from "@cromwell/core";
-import React, {
-  Suspense,
-  useEffect,
-  useState,
-} from "react";
-import {
-  DashboardContextProvider,
-  useDashboard,
-} from "../../hooks/useDashboard";
-import {
-  Responsive,
-  WidthProvider,
-} from "react-grid-layout";
-import { PageViewsWidget } from "./widgets/pageViews";
-import { ProductRatingWidget } from "./widgets/productRating";
-import { SalesValueWidget } from "./widgets/salesValue";
-import useLongPress from "../../hooks/useLongPress";
-import { SalesLastWeekWidget } from "./widgets/salesLastWeek";
-import { OrdersLastWeekWidget } from "./widgets/ordersLastWeek";
-import { CogIcon } from "@heroicons/react/outline";
-import { PageViewsList } from "./widgets/pageViewsList";
-import { WidgetPanel } from "./widgets/widgetPanel";
-import { AddWidgetMenu } from "./components/addWidgetMenu";
-import { ProductReviewsList } from "./widgets/productReviews";
+import { TCmsDashboardLayout, TCmsStats, TProductReview } from '@cromwell/core';
+import React, { Suspense, useEffect, useState } from 'react';
+import { DashboardContextProvider, useDashboard } from '../../hooks/useDashboard';
+import { Responsive, WidthProvider } from 'react-grid-layout';
+import { PageViewsWidget } from './widgets/pageViews';
+import { ProductRatingWidget } from './widgets/productRating';
+import { SalesValueWidget } from './widgets/salesValue';
+import useLongPress from '../../hooks/useLongPress';
+import { SalesLastWeekWidget } from './widgets/salesLastWeek';
+import { OrdersLastWeekWidget } from './widgets/ordersLastWeek';
+import { CogIcon } from '@heroicons/react/outline';
+import { PageViewsList } from './widgets/pageViewsList';
+import { WidgetPanel } from './widgets/widgetPanel';
+import { AddWidgetMenu } from './components/addWidgetMenu';
+import { ProductReviewsList } from './widgets/productReviews';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -64,13 +50,10 @@ const Dashboard = () => {
     <div className="relative">
       <div
         className={`${
-          isEditing
-            ? "bg-white shadow-md top-2 rounded-lg "
-            : ""
-        } sticky top-0 backdrop-filter backdrop-blur-xl z-[40] flex flex-row py-2 px-4 justify-between transform transition-all`}>
-        <h1 className="font-bold text-3xl inline-block">
-          {isEditing ? "Edit" : "Dashboard"}
-        </h1>
+          isEditing ? 'bg-white shadow-md top-2 rounded-lg ' : ''
+        } sticky top-0 backdrop-filter backdrop-blur-xl z-[40] flex flex-row py-2 px-4 justify-between transform transition-all`}
+      >
+        <h1 className="font-bold text-3xl inline-block">{isEditing ? 'Edit' : 'Dashboard'}</h1>
         {isEditing && <AddWidgetMenu />}
         {isEditing && (
           <div className="inline-block self-center">
@@ -79,7 +62,8 @@ const Dashboard = () => {
               onClick={() => {
                 resetToSnapshot();
                 setEditing(false);
-              }}>
+              }}
+            >
               cancel
             </button>
             <button
@@ -87,7 +71,8 @@ const Dashboard = () => {
                 await saveLayout();
                 setEditing(false);
               }}
-              className="rounded-lg bg-indigo-700 shadow-lg mx-2 text-xs text-white text-center py-1 px-6 transform transition-all hover:bg-indigo-600 hover:shadow-xl">
+              className="rounded-lg bg-indigo-700 shadow-lg mx-2 text-xs text-white text-center py-1 px-6 transform transition-all hover:bg-indigo-600 hover:shadow-xl"
+            >
               save
             </button>
           </div>
@@ -97,7 +82,8 @@ const Dashboard = () => {
             onClick={() => {
               setEditing(true);
             }}
-            className="bg-none bg-transparent text-xs px-4 text-indigo-500 self-center">
+            className="bg-none bg-transparent text-xs px-4 text-indigo-500 self-center"
+          >
             <CogIcon className="h-4 w-4" />
           </button>
         )}
@@ -119,109 +105,77 @@ const Dashboard = () => {
             xxs: 0,
           }}
           cols={{ lg: 12, md: 9, sm: 6, xs: 4, xxs: 2 }}
-          rowHeight={30}>
-          {layout?.lg?.map((item) => {
-            if (item.i === "productRating") {
+          rowHeight={30}
+        >
+          {layout?.lg
+            ?.map((item) => {
+              if (item.i === 'productRating') {
+                return (
+                  <div key="productRating" className="h-full w-full">
+                    <ProductRatingWidget id="productRating" isEditing={isEditing} />
+                  </div>
+                );
+              }
+
+              if (item.i === 'salesValue') {
+                return (
+                  <div key="salesValue" className="h-full w-full">
+                    <SalesValueWidget id="salesValue" isEditing={isEditing} />
+                  </div>
+                );
+              }
+
+              if (item.i === 'pageViews') {
+                return (
+                  <div key="pageViews" className="h-full w-full">
+                    <PageViewsWidget id="pageViews" isEditing={isEditing} />
+                  </div>
+                );
+              }
+
+              if (item.i === 'salesValueLastWeek') {
+                return (
+                  <div key="salesValueLastWeek" className="h-full w-full">
+                    <SalesLastWeekWidget id="salesValueLastWeek" isEditing={isEditing} />
+                  </div>
+                );
+              }
+
+              if (item.i === 'pageViewsStats') {
+                return (
+                  <div key="pageViewsStats" className="h-full w-full">
+                    <PageViewsList id="pageViewsStats" isEditing={isEditing} />
+                  </div>
+                );
+              }
+
+              if (item.i === 'productReviews') {
+                return (
+                  <div key="productReviews" className="h-full w-full">
+                    <ProductReviewsList id="productReviews" isEditing={isEditing} />
+                  </div>
+                );
+              }
+
+              if (item.i === 'ordersLastWeek') {
+                return (
+                  <div key="ordersLastWeek" className="h-full w-full">
+                    <OrdersLastWeekWidget id="ordersLastWeek" isEditing={isEditing} />
+                  </div>
+                );
+              }
+
+              const widget = customWidgets.find((k) => k.key === item.i.replace('$widget_', ''));
+
               return (
-                <div
-                  key="productRating"
-                  className="h-full w-full">
-                  <ProductRatingWidget
-                    id="productRating"
-                    isEditing={isEditing}
-                  />
+                <div key={item.i} className="h-full w-full">
+                  <WidgetPanel isEditing={isEditing} id={item.i}>
+                    {widget}
+                  </WidgetPanel>
                 </div>
               );
-            }
-
-            if (item.i === "salesValue") {
-              return (
-                <div
-                  key="salesValue"
-                  className="h-full w-full">
-                  <SalesValueWidget
-                    id="salesValue"
-                    isEditing={isEditing}
-                  />
-                </div>
-              );
-            }
-
-            if (item.i === "pageViews") {
-              return (
-                <div
-                  key="pageViews"
-                  className="h-full w-full">
-                  <PageViewsWidget
-                    id="pageViews"
-                    isEditing={isEditing}
-                  />
-                </div>
-              );
-            }
-
-            if (item.i === "salesValueLastWeek") {
-              return (
-                <div
-                  key="salesValueLastWeek"
-                  className="h-full w-full">
-                  <SalesLastWeekWidget
-                    id="salesValueLastWeek"
-                    isEditing={isEditing}
-                  />
-                </div>
-              );
-            }
-
-            if (item.i === "pageViewsStats") {
-              return (
-                <div
-                  key="pageViewsStats"
-                  className="h-full w-full">
-                  <PageViewsList
-                    id="pageViewsStats"
-                    isEditing={isEditing}
-                  />
-                </div>
-              );
-            }
-
-            if (item.i === "productReviews") {
-              return (
-                <div
-                  key="productReviews"
-                  className="h-full w-full">
-                  <ProductReviewsList
-                    id="productReviews"
-                    isEditing={isEditing}
-                  />
-                </div>
-              );
-            }
-
-            if (item.i === "ordersLastWeek") {
-              return (
-                <div
-                  key="ordersLastWeek"
-                  className="h-full w-full">
-                  <OrdersLastWeekWidget
-                    id="ordersLastWeek"
-                    isEditing={isEditing}
-                  />
-                </div>
-              );
-            }
-
-            const widget = customWidgets.find(k => k.key === item.i.replace("$widget_", ""))
-
-            return (
-              <div key={item.i} className="h-full w-full">
-              <WidgetPanel isEditing={isEditing} id={item.i}>
-                {widget}
-              </WidgetPanel>
-            </div>
-            )
-          }).filter(k => k)}
+            })
+            .filter((k) => k)}
         </ResponsiveGridLayout>
       </div>
     </div>
@@ -236,7 +190,8 @@ const DashboardLoader = () => {
         .map((k, id) => (
           <div
             key={id}
-            className="bg-white flex flex-col rounded-2xl shadow-lg p-2 gap-5 select-none sm:flex-row sm:h-64 sm:p-4 ">
+            className="bg-white flex flex-col rounded-2xl shadow-lg p-2 gap-5 select-none sm:flex-row sm:h-64 sm:p-4 "
+          >
             <div className="rounded-xl bg-gray-200 h-52 animate-pulse sm:h-full sm:w-72"></div>
             <div className="flex flex-col flex-1 gap-5 sm:p-2">
               <div className="flex flex-col flex-1 gap-3">

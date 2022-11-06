@@ -1,8 +1,8 @@
-import { TCromwellBlock } from "@cromwell/core";
-import React, { CSSProperties, useCallback, useEffect, useState } from "react";
-import { MarginEditor } from "./MarginEditor";
-import { PaddingEditor } from "./PaddingEditor";
-import { StyleNumberField } from "./StyleNumberField";
+import { TCromwellBlock } from '@cromwell/core';
+import React, { CSSProperties, useCallback, useEffect, useState } from 'react';
+import { MarginEditor } from './MarginEditor';
+import { PaddingEditor } from './PaddingEditor';
+import { StyleNumberField } from './StyleNumberField';
 
 export const DimensionsEditor = ({
   styles,
@@ -11,27 +11,25 @@ export const DimensionsEditor = ({
 }: {
   styles?: CSSProperties;
   block?: TCromwellBlock;
-  handleStyleChange: (
-    name: keyof React.CSSProperties,
-    value: any,
-    withType?: string,
-  ) => void;
+  handleStyleChange: (name: keyof React.CSSProperties, value: any, withType?: string) => void;
 }) => {
+  const handleRadius = useCallback(
+    (name: keyof React.CSSProperties, value: any, unit?: string) => {
+      const data = block?.getData();
+      const type = data?.type;
 
-  const handleRadius = useCallback((name: keyof React.CSSProperties, value: any, unit?: string) => {
-    const data = block?.getData();
-    const type = data?.type;
-
-    if (type === 'image') {
-      if (value === "" || !value) {
-        handleStyleChange("overflow", null);
-      } else {
-        handleStyleChange("overflow", "hidden");
+      if (type === 'image') {
+        if (value === '' || !value) {
+          handleStyleChange('overflow', null);
+        } else {
+          handleStyleChange('overflow', 'hidden');
+        }
       }
-    }
 
-    handleStyleChange(name, value, unit);
-  }, [handleStyleChange])
+      handleStyleChange(name, value, unit);
+    },
+    [handleStyleChange],
+  );
 
   return (
     <>
@@ -66,18 +64,10 @@ export const DimensionsEditor = ({
       </div>
 
       <hr className="my-2" />
-      <MarginEditor
-        handleStyleChange={handleStyleChange}
-        styles={styles}
-        block={block}
-      />
+      <MarginEditor handleStyleChange={handleStyleChange} styles={styles} block={block} />
 
       <hr className="my-2" />
-      <PaddingEditor
-        handleStyleChange={handleStyleChange}
-        styles={styles}
-        block={block}
-      />
+      <PaddingEditor handleStyleChange={handleStyleChange} styles={styles} block={block} />
       <hr className="my-2" />
     </>
   );

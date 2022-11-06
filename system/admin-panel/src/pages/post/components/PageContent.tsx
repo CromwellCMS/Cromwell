@@ -10,7 +10,7 @@ import styles from './Post.module.scss';
 
 const textPreloader = [];
 for (let i = 0; i < 30; i++) {
-  textPreloader.push(<Skeleton variant="text" height="10px" style={{ margin: '3px 0' }} key={i} />)
+  textPreloader.push(<Skeleton variant="text" height="10px" style={{ margin: '3px 0' }} key={i} />);
 }
 
 export function PageContent(props: TFieldsComponentProps<TPost>) {
@@ -29,16 +29,16 @@ export function PageContent(props: TFieldsComponentProps<TPost>) {
           context.hasChangesRef.current = true;
           forceUpdate();
         }
-      }
+      },
     });
 
     context.getEditorDataRef.current = async () => {
       return {
         content: await getEditorHtml(editorId),
         delta: JSON.stringify(await getEditorData(editorId)),
-      }
-    }
-  }
+      };
+    };
+  };
 
   useEffect(() => {
     context.dataRef.current = props.entityData;
@@ -56,14 +56,17 @@ export function PageContent(props: TFieldsComponentProps<TPost>) {
     <div className={styles.Post}>
       {isLoading && (
         <>
-          <Skeleton width="100%" height="100px" style={{
-            margin: '0 0 20px 0'
-          }} />
+          <Skeleton
+            width="100%"
+            height="100px"
+            style={{
+              margin: '0 0 20px 0',
+            }}
+          />
           {textPreloader}
         </>
       )}
       <div className={styles.editor} id={editorId}></div>
     </div>
   );
-
 }

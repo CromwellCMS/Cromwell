@@ -6,7 +6,6 @@ import EntityTable from '../../components/entity/entityTable/EntityTable';
 import { couponListPageInfo, couponPageInfo } from '../../constants/PageInfos';
 import { baseEntityColumns } from '../../helpers/customEntities';
 
-
 export default function CouponList() {
   const client = getGraphQLClient();
 
@@ -76,11 +75,11 @@ export default function CouponList() {
           type: 'Simple text',
           visible: false,
         },
-        ...baseEntityColumns.map(col => {
-          if (col.name === 'createDate') return { ...col, visible: true }
-          return { ...col, visible: false }
+        ...baseEntityColumns.map((col) => {
+          if (col.name === 'createDate') return { ...col, visible: true };
+          return { ...col, visible: false };
         }),
       ]}
     />
-  )
+  );
 }

@@ -1,12 +1,7 @@
-import { TCromwellBlock } from "@cromwell/core";
-import { Switch } from "@headlessui/react";
-import React, {
-  CSSProperties,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
-import { StyleNumberField } from "./StyleNumberField";
+import { TCromwellBlock } from '@cromwell/core';
+import { Switch } from '@headlessui/react';
+import React, { CSSProperties, useCallback, useEffect, useState } from 'react';
+import { StyleNumberField } from './StyleNumberField';
 
 export const PaddingEditor = ({
   styles,
@@ -14,10 +9,7 @@ export const PaddingEditor = ({
   block,
 }: {
   styles?: CSSProperties;
-  handleStyleChange: (
-    name: keyof React.CSSProperties,
-    value: any,
-  ) => void;
+  handleStyleChange: (name: keyof React.CSSProperties, value: any) => void;
   block?: TCromwellBlock;
 }) => {
   const [individual, setIndividual] = useState(false);
@@ -25,12 +17,12 @@ export const PaddingEditor = ({
   const toggleIndividual = useCallback(
     (next) => {
       if (next) {
-        handleStyleChange("padding", "");
+        handleStyleChange('padding', '');
       } else {
-        handleStyleChange("paddingLeft", "");
-        handleStyleChange("paddingRight", "");
-        handleStyleChange("paddingTop", "");
-        handleStyleChange("paddingBottom", "");
+        handleStyleChange('paddingLeft', '');
+        handleStyleChange('paddingRight', '');
+        handleStyleChange('paddingTop', '');
+        handleStyleChange('paddingBottom', '');
       }
       setIndividual(next);
     },
@@ -45,17 +37,16 @@ export const PaddingEditor = ({
           checked={individual}
           onChange={toggleIndividual}
           className={`${
-            individual ? "bg-indigo-600" : "bg-gray-200"
-          } relative inline-flex items-center h-4 rounded-full w-8`}>
+            individual ? 'bg-indigo-600' : 'bg-gray-200'
+          } relative inline-flex items-center h-4 rounded-full w-8`}
+        >
           <span
             className={`${
-              individual ? "translate-x-5" : "translate-x-1"
+              individual ? 'translate-x-5' : 'translate-x-1'
             } inline-block w-2 h-2 transform bg-white rounded-full`}
           />
         </Switch>
-        <span className="ml-2 text-gray-600">
-          individual
-        </span>
+        <span className="ml-2 text-gray-600">individual</span>
       </div>
       {individual && (
         <div className={`grid gap-1 grid-cols-2`}>

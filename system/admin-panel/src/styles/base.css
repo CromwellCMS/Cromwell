@@ -2,7 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-html, body {
+html,
+body {
   @apply bg-gray-100;
 }
 
@@ -41,6 +42,6 @@ html, body {
 
 /* Add a thumb */
 .scrollbar-md::-webkit-scrollbar-thumb {
-    @apply bg-gray-400;
-    border-radius: 10px;
+  @apply bg-gray-400;
+  border-radius: 10px;
 }

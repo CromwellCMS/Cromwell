@@ -35,19 +35,22 @@ import { TBaseEntityFilter, TEditField, TEntityEditState, TEntityPageProps, TFie
 import styles from './EntityEdit.module.scss';
 import { InputField } from './InputField';
 
-
-type TEntityEditProps<TEntityType extends TBasePageEntity, TFilterType extends TBaseEntityFilter>
-  = TEntityPageProps<TEntityType, TFilterType> & RouteComponentProps<{ id: string }> & {
+type TEntityEditProps<TEntityType extends TBasePageEntity, TFilterType extends TBaseEntityFilter> = TEntityPageProps<
+  TEntityType,
+  TFilterType
+> &
+  RouteComponentProps<{ id: string }> & {
     fields?: TEditField<TEntityType>[];
-    onSave?: (entity: Omit<TEntityType, "id">) => Promise<Omit<TEntityType, "id">>;
+    onSave?: (entity: Omit<TEntityType, 'id'>) => Promise<Omit<TEntityType, 'id'>>;
     classes?: {
       content?: string;
     };
   };
 
-class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseEntityFilter>
-  extends React.Component<TEntityEditProps<TEntityType, TFilterType>, TEntityEditState<TEntityType>> {
-
+class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseEntityFilter> extends React.Component<
+  TEntityEditProps<TEntityType, TFilterType>,
+  TEntityEditState<TEntityType>
+> {
   private prevRoute: string;
 
   componentDidMount() {
@@ -56,7 +59,9 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
 
   private init = async () => {
     if (!this.props.match) {
-      console.error('this.props.match in not defined, you must provide "react-router" props for entity to be displayed');
+      console.error(
+        'this.props.match in not defined, you must provide "react-router" props for entity to be displayed',
+      );
       return;
     }
     this.prevRoute = (this.props.history.location.state as any)?.prevRoute;
@@ -77,7 +82,7 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
     }
 
     this.setState({ isLoading: false });
-  }
+  };
 
   private refetchMeta = async () => {
     const entityId = this.props.match?.params?.id;
@@ -85,7 +90,6 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
     const data = await this.getEntity(parseInt(entityId));
     return data?.customMeta;
   };
-
 
   private getEntity = async (entityId: number) => {
     let data: TEntityType;
@@ -96,45 +100,55 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
 
     const fields = this.props.fields ?? [];
 
-    const entityProperties = [...new Set([
-      'id', this.props.entityType && 'entityType', 'createDate', 'updateDate',
-      ...(!this.props.disableMeta ? [
-        'slug', 'isEnabled', 'pageTitle', 'pageDescription', 'meta { \nkeywords \n}'
-      ] : []),
-      ...(fields.filter(field => !field.customGraphQlFragment && !field.customGraphQlProperty
-        && !field.onlyOnCreate).map(field => field.key)),
-    ])].filter(Boolean);
+    const entityProperties = [
+      ...new Set([
+        'id',
+        this.props.entityType && 'entityType',
+        'createDate',
+        'updateDate',
+        ...(!this.props.disableMeta
+          ? ['slug', 'isEnabled', 'pageTitle', 'pageDescription', 'meta { \nkeywords \n}']
+          : []),
+        ...fields
+          .filter((field) => !field.customGraphQlFragment && !field.customGraphQlProperty && !field.onlyOnCreate)
+          .map((field) => field.key),
+      ]),
+    ].filter(Boolean);
 
-    const customFragments = fields.map(field => field.customGraphQlFragment).filter(Boolean);
-    const customProperties = customGraphQlPropertyToFragment(fields.map(c => c.customGraphQlProperty).filter(Boolean));
+    const customFragments = fields.map((field) => field.customGraphQlFragment).filter(Boolean);
+    const customProperties = customGraphQlPropertyToFragment(
+      fields.map((c) => c.customGraphQlProperty).filter(Boolean),
+    );
     const metaKeys = getCustomMetaKeysFor(this.props.entityType ?? this.props.entityCategory);
 
     try {
-      data = await this.props.getById(entityId,
+      data = await this.props.getById(
+        entityId,
         gql`
           fragment ${this.props.entityCategory}AdminPanelFragment on ${this.props.entityCategory} {
             ${customFragments.join('\n')}
             ${entityProperties.join('\n')}
             ${customProperties}
             ${metaKeys?.length ? `customMeta (keys: ${JSON.stringify(metaKeys)})` : ''}
-          }`, `${this.props.entityCategory}AdminPanelFragment`
+          }`,
+        `${this.props.entityCategory}AdminPanelFragment`,
       );
     } catch (e) {
-      console.error(e)
+      console.error(e);
     }
     return data;
-  }
+  };
 
   private handleInputChange = (key: keyof TEntityType, val: any) => {
-    this.setState(prev => {
+    this.setState((prev) => {
       return {
         entityData: {
-          ...(prev?.entityData ?? {} as any),
+          ...(prev?.entityData ?? ({} as any)),
           [key]: val,
-        }
-      }
+        },
+      };
     });
-  }
+  };
 
   private handleSave = async () => {
     if (!this.props.create) {
@@ -154,7 +168,7 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
 
     const entityData = this.state?.entityData;
     if (!entityData) {
-      console.warn('handleSave: !entityData')
+      console.warn('handleSave: !entityData');
       return;
     }
 
@@ -165,25 +179,32 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
       meta: entityData.meta && {
         keywords: entityData.meta.keywords,
       },
-      ...Object.assign({}, ...(await Promise.all((this.props?.fields?.map(async field => {
-        const cached = this.getCachedField(field);
-        const value = (await cached?.saveData?.()) ?? cached?.value;
+      ...Object.assign(
+        {},
+        ...(await Promise.all(
+          this.props?.fields?.map(async (field) => {
+            const cached = this.getCachedField(field);
+            const value = (await cached?.saveData?.()) ?? cached?.value;
 
-        if (field?.saveValue) return await field.saveValue(value);
-        return {
-          [field.key]: value,
-        }
-      }) ?? [])))),
-      ...(this.props.getInput?.() ?? {} as Omit<TEntityType, "id">),
-    }
+            if (field?.saveValue) return await field.saveValue(value);
+            return {
+              [field.key]: value,
+            };
+          }) ?? [],
+        )),
+      ),
+      ...(this.props.getInput?.() ?? ({} as Omit<TEntityType, 'id'>)),
+    };
 
-    for (const field of (this.props?.fields ?? [])) {
-      if (field.required && (inputData[field.key] === null
-        || inputData[field.key] === undefined || inputData[field.key] === '')) {
+    for (const field of this.props?.fields ?? []) {
+      if (
+        field.required &&
+        (inputData[field.key] === null || inputData[field.key] === undefined || inputData[field.key] === '')
+      ) {
         if (field.onlyOnCreate && this.state?.entityData?.id) {
           // Update
         } else {
-          console.warn('handleSave: invalid field: ', field)
+          console.warn('handleSave: invalid field: ', field);
           return;
         }
       }
@@ -191,13 +212,16 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
 
     const entityId = this.props.match?.params?.id;
 
-    inputData.customMeta = Object.assign({}, inputData.customMeta,
-      await getCustomMetaFor(this.props.entityType ?? this.props.entityCategory));
+    inputData.customMeta = Object.assign(
+      {},
+      inputData.customMeta,
+      await getCustomMetaFor(this.props.entityType ?? this.props.entityCategory),
+    );
 
     if (this.props.onSave) {
       inputData = await this.props.onSave(inputData);
       if (!inputData) {
-        console.warn('No data was returned from `onSave` prop')
+        console.warn('No data was returned from `onSave` prop');
         return;
       }
     }
@@ -207,16 +231,14 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
     if (entityId === 'new') {
       try {
         const newData = await this.props.create(inputData);
-        toast.success(`Created ${(this.props.entityType
-          ?? this.props.entityCategory).toLocaleLowerCase()}`);
+        toast.success(`Created ${(this.props.entityType ?? this.props.entityCategory).toLocaleLowerCase()}`);
 
         this.props.history.replace(`${this.props.entityBaseRoute}/${newData.id}`);
 
         const updatedData = await this.getEntity(newData.id);
         this.setState({ entityData: updatedData });
       } catch (e) {
-        toast.error(`Failed to create ${(this.props.entityType
-          ?? this.props.entityCategory).toLocaleLowerCase()}`);
+        toast.error(`Failed to create ${(this.props.entityType ?? this.props.entityCategory).toLocaleLowerCase()}`);
         console.error(e);
       }
     } else {
@@ -231,17 +253,21 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
       }
     }
     this.setState({ isSaving: false, canValidate: false });
-  }
+  };
 
   private getIdFromField = (field: TEditField<TEntityType>) => {
     return `${this.props.entityCategory}_${field.key}`;
-  }
+  };
 
-  private getCachedField = (field: TEditField<TEntityType>): {
-    component: TFieldDefaultComponent;
-    saveData: () => string | Promise<string>;
-    value?: any;
-  } | undefined => {
+  private getCachedField = (
+    field: TEditField<TEntityType>,
+  ):
+    | {
+        component: TFieldDefaultComponent;
+        saveData: () => string | Promise<string>;
+        value?: any;
+      }
+    | undefined => {
     if (field.type === 'Simple text') {
       return getSimpleTextField({
         ...field,
@@ -310,13 +336,13 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
         id: this.getIdFromField(field),
       });
     }
-  }
+  };
 
   public goBack = () => {
     if (this.prevRoute) this.props.history.push(this.prevRoute);
     else if (this.props.entityListRoute) this.props.history.push(this.props.entityListRoute);
     else this.props.history.goBack();
-  }
+  };
 
   render() {
     const { entityType, entityCategory, entityLabel, classes = {}, customElements } = this.props;
@@ -326,20 +352,18 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
       return (
         <div className={styles.EntityEdit}>
           <div className={styles.notFoundPage}>
-            <p className={styles.notFoundText}>{this.props.entityType
-              ?? this.props.entityCategory} not found</p>
+            <p className={styles.notFoundText}>{this.props.entityType ?? this.props.entityCategory} not found</p>
           </div>
         </div>
-      )
+      );
     }
 
     let pageFullUrl;
     if (entityData) {
       const pageName = this.props.defaultPageName ?? this.props.entityType ?? this.props.entityCategory;
       if (getStoreItem('defaultPages')?.[pageName]) {
-        pageFullUrl = serviceLocator.getFrontendUrl() + resolvePageRoute(pageName,
-          { slug: entityData.slug ?? entityData.id + '' }
-        );
+        pageFullUrl =
+          serviceLocator.getFrontendUrl() + resolvePageRoute(pageName, { slug: entityData.slug ?? entityData.id + '' });
       }
     }
 
@@ -347,77 +371,71 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
       ...(this.state ?? {}),
       refetchMeta: this.refetchMeta,
       onSave: this.handleSave,
-    }
+    };
 
     return (
       <div className={styles.EntityEdit}>
         <ElevationScroll>
           <AppBar position="sticky" color="transparent" elevation={0}>
             <div className={styles.headerLeft}>
-              <IconButton
-                onClick={this.goBack}
-                className="mr-2"
-              >
+              <IconButton onClick={this.goBack} className="mr-2">
                 <ChevronLeftIcon className="h-6 w-6 text-gray-600 hover:text-indigo:-400" />
               </IconButton>
-              <p className={styles.pageTitle}>{(entityLabel ?? entityType ?? entityCategory)}</p>
+              <p className={styles.pageTitle}>{entityLabel ?? entityType ?? entityCategory}</p>
             </div>
             {customElements?.getEntityHeaderCenter?.(elementProps)}
             <div className={styles.headerActions}>
               {pageFullUrl && (
-                <Tooltip
-                  title={`Open ${(entityType ?? entityCategory).toLocaleLowerCase()} in the new tab`}
-                >
+                <Tooltip title={`Open ${(entityType ?? entityCategory).toLocaleLowerCase()} in the new tab`}>
                   <IconButton
                     className={clsx(styles.openPageBtn, 'w-9 h-9')}
                     aria-label="open"
-                    onClick={() => { window.open(pageFullUrl, '_blank'); }}
+                    onClick={() => {
+                      window.open(pageFullUrl, '_blank');
+                    }}
                   >
                     <OpenInNewIcon style={{ width: '100%', height: '100%' }} />
                   </IconButton>
                 </Tooltip>
               )}
               <div className={commonStyles.center}>
-                <TextButton
-                  className={styles.saveBtn}
-                  disabled={isSaving}
-                  onClick={this.handleSave}
-                >Save</TextButton>
+                <TextButton className={styles.saveBtn} disabled={isSaving} onClick={this.handleSave}>
+                  Save
+                </TextButton>
               </div>
             </div>
           </AppBar>
         </ElevationScroll>
 
         <div className={clsx(styles.content, classes.content)}>
-          {isLoading && (
-            Array(8).fill(1).map((it, index) => (
-              <Skeleton style={{ marginBottom: '10px' }} key={index} height={"50px"} />
-            ))
-          )}
-          {!isLoading && (<>
-            {(entityData && customElements?.getEntityFields?.(elementProps))
-              || (entityData && !!this.props?.fields?.length && (
+          {isLoading &&
+            Array(8)
+              .fill(1)
+              .map((it, index) => <Skeleton style={{ marginBottom: '10px' }} key={index} height={'50px'} />)}
+          {!isLoading && (
+            <>
+              {(entityData && customElements?.getEntityFields?.(elementProps)) ||
+                (entityData && !!this.props?.fields?.length && (
+                  <Grid container spacing={3}>
+                    {this.props.fields.map((field) => {
+                      const fieldCache = this.getCachedField(field);
+                      return (
+                        <InputField
+                          key={field.key}
+                          fieldCache={fieldCache}
+                          field={field}
+                          canValidate={this.state?.canValidate}
+                          entityData={entityData}
+                        />
+                      );
+                    })}
+                    <Grid item xs={12}></Grid>
+                  </Grid>
+                ))}
+              {entityData && this.props.renderFields?.(entityData)}
+              {entityData && !!getCustomMetaKeysFor(entityType ?? entityCategory).length && (
                 <Grid container spacing={3}>
-                  {this.props.fields.map(field => {
-                    const fieldCache = this.getCachedField(field);
-                    return (
-                      <InputField
-                        key={field.key}
-                        fieldCache={fieldCache}
-                        field={field}
-                        canValidate={this.state?.canValidate}
-                        entityData={entityData}
-                      />
-                    )
-                  })}
-                  <Grid item xs={12}></Grid>
-                </Grid>
-              ))}
-            {entityData && this.props.renderFields?.(entityData)}
-            {entityData &&
-              !!getCustomMetaKeysFor(entityType ?? entityCategory).length && (
-                <Grid container spacing={3}>
-                  <Grid item xs={12} >
+                  <Grid item xs={12}>
                     <RenderCustomFields
                       entityType={entityType ?? entityCategory}
                       entityData={entityData}
@@ -426,54 +444,64 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
                   </Grid>
                 </Grid>
               )}
-            {!this.props.disableMeta && (
-              <Grid container spacing={3}>
-                <Grid item xs={12}>
-                  <TextInput label="Page URL"
-                    value={entityData?.slug ?? ''}
-                    className={styles.defaultField}
-                    onChange={(e) => { this.handleInputChange('slug', e.target.value) }}
-                    description={pageFullUrl}
-                  />
+              {!this.props.disableMeta && (
+                <Grid container spacing={3}>
+                  <Grid item xs={12}>
+                    <TextInput
+                      label="Page URL"
+                      value={entityData?.slug ?? ''}
+                      className={styles.defaultField}
+                      onChange={(e) => {
+                        this.handleInputChange('slug', e.target.value);
+                      }}
+                      description={pageFullUrl}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextInput
+                      label="Meta title"
+                      value={entityData?.pageTitle ?? ''}
+                      className={styles.defaultField}
+                      onChange={(e) => {
+                        this.handleInputChange('pageTitle', e.target.value);
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextInput
+                      label="Meta description"
+                      value={entityData?.pageDescription ?? ''}
+                      className={styles.defaultField}
+                      onChange={(e) => {
+                        this.handleInputChange('pageDescription', e.target.value);
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <AutocompleteInput
+                      multiple
+                      freeSolo
+                      options={[]}
+                      className={styles.defaultField}
+                      value={entityData?.meta?.keywords ?? []}
+                      getOptionLabel={(option) => option as any}
+                      onChange={(e, newVal) => {
+                        this.handleInputChange('meta', {
+                          ...(entityData.meta ?? {}),
+                          keywords: newVal,
+                        });
+                      }}
+                      label="Meta keywords"
+                      tooltip="Press ENTER to add"
+                    />
+                  </Grid>
                 </Grid>
-                <Grid item xs={12}>
-                  <TextInput label="Meta title"
-                    value={entityData?.pageTitle ?? ''}
-                    className={styles.defaultField}
-                    onChange={(e) => { this.handleInputChange('pageTitle', e.target.value) }}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextInput label="Meta description"
-                    value={entityData?.pageDescription ?? ''}
-                    className={styles.defaultField}
-                    onChange={(e) => { this.handleInputChange('pageDescription', e.target.value) }}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <AutocompleteInput
-                    multiple
-                    freeSolo
-                    options={[]}
-                    className={styles.defaultField}
-                    value={entityData?.meta?.keywords ?? []}
-                    getOptionLabel={(option) => option as any}
-                    onChange={(e, newVal) => {
-                      this.handleInputChange('meta', {
-                        ...(entityData.meta ?? {}),
-                        keywords: newVal
-                      })
-                    }}
-                    label="Meta keywords"
-                    tooltip="Press ENTER to add"
-                  />
-                </Grid>
-              </Grid>
-            )}
-          </>)}
+              )}
+            </>
+          )}
         </div>
-      </div >
-    )
+      </div>
+    );
   }
 }
 

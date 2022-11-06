@@ -22,37 +22,29 @@ export function SearchContent(props: {
         multiple={columnSearch.multipleOptions}
         options={columnSearch.searchOptions}
         inlineOptions
-        getOptionLabel={(option: any) => option?.label ?? ""}
-        defaultValue={props.getAutocompleteValueFromSearch(
-          currentSearchRef.current,
-          columnSearch
-        )}
+        getOptionLabel={(option: any) => option?.label ?? ''}
+        defaultValue={props.getAutocompleteValueFromSearch(currentSearchRef.current, columnSearch)}
         className={styles.filterItem}
         onChange={(event, newVal) => {
           if (Array.isArray(newVal))
-            newVal = JSON.stringify(
-              newVal.map((val) => (typeof val === "object" ? val?.value : val))
-            );
-          currentSearchRef.current =
-            typeof newVal === "object" ? newVal?.value : newVal;
+            newVal = JSON.stringify(newVal.map((val) => (typeof val === 'object' ? val?.value : val)));
+          currentSearchRef.current = typeof newVal === 'object' ? newVal?.value : newVal;
         }}
         classes={{ popper: styles.autocompletePopper }}
-        label={`Search ${columnSearch?.label ?? ""}`}
+        label={`Search ${columnSearch?.label ?? ''}`}
       />
     );
   }
 
-  if (columnSearch?.type === "Date" || columnSearch?.type === "Datetime") {
+  if (columnSearch?.type === 'Date' || columnSearch?.type === 'Datetime') {
     // Datepicker range
     return (
       <DateInput
         placement="bottomEnd"
-        disabledDate={date => isAfter(date, new Date())}
-        defaultValue={JSON.parse(String(currentSearchRef.current || "[]"))}
+        disabledDate={(date) => isAfter(date, new Date())}
+        defaultValue={JSON.parse(String(currentSearchRef.current || '[]'))}
         onChange={(value) => (currentSearchRef.current = JSON.stringify(value))}
-        dateType={
-          columnSearch?.type === "Date" ? "date_range" : "date_time_range"
-        }
+        dateType={columnSearch?.type === 'Date' ? 'date_range' : 'date_time_range'}
       />
     );
   }
@@ -60,7 +52,7 @@ export function SearchContent(props: {
   return (
     <TextInput
       onChange={(event) => (currentSearchRef.current = event.target.value)}
-      label={`Search ${columnSearch?.label ?? ""}`}
+      label={`Search ${columnSearch?.label ?? ''}`}
       defaultValue={currentSearchRef.current as string}
     />
   );

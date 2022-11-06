@@ -6,13 +6,9 @@ import { useForm } from 'react-hook-form';
 
 import { ImageInput } from '../../../components/inputs/Image/ImageInput';
 
-export function UserForm(props: {
-  onSuccess: (user: TUser) => void;
-}) {
+export function UserForm(props: { onSuccess: (user: TUser) => void }) {
   const apiClient = getRestApiClient();
-  const [avatarInput, setAvatarInput] = useState<
-    string | null
-  >(null);
+  const [avatarInput, setAvatarInput] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   const {
@@ -24,7 +20,7 @@ export function UserForm(props: {
 
   const init = async () => {
     await checkAuth();
-  }
+  };
 
   const checkAuth = async () => {
     try {
@@ -32,14 +28,14 @@ export function UserForm(props: {
         disableLog: true,
       });
       if (userInfo) {
-        setStoreItem("userInfo", userInfo);
+        setStoreItem('userInfo', userInfo);
         props.onSuccess(userInfo);
       }
       return userInfo;
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
   const handleSubmitClick = async (data) => {
     if (loading) return;
@@ -47,18 +43,21 @@ export function UserForm(props: {
     const { email, password, name, passwordConfirm } = data;
 
     if (password !== passwordConfirm) {
-      setError("password", { type: "manual", message: "Passwords don't match." });
-      setError("passwordConfirm", { type: "manual", message: "Passwords don't match." });
+      setError('password', { type: 'manual', message: "Passwords don't match." });
+      setError('passwordConfirm', { type: 'manual', message: "Passwords don't match." });
       return;
     }
 
     setLoading(true);
 
     try {
-      await apiClient.login({
-        email: email,
-        password: password,
-      }, { disableLog: true });
+      await apiClient.login(
+        {
+          email: email,
+          password: password,
+        },
+        { disableLog: true },
+      );
 
       const user = await checkAuth();
       if (user) return;
@@ -73,7 +72,7 @@ export function UserForm(props: {
           email: email,
           password: password,
           avatar: avatarInput,
-        }
+        },
       });
 
       await apiClient.login({
@@ -82,7 +81,6 @@ export function UserForm(props: {
       });
 
       await checkAuth();
-
     } catch (error) {
       console.error(error);
     }
@@ -93,12 +91,9 @@ export function UserForm(props: {
     init();
   }, []);
 
-
   return (
     <div>
-      <h1 className="font-bold text-center text-3xl text-gray-700 dark:text-white">
-        Welcome to Cromwell CMS!
-      </h1>
+      <h1 className="font-bold text-center text-3xl text-gray-700 dark:text-white">Welcome to Cromwell CMS!</h1>
       <h2 className="font-medium mt-1 text-xl text-center text-gray-600 dark:text-gray-200">
         Let&apos;s create your account.
       </h2>
@@ -116,9 +111,7 @@ export function UserForm(props: {
 
       <form onSubmit={handleSubmit(handleSubmitClick)}>
         <div className="mt-4 w-full">
-          <label
-            htmlFor="name"
-            className="text-xs mb-1 tracking-wide text-gray-600 sm:text-sm">
+          <label htmlFor="name" className="text-xs mb-1 tracking-wide text-gray-600 sm:text-sm">
             Name
           </label>
 
@@ -133,22 +126,19 @@ export function UserForm(props: {
               type="text"
               placeholder="Name"
               disabled={loading}
-              {...register("name", { required: true })}
-              className={`text-sm sm:text-base relative w-full border ${errors.name
-                ? "border-red-500"
-                : "border-gray-200"
-                } shadow-md focus:shadow-indigo-300 rounded-lg placeholder-gray-400 focus:border-indigo-400 focus:outline-none py-2 pr-2 pl-12`}
+              {...register('name', { required: true })}
+              className={`text-sm sm:text-base relative w-full border ${
+                errors.name ? 'border-red-500' : 'border-gray-200'
+              } shadow-md focus:shadow-indigo-300 rounded-lg placeholder-gray-400 focus:border-indigo-400 focus:outline-none py-2 pr-2 pl-12`}
             />
           </div>
           <span className="flex font-medium mt-1 text-xs tracking-wide ml-1 text-red-500 items-center">
-            {errors.name && "Please provide a name."}
+            {errors.name && 'Please provide a name.'}
           </span>
         </div>
 
         <div className="mt-4 w-full">
-          <label
-            htmlFor="email"
-            className="text-xs mb-1 tracking-wide text-gray-600 sm:text-sm">
+          <label htmlFor="email" className="text-xs mb-1 tracking-wide text-gray-600 sm:text-sm">
             Email
           </label>
 
@@ -163,23 +153,19 @@ export function UserForm(props: {
               type="email"
               placeholder="Email Address"
               disabled={loading}
-              {...register("email", { required: true })}
-              className={`text-sm sm:text-base relative w-full border ${errors.email
-                ? "border-red-500"
-                : "border-gray-200"
-                } shadow-md focus:shadow-indigo-300 rounded-lg placeholder-gray-400 focus:border-indigo-400 focus:outline-none py-2 pr-2 pl-12`}
+              {...register('email', { required: true })}
+              className={`text-sm sm:text-base relative w-full border ${
+                errors.email ? 'border-red-500' : 'border-gray-200'
+              } shadow-md focus:shadow-indigo-300 rounded-lg placeholder-gray-400 focus:border-indigo-400 focus:outline-none py-2 pr-2 pl-12`}
             />
           </div>
           <span className="flex font-medium mt-1 text-xs tracking-wide ml-1 text-red-500 items-center">
-            {errors.email &&
-              "Please provide an email address."}
+            {errors.email && 'Please provide an email address.'}
           </span>
         </div>
 
         <div className="mt-4 w-full">
-          <label
-            htmlFor="password"
-            className="text-xs mb-1 tracking-wide text-gray-600 sm:text-sm">
+          <label htmlFor="password" className="text-xs mb-1 tracking-wide text-gray-600 sm:text-sm">
             Password
           </label>
 
@@ -194,13 +180,12 @@ export function UserForm(props: {
               type="password"
               placeholder="******"
               disabled={loading}
-              {...register("password", {
+              {...register('password', {
                 required: true,
               })}
-              className={`text-sm sm:text-base relative w-full border ${errors.password
-                ? "border-red-500"
-                : "border-gray-200"
-                } shadow-md focus:shadow-indigo-300 rounded-lg placeholder-gray-400 focus:border-indigo-400 focus:outline-none py-2 pr-2 pl-12`}
+              className={`text-sm sm:text-base relative w-full border ${
+                errors.password ? 'border-red-500' : 'border-gray-200'
+              } shadow-md focus:shadow-indigo-300 rounded-lg placeholder-gray-400 focus:border-indigo-400 focus:outline-none py-2 pr-2 pl-12`}
             />
           </div>
           <span className="flex font-medium mt-1 text-xs tracking-wide ml-1 text-red-500 items-center">
@@ -208,9 +193,7 @@ export function UserForm(props: {
           </span>
         </div>
         <div className="mt-4 w-full">
-          <label
-            htmlFor="passwordConfirm"
-            className="text-xs mb-1 tracking-wide text-gray-600 sm:text-sm">
+          <label htmlFor="passwordConfirm" className="text-xs mb-1 tracking-wide text-gray-600 sm:text-sm">
             Confirm Password
           </label>
 
@@ -225,13 +208,12 @@ export function UserForm(props: {
               type="password"
               placeholder="******"
               disabled={loading}
-              {...register("passwordConfirm", {
+              {...register('passwordConfirm', {
                 required: true,
               })}
-              className={`text-sm sm:text-base relative w-full border ${errors.passwordConfirm
-                ? "border-red-500"
-                : "border-gray-200"
-                } shadow-md focus:shadow-indigo-300 rounded-lg placeholder-gray-400 focus:border-indigo-400 focus:outline-none py-2 pr-2 pl-12`}
+              className={`text-sm sm:text-base relative w-full border ${
+                errors.passwordConfirm ? 'border-red-500' : 'border-gray-200'
+              } shadow-md focus:shadow-indigo-300 rounded-lg placeholder-gray-400 focus:border-indigo-400 focus:outline-none py-2 pr-2 pl-12`}
             />
           </div>
           <span className="flex font-medium mt-1 text-xs tracking-wide ml-1 text-red-500 items-center">
@@ -243,11 +225,12 @@ export function UserForm(props: {
           <button
             disabled={loading}
             className="rounded bg-gray-700 text-white py-2 px-4 transform transition-colors leading-5 duration-200 hover:bg-gray-600 focus:outline-none"
-            type="submit">
+            type="submit"
+          >
             Create
           </button>
         </div>
       </form>
     </div>
-  )
+  );
 }

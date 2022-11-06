@@ -8,18 +8,15 @@ export function Header() {
 
   const handleTabChange = (event: React.ChangeEvent<unknown>, newValue: number) => {
     setActiveTabNum(newValue);
-  }
+  };
 
-  return <Box>
-    <Tabs
-      value={activeTabNum}
-      indicatorColor="primary"
-      textColor="primary"
-      onChange={handleTabChange}
-    >
-      <Tab label="Main" disableRipple />
-      <Tab label="Attributes" disableRipple />
-      <Tab label="Variants" disableRipple />
-    </Tabs>
-  </Box>
+  return (
+    <Box>
+      <Tabs value={activeTabNum} indicatorColor="primary" textColor="primary" onChange={handleTabChange}>
+        <Tab label="Main" disableRipple />
+        <Tab label="Attributes" disableRipple />
+        <Tab label="Variants" disableRipple />
+      </Tabs>
+    </Box>
+  );
 }

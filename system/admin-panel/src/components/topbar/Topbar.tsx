@@ -1,9 +1,5 @@
-import { getStoreItem, TUser } from "@cromwell/core";
-import {
-  Menu,
-  Popover,
-  Transition,
-} from "@headlessui/react";
+import { getStoreItem, TUser } from '@cromwell/core';
+import { Menu, Popover, Transition } from '@headlessui/react';
 import {
   ChipIcon,
   ExclamationIcon,
@@ -17,18 +13,15 @@ import {
   SupportIcon,
   UserCircleIcon,
   XCircleIcon,
-} from "@heroicons/react/solid";
-import { BellIcon } from "@heroicons/react/outline";
-import React, { createContext, Fragment, useRef, useState } from "react";
-import { Link, useHistory } from "react-router-dom";
-import {
-  loginPageInfo,
-  userPageInfo,
-} from "../../constants/PageInfos";
-import { getPageInfos } from "../../helpers/navigation";
-import { getRestApiClient } from "@cromwell/core-frontend";
-import { useForceUpdate } from "../../helpers/forceUpdate";
-import { getFileManager } from "../fileManager/helpers";
+} from '@heroicons/react/solid';
+import { BellIcon } from '@heroicons/react/outline';
+import React, { createContext, Fragment, useRef, useState } from 'react';
+import { Link, useHistory } from 'react-router-dom';
+import { loginPageInfo, userPageInfo } from '../../constants/PageInfos';
+import { getPageInfos } from '../../helpers/navigation';
+import { getRestApiClient } from '@cromwell/core-frontend';
+import { useForceUpdate } from '../../helpers/forceUpdate';
+import { getFileManager } from '../fileManager/helpers';
 import { connect, PropsType } from 'react-redux-ts';
 import { updateStatus } from '../../redux/helpers';
 import { store, TAppState } from '../../redux/store';
@@ -39,21 +32,13 @@ import CmsInfo from '../cmsInfo/CmsInfo';
 
 export const Topbar = () => {
   const pageInfos = getPageInfos();
-  const currentInfo = pageInfos.find(
-    (i) =>
-      i.route ===
-      window.location.pathname.replace("/admin", ""),
-  );
-  
+  const currentInfo = pageInfos.find((i) => i.route === window.location.pathname.replace('/admin', ''));
 
-  const userInfo: TUser | undefined =
-    getStoreItem("userInfo");
-  const [optionsOpen, setOptionsOpen] =
-    useState<boolean>(false);
+  const userInfo: TUser | undefined = getStoreItem('userInfo');
+  const [optionsOpen, setOptionsOpen] = useState<boolean>(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [cmsInfoOpen, setCmsInfoOpen] = useState(false);
-  const [systemMonitorOpen, setSystemMonitorOpen] =
-    useState(false);
+  const [systemMonitorOpen, setSystemMonitorOpen] = useState(false);
   const history = useHistory?.();
   const forceUpdate = useForceUpdate();
 
@@ -77,10 +62,7 @@ export const Topbar = () => {
   };
 
   const openDocs = () => {
-    window.open(
-      "https://cromwellcms.com/docs/overview/intro",
-      "_blank",
-    );
+    window.open('https://cromwellcms.com/docs/overview/intro', '_blank');
   };
 
   if (currentInfo?.disableSidebar) return <></>;
@@ -100,14 +82,8 @@ export const Topbar = () => {
             />
             <NotificationMenu userInfo={userInfo} />
 
-            <CmsInfo
-                open={cmsInfoOpen}
-                onClose={() => setCmsInfoOpen(false)}
-            />
-            <SystemMonitor
-                open={systemMonitorOpen}
-                onClose={() => setSystemMonitorOpen(false)}
-            />
+            <CmsInfo open={cmsInfoOpen} onClose={() => setCmsInfoOpen(false)} />
+            <SystemMonitor open={systemMonitorOpen} onClose={() => setSystemMonitorOpen(false)} />
           </div>
         </div>
       </div>
@@ -117,12 +93,11 @@ export const Topbar = () => {
 
 const mapStateToProps = (state: TAppState) => {
   return {
-      status: state.status
-  }
-}
+    status: state.status,
+  };
+};
 
-type TPropsType = PropsType<PropsType, { color?: string },
-  ReturnType<typeof mapStateToProps>>;
+type TPropsType = PropsType<PropsType, { color?: string }, ReturnType<typeof mapStateToProps>>;
 
 const NotificationMenu = connect(mapStateToProps)((props: TPropsType) => {
   const client = getRestApiClient();
@@ -137,42 +112,43 @@ const NotificationMenu = connect(mapStateToProps)((props: TPropsType) => {
 
   const handleStartUpdate = async () => {
     store.setStateProp({
-        prop: 'status',
-        payload: {
-            ...store.getState().status,
-            isUpdating: true,
-        }
+      prop: 'status',
+      payload: {
+        ...store.getState().status,
+        isUpdating: true,
+      },
     });
 
     let success = false;
     try {
-        success = await client.launchCmsUpdate();
+      success = await client.launchCmsUpdate();
     } catch (error) {
-        console.error(error);
+      console.error(error);
     }
     await updateStatus();
 
     if (success) {
-        toast.success('CMS updated');
-        const confirm = await askConfirmation({
-            title: `CMS has been updated. Please reload this page to apply changes`,
-        });
-        if (confirm) {
-            window.location.reload();
-        }
-    }
-    else toast.error('Failed to update CMS');
-
-}
+      toast.success('CMS updated');
+      const confirm = await askConfirmation({
+        title: `CMS has been updated. Please reload this page to apply changes`,
+      });
+      if (confirm) {
+        window.location.reload();
+      }
+    } else toast.error('Failed to update CMS');
+  };
 
   return (
     <Menu as="div" className="relative">
       {({ open }) => (
         <>
           <Menu.Button
-            className={`rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 relative`}>
-              <BellIcon className={`w-6 h-6 m-1 stroke-1 ${open ? "fill-indigo-400 text-indigo-400" : "text-gray-300"}`} />
-              { !nothingToShow && <div className="absolute top-[3px] right-[3px] w-2 h-2 bg-red-500 rounded-full" /> }
+            className={`rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 relative`}
+          >
+            <BellIcon
+              className={`w-6 h-6 m-1 stroke-1 ${open ? 'fill-indigo-400 text-indigo-400' : 'text-gray-300'}`}
+            />
+            {!nothingToShow && <div className="absolute top-[3px] right-[3px] w-2 h-2 bg-red-500 rounded-full" />}
           </Menu.Button>
           <Transition
             as={Fragment}
@@ -181,99 +157,80 @@ const NotificationMenu = connect(mapStateToProps)((props: TPropsType) => {
             enterTo="opacity-100 translate-y-0"
             leave="transition ease-in duration-150"
             leaveFrom="opacity-100 translate-y-0"
-            leaveTo="opacity-0 translate-y-1">
+            leaveTo="opacity-0 translate-y-1"
+          >
             <Menu.Items className="absolute left-0 bottom-8 z-10 w-72 origin-bottom-left max-w-sm px-2 mt-3 sm:px-0 lg:max-w-md">
               <div className="overflow-hidden rounded-lg shadow-lg shadow-indigo-300 ring-1 ring-black ring-opacity-5">
                 <div className="relative grid gap-0 bg-white p-2 lg:grid-cols-1">
+                  {isUpdating && (
+                    <div className="flex items-center select-none py-2 px-4 transition w-full duration-150 ease-in-out rounded-lg bg-purple-200 focus:outline-none focus-visible:ring focus-visible:ring-indigo-500 focus-visible:ring-opacity-50">
+                      <div className="flex items-center justify-center flex-shrink-0 w-10 h-10 text-gray-900 sm:h-12 sm:w-12">
+                        <RefreshIcon className="w-6 h-6 animate-spin fill-gray-900 " />
+                      </div>
+                      <div className="ml-4">
+                        <p className="text-sm font-medium text-gray-900">Update in Progress...</p>
+                        <p className="text-sm text-gray-500">This may take a while...</p>
+                      </div>
+                    </div>
+                  )}
 
-                  { isUpdating && (<div
-                    className="flex items-center select-none py-2 px-4 transition w-full duration-150 ease-in-out rounded-lg bg-purple-200 focus:outline-none focus-visible:ring focus-visible:ring-indigo-500 focus-visible:ring-opacity-50">
-                    <div className="flex items-center justify-center flex-shrink-0 w-10 h-10 text-gray-900 sm:h-12 sm:w-12">
-                      <RefreshIcon className="w-6 h-6 animate-spin fill-gray-900 " />
+                  {showUpdateAvailable && (
+                    <div className="flex cursor-pointer items-center select-none py-2 px-4 transition w-full duration-150 ease-in-out rounded-lg bg-purple-500 focus:outline-none focus-visible:ring focus-visible:ring-indigo-500 focus-visible:ring-opacity-50">
+                      <div className="flex items-center justify-center flex-shrink-0 w-10 h-10 text-white sm:h-12 sm:w-12">
+                        <LightningBoltIcon className="w-6 h-6 animate-bounce fill-white " />
+                      </div>
+                      <div className="ml-4">
+                        <p className="text-sm font-medium text-white">Update available</p>
+                        <p className="text-sm text-gray-100">Click here to update your System.</p>
+                      </div>
                     </div>
-                    <div className="ml-4">
-                      <p className="text-sm font-medium text-gray-900">
-                        Update in Progress...
-                      </p>
-                      <p className="text-sm text-gray-500">
-                        This may take a while...
-                      </p>
-                    </div>
-                  </div>) }
+                  )}
 
-                  { showUpdateAvailable && (<div
-                    className="flex cursor-pointer items-center select-none py-2 px-4 transition w-full duration-150 ease-in-out rounded-lg bg-purple-500 focus:outline-none focus-visible:ring focus-visible:ring-indigo-500 focus-visible:ring-opacity-50">
-                    <div className="flex items-center justify-center flex-shrink-0 w-10 h-10 text-white sm:h-12 sm:w-12">
-                      <LightningBoltIcon className="w-6 h-6 animate-bounce fill-white " />
+                  {nothingToShow && (
+                    <div className="flex cursor-pointer items-center select-none py-2 px-4 transition w-full duration-150 ease-in-out rounded-lg bg-white hover:bg-gray-100 focus:outline-none focus-visible:ring focus-visible:ring-indigo-500 focus-visible:ring-opacity-50">
+                      <div className="flex items-center justify-center flex-shrink-0 w-10 h-10 text-white sm:h-12 sm:w-12">
+                        <InboxIcon className="w-6 h-6 fill-gray-400 " />
+                      </div>
+                      <div className="ml-4">
+                        <p className="text-sm font-medium text-gray-600">Nothing to see...</p>
+                        <p className="text-sm text-gray-400">No new notifications! :-)</p>
+                      </div>
                     </div>
-                    <div className="ml-4">
-                      <p className="text-sm font-medium text-white">
-                        Update available
-                      </p>
-                      <p className="text-sm text-gray-100">
-                        Click here to update your System.
-                      </p>
-                    </div>
-                  </div>) }
+                  )}
 
-                  {
-                    nothingToShow && (
-                      (<div
-                        className="flex cursor-pointer items-center select-none py-2 px-4 transition w-full duration-150 ease-in-out rounded-lg bg-white hover:bg-gray-100 focus:outline-none focus-visible:ring focus-visible:ring-indigo-500 focus-visible:ring-opacity-50">
+                  {notifications?.map((note, index) => {
+                    let severity = 'info';
+                    if (note.type === 'warning') severity = 'warning';
+                    if (note.type === 'error') severity = 'error';
+
+                    return (
+                      <div
+                        key={note.pageLink + index}
+                        className={`flex cursor-pointer items-center select-none py-2 px-4 transition w-full duration-150 ease-in-out rounded-lg ${
+                          severity === 'info' ? 'bg-blue-100' : 'bg-yellow-100'
+                        } ${
+                          severity === 'error' ? 'bg-red-100' : ''
+                        } hover:bg-gray-100 focus:outline-none focus-visible:ring focus-visible:ring-indigo-500 focus-visible:ring-opacity-50`}
+                      >
                         <div className="flex items-center justify-center flex-shrink-0 w-10 h-10 text-white sm:h-12 sm:w-12">
-                          <InboxIcon className="w-6 h-6 fill-gray-400 " />
+                          {severity === 'info' && <InformationCircleIcon className="w-6 h-6 fill-blue-500" />}
+                          {severity === 'warning' && <ExclamationIcon className="w-6 h-6 fill-yellow-600" />}
+                          {severity === 'error' && <XCircleIcon className="w-6 h-6 fill-red-500" />}
                         </div>
                         <div className="ml-4">
-                          <p className="text-sm font-medium text-gray-600">
-                            Nothing to see...
-                          </p>
-                          <p className="text-sm text-gray-400">
-                            No new notifications! :-)
-                          </p>
+                          <p className="text-sm font-medium text-gray-600">{note.message}</p>
                         </div>
-                      </div>)
-                    )
-                  }
-
-                  {
-                    notifications?.map((note, index) => {
-                      let severity = 'info';
-                      if (note.type === 'warning') severity = 'warning';
-                      if (note.type === 'error') severity = 'error';
-
-                      return (
-                        <div
-                          key={note.pageLink + index}
-                          className={`flex cursor-pointer items-center select-none py-2 px-4 transition w-full duration-150 ease-in-out rounded-lg ${
-                            severity === 'info' ? "bg-blue-100" : "bg-yellow-100"
-                          } ${ severity === 'error' ? "bg-red-100" : ""} hover:bg-gray-100 focus:outline-none focus-visible:ring focus-visible:ring-indigo-500 focus-visible:ring-opacity-50`}>
-                          <div className="flex items-center justify-center flex-shrink-0 w-10 h-10 text-white sm:h-12 sm:w-12">
-                            { severity === 'info' && <InformationCircleIcon className="w-6 h-6 fill-blue-500" /> }
-                            { severity === 'warning' && <ExclamationIcon className="w-6 h-6 fill-yellow-600" /> }
-                            { severity === 'error' && <XCircleIcon className="w-6 h-6 fill-red-500" /> }
+                        {note.documentationLink && (
+                          <div
+                            onClick={() => window.open(note.documentationLink, '_blank')}
+                            className="flex items-center justify-center flex-shrink-0 w-10 h-10 text-white sm:h-12 sm:w-12"
+                          >
+                            <QuestionMarkCircleIcon className="w-6 h-6 fill-gray-800 animate-pulse" />
                           </div>
-                          <div className="ml-4">
-                            <p className="text-sm font-medium text-gray-600">
-                              {note.message}
-                            </p>
-                          </div>
-                          {
-                            note.documentationLink && (
-                              <div
-                                onClick={() => window.open(note.documentationLink, '_blank')}
-                                className="flex items-center justify-center flex-shrink-0 w-10 h-10 text-white sm:h-12 sm:w-12">
-                                <QuestionMarkCircleIcon className="w-6 h-6 fill-gray-800 animate-pulse" />
-                              </div>
-                            )
-                          }
-                        </div>
-                      )
-                    })
-                  }
-
-
-
-
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             </Menu.Items>
@@ -281,37 +238,32 @@ const NotificationMenu = connect(mapStateToProps)((props: TPropsType) => {
         </>
       )}
     </Menu>
-  )
+  );
 });
 
-const UserMenu = ({
-  userInfo,
-  openFileManager,
-  setSystemMonitorOpen,
-  openDocs,
-  openCmsInfo,
-  handleLogout,
-}) => {
+const UserMenu = ({ userInfo, openFileManager, setSystemMonitorOpen, openDocs, openCmsInfo, handleLogout }) => {
   return (
     <Menu as="div" className="relative">
       {({ open }) => (
         <>
           <Menu.Button
             className={`
-                ${open ? "" : "text-opacity-90"}
-                text-black group bg-white-700 hover:bg-gray-50 px-3 py-2 rounded-md inline-flex items-center text-base font-medium hover:text-opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75`}>
-            {userInfo?.avatar && userInfo?.avatar !== "" ? (
+                ${open ? '' : 'text-opacity-90'}
+                text-black group bg-white-700 hover:bg-gray-50 px-3 py-2 rounded-md inline-flex items-center text-base font-medium hover:text-opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75`}
+          >
+            {userInfo?.avatar && userInfo?.avatar !== '' ? (
               <div
                 className="w-8 h-8 rounded-xl border border-indigo-100 bg-gradient-to-tr bg-cover bg-center from-indigo-900 to-pink-900"
                 style={{
                   backgroundImage: `url(${userInfo.avatar})`,
-                }}></div>
+                }}
+              ></div>
             ) : (
               <UserCircleIcon className="w-8 h-8 fill-gray-500 border border-indigo-100" />
             )}
             <div className="flex flex-col text-xs text-left pl-2">
-              <p className="font-medium">{userInfo?.fullName ?? "-"}</p>
-              <p className="font-thin">{userInfo?.email ?? "-"}</p>
+              <p className="font-medium">{userInfo?.fullName ?? '-'}</p>
+              <p className="font-thin">{userInfo?.email ?? '-'}</p>
             </div>
           </Menu.Button>
           <Transition
@@ -321,92 +273,73 @@ const UserMenu = ({
             enterTo="opacity-100 translate-y-0"
             leave="transition ease-in duration-150"
             leaveFrom="opacity-100 translate-y-0"
-            leaveTo="opacity-0 translate-y-1">
+            leaveTo="opacity-0 translate-y-1"
+          >
             <Menu.Items className="absolute left-0 bottom-8 z-10 w-72 origin-bottom-left max-w-sm px-2 mt-3 sm:px-0 lg:max-w-md">
               <div className="overflow-hidden rounded-lg shadow-lg shadow-indigo-300 ring-1 ring-black ring-opacity-5">
                 <div className="relative grid gap-0 bg-white p-2 lg:grid-cols-1">
                   <Link
                     to={`${userPageInfo.baseRoute}/${userInfo?.id}`}
-                    className="flex items-center p-4 transition w-full duration-150 ease-in-out rounded-lg hover:bg-gray-100 focus:outline-none focus-visible:ring focus-visible:ring-indigo-500 focus-visible:ring-opacity-50">
+                    className="flex items-center p-4 transition w-full duration-150 ease-in-out rounded-lg hover:bg-gray-100 focus:outline-none focus-visible:ring focus-visible:ring-indigo-500 focus-visible:ring-opacity-50"
+                  >
                     <div className="flex items-center justify-center flex-shrink-0 w-10 h-10 text-white sm:h-12 sm:w-12">
                       <UserCircleIcon className="w-6 h-6 fill-gray-600" />
                     </div>
                     <div className="ml-4">
-                      <p className="text-sm font-medium text-gray-900">
-                        {userInfo?.fullName ??
-                          userInfo.email ??
-                          ""}
-                      </p>
-                      <p className="text-sm text-gray-500">
-                        View and edit your profile
-                      </p>
+                      <p className="text-sm font-medium text-gray-900">{userInfo?.fullName ?? userInfo.email ?? ''}</p>
+                      <p className="text-sm text-gray-500">View and edit your profile</p>
                     </div>
                   </Link>
 
                   <div
                     onClick={openFileManager}
-                    className="flex items-center cursor-pointer p-4 transition w-full duration-150 ease-in-out rounded-lg hover:bg-gray-100 focus:outline-none focus-visible:ring focus-visible:ring-indigo-500 focus-visible:ring-opacity-50">
+                    className="flex items-center cursor-pointer p-4 transition w-full duration-150 ease-in-out rounded-lg hover:bg-gray-100 focus:outline-none focus-visible:ring focus-visible:ring-indigo-500 focus-visible:ring-opacity-50"
+                  >
                     <div className="flex items-center justify-center flex-shrink-0 w-10 h-10 text-white sm:h-12 sm:w-12">
                       <PhotographIcon className="w-6 h-6 fill-gray-600" />
                     </div>
                     <div className="ml-4">
-                      <p className="text-sm font-medium text-gray-900">
-                        Media
-                      </p>
-                      <p className="text-sm text-gray-500">
-                        Manage your media files
-                      </p>
+                      <p className="text-sm font-medium text-gray-900">Media</p>
+                      <p className="text-sm text-gray-500">Manage your media files</p>
                     </div>
                   </div>
 
                   <div
-                    onClick={() =>
-                      setSystemMonitorOpen(true)
-                    }
-                    className="flex items-center cursor-pointer p-4 transition w-full duration-150 ease-in-out rounded-lg hover:bg-gray-100 focus:outline-none focus-visible:ring focus-visible:ring-indigo-500 focus-visible:ring-opacity-50">
+                    onClick={() => setSystemMonitorOpen(true)}
+                    className="flex items-center cursor-pointer p-4 transition w-full duration-150 ease-in-out rounded-lg hover:bg-gray-100 focus:outline-none focus-visible:ring focus-visible:ring-indigo-500 focus-visible:ring-opacity-50"
+                  >
                     <div className="flex items-center justify-center flex-shrink-0 w-10 h-10 text-white sm:h-12 sm:w-12">
                       <ChipIcon className="w-6 h-6 fill-gray-600" />
                     </div>
                     <div className="ml-4">
-                      <p className="text-sm font-medium text-gray-900">
-                        System
-                      </p>
-                      <p className="text-sm text-gray-500">
-                        Display system stats and monitoring
-                      </p>
+                      <p className="text-sm font-medium text-gray-900">System</p>
+                      <p className="text-sm text-gray-500">Display system stats and monitoring</p>
                     </div>
                   </div>
 
                   <div
                     onClick={openDocs}
-                    className="flex items-center cursor-pointer p-4 transition w-full duration-150 ease-in-out rounded-lg hover:bg-gray-100 focus:outline-none focus-visible:ring focus-visible:ring-indigo-500 focus-visible:ring-opacity-50">
+                    className="flex items-center cursor-pointer p-4 transition w-full duration-150 ease-in-out rounded-lg hover:bg-gray-100 focus:outline-none focus-visible:ring focus-visible:ring-indigo-500 focus-visible:ring-opacity-50"
+                  >
                     <div className="flex items-center justify-center flex-shrink-0 w-10 h-10 text-white sm:h-12 sm:w-12">
                       <SupportIcon className="w-6 h-6 fill-gray-600" />
                     </div>
                     <div className="ml-4">
-                      <p className="text-sm font-medium text-gray-900">
-                        Documentation
-                      </p>
-                      <p className="text-sm text-gray-500">
-                        View CMS documentation
-                      </p>
+                      <p className="text-sm font-medium text-gray-900">Documentation</p>
+                      <p className="text-sm text-gray-500">View CMS documentation</p>
                     </div>
                   </div>
 
                   <div
                     onClick={openCmsInfo}
-                    className="flex items-center cursor-pointer p-4 transition w-full duration-150 ease-in-out rounded-lg hover:bg-gray-100 focus:outline-none focus-visible:ring focus-visible:ring-indigo-500 focus-visible:ring-opacity-50">
+                    className="flex items-center cursor-pointer p-4 transition w-full duration-150 ease-in-out rounded-lg hover:bg-gray-100 focus:outline-none focus-visible:ring focus-visible:ring-indigo-500 focus-visible:ring-opacity-50"
+                  >
                     <div className="flex items-center justify-center flex-shrink-0 w-10 h-10 text-white sm:h-12 sm:w-12">
                       <InformationCircleIcon className="w-6 h-6 fill-gray-600" />
                     </div>
                     <div className="ml-4">
-                      <p className="text-sm font-medium text-gray-900">
-                        CMS Info
-                      </p>
-                      <p className="text-sm text-gray-500">
-                        View CMS information, license and
-                        version
-                      </p>
+                      <p className="text-sm font-medium text-gray-900">CMS Info</p>
+                      <p className="text-sm text-gray-500">View CMS information, license and version</p>
                     </div>
                   </div>
 
@@ -414,14 +347,13 @@ const UserMenu = ({
 
                   <div
                     onClick={handleLogout}
-                    className="flex items-center cursor-pointer p-4 transition w-full duration-150 ease-in-out rounded-lg hover:bg-gray-100 focus:outline-none focus-visible:ring focus-visible:ring-indigo-500 focus-visible:ring-opacity-50">
+                    className="flex items-center cursor-pointer p-4 transition w-full duration-150 ease-in-out rounded-lg hover:bg-gray-100 focus:outline-none focus-visible:ring focus-visible:ring-indigo-500 focus-visible:ring-opacity-50"
+                  >
                     <div className="flex items-center justify-center flex-shrink-0 w-10 h-10 text-white sm:h-12 sm:w-12">
                       <LogoutIcon className="w-6 h-6 fill-gray-600" />
                     </div>
                     <div className="ml-4">
-                      <p className="text-sm font-medium text-gray-900">
-                        Sign out
-                      </p>
+                      <p className="text-sm font-medium text-gray-900">Sign out</p>
                     </div>
                   </div>
                 </div>

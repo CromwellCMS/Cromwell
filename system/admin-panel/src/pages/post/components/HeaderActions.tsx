@@ -12,7 +12,6 @@ import { PostContext } from '../contexts/PostContext';
 import styles from './Post.module.scss';
 import PostSettings from './PostSettings';
 
-
 export function HeaderActions(props: TFieldsComponentProps<TPost>) {
   const { entityData: data, isSaving, refetchMeta } = props;
   const actionsRef = useRef<HTMLDivElement | null>(null);
@@ -26,12 +25,12 @@ export function HeaderActions(props: TFieldsComponentProps<TPost>) {
     try {
       const data = (await client?.getTags({ pagedParams: { pageSize: 10000 } }))?.elements;
       if (data && Array.isArray(data)) {
-        setAllTags(data.sort((a, b) => a.name < b.name ? -1 : 1));
+        setAllTags(data.sort((a, b) => (a.name < b.name ? -1 : 1)));
       }
     } catch (e) {
-      console.error(e)
+      console.error(e);
     }
-  }
+  };
 
   useEffect(() => {
     getPostTags();
@@ -39,7 +38,7 @@ export function HeaderActions(props: TFieldsComponentProps<TPost>) {
 
   const handleToggleSettings = () => {
     context.setSettingsOpen(!context.settingsOpen);
-  }
+  };
 
   const handleUnpublish = async () => {
     setIsUpdating(true);
@@ -51,7 +50,7 @@ export function HeaderActions(props: TFieldsComponentProps<TPost>) {
     data.published = false;
     await props.onSave();
     setIsUpdating(false);
-  }
+  };
 
   const handlePublish = async () => {
     setIsUpdating(true);
@@ -64,28 +63,28 @@ export function HeaderActions(props: TFieldsComponentProps<TPost>) {
     data.publishDate = new Date(Date.now());
     await props.onSave();
     setIsUpdating(false);
-  }
+  };
 
   const handleChangeTitle = (event: any) => {
     context.dataRef.current.title = event.target.value;
     forceUpdate();
-  }
+  };
 
   return (
-    <Box sx={{
-      display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%',
-      paddingRight: '15px'
-    }}>
-      <input className={styles.postTitle}
-        value={data?.title ?? ''}
-        onChange={handleChangeTitle}
-      />
-      <Box ref={actionsRef} sx={{ display: 'flex', alignItems: 'center', }}>
+    <Box
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        width: '100%',
+        paddingRight: '15px',
+      }}
+    >
+      <input className={styles.postTitle} value={data?.title ?? ''} onChange={handleChangeTitle} />
+      <Box ref={actionsRef} sx={{ display: 'flex', alignItems: 'center' }}>
         <Tooltip title="Post meta info">
-          <IconButton onClick={handleToggleSettings}
-            style={{ marginRight: '10px' }}
-            id="more-button"
-          ><MoreHorizIcon />
+          <IconButton onClick={handleToggleSettings} style={{ marginRight: '10px' }} id="more-button">
+            <MoreHorizIcon />
           </IconButton>
         </Tooltip>
         <PostSettings
@@ -98,11 +97,9 @@ export function HeaderActions(props: TFieldsComponentProps<TPost>) {
           refetchMeta={refetchMeta}
         />
         {!data?.published && (
-          <TextButton
-            className={styles.publishBtn}
-            disabled={isSaving || isUpdating}
-            onClick={handlePublish}
-          >Publish</TextButton>
+          <TextButton className={styles.publishBtn} disabled={isSaving || isUpdating} onClick={handlePublish}>
+            Publish
+          </TextButton>
         )}
       </Box>
     </Box>

@@ -7,5 +7,5 @@ getModuleImporter();
 // }
 
 (async () => {
-    await import('./app');
+  await import('./app');
 })();

@@ -13,34 +13,35 @@ export const ValueItem = (props: {
   changeValues: (values: TAttributeValue[]) => void;
 }) => {
   const { values, changeValues } = props;
-  const value = values.find(item => item.value === props.value);
+  const value = values.find((item) => item.value === props.value);
 
   const handleChangeIcon = async () => {
     const newIconSrc = await getFileManager()?.getPhoto();
     if (newIconSrc) {
-      const newValues = [...(values ?? [])].map(val => ({ ...val }));
+      const newValues = [...(values ?? [])].map((val) => ({ ...val }));
       newValues.forEach((val, index) => {
         if (val === value) newValues[index].icon = newIconSrc;
-      })
+      });
       changeValues(newValues);
     }
   };
 
   const handleDeleteValue = () => {
-    const newValues = [...(values ?? [])].filter(val => val.value !== value.value);
+    const newValues = [...(values ?? [])].filter((val) => val.value !== value.value);
     changeValues(newValues);
-  }
+  };
 
   const handleValueNameChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const newValues = [...(values ?? [])].map(val => {
-      if (val === value) return {
-        ...val,
-        value: event.target.value,
-      }
+    const newValues = [...(values ?? [])].map((val) => {
+      if (val === value)
+        return {
+          ...val,
+          value: event.target.value,
+        };
       return val;
     });
     changeValues(newValues);
-  }
+  };
 
   return (
     <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -48,17 +49,19 @@ export const ValueItem = (props: {
         style={{ marginRight: '15px' }}
         defaultValue={props.value}
         onChange={handleValueNameChange}
-        baseSize={"small"}
+        baseSize={'small'}
       />
       <Tooltip title="Change icon">
         <IconButton onClick={handleChangeIcon}>
           {value.icon ? (
-            <div style={{
-              width: '20px',
-              height: '20px',
-              background: `url("${value.icon}") center center no-repeat`,
-              backgroundSize: 'contain'
-            }}></div>
+            <div
+              style={{
+                width: '20px',
+                height: '20px',
+                background: `url("${value.icon}") center center no-repeat`,
+                backgroundSize: 'contain',
+              }}
+            ></div>
           ) : (
             <PhotographIcon className="w-4 h-4" />
           )}
@@ -71,4 +74,4 @@ export const ValueItem = (props: {
       </Tooltip>
     </div>
   );
-}
+};

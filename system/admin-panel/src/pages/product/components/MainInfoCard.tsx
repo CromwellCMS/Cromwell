@@ -14,7 +14,7 @@ import { useForceUpdate } from '../../../helpers/forceUpdate';
 import styles from '../Product.module.scss';
 
 const MainInfoCard = (props: {
-  product: TProduct | TProductVariant,
+  product: TProduct | TProductVariant;
   setProdData: (data: Partial<TProduct | TProductVariant>) => void;
   isProductVariant?: boolean;
   canValidate?: boolean;
@@ -28,24 +28,28 @@ const MainInfoCard = (props: {
     productRef.current = props.product;
   }
   const forceUpdate = useForceUpdate();
-  const editorId = "prod-text-editor_" + cardIdRef.current;
+  const editorId = 'prod-text-editor_' + cardIdRef.current;
   const product = productRef.current;
 
   const setProdData = (data: TProduct) => {
-    Object.keys(data).forEach(key => { productRef.current[key] = data[key] });
+    Object.keys(data).forEach((key) => {
+      productRef.current[key] = data[key];
+    });
     props.setProdData(data);
-  }
+  };
 
   useEffect(() => {
     init();
-  }, [])
+  }, []);
 
   const init = async () => {
     let descriptionDelta;
     if (product?.descriptionDelta) {
       try {
         descriptionDelta = JSON.parse(product.descriptionDelta);
-      } catch (e) { console.error(e) }
+      } catch (e) {
+        console.error(e);
+      }
     }
 
     const updateText = debounce(300, async () => {
@@ -60,7 +64,7 @@ const MainInfoCard = (props: {
         description,
         descriptionDelta,
       });
-    })
+    });
 
     await initTextEditor({
       htmlId: editorId,
@@ -68,7 +72,7 @@ const MainInfoCard = (props: {
       placeholder: 'Product description...',
       onChange: updateText,
     });
-  }
+  };
 
   const handleChange = (prop: keyof TProduct, val: any) => {
     if (product) {
@@ -81,7 +85,7 @@ const MainInfoCard = (props: {
       setProdData(prod as TProduct);
       forceUpdate();
     }
-  }
+  };
 
   const onMetaChange = useMemo(() => {
     return debounce(300, async () => {
@@ -96,18 +100,24 @@ const MainInfoCard = (props: {
   return (
     <Grid container spacing={3}>
       <Grid item xs={12} sm={12}>
-        <TextInput label="Name"
+        <TextInput
+          label="Name"
           value={product.name ?? ''}
           className={styles.textField}
-          onChange={(e) => { handleChange('name', e.target.value) }}
+          onChange={(e) => {
+            handleChange('name', e.target.value);
+          }}
           error={props.canValidate && !product?.name}
         />
       </Grid>
       <Grid item xs={12} sm={6}>
-        <TextInput label="SKU"
+        <TextInput
+          label="SKU"
           value={product.sku ?? ''}
           className={styles.textField}
-          onChange={(e) => { handleChange('sku', e.target.value) }}
+          onChange={(e) => {
+            handleChange('sku', e.target.value);
+          }}
         />
       </Grid>
       <Grid item xs={12} sm={6}></Grid>
@@ -115,12 +125,15 @@ const MainInfoCard = (props: {
         <SelectInput
           label="Stock status"
           value={product.stockStatus}
-          onChange={(value) => { handleChange('stockStatus', value) }}
+          onChange={(value) => {
+            handleChange('stockStatus', value);
+          }}
           options={['In stock', 'Out of stock', 'On backorder'] as TStockStatus[]}
         />
       </Grid>
       <Grid item xs={12} sm={6}>
-        <TextInput label="Stock amount"
+        <TextInput
+          label="Stock amount"
           value={product.stockAmount ?? ''}
           className={styles.textField}
           type="number"
@@ -148,7 +161,9 @@ const MainInfoCard = (props: {
           type="currency"
           value={product.price ?? ''}
           className={styles.textField}
-          onChange={(e) => { handleChange('price', e.target.value) }}
+          onChange={(e) => {
+            handleChange('price', e.target.value);
+          }}
         />
       </Grid>
       <Grid item xs={12} sm={6}>
@@ -168,12 +183,17 @@ const MainInfoCard = (props: {
           <GalleryPicker
             classes={{
               imageInput: {
-                root: styles.imageItem
-              }
+                root: styles.imageItem,
+              },
             }}
             label="Gallery"
-            images={((product as TProduct)?.images ?? []).map(src => ({ src }))}
-            onChange={(val) => handleChange('images', val.map(s => s.src))}
+            images={((product as TProduct)?.images ?? []).map((src) => ({ src }))}
+            onChange={(val) =>
+              handleChange(
+                'images',
+                val.map((s) => s.src),
+              )
+            }
           />
         </div>
       </Grid>
@@ -189,12 +209,12 @@ const MainInfoCard = (props: {
             entityData={product}
             refetchMeta={async () => product.customMeta}
             onChange={onMetaChange}
-            onDidMount={() => setTimeout(() => canUpdateMeta.current = true, 10)}
+            onDidMount={() => setTimeout(() => (canUpdateMeta.current = true), 10)}
           />
         </Grid>
       )}
     </Grid>
-  )
-}
+  );
+};
 
 export default MainInfoCard;

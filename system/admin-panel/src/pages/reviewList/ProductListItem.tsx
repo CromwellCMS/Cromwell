@@ -15,24 +15,21 @@ export type TProductItemProps = {
   data?: TProduct;
   listItemProps: ListItemProps;
   embedded?: boolean;
-}
-
+};
 
 export type ListItemProps = {
   handleDeleteProductBtnClick: (product: TProduct) => void;
   toggleSelection: (data: TProduct) => void;
-}
-
+};
 
 const mapStateToProps = (state: TAppState) => {
   return {
     selectedItems: state.selectedItems,
     allSelected: state.allSelected,
-  }
-}
+  };
+};
 
-type TPropsType = PropsType<PropsType, TProductItemProps,
-  ReturnType<typeof mapStateToProps>>;
+type TPropsType = PropsType<PropsType, TProductItemProps, ReturnType<typeof mapStateToProps>>;
 
 const ProductListItem = (props: TPropsType) => {
   const cstore = getCStore();
@@ -49,19 +46,14 @@ const ProductListItem = (props: TPropsType) => {
       <Grid item xs={8} className={styles.itemMain}>
         {!props.embedded && (
           <div className={commonStyles.center}>
-            <Checkbox
-              checked={selected}
-              onChange={() => props.listItemProps.toggleSelection(data)} />
+            <Checkbox checked={selected} onChange={() => props.listItemProps.toggleSelection(data)} />
           </div>
         )}
-        <div
-          style={{ backgroundImage: `url(${props?.data?.mainImage})` }}
-          className={styles.itemImage}
-        ></div>
+        <div style={{ backgroundImage: `url(${props?.data?.mainImage})` }} className={styles.itemImage}></div>
         <div className={styles.itemMainInfo}>
           <p className={styles.itemTitle}>{props.data?.name}</p>
           <div className={styles.priceBlock}>
-            {(data?.oldPrice !== undefined && data?.oldPrice !== null) && (
+            {data?.oldPrice !== undefined && data?.oldPrice !== null && (
               <p className={styles.oldPrice}>{cstore.getPriceWithCurrency(data.oldPrice)}</p>
             )}
             <p className={styles.price}>{cstore.getPriceWithCurrency(data?.price)}</p>
@@ -70,28 +62,25 @@ const ProductListItem = (props: TPropsType) => {
       </Grid>
       <Grid item xs={2}>
         <p className={styles.itemTitle}>{props.data?.stockStatus ?? 'In stock'}</p>
-        <p style={{ fontSize: '14px' }} className={styles.ellipsis}>{props.data?.sku}</p>
+        <p style={{ fontSize: '14px' }} className={styles.ellipsis}>
+          {props.data?.sku}
+        </p>
       </Grid>
       <Grid item xs={2} className={styles.listItemActions}>
         <Link to={`${productPageInfo.baseRoute}/${props.data?.id}`}>
-          <IconButton
-            aria-label="edit"
-          >
+          <IconButton aria-label="edit">
             <EditIcon />
           </IconButton>
         </Link>
         {!props.embedded && (
-          <IconButton
-            aria-label="delete"
-            onClick={() => props.listItemProps.handleDeleteProductBtnClick(props.data)}
-          >
+          <IconButton aria-label="delete" onClick={() => props.listItemProps.handleDeleteProductBtnClick(props.data)}>
             <DeleteForeverIcon />
           </IconButton>
         )}
       </Grid>
     </Grid>
-  )
-}
+  );
+};
 
 const connectedComponent = connect(mapStateToProps)(ProductListItem);
 

@@ -12,19 +12,12 @@ import { productListInfo, productPageInfo } from '../../constants/PageInfos';
 import { baseEntityColumns } from '../../helpers/customEntities';
 import styles from './ProductList.module.scss';
 
-
 export default function ProductListPage() {
   const client = getGraphQLClient();
   const [showFilter, setShowFilter] = useState(false);
-  const filterInstRef = useRef<IFrontendFilter | null>(
-    null,
-  );
-  const [attributes, setAttributes] = useState<
-    TAttribute[] | null
-  >(null);
-  const productsRef = useRef<TFilteredProductList | null>(
-    null,
-  );
+  const filterInstRef = useRef<IFrontendFilter | null>(null);
+  const [attributes, setAttributes] = useState<TAttribute[] | null>(null);
+  const productsRef = useRef<TFilteredProductList | null>(null);
   const attributesFilterInput = useRef<TProductFilter>({});
   const initialFilterRef = useRef<TProductFilter>({});
   const entityListPageRef = useRef<IEntityListPage<TProduct, TProductFilter> | null>(null);
@@ -34,12 +27,7 @@ export default function ProductListPage() {
 
     if (filterInstRef.current && initialFilterRef.current) {
       const filter = initialFilterRef.current;
-      if (
-        filter.attributes ||
-        filter.minPrice ||
-        filter.maxPrice ||
-        filter.nameSearch
-      ) {
+      if (filter.attributes || filter.minPrice || filter.maxPrice || filter.nameSearch) {
         filterInstRef.current.setFilter(filter);
         attributesFilterInput.current = filter;
         entityListPageRef.current?.resetList?.();
@@ -57,9 +45,7 @@ export default function ProductListPage() {
   };
 
   const onFilterMount = () => {
-    filterInstRef.current?.updateFilterMeta(
-      productsRef.current,
-    );
+    filterInstRef.current?.updateFilterMeta(productsRef.current);
   };
 
   const onFilterChange = (params: TProductFilter) => {
@@ -79,20 +65,13 @@ export default function ProductListPage() {
         entityLabel="Product"
         nameProperty="name"
         getMany={async (options) => {
-          if (!options.filterParams)
-            options.filterParams = {};
-          options.filterParams.minPrice =
-            attributesFilterInput.current?.minPrice;
-          options.filterParams.maxPrice =
-            attributesFilterInput.current?.maxPrice;
-          options.filterParams.attributes =
-            attributesFilterInput.current?.attributes;
-          options.filterParams.nameSearch =
-            attributesFilterInput.current?.nameSearch;
+          if (!options.filterParams) options.filterParams = {};
+          options.filterParams.minPrice = attributesFilterInput.current?.minPrice;
+          options.filterParams.maxPrice = attributesFilterInput.current?.maxPrice;
+          options.filterParams.attributes = attributesFilterInput.current?.attributes;
+          options.filterParams.nameSearch = attributesFilterInput.current?.nameSearch;
 
-          const data = await client.getProducts(
-            options,
-          );
+          const data = await client.getProducts(options);
           filterInstRef.current?.updateFilterMeta(data);
           productsRef.current = data;
           return data;
@@ -101,10 +80,7 @@ export default function ProductListPage() {
         deleteMany={client.deleteManyProducts}
         getPageListInstance={(inst) => {
           entityListPageRef.current = inst;
-          initialFilterRef.current = Object.assign(
-            {},
-            inst.getFilterInput(),
-          );
+          initialFilterRef.current = Object.assign({}, inst.getFilterInput());
         }}
         onClearAllFilters={() => {
           filterInstRef.current?.setFilter({});
@@ -112,69 +88,63 @@ export default function ProductListPage() {
         }}
         isFilterActive={() => {
           const filter = attributesFilterInput.current;
-          return !!(
-            filter.nameSearch ||
-            filter.attributes ||
-            filter.maxPrice ||
-            filter.minPrice
-          );
+          return !!(filter.nameSearch || filter.attributes || filter.maxPrice || filter.minPrice);
         }}
         columns={[
           {
-            name: "mainImage",
-            label: "Image",
-            type: "Image",
+            name: 'mainImage',
+            label: 'Image',
+            type: 'Image',
             visible: true,
           },
           {
-            name: "name",
-            label: "Name",
-            type: "Simple text",
+            name: 'name',
+            label: 'Name',
+            type: 'Simple text',
             visible: true,
-            minWidth: "25%",
+            minWidth: '25%',
           },
           {
-            name: "sku",
-            label: "SKU",
-            type: "Simple text",
-            visible: true,
-          },
-          {
-            name: "price",
-            label: "Price",
-            type: "Currency",
+            name: 'sku',
+            label: 'SKU',
+            type: 'Simple text',
             visible: true,
           },
           {
-            name: "oldPrice",
-            label: "Old Price",
-            type: "Currency",
+            name: 'price',
+            label: 'Price',
+            type: 'Currency',
+            visible: true,
+          },
+          {
+            name: 'oldPrice',
+            label: 'Old Price',
+            type: 'Currency',
             visible: false,
           },
           {
-            name: "stockStatus",
-            label: "Stock status",
-            type: "Simple text",
+            name: 'stockStatus',
+            label: 'Stock status',
+            type: 'Simple text',
             visible: true,
             exactSearch: true,
             searchOptions: [
               {
-                value: "In stock",
-                label: "In stock",
+                value: 'In stock',
+                label: 'In stock',
               },
               {
-                value: "Out of stock",
-                label: "Out of stock",
+                value: 'Out of stock',
+                label: 'Out of stock',
               },
               {
-                value: "On backorder",
-                label: "On backorder",
+                value: 'On backorder',
+                label: 'On backorder',
               },
             ],
           },
           ...baseEntityColumns.map((col) => {
-            if (col.name === "createDate")
-              return { ...col, visible: true };
+            if (col.name === 'createDate') return { ...col, visible: true };
             return { ...col, visible: false };
           }),
         ]}
@@ -185,7 +155,8 @@ export default function ProductListPage() {
                 <IconButton
                   className={styles.attributeFilterButton}
                   onClick={handleToggleFilter}
-                  aria-label="show filter">
+                  aria-label="show filter"
+                >
                   <FilterListIcon />
                 </IconButton>
               </Tooltip>
@@ -196,15 +167,14 @@ export default function ProductListPage() {
       <Drawer
         classes={{ paper: styles.filterDrawer }}
         variant="persistent"
-        anchor={"left"}
+        anchor={'left'}
         open={showFilter}
-        onClose={() => setShowFilter(false)}>
+        onClose={() => setShowFilter(false)}
+      >
         <div className={styles.filterHeader}>
           <h3>Filter</h3>
           <Tooltip title="Close">
-            <IconButton
-              onClick={handleToggleFilter}
-              aria-label="close filter">
+            <IconButton onClick={handleToggleFilter} aria-label="close filter">
               <CloseIcon />
             </IconButton>
           </Tooltip>

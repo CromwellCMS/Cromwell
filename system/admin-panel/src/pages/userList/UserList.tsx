@@ -7,7 +7,6 @@ import { userListPageInfo, userPageInfo } from '../../constants/PageInfos';
 import { getTooltipValueView, getValueView } from '../../helpers/addressParser';
 import { baseEntityColumns } from '../../helpers/customEntities';
 
-
 export default function UserTable() {
   const client = getGraphQLClient();
   const [roles, setRoles] = useState<TRole[]>([]);
@@ -19,7 +18,7 @@ export default function UserTable() {
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
   useEffect(() => {
     init();
@@ -43,15 +42,17 @@ export default function UserTable() {
           type: 'Image',
           visible: true,
           getValueView: (value) => (
-            <div style={{
-              height: '40px',
-              width: '40px',
-              borderRadius: '100%',
-              backgroundPosition: 'center',
-              backgroundSize: 'cover',
-              backgroundImage: `url(${value})`,
-            }}></div>
-          )
+            <div
+              style={{
+                height: '40px',
+                width: '40px',
+                borderRadius: '100%',
+                backgroundPosition: 'center',
+                backgroundSize: 'cover',
+                backgroundImage: `url(${value})`,
+              }}
+            ></div>
+          ),
         },
         {
           name: 'fullName',
@@ -71,9 +72,9 @@ export default function UserTable() {
           type: 'Simple text',
           exactSearch: true,
           customGraphQlFragment: 'roles {\n id\n name\n title\n }\n',
-          getValueView: (value: TRole[]) => value?.map(r => r.title).join(', '),
-          getTooltipValueView: (value: TRole[]) => value?.map(r => r.title).join(', '),
-          searchOptions: roles.map(role => ({
+          getValueView: (value: TRole[]) => value?.map((r) => r.title).join(', '),
+          getTooltipValueView: (value: TRole[]) => value?.map((r) => r.title).join(', '),
+          searchOptions: roles.map((role) => ({
             value: role.name,
             label: role.title,
           })),
@@ -83,9 +84,9 @@ export default function UserTable() {
           },
           visible: true,
         },
-        ...baseEntityColumns.map(col => {
-          if (col.name === 'createDate') return { ...col, visible: true }
-          return { ...col, visible: false }
+        ...baseEntityColumns.map((col) => {
+          if (col.name === 'createDate') return { ...col, visible: true };
+          return { ...col, visible: false };
         }),
         {
           name: 'phone',
@@ -103,5 +104,5 @@ export default function UserTable() {
         },
       ]}
     />
-  )
+  );
 }

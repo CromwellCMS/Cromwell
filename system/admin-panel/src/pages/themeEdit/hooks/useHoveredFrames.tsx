@@ -1,5 +1,5 @@
-import { useRef, useState } from "react";
-import { Draggable } from "../../../helpers/Draggable/Draggable";
+import { useRef, useState } from 'react';
+import { Draggable } from '../../../helpers/Draggable/Draggable';
 
 export const useEditorFrames = ({
   getBlockById,
@@ -11,30 +11,19 @@ export const useEditorFrames = ({
   selectableFrameMargin,
   pageFrameRef,
 }) => {
-  const hoveredFrames = useRef<Record<string, HTMLElement>>(
-    {},
-  );
-  const selectedFrames = useRef<
-    Record<string, HTMLElement>
-  >({});
-  const invisibleSelectedFrames = useRef<
-    Record<string, HTMLElement>
-  >({});
+  const hoveredFrames = useRef<Record<string, HTMLElement>>({});
+  const selectedFrames = useRef<Record<string, HTMLElement>>({});
+  const invisibleSelectedFrames = useRef<Record<string, HTMLElement>>({});
   // const [draggable, setDraggable] = useState<Draggable>();
   const draggable = useRef<Draggable>();
 
   const createBlockFrame = (block: HTMLElement) => {
-    const selectableFrame =
-      contentWindowRef.current.document.createElement(
-        "div",
-      );
-    selectableFrame.style.zIndex = "10";
-    selectableFrame.style.pointerEvents = "none";
+    const selectableFrame = contentWindowRef.current.document.createElement('div');
+    selectableFrame.style.zIndex = '10';
+    selectableFrame.style.pointerEvents = 'none';
     selectableFrame.style.borderRadius = block?.style?.borderRadius;
 
-    selectableFrame.style.border = `1px solid ${getFrameColor(
-      block,
-    )}`;
+    selectableFrame.style.border = `1px solid ${getFrameColor(block)}`;
     setFramePosition(block, selectableFrame);
     return selectableFrame;
   };
@@ -42,9 +31,7 @@ export const useEditorFrames = ({
   const onBlockHoverStart = (block: HTMLElement) => {
     if (!block) return;
     if (hoveredFrames.current[block.id]) return;
-    const crwBlock = getBlockById.current(
-      getBlockIdFromHtml(block.id),
-    );
+    const crwBlock = getBlockById.current(getBlockIdFromHtml(block.id));
     const blockData = crwBlock?.getData();
     if (blockData.editorHidden) return;
 
@@ -52,16 +39,12 @@ export const useEditorFrames = ({
     // frame.style.border = `1px solid ${getFrameColor(
     //   block,
     // )}`;
-    frame.style.boxShadow = `0px 0px 3px 1px ${getFrameColor(
-      block,
-    )}`;
+    frame.style.boxShadow = `0px 0px 3px 1px ${getFrameColor(block)}`;
     frame.style.borderRadius = block?.style?.borderRadius;
-    frame.style.userSelect = "none";
-    frame.setAttribute("draggable", "false");
+    frame.style.userSelect = 'none';
+    frame.setAttribute('draggable', 'false');
 
-    editorWidgetWrapperCroppedRef.current.appendChild(
-      frame,
-    );
+    editorWidgetWrapperCroppedRef.current.appendChild(frame);
     hoveredFrames.current[block.id] = frame;
     // setHoveredFrames(hoveredFrames);
   };
@@ -73,20 +56,15 @@ export const useEditorFrames = ({
     // setHoveredFrames(hoveredFrames);
   };
 
-  const setFramePosition = (
-    block: HTMLElement,
-    frame: HTMLElement,
-  ) => {
+  const setFramePosition = (block: HTMLElement, frame: HTMLElement) => {
     const bounding = block.getBoundingClientRect();
-    frame.style.position = "absolute";
-    frame.style.top =
-      bounding.top + selectableFrameMargin + "px";
-    frame.style.left =
-      bounding.left + selectableFrameMargin + "px";
+    frame.style.position = 'absolute';
+    frame.style.top = bounding.top + selectableFrameMargin + 'px';
+    frame.style.left = bounding.left + selectableFrameMargin + 'px';
     frame.style.borderRadius = block?.style?.borderRadius;
 
-    frame.style.height = block.offsetHeight + "px";
-    frame.style.width = block.offsetWidth + "px";
+    frame.style.height = block.offsetHeight + 'px';
+    frame.style.width = block.offsetWidth + 'px';
   };
 
   const updateFramesPosition = () => {
@@ -96,9 +74,7 @@ export const useEditorFrames = ({
       ...Object.entries(invisibleSelectedFrames.current),
       ...Object.entries(hoveredFrames.current),
     ].forEach((entry) => {
-      const block = getBlockElementById.current(
-        getBlockIdFromHtml(entry[0]),
-      );
+      const block = getBlockElementById.current(getBlockIdFromHtml(entry[0]));
       if (!entry[1]) return;
       if (!block) {
         entry[1].remove();

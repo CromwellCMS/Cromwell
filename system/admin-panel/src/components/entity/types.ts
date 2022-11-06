@@ -24,7 +24,7 @@ export interface IEntityListPage<TEntityType extends TBasePageEntity, TFilterTyp
 
 export type TBaseEntityFilter = TBaseFilter & {
   entityType?: string;
-}
+};
 
 export type TEntityPageProps<TEntityType extends TBasePageEntity, TFilterType extends TBaseEntityFilter> = {
   /**
@@ -44,9 +44,9 @@ export type TEntityPageProps<TEntityType extends TBasePageEntity, TFilterType ex
 
   /**
    * Property of an element to use as a name in modals, such as: "Delete MyNewProductName?"
-   * Will use ID by default 
+   * Will use ID by default
    */
-  nameProperty?: string
+  nameProperty?: string;
 
   /**
    * Name of one item such as: Product, Post, etc. Used in modals
@@ -54,10 +54,9 @@ export type TEntityPageProps<TEntityType extends TBasePageEntity, TFilterType ex
   entityLabel?: string;
 
   /**
-   * How to name this list / page? 
+   * How to name this list / page?
    */
   listLabel: string;
-
 
   /**
    * Page to open when user clicks "edit" in list view page
@@ -116,10 +115,10 @@ export type TEntityPageProps<TEntityType extends TBasePageEntity, TFilterType ex
     getTableContent?: (props: TListItemProps<TEntityType, TFilterType>) => JSX.Element;
     getEntityFields?: (props: TFieldsComponentProps<TEntityType>) => JSX.Element;
     getEntityHeaderCenter?: (props: TFieldsComponentProps<TEntityType>) => JSX.Element;
-  }
+  };
 
-  /** 
-   * Show additional actions per record, appear near edit/delete buttons. Use together with `customActionsWidth`. 
+  /**
+   * Show additional actions per record, appear near edit/delete buttons. Use together with `customActionsWidth`.
    */
   getItemCustomActions?: (entity: TEntityType, itemInstance: React.Component<any>) => JSX.Element;
 
@@ -140,8 +139,7 @@ export type TEntityPageProps<TEntityType extends TBasePageEntity, TFilterType ex
    * Are any additional filters applied? Used to highlight "clear filters" button
    */
   isFilterActive?: () => boolean;
-}
-
+};
 
 export type TEditField<TEntityType> = {
   key: string;
@@ -149,10 +147,15 @@ export type TEditField<TEntityType> = {
   simpleTextType?: TCustomFieldSimpleTextType;
   label?: string;
   tooltip?: string;
-  options?: ({
-    value: string | number | undefined;
-    label: string;
-  } | string | number | undefined)[];
+  options?: (
+    | {
+        value: string | number | undefined;
+        label: string;
+      }
+    | string
+    | number
+    | undefined
+  )[];
   width?: {
     xs?: number;
     sm?: number;
@@ -171,7 +174,7 @@ export type TEditField<TEntityType> = {
   required?: boolean;
   onlyOnCreate?: boolean;
   getInitialValue?: (value: any, entityData: TEntityType) => any;
-}
+};
 
 export type TListItemProps<TEntityType extends TBasePageEntity, TFilterType extends TBaseEntityFilter> = {
   searchStore: TSearchStore;
@@ -186,22 +189,24 @@ export type TListItemProps<TEntityType extends TBasePageEntity, TFilterType exte
   loadConfiguredColumns: () => Record<string, TSearchStore['sortedColumns']>;
   handleDeleteSelected: () => void;
   clearAllFilters: () => void;
-}
+};
 
 export type TSavedConfiguredColumn = {
   name: string;
   order?: number;
   visible?: boolean;
-}
+};
 
 export type TSearchStore = {
-  sortBy?: {
-    column: TCustomEntityColumn;
-    sort: 'ASC' | 'DESC';
-  } | undefined;
+  sortBy?:
+    | {
+        column: TCustomEntityColumn;
+        sort: 'ASC' | 'DESC';
+      }
+    | undefined;
   filters?: TBaseFilter['filters'];
   sortedColumns?: Record<string, TSavedConfiguredColumn>;
-}
+};
 
 export type TEntityEditState<TEntityType> = {
   entityData?: TEntityType;
@@ -209,7 +214,7 @@ export type TEntityEditState<TEntityType> = {
   notFound?: boolean;
   isSaving?: boolean;
   canValidate?: boolean;
-}
+};
 
 export type TFieldsComponentProps<TEntityType> = TEntityEditState<TEntityType> & {
   refetchMeta: () => Promise<Record<string, string>>;

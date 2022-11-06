@@ -14,7 +14,7 @@ export const PostContext = React.createContext<{
   settingsOpen: false,
 });
 
-export const PostContextProvider = (props: { children: React.ReactNode; }) => {
+export const PostContextProvider = (props: { children: React.ReactNode }) => {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const getEditorDataRef = useRef<(() => Promise<{ content: string; delta: string }>) | null>(null);
   const dataRef = useRef<TPost | null>(null);
@@ -40,35 +40,37 @@ export const PostContextProvider = (props: { children: React.ReactNode; }) => {
       meta: {
         keywords: data.meta?.keywords,
       },
-      tagIds: data.tags?.map(tag => tag.id)?.filter(Boolean),
+      tagIds: data.tags?.map((tag) => tag.id)?.filter(Boolean),
       authorId: data?.author?.id ?? userInfo?.id,
       delta: editorData.delta,
       content: editorData.content,
       customMeta: data.customMeta,
-    }
+    };
   };
 
   useEffect(() => {
     const unregisterBlock = history.block(() => {
-      if (hasChangesRef.current) return 'Your unsaved changes will be lost. Do you want to discard and leave this page?';
+      if (hasChangesRef.current)
+        return 'Your unsaved changes will be lost. Do you want to discard and leave this page?';
     });
 
     return () => {
       unregisterBlock();
-    }
+    };
   }, []);
 
   return (
-    <PostContext.Provider value={{
-      settingsOpen,
-      setSettingsOpen,
-      getEditorDataRef,
-      dataRef,
-      hasChangesRef,
-      getInput,
-    }}>
+    <PostContext.Provider
+      value={{
+        settingsOpen,
+        setSettingsOpen,
+        getEditorDataRef,
+        dataRef,
+        hasChangesRef,
+        getInput,
+      }}
+    >
       {props.children}
     </PostContext.Provider>
-  )
-}
-
+  );
+};

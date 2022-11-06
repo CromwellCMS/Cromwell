@@ -3,44 +3,44 @@ import { TPackageCromwellConfig, TPagedList, TCCSModuleInfo } from '@cromwell/co
 import loadable from '@loadable/component';
 
 const testDataAll: TPackageCromwellConfig[] = [
-    {
-        name: '_test1_',
-        title: '_test1_title'
-    },
-    {
-        name: '_test2_',
-        title: '_test2_title'
-    }
+  {
+    name: '_test1_',
+    title: '_test1_title',
+  },
+  {
+    name: '_test2_',
+    title: '_test2_title',
+  },
 ];
 
 jest.mock('@cromwell/core-frontend', () => {
-    return {
-        getRestApiClient: () => {
-            return {
-                getPluginList: jest.fn().mockImplementation(async () => testDataAll),
-            }
-        },
-        getCentralServerClient: () => {
-            return {
-                getPluginList: jest.fn().mockImplementation(async () => ({ elements: testDataAll })),
-            }
-        },
-        CList: (props: any) => {
-            const Comp = loadable(async () => {
-                const items: TPagedList<TCCSModuleInfo> = await props.loader();
-                const ListItem = props.ListItem;
-                return () => (
-                    <div>
-                        {items.elements.map(it => {
-                            return <ListItem key={it.name} data={it} />
-                        })}
-                    </div>
-                )
-            });
-            return <Comp />;
-        },
-        CGallery: () => <></>,
-    }
+  return {
+    getRestApiClient: () => {
+      return {
+        getPluginList: jest.fn().mockImplementation(async () => testDataAll),
+      };
+    },
+    getCentralServerClient: () => {
+      return {
+        getPluginList: jest.fn().mockImplementation(async () => ({ elements: testDataAll })),
+      };
+    },
+    CList: (props: any) => {
+      const Comp = loadable(async () => {
+        const items: TPagedList<TCCSModuleInfo> = await props.loader();
+        const ListItem = props.ListItem;
+        return () => (
+          <div>
+            {items.elements.map((it) => {
+              return <ListItem key={it.name} data={it} />;
+            })}
+          </div>
+        );
+      });
+      return <Comp />;
+    },
+    CGallery: () => <></>,
+  };
 });
 
 import { render, screen } from '@testing-library/react';
@@ -49,13 +49,14 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import PluginMarket from './PluginMarket';
 
 describe('PluginList page', () => {
+  it('renders plugins', async () => {
+    render(
+      <Router>
+        <PluginMarket />
+      </Router>,
+    );
 
-
-    it("renders plugins", async () => {
-        render(<Router><PluginMarket /></Router>);
-
-        await screen.findByText('_test1_title');
-        await screen.findByText('_test2_title');
-    });
-
-})
+    await screen.findByText('_test1_title');
+    await screen.findByText('_test2_title');
+  });
+});

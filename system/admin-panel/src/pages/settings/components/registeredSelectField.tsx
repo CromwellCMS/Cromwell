@@ -1,17 +1,11 @@
-import React from "react";
-import {
-  Controller,
-  useFormContext,
-} from "react-hook-form";
-import {
-  SelectInput,
-  SelectInputProps,
-} from "../../../components/inputs/SelectInput";
+import React from 'react';
+import { Controller, useFormContext } from 'react-hook-form';
+import { SelectInput, SelectInputProps } from '../../../components/inputs/SelectInput';
 
 type PropTypes<T> = SelectInputProps<T> & {
   label?: string;
   name?: string;
-  inferValue?: (v: any) => any
+  inferValue?: (v: any) => any;
 };
 
 export const RegisteredSelectField = <T extends unknown>({
@@ -27,9 +21,7 @@ export const RegisteredSelectField = <T extends unknown>({
   const { control } = useFormContext();
   return (
     <div className="w-full">
-      <p className="font-bold pb-1 pl-[2px] text-gray-700">
-        {label}
-      </p>
+      <p className="font-bold pb-1 pl-[2px] text-gray-700">{label}</p>
       <Controller
         name={name}
         control={control}

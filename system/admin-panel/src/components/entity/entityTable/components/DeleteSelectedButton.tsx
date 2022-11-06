@@ -12,14 +12,20 @@ const mapStateToProps = (state: TAppState) => {
   return {
     selectedItems: state.selectedItems,
     allSelected: state.allSelected,
-  }
-}
+  };
+};
 
-const DeleteSelectedButton = (props: PropsType<PropsType, {
-  onClick: () => void;
-  style?: React.CSSProperties;
-  totalElements?: number | null;
-}, ReturnType<typeof mapStateToProps>>) => {
+const DeleteSelectedButton = (
+  props: PropsType<
+    PropsType,
+    {
+      onClick: () => void;
+      style?: React.CSSProperties;
+      totalElements?: number | null;
+    },
+    ReturnType<typeof mapStateToProps>
+  >,
+) => {
   const enabled = countSelectedItems(props.totalElements) > 0;
   return (
     <div style={props.style}>
@@ -37,6 +43,6 @@ const DeleteSelectedButton = (props: PropsType<PropsType, {
       </Tooltip>
     </div>
   );
-}
+};
 
 export default connect(mapStateToProps)(DeleteSelectedButton);

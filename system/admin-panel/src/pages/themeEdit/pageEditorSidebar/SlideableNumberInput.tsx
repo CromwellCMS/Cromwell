@@ -1,13 +1,6 @@
-import { Listbox, Transition } from "@headlessui/react";
-import { XCircleIcon } from "@heroicons/react/solid";
-import React, {
-  Fragment,
-  HTMLAttributes,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { Listbox, Transition } from '@headlessui/react';
+import { XCircleIcon } from '@heroicons/react/solid';
+import React, { Fragment, HTMLAttributes, useCallback, useEffect, useRef, useState } from 'react';
 
 function ResizeIcon(props: HTMLAttributes<SVGElement>) {
   return (
@@ -30,26 +23,26 @@ function ResizeIcon(props: HTMLAttributes<SVGElement>) {
 }
 
 const DragLabel = ({
-  value = "",
+  value = '',
   setValue,
-  label = "-",
+  label = '-',
   min = -Infinity,
   max = Infinity,
   boundingRef = { current: null },
-  dataType = "px"
+  dataType = 'px',
 }: {
   value?: any;
   setValue: any;
   label?: string;
   min?: number;
   max?: number;
-  dataType?: "px" | "string" | "rem" | "%" | "em" | "vh" | "vw";
+  dataType?: 'px' | 'string' | 'rem' | '%' | 'em' | 'vh' | 'vw';
   boundingRef: React.MutableRefObject<HTMLDivElement>;
 }) => {
   // We are creating a snapshot of the values when the drag starts
   // because the [value] will itself change & we need the original
   // [value] to calculate during a drag.
-  const el = useRef<HTMLSpanElement>(null)
+  const el = useRef<HTMLSpanElement>(null);
   const [snapshot, setSnapshot] = useState(value);
 
   // This captures the starting position of the drag and is used to
@@ -62,7 +55,7 @@ const DragLabel = ({
     if (!isDragging) {
       setSnapshot(value);
     }
-  }, [value, isDragging])
+  }, [value, isDragging]);
 
   // Start the drag to change operation when the mouse button is down.
   const onStart = useCallback(
@@ -74,14 +67,11 @@ const DragLabel = ({
       const start = event.clientX - rect.left;
       setMousePos({
         x: event.pageX,
-        y: event.pageY
-      })
-      const startingX = parseInt(
-        `${Math.min(Math.max(min, start), max)}`,
-        10,
-        );
-        setStartVal(startingX);
-        const initialValue = value && value !== "" ? parseInt(value) : 0;
+        y: event.pageY,
+      });
+      const startingX = parseInt(`${Math.min(Math.max(min, start), max)}`, 10);
+      setStartVal(startingX);
+      const initialValue = value && value !== '' ? parseInt(value) : 0;
       setSnapshot(initialValue);
     },
     [value],
@@ -95,19 +85,16 @@ const DragLabel = ({
     const onUpdate = (event: MouseEvent) => {
       if (startVal) {
         const movementX = event.movementX;
-        const nextVal = parseInt(
-          `${Math.min(Math.max(min, snapshot + movementX), max)}`,
-          10,
-          );
+        const nextVal = parseInt(`${Math.min(Math.max(min, snapshot + movementX), max)}`, 10);
 
         requestAnimationFrame(() => {
-          setMousePos(o => ({
-            x: (o.x + event.movementX < 0 ? window.innerWidth : (o.x + event.movementX) % window.innerWidth),
-            y: o.y
-          }))
+          setMousePos((o) => ({
+            x: o.x + event.movementX < 0 ? window.innerWidth : (o.x + event.movementX) % window.innerWidth,
+            y: o.y,
+          }));
           setSnapshot(nextVal);
           setValue(nextVal);
-        })
+        });
       }
     };
 
@@ -119,11 +106,11 @@ const DragLabel = ({
     };
 
     // el.current?.requestPointerLock()
-    document.addEventListener("mousemove", onUpdate);
-    document.addEventListener("mouseup", onEnd);
+    document.addEventListener('mousemove', onUpdate);
+    document.addEventListener('mouseup', onEnd);
     return () => {
-      document.removeEventListener("mousemove", onUpdate);
-      document.removeEventListener("mouseup", onEnd);
+      document.removeEventListener('mousemove', onUpdate);
+      document.removeEventListener('mouseup', onEnd);
       // document.exitPointerLock();
     };
   }, [startVal, setValue, snapshot]);
@@ -132,30 +119,27 @@ const DragLabel = ({
     <span
       ref={el}
       onMouseDown={onStart}
-      className="cursor-ew-resize py-1 px-1 transform text-gray-400 select-none relative">
-        <ResizeIcon style={{ transform: `translate(${mousePos.x}px, ${mousePos.y}px)` }} className={`h-4 top-0 left-0 w-4 z-[900] fixed ${isDragging ? "" : "hidden"}`} />
-        {/* <span className={`w-screen h-screen fixed left-0 top-0 z-20 ${isDragging ? "" : "hidden"}`} /> */}
+      className="cursor-ew-resize py-1 px-1 transform text-gray-400 select-none relative"
+    >
+      <ResizeIcon
+        style={{ transform: `translate(${mousePos.x}px, ${mousePos.y}px)` }}
+        className={`h-4 top-0 left-0 w-4 z-[900] fixed ${isDragging ? '' : 'hidden'}`}
+      />
+      {/* <span className={`w-screen h-screen fixed left-0 top-0 z-20 ${isDragging ? "" : "hidden"}`} /> */}
       {label}
     </span>
   );
 };
 
-export const styleDataTypes = [
-  "px",
-  "rem",
-  "%",
-  "em",
-  "vh",
-  "vw"
-]
+export const styleDataTypes = ['px', 'rem', '%', 'em', 'vh', 'vw'];
 
 export const SlideableNumberInput = ({
-  value = "",
+  value = '',
   setValue,
-  label = "-",
+  label = '-',
   min = -Infinity,
   max = Infinity,
-  dataType = "px",
+  dataType = 'px',
   onDataTypeChange = () => {},
 }: {
   value?: any;
@@ -163,7 +147,7 @@ export const SlideableNumberInput = ({
   label?: any;
   min: number;
   max: number;
-  dataType?: "px" | "string" | "rem" | "%" | "em" | "vh" | "vw";
+  dataType?: 'px' | 'string' | 'rem' | '%' | 'em' | 'vh' | 'vw';
   onDataTypeChange?: any;
 }) => {
   const boundingRef = useRef<HTMLDivElement>();
@@ -171,28 +155,22 @@ export const SlideableNumberInput = ({
   const onInputChange = useCallback(
     (ev) => {
       const raw = parseInt(ev.target.value, 10);
-      const nextVal = isNaN(raw) ? "" : raw;
-      setValue(nextVal, dataType)
+      const nextVal = isNaN(raw) ? '' : raw;
+      setValue(nextVal, dataType);
     },
     [dataType],
   );
 
   const resetValue = useCallback(() => {
-    setValue("", "px");
-  }, [setValue])
+    setValue('', 'px');
+  }, [setValue]);
 
   return (
     <div
       ref={boundingRef}
-      className="border rounded-md border-indigo-600 border-opacity-0 w-21 group hover:border-opacity-50 active:border-opacity-100 focus-within:border-opacity-100 hover:focus-within:border-opacity-100">
-      <DragLabel
-        value={value}
-        setValue={setValue}
-        boundingRef={boundingRef}
-        label={label}
-        min={min}
-        max={max}
-      />
+      className="border rounded-md border-indigo-600 border-opacity-0 w-21 group hover:border-opacity-50 active:border-opacity-100 focus-within:border-opacity-100 hover:focus-within:border-opacity-100"
+    >
+      <DragLabel value={value} setValue={setValue} boundingRef={boundingRef} label={label} min={min} max={max} />
       <input
         value={value}
         onChange={onInputChange}
@@ -208,12 +186,7 @@ export const SlideableNumberInput = ({
           <Listbox.Button className="py-1 text-gray-400 inline-block select-none relative">
             <span className="block truncate">{dataType}</span>
           </Listbox.Button>
-          <Transition
-            as={Fragment}
-            leave="transition ease-in duration-100"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
+          <Transition as={Fragment} leave="transition ease-in duration-100" leaveFrom="opacity-100" leaveTo="opacity-0">
             <Listbox.Options className="bg-white rounded-md shadow-lg ring-black mt-1 text-xs max-h-60 py-1 -right-3 ring-1 ring-opacity-5 w-14 z-[80] absolute overflow-auto focus:outline-none">
               {styleDataTypes.map((typ, typIdx) => (
                 <Listbox.Option
@@ -227,27 +200,22 @@ export const SlideableNumberInput = ({
                 >
                   {({ selected }) => (
                     <>
-                      <span
-                        className={`block truncate ${
-                          selected ? 'font-medium' : 'font-normal'
-                        }`}
-                      >
-                        {typ}
-                      </span>
+                      <span className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}>{typ}</span>
                     </>
                   )}
                 </Listbox.Option>
               ))}
             </Listbox.Options>
           </Transition>
-          </div>
+        </div>
       </Listbox>
       {/* <span className="py-1 text-gray-400 inline-block select-none relative">{dataType}</span> */}
       <XCircleIcon
         onClick={resetValue}
         width="16px"
         height="16px"
-        className="text-white ml-1 inline-block group-hover:text-gray-400" />
+        className="text-white ml-1 inline-block group-hover:text-gray-400"
+      />
     </div>
   );
 };

@@ -4,12 +4,10 @@ export default function isRangeVisible({
   startIndex,
   stopIndex,
 }: {
-  lastRenderedStartIndex: number,
-  lastRenderedStopIndex: number,
-  startIndex: number,
-  stopIndex: number,
+  lastRenderedStartIndex: number;
+  lastRenderedStopIndex: number;
+  startIndex: number;
+  stopIndex: number;
 }): boolean {
-  return !(
-    startIndex > lastRenderedStopIndex || stopIndex < lastRenderedStartIndex
-  );
+  return !(startIndex > lastRenderedStopIndex || stopIndex < lastRenderedStartIndex);
 }

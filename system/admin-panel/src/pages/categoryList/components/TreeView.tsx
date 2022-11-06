@@ -8,7 +8,6 @@ import { resetSelected, toggleItemSelection } from '../../../redux/helpers';
 import styles from '../CategoryList.module.scss';
 import CategoryItem from './CategoryItem';
 
-
 export function TreeView(props: {
   entityListPageRef: React.MutableRefObject<IEntityListPage<TProductCategory, TProductCategoryFilter>>;
   collapsedItemsRef: React.MutableRefObject<Record<string, boolean>>;
@@ -25,7 +24,7 @@ export function TreeView(props: {
     if (!success) return;
     props.deletedItemsRef.current[category.id] = true;
     await getRootCategories();
-  }
+  };
 
   const getRootCategories = async () => {
     setIsLoading(true);
@@ -39,11 +38,11 @@ export function TreeView(props: {
       console.error(e);
     }
     setIsLoading(false);
-  }
+  };
 
   const handleToggleItemSelection = (data: TProductCategory) => {
     toggleItemSelection(data.id);
-  }
+  };
 
   useEffect(() => {
     getRootCategories();
@@ -51,15 +50,18 @@ export function TreeView(props: {
     resetSelected();
     return () => {
       resetSelected();
-    }
+    };
   }, [props.updateRoot]);
 
   return (
     <div className={styles.treeList}>
-      {isLoading && Array(5).fill(1).map((it, index) => {
-        return <Skeleton key={index} variant="text" height="20px" style={{ margin: '20px 20px 0 20px' }} />
-      })}
-      {rootCategories?.map(category => {
+      {isLoading &&
+        Array(5)
+          .fill(1)
+          .map((it, index) => {
+            return <Skeleton key={index} variant="text" height="20px" style={{ margin: '20px 20px 0 20px' }} />;
+          })}
+      {rootCategories?.map((category) => {
         return (
           <CategoryItem
             key={category.id}
@@ -72,8 +74,8 @@ export function TreeView(props: {
               embeddedView: false,
             }}
           />
-        )
+        );
       })}
     </div>
-  )
+  );
 }

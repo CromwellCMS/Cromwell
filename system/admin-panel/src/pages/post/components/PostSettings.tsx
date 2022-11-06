@@ -34,27 +34,30 @@ const PostSettings = (props: {
   const changeValue = <TKey extends keyof TPost>(key: TKey, value: TPost[TKey]) => {
     context.dataRef.current[key] = value;
     forceUpdate();
-  }
+  };
   const getValue = <TKey extends keyof TPost>(key: TKey): TPost[TKey] => {
     return context.dataRef.current?.[key];
-  }
+  };
 
   const handleChangeTags = (event: any, newValue: TTag[]) => {
     changeValue('tags', newValue);
-  }
+  };
 
   const handleChangeKeywords = (event: any, newValue: string[]) => {
     if (!context.dataRef.current.meta) context.dataRef.current.meta = {};
     context.dataRef.current.meta.keywords = newValue;
     forceUpdate();
-  }
+  };
 
   const handleClose = async () => {
-    context.dataRef.current.customMeta = Object.assign({}, context.dataRef.current.customMeta,
-      await getCustomMetaFor(EDBEntity.Post));
+    context.dataRef.current.customMeta = Object.assign(
+      {},
+      context.dataRef.current.customMeta,
+      await getCustomMetaFor(EDBEntity.Post),
+    );
 
     props.onClose();
-  }
+  };
 
   const handleChangePublishDate = (newValue: Date | null) => {
     if (!newValue) {
@@ -67,12 +70,13 @@ const PostSettings = (props: {
       return;
     }
     changeValue('publishDate', date);
-  }
+  };
 
-
-  const pageFullUrl = serviceLocator.getFrontendUrl() + resolvePageRoute('post', {
-    slug: data?.slug ?? data?.id + ''
-  });
+  const pageFullUrl =
+    serviceLocator.getFrontendUrl() +
+    resolvePageRoute('post', {
+      slug: data?.slug ?? data?.id + '',
+    });
 
   return (
     <Popover
@@ -93,22 +97,20 @@ const PostSettings = (props: {
     >
       <div className={styles.PostSettings}>
         <p className={styles.headerText}>Post meta</p>
-        <IconButton className={styles.closeBtn}
-          id="post-settings-close-btn"
-          onClick={handleClose}>
+        <IconButton className={styles.closeBtn} id="post-settings-close-btn" onClick={handleClose}>
           <CloseIcon />
         </IconButton>
         <TextInput
           label="Title"
           value={getValue('title') ?? ''}
           className={styles.settingItem}
-          onChange={e => changeValue('title', e.target.value)}
+          onChange={(e) => changeValue('title', e.target.value)}
         />
         <TextInput
           label="Page URL"
           className={styles.settingItem}
           value={getValue('slug') ?? ''}
-          onChange={e => changeValue('slug', e.target.value)}
+          onChange={(e) => changeValue('slug', e.target.value)}
           description={pageFullUrl}
         />
         <ImageInput
@@ -116,14 +118,14 @@ const PostSettings = (props: {
           onChange={(val) => changeValue('mainImage', val)}
           value={getValue('mainImage')}
           className={styles.imageBox}
-          backgroundSize='cover'
+          backgroundSize="cover"
           showRemove
         />
         <AutocompleteInput
           multiple
           className={styles.settingItem}
           options={props.allTags ?? []}
-          value={getValue('tags')?.map(tag => (props.allTags ?? []).find(allTag => allTag.name === tag.name)) ?? []}
+          value={getValue('tags')?.map((tag) => (props.allTags ?? []).find((allTag) => allTag.name === tag.name)) ?? []}
           getOptionLabel={(option) => option.name}
           onChange={handleChangeTags}
           label="Tags"
@@ -145,13 +147,13 @@ const PostSettings = (props: {
           label="Meta title"
           className={styles.settingItem}
           value={getValue('pageTitle') ?? ''}
-          onChange={e => changeValue('pageTitle', e.target.value)}
+          onChange={(e) => changeValue('pageTitle', e.target.value)}
         />
         <TextInput
           label="Meta description"
           className={styles.settingItem}
           value={getValue('pageDescription') ?? ''}
-          onChange={e => changeValue('pageDescription', e.target.value)}
+          onChange={(e) => changeValue('pageDescription', e.target.value)}
         />
         <AutocompleteInput
           multiple
@@ -166,24 +168,18 @@ const PostSettings = (props: {
         />
         {getValue('published') && (
           <Tooltip title="Remove post from publication">
-            <TextButton
-              className={styles.publishBtn}
-              disabled={props.isSaving}
-              onClick={props.handleUnpublish}
-            >Unpublish</TextButton>
+            <TextButton className={styles.publishBtn} disabled={props.isSaving} onClick={props.handleUnpublish}>
+              Unpublish
+            </TextButton>
           </Tooltip>
         )}
         <div style={{ marginBottom: '15px' }}></div>
         {data && isSettingsOpen && (
-          <RenderCustomFields
-            entityType={EDBEntity.Post}
-            entityData={data}
-            refetchMeta={refetchMeta}
-          />
+          <RenderCustomFields entityType={EDBEntity.Post} entityData={data} refetchMeta={refetchMeta} />
         )}
       </div>
     </Popover>
-  )
-}
+  );
+};
 
 export default PostSettings;

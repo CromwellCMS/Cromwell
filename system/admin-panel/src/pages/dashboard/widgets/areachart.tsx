@@ -55,11 +55,11 @@ export const AreaChart = withTooltip<AreaProps, any>(
     // if (width < 10) return null;
 
     // bounds
-    const bounds = ref.current?.getBoundingClientRect()
+    const bounds = ref.current?.getBoundingClientRect();
     // const innerWidth = ref.current?.getBoundingClientRect()?.width - margin.left - margin.right;
     // const innerHeight = height - margin.top - margin.bottom;
-    const innerWidth = bounds?.width || 100
-    const innerHeight = bounds?.height || 100
+    const innerWidth = bounds?.width || 100;
+    const innerHeight = bounds?.height || 100;
 
     // scales
     const dateScale = useMemo(
@@ -104,14 +104,7 @@ export const AreaChart = withTooltip<AreaProps, any>(
     return (
       <div className="h-full w-full">
         <svg width="100%" height="100%" ref={ref}>
-          <rect
-            x={0}
-            y={0}
-            width="100%"
-            height="100%"
-            fill="url(#area-background-gradient)"
-            rx={14}
-          />
+          <rect x={0} y={0} width="100%" height="100%" fill="url(#area-background-gradient)" rx={14} />
           <LinearGradient id="area-background-gradient" from={background} to={background2} />
           <LinearGradient id="area-gradient" from={accentColor} to={accentColor} toOpacity={0.1} />
           <GridRows
@@ -189,12 +182,7 @@ export const AreaChart = withTooltip<AreaProps, any>(
         </svg>
         {tooltipData && (
           <div className="ttp">
-            <TooltipWithBounds
-              key={Math.random()}
-              top={tooltipTop - 12}
-              left={tooltipLeft + 12}
-              style={tooltipStyles}
-            >
+            <TooltipWithBounds key={Math.random()} top={tooltipTop - 12} left={tooltipLeft + 12} style={tooltipStyles}>
               {`$${accessors.getY(tooltipData)}`}
             </TooltipWithBounds>
             <Tooltip

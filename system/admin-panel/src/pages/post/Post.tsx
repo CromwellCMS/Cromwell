@@ -10,13 +10,12 @@ import { HeaderActions } from './components/HeaderActions';
 import { PageContent } from './components/PageContent';
 import { PostContext, PostContextProvider } from './contexts/PostContext';
 
-
 export default function PostPage() {
   return (
     <PostContextProvider>
       <PostEdit />
     </PostContextProvider>
-  )
+  );
 }
 
 function PostEdit() {
@@ -36,7 +35,9 @@ function PostEdit() {
         return context.getInput();
       }}
       getById={async (id) => {
-        return client.getPostById(id, gql`
+        return client.getPostById(
+          id,
+          gql`
           fragment AdminPanelPostFragment on Post {
             id
             slug
@@ -68,7 +69,8 @@ function PostEdit() {
             delta
             published 
             customMeta (keys: ${JSON.stringify(getCustomMetaKeysFor(EDBEntity.Post))})
-          }`, 'AdminPanelPostFragment'
+          }`,
+          'AdminPanelPostFragment',
         );
       }}
       update={client.updatePost}
@@ -79,5 +81,5 @@ function PostEdit() {
         getEntityHeaderCenter: (props) => <HeaderActions {...props} />,
       }}
     />
-  )
+  );
 }

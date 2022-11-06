@@ -48,7 +48,6 @@ function Layout() {
   document.body.classList.add(darkMode ? 'modeDark' : 'modeLight');
   document.body.classList.add(darkMode ? 'dark' : 'light');
 
-
   const theme = createTheme({
     typography: {
       fontFamily: `Roboto, ui-sans-serif, system-ui, -apple-system, Segoe UI, Ubuntu, Cantarell, Noto Sans, sans-serif, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"`,
@@ -65,35 +64,41 @@ function Layout() {
             <div className={styles.main} id="main-scroll-container">
               {/* <Toolbar className={styles.dummyToolbar} /> */}
               <Switch>
-                {getPageInfos().map(page => {
+                {getPageInfos().map((page) => {
                   if (page.permissions?.length && !matchPermissions(getStoreItem('userInfo'), page.permissions))
                     return null;
                   if (page.module && !settings?.modules?.[page.module]) return null;
 
                   return (
-                    <Route exact={!page.baseRoute}
+                    <Route
+                      exact={!page.baseRoute}
                       path={page.route}
                       key={page.name}
                       component={(props: RouteComponentProps) => {
                         return (
                           <PageErrorBoundary>
-                            <Suspense fallback={/*<LoadBox />*/<></>}>
+                            <Suspense fallback={/*<LoadBox />*/ <></>}>
                               <page.component {...props} />
                             </Suspense>
                           </PageErrorBoundary>
-                        )
+                        );
                       }}
                     />
-                  )
+                  );
                 })}
-                <Route key={'404'} >
+                <Route key={'404'}>
                   <Page404 />
                 </Route>
               </Switch>
             </div>
           </BrowserRouter>
-          {document?.body && ReactDOM.createPortal(
-            <div className={styles.toastContainer} ><ToastContainer /></div>, document.body)}
+          {document?.body &&
+            ReactDOM.createPortal(
+              <div className={styles.toastContainer}>
+                <ToastContainer />
+              </div>,
+              document.body,
+            )}
           <FileManager />
           <ConfirmPrompt />
           <LayoutPortal />
@@ -104,4 +109,3 @@ function Layout() {
 }
 
 export default Layout;
-

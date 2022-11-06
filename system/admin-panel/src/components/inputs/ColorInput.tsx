@@ -11,7 +11,7 @@ export type ColorInputProps = {
   className?: string;
   style?: React.CSSProperties;
   onChange?: (color: string) => void;
-}
+};
 
 export function ColorInput(props: ColorInputProps) {
   const colorRef = useRef<string | null>(null);
@@ -26,34 +26,38 @@ export function ColorInput(props: ColorInputProps) {
   }
 
   const handleChange = (color: { hex: string; rgb: { r: number; g: number; b: number; a: number } }) => {
-    const colorStr = color.rgb.a === 1 ? color.hex : `rgba(${color.rgb.r}, ${color.rgb.g}, ${color.rgb.b}, ${color.rgb.a})`;
+    const colorStr =
+      color.rgb.a === 1 ? color.hex : `rgba(${color.rgb.r}, ${color.rgb.g}, ${color.rgb.b}, ${color.rgb.a})`;
     colorRef.current = colorStr;
     forceUpdate();
-  }
+  };
 
   const handleClose = () => {
     handleApply();
     setOpen(false);
-  }
+  };
 
   const handleApply = () => {
     props.onChange?.(colorRef.current);
-  }
+  };
 
   const handleInputChange = (event) => {
     colorRef.current = event.target.value;
     forceUpdate();
     handleApply();
-  }
+  };
 
   return (
     <>
       <TextInput
-        startAdornment={(
+        startAdornment={
           <div className="flex items-center mr-2">
-            <div className="w-8 h-8 rounded-full border-2 cursor-pointer" style={{ backgroundColor: colorRef.current }}></div>
+            <div
+              className="w-8 h-8 rounded-full border-2 cursor-pointer"
+              style={{ backgroundColor: colorRef.current }}
+            ></div>
           </div>
-        )}
+        }
         className={props.className}
         label={props.label}
         value={colorRef.current}
@@ -76,12 +80,9 @@ export function ColorInput(props: ColorInputProps) {
         }}
       >
         <div>
-          <SketchPicker
-            color={colorRef.current ?? '#000'}
-            onChangeComplete={handleChange}
-          />
+          <SketchPicker color={colorRef.current ?? '#000'} onChangeComplete={handleChange} />
         </div>
       </Popover>
     </>
-  )
+  );
 }

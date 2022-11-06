@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 
 export function useDebounceFn<T extends (...args: any) => void>(fn: T, delay: number, trail = true): T {
   const timeoutId = React.useRef<NodeJS.Timeout>();
@@ -19,29 +19,30 @@ export function useDebounceFn<T extends (...args: any) => void>(fn: T, delay: nu
   }, []);
 
   return React.useMemo<any>(
-    () => (...args: any) => {
-      clearTimeout(timeoutId.current);
+    () =>
+      (...args: any) => {
+        clearTimeout(timeoutId.current);
 
-      if (trail) {
-        timeoutId.current = setTimeout(() => {
-          if (originalFn.current) {
-            originalFn.current(...args);
-          }
-        }, delay);
-      } else {
-        if (!wasCalled.current) {
-          wasCalled.current = true;
-          if (originalFn.current) {
-            originalFn.current(...args);
-          }
-        } else {
+        if (trail) {
           timeoutId.current = setTimeout(() => {
-            wasCalled.current = false;
-          }, delay)
+            if (originalFn.current) {
+              originalFn.current(...args);
+            }
+          }, delay);
+        } else {
+          if (!wasCalled.current) {
+            wasCalled.current = true;
+            if (originalFn.current) {
+              originalFn.current(...args);
+            }
+          } else {
+            timeoutId.current = setTimeout(() => {
+              wasCalled.current = false;
+            }, delay);
+          }
         }
-      }
-    },
-    [delay]
+      },
+    [delay],
   );
 }
 
@@ -61,7 +62,7 @@ export function useDebounce(value, delay) {
         clearTimeout(handler);
       };
     },
-    [value, delay] // Only re-call effect if value or delay changes
+    [value, delay], // Only re-call effect if value or delay changes
   );
   return debouncedValue;
 }

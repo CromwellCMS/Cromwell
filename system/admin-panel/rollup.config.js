@@ -12,35 +12,35 @@ fs.ensureDirSync(resolve(__dirname, buildDir));
 
 const sharedState = {};
 const compilerOptions = {
-    declaration: true,
-    declarationMap: true,
-    declarationDir: resolve(__dirname, buildDir, 'types')
+  declaration: true,
+  declarationMap: true,
+  declarationDir: resolve(__dirname, buildDir, 'types'),
 };
 const tsOptions = {
-    monorepo: true,
-    compilerOptions,
-    sharedState,
-}
+  monorepo: true,
+  compilerOptions,
+  sharedState,
+};
 
 export default [
-    {
-        // preserveModules: true,
-        input: resolve(__dirname, "src/server.ts"),
-        output: [
-            {
-                // file: resolve(__dirname, buildDir, 'server.js'),
-                dir: resolve(__dirname, buildDir),
-                format: "cjs",
-            }
-        ],
-        external: isExternalForm,
-        plugins: [
-            typescript(tsOptions),
-            json(),
-            nodeResolve({
-                preferBuiltins: false
-            }),
-            commonjs(),
-        ]
-    },
+  {
+    // preserveModules: true,
+    input: resolve(__dirname, 'src/server.ts'),
+    output: [
+      {
+        // file: resolve(__dirname, buildDir, 'server.js'),
+        dir: resolve(__dirname, buildDir),
+        format: 'cjs',
+      },
+    ],
+    external: isExternalForm,
+    plugins: [
+      typescript(tsOptions),
+      json(),
+      nodeResolve({
+        preferBuiltins: false,
+      }),
+      commonjs(),
+    ],
+  },
 ];

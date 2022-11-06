@@ -5,72 +5,63 @@ import { Button, IconButton, InputAdornment, TextField } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
-import { toast } from "../../components/toast/toast";
-import { useForm } from "react-hook-form";
-import { KeyIcon, LockClosedIcon, MailIcon } from "@heroicons/react/solid";
-import { LoadingStatus } from "../../components/loadBox/LoadingStatus";
+import { toast } from '../../components/toast/toast';
+import { useForm } from 'react-hook-form';
+import { KeyIcon, LockClosedIcon, MailIcon } from '@heroicons/react/solid';
+import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
 import { getSideBarLinksFlat } from '../../helpers/navigation';
 
-export type TFromType =
-  | "sign-in"
-  | "sign-up"
-  | "forgot-pass"
-  | "reset-pass";
+export type TFromType = 'sign-in' | 'sign-up' | 'forgot-pass' | 'reset-pass';
 
-type TEvent = { preventDefault: () => any; };
+type TEvent = { preventDefault: () => any };
 
 const LoginPage = () => {
   const apiClient = getRestApiClient();
   const [loading, setLoading] = useState(false);
   const history = useHistory();
-  const [formType, setFormType] =
-    useState<TFromType>("sign-in");
+  const [formType, setFormType] = useState<TFromType>('sign-in');
 
-  const [email, setEmail] = useState<string>("");
+  const [email, setEmail] = useState<string>('');
 
   const checkAuth = async (showError?: boolean) => {
-      const userInfo = await apiClient.getUserInfo({ disableLog: true });
-      if (userInfo?.id) {
-          if (!userInfo.roles?.length || !userInfo.email) {
-              if (showError) toast.error('Incorrect user account');
-              return;
-          }
-          setStoreItem('userInfo', userInfo);
-          loginSuccess(userInfo);
-      } else {
-          if (showError) toast.error('Incorrect email or password');
+    const userInfo = await apiClient.getUserInfo({ disableLog: true });
+    if (userInfo?.id) {
+      if (!userInfo.roles?.length || !userInfo.email) {
+        if (showError) toast.error('Incorrect user account');
+        return;
       }
-  }
+      setStoreItem('userInfo', userInfo);
+      loginSuccess(userInfo);
+    } else {
+      if (showError) toast.error('Incorrect email or password');
+    }
+  };
 
   const loginSuccess = (userInfo: TUser) => {
-      if (!userInfo?.roles?.length) {
-          toast.error('Access forbidden');
-          return;
-      }
-      // Find a page with allowed permissions for this user
-      const sidebarLinks = getSideBarLinksFlat();
-      const allowed = sidebarLinks.find(link => link.route && matchPermissions(userInfo, link.permissions));
-      history?.push?.(allowed?.route ?? '/');
-  }
+    if (!userInfo?.roles?.length) {
+      toast.error('Access forbidden');
+      return;
+    }
+    // Find a page with allowed permissions for this user
+    const sidebarLinks = getSideBarLinksFlat();
+    const allowed = sidebarLinks.find((link) => link.route && matchPermissions(userInfo, link.permissions));
+    history?.push?.(allowed?.route ?? '/');
+  };
 
   useEffect(() => {
     checkAuth();
   }, []);
 
   const handleGoToForgotPass = () => {
-    setFormType("forgot-pass");
+    setFormType('forgot-pass');
   };
 
   return (
     <div className="bg-gradient-to-tr flex h-full from-indigo-900 to-pink-900 w-screen top-0 right-0 bottom-0 left-0 z-999 items-center fixed">
       <div className="bg-white rounded-lg mx-auto max-w-sm shadow-md w-full overflow-hidden dark:bg-gray-800">
         <div className="py-4 px-6">
-          <img
-            src="/admin/static/logo_small_black.svg"
-            width="80px"
-            className="mx-auto mt-3"
-          />
-          {formType === "sign-in" && (
+          <img src="/admin/static/logo_small_black.svg" width="80px" className="mx-auto mt-3" />
+          {formType === 'sign-in' && (
             <SignInForm
               onClickForget={handleGoToForgotPass}
               onSuccess={checkAuth}
@@ -78,23 +69,18 @@ const LoginPage = () => {
               setLoading={setLoading}
             />
           )}
-          {formType === "forgot-pass" && (
+          {formType === 'forgot-pass' && (
             <ForgotPassForm
               onSuccess={(result) => {
-                setEmail(result.email)
-                setFormType(result.step)
+                setEmail(result.email);
+                setFormType(result.step);
               }}
               loading={loading}
               setLoading={setLoading}
             />
           )}
-          {formType === "reset-pass" && (
-            <ResetPassForm
-              email={email}
-              onSuccess={setFormType}
-              loading={loading}
-              setLoading={setLoading}
-            />
+          {formType === 'reset-pass' && (
+            <ResetPassForm email={email} onSuccess={setFormType} loading={loading} setLoading={setLoading} />
           )}
         </div>
       </div>
@@ -103,12 +89,7 @@ const LoginPage = () => {
   );
 };
 
-const ResetPassForm = ({
-  onSuccess,
-  setLoading,
-  loading,
-  email,
-}) => {
+const ResetPassForm = ({ onSuccess, setLoading, loading, email }) => {
   const apiClient = getRestApiClient();
 
   const {
@@ -118,8 +99,8 @@ const ResetPassForm = ({
   } = useForm({
     defaultValues: {
       email: email,
-      password: "",
-      code: "",
+      password: '',
+      code: '',
     },
   });
 
@@ -133,10 +114,10 @@ const ResetPassForm = ({
         newPassword: data.password,
       });
       if (success) {
-        toast.success("Password has been changed.");
-        onSuccess("sign-in");
+        toast.success('Password has been changed.');
+        onSuccess('sign-in');
       } else {
-        throw new Error("!success");
+        throw new Error('!success');
       }
     } catch (e) {
       console.error(e);
@@ -147,13 +128,11 @@ const ResetPassForm = ({
 
       if (info?.statusCode === 429) {
       } else if (info?.statusCode === 417) {
-        toast.error?.("Exceeded reset password attempts");
+        toast.error?.('Exceeded reset password attempts');
         // setCodeInput('')
-        onSuccess("sign-in");
+        onSuccess('sign-in');
       } else {
-        toast.error?.(
-          "Incorrect e-mail or user was not found",
-        );
+        toast.error?.('Incorrect e-mail or user was not found');
       }
     }
     setLoading(false);
@@ -165,9 +144,7 @@ const ResetPassForm = ({
         We sent you an e-mail with reset code. Copy the code below and create a new password
       </div>
       <div className="mt-4 w-full">
-        <label
-          htmlFor="email"
-          className="text-xs mb-1 tracking-wide text-gray-600 sm:text-sm">
+        <label htmlFor="email" className="text-xs mb-1 tracking-wide text-gray-600 sm:text-sm">
           Email
         </label>
 
@@ -182,24 +159,19 @@ const ResetPassForm = ({
             type="email"
             placeholder="Email Address"
             disabled={true}
-            {...register("email", { required: true })}
+            {...register('email', { required: true })}
             className={`text-sm sm:text-base relative w-full border ${
-              errors.email
-                ? "border-red-500"
-                : "border-gray-200"
+              errors.email ? 'border-red-500' : 'border-gray-200'
             } shadow-md focus:shadow-indigo-300 rounded-lg placeholder-gray-400 focus:border-indigo-400 focus:outline-none py-2 pr-2 pl-12`}
           />
         </div>
         <span className="flex font-medium mt-1 text-xs tracking-wide ml-1 text-red-500 items-center">
-          {errors.email &&
-            "Please provide an email address."}
+          {errors.email && 'Please provide an email address.'}
         </span>
       </div>
 
       <div className="mt-4 w-full">
-        <label
-          htmlFor="password"
-          className="text-xs mb-1 tracking-wide text-gray-600 sm:text-sm">
+        <label htmlFor="password" className="text-xs mb-1 tracking-wide text-gray-600 sm:text-sm">
           Password
         </label>
 
@@ -214,13 +186,11 @@ const ResetPassForm = ({
             type="password"
             placeholder="******"
             disabled={loading}
-            {...register("password", {
+            {...register('password', {
               required: true,
             })}
             className={`text-sm sm:text-base relative w-full border ${
-              errors.password
-                ? "border-red-500"
-                : "border-gray-200"
+              errors.password ? 'border-red-500' : 'border-gray-200'
             } shadow-md focus:shadow-indigo-300 rounded-lg placeholder-gray-400 focus:border-indigo-400 focus:outline-none py-2 pr-2 pl-12`}
           />
         </div>
@@ -230,9 +200,7 @@ const ResetPassForm = ({
       </div>
 
       <div className="mt-4 w-full">
-        <label
-          htmlFor="code"
-          className="text-xs mb-1 tracking-wide text-gray-600 sm:text-sm">
+        <label htmlFor="code" className="text-xs mb-1 tracking-wide text-gray-600 sm:text-sm">
           Code
         </label>
 
@@ -247,13 +215,11 @@ const ResetPassForm = ({
             type="text"
             placeholder="123456"
             disabled={loading}
-            {...register("code", {
+            {...register('code', {
               required: true,
             })}
             className={`text-sm sm:text-base relative w-full border ${
-              errors.code
-                ? "border-red-500"
-                : "border-gray-200"
+              errors.code ? 'border-red-500' : 'border-gray-200'
             } shadow-md focus:shadow-indigo-300 rounded-lg placeholder-gray-400 focus:border-indigo-400 focus:outline-none py-2 pr-2 pl-12`}
           />
         </div>
@@ -266,7 +232,8 @@ const ResetPassForm = ({
         <button
           disabled={loading}
           className="rounded bg-gray-700 text-white py-2 px-4 transform transition-colors leading-5 duration-200 hover:bg-gray-600 focus:outline-none"
-          type="submit">
+          type="submit"
+        >
           Change Password
         </button>
       </div>
@@ -274,11 +241,7 @@ const ResetPassForm = ({
   );
 };
 
-const ForgotPassForm = ({
-  onSuccess,
-  setLoading,
-  loading,
-}) => {
+const ForgotPassForm = ({ onSuccess, setLoading, loading }) => {
   const apiClient = getRestApiClient();
 
   const {
@@ -291,18 +254,15 @@ const ForgotPassForm = ({
     setLoading(true);
 
     try {
-      const success = await apiClient?.forgotPassword(
-        { email: data.email },
-        { disableLog: true },
-      );
+      const success = await apiClient?.forgotPassword({ email: data.email }, { disableLog: true });
       if (success) {
-        toast.success("We sent you an e-mail");
+        toast.success('We sent you an e-mail');
         onSuccess({
-          step: "reset-pass",
+          step: 'reset-pass',
           email: data.email,
         });
       } else {
-        throw new Error("!success");
+        throw new Error('!success');
       }
     } catch (e) {
       console.error(e);
@@ -313,9 +273,7 @@ const ForgotPassForm = ({
 
       if (info?.statusCode === 429) {
       } else {
-        toast.error?.(
-          "Incorrect e-mail or user was not found",
-        );
+        toast.error?.('Incorrect e-mail or user was not found');
       }
     }
     setLoading(false);
@@ -324,9 +282,7 @@ const ForgotPassForm = ({
   return (
     <form onSubmit={handleSubmit(handleForgotPass)}>
       <div className="mt-4 w-full">
-        <label
-          htmlFor="email"
-          className="text-xs mb-1 tracking-wide text-gray-600 sm:text-sm">
+        <label htmlFor="email" className="text-xs mb-1 tracking-wide text-gray-600 sm:text-sm">
           Email
         </label>
 
@@ -341,17 +297,14 @@ const ForgotPassForm = ({
             type="email"
             placeholder="Email Address"
             disabled={loading}
-            {...register("email", { required: true })}
+            {...register('email', { required: true })}
             className={`text-sm sm:text-base relative w-full border ${
-              errors.email
-                ? "border-red-500"
-                : "border-gray-200"
+              errors.email ? 'border-red-500' : 'border-gray-200'
             } shadow-md focus:shadow-indigo-300 rounded-lg placeholder-gray-400 focus:border-indigo-400 focus:outline-none py-2 pr-2 pl-12`}
           />
         </div>
         <span className="flex font-medium mt-1 text-xs tracking-wide ml-1 text-red-500 items-center">
-          {errors.email &&
-            "Please provide an email address."}
+          {errors.email && 'Please provide an email address.'}
         </span>
       </div>
 
@@ -359,7 +312,8 @@ const ForgotPassForm = ({
         <button
           disabled={loading}
           className="rounded bg-gray-700 text-white py-2 px-4 transform transition-colors leading-5 duration-200 hover:bg-gray-600 focus:outline-none"
-          type="submit">
+          type="submit"
+        >
           Reset Password
         </button>
       </div>
@@ -367,12 +321,7 @@ const ForgotPassForm = ({
   );
 };
 
-const SignInForm = ({
-  onClickForget,
-  onSuccess,
-  setLoading,
-  loading,
-}) => {
+const SignInForm = ({ onClickForget, onSuccess, setLoading, loading }) => {
   const apiClient = getRestApiClient();
 
   const {
@@ -396,15 +345,15 @@ const SignInForm = ({
       onSuccess(true);
     } catch (e) {
       if (e.statusCode === 0) {
-        toast.error("Could not connect to the Server");
+        toast.error('Could not connect to the Server');
       } else {
-        toast.error("Incorrect email or password");
+        toast.error('Incorrect email or password');
 
-        setError("email", {
-          message: "Invalid email or password",
+        setError('email', {
+          message: 'Invalid email or password',
         });
-        setError("password", {
-          message: "Invalid email or password",
+        setError('password', {
+          message: 'Invalid email or password',
         });
       }
 
@@ -416,9 +365,7 @@ const SignInForm = ({
   return (
     <form onSubmit={handleSubmit(handleLoginClick)}>
       <div className="mt-4 w-full">
-        <label
-          htmlFor="email"
-          className="text-xs mb-1 tracking-wide text-gray-600 sm:text-sm">
+        <label htmlFor="email" className="text-xs mb-1 tracking-wide text-gray-600 sm:text-sm">
           Email
         </label>
 
@@ -433,24 +380,19 @@ const SignInForm = ({
             type="email"
             placeholder="Email Address"
             disabled={loading}
-            {...register("email", { required: true })}
+            {...register('email', { required: true })}
             className={`text-sm sm:text-base relative w-full border ${
-              errors.email
-                ? "border-red-500"
-                : "border-gray-200"
+              errors.email ? 'border-red-500' : 'border-gray-200'
             } shadow-md focus:shadow-indigo-300 rounded-lg placeholder-gray-400 focus:border-indigo-400 focus:outline-none py-2 pr-2 pl-12`}
           />
         </div>
         <span className="flex font-medium mt-1 text-xs tracking-wide ml-1 text-red-500 items-center">
-          {errors.email &&
-            "Please provide an email address."}
+          {errors.email && 'Please provide an email address.'}
         </span>
       </div>
 
       <div className="mt-4 w-full">
-        <label
-          htmlFor="password"
-          className="text-xs mb-1 tracking-wide text-gray-600 sm:text-sm">
+        <label htmlFor="password" className="text-xs mb-1 tracking-wide text-gray-600 sm:text-sm">
           Password
         </label>
 
@@ -465,13 +407,11 @@ const SignInForm = ({
             type="password"
             placeholder="******"
             disabled={loading}
-            {...register("password", {
+            {...register('password', {
               required: true,
             })}
             className={`text-sm sm:text-base relative w-full border ${
-              errors.password
-                ? "border-red-500"
-                : "border-gray-200"
+              errors.password ? 'border-red-500' : 'border-gray-200'
             } shadow-md focus:shadow-indigo-300 rounded-lg placeholder-gray-400 focus:border-indigo-400 focus:outline-none py-2 pr-2 pl-12`}
           />
         </div>
@@ -484,13 +424,12 @@ const SignInForm = ({
         <button
           disabled={loading}
           className="rounded bg-gray-700 text-white py-2 px-4 transform transition-colors leading-5 duration-200 hover:bg-gray-600 focus:outline-none"
-          type="submit">
+          type="submit"
+        >
           Login
         </button>
       </div>
-      <p
-        onClick={onClickForget}
-        className="my-2 hover:underline">
+      <p onClick={onClickForget} className="my-2 hover:underline">
         Forgot password?
       </p>
     </form>

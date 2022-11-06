@@ -9,31 +9,35 @@ import { TextInput } from '../TextInput/TextInput';
 import { ListItem, ListItemProps } from './ListItem';
 import styles from './SearchInput.module.scss';
 
-export class SearchInput<TItemData extends { id: number | string }> extends React.Component<{
-  loader: (search: string, params?: TPagedParams<TItemData>) => Promise<(TPagedList<TItemData> | TItemData[]) | undefined>;
-  itemComponent?: (props: {
-    data: TItemData;
-  }) => JSX.Element;
-  getOptionLabel: (data: TItemData) => string;
-  getOptionValue?: (data: TItemData) => string;
-  onSelect?: (data: TItemData | TItemData[] | null) => void;
-  className?: string;
-  fullWidth?: boolean;
-  defaultValue?: TItemData | TItemData[];
-  label?: string;
-  variant?: 'standard' | 'outlined' | 'filled';
-  multiple?: boolean;
-  style?: React.CSSProperties;
-  options?: TItemData[];
-}, {
-  searchOpen?: boolean;
-  isLoading: boolean;
-  searchItems?: TItemData[];
-  searchText?: string;
-  pickedText?: string;
-  pickedItems?: string[];
-  defaultValue?: TItemData | TItemData[];
-}> {
+export class SearchInput<TItemData extends { id: number | string }> extends React.Component<
+  {
+    loader: (
+      search: string,
+      params?: TPagedParams<TItemData>,
+    ) => Promise<(TPagedList<TItemData> | TItemData[]) | undefined>;
+    itemComponent?: (props: { data: TItemData }) => JSX.Element;
+    getOptionLabel: (data: TItemData) => string;
+    getOptionValue?: (data: TItemData) => string;
+    onSelect?: (data: TItemData | TItemData[] | null) => void;
+    className?: string;
+    fullWidth?: boolean;
+    defaultValue?: TItemData | TItemData[];
+    label?: string;
+    variant?: 'standard' | 'outlined' | 'filled';
+    multiple?: boolean;
+    style?: React.CSSProperties;
+    options?: TItemData[];
+  },
+  {
+    searchOpen?: boolean;
+    isLoading: boolean;
+    searchItems?: TItemData[];
+    searchText?: string;
+    pickedText?: string;
+    pickedItems?: string[];
+    defaultValue?: TItemData | TItemData[];
+  }
+> {
   private searchAnchorRef = React.createRef<HTMLDivElement>();
   private listId = 'AutocompleteList_' + getRandStr();
   private listSkeleton = [];
@@ -45,10 +49,10 @@ export class SearchInput<TItemData extends { id: number | string }> extends Reac
     this.state = {
       searchOpen: false,
       isLoading: false,
-    }
+    };
 
     for (let i = 0; i < 5; i++) {
-      this.listSkeleton.push(<Skeleton key={i} variant="text" height="20px" style={{ margin: '5px 20px' }} />)
+      this.listSkeleton.push(<Skeleton key={i} variant="text" height="20px" style={{ margin: '5px 20px' }} />);
     }
   }
 
@@ -59,24 +63,21 @@ export class SearchInput<TItemData extends { id: number | string }> extends Reac
       const pickedItems: string[] = [];
 
       for (const val of defaultValue) {
-        const pickedText = defaultValue ? (getOptionValue?.(val)
-          ?? getOptionLabel(val)) : '';
+        const pickedText = defaultValue ? getOptionValue?.(val) ?? getOptionLabel(val) : '';
 
         this.pickedData[pickedText] = val;
         pickedItems.push(pickedText);
       }
 
-      Object.values(this.multiSelectionListeners).forEach(func => func(pickedItems));
+      Object.values(this.multiSelectionListeners).forEach((func) => func(pickedItems));
       this.setState({
         searchText: '',
         pickedText: '',
         pickedItems,
         defaultValue,
       });
-
     } else {
-      const pickedText = defaultValue ? (getOptionValue?.(defaultValue)
-        ?? getOptionLabel(defaultValue)) : '';
+      const pickedText = defaultValue ? getOptionValue?.(defaultValue) ?? getOptionLabel(defaultValue) : '';
 
       this.setState({
         searchText: pickedText,
@@ -84,7 +85,7 @@ export class SearchInput<TItemData extends { id: number | string }> extends Reac
         defaultValue,
       });
     }
-  }
+  };
 
   componentDidMount() {
     this.setDefaultValue(this.props.defaultValue);
@@ -97,19 +98,18 @@ export class SearchInput<TItemData extends { id: number | string }> extends Reac
   }
 
   private fetchItems = async (searchText: string, params?: TPagedParams<TItemData>) => {
-    if (!this.state.isLoading)
-      this.setState({ isLoading: true });
+    if (!this.state.isLoading) this.setState({ isLoading: true });
 
     let itemList;
     try {
       itemList = await this.props.loader(searchText, params);
       if (Array.isArray(itemList)) {
         this.setState({
-          searchItems: itemList
+          searchItems: itemList,
         });
       } else if (itemList.elements) {
         this.setState({
-          searchItems: itemList.elements
+          searchItems: itemList.elements,
         });
       }
     } catch (e) {
@@ -117,7 +117,7 @@ export class SearchInput<TItemData extends { id: number | string }> extends Reac
     }
     this.setState({ isLoading: false });
     return itemList;
-  }
+  };
 
   private searchRequest = debounce(500, async () => {
     const list = getBlockInstance<TCList>(this.listId)?.getContentInstance();
@@ -130,13 +130,12 @@ export class SearchInput<TItemData extends { id: number | string }> extends Reac
 
   private loadMore = (params: TPagedParams<TItemData>) => {
     return this.fetchItems(this.state.searchText, params);
-  }
+  };
 
   private handleSearchInput = (searchText: string) => {
     this.setState({ searchText });
 
-    if (!this.state.isLoading)
-      this.setState({ isLoading: true });
+    if (!this.state.isLoading) this.setState({ isLoading: true });
 
     if (!this.state.searchOpen) {
       setTimeout(() => {
@@ -144,33 +143,33 @@ export class SearchInput<TItemData extends { id: number | string }> extends Reac
       }, 100);
     }
     this.searchRequest();
-  }
+  };
 
   private handleSearchClose = () => {
     this.setState({ searchOpen: false, searchText: this.state.pickedText });
-  }
+  };
 
   private handleItemClick = (data: TItemData) => {
     const pickedText = this.props.getOptionValue?.(data) ?? this.props.getOptionLabel(data);
     this.pickedData[pickedText] = data;
     const { multiple } = this.props;
 
-    this.setState(prev => {
+    this.setState((prev) => {
       if (multiple) {
         let pickedItems = [...new Set([...(prev.pickedItems ?? [])])];
         if (pickedItems.includes(pickedText)) {
-          pickedItems = pickedItems.filter(item => item !== pickedText);
+          pickedItems = pickedItems.filter((item) => item !== pickedText);
         } else {
           pickedItems.push(pickedText);
         }
-        this.props.onSelect?.(pickedItems.map(item => this.pickedData[item]));
-        Object.values(this.multiSelectionListeners).forEach(func => func(pickedItems));
+        this.props.onSelect?.(pickedItems.map((item) => this.pickedData[item]));
+        Object.values(this.multiSelectionListeners).forEach((func) => func(pickedItems));
 
         return {
           searchText: '',
           pickedText: '',
           pickedItems,
-        }
+        };
       }
 
       this.props.onSelect?.(data);
@@ -178,17 +177,17 @@ export class SearchInput<TItemData extends { id: number | string }> extends Reac
         searchText: pickedText,
         pickedText: pickedText,
         searchOpen: false,
-      }
+      };
     });
-  }
+  };
 
-  private multiSelectionListeners: Record<string, ((pickedItems: string[]) => any)> = {};
+  private multiSelectionListeners: Record<string, (pickedItems: string[]) => any> = {};
   public addMultiSelectListener = (id: string, listener: (pickedItems: string[]) => any) => {
     this.multiSelectionListeners[id] = listener;
-  }
+  };
   public removeMultiSelectListener = (id: string) => {
     delete this.multiSelectionListeners[id];
-  }
+  };
 
   private handleClear = () => {
     this.setState({
@@ -197,7 +196,7 @@ export class SearchInput<TItemData extends { id: number | string }> extends Reac
       searchOpen: false,
     });
     this.props.onSelect?.(null);
-  }
+  };
 
   render() {
     const { searchOpen, pickedItems, pickedText } = this.state;
@@ -210,15 +209,15 @@ export class SearchInput<TItemData extends { id: number | string }> extends Reac
           multiple={multiple}
           options={pickedItems ?? []}
           getOptionLabel={(option) => option as any}
-          value={multiple ? (pickedItems ?? []) : (pickedText ?? '')}
+          value={multiple ? pickedItems ?? [] : pickedText ?? ''}
           onChange={(event, newValue) => {
             if (!newValue) {
               this.handleClear();
             }
             if (multiple && newValue) {
               const pickedItems = [...new Set([...(newValue as any)])];
-              this.props.onSelect?.(pickedItems.map(item => this.pickedData[item]));
-              Object.values(this.multiSelectionListeners).forEach(func => func(pickedItems));
+              this.props.onSelect?.(pickedItems.map((item) => this.pickedData[item]));
+              Object.values(this.multiSelectionListeners).forEach((func) => func(pickedItems));
               this.setState({
                 pickedItems,
               });
@@ -238,8 +237,7 @@ export class SearchInput<TItemData extends { id: number | string }> extends Reac
                     {...rest}
                     onKeyDown={(event: any) => {
                       if (event.key === 'Backspace') {
-                        if (event.target.value.length >= 1)
-                          event.stopPropagation();
+                        if (event.target.value.length >= 1) event.stopPropagation();
                       }
                     }}
                     style={this.props.style}
@@ -247,22 +245,24 @@ export class SearchInput<TItemData extends { id: number | string }> extends Reac
                     onChange={(event) => this.handleSearchInput(event.currentTarget.value)}
                     onFocus={() => this.handleSearchInput(this.state.searchText)}
                     onBlur={() => !multiple && this.handleSearchClose()}
-                    label={this.props.label ?? "Search..."}
+                    label={this.props.label ?? 'Search...'}
                   />
                 </div>
               </div>
-            )
+            );
           }}
         />
-        <Popper open={searchOpen} anchorEl={this.searchAnchorRef.current}
-          style={{ zIndex: 9999 }}
-          transition>
+        <Popper open={searchOpen} anchorEl={this.searchAnchorRef.current} style={{ zIndex: 9999 }} transition>
           {({ TransitionProps }) => (
             <Fade {...TransitionProps} timeout={350}>
-              <div className={styles.searchContent} style={{
-                top: '5px', position: 'relative',
-                width: (this.searchAnchorRef.current?.clientWidth || 470) + 'px',
-              }}>
+              <div
+                className={styles.searchContent}
+                style={{
+                  top: '5px',
+                  position: 'relative',
+                  width: (this.searchAnchorRef.current?.clientWidth || 470) + 'px',
+                }}
+              >
                 <ClickAwayListener onClickAway={this.handleSearchClose}>
                   <CList<TItemData, ListItemProps<TItemData>>
                     useAutoLoading

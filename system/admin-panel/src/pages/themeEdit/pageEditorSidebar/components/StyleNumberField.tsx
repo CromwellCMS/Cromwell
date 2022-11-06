@@ -1,26 +1,32 @@
-import React, { CSSProperties, useCallback, useEffect, useState } from "react"
-import { SlideableNumberInput } from "../SlideableNumberInput";
+import React, { CSSProperties, useCallback, useEffect, useState } from 'react';
+import { SlideableNumberInput } from '../SlideableNumberInput';
 
 const getUnit = (value?: any) => {
   const strVal = String(value);
 
-  if (strVal.includes("vh")) return "vh";
-  if (strVal.includes("rem")) return "rem";
-  if (strVal.includes("em")) return "em";
-  if (strVal.includes("vw")) return "vw";
-  if (strVal.includes("%")) return "%";
-  return "px";
-}
+  if (strVal.includes('vh')) return 'vh';
+  if (strVal.includes('rem')) return 'rem';
+  if (strVal.includes('em')) return 'em';
+  if (strVal.includes('vw')) return 'vw';
+  if (strVal.includes('%')) return '%';
+  return 'px';
+};
 
 const getWithoutUnit = (value?: any) => {
   const strVal = String(value);
-  return strVal.replace("vh", "").replace("vw", "").replace("rem", "").replace("em", "").replace("%", "").replace("px", "");
-}
+  return strVal
+    .replace('vh', '')
+    .replace('vw', '')
+    .replace('rem', '')
+    .replace('em', '')
+    .replace('%', '')
+    .replace('px', '');
+};
 
 export const StyleNumberField = ({
-  dataType = "px",
+  dataType = 'px',
   handleStyleChange,
-  value = "",
+  value = '',
   label,
   keyName,
   name,
@@ -28,12 +34,8 @@ export const StyleNumberField = ({
   max,
   options = [],
 }: {
-  dataType: "px" | "string" | "rem" | "%" | "em" | "vh" | "vw";
-  handleStyleChange: (
-    name: keyof React.CSSProperties,
-    value: any,
-    withType?: any,
-  ) => void;
+  dataType: 'px' | 'string' | 'rem' | '%' | 'em' | 'vh' | 'vw';
+  handleStyleChange: (name: keyof React.CSSProperties, value: any, withType?: any) => void;
   keyName: keyof CSSProperties;
   value: any;
   name?: string;
@@ -43,7 +45,7 @@ export const StyleNumberField = ({
   options?: string[];
 }) => {
   const [internalValue, setInternalValue] = useState(getWithoutUnit(value));
-  const [dType, setDataType] = useState<"px"|"rem"|"%"|"em"|"vh"|"vw">(getUnit(value))
+  const [dType, setDataType] = useState<'px' | 'rem' | '%' | 'em' | 'vh' | 'vw'>(getUnit(value));
 
   const onChangeValue = useCallback(
     (newVal, forceType = dType) => {
@@ -67,8 +69,8 @@ export const StyleNumberField = ({
       min={min}
       dataType={dType}
       onDataTypeChange={(newType) => {
-        setDataType(newType)
-        onChangeValue(internalValue, newType)
+        setDataType(newType);
+        onChangeValue(internalValue, newType);
       }}
     />
   );

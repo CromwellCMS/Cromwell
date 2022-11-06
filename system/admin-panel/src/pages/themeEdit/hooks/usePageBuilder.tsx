@@ -7,25 +7,25 @@ import {
   TCromwellStore,
   TPageConfig,
   TPluginEntity,
-} from "@cromwell/core";
+} from '@cromwell/core';
 import {
   blockCssClass,
   getBlockHtmlType,
   getBlockIdFromHtml,
   getRestApiClient,
   pageRootContainerId,
-} from "@cromwell/core-frontend";
-import React, { useEffect, useRef, useState } from "react";
-import { askConfirmation } from "../../../components/modal/Confirmation";
-import { toast } from "../../../exports";
-import { Draggable } from "../../../helpers/Draggable/Draggable";
-import { TBlockMenuProps } from "../pageEditor/components/BlockMenu";
-import { TExtendedPageInfo } from "../ThemeEdit";
-import { useBlockEvents } from "./useBlockEvents";
-import { useBlockFns } from "./useBlockFns";
-import { useEditorUtils } from "./useEditorUtils";
-import { useEditorFrames } from "./useHoveredFrames";
-import { useThemeEditor } from "./useThemeEditor";
+} from '@cromwell/core-frontend';
+import React, { useEffect, useRef, useState } from 'react';
+import { askConfirmation } from '../../../components/modal/Confirmation';
+import { toast } from '../../../exports';
+import { Draggable } from '../../../helpers/Draggable/Draggable';
+import { TBlockMenuProps } from '../pageEditor/components/BlockMenu';
+import { TExtendedPageInfo } from '../ThemeEdit';
+import { useBlockEvents } from './useBlockEvents';
+import { useBlockFns } from './useBlockFns';
+import { useEditorUtils } from './useEditorUtils';
+import { useEditorFrames } from './useHoveredFrames';
+import { useThemeEditor } from './useThemeEditor';
 
 export const contentStyles = `
 * {
@@ -47,8 +47,7 @@ type THistoryItem = {
   global: string;
 };
 
-const unsavedPrompt =
-  "Your unsaved changes will be lost. Do you want to discard and leave this page?";
+const unsavedPrompt = 'Your unsaved changes will be lost. Do you want to discard and leave this page?';
 
 const usePageBuilderContext = () => {
   const {
@@ -76,50 +75,26 @@ const usePageBuilderContext = () => {
   } = useThemeEditor();
   const contentWindowRef = useRef<Window>();
   const editorWidgetWrapperRef = useRef<HTMLDivElement>();
-  const editorWidgetWrapperCroppedRef =
-    useRef<HTMLDivElement>();
+  const editorWidgetWrapperCroppedRef = useRef<HTMLDivElement>();
   const contentStore = useRef<TCromwellStore>();
-  const contentFrontend =
-    useRef<typeof import("@cromwell/core-frontend")>();
-  const [ignoreDraggableClass] = useState(
-    pageRootContainerId,
-  );
+  const contentFrontend = useRef<typeof import('@cromwell/core-frontend')>();
+  const [ignoreDraggableClass] = useState(pageRootContainerId);
 
   const selectedBlock = useRef<HTMLElement>();
   const selectedEditableBlock = useRef<TCromwellBlock>();
 
-  const [history, setHistory] = useState<THistoryItem[]>(
-    [],
-  );
-  const [undoneHistory, setUndoneHistory] = useState<
-    THistoryItem[]
-  >([]);
+  const [history, setHistory] = useState<THistoryItem[]>([]);
+  const [undoneHistory, setUndoneHistory] = useState<THistoryItem[]>([]);
 
-  const [blockInfos, setBlockInfos] = useState<
-    Record<
-      string,
-      { canDrag?: boolean; canDeselect?: boolean }
-    >
-  >({});
+  const [blockInfos, setBlockInfos] = useState<Record<string, { canDrag?: boolean; canDeselect?: boolean }>>({});
 
   const selectableFrameMargin = 0;
 
   const canInsertBlock = () => true;
 
-  const {
-    getStoreItem,
-    setStoreItem,
-    getBlockData,
-    getBlockById,
-    getBlockElementById,
-  } = useBlockFns();
+  const { getStoreItem, setStoreItem, getBlockData, getBlockById, getBlockElementById } = useBlockFns();
 
-  const {
-    isGlobalElem,
-    getFrameColor,
-    findEditableParent,
-    checkBlockDataGlobal,
-  } = useEditorUtils({
+  const { isGlobalElem, getFrameColor, findEditableParent, checkBlockDataGlobal } = useEditorUtils({
     getBlockData,
     getBlockElementById,
     contentWindowRef,
@@ -184,8 +159,7 @@ const usePageBuilderContext = () => {
     rerender: forceUpdate,
   });
 
-  const [changedModifications, __setChangedModifications] =
-    useState<TCromwellBlockData[] | null | undefined>(null);
+  const [changedModifications, __setChangedModifications] = useState<TCromwellBlockData[] | null | undefined>(null);
 
   const updateChangedModifications = (data) => {
     if (data) {
@@ -198,65 +172,40 @@ const usePageBuilderContext = () => {
     updateFramesPosition();
   }, [rerender]);
 
-  function modifyBlock(
-    blockData: TCromwellBlockData,
-    saveHist?: boolean,
-  ) {
-    if (!changedModifications)
-      updateChangedModifications([]);
+  function modifyBlock(blockData: TCromwellBlockData, saveHist?: boolean) {
+    if (!changedModifications) updateChangedModifications([]);
     // Save history
     if (saveHist !== false) saveCurrentState();
 
     // Save to global modifications in pageConfig.
-    const pageConfig: TPageConfig =
-      getStoreItem.current("pageConfig") ??
-      ({} as TPageConfig);
-    if (!pageConfig.modifications)
-      pageConfig.modifications = [];
-    pageConfig.modifications = addToModifications(
-      blockData,
-      pageConfig.modifications,
-    );
-    setStoreItem.current("pageConfig", pageConfig);
+    const pageConfig: TPageConfig = getStoreItem.current('pageConfig') ?? ({} as TPageConfig);
+    if (!pageConfig.modifications) pageConfig.modifications = [];
+    pageConfig.modifications = addToModifications(blockData, pageConfig.modifications);
+    setStoreItem.current('pageConfig', pageConfig);
 
     // Add to local changedModifications (contains only newly added changes)
-    updateChangedModifications(
-      addToModifications(blockData, changedModifications),
-    );
+    updateChangedModifications(addToModifications(blockData, changedModifications));
   }
 
   function updateDraggable() {
     // console.log("updatedrag", draggable);
     draggable.current?.updateBlocks();
-    pageFrameRef.current?.addEventListener(
-      "scroll",
-      onAnyElementScroll,
-    );
-    contentWindowRef.current?.addEventListener(
-      "scroll",
-      onAnyElementScroll,
-    );
+    pageFrameRef.current?.addEventListener('scroll', onAnyElementScroll);
+    contentWindowRef.current?.addEventListener('scroll', onAnyElementScroll);
 
-    const allElements = Array.from(
-      contentWindowRef.current.document.getElementsByTagName(
-        "*",
-      ) ?? [],
-    );
+    const allElements = Array.from(contentWindowRef.current.document.getElementsByTagName('*') ?? []);
     allElements.forEach((el: HTMLElement) => {
       // Disable all links
       el.onclick = (e) => {
         e.preventDefault();
       };
-      el.addEventListener("scroll", onAnyElementScroll);
+      el.addEventListener('scroll', onAnyElementScroll);
     });
 
     updateFramesPosition();
   }
 
-  function addToModifications(
-    data: TCromwellBlockData,
-    mods: TCromwellBlockData[],
-  ) {
+  function addToModifications(data: TCromwellBlockData, mods: TCromwellBlockData[]) {
     let modIndex: number | null = null;
     mods = mods ? mods : [];
     const modifications = [...mods];
@@ -272,11 +221,9 @@ const usePageBuilderContext = () => {
   }
 
   function getCurrentModificationsState(): THistoryItem {
-    const pageConfig = getStoreItem.current("pageConfig");
+    const pageConfig = getStoreItem.current('pageConfig');
     return {
-      global: JSON.stringify(
-        pageConfig?.modifications ?? [],
-      ),
+      global: JSON.stringify(pageConfig?.modifications ?? []),
       local: JSON.stringify(changedModifications),
     };
   }
@@ -284,9 +231,7 @@ const usePageBuilderContext = () => {
   function saveCurrentState() {
     const current = getCurrentModificationsState();
 
-    if (
-      history[history.length - 1]?.local !== current.local
-    ) {
+    if (history[history.length - 1]?.local !== current.local) {
       setHistory([...history, current]);
     }
 
@@ -299,9 +244,7 @@ const usePageBuilderContext = () => {
   }
 
   async function rerenderBlocks() {
-    const instances = getStoreItem.current(
-      "blockInstances",
-    );
+    const instances = getStoreItem.current('blockInstances');
     const promises: Promise<any>[] = [];
     if (instances) {
       Object.values(instances).forEach((inst) => {
@@ -316,18 +259,15 @@ const usePageBuilderContext = () => {
   }
 
   async function applyHistory(history: THistoryItem) {
-    const pageConfig = getStoreItem.current("pageConfig");
+    const pageConfig = getStoreItem.current('pageConfig');
     pageConfig.modifications = JSON.parse(history.global);
-    setStoreItem.current("pageConfig", pageConfig);
+    setStoreItem.current('pageConfig', pageConfig);
     // changedModifications = JSON.parse(history.local);
     updateChangedModifications(JSON.parse(history.local));
     await new Promise((done) => setTimeout(done, 10));
     await rerenderBlocks();
 
-    if (selectedBlock.current)
-      selectBlock(
-        getBlockData.current(selectedBlock.current),
-      );
+    if (selectedBlock.current) selectBlock(getBlockData.current(selectedBlock.current));
   }
 
   function undoModification() {
@@ -335,10 +275,7 @@ const usePageBuilderContext = () => {
     const [last, ...nxt] = history.reverse();
     if (last) {
       setHistory(nxt.reverse());
-      setUndoneHistory([
-        ...undoneHistory,
-        getCurrentModificationsState(),
-      ]);
+      setUndoneHistory([...undoneHistory, getCurrentModificationsState()]);
       applyHistory(last);
     }
   }
@@ -357,16 +294,12 @@ const usePageBuilderContext = () => {
     }
   }
 
-  async function deleteBlock(
-    blockData: TCromwellBlockData,
-  ) {
+  async function deleteBlock(blockData: TCromwellBlockData) {
     if (blockData) {
       blockData.isDeleted = true;
       modifyBlock(blockData);
     }
-    deselectBlock(
-      getBlockElementById.current(blockData.id),
-    );
+    deselectBlock(getBlockElementById.current(blockData.id));
     await rerenderBlocks();
 
     draggable.current?.updateBlocks();
@@ -376,32 +309,29 @@ const usePageBuilderContext = () => {
     blockData: TCromwellBlockData,
     callerBlock: TCromwellBlockData,
     containerData?: TCromwellBlockData,
-    position?: "top" | "bottom",
+    position?: 'top' | 'bottom',
   ) {
     const newBlock: TCromwellBlockData = {
       id: `_${getRandStr()}`,
       type: blockData.type,
       isVirtual: true,
       style: {
-        minWidth: "50px",
-        minHeight: "30px",
+        minWidth: '50px',
+        minHeight: '30px',
       },
     };
 
-    if (blockData.type === "plugin") {
+    if (blockData.type === 'plugin') {
       newBlock.plugin = blockData.plugin;
     }
 
-    if (containerData && containerData.type !== "container")
-      containerData = undefined;
+    if (containerData && containerData.type !== 'container') containerData = undefined;
 
     addBlock({
       blockData: newBlock,
-      targetBlockData: containerData
-        ? undefined
-        : callerBlock,
+      targetBlockData: containerData ? undefined : callerBlock,
       parentData: containerData,
-      position: position === "top" ? "before" : "after",
+      position: position === 'top' ? 'before' : 'after',
     });
 
     await rerenderBlocks();
@@ -427,27 +357,24 @@ const usePageBuilderContext = () => {
       type: newBlockType,
       isVirtual: true,
       style: {
-        minWidth: "50px",
-        minHeight: "30px",
+        minWidth: '50px',
+        minHeight: '30px',
       },
     };
 
-    if (newBlockType === "plugin") {
+    if (newBlockType === 'plugin') {
       newBlock.plugin = {
         pluginName: pluginInfo.pluginName,
       };
     }
 
-    if (containerData && containerData.type !== "container")
-      containerData = undefined;
+    if (containerData && containerData.type !== 'container') containerData = undefined;
 
     addBlock({
       blockData: newBlock,
-      targetBlockData: containerData
-        ? undefined
-        : afterBlockData,
+      targetBlockData: containerData ? undefined : afterBlockData,
       parentData: containerData,
-      position: "after",
+      position: 'after',
     });
 
     await rerenderBlocks();
@@ -461,17 +388,12 @@ const usePageBuilderContext = () => {
     return;
   }
 
-  function createBlockProps(
-    block?: TCromwellBlock,
-  ): TBlockMenuProps {
+  function createBlockProps(block?: TCromwellBlock): TBlockMenuProps {
     const data = block?.getData();
     const bId = data?.id;
     const bType = data?.type;
     const privateDeleteBlock = () => {
-      if (
-        !data.global &&
-        isGlobalElem(getBlockElementById.current(data?.id))
-      ) {
+      if (!data.global && isGlobalElem(getBlockElementById.current(data?.id))) {
         data.global = true;
       }
       deleteBlock(data);
@@ -483,24 +405,11 @@ const usePageBuilderContext = () => {
         blockName?: string;
       },
     ) => {
-      return createNewBlock(
-        newBType,
-        data,
-        bType === "container" ? data : undefined,
-        pluginInfo,
-      );
+      return createNewBlock(newBType, data, bType === 'container' ? data : undefined, pluginInfo);
     };
 
-    const handleAddBlock = async (
-      block: TCromwellBlockData,
-      position: "top" | "bottom",
-    ) => {
-      return createBlockV2(
-        block,
-        data,
-        block.type === "container" ? data : undefined,
-        position,
-      );
+    const handleAddBlock = async (block: TCromwellBlockData, position: 'top' | 'bottom') => {
+      return createBlockV2(block, data, block.type === 'container' ? data : undefined, position);
     };
 
     const blockProps: TBlockMenuProps = {
@@ -512,9 +421,7 @@ const usePageBuilderContext = () => {
         modifyBlock(blockData);
         block?.rerender();
         if (blockData?.parentId) {
-          const parentBlock = getBlockById.current(
-            blockData?.parentId,
-          );
+          const parentBlock = getBlockById.current(blockData?.parentId);
           parentBlock?.rerender();
         }
       },
@@ -552,10 +459,7 @@ const usePageBuilderContext = () => {
 
     let success;
     try {
-      success = await getRestApiClient()?.resetPage(
-        editingPageConfig.route,
-        themeName,
-      );
+      success = await getRestApiClient()?.resetPage(editingPageConfig.route, themeName);
     } catch (e) {
       console.error(e);
     }
@@ -563,44 +467,43 @@ const usePageBuilderContext = () => {
     await handleOpenPage(editingPageConfig);
 
     if (success) {
-      toast.success("Page has been reset");
+      toast.success('Page has been reset');
     } else {
-      toast.error("Failed to reset page");
+      toast.error('Failed to reset page');
     }
   }
 
   async function deletePage(pageInfo: TExtendedPageInfo) {
-    if (! await askConfirmation({
-          title: `Delete page ${pageInfo.name} ?`,
-      })) return;
+    if (
+      !(await askConfirmation({
+        title: `Delete page ${pageInfo.name} ?`,
+      }))
+    )
+      return;
 
-      let success;
-      if (pageInfo.isSaved === false && typeof pageInfo.isSaved !== "undefined") {
-          success = true;
-      } else {
-          try {
-              success = await getRestApiClient()?.deletePage(pageInfo.route, themeName);
-          } catch (error) {
-              console.error(error);
-          }
+    let success;
+    if (pageInfo.isSaved === false && typeof pageInfo.isSaved !== 'undefined') {
+      success = true;
+    } else {
+      try {
+        success = await getRestApiClient()?.deletePage(pageInfo.route, themeName);
+      } catch (error) {
+        console.error(error);
       }
+    }
 
-      if (success) {
-          setPageInfos(prev => (prev.filter(page => page.id !== pageInfo.id)))
-          setChangedPageInfo(false);
-          toast.success('Page deleted'); 
-      } else {
-          toast.error('Failed to delete page');
-      }
+    if (success) {
+      setPageInfos((prev) => prev.filter((page) => page.id !== pageInfo.id));
+      setChangedPageInfo(false);
+      toast.success('Page deleted');
+    } else {
+      toast.error('Failed to delete page');
+    }
   }
 
   async function savePage() {
-    if (
-      !hasUnsavedModifications &&
-      (editingPageConfig as TExtendedPageInfo)?.isSaved !==
-        false
-    ) {
-      toast.warning("No changes to save");
+    if (!hasUnsavedModifications && (editingPageConfig as TExtendedPageInfo)?.isSaved !== false) {
+      toast.warning('No changes to save');
       return;
     }
 
@@ -608,10 +511,7 @@ const usePageBuilderContext = () => {
 
     if (changedPalette && themePalette) {
       try {
-        await getRestApiClient().saveThemePalette(
-          themeName,
-          themePalette,
-        );
+        await getRestApiClient().saveThemePalette(themeName, themePalette);
       } catch (error) {
         console.error(error);
       }
@@ -636,10 +536,7 @@ const usePageBuilderContext = () => {
 
     let success;
     try {
-      success = await client?.savePageConfig(
-        pageConfig,
-        themeName,
-      );
+      success = await client?.savePageConfig(pageConfig, themeName);
     } catch (error) {
       console.error(error);
     }
@@ -647,11 +544,10 @@ const usePageBuilderContext = () => {
     if (success) {
       resetModifications();
       setChangedPageInfo(false);
-      toast.success("Saved");
+      toast.success('Saved');
 
       let hasChangedRoute = false;
-      delete (editingPageConfig as TExtendedPageInfo)
-        .isSaved;
+      delete (editingPageConfig as TExtendedPageInfo).isSaved;
       setEditingPageConfig({
         ...editingPageConfig,
         ...pageConfigOverrides,
@@ -673,23 +569,22 @@ const usePageBuilderContext = () => {
         handleOpenPage(pageConfig);
       }
     } else {
-      toast.error("Failed to save changes");
+      toast.error('Failed to save changes');
     }
     setLoading(false);
   }
 
   function pageChangeStart() {
     if (pageFrameRef.current) {
-      pageFrameRef.current.style.transitionDuration =
-        "0.5s";
-      pageFrameRef.current.style.opacity = "0";
+      pageFrameRef.current.style.transitionDuration = '0.5s';
+      pageFrameRef.current.style.opacity = '0';
     }
   }
 
   function pageChangeFinish() {
     if (pageFrameRef.current) {
       setTimeout(() => {
-        pageFrameRef.current.style.opacity = "1";
+        pageFrameRef.current.style.opacity = '1';
       }, 100);
     }
   }
@@ -702,24 +597,15 @@ const usePageBuilderContext = () => {
     deselectCurrentBlock();
     pageChangeStart();
     await sleep(0.2);
-    contentWindowRef.current =
-      pageFrameRef.current?.contentWindow;
+    contentWindowRef.current = pageFrameRef.current?.contentWindow;
     // console.log(contentWindowRef.current.origin)
-    editorWidgetWrapperRef.current =
-      document.getElementById(
-        "editorWidgetWrapper",
-      ) as HTMLDivElement;
-    editorWidgetWrapperCroppedRef.current =
-      document.getElementById(
-        "editorWidgetWrapperCropped",
-      ) as HTMLDivElement;
+    editorWidgetWrapperRef.current = document.getElementById('editorWidgetWrapper') as HTMLDivElement;
+    editorWidgetWrapperCroppedRef.current = document.getElementById('editorWidgetWrapperCropped') as HTMLDivElement;
 
     const waitForModules = async () => {
       if (
-        !contentWindowRef.current.CromwellStore?.nodeModules
-          ?.modules?.["@cromwell/core-frontend"] ||
-        !contentWindowRef.current.CromwellStore
-          ?.forceUpdatePage
+        !contentWindowRef.current.CromwellStore?.nodeModules?.modules?.['@cromwell/core-frontend'] ||
+        !contentWindowRef.current.CromwellStore?.forceUpdatePage
       ) {
         await sleep(0.2);
         await waitForModules();
@@ -730,51 +616,31 @@ const usePageBuilderContext = () => {
 
     // console.log("MODULES DONE");
 
-    contentWindowRef.current.document.body.style.userSelect =
-      "none";
-    contentStore.current =
-      contentWindowRef.current.CromwellStore;
+    contentWindowRef.current.document.body.style.userSelect = 'none';
+    contentStore.current = contentWindowRef.current.CromwellStore;
 
     // console.log(contentWindowRef.current, contentStore.current)
-    contentFrontend.current =
-      contentStore.current.nodeModules?.modules?.[
-        "@cromwell/core-frontend"
-      ];
+    contentFrontend.current = contentStore.current.nodeModules?.modules?.['@cromwell/core-frontend'];
     // if (contentFrontend.current) {
-    getBlockElementById.current =
-      contentFrontend.current.getBlockElementById;
-    getBlockData.current =
-      contentFrontend.current.getBlockData;
-    getBlockById.current =
-      contentFrontend.current.getBlockById;
+    getBlockElementById.current = contentFrontend.current.getBlockElementById;
+    getBlockData.current = contentFrontend.current.getBlockData;
+    getBlockById.current = contentFrontend.current.getBlockById;
     // }
 
-    getStoreItem.current =
-      contentStore.current.nodeModules?.modules?.[
-        "@cromwell/core"
-      ].getStoreItem;
-    setStoreItem.current =
-      contentStore.current.nodeModules?.modules?.[
-        "@cromwell/core"
-      ].setStoreItem;
+    getStoreItem.current = contentStore.current.nodeModules?.modules?.['@cromwell/core'].getStoreItem;
+    setStoreItem.current = contentStore.current.nodeModules?.modules?.['@cromwell/core'].setStoreItem;
 
     // const getBlockElementId_ = contentFrontend.current.getBlockElementById
     // const getBlockData_ = contentFrontend.current.getBlockData
-    const getBlockById_ =
-      contentFrontend.current.getBlockById;
+    const getBlockById_ = contentFrontend.current.getBlockById;
     // const getStoreItem_ = contentStore.current.nodeModules?.modules?.['@cromwell/core'].getStoreItem
     // const setStoreItem_ = contentStore.current.nodeModules?.modules?.['@cromwell/core'].setStoreItem
 
     draggable.current = new Draggable({
       document: contentWindowRef.current.document,
       draggableSelector: `.${blockCssClass}`,
-      containerSelector: `.${getBlockHtmlType(
-        "container",
-      )}`,
-      rootElement:
-        contentWindowRef.current.document.getElementById(
-          "CB_root",
-        ),
+      containerSelector: `.${getBlockHtmlType('container')}`,
+      rootElement: contentWindowRef.current.document.getElementById('CB_root'),
       disableInsert: true,
       ignoreDraggableClass: ignoreDraggableClass,
       canInsertBlock: canInsertBlock,
@@ -787,35 +653,28 @@ const usePageBuilderContext = () => {
       onBlockHoverStart: onBlockHoverStart,
       onBlockHoverEnd: onBlockHoverEnd,
       onTryToInsert: onTryToInsert,
-      dragPlacement: "underline",
+      dragPlacement: 'underline',
       disableClickAwayDeselect: true,
     });
 
-    const styles =
-      contentWindowRef.current.document.createElement(
-        "style",
-      );
+    const styles = contentWindowRef.current.document.createElement('style');
     styles.innerHTML = contentStyles;
-    contentWindowRef.current.document.head.appendChild(
-      styles,
-    );
+    contentWindowRef.current.document.head.appendChild(styles);
 
     const rootBlock = getBlockById_(pageRootContainerId);
     if (rootBlock)
-      rootBlock.addDidUpdateListener("PageBuilder", () => {
+      rootBlock.addDidUpdateListener('PageBuilder', () => {
         updateDraggable();
       });
 
-    document.body.addEventListener("mouseup", onMouseUp);
+    document.body.addEventListener('mouseup', onMouseUp);
     // checkHistoryButtons();
     updateDraggable();
     pageChangeFinish();
     // pageChangeFinish();
   }
 
-  const hasUnsavedModifications =
-    changedPalette ||
-    !!(changedPageInfo || changedModifications?.length > 0);
+  const hasUnsavedModifications = changedPalette || !!(changedPageInfo || changedModifications?.length > 0);
 
   return {
     onPageChange,
@@ -844,15 +703,10 @@ export const usePageBuilder = () => {
 type ContextType = ReturnType<typeof usePageBuilderContext>;
 const Empty = {} as ContextType;
 
-const PageBuilderContext =
-  React.createContext<ContextType>(Empty);
+const PageBuilderContext = React.createContext<ContextType>(Empty);
 
 export const PageBuilderProvider = ({ children }) => {
   const value = usePageBuilderContext();
 
-  return (
-    <PageBuilderContext.Provider value={value}>
-      {children}
-    </PageBuilderContext.Provider>
-  );
+  return <PageBuilderContext.Provider value={value}>{children}</PageBuilderContext.Provider>;
 };

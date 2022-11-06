@@ -43,10 +43,7 @@ export const CheckList = (props: {
 
   return (
     <div className={props.className}>
-      <div
-        style={{ padding: '16px', display: 'flex', alignItems: 'center' }}
-        className={styles.cardHeader}
-      >
+      <div style={{ padding: '16px', display: 'flex', alignItems: 'center' }} className={styles.cardHeader}>
         <div style={{ marginRight: '16px' }}>
           <CheckboxInput
             onClick={handleToggleAll(items)}
@@ -57,9 +54,7 @@ export const CheckList = (props: {
           />
         </div>
         <div>
-          {typeof title !== 'object' ? (
-            <p style={{ fontWeight: 500, fontSize: '1rem' }}>{title}</p>
-          ) : title}
+          {typeof title !== 'object' ? <p style={{ fontWeight: 500, fontSize: '1rem' }}>{title}</p> : title}
           <p style={{ fontSize: '0.8rem' }}>{`${numberOfChecked(items)}/${items.length} selected`}</p>
         </div>
         {props.actions}
@@ -70,8 +65,11 @@ export const CheckList = (props: {
           const labelId = `transfer-list-all-item-${value}-label`;
 
           return (
-            <ListItem key={index} disableRipple
-              role="listitem" onClick={() => {
+            <ListItem
+              key={index}
+              disableRipple
+              role="listitem"
+              onClick={() => {
                 if (fullWidthToggle !== false) handleToggle(value)();
               }}
               button={fullWidthToggle !== false ? true : undefined}
@@ -79,7 +77,8 @@ export const CheckList = (props: {
               <ListItemIcon
                 onClick={() => {
                   if (fullWidthToggle === false) handleToggle(value)();
-                }}>
+                }}
+              >
                 <CheckboxInput
                   color="primary"
                   checked={checked.indexOf(value) !== -1}
@@ -98,6 +97,6 @@ export const CheckList = (props: {
         })}
         <ListItem />
       </List>
-    </div >
-  )
-}
+    </div>
+  );
+};

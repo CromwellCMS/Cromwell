@@ -14,7 +14,6 @@ import { formatTimeAgo } from '../../helpers/time';
 import ProductListItem from './ProductListItem';
 import styles from './ReviewListItem.module.scss';
 
-
 export default function ProductReviewTable() {
   const client = getGraphQLClient();
   const [itemToView, setItemToView] = useState<TProductReview | null>(null);
@@ -26,7 +25,7 @@ export default function ProductReviewTable() {
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
-  }
+  };
 
   const handleApproveReview = async (data: TProductReview, inst?: React.Component<any>): Promise<boolean> => {
     const review = await client.getProductReviewById(data.id);
@@ -55,7 +54,7 @@ export default function ProductReviewTable() {
       console.error(e);
       return false;
     }
-  }
+  };
 
   const handleOpenReview = async (data: TProductReview) => {
     const review = await client.getProductReviewById(data.id);
@@ -64,7 +63,7 @@ export default function ProductReviewTable() {
     if (product) {
       setProductToView(product);
     }
-  }
+  };
 
   return (
     <>
@@ -77,7 +76,7 @@ export default function ProductReviewTable() {
         getMany={client.getProductReviews}
         deleteOne={client.deleteProductReview}
         deleteMany={client.deleteManyProductReviews}
-        getPageListInstance={inst => {
+        getPageListInstance={(inst) => {
           entityListPageRef.current = inst;
         }}
         columns={[
@@ -126,8 +125,9 @@ export default function ProductReviewTable() {
             ],
             getValueView: (value: boolean) => (
               <p style={ellipsisStyle} className={styles.status}>
-                {value ? <CheckIcon /> : <ClockIcon />} {value ? 'Approved' : 'Pending'}</p>
-            )
+                {value ? <CheckIcon /> : <ClockIcon />} {value ? 'Approved' : 'Pending'}
+              </p>
+            ),
           },
           {
             name: 'id',
@@ -164,11 +164,11 @@ export default function ProductReviewTable() {
         ]}
         getItemCustomActions={(entity, inst) => {
           return (
-            <Box display="flex" alignItems="center" >
+            <Box display="flex" alignItems="center">
               {!entity?.approved && (
                 <Tooltip title="Approve">
                   <span>
-                    <IconButton onClick={() => handleApproveReview(entity, inst)} >
+                    <IconButton onClick={() => handleApproveReview(entity, inst)}>
                       <BadgeCheckIcon className="h-4 text-gray-300 w-4 cursor-pointer" />
                     </IconButton>
                   </span>
@@ -182,7 +182,7 @@ export default function ProductReviewTable() {
                 </span>
               </Tooltip>
             </Box>
-          )
+          );
         }}
         customActionsWidth={80}
       />
@@ -197,11 +197,7 @@ export default function ProductReviewTable() {
         <div className={styles.itemToView}>
           <div className={styles.itemToViewHeader}>
             <p className={styles.userName}>{itemToView?.userName}</p>
-            <Rating name="read-only"
-              className={styles.rating}
-              value={itemToView?.rating}
-              precision={0.5}
-              readOnly />
+            <Rating name="read-only" className={styles.rating} value={itemToView?.rating} precision={0.5} readOnly />
           </div>
           <h4 className={styles.title}>{itemToView?.title}</h4>
           <p className={styles.description}>{itemToView?.description}</p>
@@ -215,7 +211,8 @@ export default function ProductReviewTable() {
                   entityListPageRef.current?.resetList();
                 }
               }}
-              className="flex items-center rounded-lg py-2 font-bold bg-indigo-600 mt-4 my-2 text-sm text-white px-3 uppercase self-center hover:bg-indigo-500 disabled:bg-gray-700">
+              className="flex items-center rounded-lg py-2 font-bold bg-indigo-600 mt-4 my-2 text-sm text-white px-3 uppercase self-center hover:bg-indigo-500 disabled:bg-gray-700"
+            >
               <BadgeCheckIcon className="h-5 w-5 mr-1 text-white-900 cursor-pointer" />
               Approve
             </button>
@@ -232,9 +229,8 @@ export default function ProductReviewTable() {
               />
             </div>
           )}
-
         </div>
       </Modal>
     </>
-  )
+  );
 }

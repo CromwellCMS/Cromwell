@@ -19,21 +19,25 @@ const mapStateToProps = (state: TAppState) => {
   return {
     selectedItems: state.selectedItems,
     allSelected: state.allSelected,
-  }
-}
+  };
+};
 
-type TEntityTableItemProps<TEntityType extends TBasePageEntity, TFilterType extends TBaseEntityFilter>
-  = PropsType<PropsType, {
+type TEntityTableItemProps<TEntityType extends TBasePageEntity, TFilterType extends TBaseEntityFilter> = PropsType<
+  PropsType,
+  {
     data?: TEntityType;
     numberOnScreen?: number;
     listItemProps: TListItemProps<TEntityType, TFilterType>;
     // prevItemProps?: {}
-  }, ReturnType<typeof mapStateToProps>> & RouteComponentProps;
+  },
+  ReturnType<typeof mapStateToProps>
+> &
+  RouteComponentProps;
 
-
-class EntityTableItem<TEntityType extends TBasePageEntity, TFilterType extends TBaseEntityFilter>
-  extends React.Component<TEntityTableItemProps<TEntityType, TFilterType>> {
-
+class EntityTableItem<
+  TEntityType extends TBasePageEntity,
+  TFilterType extends TBaseEntityFilter,
+> extends React.Component<TEntityTableItemProps<TEntityType, TFilterType>> {
   private columnRefs: Record<string, React.RefObject<HTMLDivElement>> = {};
 
   render() {
@@ -45,134 +49,142 @@ class EntityTableItem<TEntityType extends TBasePageEntity, TFilterType extends T
     const tableColumns = this.props.listItemProps.getColumns();
 
     return (
-      <div className={clsx(styles.listItem)} style={{ backgroundColor: numberOnScreen % 2 ? '#fafafa' : '#eee', }}>
+      <div className={clsx(styles.listItem)} style={{ backgroundColor: numberOnScreen % 2 ? '#fafafa' : '#eee' }}>
         <div className={commonStyles.center}>
-          <CheckboxInput
-            checked={selected}
-            onChange={() => this.props.listItemProps.toggleSelection(data)}
-          />
+          <CheckboxInput checked={selected} onChange={() => this.props.listItemProps.toggleSelection(data)} />
         </div>
         <div className={styles.columns}>
-          {!!tableColumns?.length && tableColumns.map(col => {
-            if (!col.visible) return null;
-            const value = !col.meta ? data?.[col.name] : data?.customMeta?.[col.name];
-            let tooltipValue = value ?? '';
-            let content;
+          {!!tableColumns?.length &&
+            tableColumns.map((col) => {
+              if (!col.visible) return null;
+              const value = !col.meta ? data?.[col.name] : data?.customMeta?.[col.name];
+              let tooltipValue = value ?? '';
+              let content;
 
-            if (!this.columnRefs[col.name]) this.columnRefs[col.name] = React.createRef();
+              if (!this.columnRefs[col.name]) this.columnRefs[col.name] = React.createRef();
 
-
-            if (col.type === 'Select' || col.type === 'Simple text') {
-              content = (
-                <p className={styles.ellipsis}
-                  ref={this.columnRefs[col.name]}
-                >{value ?? ''}</p>
-              )
-            }
-            if (col.type === 'Color') {
-              content = (
-                <div style={{
-                  width: '20px',
-                  height: '20px',
-                  backgroundColor: value,
-                  borderRadius: '100%',
-                }}></div>
-              )
-            }
-            if (col.type === 'Image') {
-              content = (
-                <div className={styles.imageItemContainer}>
-                  <div className={styles.imageItem}
-                    style={{ backgroundImage: value && `url(${value})` }}
+              if (col.type === 'Select' || col.type === 'Simple text') {
+                content = (
+                  <p className={styles.ellipsis} ref={this.columnRefs[col.name]}>
+                    {value ?? ''}
+                  </p>
+                );
+              }
+              if (col.type === 'Color') {
+                content = (
+                  <div
+                    style={{
+                      width: '20px',
+                      height: '20px',
+                      backgroundColor: value,
+                      borderRadius: '100%',
+                    }}
                   ></div>
+                );
+              }
+              if (col.type === 'Image') {
+                content = (
+                  <div className={styles.imageItemContainer}>
+                    <div className={styles.imageItem} style={{ backgroundImage: value && `url(${value})` }}></div>
+                  </div>
+                );
+              }
+              if (col.type === 'Datetime') {
+                tooltipValue = toLocaleDateTimeString(value);
+                content = (
+                  <p className={styles.ellipsis} ref={this.columnRefs[col.name]}>
+                    {toLocaleDateTimeString(value)}
+                  </p>
+                );
+              }
+              if (col.type === 'Date') {
+                tooltipValue = toLocaleDateString(value);
+                content = (
+                  <p className={styles.ellipsis} ref={this.columnRefs[col.name]}>
+                    {toLocaleDateString(value)}
+                  </p>
+                );
+              }
+              if (col.type === 'Time') {
+                tooltipValue = toLocaleTimeString(value);
+                content = (
+                  <p className={styles.ellipsis} ref={this.columnRefs[col.name]}>
+                    {toLocaleTimeString(value)}
+                  </p>
+                );
+              }
+              if (col.type === 'Currency') {
+                tooltipValue = cstore.getPriceWithCurrency(value);
+                content = (
+                  <p className={styles.ellipsis} ref={this.columnRefs[col.name]}>
+                    {cstore.getPriceWithCurrency(value)}
+                  </p>
+                );
+              }
+              if (col.type === 'Rating') {
+                content = <Rating name="read-only" size="small" value={value ?? 0} precision={0.5} readOnly />;
+              }
+              if (col.type === 'Checkbox') {
+                content = <CheckboxInput checked={!!value} disabled />;
+              }
+
+              if (col.getValueView) {
+                content = (
+                  <div className={styles.ellipsis} ref={this.columnRefs[col.name]}>
+                    {col.getValueView(value)}
+                  </div>
+                );
+              }
+              if (col.getTooltipValueView) {
+                tooltipValue = <div style={{ whiteSpace: 'pre-line' }}>{col.getTooltipValueView(value)}</div>;
+              }
+
+              const TooltipContent = (props: { title: string }): any => {
+                let title;
+                if (
+                  col.type === 'Color' ||
+                  col.type === 'Image' ||
+                  col.type === 'Date' ||
+                  col.type === 'Datetime' ||
+                  col.type === 'Time'
+                )
+                  title = props.title;
+                const element = this.columnRefs[col.name]?.current;
+                // Ellipsis
+                if (element && element.offsetWidth < element.scrollWidth) title = props.title;
+                if (title) return <div className={styles.tooltip}>{title}</div>;
+                return null;
+              };
+
+              return (
+                <div className={styles.column} key={col.name} style={listItemProps.getColumnStyles(col, tableColumns)}>
+                  <Tooltip
+                    classes={{ popper: styles.cellTooltipPaper }}
+                    title={<TooltipContent title={tooltipValue ?? ''} />}
+                    enterDelay={0}
+                  >
+                    {content ?? <></>}
+                  </Tooltip>
                 </div>
-              )
-            }
-            if (col.type === 'Datetime') {
-              tooltipValue = toLocaleDateTimeString(value);
-              content = (
-                <p className={styles.ellipsis} ref={this.columnRefs[col.name]}>{toLocaleDateTimeString(value)}</p>
-              )
-            }
-            if (col.type === 'Date') {
-              tooltipValue = toLocaleDateString(value);
-              content = (
-                <p className={styles.ellipsis} ref={this.columnRefs[col.name]}>{toLocaleDateString(value)}</p>
-              )
-            }
-            if (col.type === 'Time') {
-              tooltipValue = toLocaleTimeString(value);
-              content = (
-                <p className={styles.ellipsis} ref={this.columnRefs[col.name]}>{toLocaleTimeString(value)}</p>
-              )
-            }
-            if (col.type === 'Currency') {
-              tooltipValue = cstore.getPriceWithCurrency(value);
-              content = (
-                <p className={styles.ellipsis} ref={this.columnRefs[col.name]}>{cstore.getPriceWithCurrency(value)}</p>
-              )
-            }
-            if (col.type === 'Rating') {
-              content = (
-                <Rating name="read-only"
-                  size="small"
-                  value={value ?? 0}
-                  precision={0.5}
-                  readOnly
-                />
-              )
-            }
-            if (col.type === 'Checkbox') {
-              content = (
-                <CheckboxInput checked={!!value} disabled />
-              )
-            }
-
-            if (col.getValueView) {
-              content = <div className={styles.ellipsis}
-                ref={this.columnRefs[col.name]}>{col.getValueView(value)}</div>;
-            }
-            if (col.getTooltipValueView) {
-              tooltipValue = <div style={{ whiteSpace: 'pre-line' }}>{col.getTooltipValueView(value)}</div>;
-            }
-
-            const TooltipContent = (props: { title: string }): any => {
-              let title;
-              if (col.type === 'Color' || col.type === 'Image' || col.type === 'Date'
-                || col.type === 'Datetime' || col.type === 'Time') title = props.title;
-              const element = this.columnRefs[col.name]?.current;
-              // Ellipsis
-              if (element && element.offsetWidth < element.scrollWidth) title = props.title;
-              if (title) return <div className={styles.tooltip}>{title}</div>
-              return null
-            }
-
-            return (
-              <div className={styles.column}
-                key={col.name}
-                style={listItemProps.getColumnStyles(col, tableColumns)}
-              >
-                <Tooltip
-                  classes={{ popper: styles.cellTooltipPaper }}
-                  title={<TooltipContent title={(tooltipValue ?? '')} />} enterDelay={0}
-                >{content ?? <></>}</Tooltip>
-              </div>
-            )
-          })}
-          <div className={styles.listItemActions} style={{
-            ...listItemProps.getColumnStyles({ name: 'actions', label: 'Actions' }, tableColumns),
-            minWidth: listItemProps.actionsWidth + (listItemProps.tableProps?.customActionsWidth || 0) + 'px',
-          }}>
+              );
+            })}
+          <div
+            className={styles.listItemActions}
+            style={{
+              ...listItemProps.getColumnStyles({ name: 'actions', label: 'Actions' }, tableColumns),
+              minWidth: listItemProps.actionsWidth + (listItemProps.tableProps?.customActionsWidth || 0) + 'px',
+            }}
+          >
             {data && listItemProps.tableProps?.getItemCustomActions && (
-              <div className={styles.customActions}>
-                {listItemProps.tableProps.getItemCustomActions(data, this)}
-              </div>
+              <div className={styles.customActions}>{listItemProps.tableProps.getItemCustomActions(data, this)}</div>
             )}
             {listItemProps.tableProps?.entityBaseRoute && data?.id && (
-              <Link to={{
-                pathname: `${listItemProps.tableProps.entityBaseRoute}/${data?.id}`,
-                state: { prevRoute: this.props.history.location.pathname + window.location.search }
-              }}>
+              <Link
+                to={{
+                  pathname: `${listItemProps.tableProps.entityBaseRoute}/${data?.id}`,
+                  state: { prevRoute: this.props.history.location.pathname + window.location.search },
+                }}
+              >
                 <IconButton>
                   <PencilIcon className="h-4 text-gray-300 w-4" />
                 </IconButton>

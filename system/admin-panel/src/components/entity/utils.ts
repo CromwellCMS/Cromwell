@@ -5,7 +5,6 @@ export const customGraphQlPropertyToFragment = (properties: TCustomGraphQlProper
   if (!properties?.length) return '';
   const customProperties = {};
   for (const property of properties) {
-
     const addProperty = (prop: TCustomGraphQlProperty, mapping: any) => {
       if (typeof prop === 'object') {
         Object.entries(prop).forEach(([key, value]) => {
@@ -20,7 +19,7 @@ export const customGraphQlPropertyToFragment = (properties: TCustomGraphQlProper
       } else {
         if (!mapping[prop]) mapping[prop] = true;
       }
-    }
+    };
 
     addProperty(property, customProperties);
   }
@@ -28,4 +27,4 @@ export const customGraphQlPropertyToFragment = (properties: TCustomGraphQlProper
   if (!Object.keys(customProperties).length) return '';
 
   return jsonToGraphQLQuery(customProperties);
-}
+};

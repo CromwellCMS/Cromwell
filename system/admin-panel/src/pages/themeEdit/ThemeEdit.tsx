@@ -1,52 +1,27 @@
-import {
-  getStoreItem,
-  TCromwellBlockData,
-  TPageConfig,
-  TPageInfo,
-  TPluginEntity,
-} from "@cromwell/core";
-import {
-  getGraphQLClient,
-  getRestApiClient,
-} from "@cromwell/core-frontend";
-import {
-  ChevronLeftIcon
-} from "@heroicons/react/outline";
-import React from "react";
-import {
-  Link,
-  RouteComponentProps,
-} from "react-router-dom";
+import { getStoreItem, TCromwellBlockData, TPageConfig, TPageInfo, TPluginEntity } from '@cromwell/core';
+import { getGraphQLClient, getRestApiClient } from '@cromwell/core-frontend';
+import { ChevronLeftIcon } from '@heroicons/react/outline';
+import React from 'react';
+import { Link, RouteComponentProps } from 'react-router-dom';
 
-import { LoadingStatus } from "../../components/loadBox/LoadingStatus";
-import { PageBuilderProvider } from "./hooks/usePageBuilder";
-import {
-  ThemeEditorProvider,
-  useThemeEditor,
-} from "./hooks/useThemeEditor";
-import { PageFrame } from "./pageEditor/PageEditor";
-import { PageActions } from "./pageEditorSidebar/components/PageActions";
-import { PageEditorSidebar } from "./pageEditorSidebar/PageEditorSidebar";
-import { PageList } from "./pageList/PageList";
-import "./ThemeEdit.module.scss";
+import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
+import { PageBuilderProvider } from './hooks/usePageBuilder';
+import { ThemeEditorProvider, useThemeEditor } from './hooks/useThemeEditor';
+import { PageFrame } from './pageEditor/PageEditor';
+import { PageActions } from './pageEditorSidebar/components/PageActions';
+import { PageEditorSidebar } from './pageEditorSidebar/PageEditorSidebar';
+import { PageList } from './pageList/PageList';
+import './ThemeEdit.module.scss';
 
 export type TExtendedPageInfo = TPageInfo & {
   isSaved?: boolean;
   previewUrl?: string;
 };
 
-export type TExtendedPageConfig = TPageConfig &
-  TExtendedPageInfo;
+export type TExtendedPageConfig = TPageConfig & TExtendedPageInfo;
 
-export const InnerThemeEditor: React.FunctionComponent<
-  RouteComponentProps
-> = ({ history }) => {
-  const {
-    minimizeLeftbar,
-    setMinimizeLeftbar,
-    isPageLoading,
-    frameWidth,
-  } = useThemeEditor();
+export const InnerThemeEditor: React.FunctionComponent<RouteComponentProps> = ({ history }) => {
+  const { minimizeLeftbar, setMinimizeLeftbar, isPageLoading, frameWidth } = useThemeEditor();
 
   return (
     <div className={`w-full h-full relative`}>
@@ -65,17 +40,16 @@ export const InnerThemeEditor: React.FunctionComponent<
         <div
           className={`bg-white transform transition-all ${
             minimizeLeftbar
-              ? "absolute left-0 top-14 w-56 h-9 overflow-hidden shadow-lg rounded-r-lg z-[500]"
-              : "w-72 h-screen pt-10 border-r border-gray-300"
-          }`}>
+              ? 'absolute left-0 top-14 w-56 h-9 overflow-hidden shadow-lg rounded-r-lg z-[500]'
+              : 'w-72 h-screen pt-10 border-r border-gray-300'
+          }`}
+        >
           <div className="flex flex-row justify-between">
-            <h2 className="text-xs py-2 px-4 text-gray-700">
-              Pages
-            </h2>
+            <h2 className="text-xs py-2 px-4 text-gray-700">Pages</h2>
             <ChevronLeftIcon
               onClick={() => setMinimizeLeftbar((o) => !o)}
               className={`w-7 h-7 cursor-pointer hover:bg-gray-300 rounded-lg p-2 m-1 ${
-                minimizeLeftbar ? "rotate-180" : ""
+                minimizeLeftbar ? 'rotate-180' : ''
               }`}
             />
           </div>
@@ -88,10 +62,11 @@ export const InnerThemeEditor: React.FunctionComponent<
               className={`w-full ${
                 frameWidth > 1
                   ? frameWidth === 4
-                    ? "max-w-full"
-                    : "w-[765px] h-[800px] mt-20 p-6 bg-black rounded-xl pb-14"
-                  : "w-[384px] h-[700px] mt-20 p-6 bg-black rounded-xl pb-14"
-              } transform transition-all relative h-full mx-auto overflow-y-auto`}>
+                    ? 'max-w-full'
+                    : 'w-[765px] h-[800px] mt-20 p-6 bg-black rounded-xl pb-14'
+                  : 'w-[384px] h-[700px] mt-20 p-6 bg-black rounded-xl pb-14'
+              } transform transition-all relative h-full mx-auto overflow-y-auto`}
+            >
               {!isPageLoading && <PageFrame />}
             </div>
           </div>
@@ -102,9 +77,7 @@ export const InnerThemeEditor: React.FunctionComponent<
   );
 };
 
-export const ThemeEditor: React.FunctionComponent<
-  RouteComponentProps
-> = (props) => {
+export const ThemeEditor: React.FunctionComponent<RouteComponentProps> = (props) => {
   return (
     <ThemeEditorProvider>
       <InnerThemeEditor {...props} />

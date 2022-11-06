@@ -6,24 +6,23 @@ import {
   ShoppingBagIcon,
   TagIcon,
   UserIcon,
-} from "@heroicons/react/outline";
-import { DuplicateIcon, LockClosedIcon } from "@heroicons/react/solid";
-import React, { useState } from "react";
-import { TBreadcrumbs } from "../../../components/breadcrumbs";
-import { SpyIcon } from "../../../components/icons/spyIcon";
-import { useAdminSettings } from "../../../hooks/useAdminSettings";
-import { NewEntityForm } from "../components/newEntityForm";
-import { NewRoleForm } from "../components/newRoleForm";
-import { SettingItem } from "../components/settingItem";
+} from '@heroicons/react/outline';
+import { DuplicateIcon, LockClosedIcon } from '@heroicons/react/solid';
+import React, { useState } from 'react';
+import { TBreadcrumbs } from '../../../components/breadcrumbs';
+import { SpyIcon } from '../../../components/icons/spyIcon';
+import { useAdminSettings } from '../../../hooks/useAdminSettings';
+import { NewEntityForm } from '../components/newEntityForm';
+import { NewRoleForm } from '../components/newRoleForm';
+import { SettingItem } from '../components/settingItem';
 
 const titlePath = [
-  { title: "Settings", link: "/settings/" },
-  { title: "ACL", link: "/settings/acl" },
+  { title: 'Settings', link: '/settings/' },
+  { title: 'ACL', link: '/settings/acl' },
 ];
 
 export const ACLSettingsPage = () => {
-  const [showRoleForm, setShowRoleForm] =
-    useState(false);
+  const [showRoleForm, setShowRoleForm] = useState(false);
   const { adminSettings, roles } = useAdminSettings();
 
   return (
@@ -36,51 +35,51 @@ export const ACLSettingsPage = () => {
 
       <div className="flex flex-col z-4 gap-6 relative lg:flex-row">
         <div className="max-h-min my-4 top-16 self-start lg:order-2 lg:max-w-[13rem] lg:sticky">
-          <h2 className="font-bold text-gray-700 col-span-1">
-            Access Control List
-          </h2>
+          <h2 className="font-bold text-gray-700 col-span-1">Access Control List</h2>
           {/* <p>Select an Entity or add a new one.</p> */}
           {/* <p className="text-red-600">
             Warning: Changes to custom data are permanent.
           </p> */}
         </div>
 
-        <div
-          className={`bg-white rounded-lg shadow-lg w-full p-4 max-w-4xl border border-white`}>
+        <div className={`bg-white rounded-lg shadow-lg w-full p-4 max-w-4xl border border-white`}>
           <div className="grid gap-2 grid-cols-1">
             <h2 className="font-bold my-2 text-lg">Roles</h2>
             <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
-              {
-                roles.map((role) => (
-                  <SettingItem
-                    key={role?.id}
-                    href={!role.name?.startsWith("admin") ? `/settings/acl/${role.id}` : null}
-                    onClick={!role.name?.startsWith("admin") ? null : () => {}}
-                    title={`${role?.title}`}
-                    icon={!role.name?.startsWith("admin") ? <LockClosedIcon className="mx-auto h-8 w-8 self-center" />  : <SpyIcon className="mx-auto h-8 w-8 self-center" />}
-                    description={!role.name?.startsWith("admin") ? `Customize permissions for ${role.title}.` : `The system administrator with all privileges and access to all resources`}
-                  />
-                ))
-              }
+              {roles.map((role) => (
+                <SettingItem
+                  key={role?.id}
+                  href={!role.name?.startsWith('admin') ? `/settings/acl/${role.id}` : null}
+                  onClick={!role.name?.startsWith('admin') ? null : () => {}}
+                  title={`${role?.title}`}
+                  icon={
+                    !role.name?.startsWith('admin') ? (
+                      <LockClosedIcon className="mx-auto h-8 w-8 self-center" />
+                    ) : (
+                      <SpyIcon className="mx-auto h-8 w-8 self-center" />
+                    )
+                  }
+                  description={
+                    !role.name?.startsWith('admin')
+                      ? `Customize permissions for ${role.title}.`
+                      : `The system administrator with all privileges and access to all resources`
+                  }
+                />
+              ))}
             </div>
 
             <hr className="my-2" />
             <SettingItem
-                onClick={() => setShowRoleForm(true)}
-                className="bg-transparent"
-                icon={
-                  <PlusIcon className="mx-auto h-8 w-8 self-center" />
-                }
-                title="New Role"
-                description="Create a new custom role"
-              />
+              onClick={() => setShowRoleForm(true)}
+              className="bg-transparent"
+              icon={<PlusIcon className="mx-auto h-8 w-8 self-center" />}
+              title="New Role"
+              description="Create a new custom role"
+            />
           </div>
         </div>
       </div>
-      <NewRoleForm
-        show={showRoleForm}
-        onToggle={setShowRoleForm}
-      />
+      <NewRoleForm show={showRoleForm} onToggle={setShowRoleForm} />
     </>
   );
 };

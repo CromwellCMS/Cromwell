@@ -6,7 +6,6 @@ import EntityTable from '../../components/entity/entityTable/EntityTable';
 import { tagListPageInfo, tagPageInfo } from '../../constants/PageInfos';
 import { baseEntityColumns } from '../../helpers/customEntities';
 
-
 export default function TagTable() {
   const client = getGraphQLClient();
 
@@ -40,11 +39,11 @@ export default function TagTable() {
           type: 'Color',
           visible: true,
         },
-        ...baseEntityColumns.map(col => {
-          if (col.name === 'createDate') return { ...col, visible: true }
-          return { ...col, visible: false }
+        ...baseEntityColumns.map((col) => {
+          if (col.name === 'createDate') return { ...col, visible: true };
+          return { ...col, visible: false };
         }),
       ]}
     />
-  )
+  );
 }

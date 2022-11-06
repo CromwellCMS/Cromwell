@@ -14,14 +14,14 @@ export type ListItemProps = {
   handleDeleteCategory: (product: TProductCategory) => void;
   toggleSelection?: (data: TProductCategory) => void;
   embeddedView?: boolean;
-}
+};
 export type TView = 'tree' | 'list';
 
 const viewTypeKey = 'crw_category_view_type';
 
 export default function CategoryList() {
   const client = getGraphQLClient();
-  const [view, setView] = useState<TView>(window.localStorage.getItem(viewTypeKey) as any || 'list');
+  const [view, setView] = useState<TView>((window.localStorage.getItem(viewTypeKey) as any) || 'list');
   const [updateRoot, setUpdateRoot] = useState<any>({});
 
   const entityListPageRef = useRef<IEntityListPage<TProductCategory, TProductCategoryFilter> | null>(null);
@@ -32,12 +32,12 @@ export default function CategoryList() {
   const handleCollapseAll = () => {
     collapsedItemsRef.current['all'] = false;
     forceUpdate();
-  }
+  };
 
   const handleExpandAll = () => {
     collapsedItemsRef.current['all'] = true;
     forceUpdate();
-  }
+  };
 
   return (
     <EntityTable
@@ -49,9 +49,10 @@ export default function CategoryList() {
       nameProperty="name"
       customElements={{
         getHeaderRightActions: () => (
-          <HeaderActions view={view}
+          <HeaderActions
+            view={view}
             setView={(value) => {
-              window.localStorage.setItem(viewTypeKey, value)
+              window.localStorage.setItem(viewTypeKey, value);
               setView(value);
             }}
             expandAll={handleExpandAll}
@@ -60,12 +61,16 @@ export default function CategoryList() {
         ),
         getTableContent: () => {
           if (view === 'tree') {
-            return <TreeView entityListPageRef={entityListPageRef}
-              collapsedItemsRef={collapsedItemsRef}
-              updateRoot={updateRoot}
-              deletedItemsRef={deletedItemsRef} />
+            return (
+              <TreeView
+                entityListPageRef={entityListPageRef}
+                collapsedItemsRef={collapsedItemsRef}
+                updateRoot={updateRoot}
+                deletedItemsRef={deletedItemsRef}
+              />
+            );
           }
-        }
+        },
       }}
       getPageListInstance={(inst) => {
         entityListPageRef.current = inst;
@@ -78,8 +83,7 @@ export default function CategoryList() {
         return res;
       }}
       deleteMany={async (input, filters) => {
-        for (const id of input.ids)
-          deletedItemsRef.current[id] = true;
+        for (const id of input.ids) deletedItemsRef.current[id] = true;
 
         const res = await client.deleteManyProductCategories(input, filters);
         setUpdateRoot({});
@@ -110,8 +114,8 @@ export default function CategoryList() {
           getValueView: (parent) => parent?.name,
           customGraphQlProperty: {
             parent: {
-              name: true
-            }
+              name: true,
+            },
           },
         },
         {
@@ -128,14 +132,14 @@ export default function CategoryList() {
           customGraphQlProperty: {
             parent: {
               id: true,
-            }
+            },
           },
         },
-        ...baseEntityColumns.map(col => {
-          if (col.name === 'createDate') return { ...col, visible: true }
-          return { ...col, visible: false }
+        ...baseEntityColumns.map((col) => {
+          if (col.name === 'createDate') return { ...col, visible: true };
+          return { ...col, visible: false };
         }),
       ]}
     />
-  )
+  );
 }

@@ -1,37 +1,26 @@
-import { useCallback, useRef } from "react";
-import isRangeVisible from "./isRangeVisible";
-import { scanForUnloadedRanges } from "./scanForUnloadedRanges";
-import type { Ranges } from "./types";
+import { useCallback, useRef } from 'react';
+import isRangeVisible from './isRangeVisible';
+import { scanForUnloadedRanges } from './scanForUnloadedRanges';
+import type { Ranges } from './types';
 
 type onItemsRenderedParams = {
   visibleStartIndex: number;
   visibleStopIndex: number;
 };
-type onItemsRendered = (
-  params: onItemsRenderedParams,
-) => void;
+type onItemsRendered = (params: onItemsRenderedParams) => void;
 
 export type Props = {
   // Render prop.
-  children: (arg0: {
-    onItemsRendered: onItemsRendered;
-    ref: any;
-  }) => any;
+  children: (arg0: { onItemsRendered: onItemsRendered; ref: any }) => any;
   // Function responsible for tracking the loaded state of each item.
   isItemLoaded: (index: number) => boolean;
   // Number of rows in list; can be arbitrary high number if actual number is unknown.
   itemCount: number;
   // Callback to be invoked when more rows must be loaded.
   // It should return a Promise that is resolved once all data has finished loading.
-  loadMoreItems: (
-    startIndex: number,
-    stopIndex: number,
-  ) => Promise<void>;
+  loadMoreItems: (startIndex: number, stopIndex: number) => Promise<void>;
   // Renamed to loadMoreItems in v1.0.3; will be removed in v2.0
-  loadMoreRows?: (
-    startIndex: number,
-    stopIndex: number,
-  ) => Promise<void>;
+  loadMoreRows?: (startIndex: number, stopIndex: number) => Promise<void>;
   // Minimum number of rows to be loaded at a time; defaults to 10.
   // This property can be used to batch requests to reduce HTTP requests.
   minimumBatchSize?: number;
@@ -54,58 +43,44 @@ export const InfiniteLoader = ({
   const _listRef = useRef<any>(null);
   const _memoizedUnloadedRanges = useRef<Ranges>([]);
 
-  const _loadUnloadedRanges = useCallback(
-    (unloadedRanges: Ranges) => {
-      const loadMore = loadMoreItems || loadMoreRows;
+  const _loadUnloadedRanges = useCallback((unloadedRanges: Ranges) => {
+    const loadMore = loadMoreItems || loadMoreRows;
 
-      for (let i = 0; i < unloadedRanges.length; i += 2) {
-        const startIndex = unloadedRanges[i];
-        const stopIndex = unloadedRanges[i + 1];
-        console.log(unloadedRanges.length, startIndex, stopIndex)
-        const promise = loadMore(startIndex, stopIndex);
-        console.log("loading more")
+    for (let i = 0; i < unloadedRanges.length; i += 2) {
+      const startIndex = unloadedRanges[i];
+      const stopIndex = unloadedRanges[i + 1];
+      console.log(unloadedRanges.length, startIndex, stopIndex);
+      const promise = loadMore(startIndex, stopIndex);
+      console.log('loading more');
 
-        if (promise != null) {
-          promise.then(() => {
-            if (
-              isRangeVisible({
-                lastRenderedStartIndex:
-                  _lastRenderedStartIndex.current,
-                lastRenderedStopIndex:
-                  _lastRenderedStopIndex.current,
-                startIndex,
-                stopIndex,
-              })
-            ) {
-              if (_listRef.current == null) {
-                return;
-              }
-
-              if (
-                typeof _listRef.current?.resetAfterIndex ===
-                "function"
-              ) {
-                _listRef.current?.resetAfterIndex?.(
-                  startIndex,
-                  true,
-                );
-              } else {
-                if (
-                  typeof _listRef.current
-                    ?._getItemStyleCache === "function"
-                ) {
-                  _listRef.current?._getItemStyleCache(-1);
-                }
-
-                _listRef.current?.forceUpdate();
-              }
+      if (promise != null) {
+        promise.then(() => {
+          if (
+            isRangeVisible({
+              lastRenderedStartIndex: _lastRenderedStartIndex.current,
+              lastRenderedStopIndex: _lastRenderedStopIndex.current,
+              startIndex,
+              stopIndex,
+            })
+          ) {
+            if (_listRef.current == null) {
+              return;
             }
-          });
-        }
+
+            if (typeof _listRef.current?.resetAfterIndex === 'function') {
+              _listRef.current?.resetAfterIndex?.(startIndex, true);
+            } else {
+              if (typeof _listRef.current?._getItemStyleCache === 'function') {
+                _listRef.current?._getItemStyleCache(-1);
+              }
+
+              _listRef.current?.forceUpdate();
+            }
+          }
+        });
       }
-    },
-    [],
-  );
+    }
+  }, []);
 
   const _ensureRowsLoaded = useCallback(
     (startIndex: number, stopIndex: number) => {
@@ -115,19 +90,12 @@ export const InfiniteLoader = ({
         itemCount,
         minimumBatchSize,
         startIndex: Math.max(0, startIndex - threshold),
-        stopIndex: Math.min(
-          itemCount - 1,
-          stopIndex + threshold,
-        ),
+        stopIndex: Math.min(itemCount - 1, stopIndex + threshold),
       });
 
       if (
-        _memoizedUnloadedRanges.current.length !==
-          unloadedRanges.length ||
-        _memoizedUnloadedRanges.current.some(
-          (startOrStop, index) =>
-            unloadedRanges[index] !== startOrStop,
-        )
+        _memoizedUnloadedRanges.current.length !== unloadedRanges.length ||
+        _memoizedUnloadedRanges.current.some((startOrStop, index) => unloadedRanges[index] !== startOrStop)
       ) {
         _memoizedUnloadedRanges.current = unloadedRanges;
 
@@ -137,32 +105,20 @@ export const InfiniteLoader = ({
     [isItemLoaded, itemCount, threshold, minimumBatchSize],
   );
 
-  const resetloadMoreItemsCache = useCallback(
-    (autoReload = false) => {
-      _memoizedUnloadedRanges.current = [];
+  const resetloadMoreItemsCache = useCallback((autoReload = false) => {
+    _memoizedUnloadedRanges.current = [];
 
-      if (autoReload) {
-        _ensureRowsLoaded(
-          _lastRenderedStartIndex.current,
-          _lastRenderedStopIndex.current,
-        );
-      }
-    },
-    [],
-  );
+    if (autoReload) {
+      _ensureRowsLoaded(_lastRenderedStartIndex.current, _lastRenderedStopIndex.current);
+    }
+  }, []);
 
   const _onItemsRendered: onItemsRendered = useCallback(
-    ({
-      visibleStartIndex,
-      visibleStopIndex,
-    }: onItemsRenderedParams) => {
+    ({ visibleStartIndex, visibleStopIndex }: onItemsRenderedParams) => {
       _lastRenderedStartIndex.current = visibleStartIndex;
       _lastRenderedStopIndex.current = visibleStopIndex;
 
-      _ensureRowsLoaded(
-        visibleStartIndex,
-        visibleStopIndex,
-      );
+      _ensureRowsLoaded(visibleStartIndex, visibleStopIndex);
     },
     [_ensureRowsLoaded],
   );

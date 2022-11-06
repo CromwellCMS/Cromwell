@@ -8,7 +8,6 @@ import { orderListPageInfo, orderPageInfo } from '../../constants/PageInfos';
 import { getTooltipValueView, getValueView } from '../../helpers/addressParser';
 import { formatTimeAgo } from '../../helpers/time';
 
-
 export default function OrderTable() {
   const client = getGraphQLClient();
 
@@ -38,7 +37,7 @@ export default function OrderTable() {
           type: 'Simple text',
           visible: true,
           exactSearch: true,
-          searchOptions: orderStatuses.map(status => ({
+          searchOptions: orderStatuses.map((status) => ({
             value: status,
             label: status,
           })),
@@ -133,5 +132,5 @@ export default function OrderTable() {
         },
       ]}
     />
-  )
+  );
 }

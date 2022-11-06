@@ -9,108 +9,120 @@ import { TSidebarLink } from '../../constants/PageInfos';
 import styles from './Sidebar.module.scss';
 
 const ExpansionPanel = withStyles({
-    root: {
-        padding: 0,
-        boxShadow: 'none',
-        '&:before': {
-            display: 'none',
-        },
-        '&$expanded': {
-            margin: 'auto',
-        },
+  root: {
+    padding: 0,
+    boxShadow: 'none',
+    '&:before': {
+      display: 'none',
     },
-    expanded: {},
+    '&$expanded': {
+      margin: 'auto',
+    },
+  },
+  expanded: {},
 })(Accordion);
 
 const ExpansionPanelDetails = withStyles({
-    root: {
-        padding: 0,
-    }
+  root: {
+    padding: 0,
+  },
 })(AccordionDetails);
 
 const MenuItem = withStyles({
-    root: {
-        width: '100%',
-        paddingTop: '12px',
-        paddingBottom: '12px'
-    },
+  root: {
+    width: '100%',
+    paddingTop: '12px',
+    paddingBottom: '12px',
+  },
 })(MuiMenuItem);
 
-
 const SidebarLink = (props: {
-    data: TSidebarLink,
-    toggleSubMenu: (panel: string) => (event: React.ChangeEvent, isExpanded: boolean) => void,
-    expanded: string | false;
-    forceUpdate: () => void;
-    activeId: string;
-    userInfo: TUser | undefined;
+  data: TSidebarLink;
+  toggleSubMenu: (panel: string) => (event: React.ChangeEvent, isExpanded: boolean) => void;
+  expanded: string | false;
+  forceUpdate: () => void;
+  activeId: string;
+  userInfo: TUser | undefined;
 }) => {
-    const isExpanded = props.expanded === props.data.id;
-    const { data, userInfo } = props;
+  const isExpanded = props.expanded === props.data.id;
+  const { data, userInfo } = props;
 
-    const hasPermission = (link: TSidebarLink) => !(link?.permissions?.length &&
-        !matchPermissions(userInfo, link?.permissions))
+  const hasPermission = (link: TSidebarLink) =>
+    !(link?.permissions?.length && !matchPermissions(userInfo, link?.permissions));
 
-    if (!hasPermission(data)) return null;
-    // Don't show sidebar category if no sub links permitted to access
-    if (!data.route && !data.subLinks.some(hasPermission)) return null;
+  if (!hasPermission(data)) return null;
+  // Don't show sidebar category if no sub links permitted to access
+  if (!data.route && !data.subLinks.some(hasPermission)) return null;
 
-    let head = (
-        <MenuItem className={styles.linkHead}>
-            <div className={styles.linkHeadContent}>
-                <div className={styles.sidebarlinkIcon}>{props.data.icon}</div>
-                <p>{props.data.title}</p>
-            </div>
-            {props.data.subLinks && (
-                <ExpandMoreIcon style={{ transform: isExpanded ? 'rotate(180deg)' : '' }}
-                    className={styles.ExpandMoreIcon} htmlColor='#999' />
-            )}
-        </MenuItem>
+  let head = (
+    <MenuItem className={styles.linkHead}>
+      <div className={styles.linkHeadContent}>
+        <div className={styles.sidebarlinkIcon}>{props.data.icon}</div>
+        <p>{props.data.title}</p>
+      </div>
+      {props.data.subLinks && (
+        <ExpandMoreIcon
+          style={{ transform: isExpanded ? 'rotate(180deg)' : '' }}
+          className={styles.ExpandMoreIcon}
+          htmlColor="#999"
+        />
+      )}
+    </MenuItem>
+  );
+  if (props.data.route) {
+    head = (
+      <Link
+        to={props.data.route}
+        onClick={(e) => {
+          e.stopPropagation();
+          // props.setActiveId(props.data.id);
+        }}
+      >
+        {head}
+      </Link>
     );
-    if (props.data.route) {
-        head = <Link to={props.data.route}
-            onClick={e => {
-                e.stopPropagation();
-                // props.setActiveId(props.data.id);
-            }}
-        >{head}</Link>
-    }
+  }
 
-    if (props.data.subLinks) return (
-        <ExpansionPanel
-            key={props.data.id}
-            expanded={isExpanded}
-            onChange={props.toggleSubMenu(props.data.id)}
-            className={styles.SidebarLink}>
-            <AccordionSummary
-                className={styles.ExpansionPanelSummary}
-                aria-controls={`subLinks-${props.data.title}-content`}
-
-            >{head}
-            </AccordionSummary>
-            <ExpansionPanelDetails>
-                <div className={styles.subLinksContainer}>
-                    {props.data.subLinks.map(subLink => (
-                        <SidebarLink data={subLink}
-                            key={subLink.id}
-                            expanded={props.expanded} toggleSubMenu={props.toggleSubMenu}
-                            forceUpdate={props.forceUpdate}
-                            activeId={props.activeId}
-                            userInfo={props.userInfo}
-                        />
-                    ))}
-                </div>
-            </ExpansionPanelDetails>
-        </ExpansionPanel>
-    );
-
+  if (props.data.subLinks)
     return (
-        <div className={`${styles.SidebarLink} ${props.activeId === props.data.id ? styles.SidebarLinkActive : ''}`}
-            key={props.data.id}
-        >{head}
-        </div>
-    )
+      <ExpansionPanel
+        key={props.data.id}
+        expanded={isExpanded}
+        onChange={props.toggleSubMenu(props.data.id)}
+        className={styles.SidebarLink}
+      >
+        <AccordionSummary
+          className={styles.ExpansionPanelSummary}
+          aria-controls={`subLinks-${props.data.title}-content`}
+        >
+          {head}
+        </AccordionSummary>
+        <ExpansionPanelDetails>
+          <div className={styles.subLinksContainer}>
+            {props.data.subLinks.map((subLink) => (
+              <SidebarLink
+                data={subLink}
+                key={subLink.id}
+                expanded={props.expanded}
+                toggleSubMenu={props.toggleSubMenu}
+                forceUpdate={props.forceUpdate}
+                activeId={props.activeId}
+                userInfo={props.userInfo}
+              />
+            ))}
+          </div>
+        </ExpansionPanelDetails>
+      </ExpansionPanel>
+    );
 
-}
+  return (
+    <div
+      className={`${styles.SidebarLink} ${props.activeId === props.data.id ? styles.SidebarLinkActive : ''}`}
+      key={props.data.id}
+    >
+      {head}
+    </div>
+  );
+};
 
 export default SidebarLink;

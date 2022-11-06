@@ -1,62 +1,54 @@
-import { TCromwellBlock } from "@cromwell/core";
-import { Switch } from "@headlessui/react";
-import React, { CSSProperties, useCallback, useEffect, useState, } from "react"
-import { StyleNumberField } from "./StyleNumberField";
+import { TCromwellBlock } from '@cromwell/core';
+import { Switch } from '@headlessui/react';
+import React, { CSSProperties, useCallback, useEffect, useState } from 'react';
+import { StyleNumberField } from './StyleNumberField';
 
 export const MarginEditor = ({
   styles,
   handleStyleChange,
-  block
+  block,
 }: {
   styles?: CSSProperties;
-  handleStyleChange: (
-    name: keyof React.CSSProperties,
-    value: any,
-  ) => void;
+  handleStyleChange: (name: keyof React.CSSProperties, value: any) => void;
   block?: TCromwellBlock;
 }) => {
   const [individual, setIndividual] = useState(false);
-  const [mxAuto, setMXAuto] = useState(
-    styles?.marginLeft === "auto" &&
-      styles?.marginRight === "auto",
-  );
+  const [mxAuto, setMXAuto] = useState(styles?.marginLeft === 'auto' && styles?.marginRight === 'auto');
 
   const toggleMXAuto = useCallback(
     (newValue) => {
       setMXAuto(newValue);
       if (newValue) {
         // setStyle("0 auto");
-        handleStyleChange("marginLeft", "auto");
-        handleStyleChange("marginRight", "auto");
+        handleStyleChange('marginLeft', 'auto');
+        handleStyleChange('marginRight', 'auto');
       } else {
-        handleStyleChange("marginLeft", "");
-        handleStyleChange("marginRight", "");
+        handleStyleChange('marginLeft', '');
+        handleStyleChange('marginRight', '');
       }
     },
     [setMXAuto, handleStyleChange],
   );
 
-  const toggleIndividual = useCallback((next) => {
-    if (next) {
-      handleStyleChange("margin", "");
-    } else {
-      handleStyleChange("marginLeft", "");
-      handleStyleChange("marginRight", "");
-      handleStyleChange("marginTop", "");
-      handleStyleChange("marginBottom", "");
-      setMXAuto(false);
-    }
-    setIndividual(next);
-  }, [handleStyleChange])
+  const toggleIndividual = useCallback(
+    (next) => {
+      if (next) {
+        handleStyleChange('margin', '');
+      } else {
+        handleStyleChange('marginLeft', '');
+        handleStyleChange('marginRight', '');
+        handleStyleChange('marginTop', '');
+        handleStyleChange('marginBottom', '');
+        setMXAuto(false);
+      }
+      setIndividual(next);
+    },
+    [handleStyleChange],
+  );
 
   useEffect(() => {
-    setMXAuto(
-      styles?.marginLeft === "auto" &&
-        styles?.marginRight === "auto",
-    );
-    setIndividual(
-      !!styles?.marginLeft || !!styles?.marginTop || !!styles?.marginBottom || !!styles.marginRight
-    )
+    setMXAuto(styles?.marginLeft === 'auto' && styles?.marginRight === 'auto');
+    setIndividual(!!styles?.marginLeft || !!styles?.marginTop || !!styles?.marginBottom || !!styles.marginRight);
   }, [styles]);
 
   return (
@@ -67,17 +59,16 @@ export const MarginEditor = ({
           checked={individual}
           onChange={toggleIndividual}
           className={`${
-            individual ? "bg-indigo-600" : "bg-gray-200"
-          } relative inline-flex items-center h-4 rounded-full w-8`}>
+            individual ? 'bg-indigo-600' : 'bg-gray-200'
+          } relative inline-flex items-center h-4 rounded-full w-8`}
+        >
           <span
             className={`${
-              individual ? "translate-x-5" : "translate-x-1"
+              individual ? 'translate-x-5' : 'translate-x-1'
             } inline-block w-2 h-2 transform bg-white rounded-full`}
           />
         </Switch>
-        <span className="ml-2 text-gray-600">
-          individual
-        </span>
+        <span className="ml-2 text-gray-600">individual</span>
       </div>
       {individual && (
         <>
@@ -86,17 +77,16 @@ export const MarginEditor = ({
               checked={mxAuto}
               onChange={toggleMXAuto}
               className={`${
-                mxAuto ? "bg-indigo-600" : "bg-gray-200"
-              } relative inline-flex items-center h-4 rounded-full w-8`}>
+                mxAuto ? 'bg-indigo-600' : 'bg-gray-200'
+              } relative inline-flex items-center h-4 rounded-full w-8`}
+            >
               <span
                 className={`${
-                  mxAuto ? "translate-x-5" : "translate-x-1"
+                  mxAuto ? 'translate-x-5' : 'translate-x-1'
                 } inline-block w-2 h-2 transform bg-white rounded-full`}
               />
             </Switch>
-            <span className="ml-2 text-gray-600">
-              mx auto
-            </span>
+            <span className="ml-2 text-gray-600">mx auto</span>
           </div>
           <div className={`grid gap-1 grid-cols-2`}>
             {!mxAuto && (

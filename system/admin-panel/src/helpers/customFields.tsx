@@ -30,50 +30,58 @@ export type TRegisteredCustomField = TAdminCustomField & {
     onChange?: (value: any) => void;
   }>;
   saveData: () => string | Promise<string>;
-}
+};
 
 export type TFieldDefaultComponent = React.ComponentType<{
   initialValue: string | undefined;
   entity: TBasePageEntity;
   canValidate?: boolean;
   error?: boolean;
-  options?: ({
-    value: string | number | undefined;
-    label: string;
-  } | string | number | undefined)[];
+  options?: (
+    | {
+        value: string | number | undefined;
+        label: string;
+      }
+    | string
+    | number
+    | undefined
+  )[];
   onChange?: (value: any) => void;
-}>
+}>;
 
 const customFields: Record<EDBEntity | string, Record<string, TRegisteredCustomField>> = {};
-const customFieldsForceUpdates: Partial<Record<EDBEntity, (() => void)>> = {};
-const onFieldRegisterListeners: Record<string, ((field: TRegisteredCustomField) => any)> = {};
+const customFieldsForceUpdates: Partial<Record<EDBEntity, () => void>> = {};
+const onFieldRegisterListeners: Record<string, (field: TRegisteredCustomField) => any> = {};
 
-const fieldsCache: Record<string, {
-  component: TFieldDefaultComponent;
-  saveData: () => string | Promise<string>;
-  value?: any;
-}> = {};
+const fieldsCache: Record<
+  string,
+  {
+    component: TFieldDefaultComponent;
+    saveData: () => string | Promise<string>;
+    value?: any;
+  }
+> = {};
 
 export const registerCustomField = (field: TRegisteredCustomField) => {
   if (!customFields[field.entityType]) customFields[field.entityType] = {};
   customFields[field.entityType][field.key] = field;
   customFieldsForceUpdates[field.entityType]?.();
-  Object.values(onFieldRegisterListeners).forEach(listener => listener(field));
-}
+  Object.values(onFieldRegisterListeners).forEach((listener) => listener(field));
+};
 
 export const unregisterCustomField = (entityType: string, key: string) => {
   if (customFields[entityType]) {
     delete customFields[entityType][key];
     customFieldsForceUpdates[entityType]?.();
   }
-}
+};
 
-export const addOnFieldRegisterEventListener = (id: string, listener: ((field: TRegisteredCustomField) => any)) => {
+export const addOnFieldRegisterEventListener = (id: string, listener: (field: TRegisteredCustomField) => any) => {
   onFieldRegisterListeners[id] = listener;
-}
+};
 export const removeOnFieldRegisterEventListener = (id: string) => {
   delete onFieldRegisterListeners[id];
-}
+};
 
 export const RenderCustomFields = (props: {
   entityType: EDBEntity | string;
@@ -101,42 +109,52 @@ export const RenderCustomFields = (props: {
     return () => {
       removeOnFieldRegisterEventListener(entityType);
       delete customFieldsForceUpdates[entityType];
-    }
+    };
   }, []);
 
   // Just update the values that are undefined, but leave the rest
   // for user input to be untouched
   const customMeta = Object.assign({}, updatedMeta, entityData?.customMeta);
 
-  return <>{Object.values(customFields[entityType] ?? {})
-    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
-    .map(field => {
-      const Comp = field.component;
-      return <Comp
-        key={field.key}
-        initialValue={customMeta?.[field.key]}
-        entity={entityData}
-        onChange={(value) => onChange?.(field, value)}
-      />
-    })}</>
-}
+  return (
+    <>
+      {Object.values(customFields[entityType] ?? {})
+        .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+        .map((field) => {
+          const Comp = field.component;
+          return (
+            <Comp
+              key={field.key}
+              initialValue={customMeta?.[field.key]}
+              entity={entityData}
+              onChange={(value) => onChange?.(field, value)}
+            />
+          );
+        })}
+    </>
+  );
+};
 
 export const getCustomMetaFor = async (entityType: EDBEntity | string): Promise<Record<string, string>> => {
-  return Object.assign({}, ...(await Promise.all(Object.values(customFields[entityType] ?? {})
-    .map(async field => {
-      return {
-        [field.key]: await field.saveData(),
-      }
-    }))));
-}
+  return Object.assign(
+    {},
+    ...(await Promise.all(
+      Object.values(customFields[entityType] ?? {}).map(async (field) => {
+        return {
+          [field.key]: await field.saveData(),
+        };
+      }),
+    )),
+  );
+};
 
 export const getCustomMetaKeysFor = (entityType: EDBEntity | string): string[] => {
-  return Object.values(customFields[entityType] ?? {}).map(field => field.key);
-}
+  return Object.values(customFields[entityType] ?? {}).map((field) => field.key);
+};
 
 export const getCustomFieldsFor = (entityType: EDBEntity | string): TRegisteredCustomField[] => {
   return Object.values(customFields[entityType] ?? {});
-}
+};
 
 const useInitialValue = (initialValue: any): [any, React.Dispatch<React.SetStateAction<any>>] => {
   const [value, setValue] = useState(initialValue);
@@ -146,8 +164,7 @@ const useInitialValue = (initialValue: any): [any, React.Dispatch<React.SetState
     setValue(initialValue);
   }
   return [value, setValue];
-}
-
+};
 
 export const getCustomField = (settings: {
   id: string;
@@ -167,23 +184,27 @@ export const getCustomField = (settings: {
   if (fieldsCache[id]) return fieldsCache[id];
 
   fieldsCache[id] = {
-    component: !Component ? undefined : (props) => {
-      const [value, setValue] = useInitialValue(props.initialValue);
-      fieldsCache[id].value = value;
-
-      return <Component
-        {...props}
-        value={value}
-        onChange={value => {
+    component: !Component
+      ? undefined
+      : (props) => {
+          const [value, setValue] = useInitialValue(props.initialValue);
           fieldsCache[id].value = value;
-          setValue(value);
-        }}
-      />
-    },
-    saveData: saveData ?? (() => (!fieldsCache[id].value) ? null : fieldsCache[id].value),
+
+          return (
+            <Component
+              {...props}
+              value={value}
+              onChange={(value) => {
+                fieldsCache[id].value = value;
+                setValue(value);
+              }}
+            />
+          );
+        },
+    saveData: saveData ?? (() => (!fieldsCache[id].value ? null : fieldsCache[id].value)),
   };
   return fieldsCache[id];
-}
+};
 
 export const getSimpleTextField = (settings: {
   id: string;
@@ -201,42 +222,50 @@ export const getSimpleTextField = (settings: {
       const [showPassword, setShowPassword] = useState(false);
       fieldsCache[id].value = value;
 
-      return <TextInput
-        value={value ?? ''}
-        type={(simpleTextType === 'password' && !showPassword) ? 'password' : 'text'}
-        onChange={e => {
-          if (simpleTextType === 'integer' || simpleTextType === 'float') {
-            const val = simpleTextType === 'integer' ? parseInt(e.target.value) :
-              parseFloat(e.target.value);
+      return (
+        <TextInput
+          value={value ?? ''}
+          type={simpleTextType === 'password' && !showPassword ? 'password' : 'text'}
+          onChange={(e) => {
+            if (simpleTextType === 'integer' || simpleTextType === 'float') {
+              const val = simpleTextType === 'integer' ? parseInt(e.target.value) : parseFloat(e.target.value);
 
-            if (!isNaN(val)) {
-              fieldsCache[id].value = val;
-              setValue(val as any);
-              props.onChange?.(val);
+              if (!isNaN(val)) {
+                fieldsCache[id].value = val;
+                setValue(val as any);
+                props.onChange?.(val);
+              }
+              return;
             }
-            return;
+            fieldsCache[id].value = e.target.value;
+            setValue(e.target.value);
+            props.onChange?.(e.target.value);
+          }}
+          label={settings.label ?? settings.key}
+          inputComponent={
+            simpleTextType === 'textarea'
+              ? 'textarea'
+              : simpleTextType === 'currency'
+              ? (NumberFormatCustom as any)
+              : undefined
           }
-          fieldsCache[id].value = e.target.value;
-          setValue(e.target.value);
-          props.onChange?.(e.target.value);
-        }}
-        label={settings.label ?? settings.key}
-        inputComponent={simpleTextType === 'textarea' ? 'textarea' :
-          simpleTextType === 'currency' ? NumberFormatCustom as any : undefined}
-        endAdornment={simpleTextType === 'password' ? (
-          <InputAdornment position="end">
-            <IconButton
-              aria-label="toggle password visibility"
-              onClick={() => setShowPassword(!showPassword)}
-              edge="end"
-            >
-              {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
-            </IconButton>
-          </InputAdornment>
-        ) : undefined}
-        error={props.error && props.canValidate}
-        {...(settings.props ?? {})}
-      />
+          endAdornment={
+            simpleTextType === 'password' ? (
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={() => setShowPassword(!showPassword)}
+                  edge="end"
+                >
+                  {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                </IconButton>
+              </InputAdornment>
+            ) : undefined
+          }
+          error={props.error && props.canValidate}
+          {...(settings.props ?? {})}
+        />
+      );
     },
     saveData: () => {
       const value = fieldsCache[id].value;
@@ -252,8 +281,7 @@ export const getSimpleTextField = (settings: {
     },
   };
   return fieldsCache[id];
-}
-
+};
 
 export const registerSimpleTextCustomField = (settings: {
   entityType: EDBEntity | string;
@@ -272,24 +300,22 @@ export const registerSimpleTextCustomField = (settings: {
     component: field.component,
     saveData: field.saveData,
   });
-}
+};
 
-
-export const getTextEditorField = (settings: {
-  id: string;
-  label?: string;
-  props?: TextInputProps;
-}) => {
+export const getTextEditorField = (settings: { id: string; label?: string; props?: TextInputProps }) => {
   const { id } = settings;
   if (fieldsCache[id]) return fieldsCache[id];
 
   const state = {
     id,
     editorId: undefined,
-  }
+  };
 
-  class TextEditorCustomField extends React.Component<{ initialValue: string | undefined; entity: TBasePageEntity; onChange?: (value: any) => void }> {
-
+  class TextEditorCustomField extends React.Component<{
+    initialValue: string | undefined;
+    entity: TBasePageEntity;
+    onChange?: (value: any) => void;
+  }> {
     public editorId: string;
     public initialValue: string;
     public initPromise: null | Promise<void>;
@@ -319,22 +345,23 @@ export const getTextEditorField = (settings: {
         this.initialValue = this.props.initialValue;
         this.initEditor();
       }
-    }
+    };
 
     private initEditor = async () => {
-      let data: {
-        html: string;
-        json: string;
-      } | undefined = undefined;
+      let data:
+        | {
+            html: string;
+            json: string;
+          }
+        | undefined = undefined;
       if (this.initPromise) await this.initPromise;
       let initDone;
-      this.initPromise = new Promise(done => initDone = done);
+      this.initPromise = new Promise((done) => (initDone = done));
 
       const target = document.getElementById(this.editorId);
       if (!target) return;
       await destroyEditor(this.editorId);
       target.innerHTML = '';
-
 
       if (this.initialValue) {
         try {
@@ -354,18 +381,16 @@ export const getTextEditorField = (settings: {
       });
 
       initDone();
-    }
+    };
 
     render() {
       return (
-        <div style={{ margin: '15px 0' }}
-          className={entityEditStyles.descriptionEditor}>
+        <div style={{ margin: '15px 0' }} className={entityEditStyles.descriptionEditor}>
           <div style={{ height: '350px' }} id={this.editorId}></div>
         </div>
-      )
+      );
     }
   }
-
 
   fieldsCache[id] = {
     component: TextEditorCustomField,
@@ -380,7 +405,7 @@ export const getTextEditorField = (settings: {
     },
   };
   return fieldsCache[id];
-}
+};
 
 export const registerTextEditorCustomField = (settings: {
   entityType: EDBEntity | string;
@@ -398,17 +423,21 @@ export const registerTextEditorCustomField = (settings: {
     component: field.component,
     saveData: field.saveData,
   });
-}
-
+};
 
 export const getSelectField = (settings: {
   id: string;
   label?: string;
   props?: SelectInputProps;
-  options?: ({
-    value: string | number | undefined;
-    label: string;
-  } | string | number | undefined)[];
+  options?: (
+    | {
+        value: string | number | undefined;
+        label: string;
+      }
+    | string
+    | number
+    | undefined
+  )[];
 }) => {
   const { id } = settings;
   if (fieldsCache[id]) return fieldsCache[id];
@@ -431,21 +460,26 @@ export const getSelectField = (settings: {
           error={props.error && props.canValidate}
           {...(settings.props ?? {})}
         />
-      )
+      );
     },
-    saveData: () => (!fieldsCache[id].value) ? null : fieldsCache[id].value,
+    saveData: () => (!fieldsCache[id].value ? null : fieldsCache[id].value),
   };
   return fieldsCache[id];
-}
+};
 
 export const registerSelectCustomField = (settings: {
   entityType: EDBEntity | string;
   key: string;
   label?: string;
-  options?: ({
-    value: string | number | undefined;
-    label: string;
-  } | string | number | undefined)[];
+  options?: (
+    | {
+        value: string | number | undefined;
+        label: string;
+      }
+    | string
+    | number
+    | undefined
+  )[];
   props?: SelectInputProps;
 }) => {
   const id = getRandStr(12);
@@ -458,14 +492,9 @@ export const registerSelectCustomField = (settings: {
     component: field.component,
     saveData: field.saveData,
   });
-}
+};
 
-
-export const getImageField = (settings: {
-  id: string;
-  label?: string;
-  props?: ImageInputProps;
-}) => {
+export const getImageField = (settings: { id: string; label?: string; props?: ImageInputProps }) => {
   const { id } = settings;
   if (fieldsCache[id]) return fieldsCache[id];
 
@@ -487,12 +516,12 @@ export const getImageField = (settings: {
           variant="standard"
           {...(settings.props ?? {})}
         />
-      )
+      );
     },
-    saveData: () => (!fieldsCache[id].value) ? null : fieldsCache[id].value,
+    saveData: () => (!fieldsCache[id].value ? null : fieldsCache[id].value),
   };
   return fieldsCache[id];
-}
+};
 
 export const registerImageCustomField = (settings: {
   entityType: EDBEntity | string;
@@ -510,14 +539,9 @@ export const registerImageCustomField = (settings: {
     component: field.component,
     saveData: field.saveData,
   });
-}
+};
 
-
-export const getGalleryField = (settings: {
-  id: string;
-  label?: string;
-  props?: GalleryPickerProps;
-}) => {
+export const getGalleryField = (settings: { id: string; label?: string; props?: GalleryPickerProps }) => {
   const { id } = settings;
   if (fieldsCache[id]) return fieldsCache[id];
 
@@ -528,9 +552,9 @@ export const getGalleryField = (settings: {
 
       return (
         <GalleryPicker
-          images={value?.split(',').map(src => ({ src })) ?? []}
+          images={value?.split(',').map((src) => ({ src })) ?? []}
           onChange={(value: TImageSettings[]) => {
-            const valStr = value.map(val => val.src).join(',');
+            const valStr = value.map((val) => val.src).join(',');
             fieldsCache[id].value = valStr;
             setValue(valStr);
             props.onChange?.(valStr);
@@ -539,12 +563,12 @@ export const getGalleryField = (settings: {
           style={{ border: '1px solid #ccc', borderRadius: '6px', padding: '10px' }}
           {...(settings.props ?? {})}
         />
-      )
+      );
     },
-    saveData: () => (!fieldsCache[id].value) ? null : fieldsCache[id].value,
+    saveData: () => (!fieldsCache[id].value ? null : fieldsCache[id].value),
   };
   return fieldsCache[id];
-}
+};
 
 export const registerGalleryCustomField = (settings: {
   entityType: EDBEntity | string;
@@ -562,13 +586,9 @@ export const registerGalleryCustomField = (settings: {
     component: field.component,
     saveData: field.saveData,
   });
-}
+};
 
-export const getColorField = (settings: {
-  id: string;
-  label?: string;
-  props?: ColorInputProps;
-}) => {
+export const getColorField = (settings: { id: string; label?: string; props?: ColorInputProps }) => {
   const { id, label } = settings;
   if (fieldsCache[id]) return fieldsCache[id];
 
@@ -588,12 +608,12 @@ export const getColorField = (settings: {
           }}
           {...(settings.props ?? {})}
         />
-      )
+      );
     },
-    saveData: () => (!fieldsCache[id].value) ? null : fieldsCache[id].value,
+    saveData: () => (!fieldsCache[id].value ? null : fieldsCache[id].value),
   };
   return fieldsCache[id];
-}
+};
 
 export const registerColorCustomField = (settings: {
   entityType: EDBEntity | string;
@@ -611,14 +631,9 @@ export const registerColorCustomField = (settings: {
     component: field.component,
     saveData: field.saveData,
   });
-}
+};
 
-
-export const getCheckboxField = (settings: {
-  id: string;
-  label?: string;
-  props?: CheckboxProps;
-}) => {
+export const getCheckboxField = (settings: { id: string; label?: string; props?: CheckboxProps }) => {
   const { id, label } = settings;
   if (fieldsCache[id]) return fieldsCache[id];
 
@@ -639,12 +654,12 @@ export const getCheckboxField = (settings: {
           color="primary"
           {...(settings.props ?? {})}
         />
-      )
+      );
     },
-    saveData: () => (!fieldsCache[id].value) ? null : fieldsCache[id].value,
+    saveData: () => (!fieldsCache[id].value ? null : fieldsCache[id].value),
   };
   return fieldsCache[id];
-}
+};
 
 export const registerCheckboxCustomField = (settings: {
   entityType: EDBEntity | string;
@@ -662,8 +677,7 @@ export const registerCheckboxCustomField = (settings: {
     component: field.component,
     saveData: field.saveData,
   });
-}
-
+};
 
 export const getDatepickerField = (settings: {
   id: string;
@@ -693,12 +707,12 @@ export const getDatepickerField = (settings: {
             {...(settings.props ?? {})}
           />
         </div>
-      )
+      );
     },
-    saveData: () => (!fieldsCache[id].value) ? null : fieldsCache[id].value,
+    saveData: () => (!fieldsCache[id].value ? null : fieldsCache[id].value),
   };
   return fieldsCache[id];
-}
+};
 
 export const registerDatepickerCustomField = (settings: {
   entityType: EDBEntity | string;
@@ -717,9 +731,7 @@ export const registerDatepickerCustomField = (settings: {
     component: field.component,
     saveData: field.saveData,
   });
-}
-
-
+};
 
 export const registerCustomFieldOfType = (field: TAdminCustomField) => {
   if (field.fieldType === 'Simple text') {
@@ -749,4 +761,4 @@ export const registerCustomFieldOfType = (field: TAdminCustomField) => {
       ...field,
     });
   }
-}
+};

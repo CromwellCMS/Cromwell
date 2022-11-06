@@ -12,14 +12,15 @@ import styles from '../EntityTable.module.scss';
 import DeleteSelectedButton from './DeleteSelectedButton';
 
 export function PageHeader<TEntityType extends TBasePageEntity, TFilterType extends TBaseEntityFilter>(
-  props: TListItemProps<TEntityType, TFilterType>) {
+  props: TListItemProps<TEntityType, TFilterType>,
+) {
   const { searchStore, tableProps, handleDeleteSelected, totalElements, clearAllFilters } = props;
   const { filters, sortBy } = searchStore;
   const history = useHistory();
 
   const handleCreate = () => {
-    history.push(`${tableProps.entityBaseRoute}/new`)
-  }
+    history.push(`${tableProps.entityBaseRoute}/new`);
+  };
 
   return (
     <div className={styles.pageHeader}>
@@ -29,28 +30,24 @@ export function PageHeader<TEntityType extends TBasePageEntity, TFilterType exte
       </div>
       <div style={{ display: 'flex', alignItems: 'center' }}>
         {tableProps.customElements?.getHeaderRightActions?.(props)}
-        {!!(filters?.length || sortBy?.column
-          || tableProps.isFilterActive?.()) && (
-            <Tooltip title="Clear filters">
-              <span>
-                <IconButton className={clsx(styles.iconButton)}
-                  onClick={clearAllFilters}
-                ><ClearFilterIcon className="w-5 h-5" />
-                </IconButton>
-              </span>
-            </Tooltip>
-          )}
+        {!!(filters?.length || sortBy?.column || tableProps.isFilterActive?.()) && (
+          <Tooltip title="Clear filters">
+            <span>
+              <IconButton className={clsx(styles.iconButton)} onClick={clearAllFilters}>
+                <ClearFilterIcon className="w-5 h-5" />
+              </IconButton>
+            </span>
+          </Tooltip>
+        )}
         <DeleteSelectedButton
           style={{ marginRight: '10px' }}
           onClick={handleDeleteSelected}
           totalElements={totalElements}
         />
         {tableProps.entityBaseRoute && !tableProps.hideAddNew && (
-          <TextButton
-            onClick={handleCreate}
-          >Add new</TextButton>
+          <TextButton onClick={handleCreate}>Add new</TextButton>
         )}
       </div>
     </div>
-  )
+  );
 }

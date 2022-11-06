@@ -15,7 +15,7 @@ import { ProductContext, TProductStore } from './contexts/Product';
 export default function ProductPage() {
   const [store, setStore] = useState<TProductStore>({
     tab: Number(queryString.parse(window.location.search).tab || '0'),
-    productRef: { data: null }
+    productRef: { data: null },
   });
   const client = getGraphQLClient();
   const [activeTabNum] = useTabs({ store, setStore });
@@ -30,7 +30,9 @@ export default function ProductPage() {
         entityLabel="Product"
         defaultPageName="product"
         getById={(id) => {
-          return client.getProductById(id, gql`
+          return client.getProductById(
+            id,
+            gql`
           fragment AdminPanelProductFragment on Product {
               id
               slug
@@ -85,19 +87,23 @@ export default function ProductPage() {
                   attributes
                   customMeta (keys: ${JSON.stringify(getCustomMetaKeysFor(EDBEntity.ProductVariant))})
               }
-          }`, 'AdminPanelProductFragment')
+          }`,
+            'AdminPanelProductFragment',
+          );
         }}
         onSave={async (data) => {
           const product = Object.assign({}, data, store.productRef.data);
 
-          const productAttributes = product.attributes?.map(attr => ({
+          const productAttributes = product.attributes?.map((attr) => ({
             key: attr.key,
-            values: attr.values ? attr.values.map(val => ({
-              value: val.value,
-            })) : [],
+            values: attr.values
+              ? attr.values.map((val) => ({
+                  value: val.value,
+                }))
+              : [],
           }));
 
-          const categoryIds = product.categories?.map(cat => cat.id);
+          const categoryIds = product.categories?.map((cat) => cat.id);
           if (product.mainCategoryId && !categoryIds.includes(product.mainCategoryId)) {
             categoryIds.push(product.mainCategoryId);
           }
@@ -121,9 +127,9 @@ export default function ProductPage() {
             pageTitle: product.pageTitle,
             pageDescription: product.pageDescription,
             meta: product.meta && {
-              keywords: product.meta.keywords
+              keywords: product.meta.keywords,
             },
-            variants: product.variants?.map(variant => ({
+            variants: product.variants?.map((variant) => ({
               id: typeof variant.id === 'number' ? variant.id : undefined,
               name: variant.name,
               price: typeof variant.price === 'string' ? parseFloat(variant.price) : variant.price,
@@ -154,5 +160,5 @@ export default function ProductPage() {
         classes={{ content: activeTabNum !== 0 ? 'bg-transparent border-0' : '' }}
       />
     </ProductContext.Provider>
-  )
+  );
 }

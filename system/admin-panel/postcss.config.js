@@ -4,6 +4,6 @@ module.exports = {
   plugins: {
     'postcss-preset-env': {},
     tailwindcss: { config: `${getAdminPanelDir()}/tailwind.config.js` },
-    'autoprefixer': {},
+    autoprefixer: {},
   },
 };

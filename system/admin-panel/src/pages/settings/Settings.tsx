@@ -1,25 +1,18 @@
-import { EDBEntity } from "@cromwell/core";
-import React from "react";
-import {
-  Route,
-  Switch,
-  useRouteMatch,
-} from "react-router-dom";
-import {
-  AdminSettingsContextProvider,
-  useAdminSettings,
-} from "../../hooks/useAdminSettings";
-import { SettingsIndexPage } from "./pages";
-import { ACLSettingsPage } from "./pages/acl";
-import { CodeSettingsPage } from "./pages/code";
-import { CustomEntitySettingsPage } from "./pages/custom/customEntity";
-import { CustomRoleSettingsPage } from "./pages/custom/customRole";
-import { DefaultEntitySettingsPage } from "./pages/custom/defaultEntity";
-import { CustomDataPage } from "./pages/customData";
-import { GeneralSettingsPage } from "./pages/general";
-import { MigrationSettingsPage } from "./pages/migration";
-import { SEOSettingsPage } from "./pages/seo";
-import { StoreSettingsPage } from "./pages/store";
+import { EDBEntity } from '@cromwell/core';
+import React from 'react';
+import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { AdminSettingsContextProvider, useAdminSettings } from '../../hooks/useAdminSettings';
+import { SettingsIndexPage } from './pages';
+import { ACLSettingsPage } from './pages/acl';
+import { CodeSettingsPage } from './pages/code';
+import { CustomEntitySettingsPage } from './pages/custom/customEntity';
+import { CustomRoleSettingsPage } from './pages/custom/customRole';
+import { DefaultEntitySettingsPage } from './pages/custom/defaultEntity';
+import { CustomDataPage } from './pages/customData';
+import { GeneralSettingsPage } from './pages/general';
+import { MigrationSettingsPage } from './pages/migration';
+import { SEOSettingsPage } from './pages/seo';
+import { StoreSettingsPage } from './pages/store';
 // import SettingsOld from "./SettingsOld"
 
 export const SettingsPage = () => {
@@ -28,41 +21,13 @@ export const SettingsPage = () => {
   return (
     <div className="p-2 md:p-4">
       <Switch>
-        <Route
-          path={`${match.path}/general`}
-          exact
-          component={GeneralSettingsPage}
-        />
-        <Route
-          path={`${match.path}/store`}
-          exact
-          component={StoreSettingsPage}
-        />
-        <Route
-          path={`${match.path}/code`}
-          exact
-          component={CodeSettingsPage}
-        />
-        <Route
-          path={`${match.path}/seo`}
-          exact
-          component={SEOSettingsPage}
-        />
-        <Route
-          path={`${match.path}/acl`}
-          exact
-          component={ACLSettingsPage}
-        />
-        <Route
-          path={`${match.path}/acl/:roleId`}
-          component={CustomRoleSettingsPage}
-        />
-        <Route
-          path={`${match.path}/custom-data`}
-          component={CustomDataPage}
-          exact
-        >
-        </Route>
+        <Route path={`${match.path}/general`} exact component={GeneralSettingsPage} />
+        <Route path={`${match.path}/store`} exact component={StoreSettingsPage} />
+        <Route path={`${match.path}/code`} exact component={CodeSettingsPage} />
+        <Route path={`${match.path}/seo`} exact component={SEOSettingsPage} />
+        <Route path={`${match.path}/acl`} exact component={ACLSettingsPage} />
+        <Route path={`${match.path}/acl/:roleId`} component={CustomRoleSettingsPage} />
+        <Route path={`${match.path}/custom-data`} component={CustomDataPage} exact></Route>
         <Route
           path={`${match.path}/custom-data/product`}
           component={() => <DefaultEntitySettingsPage entityType={EDBEntity.Product} />}
@@ -87,38 +52,22 @@ export const SettingsPage = () => {
           path={`${match.path}/custom-data/general`}
           component={() => <DefaultEntitySettingsPage entityType={EDBEntity.CMS} />}
         />
-        <Route
-          path={`${match.path}/custom-data/:entityType`}
-          component={CustomEntitySettingsPage}
-        />
-        <Route
-          path={`${match.path}/migration`}
-          exact
-          component={MigrationSettingsPage}
-        />
-        <Route
-          path={match.path}
-          component={SettingsIndexPage}
-        />
+        <Route path={`${match.path}/custom-data/:entityType`} component={CustomEntitySettingsPage} />
+        <Route path={`${match.path}/migration`} exact component={MigrationSettingsPage} />
+        <Route path={match.path} component={SettingsIndexPage} />
         {/* <Route path={`${match.path}/general`} component={SettingsIndexPage} /> */}
       </Switch>
     </div>
   );
 };
 
-const SettingsPageLoader = ({
-  children,
-}: {
-  children?: any;
-}) => {
+const SettingsPageLoader = ({ children }: { children?: any }) => {
   const { adminSettings } = useAdminSettings();
 
   if (!adminSettings) {
     return (
       <>
-        <h1 className="font-bold my-3 text-3xl inline-block">
-          ...
-        </h1>
+        <h1 className="font-bold my-3 text-3xl inline-block">...</h1>
       </>
     );
   }

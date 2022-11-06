@@ -21,239 +21,243 @@ let EditorWarning: typeof import('@editorjs/warning');
 
 let importPromise;
 (async () => {
-    let importResolver;
-    importPromise = new Promise(done => {
-        importResolver = done;
-    });
+  let importResolver;
+  importPromise = new Promise((done) => {
+    importResolver = done;
+  });
 
-    if (!EditorJS) {
-        [
-            EditorJS,
-            EditorHeader,
-            EditorList,
-            EditorImage,
-            EditorEmbed,
-            EditorQuote,
-            EditorDelimiter,
-            // EditorRaw,
-            EditorTable,
-            EditorMarker,
-            // EditorCode,
-            EditorLink,
-            EditorWarning,
-        ] = await Promise.all([
-            await import('@editorjs/editorjs'),
-            await import('@editorjs/header'),
-            await import('@editorjs/list'),
-            await import('@cromwell/editorjs-image'),
-            await import('@editorjs/embed'),
-            await import('@editorjs/quote'),
-            await import('@editorjs/delimiter'),
-            // await import('@editorjs/raw'),
-            await import('@editorjs/table'),
-            await import('@editorjs/marker'),
-            // await import('@editorjs/code'),
-            await import('@editorjs/link'),
-            await import('@editorjs/warning'),
-        ]);
-    }
+  if (!EditorJS) {
+    [
+      EditorJS,
+      EditorHeader,
+      EditorList,
+      EditorImage,
+      EditorEmbed,
+      EditorQuote,
+      EditorDelimiter,
+      // EditorRaw,
+      EditorTable,
+      EditorMarker,
+      // EditorCode,
+      EditorLink,
+      EditorWarning,
+    ] = await Promise.all([
+      await import('@editorjs/editorjs'),
+      await import('@editorjs/header'),
+      await import('@editorjs/list'),
+      await import('@cromwell/editorjs-image'),
+      await import('@editorjs/embed'),
+      await import('@editorjs/quote'),
+      await import('@editorjs/delimiter'),
+      // await import('@editorjs/raw'),
+      await import('@editorjs/table'),
+      await import('@editorjs/marker'),
+      // await import('@editorjs/code'),
+      await import('@editorjs/link'),
+      await import('@editorjs/warning'),
+    ]);
+  }
 
-    importResolver();
+  importResolver();
 })();
 
 const getTools = (readOnly?: boolean) => ({
-    image: {
-        class: EditorImage.default,
-        inlineToolbar: !readOnly,
-        config: readOnly ? undefined : {
-            onSelectFile: async () => {
-                return getFileManager().getPhoto();
+  image: {
+    class: EditorImage.default,
+    inlineToolbar: !readOnly,
+    config: readOnly
+      ? undefined
+      : {
+          onSelectFile: async () => {
+            return getFileManager().getPhoto();
+          },
+          uploader: {
+            uploadByFile: () => {
+              toast.error('Please upload image via File manager');
+              return new Promise<any>((done) =>
+                done({
+                  success: 0,
+                }),
+              );
             },
-            uploader: {
-                uploadByFile: () => {
-                    toast.error('Please upload image via File manager')
-                    return new Promise<any>(done => done({
-                        success: 0,
-                    }));
-                },
-                uploadByUrl: (url: string) => {
-                    if (url.startsWith(window.location.origin)) {
-                        return new Promise<any>(done => done({
-                            success: 1,
-                            file: {
-                                url,
-                            }
-                        }));
-                    } else {
-                        toast.error('Please upload image via File manage')
-                        return new Promise<any>(done => done({
-                            success: 0,
-                        }));
-                    }
-                }
+            uploadByUrl: (url: string) => {
+              if (url.startsWith(window.location.origin)) {
+                return new Promise<any>((done) =>
+                  done({
+                    success: 1,
+                    file: {
+                      url,
+                    },
+                  }),
+                );
+              } else {
+                toast.error('Please upload image via File manage');
+                return new Promise<any>((done) =>
+                  done({
+                    success: 0,
+                  }),
+                );
+              }
             },
-        }
-    },
-    header: {
-        class: EditorHeader.default,
-        inlineToolbar: !readOnly
-    },
-    list: {
-        class: EditorList.default,
-        inlineToolbar: !readOnly,
-    },
-    embed: {
-        class: EditorEmbed.default,
-        inlineToolbar: !readOnly,
-    },
-    quote: {
-        class: EditorQuote.default,
-        inlineToolbar: !readOnly,
-    },
-    delimiter: {
-        class: EditorDelimiter.default,
-        inlineToolbar: !readOnly,
-    },
-    // raw: {
-    //     class: EditorRaw.default,
-    //     inlineToolbar: true,
-    // },
-    table: {
-        class: EditorTable.default,
-        inlineToolbar: !readOnly,
-    },
-    Marker: {
-        class: EditorMarker.default,
-        inlineToolbar: !readOnly,
-        shortcut: 'CMD+SHIFT+M',
-    },
-    // code: {
-    //     class: EditorCode.default,
-    //     inlineToolbar: true,
-    // },
-    code: {
-        class: InlineCode,
-        inlineToolbar: true,
-    },
-    linkTool: {
-        class: EditorLink.default,
-        inlineToolbar: !readOnly,
-    },
-    warning: {
-        class: EditorWarning.default,
-        inlineToolbar: !readOnly,
-    },
-    fontSize: FontSize,
-})
+          },
+        },
+  },
+  header: {
+    class: EditorHeader.default,
+    inlineToolbar: !readOnly,
+  },
+  list: {
+    class: EditorList.default,
+    inlineToolbar: !readOnly,
+  },
+  embed: {
+    class: EditorEmbed.default,
+    inlineToolbar: !readOnly,
+  },
+  quote: {
+    class: EditorQuote.default,
+    inlineToolbar: !readOnly,
+  },
+  delimiter: {
+    class: EditorDelimiter.default,
+    inlineToolbar: !readOnly,
+  },
+  // raw: {
+  //     class: EditorRaw.default,
+  //     inlineToolbar: true,
+  // },
+  table: {
+    class: EditorTable.default,
+    inlineToolbar: !readOnly,
+  },
+  Marker: {
+    class: EditorMarker.default,
+    inlineToolbar: !readOnly,
+    shortcut: 'CMD+SHIFT+M',
+  },
+  // code: {
+  //     class: EditorCode.default,
+  //     inlineToolbar: true,
+  // },
+  code: {
+    class: InlineCode,
+    inlineToolbar: true,
+  },
+  linkTool: {
+    class: EditorLink.default,
+    inlineToolbar: !readOnly,
+  },
+  warning: {
+    class: EditorWarning.default,
+    inlineToolbar: !readOnly,
+  },
+  fontSize: FontSize,
+});
 
 const editors: Record<string, EditorJS.default> = {};
 
 export const initTextEditor = async (options: {
-    htmlId: string;
-    placeholder?: string;
-    data?: any;
-    autofocus?: boolean;
-    onChange?: (api: API, block: BlockAPI) => any;
+  htmlId: string;
+  placeholder?: string;
+  data?: any;
+  autofocus?: boolean;
+  onChange?: (api: API, block: BlockAPI) => any;
 }): Promise<void> => {
-    const { htmlId, data, onChange, placeholder, autofocus } = options;
+  const { htmlId, data, onChange, placeholder, autofocus } = options;
 
-    if (importPromise) await importPromise;
+  if (importPromise) await importPromise;
 
-    if (editors[htmlId]) {
-        await editors[htmlId].isReady;
-        if (typeof editors[htmlId]?.destroy === 'function')
-            await editors[htmlId].destroy();
-        delete editors[htmlId];
-    }
+  if (editors[htmlId]) {
+    await editors[htmlId].isReady;
+    if (typeof editors[htmlId]?.destroy === 'function') await editors[htmlId].destroy();
+    delete editors[htmlId];
+  }
 
-    const container = document.querySelector(`#${htmlId}`);
-    if (!container) {
-        console.error('initTextEditor: Failed to find container by id: ' + htmlId);
-        return;
-    }
-    container.classList.add('crw-text-editor');
+  const container = document.querySelector(`#${htmlId}`);
+  if (!container) {
+    console.error('initTextEditor: Failed to find container by id: ' + htmlId);
+    return;
+  }
+  container.classList.add('crw-text-editor');
 
-    const editor = new EditorJS.default({
-        holder: htmlId,
-        data: data,
-        // readOnly: true,
-        minHeight: 0,
-        tools: {
-            ...getTools(),
-        },
-        onChange,
-        autofocus,
-        placeholder: placeholder ?? 'Let`s write an awesome story!',
-    });
-    editors[htmlId] = editor;
-    await editor.isReady;
-}
+  const editor = new EditorJS.default({
+    holder: htmlId,
+    data: data,
+    // readOnly: true,
+    minHeight: 0,
+    tools: {
+      ...getTools(),
+    },
+    onChange,
+    autofocus,
+    placeholder: placeholder ?? 'Let`s write an awesome story!',
+  });
+  editors[htmlId] = editor;
+  await editor.isReady;
+};
 
 export const getEditorHtml = async (htmlId: string, data?: OutputData) => {
-    if (!data) data = await getEditorData(htmlId);
-    if (!data) return;
+  if (!data) data = await getEditorData(htmlId);
+  if (!data) return;
 
-    const saverId = 'editorSaverContainer';
+  const saverId = 'editorSaverContainer';
 
-    let editor = editors['saver'];
-    let saverContainer = document.getElementById(saverId);
+  let editor = editors['saver'];
+  let saverContainer = document.getElementById(saverId);
 
-    if (editor) {
-        await editor.isReady;
-        await editor.render(data);
-        await editor.isReady;
+  if (editor) {
+    await editor.isReady;
+    await editor.render(data);
+    await editor.isReady;
+  } else {
+    saverContainer = document.createElement('div');
+    saverContainer.id = saverId;
+    saverContainer.style.display = 'none';
+    document.body.appendChild(saverContainer);
 
-    } else {
-        saverContainer = document.createElement('div');
-        saverContainer.id = saverId;
-        saverContainer.style.display = 'none';
-        document.body.appendChild(saverContainer);
-
-        editor = new EditorJS.default({
-            holder: saverId,
-            data: data,
-            minHeight: 0,
-            readOnly: true,
-            autofocus: false,
-            tools: {
-                ...getTools(true),
-            },
-        });
-        await editor.isReady;
-    }
-
-    editors['saver'] = editor;
-
-    const redactor = saverContainer.querySelector('.codex-editor__redactor');
-    (redactor as any).style = null;
-    redactor.querySelectorAll('*').forEach(element => {
-        element.removeAttribute('contentEditable');
-        element.removeAttribute('data-placeholder');
+    editor = new EditorJS.default({
+      holder: saverId,
+      data: data,
+      minHeight: 0,
+      readOnly: true,
+      autofocus: false,
+      tools: {
+        ...getTools(true),
+      },
     });
+    await editor.isReady;
+  }
 
-    redactor.querySelectorAll('.embed-tool__url').forEach(el => el.remove());
-    redactor.querySelectorAll('.embed-tool__caption').forEach(el => el.remove());
-    redactor.querySelectorAll('iframe.embed-tool__content').forEach(el => el.classList.remove('embed-tool__content'));
+  editors['saver'] = editor;
 
-    const content = redactor.outerHTML;
-    return content;
+  const redactor = saverContainer.querySelector('.codex-editor__redactor');
+  (redactor as any).style = null;
+  redactor.querySelectorAll('*').forEach((element) => {
+    element.removeAttribute('contentEditable');
+    element.removeAttribute('data-placeholder');
+  });
 
-}
+  redactor.querySelectorAll('.embed-tool__url').forEach((el) => el.remove());
+  redactor.querySelectorAll('.embed-tool__caption').forEach((el) => el.remove());
+  redactor.querySelectorAll('iframe.embed-tool__content').forEach((el) => el.classList.remove('embed-tool__content'));
+
+  const content = redactor.outerHTML;
+  return content;
+};
 
 export const getEditorData = async (htmlId: string): Promise<OutputData | undefined> => {
-    const editor = editors[htmlId];
-    if (!editor || typeof editor.save !== 'function') {
-        return;
-    }
-    return await editor.save();
-}
+  const editor = editors[htmlId];
+  if (!editor || typeof editor.save !== 'function') {
+    return;
+  }
+  return await editor.save();
+};
 
 export const destroyEditor = async (htmlId: string) => {
-    const editor = editors[htmlId];
-    if (!editor) {
-        return;
-    }
-    if (typeof editor.destroy === 'function')
-        await editor.destroy();
-    delete editors[htmlId];
-}
+  const editor = editors[htmlId];
+  if (!editor) {
+    return;
+  }
+  if (typeof editor.destroy === 'function') await editor.destroy();
+  delete editors[htmlId];
+};

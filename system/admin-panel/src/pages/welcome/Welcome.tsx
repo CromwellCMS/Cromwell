@@ -10,31 +10,19 @@ export default function WelcomePage() {
 
   const onAccountSuccess = () => {
     setStep('settings');
-  }
+  };
 
   const onSettingsSuccess = () => {
     history?.push?.(`/`);
-  }
+  };
 
   return (
     <div className="dark:bg-black py-8 my-auto">
       <div className="bg-white rounded-lg mx-auto max-w-sm shadow-md w-full overflow-hidden dark:bg-gray-800">
         <div className="py-4 px-6">
-          <img
-            src="/admin/static/logo_small_black.svg"
-            width="80px"
-            className="mx-auto mt-3 mb-6"
-          />
-          {step === 'account' && (
-            <UserForm
-              onSuccess={onAccountSuccess}
-            />
-          )}
-          {step === 'settings' && (
-            <CmsSettingsForm
-              onSuccess={onSettingsSuccess}
-            />
-          )}
+          <img src="/admin/static/logo_small_black.svg" width="80px" className="mx-auto mt-3 mb-6" />
+          {step === 'account' && <UserForm onSuccess={onAccountSuccess} />}
+          {step === 'settings' && <CmsSettingsForm onSuccess={onSettingsSuccess} />}
         </div>
       </div>
     </div>
