@@ -105,7 +105,7 @@ export const getAdminPanelServiceBuildDir = () => {
     const adminPanelDir = getAdminPanelDir();
     if (adminPanelDir) return resolve(adminPanelDir, 'build');
 }
-export const getAdminPanelTempDir = () => resolve(getTempDir(), 'admin-panel');
+export const getAdminPanelTempDir = () => resolve(getTempDir(), 'admin');
 
 export const getAdminPanelWebServiceBuildDir = () =>
     resolve(getAdminPanelTempDir(), 'build');

@@ -34,7 +34,7 @@ const main = () => {
     spawnSync('npx webpack', [], { shell: true, stdio: 'inherit', cwd: __dirname });
 
     // Move type declarations
-    const declarations = resolve(getAdminPanelServiceBuildDir(), 'types/system/admin-panel/src');
+    const declarations = resolve(getAdminPanelServiceBuildDir(), 'types/system/admin/src');
     if (fs.pathExistsSync(declarations)) {
       const typesTemp = resolve(getAdminPanelServiceBuildDir(), 'types2');
       const typesDest = resolve(getAdminPanelServiceBuildDir(), 'types');

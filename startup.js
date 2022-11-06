@@ -24,7 +24,7 @@ let fs = require('fs');
     const rootNodeModulesDir = resolve(projectRootDir, 'node_modules');
 
     const managerStartupPath = resolve(projectRootDir, 'system/manager/startup.js');
-    const adminStartupPath = resolve(projectRootDir, 'system/admin-panel/startup.js');
+    const adminStartupPath = resolve(projectRootDir, 'system/admin/startup.js');
     const serverStartupPath = resolve(projectRootDir, 'system/server/startup.js');
     const cliStartupPath = resolve(projectRootDir, 'system/cli/startup.js');
     const backendNode_modules = resolve(coreDir, 'backend/node_modules');

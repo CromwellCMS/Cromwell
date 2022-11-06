@@ -66,7 +66,7 @@ describe('rollup', () => {
         );
 
         await fs.outputFile(
-            join(testDir, 'src/admin-panel/index.js'),
+            join(testDir, 'src/admin/index.js'),
             `export default () => 'test';`
         );
 

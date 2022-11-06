@@ -136,7 +136,7 @@ const winStart = () => {
 
         if (services.adminPanel) {
             // ADMIN PANEL
-            await startTerminal(getCacheKey(cacheKeys.adminPanel), `cd ${projectRootDir}\\system\\admin-panel && npm run ${services.adminPanel}`, {
+            await startTerminal(getCacheKey(cacheKeys.adminPanel), `cd ${projectRootDir}\\system\\admin && npm run ${services.adminPanel}`, {
                 x: startX + overlayShift,
                 y: monitorBounds.y,
                 height: monitorBounds.height * serverHeigth + padding,

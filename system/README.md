@@ -52,7 +52,7 @@ API Server Implements REST API for transactions or internal usage and GraphQL AP
 Next.js service, compiles (using Utils) and serves files of an active Theme and Plugins to end-users.
 
 ### 3. Admin Panel
-- Path - system/admin-panel
+- Path - system/admin
 - NPM Module - @cromwell/admin-panel
 - Run command - `npx crw s --sv a`
 - Available at - http://localhost:4064

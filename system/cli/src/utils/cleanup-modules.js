@@ -14,7 +14,7 @@ const folders = [
     join(systemDir, 'core/frontend/node_modules'),
     join(systemDir, 'server/node_modules'),
     join(systemDir, 'renderer/node_modules'),
-    join(systemDir, 'admin-panel/node_modules'),
+    join(systemDir, 'admin/node_modules'),
     join(systemDir, 'manager/node_modules'),
     join(systemDir, 'utils/node_modules'),
     join(systemDir, 'cli/node_modules'),

@@ -337,7 +337,7 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
 
 
         // Theme admin panel page-controller 
-        const adminPanelDirChunk = 'admin-panel';
+        const adminPanelDirChunk = 'admin';
         const adminPanelDir = resolve(srcDir, adminPanelDirChunk);
         if (!watch && fs.pathExistsSync(adminPanelDir)) {
             const adminOptions: RollupOptions = (Object.assign({}, specifiedOptions?.themePages ? specifiedOptions.themePages : inputOptions));
