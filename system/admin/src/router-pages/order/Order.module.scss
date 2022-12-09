@@ -1,0 +1,158 @@
+@import '../../styles/common.module.scss';
+
+.OrderPage {
+  max-width: 900px;
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 300px;
+}
+
+.notFoundPage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.notFoundText {
+  font-size: 25px;
+  font-weight: 500;
+}
+
+.header {
+  @include paper;
+  padding: 0 10px 0 0;
+  min-height: 40px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1;
+}
+
+.content {
+  @include styledScrollBarList;
+  width: 100%;
+  min-height: 300px;
+  height: 100%;
+  overflow: auto;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+}
+
+.fields {
+  @include paper;
+  padding: 20px;
+  margin-bottom: 25px;
+}
+
+.textField {
+  margin-bottom: 0;
+}
+
+.sums {
+  @include paper;
+  margin-bottom: 25px;
+  padding: 20px;
+
+  p {
+    margin-bottom: 5px;
+  }
+
+  b {
+    font-weight: 500;
+  }
+}
+
+.totalChangedBlock {
+  margin-top: 15px;
+  border: 1px solid #ff9100;
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.totalChangedWarning {
+  display: flex;
+  align-items: center;
+  margin-bottom: 9px;
+
+  svg {
+    color: #ff9100;
+  }
+
+  p {
+    font-weight: 500;
+  }
+}
+
+.cart {
+  @include paper;
+  margin-bottom: 20px;
+}
+
+.cartItem {
+  border-bottom: 1px solid #ddd;
+  padding: 10px;
+}
+
+.itemBlock {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.productName {
+  font-weight: 500;
+}
+
+.mainImage {
+  height: 60px;
+}
+
+.priceBlock {
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 18px;
+  margin: 6px 0;
+}
+
+.price {
+  font-weight: 400;
+}
+
+.oldPrice {
+  text-decoration: line-through;
+  opacity: 0.7;
+  margin-right: 10px;
+}
+
+:global(.modeDark) {
+  .header,
+  .fields,
+  .cart,
+  .sums {
+    background-color: #333;
+
+    * {
+      color: #eee;
+    }
+  }
+
+  .popper {
+    background-color: #222;
+
+    * {
+      color: #eee;
+    }
+  }
+
+  .cartItem {
+    border-bottom: 1px solid #222;
+  }
+}

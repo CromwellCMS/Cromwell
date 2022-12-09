@@ -1,5 +1,5 @@
 import { Menu, Transition } from '@headlessui/react';
-import { ChevronRightIcon, DotsVerticalIcon } from '@heroicons/react/outline';
+import { ChevronRightIcon, DotsVerticalIcon } from '@heroicons/react/24/outline';
 import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 

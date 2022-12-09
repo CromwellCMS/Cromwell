@@ -1,28 +1,10 @@
-import {
-  setStoreItem,
-  TAdminCustomEntity,
-  TAdminCustomField,
-  TBasePageEntity,
-  TCmsConfig,
-  TPermission,
-  TProduct,
-  TRole,
-} from '@cromwell/core';
-import { CustomEntity } from '@cromwell/core-backend';
-import { getCStore, getGraphQLClient, getRestApiClient, useCmsSettings } from '@cromwell/core-frontend';
-import { PencilIcon } from '@heroicons/react/outline';
-import React, { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
+import { TBasePageEntity, TProduct } from '@cromwell/core';
+import { getCStore, getGraphQLClient, getRestApiClient } from '@cromwell/core-frontend';
+import { PencilIcon } from '@heroicons/react/24/outline';
+import React, { useCallback, useMemo, useReducer, useState } from 'react';
 import { Link } from 'react-router-dom';
-import {
-  useTable,
-  Column,
-  useSortBy,
-  useResizeColumns,
-  useFlexLayout,
-  useBlockLayout,
-  usePagination,
-} from 'react-table';
-import { toast } from '../components/toast/toast';
+import { Column, useBlockLayout, usePagination, useResizeColumns, useSortBy, useTable } from 'react-table';
+
 import { baseEntityColumns, TBaseEntityFilter } from '../exports';
 import { timeSince } from '../helpers/time';
 import { useDebounceFn } from './useDebounce';

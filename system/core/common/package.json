@@ -21,25 +21,25 @@
     "format": "prettier --write --ignore-unknown \"**/*.+(js|jsx|json|css|md|ts|tsx)\""
   },
   "dependencies": {
-    "react": "17.0.2",
-    "react-dom": "17.0.2",
-    "tslib": "2.3.1"
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "tslib": "2.4.1"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "20.0.0",
     "@rollup/plugin-node-resolve": "13.0.4",
-    "@types/react": "17.0.18",
-    "@types/react-dom": "17.0.9",
-    "@typescript-eslint/eslint-plugin": "4.29.2",
-    "@typescript-eslint/parser": "4.29.2",
-    "eslint": "7.32.0",
+    "@types/react": "18.0.25",
+    "@types/react-dom": "18.0.8",
+    "@typescript-eslint/eslint-plugin": "5.42.0",
+    "@typescript-eslint/parser": "5.42.0",
+    "eslint": "8.27.0",
     "rollup": "2.56.2",
     "rollup-plugin-terser": "7.0.2",
     "rollup-plugin-ts-compiler": "1.0.18",
-    "typescript": "4.3.5"
+    "typescript": "4.8.4"
   },
   "peerDependencies": {
-    "next": "12.0.7",
+    "next": "13.0.2",
     "typeorm": "0.2.37"
   }
 }

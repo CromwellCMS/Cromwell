@@ -24,7 +24,7 @@ import {
   useScrollTrigger,
 } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 import { loginPageInfo, userPageInfo } from '../../constants/PageInfos';
 import { useForceUpdate } from '../../helpers/forceUpdate';
@@ -47,8 +47,9 @@ export default function Sidebar() {
   const [cmsInfoOpen, setCmsInfoOpen] = useState(false);
   const [systemMonitorOpen, setSystemMonitorOpen] = useState(false);
   const popperAnchorEl = useRef<HTMLDivElement | null>(null);
-  const history = useHistory?.();
+  const navigate = useNavigate();
   const forceUpdate = useForceUpdate();
+  const location = useLocation();
 
   const userInfo: TUser | undefined = getStoreItem('userInfo');
   const toggleSubMenu = (panel: string) => (event: React.ChangeEvent<any>, isExpanded: boolean) => {
@@ -65,15 +66,6 @@ export default function Sidebar() {
     onStoreChange('userInfo', () => {
       setTimeout(forceUpdate, 100);
     });
-    history?.listen(() => {
-      const currentInfo = pageInfos.find((i) => i.route === window.location.pathname.replace('/admin', ''));
-      const newCurrentLink = getLinkByInfo(currentInfo);
-      if (newCurrentLink && newCurrentLink !== currentLink) {
-        // setActiveId(newCurrentLink.id);
-        if (newCurrentLink.parentId) setExpanded(newCurrentLink.parentId);
-      }
-      setTimeout(forceUpdate, 100);
-    });
 
     store.setStateProp({
       prop: 'forceUpdateSidebar',
@@ -81,11 +73,21 @@ export default function Sidebar() {
     });
   }, []);
 
+  useEffect(() => {
+    const currentInfo = pageInfos.find((i) => i.route === window.location.pathname.replace('/admin', ''));
+    const newCurrentLink = getLinkByInfo(currentInfo);
+    if (newCurrentLink && newCurrentLink !== currentLink) {
+      // setActiveId(newCurrentLink.id);
+      if (newCurrentLink.parentId) setExpanded(newCurrentLink.parentId);
+    }
+    setTimeout(forceUpdate, 100);
+  }, [location]);
+
   const handleLogout = async () => {
     setOptionsOpen(false);
     await getRestApiClient()?.logOut();
     forceUpdate();
-    history?.push(loginPageInfo.route);
+    navigate(loginPageInfo.route);
   };
 
   const handleOptionsToggle = () => {

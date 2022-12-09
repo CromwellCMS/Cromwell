@@ -2,7 +2,7 @@ import { TBasePageEntity } from '@cromwell/core';
 import { Tooltip } from '@mui/material';
 import clsx from 'clsx';
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { IconButton } from '../../../buttons/IconButton';
 import { TextButton } from '../../../buttons/TextButton';
@@ -16,10 +16,10 @@ export function PageHeader<TEntityType extends TBasePageEntity, TFilterType exte
 ) {
   const { searchStore, tableProps, handleDeleteSelected, totalElements, clearAllFilters } = props;
   const { filters, sortBy } = searchStore;
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const handleCreate = () => {
-    history.push(`${tableProps.entityBaseRoute}/new`);
+    navigate(`${tableProps.entityBaseRoute}/new`);
   };
 
   return (

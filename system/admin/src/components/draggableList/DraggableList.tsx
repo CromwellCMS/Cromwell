@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 
 import { IconButton } from '../buttons/IconButton';
-import styles from './DraggableList.modules.scss';
+import styles from './DraggableList.module.scss';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 

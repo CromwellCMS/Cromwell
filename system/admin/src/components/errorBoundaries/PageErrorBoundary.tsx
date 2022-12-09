@@ -1,13 +1,20 @@
 import React from 'react';
 
-class PageErrorBoundary extends React.Component<unknown, { hasError: boolean; errorMessage: string }> {
+class PageErrorBoundary extends React.Component<
+  { children: any },
+  { hasError: boolean; errorMessage: string; stack: string }
+> {
   constructor(props) {
     super(props);
-    this.state = { hasError: false, errorMessage: '' };
+    this.state = { hasError: false, errorMessage: '', stack: '' };
   }
 
   static getDerivedStateFromError(error) {
-    return { hasError: true, errorMessage: JSON.stringify(error) };
+    return {
+      hasError: true,
+      errorMessage: error.message || JSON.stringify(error),
+      stack: error.stack,
+    };
   }
 
   componentDidCatch(error, errorInfo) {
@@ -18,8 +25,10 @@ class PageErrorBoundary extends React.Component<unknown, { hasError: boolean; er
     if (this.state.hasError) {
       return (
         <div>
-          <h3>Page crashed</h3>
+          <h3>There is a problem. Please refresh the page</h3>
+          <br />
           <p>{this.state.errorMessage}</p>
+          <p>{this.state.stack}</p>
         </div>
       );
     }

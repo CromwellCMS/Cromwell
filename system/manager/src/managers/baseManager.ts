@@ -175,12 +175,6 @@ export const startSystem = async (options: TStartOptions) => {
     spawn(`npx rollup -cw`, [], { shell: true, stdio: 'inherit', cwd: getCoreCommonDir() });
     spawn(`npx rollup -cw`, [], { shell: true, stdio: 'inherit', cwd: getCoreBackendDir() });
     spawn(`npx rollup -cw`, [], { shell: true, stdio: 'inherit', cwd: getCoreFrontendDir() });
-
-    const { windowsDev } = managerConfig;
-
-    windowsDev.otherDirs.forEach((dir) => {
-      spawn(`npx rollup -cw`, [], { shell: true, stdio: 'inherit', cwd: resolve(process.cwd(), dir) });
-    });
   }
 
   const serverSuccess = await startServiceByName({

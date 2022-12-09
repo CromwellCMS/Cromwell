@@ -148,11 +148,11 @@ const useDashboardContext = () => {
       }
 
       return {
-        xxs: [...oldLayout?.xxs, getDefaultLayout(widgetKey)],
-        xs: [...oldLayout?.xs, getDefaultLayout(widgetKey)],
-        sm: [...oldLayout?.sm, getDefaultLayout(widgetKey)],
-        md: [...oldLayout?.md, getDefaultLayout(widgetKey)],
-        lg: [...oldLayout?.lg, getDefaultLayout(widgetKey)],
+        xxs: [...(oldLayout?.xxs ?? []), getDefaultLayout(widgetKey)],
+        xs: [...(oldLayout?.xs ?? []), getDefaultLayout(widgetKey)],
+        sm: [...(oldLayout?.sm ?? []), getDefaultLayout(widgetKey)],
+        md: [...(oldLayout?.md ?? []), getDefaultLayout(widgetKey)],
+        lg: [...(oldLayout?.lg ?? []), getDefaultLayout(widgetKey)],
       };
     });
   }, []);

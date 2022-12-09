@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import { Listbox, Transition } from '@headlessui/react';
-import { CheckIcon, SelectorIcon } from '@heroicons/react/solid';
+import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/24/solid';
 
 type ValueType = string | number | undefined | null;
 
@@ -24,6 +24,7 @@ export type SelectInputProps<T = ValueType> = {
   style?: React.CSSProperties;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-constraint
 export const SelectInput = <T extends unknown>({
   value = null,
   onChange = () => {},
@@ -63,7 +64,7 @@ export const SelectInput = <T extends unknown>({
           >
             <span className="block truncate">{displayValue ?? '-'}</span>
             <span className="flex pr-2 inset-y-0 right-0 absolute items-center pointer-events-none">
-              <SelectorIcon className="h-5 text-gray-400 w-5" aria-hidden="true" />
+              <ChevronUpDownIcon className="h-5 text-gray-400 w-5" aria-hidden="true" />
             </span>
           </Listbox.Button>
           <Transition as={Fragment} leave="transition ease-in duration-100" leaveFrom="opacity-100" leaveTo="opacity-0">

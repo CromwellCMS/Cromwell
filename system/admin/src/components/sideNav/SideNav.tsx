@@ -1,44 +1,29 @@
 import { getStoreItem, onStoreChange, TUser } from '@cromwell/core';
-import React, { useEffect, useRef, useState } from 'react';
-import { Link, useHistory } from 'react-router-dom';
-import SideNavLink from './SideNavLink';
+import { EyeIcon } from '@heroicons/react/24/solid';
+import React, { useEffect, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+
 import { useForceUpdate } from '../../helpers/forceUpdate';
 import { getLinkByInfo, getPageInfos, getSideBarLinks } from '../../helpers/navigation';
 import { store } from '../../redux/store';
 import Topbar from '../topbar/Topbar';
-import { EyeIcon } from '@heroicons/react/solid';
+import SideNavLink from './SideNavLink';
 
 export const SideNav = () => {
   const pageInfos = getPageInfos();
   const currentInfo = pageInfos.find((i) => i.route === window.location.pathname.replace('/admin', ''));
   const currentLink = getLinkByInfo(currentInfo);
   const [expanded, setExpanded] = useState<string | false>(currentLink?.parentId ?? false);
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const history = useHistory?.();
+  const location = useLocation();
   const forceUpdate = useForceUpdate();
 
   const userInfo: TUser | undefined = getStoreItem('userInfo');
   const toggleSubMenu = (panel: string) => (event: React.ChangeEvent<any>, isExpanded: boolean) => {
     setExpanded(isExpanded ? panel : false);
   };
-  const handleCloseMenu = () => {
-    setMobileOpen(false);
-  };
-  const handleOpenMenu = () => {
-    setMobileOpen(true);
-  };
 
   useEffect(() => {
     onStoreChange('userInfo', () => {
-      setTimeout(forceUpdate, 100);
-    });
-    history?.listen(() => {
-      const currentInfo = pageInfos.find((i) => i.route === window.location.pathname.replace('/admin', ''));
-      const newCurrentLink = getLinkByInfo(currentInfo);
-      if (newCurrentLink && newCurrentLink !== currentLink) {
-        // setActiveId(newCurrentLink.id);
-        if (newCurrentLink.parentId) setExpanded(newCurrentLink.parentId);
-      }
       setTimeout(forceUpdate, 100);
     });
 
@@ -47,6 +32,16 @@ export const SideNav = () => {
       payload: forceUpdate,
     });
   }, []);
+
+  useEffect(() => {
+    const currentInfo = pageInfos.find((i) => i.route === window.location.pathname.replace('/admin', ''));
+    const newCurrentLink = getLinkByInfo(currentInfo);
+    if (newCurrentLink && newCurrentLink !== currentLink) {
+      // setActiveId(newCurrentLink.id);
+      if (newCurrentLink.parentId) setExpanded(newCurrentLink.parentId);
+    }
+    setTimeout(forceUpdate, 100);
+  }, [location]);
 
   // check for disabled sidebar
   if (currentInfo?.disableSidebar) return <></>;

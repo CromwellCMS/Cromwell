@@ -1,5 +1,5 @@
-@import "../../styles/common.module.scss";
-@import "../../styles/variables.scss";
+@import '../../styles/common.module.scss';
+@import '../../styles/variables.scss';
 
 // * {
 //     font-family: "Roboto", sans-serif;
@@ -18,68 +18,65 @@
 // }
 
 .Layout {
-    display: flex;
-    width: 100vw;
-    height: 100vh;
-    // max-width: 1200px;
-    margin: 0 auto;
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  // max-width: 1200px;
+  margin: 0 auto;
 }
 
 .header {
-    width: 100%;
-    background-color: #fff;
+  width: 100%;
+  background-color: #fff;
 }
 
 .main {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgb(243, 243, 243);
-    height: 100vh;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(243, 243, 243);
+  height: 100vh;
 }
 
 .sidebar {
-    min-width: 275px;
-    // width: 20%;
-    overflow: auto;
-    height: 100%;
+  min-width: 275px;
+  // width: 20%;
+  overflow: auto;
+  height: 100%;
 }
 
 .dummyToolbar {
-    height: 56px;
+  height: 56px;
 }
 
 .toastContainer {
-    z-index: 99999;
+  z-index: 99999;
 
-    .Toastify {
-        font-size: 16px;
-    }
+  .Toastify {
+    font-size: 16px;
+  }
 }
 
 :global(.modeDark) {
-
-    .main,
-    .sidebar {
-        background-color: #444;
-    }
+  .main,
+  .sidebar {
+    background-color: #444;
+  }
 }
 
 @media screen and (max-width: $mobileBreakpoint) {
-
-    // mobile
-    .sidebar {
-        min-width: 0;
-        width: 0;
-    }
+  // mobile
+  .sidebar {
+    min-width: 0;
+    width: 0;
+  }
 }
 
 @media screen and (min-width: $mobileBreakpoint) {
-
-    // desktop
-    div.dummyToolbar {
-        display: none;
-    }
+  // desktop
+  div.dummyToolbar {
+    display: none;
+  }
 }

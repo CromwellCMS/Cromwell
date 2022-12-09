@@ -1,82 +1,82 @@
-@import "../../styles/common.module.scss";
+@import '../../styles/common.module.scss';
 
 .listItem {
-    padding: 10px;
+  padding: 10px;
 }
 
 .listItemContent {
-    @include paper;
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    position: relative;
+  @include paper;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  position: relative;
 }
 
 .cardActionArea {
-    padding: 20px 10px;
+  padding: 20px 10px;
 }
 
 .image {
-    width: 100%;
-    height: 150px;
-    object-fit: contain;
+  width: 100%;
+  height: 150px;
+  object-fit: contain;
 }
 
 .caption {
-    width: 100%;
-    padding: 10px;
-    margin-top: 15px;
+  width: 100%;
+  padding: 10px;
+  margin-top: 15px;
 }
 
 .title {
-    margin: 0;
+  margin: 0;
 }
 
 .version {
-    font-size: 12px;
-    color: #666;
-    margin-bottom: 10px;
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 10px;
 }
 
 .excerpt {
-    font-size: 15px;
-    color: rgba(0, 0, 0, 0.54);
+  font-size: 15px;
+  color: rgba(0, 0, 0, 0.54);
 }
 
 .actions {
-    display: flex;
-    flex-wrap: wrap;
-    width: 100%;
-    padding: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  padding: 10px;
 
-    > button {
-        margin-right: 10px;
-        margin-bottom: 10px;
-    }
+  > button {
+    margin-right: 10px;
+    margin-bottom: 10px;
+  }
 }
 
 .listItem .updateProgress {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-    height: 3px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 3px;
 }
 
 .installing {
-    .cardActionArea,
-    .caption {
-        opacity: 0.5;
-    }
+  .cardActionArea,
+  .caption {
+    opacity: 0.5;
+  }
 }
 
 :global(.modeDark) {
-    .listItemContent {
-        background-color: #333;
+  .listItemContent {
+    background-color: #333;
 
-        * {
-            color: #eee;
-        }
+    * {
+      color: #eee;
     }
+  }
 }

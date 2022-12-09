@@ -1,0 +1,177 @@
+@import '../../styles/common.module.scss';
+
+.listItem {
+  @include paper;
+  display: flex;
+  align-items: center;
+  margin-bottom: 3px;
+  transition: 0.3s;
+  border: 1px solid transparent;
+  border-bottom: 1px solid #ddd;
+
+  &.embedded {
+    box-shadow: none;
+    min-height: 60px;
+
+    .itemTitle {
+      font-weight: 400;
+    }
+  }
+}
+
+.itemMain {
+  display: flex;
+}
+
+.itemImage {
+  @include bckgrCover;
+  height: 60px;
+  width: 90px;
+}
+
+.itemMainInfo {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-left: 10px;
+}
+
+.itemSubInfo {
+  padding: 5px;
+}
+
+.itemTitle {
+  margin-bottom: 4px;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.itemAuthor {
+  font-size: 12px;
+}
+
+.itemPublished {
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+
+.itemCreate {
+  font-size: 12px;
+}
+
+.address {
+  word-wrap: break-word;
+}
+
+.listItemActions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.createDate {
+  font-size: 14px;
+  // font-weight: 500;
+  margin-bottom: 5px;
+}
+
+.address {
+  font-size: 12px;
+}
+
+.status {
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+
+  > svg {
+    margin-right: 5px;
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.title {
+  font-size: 14px;
+  font-weight: 400;
+  margin-bottom: 5px;
+  margin-left: 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.listItem:hover {
+  background-color: #f4f4f4;
+}
+
+.itemToView {
+  @include paper;
+  background-color: #fff;
+  padding: 20px;
+  min-height: 250px;
+  min-width: 400px;
+  overflow: auto;
+  max-width: 100vw;
+  max-height: 95vh;
+
+  .itemToViewHeader {
+    display: flex;
+    align-items: center;
+  }
+
+  .userName {
+    font-weight: 600;
+    margin-right: 15px;
+  }
+
+  .title {
+    font-size: 20px;
+    font-weight: 500;
+    margin: 10px 0;
+    max-width: 600px;
+  }
+
+  .description {
+    font-size: 16px;
+    max-width: 600px;
+  }
+
+  .approveBtn {
+    margin-top: 15px;
+  }
+
+  .productToView {
+    margin-top: 30px;
+  }
+}
+
+:global(.modeDark) {
+  .listItem,
+  .itemToView {
+    background-color: #333;
+    border-bottom: 1px solid #333;
+
+    * {
+      color: #eee;
+    }
+  }
+
+  .listItem:hover {
+    background-color: #555;
+  }
+
+  .rating,
+  .rating * {
+    color: #fdcf63;
+
+    :global(.MuiRating-iconEmpty) {
+      color: #666;
+      * {
+        color: #666;
+      }
+    }
+  }
+}

@@ -1,7 +1,7 @@
 import React from 'react';
 
 export class WidgetErrorBoundary extends React.Component<
-  { widgetName: string },
+  { widgetName: string; children: any },
   { hasError: boolean; errorMessage: string }
 > {
   constructor(props) {

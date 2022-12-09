@@ -18,7 +18,6 @@ const buildScriptPath = resolve(localProjectRootDir, 'build/index.js');
  * check - build if previous build does not exist
  * buildService - build manager service
  * build - build all services
- * winDev - start dev environment in Windows OS
  */
 const scriptName = process.argv[2];
 

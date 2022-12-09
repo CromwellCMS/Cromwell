@@ -1,13 +1,12 @@
 import { gql } from '@apollo/client';
 import { getStoreItem, resolvePageRoute, serviceLocator, TBasePageEntity } from '@cromwell/core';
-import { ChevronLeftIcon } from '@heroicons/react/outline';
+import { ChevronLeftIcon } from '@heroicons/react/24/outline';
 import { OpenInNew as OpenInNewIcon } from '@mui/icons-material';
 import { Grid, Skeleton, Tooltip } from '@mui/material';
 import AppBar from '@mui/material/AppBar';
-import useScrollTrigger from '@mui/material/useScrollTrigger';
 import clsx from 'clsx';
 import React from 'react';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
+import { Location, NavigateFunction, Params, useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import {
   getCheckboxField,
@@ -28,27 +27,33 @@ import commonStyles from '../../../styles/common.module.scss';
 import { IconButton } from '../../buttons/IconButton';
 import { TextButton } from '../../buttons/TextButton';
 import { AutocompleteInput } from '../../inputs/AutocompleteInput';
-import { customGraphQlPropertyToFragment } from '../utils';
 import { TextInput } from '../../inputs/TextInput/TextInput';
 import { toast } from '../../toast/toast';
 import { TBaseEntityFilter, TEditField, TEntityEditState, TEntityPageProps, TFieldsComponentProps } from '../types';
+import { customGraphQlPropertyToFragment } from '../utils';
 import styles from './EntityEdit.module.scss';
+import { ElevationScroll } from './helpers';
 import { InputField } from './InputField';
 
 type TEntityEditProps<TEntityType extends TBasePageEntity, TFilterType extends TBaseEntityFilter> = TEntityPageProps<
   TEntityType,
   TFilterType
-> &
-  RouteComponentProps<{ id: string }> & {
-    fields?: TEditField<TEntityType>[];
-    onSave?: (entity: Omit<TEntityType, 'id'>) => Promise<Omit<TEntityType, 'id'>>;
-    classes?: {
-      content?: string;
-    };
+> & {
+  fields?: TEditField<TEntityType>[];
+  onSave?: (entity: Omit<TEntityType, 'id'>) => Promise<Omit<TEntityType, 'id'>>;
+  classes?: {
+    content?: string;
   };
+};
 
 class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseEntityFilter> extends React.Component<
-  TEntityEditProps<TEntityType, TFilterType>,
+  TEntityEditProps<TEntityType, TFilterType> & {
+    // history;
+    // match;
+    location: Location;
+    navigate: NavigateFunction;
+    params: Readonly<Params<string>>;
+  },
   TEntityEditState<TEntityType>
 > {
   private prevRoute: string;
@@ -58,15 +63,9 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
   }
 
   private init = async () => {
-    if (!this.props.match) {
-      console.error(
-        'this.props.match in not defined, you must provide "react-router" props for entity to be displayed',
-      );
-      return;
-    }
-    this.prevRoute = (this.props.history.location.state as any)?.prevRoute;
+    this.prevRoute = (this.props.location.state as any)?.prevRoute;
     this.setState({ isLoading: true });
-    const entityId = this.props.match.params?.id;
+    const entityId = this.props.params?.id;
     let entityData: TEntityType;
 
     if (entityId === 'new') {
@@ -85,7 +84,7 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
   };
 
   private refetchMeta = async () => {
-    const entityId = this.props.match?.params?.id;
+    const entityId = this.props.params?.id;
     if (!entityId) return;
     const data = await this.getEntity(parseInt(entityId));
     return data?.customMeta;
@@ -159,10 +158,6 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
       console.error('this.props.update in not defined, you must provide "update" prop for entity to be saved');
       return;
     }
-    if (!this.props.history) {
-      console.error('this.props.history in not defined, you must provide "react-router" props for entity to be saved');
-      return;
-    }
 
     this.setState({ canValidate: true });
 
@@ -210,7 +205,7 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
       }
     }
 
-    const entityId = this.props.match?.params?.id;
+    const entityId = this.props.params?.id;
 
     inputData.customMeta = Object.assign(
       {},
@@ -233,7 +228,7 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
         const newData = await this.props.create(inputData);
         toast.success(`Created ${(this.props.entityType ?? this.props.entityCategory).toLocaleLowerCase()}`);
 
-        this.props.history.replace(`${this.props.entityBaseRoute}/${newData.id}`);
+        this.props.navigate(`${this.props.entityBaseRoute}/${newData.id}`, { replace: true });
 
         const updatedData = await this.getEntity(newData.id);
         this.setState({ entityData: updatedData });
@@ -339,9 +334,9 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
   };
 
   public goBack = () => {
-    if (this.prevRoute) this.props.history.push(this.prevRoute);
-    else if (this.props.entityListRoute) this.props.history.push(this.props.entityListRoute);
-    else this.props.history.goBack();
+    if (this.prevRoute) this.props.navigate(this.prevRoute);
+    else if (this.props.entityListRoute) this.props.navigate(this.props.entityListRoute);
+    else this.props.navigate(-1);
   };
 
   render() {
@@ -505,18 +500,13 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
   }
 }
 
-export default withRouter(EntityEdit);
+export default function ComponentWithRouterProp<
+  TEntityType extends TBasePageEntity,
+  TFilterType extends TBaseEntityFilter,
+>(props: TEntityEditProps<TEntityType, TFilterType>) {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const params = useParams();
 
-function ElevationScroll(props) {
-  const trigger = useScrollTrigger({
-    disableHysteresis: true,
-    threshold: 0,
-    target: document.getElementById('main-scroll-container'),
-  });
-
-  const bgStyle = 'bg-gray-100 bg-opacity-60 w-fudropll back-filter backdrop-blur-lg';
-
-  return React.cloneElement(props.children, {
-    className: trigger ? clsx(styles.header, styles.headerElevated, bgStyle) : clsx(styles.header, bgStyle),
-  });
+  return <EntityEdit {...props} location={location} navigate={navigate} params={params} />;
 }

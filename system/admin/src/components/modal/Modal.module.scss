@@ -1,22 +1,22 @@
 .Modal {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  outline: none;
+  background-color: rgba(193, 193, 193, 0.2);
+  :focus {
     outline: none;
-    background-color: rgba(193, 193, 193, 0.2);
-    :focus {
-        outline: none;
-    }
+  }
 
-    > div:first-child {
-        background-color: transparent !important;
-    }
+  > div:first-child {
+    background-color: transparent !important;
+  }
 }
 
 .modalContent {
-    max-width: 100vw;
-    max-height: 100vh;
-    // background-color: #fff;
-    // overflow: auto;
-    outline: none;
+  max-width: 100vw;
+  max-height: 100vh;
+  // background-color: #fff;
+  // overflow: auto;
+  outline: none;
 }

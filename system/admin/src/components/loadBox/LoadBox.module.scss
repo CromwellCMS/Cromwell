@@ -1,33 +1,33 @@
-@import "../../styles/common.module.scss";
+@import '../../styles/common.module.scss';
 
 .LoadBox {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+
+  svg {
+    background-color: rgba(0, 0, 0, 0.4);
+    border-radius: 100%;
     width: 100%;
     height: 100%;
-    top: 0;
-    left: 0;
-
-    svg {
-        background-color: rgba(0, 0, 0, 0.4);
-        border-radius: 100%;
-        width: 100%;
-        height: 100%;
-    }
+  }
 }
 
 .LoadingStatus {
-    width: 100%;
-    display: flex;
-    justify-content: center;
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
 div.loadContainer {
-    @include paperElevated;
-    box-shadow: 0 2px 14px 0 rgb(0 0 0 / 14%), 0 0 35px 4px rgb(0 0 0 / 12%);
-    width: 64px;
-    margin: 0 0 0 auto;
-    border-radius: 70px;
-    padding: 0;
+  @include paperElevated;
+  box-shadow: 0 2px 14px 0 rgb(0 0 0 / 14%), 0 0 35px 4px rgb(0 0 0 / 12%);
+  width: 64px;
+  margin: 0 0 0 auto;
+  border-radius: 70px;
+  padding: 0;
 }

@@ -1,85 +1,84 @@
-@import "../../../styles/common.module.scss";
+@import '../../../styles/common.module.scss';
 
 .EntityEdit {
-    padding: 5px 20px 20px 20px;
-    max-width: 900px;
-    margin: 0 auto;
+  padding: 5px 20px 20px 20px;
+  max-width: 900px;
+  margin: 0 auto;
+  width: 100%;
+
+  .header {
+    padding: 10px;
     width: 100%;
+    margin-bottom: 15px;
+    min-height: 46px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    top: -1px;
+    border-radius: 15px;
+  }
 
-    .header {
-        padding: 10px;
-        width: 100%;
-        margin-bottom: 15px;
-        min-height: 46px;
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-        top: -1px;
-        border-radius: 15px;
-    }
-
-    .headerElevated {
-        box-shadow: 0 8px 15px 0 rgb(0 0 0 / 9%);
-        background-color: rgba(243, 244, 246, var(--tw-bg-opacity));
-    }
+  .headerElevated {
+    box-shadow: 0 8px 15px 0 rgb(0 0 0 / 9%);
+    background-color: rgba(243, 244, 246, var(--tw-bg-opacity));
+  }
 }
 
 .pageTitle {
-    font-size: 1.5rem;
+  font-size: 1.5rem;
 }
 
 .notFoundPage {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
 }
 
 .notFoundText {
-    font-size: 25px;
-    font-weight: 500;
+  font-size: 25px;
+  font-weight: 500;
 }
 
 .headerLeft {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 button.openPageBtn {
-    margin-right: 10px;
+  margin-right: 10px;
 }
 
 .headerActions {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .content {
-    @include paper;
-    padding: 20px;
-    margin-bottom: 15px;
-    border: 1px solid #eee;
-    border-radius: 10px;
+  @include paper;
+  padding: 20px;
+  margin-bottom: 15px;
+  border: 1px solid #eee;
+  border-radius: 10px;
 }
 
 .descriptionEditor {
-    @include styledScrollBar;
-    border: 1px solid #bbb;
-    border-radius: 5px;
-    max-height: 400px;
-    overflow: auto;
-    padding: 15px 30px;
+  @include styledScrollBar;
+  border: 1px solid #bbb;
+  border-radius: 5px;
+  max-height: 400px;
+  overflow: auto;
+  padding: 15px 30px;
 }
 
 :global(.modeDark) {
+  .header,
+  .content {
+    background-color: #333;
 
-    .header,
-    .content {
-        background-color: #333;
-
-        * {
-            color: #eee;
-        }
+    * {
+      color: #eee;
     }
+  }
 }

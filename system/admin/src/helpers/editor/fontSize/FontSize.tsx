@@ -1,4 +1,4 @@
-import { API, InlineTool } from '@editorjs/editorjs';
+import type { API, InlineTool } from '@editorjs/editorjs';
 import React from 'react';
 
 import { layoutActions } from '../../LayoutPortal';

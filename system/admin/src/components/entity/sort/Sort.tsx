@@ -42,7 +42,7 @@ export default function Sort<TEntity>(props: {
         }}
       >
         {props.options.map((sort) => (
-          <MenuItem key={sort.key + ''} value={sort.key + ''}>
+          <MenuItem key={String(sort.key)} value={String(sort.key)}>
             {sort.label}
           </MenuItem>
         ))}

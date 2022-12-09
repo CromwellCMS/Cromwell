@@ -1,52 +1,52 @@
-@import "../../styles/variables.scss";
-@import "../../styles/common.module.scss";
+@import '../../styles/variables.scss';
+@import '../../styles/common.module.scss';
 
 .list {
-    @include styledScrollBar;
-    max-height: 230px;
-    overflow: auto;
+  @include styledScrollBar;
+  max-height: 230px;
+  overflow: auto;
 }
 
 button.button {
-    margin: 10px 0px;
-    padding: 7px 10px;
-    border-width: 2px;
+  margin: 10px 0px;
+  padding: 7px 10px;
+  border-width: 2px;
 }
 
 button.button:hover {
-    box-shadow: none;
+  box-shadow: none;
 }
 
 button.button:focus,
 button.button:active {
-    box-shadow: none;
-    border-width: 2px;
-    background-color: transparent;
-    color: $primaryColor;
+  box-shadow: none;
+  border-width: 2px;
+  background-color: transparent;
+  color: $primaryColor;
 }
 
 .root {
-    margin: auto;
+  margin: auto;
 }
 
 .cardHeader {
-    padding: 8px 16px;
+  padding: 8px 16px;
 }
 
 div.buttonsContainer {
-    margin-top: auto;
-    margin-bottom: auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  margin-top: auto;
+  margin-bottom: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 :global(.modeDark) {
-    button.button {
-        background-color: #444;
+  button.button {
+    background-color: #444;
 
-        * {
-            color: #eee;
-        }
+    * {
+      color: #eee;
     }
+  }
 }

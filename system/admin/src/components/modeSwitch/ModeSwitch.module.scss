@@ -1,59 +1,59 @@
 .root {
-    width: 55px;
-    height: 26px;
-    margin: 0;
-    padding: 0;
-    border: 1px solid #333;
-    border-radius: 30px;
+  width: 55px;
+  height: 26px;
+  margin: 0;
+  padding: 0;
+  border: 1px solid #333;
+  border-radius: 30px;
 }
 
 .track {
-    width: 55px;
-    border-radius: 13px;
-    opacity: 1;
-    color: #fff;
-    background-color: #fff;
-    background-size: contain;
-    background-position: 84% center;
-    background-repeat: no-repeat;
-    opacity: 1;
-    border: "none";
+  width: 55px;
+  border-radius: 13px;
+  opacity: 1;
+  color: #fff;
+  background-color: #fff;
+  background-size: contain;
+  background-position: 84% center;
+  background-repeat: no-repeat;
+  opacity: 1;
+  border: 'none';
 }
 
 .switchBase {
-    padding: 0;
-    margin-left: -1px;
+  padding: 0;
+  margin-left: -1px;
 
-    &.checked {
-        padding: 0px 0 0 15px;
-        transform: translateX(16px);
-        color: #fff;
-    }
+  &.checked {
+    padding: 0px 0 0 15px;
+    transform: translateX(16px);
+    color: #fff;
+  }
 }
 
 .thumb {
-    background-color: #fff;
-    border: 1px solid #333;
-    width: 24px;
-    height: 24px;
+  background-color: #fff;
+  border: 1px solid #333;
+  width: 24px;
+  height: 24px;
 }
 
 .darkMode {
-    .root {
-        border: 1px solid #eee;
+  .root {
+    border: 1px solid #eee;
 
-        .track {
-            // color: #222;
-            background-color: #ddd;
-            background-position: 10% center;
-            background-size: 36%;
-            opacity: 1;
-            filter: invert(100%);
-        }
-
-        .thumb {
-            background-color: #fff;
-            border: 1px solid #333;
-        }
+    .track {
+      // color: #222;
+      background-color: #ddd;
+      background-position: 10% center;
+      background-size: 36%;
+      opacity: 1;
+      filter: invert(100%);
     }
+
+    .thumb {
+      background-color: #fff;
+      border: 1px solid #333;
+    }
+  }
 }

@@ -1,88 +1,88 @@
-@import "../../../styles/common.module.scss";
+@import '../../../styles/common.module.scss';
 
 .GalleryPicker {
-    position: relative;
-    width: 100%;
+  position: relative;
+  width: 100%;
 
-    .container {
-        display: flex;
-        flex-direction: column;
+  .container {
+    display: flex;
+    flex-direction: column;
+  }
+
+  button.galleryActionBtn {
+    background-color: rgba($color: #fff, $alpha: 0.7);
+  }
+
+  button.galleryActionBtn:hover {
+    background-color: rgba(0, 0, 0, 0.3);
+
+    svg {
+      color: #fff;
     }
+  }
 
-    button.galleryActionBtn {
-        background-color: rgba($color: #fff, $alpha: 0.7);
-    }
-
-    button.galleryActionBtn:hover {
-        background-color: rgba(0, 0, 0, 0.3);
-
-        svg {
-            color: #fff;
-        }
-    }
-
-    button.galleryAddImageBtn {
-        @extend .galleryActionBtn;
-    }
+  button.galleryAddImageBtn {
+    @extend .galleryActionBtn;
+  }
 }
 
 .actions {
-    margin-top: 10px;
+  margin-top: 10px;
 }
 
 .imageItem {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    transition: 0.3s;
-    background-color: #fff;
-    border-radius: 5px;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  transition: 0.3s;
+  background-color: #fff;
+  border-radius: 5px;
 
-    >div {
-        width: 100%;
-    }
+  > div {
+    width: 100%;
+  }
 }
 
 .imageItem:hover {
-    background-color: #ddd;
+  background-color: #ddd;
 }
 
 .imageItemContent {
-    height: 100%;
+  height: 100%;
 }
 
 div.popover {
-    @include paperElevated;
-    padding: 10px 15px;
+  @include paperElevated;
+  padding: 10px 15px;
 }
 
 .label {
-    font-size: 16px;
-    color: #888;
-    margin-bottom: 10px;
+  font-size: 16px;
+  color: #888;
+  margin-bottom: 10px;
 }
 
 :global(.modeDark) {
-    .GalleryPicker {
-        button.galleryActionBtn {
-            background-color: #222;
-            margin-right: 5px;
-        }
-
-        button.galleryActionBtn:hover {
-            background-color: #555;
-
-            svg {
-                color: #fff;
-            }
-        }
+  .GalleryPicker {
+    button.galleryActionBtn {
+      background-color: #222;
+      margin-right: 5px;
     }
 
-    .imageItem {
-        background-color: #333;
-    }
+    button.galleryActionBtn:hover {
+      background-color: #555;
 
-    .imageItem:hover {
-        background-color: #555;
+      svg {
+        color: #fff;
+      }
     }
+  }
+
+  .imageItem {
+    background-color: #333;
+  }
+
+  .imageItem:hover {
+    background-color: #555;
+  }
 }

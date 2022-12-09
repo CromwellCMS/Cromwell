@@ -1,5 +1,5 @@
 import { TImageSettings } from '@cromwell/core';
-import { LinkIcon, TrashIcon, TrashIcon as FillTrashIcon } from '@heroicons/react/outline';
+import { LinkIcon, TrashIcon, TrashIcon as FillTrashIcon } from '@heroicons/react/24/outline';
 import { Add as AddIcon } from '@mui/icons-material';
 import { IconButton, Popover, TextField, Tooltip } from '@mui/material';
 import clsx from 'clsx';

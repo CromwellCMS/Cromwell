@@ -1,4 +1,10 @@
-import { PhotographIcon, XIcon, ZoomInIcon, ZoomOutIcon, ExternalLinkIcon } from '@heroicons/react/outline';
+import {
+  ArrowTopRightOnSquareIcon,
+  MagnifyingGlassMinusIcon,
+  MagnifyingGlassPlusIcon,
+  PhotoIcon,
+  XMarkIcon,
+} from '@heroicons/react/24/outline';
 import React, { useCallback, useState } from 'react';
 
 import { getFileManager } from '../../fileManager/helpers';
@@ -93,7 +99,7 @@ export const ImageInput = ({ centerImage = true, ...props }: ImageInputProps) =>
                 }}
                 className="rounded-full mx-auto bg-red-700 bg-opacity-60 text-center text-white opacity-0 py-1 transform px-1 transition-all top-1 right-1 absolute self-center hover:bg-opacity-100 group-hover:opacity-80 "
               >
-                <XIcon className="h-4 w-4" />
+                <XMarkIcon className="h-4 w-4" />
               </span>
             )}
             {value && (
@@ -104,8 +110,8 @@ export const ImageInput = ({ centerImage = true, ...props }: ImageInputProps) =>
                 }}
                 className="rounded-full mx-auto text-center text-white opacity-0 py-1 transform px-1 transition-all top-1 left-1 absolute self-center hover:bg-opacity-100 group-hover:opacity-100 "
               >
-                {!zoom && <ZoomInIcon className="h-4 w-4" />}
-                {zoom && <ZoomOutIcon className="h-4 w-4" />}
+                {!zoom && <MagnifyingGlassPlusIcon className="h-4 w-4" />}
+                {zoom && <MagnifyingGlassMinusIcon className="h-4 w-4" />}
               </span>
             )}
             {value && (
@@ -116,10 +122,10 @@ export const ImageInput = ({ centerImage = true, ...props }: ImageInputProps) =>
                 }}
                 className="rounded-full mx-auto text-center text-white opacity-0 py-1 transform px-1 transition-all top-1 left-6 absolute self-center hover:bg-opacity-100 group-hover:opacity-100 "
               >
-                <ExternalLinkIcon className="h-4 w-4" />
+                <ArrowTopRightOnSquareIcon className="h-4 w-4" />
               </span>
             )}
-            {!value && <PhotographIcon className="mx-auto h-24 w-full text-indigo-300 self-center" />}
+            {!value && <PhotoIcon className="mx-auto h-24 w-full text-indigo-300 self-center" />}
           </div>
         </div>
         {!props.hideSrc && (

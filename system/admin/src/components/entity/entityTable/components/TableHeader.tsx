@@ -1,5 +1,5 @@
 import { TBaseFilter, TBasePageEntity, TCustomEntityColumn } from '@cromwell/core';
-import { ChevronDownIcon, TableIcon, XIcon } from '@heroicons/react/outline';
+import { ChevronDownIcon, TableIcon, XIcon } from '@heroicons/react/24/outline';
 import { Close as CloseIcon } from '@mui/icons-material';
 import { Popover, Theme, Tooltip } from '@mui/material';
 import { useTheme } from '@mui/styles';
@@ -280,7 +280,7 @@ export function TableHeader<TEntityType extends TBasePageEntity, TFilterType ext
               </div>
               {searchQuery && (
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <p className={clsx(styles.searchQuery, styles.ellipsis)}>{searchQuery}</p>
+                  <p className={clsx(styles.searchQuery, styles.ellipsis)}>{String(searchQuery)}</p>
                   <Tooltip title="Clear search" enterDelay={500}>
                     <div onClick={() => clearColumnSearch(col)} style={{ cursor: 'pointer' }}>
                       <CloseIcon

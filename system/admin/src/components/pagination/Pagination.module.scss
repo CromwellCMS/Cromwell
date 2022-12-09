@@ -1,32 +1,28 @@
-@import "../../styles/common.module.scss";
+@import '../../styles/common.module.scss';
 
 .paginationContainer {
-    margin-top: 15px;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    position: absolute;
-    bottom: 10px;
-    pointer-events: none;
+  margin-top: 15px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  bottom: 10px;
+  pointer-events: none;
 }
 
 .pagination {
-    @include paper;
-    padding: 5px 10px;
-    pointer-events: all;
+  @include paper;
+  padding: 5px 10px;
+  pointer-events: all;
 }
 
 :global(.modeDark) {
-    .pagination {
-        background-color: #333;
-        box-shadow: 0 2px 3px 0 rgb(0 0 0 / 27%), 0 0 20px 4px rgb(0 0 0 / 34%);
+  .pagination {
+    background-color: #333;
+    box-shadow: 0 2px 3px 0 rgb(0 0 0 / 27%), 0 0 20px 4px rgb(0 0 0 / 34%);
 
-        * {
-            color: #eee;
-        }
+    * {
+      color: #eee;
     }
-
-    :global(.MuiPaginationItem-page.Mui-selected) {
-        background-color: #222;
-    }
+  }
 }

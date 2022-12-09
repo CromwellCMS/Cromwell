@@ -1,11 +1,11 @@
 import { TBasePageEntity } from '@cromwell/core';
 import { getCStore } from '@cromwell/core-frontend';
-import { PencilIcon, TrashIcon } from '@heroicons/react/outline';
+import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { Rating, Tooltip } from '@mui/material';
 import clsx from 'clsx';
 import React from 'react';
 import { connect, PropsType } from 'react-redux-ts';
-import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import { toLocaleDateString, toLocaleDateTimeString, toLocaleTimeString } from '../../../../helpers/time';
 import { TAppState } from '../../../../redux/store';
@@ -31,8 +31,7 @@ type TEntityTableItemProps<TEntityType extends TBasePageEntity, TFilterType exte
     // prevItemProps?: {}
   },
   ReturnType<typeof mapStateToProps>
-> &
-  RouteComponentProps;
+>;
 
 class EntityTableItem<
   TEntityType extends TBasePageEntity,
@@ -180,10 +179,8 @@ class EntityTableItem<
             )}
             {listItemProps.tableProps?.entityBaseRoute && data?.id && (
               <Link
-                to={{
-                  pathname: `${listItemProps.tableProps.entityBaseRoute}/${data?.id}`,
-                  state: { prevRoute: this.props.history.location.pathname + window.location.search },
-                }}
+                to={`${listItemProps.tableProps.entityBaseRoute}/${data?.id}`}
+                state={{ prevRoute: window.location.pathname + window.location.search }}
               >
                 <IconButton>
                   <PencilIcon className="h-4 text-gray-300 w-4" />
@@ -202,4 +199,4 @@ class EntityTableItem<
   }
 }
 
-export default connect(mapStateToProps)(withRouter(EntityTableItem));
+export default connect(mapStateToProps)(EntityTableItem);

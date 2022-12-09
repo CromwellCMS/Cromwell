@@ -3,7 +3,7 @@ import React from 'react';
 
 import { CheckboxInput } from '../inputs/CheckboxInput';
 import { intersection, not, union } from './helpers';
-import styles from './TransferList.Module.scss';
+import styles from './TransferList.module.scss';
 
 export const CheckList = (props: {
   title: React.ReactNode;

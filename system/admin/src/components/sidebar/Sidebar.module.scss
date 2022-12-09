@@ -1,267 +1,260 @@
-@import "../../styles/common.module.scss";
-@import "../../styles/variables.scss";
+@import '../../styles/common.module.scss';
+@import '../../styles/variables.scss';
 
 .Sidebar {
-    width: 100%;
-    height: 100%;
-    // background: #222;
-    // background: linear-gradient(144deg, rgba(27, 0, 75, 1) 0%, rgba(52, 0, 46, 1) 100%);
-    // background: linear-gradient(144deg, #1b004b 0%, #46003e 100%);
-    background: linear-gradient(339deg, #160c28, #361132);
+  width: 100%;
+  height: 100%;
+  // background: #222;
+  // background: linear-gradient(144deg, rgba(27, 0, 75, 1) 0%, rgba(52, 0, 46, 1) 100%);
+  // background: linear-gradient(144deg, #1b004b 0%, #46003e 100%);
+  background: linear-gradient(339deg, #160c28, #361132);
 }
 
 .sidebarContent {
-    @include styledScrollBar;
-    width: 100%;
-    height: 100%;
-    padding: 10px 20px;
-    overflow: auto;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-a {
-    display: block;
-    color: initial;
-    text-decoration: initial;
+  @include styledScrollBar;
+  width: 100%;
+  height: 100%;
+  padding: 10px 20px;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .sidebarHeader {
-    margin-bottom: 15px;
-    margin-top: 5px;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  margin-bottom: 15px;
+  margin-top: 5px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .logo {
-    width: 24px;
-    height: 24px;
-    margin-right: 10px;
-    margin-left: 9px;
-    user-select: none;
-    background-size: contain;
-    background-repeat: no-repeat;
+  width: 24px;
+  height: 24px;
+  margin-right: 10px;
+  margin-left: 9px;
+  user-select: none;
+  background-size: contain;
+  background-repeat: no-repeat;
 }
 
 .logoMobile {
-    filter: invert(100%);
-    width: 24px;
-    height: 24px;
-    margin-right: 10px;
-    margin-left: 5px;
-    user-select: none;
-    background-size: contain;
-    background-repeat: no-repeat;
+  filter: invert(100%);
+  width: 24px;
+  height: 24px;
+  margin-right: 10px;
+  margin-left: 5px;
+  user-select: none;
+  background-size: contain;
+  background-repeat: no-repeat;
 }
 
 div.SidebarLink {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.1);
+  margin-bottom: 7px !important;
+  border-radius: 6px;
+  overflow: hidden;
+  transition: 0.3s;
+
+  .ExpansionPanelSummary {
     width: 100%;
-    background: rgba(0, 0, 0, 0.1);
-    margin-bottom: 7px !important;
-    border-radius: 6px;
-    overflow: hidden;
+    min-height: 30px;
+    padding: 0;
+  }
+
+  .ExpandMoreIcon {
     transition: 0.3s;
+  }
 
-    .ExpansionPanelSummary {
-        width: 100%;
-        min-height: 30px;
-        padding: 0;
-    }
+  :global(.MuiAccordionSummary-content) {
+    margin: 0;
+  }
 
-    .ExpandMoreIcon {
-        transition: 0.3s;
-    }
-
-    :global(.MuiAccordionSummary-content) {
-        margin: 0;
-    }
-
-    :global(.MuiIconButton-edgeEnd) {
-        margin: 0;
-    }
+  :global(.MuiIconButton-edgeEnd) {
+    margin: 0;
+  }
 }
 
 .SidebarLink:hover {
-    background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.4);
 }
 
 .subLinksContainer {
-    width: 100%;
-    padding: 5px 5px 0 15px;
+  width: 100%;
+  padding: 5px 5px 0 15px;
 }
 
 .SidebarLink .linkHead {
-    display: flex;
-    justify-content: space-between;
-    padding-top: 9px;
-    padding-bottom: 9px;
-    padding-left: 9px;
-    padding-right: 9px;
-    color: #999;
-    font-weight: 200;
+  display: flex;
+  justify-content: space-between;
+  padding-top: 9px;
+  padding-bottom: 9px;
+  padding-left: 9px;
+  padding-right: 9px;
+  color: #999;
+  font-weight: 200;
 }
 
 .linkHeadContent {
-    display: flex;
+  display: flex;
 }
 
 .sidebarlinkIcon {
-    display: flex;
-    margin-right: 10px;
+  display: flex;
+  margin-right: 10px;
 }
 
 .SidebarLinkActive {
-    position: relative;
-    background: rgba(0, 0, 0, 0.4);
-    border-left: 3px solid #ccc;
+  position: relative;
+  background: rgba(0, 0, 0, 0.4);
+  border-left: 3px solid #ccc;
 
-    .linkHead {
-        color: #fff;
-    }
+  .linkHead {
+    color: #fff;
+  }
 
-    .customIcon {
-        opacity: 1;
-    }
+  .customIcon {
+    opacity: 1;
+  }
 }
 
 .sidebarBottom {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 15px;
 
-    * {
-        color: #fff;
-    }
+  * {
+    color: #fff;
+  }
 }
 
 .bottomBlock {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .textBlock {
-    overflow: hidden;
-    text-overflow: ellipsis;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .nameText {
-    font-size: 0.85rem;
-    margin-bottom: 5px;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  font-size: 0.85rem;
+  margin-bottom: 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .emailText {
-    font-size: 10px;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  font-size: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .sidebarBottom .avatar {
-    width: 40px;
-    height: 40px;
-    color: #fff;
-    margin-right: 5px;
-    border-radius: 100%;
-    background-size: cover;
-    background-position: center;
+  width: 40px;
+  height: 40px;
+  color: #fff;
+  margin-right: 5px;
+  border-radius: 100%;
+  background-size: cover;
+  background-position: center;
 }
 
 li.optionsItem {
-    padding: 10px 15px;
+  padding: 10px 15px;
 
-    svg {
-        margin-right: 10px;
-    }
+  svg {
+    margin-right: 10px;
+  }
 }
 
 .customIcon {
-    @include bckgrContain;
-    width: 24px;
-    height: 24px;
-    opacity: 0.6;
+  @include bckgrContain;
+  width: 24px;
+  height: 24px;
+  opacity: 0.6;
 }
 
 .drawer {
-    min-width: 300px;
-    background-color: #fff;
-    height: 100vh;
-    background: #222;
-    background: linear-gradient(339deg, #160c28, #361132);
+  min-width: 300px;
+  background-color: #fff;
+  height: 100vh;
+  background: #222;
+  background: linear-gradient(339deg, #160c28, #361132);
 }
 
 header.appBar {
-    padding: 0;
-    @extend .paper;
-    border-radius: 0;
+  padding: 0;
+  @extend .paper;
+  border-radius: 0;
 
-    >div {
-        padding: 0;
-    }
+  > div {
+    padding: 0;
+  }
 }
 
 .sidebarMobileActions.sidebarHeader {
-    margin-top: -15px;
-    margin-right: -15px;
+  margin-top: -15px;
+  margin-right: -15px;
 }
 
 .sidebarMobileHeader {
-    @extend .sidebarHeader;
-    padding: 0 10px;
+  @extend .sidebarHeader;
+  padding: 0 10px;
 }
 
 .mobileActions {
-    display: flex;
+  display: flex;
 }
 
 @media screen and (max-width: $mobileBreakpoint) {
+  // mobile
+  .sidebarMobileHeader {
+    margin: 0;
+  }
 
-    // mobile
-    .sidebarMobileHeader {
-        margin: 0;
-    }
+  .desktopContent {
+    display: none;
+  }
 
-    .desktopContent {
-        display: none;
-    }
-
-    .logo {
-        display: none;
-    }
+  .logo {
+    display: none;
+  }
 }
 
 @media screen and (min-width: $mobileBreakpoint) {
+  // desktop
+  .mobileContent {
+    display: none;
+  }
 
-    // desktop
-    .mobileContent {
-        display: none;
-    }
-
-    .mobileActions,
-    .sidebarMobileActions {
-        display: none;
-    }
+  .mobileActions,
+  .sidebarMobileActions {
+    display: none;
+  }
 }
 
 :global(.modeDark) {
-    .Sidebar, .drawer {
-        background: #222;
-    }
+  .Sidebar,
+  .drawer {
+    background: #222;
+  }
 
-    header.appBar {
-        background-color: #333;
-        box-shadow: 0 1px 11px 0 rgb(0 0 0 / 24%), 0 0 11px 5px rgb(0 0 0 / 27%);
+  header.appBar {
+    background-color: #333;
+    box-shadow: 0 1px 11px 0 rgb(0 0 0 / 24%), 0 0 11px 5px rgb(0 0 0 / 27%);
 
-        * {
-            color: #eee;
-        }
+    * {
+      color: #eee;
     }
+  }
 
-    .logoMobile {
-        filter: none;
-    }
+  .logoMobile {
+    filter: none;
+  }
 }

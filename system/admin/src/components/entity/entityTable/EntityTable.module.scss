@@ -1,196 +1,194 @@
-@import "../../../styles/common.module.scss";
-@import "../../../styles/variables.scss";
+@import '../../../styles/common.module.scss';
+@import '../../../styles/variables.scss';
 
 .EntityTable {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    height: 100%;
-    padding: 20px 20px 0 20px;
-    max-width: 1200px;
-    margin: 0 auto;
-    min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  padding: 20px 20px 0 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  min-height: 200px;
 }
 
 .pageHeader {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
-    padding: 5px 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding: 5px 10px;
 }
 
 .tableProperties {
-    display: flex;
-    justify-content: space-between;
+  display: flex;
+  justify-content: space-between;
 }
 
 .pageTitle {
-    font-size: 20px;
-    font-weight: 500;
-    margin-right: 10px;
-    font-size: 1.5rem;
+  font-size: 20px;
+  font-weight: 500;
+  margin-right: 10px;
+  font-size: 1.5rem;
 }
 
 .table {
-    display: flex;
-    flex-direction: column;
-    background-color: #fff;
-    padding: 20px 20px 0 20px;
-    border-radius: 10px;
-    height: 100%;
-    min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  padding: 20px 20px 0 20px;
+  border-radius: 10px;
+  height: 100%;
+  min-height: 300px;
 }
 
 .tableHeader {
-    display: flex;
-    border-radius: 9px 9px 0 0;
-    align-items: center;
-    justify-content: space-between;
-    z-index: 1;
-    background-color: #fff;
+  display: flex;
+  border-radius: 9px 9px 0 0;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 1;
+  background-color: #fff;
 }
 
 .tableColumnNames {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    min-width: 20px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  min-width: 20px;
 }
 
 .columnName {
-    display: flex;
-    flex-direction: column;
-    padding-right: 15px;
-    font-size: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  padding-right: 15px;
+  font-size: 0.85rem;
 }
 
 .columnNameText {
-    cursor: pointer;
-    font-weight: 500;
+  cursor: pointer;
+  font-weight: 500;
 }
 
 .pageActions {
-    display: flex;
-    align-items: center;
-    margin-right: 10px;
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
 }
 
 .listWrapper {
-    min-height: 300px;
-    height: 100%;
-    width: 100%;
+  min-height: 300px;
+  height: 100%;
+  width: 100%;
 }
 
 .columnSearch {
-    @include paperElevated;
-    @include styledScrollBarList;
-    position: relative;
-    padding: 25px;
-    max-height: 60vh;
-    width: 300px;
-    border-radius: 10px;
+  @include paperElevated;
+  @include styledScrollBarList;
+  position: relative;
+  padding: 25px;
+  max-height: 60vh;
+  width: 300px;
+  border-radius: 10px;
 }
 
 .columnsConfigure {
-    @include paperElevated;
-    @include styledScrollBarList;
-    padding: 5px;
-    overflow: auto;
-    max-height: 60vh;
-    width: 250px;
+  @include paperElevated;
+  @include styledScrollBarList;
+  padding: 5px;
+  overflow: auto;
+  max-height: 60vh;
+  width: 250px;
 }
 
 .list {
-    @include styledScrollBarList;
-    // padding-right: 10px;
-    // margin-right: -18px;
-    margin-right: -5px;
-    scrollbar-gutter: stable;
+  @include styledScrollBarList;
+  // padding-right: 10px;
+  // margin-right: -18px;
+  margin-right: -5px;
+  scrollbar-gutter: stable;
 }
 
 .listContent {
-    padding-bottom: 70px;
+  padding-bottom: 70px;
 }
 
 .paginationContainer {
-    margin-top: 15px;
-    width: 100%;
-    display: flex;
-    justify-content: center;
+  margin-top: 15px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
 .pagination {
-    @include paper;
-    padding: 5px 10px;
+  @include paper;
+  padding: 5px 10px;
 }
 
 .ellipsis {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .popoverPaper {
-    overflow: initial !important;
+  overflow: initial !important;
 }
 
 .orderButton {
-    cursor: pointer;
-    color: $primaryColor;
+  cursor: pointer;
+  color: $primaryColor;
 }
 
 .searchQuery {
-    font-size: 12px;
-    color: #555;
+  font-size: 12px;
+  color: #555;
 }
 
 .headerSettings {
-    width: 68px;
-    justify-content: flex-end;
-    padding: 0 10px;
-    margin-right: 5px;
+  width: 68px;
+  justify-content: flex-end;
+  padding: 0 10px;
+  margin-right: 5px;
 }
 
 :global(.modeDark) {
+  .pagination,
+  .tableHeader,
+  .columnsConfigure {
+    background-color: #333;
 
-    .pagination,
-    .tableHeader,
-    .columnsConfigure {
-        background-color: #333;
+    * {
+      color: #eee;
+    }
+  }
 
-        * {
-            color: #eee;
-        }
+  div.autocompletePopper {
+    background-color: #333;
+
+    * {
+      background-color: #333;
+      color: #eee;
+    }
+  }
+
+  .iconButton {
+    color: #eee;
+
+    &[disabled] {
+      color: #777;
+
+      * {
+        color: #777;
+      }
     }
 
-    div.autocompletePopper {
-        background-color: #333;
-
-        * {
-            background-color: #333;
-            color: #eee;
-        }
+    * {
+      color: #eee;
     }
+  }
 
-    .iconButton {
-        color: #eee;
-
-        &[disabled] {
-            color: #777;
-
-            * {
-                color: #777;
-            }
-        }
-
-        * {
-            color: #eee;
-
-        }
-    }
-
-    .pageTitle {
-        color: #eee;
-    }
+  .pageTitle {
+    color: #eee;
+  }
 }

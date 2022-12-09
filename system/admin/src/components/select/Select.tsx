@@ -10,7 +10,7 @@ import {
   Tooltip,
 } from '@mui/material';
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 export function Select(
   props: {
@@ -29,14 +29,14 @@ export function Select(
     tooltipLink?: string;
   } & SelectProps<string | number>,
 ) {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const openLink = () => {
     if (props.tooltipLink) {
       if (props.tooltipLink.startsWith('http')) {
         window.open(props.tooltipLink, '_blank');
       } else {
-        history.push(props.tooltipLink);
+        navigate(props.tooltipLink);
       }
     }
   };

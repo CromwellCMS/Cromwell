@@ -1,37 +1,37 @@
-@import "../../styles/common.module.scss";
-@import "../../styles/variables.scss";
+@import '../../styles/common.module.scss';
+@import '../../styles/variables.scss';
 
 .cmsInfo {
-    @include paper;
-    padding: 20px;
+  @include paper;
+  padding: 20px;
 
-    > p {
-        margin: 8px 0;
-    }
+  > p {
+    margin: 8px 0;
+  }
 }
 
 .cmsInfoHeader {
-    font-size: 20px;
-    font-weight: 500;
-    margin-bottom: 15px;
+  font-size: 20px;
+  font-weight: 500;
+  margin-bottom: 15px;
 }
 
 .iconsCredits {
-    font-size: 12px;
-    display: flex;
+  font-size: 12px;
+  display: flex;
 
-    a {
-        color: $primaryColor;
-        margin: 0 2px;
-    }
+  a {
+    color: $primaryColor;
+    margin: 0 2px;
+  }
 }
 
 :global(.modeDark) {
-    .cmsInfo {
-        background-color: #333;
+  .cmsInfo {
+    background-color: #333;
 
-        * {
-            color: #eee;
-        }
+    * {
+      color: #eee;
     }
+  }
 }

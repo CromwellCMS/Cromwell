@@ -4,7 +4,7 @@
     "module": "esnext",
     "lib": ["dom", "dom.iterable", "es2015", "es2016", "es2017", "es2018"],
     "baseUrl": ".",
-    "jsx": "react",
+    "jsx": "preserve",
     "outDir": "build",
     "moduleResolution": "node",
     "noImplicitAny": false,
@@ -15,10 +15,18 @@
     "types": ["jest", "node", "@testing-library/jest-dom"],
     "paths": {
       "@components/*": ["./src/components/*"],
-      "@pages/*": ["./src/pages/*"],
+      "@pages/*": ["src/router-pages/*"],
       "@hooks/*": ["./src/hooks/*"],
-      "@helpers/*": ["./src/helpers/*"]
-    }
+      "@helpers/*": ["./src/helpers/*"],
+      "@redux/*": ["./src/redux/*"],
+      "@constants/*": ["./src/constants/*"]
+    },
+    "strict": false,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "incremental": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true
   },
   "exclude": [
     "node_modules",

@@ -7,7 +7,7 @@ import React from 'react';
 import { TextButton } from '../buttons/TextButton';
 import { CheckList } from './CheckList';
 import { intersection, not } from './helpers';
-import styles from './TransferList.Module.scss';
+import styles from './TransferList.module.scss';
 
 export default function TransferList(props: {
   left: string[];

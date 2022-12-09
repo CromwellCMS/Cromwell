@@ -37,7 +37,7 @@ export const FileItem = (props: TFileItemProps) => {
   if (itemType === 'image') {
     ItemIcon = (
       <div className={styles.itemImageContainer}>
-        <LazyLoad height={60} offsetVertical={60} className={styles.itemImageContainer}>
+        <LazyLoad height={60} offset={60} className={styles.itemImageContainer}>
           <img className={styles.itemImage} src={normalize(`/${currentPath}/${item}`)} />
         </LazyLoad>
       </div>

@@ -1,18 +1,18 @@
 import {
-  BadgeCheckIcon,
+  CheckBadgeIcon,
   CogIcon,
-  CollectionIcon,
+  RectangleStackIcon,
   DocumentDuplicateIcon,
   HashtagIcon,
   HomeIcon,
-  PencilAltIcon,
+  PencilSquareIcon,
   ShoppingBagIcon,
   StarIcon,
   TagIcon,
-  TemplateIcon,
+  RectangleGroupIcon,
   UsersIcon,
-  ViewGridAddIcon,
-} from '@heroicons/react/solid';
+  SquaresPlusIcon,
+} from '@heroicons/react/24/solid';
 import React from 'react';
 import { getStoreItem } from '@cromwell/core';
 import {
@@ -121,7 +121,7 @@ export const getSideBarLinks = (): TSidebarLink[] => {
           id: '3_productList',
           title: 'Products',
           route: productListInfo.route,
-          icon: <CollectionIcon className="h-5 w-5" />,
+          icon: <RectangleStackIcon className="h-5 w-5" />,
           permissions: ['read_products'],
           module: 'ecommerce',
         },
@@ -153,7 +153,7 @@ export const getSideBarLinks = (): TSidebarLink[] => {
           id: 'Coupon_list',
           title: 'Coupons',
           route: couponListPageInfo.route,
-          icon: <BadgeCheckIcon className="h-5 w-5" />,
+          icon: <CheckBadgeIcon className="h-5 w-5" />,
           permissions: ['read_coupons'],
           module: 'ecommerce',
         },
@@ -170,7 +170,7 @@ export const getSideBarLinks = (): TSidebarLink[] => {
     {
       id: '6_Blog',
       title: 'Blog',
-      icon: <PencilAltIcon className="h-5 w-5" />,
+      icon: <PencilSquareIcon className="h-5 w-5" />,
       module: 'blog',
       subLinks: [
         {
@@ -196,14 +196,14 @@ export const getSideBarLinks = (): TSidebarLink[] => {
       id: '5_themeListPage',
       title: 'Theme Editor',
       route: themeEditPageInfo.route,
-      icon: <TemplateIcon className="h-5 w-5" />,
+      icon: <RectangleGroupIcon className="h-5 w-5" />,
       permissions: ['read_themes'],
     },
     {
       id: '6_pluginsPage',
       title: 'Plugins',
       route: pluginListPageInfo.route,
-      icon: <ViewGridAddIcon className="h-5 w-5" />,
+      icon: <SquaresPlusIcon className="h-5 w-5" />,
       permissions: ['read_plugins'],
     },
     {

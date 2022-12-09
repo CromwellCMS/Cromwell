@@ -1,5 +1,4 @@
-import { API, BlockAPI, OutputData } from '@editorjs/editorjs';
-import InlineCode from '@editorjs/inline-code';
+import type { API, BlockAPI, OutputData } from '@editorjs/editorjs';
 
 import { getFileManager } from '../../components/fileManager/helpers';
 import { toast } from '../../components/toast/toast';
@@ -18,14 +17,9 @@ let EditorMarker: typeof import('@editorjs/marker');
 // let EditorCode: typeof import('@editorjs/code');
 let EditorLink: typeof import('@editorjs/link');
 let EditorWarning: typeof import('@editorjs/warning');
+let InlineCode: typeof import('@editorjs/inline-code');
 
-let importPromise;
-(async () => {
-  let importResolver;
-  importPromise = new Promise((done) => {
-    importResolver = done;
-  });
-
+const importDependencies = async () => {
   if (!EditorJS) {
     [
       EditorJS,
@@ -41,6 +35,7 @@ let importPromise;
       // EditorCode,
       EditorLink,
       EditorWarning,
+      InlineCode,
     ] = await Promise.all([
       await import('@editorjs/editorjs'),
       await import('@editorjs/header'),
@@ -55,11 +50,10 @@ let importPromise;
       // await import('@editorjs/code'),
       await import('@editorjs/link'),
       await import('@editorjs/warning'),
+      await import('@editorjs/inline-code'),
     ]);
   }
-
-  importResolver();
-})();
+};
 
 const getTools = (readOnly?: boolean) => ({
   image: {
@@ -165,7 +159,7 @@ export const initTextEditor = async (options: {
 }): Promise<void> => {
   const { htmlId, data, onChange, placeholder, autofocus } = options;
 
-  if (importPromise) await importPromise;
+  await importDependencies();
 
   if (editors[htmlId]) {
     await editors[htmlId].isReady;

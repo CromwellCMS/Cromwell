@@ -1,7 +1,7 @@
 import { TUser, matchPermissions } from '@cromwell/core';
 import { useCmsSettings } from '@cromwell/core-frontend';
 import { Disclosure, Transition } from '@headlessui/react';
-import { ChevronRightIcon } from '@heroicons/react/solid';
+import { ChevronRightIcon } from '@heroicons/react/24/solid';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
