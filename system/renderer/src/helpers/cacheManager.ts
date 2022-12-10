@@ -6,7 +6,6 @@ import fs from 'fs-extra';
 import glob from 'glob';
 import { IncomingMessage, ServerResponse } from 'http';
 import LRUCache from 'lru-cache';
-import { IncrementalCacheValue } from 'next/dist/server/incremental-cache';
 import { NextServer as _NextServer } from 'next/dist/server/next';
 import _Server from 'next/dist/server/next-server';
 import normalizePath from 'normalize-path';
@@ -16,7 +15,6 @@ type IncrementalCacheEntry = {
   curRevalidate?: number | false;
   revalidateAfter: number | false;
   isStale?: boolean;
-  value: IncrementalCacheValue | null;
 };
 
 type NextServer = Omit<_NextServer, 'server'> & {

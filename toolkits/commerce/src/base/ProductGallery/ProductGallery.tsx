@@ -76,7 +76,7 @@ export function ProductGallery(props: ProductGalleryProps) {
           },
           ...(gallerySettings ?? {}),
         }}
-        {...(blockProps ?? {})}
+        {...((blockProps as Partial<TCromwellBlockProps>) ?? {})}
       />
     </div>
   );

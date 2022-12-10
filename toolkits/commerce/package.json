@@ -19,6 +19,7 @@
     "build": "npx rollup -c",
     "watch": "npx rollup -cw",
     "test": "npx --no-install jest",
+    "typecheck": "tsc --noEmit",
     "format": "prettier --write --ignore-unknown \"**/*.+(js|jsx|json|css|md|ts|tsx)\""
   },
   "dependencies": {
@@ -41,7 +42,7 @@
     "@types/htmlparser2": "3.10.3",
     "@types/jest": "29.2.2",
     "@types/loadable__component": "5.13.4",
-    "@types/node": "14.14.31",
+    "@types/node": "18.11.12",
     "@types/react": "18.0.25",
     "@types/react-dom": "18.0.8",
     "@types/react-html-parser": "2.0.2",

@@ -14,9 +14,9 @@
   ],
   "scripts": {
     "build": "npx --no-install cromwell build",
-    "typecheck": "npx tsc --noEmit",
     "test": "cd tests && npx --no-install jest",
     "watch": "npx --no-install cromwell b -w",
+    "typecheck": "tsc --noEmit",
     "format": "prettier --write --ignore-unknown \"**/*.+(js|jsx|json|css|md|ts|tsx)\""
   },
   "cromwell": {
@@ -88,12 +88,12 @@
     ]
   },
   "dependencies": {
-    "@emotion/cache": "11.5.0",
-    "@emotion/server": "11.4.0",
-    "@mui/icons-material": "5.10.9",
-    "@mui/lab": "5.0.0-alpha.106",
-    "@mui/material": "5.10.12",
-    "@mui/styles": "5.10.10",
+    "@emotion/cache": "11.10.5",
+    "@emotion/server": "11.10.0",
+    "@mui/icons-material": "5.10.16",
+    "@mui/lab": "5.0.0-alpha.111",
+    "@mui/material": "5.10.17",
+    "@mui/styles": "5.10.16",
     "mobx": "6.3.2",
     "mobx-react": "7.2.0",
     "reset-css": "5.0.1"
@@ -105,7 +105,7 @@
     "@testing-library/react": "13.4.0",
     "@testing-library/user-event": "14.4.3",
     "@types/jest": "29.2.2",
-    "@types/node": "14.14.31",
+    "@types/node": "18.11.12",
     "@types/react": "18.0.25",
     "@types/react-dom": "18.0.8",
     "@types/testing-library__jest-dom": "5.14.1",

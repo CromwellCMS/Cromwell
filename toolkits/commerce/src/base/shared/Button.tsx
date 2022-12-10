@@ -12,6 +12,7 @@ export type TBaseButtonProps = {
   size?: 'small' | 'medium' | 'large';
   startIcon?: React.ReactNode;
   'aria-label'?: string;
+  children?: React.ReactNode;
 };
 /** @internal */
 export type TBaseButton = React.ComponentType<TBaseButtonProps>;

@@ -9,7 +9,14 @@ import {
   TPagedParams,
 } from '@cromwell/core';
 import { HttpException, HttpStatus } from '@nestjs/common';
-import { ConnectionOptions, DeleteQueryBuilder, getConnection, Repository, SelectQueryBuilder } from 'typeorm';
+import {
+  ConnectionOptions,
+  DeepPartial,
+  DeleteQueryBuilder,
+  getConnection,
+  Repository,
+  SelectQueryBuilder,
+} from 'typeorm';
 
 import { applyBaseFilter, getPaged, getSqlBoolStr, getSqlLike, wrapInQuotes } from '../helpers/base-queries';
 import { entityMetaRepository } from '../helpers/entity-meta';
@@ -18,7 +25,10 @@ import { PageStats } from '../models/entities/page-stats.entity';
 
 const logger = getLogger();
 
-export class BaseRepository<EntityType, EntityInputType = EntityType> extends Repository<EntityType> {
+export class BaseRepository<
+  EntityType extends { id?: number | undefined },
+  EntityInputType extends object = EntityType,
+> extends Repository<EntityType> {
   public dbType: ConnectionOptions['type'];
 
   constructor(private EntityClass: new (...args: any[]) => EntityType & { id?: number }) {
@@ -64,19 +74,18 @@ export class BaseRepository<EntityType, EntityInputType = EntityType> extends Re
 
   async createEntity(input: EntityInputType, id?: number | null): Promise<EntityType> {
     logger.log('BaseRepository::createEntity');
-    let entity = new this.EntityClass();
+    const entity = new this.EntityClass();
     if (id) entity.id = id;
 
     for (const key of Object.keys(input)) {
       entity[key] = input[key];
     }
-    entity = await this.save(entity);
-    return entity;
+    return await this.save(entity as DeepPartial<EntityType>);
   }
 
   async updateEntity(id: number, input: EntityInputType): Promise<EntityType> {
     logger.log('BaseRepository::updateEntity');
-    let entity = await this.findOne({
+    const entity = await this.findOne({
       where: { id },
     });
     if (!entity) throw new HttpException(`${this.metadata.tablePath} ${id} not found!`, HttpStatus.NOT_FOUND);
@@ -84,9 +93,7 @@ export class BaseRepository<EntityType, EntityInputType = EntityType> extends Re
     for (const key of Object.keys(input)) {
       entity[key] = input[key];
     }
-    entity = await this.save(entity);
-
-    return entity;
+    return await this.save(entity as DeepPartial<EntityType>);
   }
 
   async deleteEntity(id: number): Promise<boolean> {
@@ -96,7 +103,7 @@ export class BaseRepository<EntityType, EntityInputType = EntityType> extends Re
       logger.error(`BaseRepository::deleteEntity failed to find ${this.metadata.tablePath} ${id} by id: ${id}`);
       return false;
     }
-    const res = await this.delete(id);
+    await this.delete(id);
     return true;
   }
 

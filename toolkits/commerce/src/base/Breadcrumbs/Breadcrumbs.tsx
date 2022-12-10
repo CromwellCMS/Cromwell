@@ -29,6 +29,7 @@ export type BreadcrumbsProps = {
       className?: string;
       style?: React.CSSProperties;
       maxItems?: number;
+      children?: React.ReactNode;
     }>;
     Breadcrumb?: React.ComponentType<{
       className?: string;

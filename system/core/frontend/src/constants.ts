@@ -69,7 +69,7 @@ export const awaitImporter = async () => {
   const importer = getStoreItem('nodeModules');
   if (importer?.scriptStatuses) {
     const promises: Promise<any>[] = [];
-    Object.values(importer.scriptStatuses).forEach((p) => {
+    Object.values(importer.scriptStatuses).forEach((p: any) => {
       if (typeof p === 'object' && p.then) promises.push(p);
     });
     if (promises.length > 0) await Promise.all(promises);

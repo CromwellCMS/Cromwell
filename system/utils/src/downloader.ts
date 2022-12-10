@@ -173,7 +173,7 @@ const parallelFlows = async <T>(flowQnt: number, items: T[], worker: (item: T) =
   const statuses: Promise<any>[] = [];
   for (let i = 0; i < items.length; i++) {
     const num = i % flowQnt;
-    if (statuses[num]) {
+    if (statuses[num] as any) {
       await statuses[num];
     }
     const item = items[i];

@@ -32,7 +32,7 @@ export const PostCard = (props?: {
         <Link href={postLink} aria-label={`Post ${data?.title}`} style={{ display: 'flex' }}>
           {Image && (
             <Image
-              alt={data?.title ?? undefined}
+              alt={data?.title || ''}
               unoptimized
               loader={imageLoader}
               objectFit="cover"

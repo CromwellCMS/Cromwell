@@ -12,9 +12,9 @@ export const DefaultCheckoutFields = {
 };
 
 /** @internal */
-export const DefaultPlacedOrder = (props) => <p>{props.children}</p>;
+export const DefaultPlacedOrder = (props: { children?: React.ReactNode }) => <p>{props.children}</p>;
 /** @internal */
-export const DefaultEmptyCartAlert = (props) => <p>{props.children}</p>;
+export const DefaultEmptyCartAlert = (props: { children?: React.ReactNode }) => <p>{props.children}</p>;
 
 export type CheckoutFieldProps = Omit<TBaseTextFieldProps, 'onChange'> & {
   onChange: (value: any) => any;

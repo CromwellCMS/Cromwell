@@ -55,7 +55,7 @@ export type CheckoutProps = {
 
   elements?: {
     Loadbox?: React.ComponentType;
-    PlacedOrder?: React.ComponentType<{ order: TOrder }>;
+    PlacedOrder?: React.ComponentType<{ order: TOrder; children?: React.ReactNode }>;
     EmptyCartAlert?: React.ComponentType;
     RadioGroup?: TBaseRadio;
     Button?: TBaseButton;

@@ -18,6 +18,7 @@ export type TRadioProps = {
   name?: string;
   value?: string;
   id?: string;
+  children?: React.ReactNode;
 };
 /** @internal */
 export type TBaseRadio = React.ComponentType<TRadioProps>;

@@ -38,7 +38,9 @@ import { Slider } from './Slider';
 
 const ExpandMoreIcon = iconFromPath(<path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"></path>);
 const FilterListIcon = iconFromPath(<path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"></path>);
-const CloseIcon = iconFromPath(<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path>);
+const CloseIcon = iconFromPath(
+  <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path>,
+);
 
 type FilterState = {
   collapsedItems: Record<string, boolean>;
@@ -46,7 +48,7 @@ type FilterState = {
   maxPrice: number;
   isMobileOpen: boolean;
   isLoading?: boolean;
-}
+};
 
 type FilterProps = {
   router?: NextRouter;
@@ -69,7 +71,7 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
       maxPrice: 0,
       isMobileOpen: false,
       isLoading: false,
-    }
+    };
     this.props?.instanceSettings?.getInstance?.(this);
 
     this.props.router?.events?.on('routeChangeComplete', this.routeChangeComplete);
@@ -81,12 +83,12 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
   }
 
   componentWillUnmount() {
-    this.props.router?.events?.off('routeChangeComplete', this.routeChangeComplete)
+    this.props.router?.events?.off('routeChangeComplete', this.routeChangeComplete);
   }
 
   private routeChangeComplete = () => {
     this.init();
-  }
+  };
 
   private async init() {
     this.setState({ isLoading: true });
@@ -109,29 +111,32 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
     this.checkedAttrs[key] = checks;
     this.forceUpdate();
     this.applyFilter();
-  }
+  };
 
   public updateFilterMeta = (filteredList: TFilteredProductList | undefined) => {
     if (filteredList && filteredList.filterMeta) {
-      if (filteredList.filterMeta.minPrice !== undefined) this.setState({
-        minPrice: filteredList.filterMeta.minPrice
-      });
-      if (filteredList.filterMeta.maxPrice !== undefined) this.setState({
-        maxPrice: filteredList.filterMeta.maxPrice
-      });
+      if (filteredList.filterMeta.minPrice !== undefined)
+        this.setState({
+          minPrice: filteredList.filterMeta.minPrice,
+        });
+      if (filteredList.filterMeta.maxPrice !== undefined)
+        this.setState({
+          maxPrice: filteredList.filterMeta.maxPrice,
+        });
     }
-  }
+  };
 
   private getFilterParams = (): TProductFilter => {
     return {
-      attributes: Object.keys(this.checkedAttrs).map(key => ({
-        key, values: this.checkedAttrs[key]
+      attributes: Object.keys(this.checkedAttrs).map((key) => ({
+        key,
+        values: this.checkedAttrs[key],
       })),
       minPrice: this.priceRange[0],
       maxPrice: this.priceRange[1],
-      nameSearch: (this.search) ? this.search : undefined,
-    }
-  }
+      nameSearch: this.search ? this.search : undefined,
+    };
+  };
 
   private applyFilter = () => {
     const filterParams = this.getFilterParams();
@@ -151,8 +156,8 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
       return;
     }
 
-    filterCList(filterParams, productListId, productCategory, this.client, this.updateFilterMeta)
-  }
+    filterCList(filterParams, productListId, productCategory, this.client, this.updateFilterMeta);
+  };
 
   private onPriceRangeChange = debounce(500, (newValue: number[]) => {
     this.priceRange = newValue;
@@ -166,37 +171,36 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
 
   public handleMobileOpen = () => {
     this.setState({ isMobileOpen: true });
-  }
+  };
   public handleMobileClose = () => {
     this.setState({ isMobileOpen: false });
-  }
+  };
 
   private handleCategoryClick = (category: TProductCategory) => () => {
     const skip = this.props?.instanceSettings?.onCategoryClick?.(category);
     if (skip) return;
 
-    if (!category?.slug && !category?.id || !this.props.router) return;
+    if ((!category?.slug && !category?.id) || !this.props.router) return;
     const url = resolvePageRoute('category', { slug: category.slug ?? category.id + '' });
     this.props.router?.push(url);
-  }
+  };
 
   public setFilter = (filterParams: TProductFilter) => {
     if (filterParams.minPrice !== undefined) this.priceRange[0] = filterParams.minPrice;
     if (filterParams.maxPrice !== undefined) this.priceRange[1] = filterParams.maxPrice;
     if (filterParams.nameSearch) this.search = filterParams.nameSearch;
-    this.checkedAttrs = Object.assign({}, ...(filterParams.attributes?.map(attr => {
-      return {
-        [attr.key]: attr.values
-      }
-    }) ?? []));
+    this.checkedAttrs = Object.assign(
+      {},
+      ...(filterParams.attributes?.map((attr) => {
+        return {
+          [attr.key]: attr.values,
+        };
+      }) ?? []),
+    );
     this.forceUpdate();
-  }
+  };
 
-  private getFilterItem = (props: {
-    title: string;
-    key: string;
-    content: JSX.Element;
-  }) => {
+  private getFilterItem = (props: { title: string; key: string; content: JSX.Element }) => {
     const { collapsedItems } = this.state;
     if (collapsedItems[props.key] === undefined) {
       collapsedItems[props.key] = this.collapsedByDefault;
@@ -205,21 +209,29 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
 
     return (
       <Card className="productFilter_card">
-        <div className="productFilter_headerWrapper"
-          onClick={() => this.setState(prev => ({
-            collapsedItems: {
-              ...prev.collapsedItems,
-              [props.key]: !prev.collapsedItems[props.key]
-            }
-          }))}
+        <div
+          className="productFilter_headerWrapper"
+          onClick={() =>
+            this.setState((prev) => ({
+              collapsedItems: {
+                ...prev.collapsedItems,
+                [props.key]: !prev.collapsedItems[props.key],
+              },
+            }))
+          }
         >
-          <Typography gutterBottom style={{
-            fontSize: '14px',
-            margin: '0 0 0 15px'
-          }}>{props.title}</Typography>
+          <Typography
+            gutterBottom
+            style={{
+              fontSize: '14px',
+              margin: '0 0 0 15px',
+            }}
+          >
+            {props.title}
+          </Typography>
           <IconButton
             className={clsx('productFilter_expand', {
-              'productFilter_expandOpen': isExpanded,
+              productFilter_expandOpen: isExpanded,
             })}
             aria-expanded={isExpanded}
             aria-label={`Toggle ${props.title} filter visibility`}
@@ -230,9 +242,9 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
         <Collapse in={isExpanded} timeout="auto" unmountOnExit>
           {props.content}
         </Collapse>
-      </Card >
-    )
-  }
+      </Card>
+    );
+  };
 
   render() {
     const { instanceSettings } = this.props;
@@ -241,15 +253,17 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
     const { isMobileOpen, minPrice, maxPrice, collapsedItems, isLoading } = this.state;
     instanceSettings?.getInstance?.(this);
 
-    if (isLoading) return (
-      <div style={{ width: '100%', height: '100px' }}>
-        <LoadBox size={60} />
-      </div>
-    );
+    if (isLoading)
+      return (
+        <div style={{ width: '100%', height: '100px' }}>
+          <LoadBox size={60} />
+        </div>
+      );
 
     const isMobile = !instanceSettings?.disableMobile && this.props.isMobile;
-    const pcCollapsedByDefault = pluginSettings?.collapsedByDefault ?? defaultSettings.collapsedByDefault
-    const mobileCollapsedByDefault = pluginSettings?.mobileCollapsedByDefault ?? defaultSettings.mobileCollapsedByDefault;
+    const pcCollapsedByDefault = pluginSettings?.collapsedByDefault ?? defaultSettings.collapsedByDefault;
+    const mobileCollapsedByDefault =
+      pluginSettings?.mobileCollapsedByDefault ?? defaultSettings.mobileCollapsedByDefault;
     const _collapsedByDefault = isMobile ? mobileCollapsedByDefault : pcCollapsedByDefault;
     const productListId = instanceSettings?.listId ?? pluginSettings?.listId;
 
@@ -268,7 +282,8 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
             <IconButton
               aria-label="Close filter"
               className="productFilter_mobileCloseBtn"
-              onClick={this.handleMobileClose}>
+              onClick={this.handleMobileClose}
+            >
               <CloseIcon />
             </IconButton>
           </div>
@@ -284,9 +299,9 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
               }}
               placeholder="type to search..."
               variant="standard"
-              onChange={e => this.onSearchChange(e.target.value)}
+              onChange={(e) => this.onSearchChange(e.target.value)}
             />
-          )
+          ),
         })}
         {productCategory &&
           !!(productCategory.parent || productCategory.children?.length) &&
@@ -294,61 +309,62 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
             title: 'Categories',
             key: 'categories',
             content: (
-              <div className={clsx('productFilter_categoryBox',
-                'productFilter_styledScrollBar',
-                'productFilter_list')}>
+              <div className={clsx('productFilter_categoryBox', 'productFilter_styledScrollBar', 'productFilter_list')}>
                 {productCategory.parent && (
-                  <Chip className="productFilter_category"
+                  <Chip
+                    className="productFilter_category"
                     label={productCategory.parent.name}
-                    onClick={this.handleCategoryClick(productCategory.parent)} />
+                    onClick={this.handleCategoryClick(productCategory.parent)}
+                  />
                 )}
                 {productCategory && (
-                  <Chip className="productFilter_category"
+                  <Chip
+                    className="productFilter_category"
                     variant="outlined"
                     disabled
                     style={{ marginLeft: productCategory.parent ? '15px' : '' }}
                     label={productCategory.name}
-                    onClick={this.handleCategoryClick(productCategory)} />
+                    onClick={this.handleCategoryClick(productCategory)}
+                  />
                 )}
                 {!!productCategory.children?.length && (
                   <>
-                    {productCategory.children.map(child => (
-                      <Chip key={child.id}
+                    {productCategory.children.map((child) => (
+                      <Chip
+                        key={child.id}
                         className="productFilter_category"
-                        style={{ marginLeft: ((productCategory?.parent ? 15 : 0) + 15) + 'px' }}
+                        style={{ marginLeft: (productCategory?.parent ? 15 : 0) + 15 + 'px' }}
                         label={child.name}
-                        onClick={this.handleCategoryClick(child)} />
+                        onClick={this.handleCategoryClick(child)}
+                      />
                     ))}
                   </>
                 )}
               </div>
-            )
+            ),
           })}
         {this.getFilterItem({
           title: 'Price',
           key: 'price',
-          content: (
-            <Slider
-              onChange={this.onPriceRangeChange}
-              minPrice={minPrice}
-              maxPrice={maxPrice}
-            />
-          )
+          content: <Slider onChange={this.onPriceRangeChange} minPrice={minPrice} maxPrice={maxPrice} />,
         })}
-        {attributes && (
-          attributes.map(attr => {
+        {attributes &&
+          attributes.map((attr) => {
             if (!attr.key || !attr.values) return null;
             const checked: string[] | undefined = this.checkedAttrs[attr.key];
-            const numberOfChecked = () => checked ? checked.length : 0;
+            const numberOfChecked = () => (checked ? checked.length : 0);
             const handleToggleAll = () => {
               if (attr.key && attr.values && attr.values?.length !== 0) {
                 if (numberOfChecked() === attr.values?.length) {
-                  this.handleSetAttribute(attr.key, [])
+                  this.handleSetAttribute(attr.key, []);
                 } else {
-                  this.handleSetAttribute(attr.key, attr.values.map(v => v.value))
+                  this.handleSetAttribute(
+                    attr.key,
+                    attr.values.map((v) => v.value),
+                  );
                 }
               }
-            }
+            };
             if (collapsedItems[attr.key] === undefined) {
               collapsedItems[attr.key] = this.collapsedByDefault;
             }
@@ -372,14 +388,16 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
                     subheader={`${numberOfChecked()}/${attr.values.length} selected`}
                   />
                   <IconButton
-                    onClick={() => this.setState(prev => ({
-                      collapsedItems: {
-                        ...prev.collapsedItems,
-                        [attr.key!]: !prev.collapsedItems[attr.key!]
-                      }
-                    }))}
+                    onClick={() =>
+                      this.setState((prev) => ({
+                        collapsedItems: {
+                          ...prev.collapsedItems,
+                          [attr.key!]: !prev.collapsedItems[attr.key!],
+                        },
+                      }))
+                    }
                     className={clsx('productFilter_expand', {
-                      'productFilter_expandOpen': isExpanded,
+                      productFilter_expandOpen: isExpanded,
                     })}
                     aria-label="Toggle filter visibility"
                     aria-expanded={isExpanded}
@@ -389,12 +407,20 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
                 </div>
                 <Collapse in={isExpanded} timeout="auto" unmountOnExit>
                   <Divider />
-                  <List className={clsx('productFilter_list', 'productFilter_styledScrollBar')} dense component="div" role="list">
+                  <List
+                    className={clsx('productFilter_list', 'productFilter_styledScrollBar')}
+                    dense
+                    component="div"
+                    role="list"
+                  >
                     {attr.values.map((attrValue: TAttributeValue) => {
-                      const value = attrValue.value
+                      const value = attrValue.value;
                       const labelId = `attribute-list-${attr.key}-${value}-label`;
                       return (
-                        <ListItem key={value} role="listitem" button
+                        <ListItem
+                          key={value}
+                          role="listitem"
+                          button
                           onClick={() => {
                             const newChecked = checked ? [...checked] : [];
                             const currentIndex = newChecked.indexOf(value);
@@ -404,7 +430,8 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
                               newChecked.splice(currentIndex, 1);
                             }
                             this.handleSetAttribute(attr.key!, newChecked);
-                          }}>
+                          }}
+                        >
                           <ListItemIcon>
                             <Checkbox
                               color="primary"
@@ -417,7 +444,8 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
                           {attrValue.icon && (
                             <div
                               style={{ backgroundImage: `url(${attrValue.icon}` }}
-                              className="productFilter_attrValueIcon"></div>
+                              className="productFilter_attrValueIcon"
+                            ></div>
                           )}
                           <ListItemText id={labelId} primary={value} />
                         </ListItem>
@@ -427,16 +455,13 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
                   </List>
                 </Collapse>
               </Card>
-            )
-          })
-        )}
+            );
+          })}
       </div>
     );
 
     if (isMobile) {
-      const onOpen = () => {
-
-      }
+      const onOpen = () => {};
       const mobileIconPosition = pluginSettings?.mobileIconPosition ?? defaultSettings.mobileIconPosition;
 
       return (
@@ -446,9 +471,10 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
             className="productFilter_mobileOpenBtn"
             style={{
               top: mobileIconPosition.top + 'px',
-              left: mobileIconPosition.left + 'px'
+              left: mobileIconPosition.left + 'px',
             }}
-            onClick={this.handleMobileOpen}>
+            onClick={this.handleMobileOpen}
+          >
             <FilterListIcon />
           </IconButton>
           <SwipeableDrawer
@@ -457,9 +483,7 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
             onOpen={onOpen}
             classes={{ paper: 'productFilter_styledScrollBar' }}
           >
-            <div className="productFilter_drawer">
-              {filterContent}
-            </div>
+            <div className="productFilter_drawer">{filterContent}</div>
           </SwipeableDrawer>
         </div>
       );
@@ -471,8 +495,8 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
 
 let HocComp: any = (props: TFrontendPluginProps<TProductFilterData, TInstanceSettings>) => {
   const isMobile = useMediaQuery(`(max-width:${props.data?.pluginSettings?.mobileBreakpoint || 600}px)`);
-  return <ProductFilter {...props} isMobile={isMobile} />
-}
+  return <ProductFilter {...props} isMobile={isMobile} />;
+};
 
 HocComp = withStyles(styles)(HocComp);
 export default HocComp;

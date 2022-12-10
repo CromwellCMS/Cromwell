@@ -7,19 +7,19 @@ import { TProductFilterSettings } from '../types';
 
 let HocComp = Filter;
 if (withRouter) {
-    HocComp = withRouter(HocComp);
+  HocComp = withRouter(HocComp);
 }
 
 export default HocComp;
 
 export const getStaticProps: TGetPluginStaticProps<TProductFilterData, TProductFilterSettings> = async (context) => {
-    const { pluginSettings } = context ?? {};
-    const slug = context?.params?.slug ?? null;
+  const { pluginSettings } = context ?? {};
+  const slug = context?.params?.slug ?? null;
 
-    return {
-        props: {
-            slug,
-            pluginSettings,
-        }
-    }
-}
+  return {
+    props: {
+      slug,
+      pluginSettings,
+    },
+  };
+};

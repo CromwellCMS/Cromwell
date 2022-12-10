@@ -241,7 +241,7 @@ export function ProductCard(props: ProductCardProps) {
             onClick={(e) => productLink && props.onProductLinkClick?.(e, productLink)}
           >
             <Image
-              alt={product?.name ?? undefined}
+              alt={product?.name || ''}
               loader={imageLoader}
               objectFit="contain"
               layout="fill"

@@ -1,15 +1,16 @@
 # Menu plugin for Cromwell CMS
 
-Add website navigation. Elements can be edited on the admin panel plugin's page.  
+Add website navigation. Elements can be edited on the admin panel plugin's page.
 
 Supports desktop (row) and mobile (column) modes. You need to use your own solution to detect mobile screen, the plugin needs `mobile` prop to display mobile mode. Otherwise will be displayed desktop mode.
 
-Custom elements: 
+Custom elements:
+
 - MenuItem
 - IconButton
 - Popover
 
-Example of usage: 
+Example of usage:
 
 ```tsx
 import { IconButton, MenuItem, Popover } from '@mui/material';
@@ -29,10 +30,10 @@ export default function MyPage() {
             MenuItem,
             IconButton,
             Popover,
-          }
-        }
+          },
+        },
       }}
     />
-  ) 
+  );
 }
 ```

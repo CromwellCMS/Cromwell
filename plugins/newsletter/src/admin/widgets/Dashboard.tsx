@@ -5,35 +5,34 @@ import { useEffect } from 'react';
 import { useStyles } from '../styles';
 
 export const Dashboard = (props: WidgetTypes['Dashboard']) => {
-    const [newsletterCount, setNewsletterCount] = useState('')
-    const classes = useStyles();
-    const widgetKey = '@cromwell/plugin-newsletter';
+  const [newsletterCount, setNewsletterCount] = useState('');
+  const classes = useStyles();
+  const widgetKey = '@cromwell/plugin-newsletter';
 
-    useEffect(() => {
-        getStats();
-        props?.setSize?.(widgetKey, {
-            lg: { w: 3, h: 3 },
-            md: { w: 3, h: 3 },
-            sm: { w: 2, h: 3 },
-            xs: { w: 2, h: 3 },
-            xxs: { w: 2, h: 3 },
-        });
+  useEffect(() => {
+    getStats();
+    props?.setSize?.(widgetKey, {
+      lg: { w: 3, h: 3 },
+      md: { w: 3, h: 3 },
+      sm: { w: 2, h: 3 },
+      xs: { w: 2, h: 3 },
+      xxs: { w: 2, h: 3 },
+    });
+  }, []);
 
-    }, []);
+  const getStats = async () => {
+    const client = getRestApiClient();
+    const data = await client.get<string>('plugin-newsletter/stats');
+    setNewsletterCount(data ?? '');
+  };
 
-    const getStats = async () => {
-        const client = getRestApiClient();
-        const data = await client.get<string>('plugin-newsletter/stats');
-        setNewsletterCount(data ?? '')
-    }
-
-    return (
-        <div className={classes.dashboard}>
-            <img
-                className={classes.dashboardIcon + ' PluginNewsletter-dashboardImage'}
-                src={`${getPluginStaticUrl('@cromwell/plugin-newsletter')}/icon_email.png`}
-            ></img>
-            <h3 className={classes.dashboardText}>{newsletterCount} total newsletters</h3>
-        </div>
-    );
-}
+  return (
+    <div className={classes.dashboard}>
+      <img
+        className={classes.dashboardIcon + ' PluginNewsletter-dashboardImage'}
+        src={`${getPluginStaticUrl('@cromwell/plugin-newsletter')}/icon_email.png`}
+      ></img>
+      <h3 className={classes.dashboardText}>{newsletterCount} total newsletters</h3>
+    </div>
+  );
+};

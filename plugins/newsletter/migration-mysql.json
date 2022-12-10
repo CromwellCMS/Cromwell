@@ -1,16 +1,14 @@
 {
-    "type": "mariadb",
-    "host": "localhost",
-    "port": 3306,
-    "username": "cromwell",
-    "password": "my_password",
-    "database": "cromwell",
-    "entityPrefix": "crw_",
-    "entities": [
-        "./build/backend/index.js"
-    ],
-    "migrationsTableName": "crw_migrations",
-    "cli": {
-        "migrationsDir": "migrations/mysql"
-    }
+  "type": "mariadb",
+  "host": "localhost",
+  "port": 3306,
+  "username": "cromwell",
+  "password": "my_password",
+  "database": "cromwell",
+  "entityPrefix": "crw_",
+  "entities": ["./build/backend/index.js"],
+  "migrationsTableName": "crw_migrations",
+  "cli": {
+    "migrationsDir": "migrations/mysql"
+  }
 }

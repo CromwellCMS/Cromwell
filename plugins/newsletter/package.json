@@ -18,6 +18,7 @@
     "build": "npx --no-install cromwell b",
     "watch": "npx --no-install cromwell b -w",
     "test": "cd tests && npx --no-install jest",
+    "format": "prettier --write --ignore-unknown \"**/*.+(js|jsx|json|css|scss|md|ts|tsx)\"",
     "docker:start-dev-mariadb": "docker run --rm -d -p 3306:3306 --name crw-mariadb -e MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=true -e MARIADB_DATABASE=cromwell -e MYSQL_USER=cromwell -e MYSQL_PASSWORD=my_password mariadb:latest",
     "docker:start-dev-postgres": "docker run --rm -d -p 5432:5432 --name crw-postgres -e POSTGRES_DB=cromwell -e POSTGRES_USER=cromwell -e POSTGRES_PASSWORD=my_password postgres",
     "migration:generate:mysql": "npx --no-install typeorm migration:generate -o -f migration-mysql -n %npm_config_name%",
@@ -27,10 +28,10 @@
     "migration:generate:all-example": "npm run migration:generate:all --name=init"
   },
   "dependencies": {
-    "@mui/lab": "5.0.0-alpha.106",
-    "@mui/material": "5.10.12",
-    "@mui/styles": "5.10.10",
-    "@mui/system": "5.2.1"
+    "@mui/lab": "5.0.0-alpha.111",
+    "@mui/material": "5.10.17",
+    "@mui/styles": "5.10.16",
+    "@mui/system": "5.10.17"
   },
   "devDependencies": {
     "@nestjs/testing": "8.0.6",
@@ -41,7 +42,7 @@
     "@testing-library/react": "13.4.0",
     "@testing-library/user-event": "14.4.3",
     "@types/jest": "29.2.2",
-    "@types/node": "14.14.31",
+    "@types/node": "18.11.12",
     "@types/react": "18.0.25",
     "@types/react-dom": "18.0.8",
     "@types/testing-library__jest-dom": "5.14.1",

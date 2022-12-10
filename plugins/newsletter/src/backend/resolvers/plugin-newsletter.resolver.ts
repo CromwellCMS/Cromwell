@@ -7,25 +7,21 @@ import { getManager } from 'typeorm';
 import { newsletterPermissions } from '../auth';
 import PluginNewsletter from '../entities/newsletter-form.entity';
 
-
 @Resolver(PluginNewsletter)
 export default class PluginNewsletterResolver {
+  @Authorized(newsletterPermissions.export.name)
+  @Query(() => [PluginNewsletter])
+  async pluginNewsletterExport(): Promise<PluginNewsletter[]> {
+    return await getManager().find(PluginNewsletter);
+  }
 
-    @Authorized(newsletterPermissions.export.name)
-    @Query(() => [PluginNewsletter])
-    async pluginNewsletterExport(): Promise<PluginNewsletter[]> {
-        return await getManager().find(PluginNewsletter);
-    }
+  /** Restrict via decorator: */
+  @Authorized(newsletterPermissions.stats.name)
+  @Query(() => String)
+  async pluginNewsletterStats(@Ctx() ctx: TGraphQLContext): Promise<string> {
+    // Or via checking manually user info: (both methods can work independently)
+    if (!matchPermissions(ctx.user, [newsletterPermissions.stats.name])) throw new ForbiddenException('Forbidden');
 
-    /** Restrict via decorator: */
-    @Authorized(newsletterPermissions.stats.name)
-    @Query(() => String)
-    async pluginNewsletterStats(@Ctx() ctx: TGraphQLContext): Promise<string> {
-
-        // Or via checking manually user info: (both methods can work independently)
-        if (!matchPermissions(ctx.user, [newsletterPermissions.stats.name]))
-            throw new ForbiddenException('Forbidden');
-
-        return (await getManager().find(PluginNewsletter) ?? []).length + '';
-    }
+    return ((await getManager().find(PluginNewsletter)) ?? []).length + '';
+  }
 }

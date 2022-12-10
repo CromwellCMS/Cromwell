@@ -15,6 +15,7 @@
     "noImplicitAny": false,
     "removeComments": false,
     "moduleResolution": "node",
+    "skipLibCheck": true,
     "plugins": [
       {
         "name": "typescript-plugin-css-modules"

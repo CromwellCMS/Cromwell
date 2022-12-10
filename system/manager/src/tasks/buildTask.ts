@@ -19,6 +19,7 @@ import { OutputOptions, RollupWatcherEvent } from 'rollup';
 
 import { rendererRunBuild, rendererStartWatchDev } from '../managers/rendererManager';
 import { checkDependencies } from './checkModules';
+import { handleError, bold, underline, cyan, green, relativeId, stderr } from '../utils/buildUtils';
 
 const logger = getLogger(false);
 
@@ -231,21 +232,10 @@ const rollupBuild = async (
   return rollupBuildSuccess;
 };
 
-let handleError, bold, underline, cyan, stderr, green, relativeId, dateTime, prettyBytes, ms;
+let dateTime, prettyBytes, ms;
 
 const requireDevDeps = () => {
-  if (!handleError || !bold) {
-    const loadConfigFile = require('rollup/dist/shared/loadConfigFile.js');
-    handleError = loadConfigFile.handleError;
-    bold = loadConfigFile.bold;
-    underline = loadConfigFile.underline;
-    cyan = loadConfigFile.cyan;
-    stderr = loadConfigFile.stderr;
-    green = loadConfigFile.green;
-    relativeId = loadConfigFile.relativeId;
-    const rollupShared = require('rollup/dist/shared/rollup.js');
-    relativeId = rollupShared.relativeId;
-
+  if (!dateTime || !prettyBytes) {
     dateTime = require('date-time');
     prettyBytes = require('pretty-bytes');
     ms = require('pretty-ms');

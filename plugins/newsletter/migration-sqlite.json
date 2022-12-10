@@ -1,12 +1,10 @@
 {
-    "type": "sqlite",
-    "database": "./.cromwell/temp/db.sqlite3",
-    "entityPrefix": "crw_",
-    "entities": [
-        "./build/backend/index.js"
-    ],
-    "migrationsTableName": "crw_migrations",
-    "cli": {
-        "migrationsDir": "migrations/sqlite"
-    }
+  "type": "sqlite",
+  "database": "./.cromwell/temp/db.sqlite3",
+  "entityPrefix": "crw_",
+  "entities": ["./build/backend/index.js"],
+  "migrationsTableName": "crw_migrations",
+  "cli": {
+    "migrationsDir": "migrations/sqlite"
+  }
 }

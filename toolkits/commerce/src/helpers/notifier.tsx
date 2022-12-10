@@ -7,6 +7,7 @@ export type NotifierActionOptions = ToastOptions & {
     className?: string;
     severity?: any;
     options?: NotifierActionOptions;
+    children?: React.ReactNode;
   }>;
 };
 

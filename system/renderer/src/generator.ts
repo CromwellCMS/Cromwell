@@ -477,6 +477,7 @@ const linkFiles = async (tempDir: string, themeName: string, options) => {
   const tempDirPublic = resolve(tempDir, 'public');
 
   await fs.ensureDir(tempDir);
+  await fs.ensureDir(getPublicDir());
 
   // Link public dir in root to renderer's public dir for Next.js server
   if (!fs.existsSync(tempDirPublic)) {

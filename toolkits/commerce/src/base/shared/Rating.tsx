@@ -14,6 +14,7 @@ export type TBaseRatingProps = {
   className?: string;
   style?: React.CSSProperties;
   id?: string;
+  children?: React.ReactNode;
 };
 /** @internal */
 export type TBaseRating = React.ComponentType<TBaseRatingProps>;

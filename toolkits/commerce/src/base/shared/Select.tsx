@@ -19,6 +19,7 @@ export type TSelectProps = {
   name?: string;
   value?: string;
   id?: string;
+  children?: React.ReactNode;
 };
 /** @internal */
 export type TBaseSelect = React.ComponentType<TSelectProps>;

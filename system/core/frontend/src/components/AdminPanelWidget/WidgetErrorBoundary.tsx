@@ -2,7 +2,7 @@ import React from 'react';
 
 /** @internal */
 export class WidgetErrorBoundary extends React.Component<
-  { widgetName: string },
+  { widgetName: string; children?: React.ReactNode },
   { hasError: boolean; errorMessage: string }
 > {
   constructor(props) {

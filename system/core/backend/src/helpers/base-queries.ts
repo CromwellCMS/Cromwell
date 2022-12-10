@@ -25,8 +25,8 @@ export const applyGetPaged = <T>(
 
   if (p.orderBy && isSimpleString(String(p.orderBy))) {
     if (p.order !== 'DESC' && p.order !== 'ASC') p.order = 'DESC';
-    if (sortByTableName) qb.orderBy(`${sortByTableName}.${p.orderBy}`, p.order);
-    else qb.orderBy(p.orderBy + '', p.order);
+    if (sortByTableName) qb.orderBy(`${sortByTableName}.${String(p.orderBy)}`, p.order);
+    else qb.orderBy(String(p.orderBy) + '', p.order);
   }
 
   return qb.skip(p.pageSize * (p.pageNumber - 1)).take(p.pageSize);
@@ -46,9 +46,14 @@ export const applyGetManyFromOne = <T>(
   secondEntityName: string,
   secondEntityId: number,
 ): SelectQueryBuilder<T> => {
-  return qb.innerJoin(`${firstEntityName}.${firstEntityProp}`, secondEntityName, `${secondEntityName}.id = :entityId`, {
-    entityId: secondEntityId,
-  });
+  return qb.innerJoin(
+    `${firstEntityName}.${String(firstEntityProp)}`,
+    secondEntityName,
+    `${secondEntityName}.id = :entityId`,
+    {
+      entityId: secondEntityId,
+    },
+  );
 };
 
 export const getPaged = async <T>(

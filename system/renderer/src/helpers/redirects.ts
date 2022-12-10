@@ -93,13 +93,13 @@ export const usePatchForRedirects = () => {
     const pushState = history.pushState;
     history.pushState = (...params) => {
       logInfo('history.pushState params', params);
-      pushState.apply(history, handleChange(...params));
+      pushState.apply(history, handleChange(...(params as [any, any])));
     };
 
     const replaceState = history.replaceState;
     history.replaceState = (...params) => {
       logInfo('history.replaceState params', params);
-      replaceState.apply(history, handleChange(...params));
+      replaceState.apply(history, handleChange(...(params as [any, any])));
     };
   }
 

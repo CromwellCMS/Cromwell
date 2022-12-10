@@ -8,7 +8,6 @@ import { BaseRepository } from './base.repository';
 
 const logger = getLogger();
 
-@EntityRepository(Coupon)
 export class CouponRepository extends BaseRepository<Coupon> {
   constructor() {
     super(Coupon);
@@ -93,7 +92,7 @@ export class CouponRepository extends BaseRepository<Coupon> {
     return true;
   }
 
-  applyCouponFilter(qb: SelectQueryBuilder<TCoupon>, filterParams?: TBaseFilter) {
+  applyCouponFilter(qb: SelectQueryBuilder<Coupon>, filterParams?: TBaseFilter) {
     this.applyBaseFilter(qb, filterParams);
     return qb;
   }

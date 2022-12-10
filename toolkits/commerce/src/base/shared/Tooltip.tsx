@@ -12,6 +12,7 @@ export type TBaseTooltipProps = {
   className?: string;
   style?: React.CSSProperties;
   arrow?: boolean;
+  children?: React.ReactNode;
 };
 /** @internal */
 export type TBaseTooltip = React.ComponentType<TBaseTooltipProps>;

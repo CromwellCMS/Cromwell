@@ -20,6 +20,7 @@ export type TBaseTextFieldProps = {
   className?: string;
   name?: string;
   style?: React.CSSProperties;
+  children?: React.ReactNode;
 };
 /** @internal */
 export type TBaseTextField = React.ComponentType<TBaseTextFieldProps>;

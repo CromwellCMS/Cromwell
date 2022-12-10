@@ -599,7 +599,7 @@ export class CGraphQLClient {
    * Get filtered records of a generic entity
    * @auth admin
    */
-  public getEntities<TEntity, TFilter>(
+  public getEntities<TEntity, TFilter extends TBaseFilter>(
     entityName: string,
     fragment: DocumentNode,
     fragmentName: string,

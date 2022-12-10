@@ -5,13 +5,13 @@ import { SettingsPage } from './widgets/SettingsPage';
 import { ThemeEditor } from './widgets/ThemeEditor';
 
 registerWidget({
-    pluginName: '@cromwell/plugin-product-filter',
-    widgetName: 'PluginSettings',
-    component: SettingsPage
+  pluginName: '@cromwell/plugin-product-filter',
+  widgetName: 'PluginSettings',
+  component: SettingsPage,
 });
 
 registerThemeEditorPluginBlock({
-    pluginName: '@cromwell/plugin-product-filter',
-    blockName: 'Product filter',
-    component: ThemeEditor
+  pluginName: '@cromwell/plugin-product-filter',
+  blockName: 'Product filter',
+  component: ThemeEditor,
 });

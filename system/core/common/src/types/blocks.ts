@@ -306,7 +306,7 @@ export type TGallerySettings = {
   zoom?: boolean;
   fullscreen?: boolean;
   components?: {
-    imgWrapper?: React.ComponentType<{ image?: TImageSettings }>;
+    imgWrapper?: React.ComponentType<{ image?: TImageSettings; children?: React.ReactNode }>;
     backButton?: React.ComponentType;
     nextButton?: React.ComponentType;
   };

@@ -56,7 +56,7 @@ export const closeService = async (name: string): Promise<boolean> => {
     const proc = serviceProcesses[name];
     if (proc) {
       proc.disconnect();
-      kill(proc.pid);
+      kill(proc.pid as number);
     } else {
       getProcessPid(name, (pid: number) => {
         kill(pid);

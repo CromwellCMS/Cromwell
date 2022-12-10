@@ -7,7 +7,10 @@ import { BaseFilterInput } from '../models/filters/base-filter.filter';
 import { PagedMeta } from '../models/paged/meta.paged';
 import { BaseRepository } from '../repositories/base.repository';
 
-export const createGenericEntity = <EntityType, EntityInputType = EntityType>(
+export const createGenericEntity = <
+  EntityType extends { id?: number | undefined },
+  EntityInputType extends object = EntityType,
+>(
   entityName: string,
   EntityClass: new (...args: any[]) => EntityType,
   InputEntityClass?: new (...args: any[]) => EntityInputType,

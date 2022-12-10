@@ -71,7 +71,8 @@ export const withCromwellApp = (App: (props: TAppProps) => JSX.Element | null) =
     const Head = getModuleImporter()?.modules?.['next/head']?.default;
     const pageId = documentContext?.fullUrl ?? (resolvedPageRoute as string);
 
-    const RootComp: React.ComponentType = getStoreItem('rendererComponents')?.root ?? DefaultRootComp;
+    const RootComp: React.ComponentType<{ children?: React.ReactNode }> =
+      getStoreItem('rendererComponents')?.root ?? DefaultRootComp;
 
     usePatchForRedirects();
 

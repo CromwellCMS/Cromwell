@@ -8,6 +8,7 @@ import {
   readCMSConfigSync,
   serverMessages,
   TGraphQLContext,
+  TRequestWithUser,
 } from '@cromwell/core-backend';
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
@@ -57,7 +58,7 @@ async function bootstrap(): Promise<void> {
 
   const apolloServer = new ApolloServer({
     schema,
-    context: (context): TGraphQLContext => {
+    context: (context: { request?: TRequestWithUser }): TGraphQLContext => {
       return { user: context?.request?.user };
     },
     debug: envMode.envMode === 'dev',

@@ -28,8 +28,7 @@ const main = () => {
 
     if (dev) return;
 
-    const cyan = require('rollup/dist/shared/loadConfigFile.js').cyan;
-    console.error(cyan('\nStart bundling at ' + new Date() + '\n'));
+    console.error('\nStart bundling at ' + new Date() + '\n');
 
     spawnSync('npx webpack', [], { shell: true, stdio: 'inherit', cwd: __dirname });
 

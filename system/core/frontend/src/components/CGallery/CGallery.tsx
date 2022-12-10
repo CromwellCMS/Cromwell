@@ -6,13 +6,12 @@ import {
   CarouselContext,
   CarouselInjectedProps,
   CarouselProvider,
-  CarouselStoreInterface,
   DotGroup,
   Image as CarouselImage,
+  ImageProps,
   ImageWithZoom,
   Slide,
   Slider,
-  ImageProps,
   WithStore,
 } from 'pure-react-carousel';
 import React, { useContext, useEffect } from 'react';
@@ -34,21 +33,23 @@ export type TImageComponent = React.ComponentClass<Partial<ImageProps>>;
 /** @internal */
 class CarouselStoreSetterRaw extends React.Component<
   CarouselInjectedProps & {
-    setStore: (store: CarouselStoreInterface) => any;
+    setStore: (store: CarouselInjectedProps['carouselStore']) => any;
   }
 > {
   constructor(props) {
     super(props);
     this.props.setStore(this.props.carouselStore);
   }
+
   render() {
     this.props.setStore(this.props.carouselStore);
     return <></>;
   }
 }
+
 /** @internal */
 const CarouselStoreSetter = WithStore(CarouselStoreSetterRaw) as any as React.ComponentType<{
-  setStore: (store: CarouselStoreInterface) => any;
+  setStore: (store: CarouselInjectedProps['carouselStore']) => any;
 }>;
 
 export class CGallery extends React.Component<TCGalleryProps> {
@@ -56,7 +57,7 @@ export class CGallery extends React.Component<TCGalleryProps> {
   private galleryId?: string;
   private thumbsId?: string;
   private randId = getRandStr(5);
-  private galleryStore?: CarouselStoreInterface;
+  private galleryStore?: CarouselInjectedProps['carouselStore'];
   private activeSlide: number = 0;
   private setLightbox?: (open: boolean, index: number) => void;
   private forceUpdateThumbs?: () => void;
@@ -152,7 +153,6 @@ export class CGallery extends React.Component<TCGalleryProps> {
         isPlaying={gallerySettings.autoPlay}
       >
         <CarouselOnChangeWatcher onChange={this.onActiveSlideChange} />
-
         <CarouselStoreSetter
           setStore={(store) => {
             this.galleryStore = store;

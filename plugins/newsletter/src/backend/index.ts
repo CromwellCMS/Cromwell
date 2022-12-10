@@ -5,9 +5,9 @@ import PluginNewsletter from './entities/newsletter-form.entity';
 import PluginNewsletterResolver from './resolvers/plugin-newsletter.resolver';
 
 const backendModule: TBackendModule = {
-    controllers: [PluginNewsletterController],
-    entities: [PluginNewsletter],
-    resolvers: [PluginNewsletterResolver],
-}
+  controllers: [PluginNewsletterController],
+  entities: [PluginNewsletter],
+  resolvers: [PluginNewsletterResolver],
+};
 
 export default backendModule;

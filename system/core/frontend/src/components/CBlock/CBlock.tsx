@@ -31,7 +31,7 @@ import { CText } from '../CText/CText';
 
 /** @internal */
 export class CBlock<TContentBlock = React.Component>
-  extends Component<TCromwellBlockProps<TContentBlock>>
+  extends Component<TCromwellBlockProps<TContentBlock> & { children?: React.ReactNode }>
   implements TCromwellBlock<TContentBlock>
 {
   private data?: TCromwellBlockData;

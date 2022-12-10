@@ -6,6 +6,7 @@ export type TBaseAlertProps = {
   className?: string;
   id?: string;
   style?: React.CSSProperties;
+  children?: React.ReactNode;
 };
 /** @internal */
 export type TBaseAlert = React.ComponentType<TBaseAlertProps>;

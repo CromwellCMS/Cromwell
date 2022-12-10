@@ -4,7 +4,7 @@ import React from 'react';
 import { parseHtml } from '../../helpers/parserTransform';
 import { CBlock } from '../CBlock/CBlock';
 
-export class CEditor extends React.Component<TCromwellBlockProps> {
+export class CEditor extends React.Component<TCromwellBlockProps & { children?: React.ReactNode }> {
   render() {
     const { children, editor, ...rest } = this.props;
     return (

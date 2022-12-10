@@ -16,6 +16,7 @@
   "scripts": {
     "build": "npx cromwell b",
     "test": "cd tests && npx --no-install jest",
+    "format": "prettier --write --ignore-unknown \"**/*.+(js|jsx|json|css|scss|md|ts|tsx)\"",
     "watch": "npx cromwell b -w"
   },
   "dependencies": {
@@ -29,7 +30,7 @@
     "@testing-library/react": "13.4.0",
     "@testing-library/user-event": "14.4.3",
     "@types/jest": "29.2.2",
-    "@types/node": "14.14.31",
+    "@types/node": "18.11.12",
     "@types/react": "18.0.25",
     "@types/react-dom": "18.0.8",
     "@types/testing-library__jest-dom": "5.14.1",
