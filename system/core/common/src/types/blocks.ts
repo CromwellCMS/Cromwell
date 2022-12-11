@@ -129,6 +129,7 @@ export type TCromwellBlockProps<TContentBlock = React.Component> = {
     setContentInstance: TCromwellBlock<TContentBlock>['setContentInstance'],
     setClasses?: (classes: string) => void,
   ) => React.ReactNode;
+  children?: React.ReactNode;
 } & TCromwellBlockData;
 
 export type TContentComponentProps = {

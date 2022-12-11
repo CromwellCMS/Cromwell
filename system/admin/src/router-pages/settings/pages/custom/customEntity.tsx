@@ -1,7 +1,7 @@
 import { TAdminCustomEntity } from '@cromwell/core';
 import React, { useState } from 'react';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
-import { Redirect, useHistory, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import { ActionButton } from '../../../../components/actionButton';
 import { TBreadcrumbs } from '../../../../components/breadcrumbs';
@@ -29,7 +29,7 @@ export const CustomEntitySettingsPage = () => {
   const entity = adminSettings.customEntities.find((e) => e.entityType === params.entityType);
 
   if (!entity) {
-    return <Redirect to="/settings/custom-data" />;
+    return null;
   }
 
   return <CustomEntityForm entity={entity} />;
@@ -37,7 +37,7 @@ export const CustomEntitySettingsPage = () => {
 
 const CustomEntityForm = ({ entity }: { entity: TAdminCustomEntity }) => {
   const { adminSettings, saveCustomEntity } = useAdminSettings();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [uniqError, setUniqError] = useState(false);
   const methods = useForm<CustomEntityFormType>({
     defaultValues: {
@@ -73,7 +73,7 @@ const CustomEntityForm = ({ entity }: { entity: TAdminCustomEntity }) => {
     if (saved) {
       reset(data);
       if (entity.entityType !== inputs.entityType) {
-        history.replace(`/settings/custom-data/${inputs.entityType}`);
+        navigate(`/settings/custom-data/${inputs.entityType}`, { replace: true });
       }
     }
   };

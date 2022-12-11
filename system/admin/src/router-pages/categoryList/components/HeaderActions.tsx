@@ -1,4 +1,4 @@
-import { ViewListIcon } from '@heroicons/react/24/outline';
+import { QueueListIcon } from '@heroicons/react/24/outline';
 import { UnfoldLess as UnfoldLessIcon, UnfoldMore as UnfoldMoreIcon } from '@mui/icons-material';
 import { Box, Tooltip } from '@mui/material';
 import clsx from 'clsx';
@@ -43,7 +43,7 @@ export function HeaderActions({
               style={{ backgroundImage: `url(/admin/static/subfolder.png)` }}
             ></div>
           ) : (
-            <ViewListIcon className={clsx('w-5 h-5')} />
+            <QueueListIcon className={clsx('w-5 h-5')} />
           )}
         </IconButton>
       </Tooltip>

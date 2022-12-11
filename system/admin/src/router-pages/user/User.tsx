@@ -1,4 +1,4 @@
-import { EDBEntity, TRole } from '@cromwell/core';
+import { EDBEntity, TRole, TUser, TUserFilter, TUpdateUser } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
 import { Grid, TextField } from '@mui/material';
 import React, { useEffect, useState } from 'react';
@@ -25,7 +25,7 @@ export default function UserPage() {
   }, []);
 
   return (
-    <EntityEdit
+    <EntityEdit<TUser, TUserFilter, TUpdateUser>
       entityCategory={EDBEntity.User}
       entityListRoute={userListPageInfo.route}
       entityBaseRoute={userPageInfo.baseRoute}

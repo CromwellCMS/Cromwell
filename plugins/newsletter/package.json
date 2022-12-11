@@ -34,7 +34,7 @@
     "@mui/system": "5.10.17"
   },
   "devDependencies": {
-    "@nestjs/testing": "8.0.6",
+    "@nestjs/testing": "9.2.1",
     "@rollup/plugin-commonjs": "20.0.0",
     "@rollup/plugin-node-resolve": "13.0.4",
     "@testing-library/dom": "8.19.0",

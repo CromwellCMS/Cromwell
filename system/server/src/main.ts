@@ -1,5 +1,9 @@
 import 'reflect-metadata';
 
+import { ApolloServer } from '@apollo/server';
+import { ApolloServerPluginLandingPageDisabled } from '@apollo/server/plugin/disabled';
+import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
+import { fastifyApolloDrainPlugin, fastifyApolloHandler } from '@as-integrations/fastify';
 import {
   collectPlugins,
   getAuthSettings,
@@ -14,9 +18,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { ApolloServerPluginLandingPageDisabled, ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core';
-import { ApolloServer } from 'apollo-server-fastify';
-import fastify from 'fastify';
+import Fastify from 'fastify';
 import getPort from 'get-port';
 import { buildSchema } from 'type-graphql';
 
@@ -45,7 +47,7 @@ async function bootstrap(): Promise<void> {
 
   // Init Fastify as Nest.js server
   const apiPrefix = 'api';
-  const fastifyInstance = fastify();
+  const fastifyInstance = Fastify();
 
   // GraphQL
   const schema = await buildSchema({
@@ -58,12 +60,9 @@ async function bootstrap(): Promise<void> {
 
   const apolloServer = new ApolloServer({
     schema,
-    context: (context: { request?: TRequestWithUser }): TGraphQLContext => {
-      return { user: context?.request?.user };
-    },
-    debug: envMode.envMode === 'dev',
     introspection: envMode.envMode === 'dev',
     plugins: [
+      fastifyApolloDrainPlugin(fastifyInstance),
       envMode.envMode === 'dev'
         ? ApolloServerPluginLandingPageLocalDefault({ footer: false })
         : ApolloServerPluginLandingPageDisabled(),
@@ -73,12 +72,15 @@ async function bootstrap(): Promise<void> {
 
   await apolloServer.start();
 
-  fastifyInstance.register(
-    apolloServer.createHandler({
-      path: `/${apiPrefix}/graphql`,
-      cors: corsHandler,
-    }),
-  );
+  await fastifyInstance.route({
+    url: `/${apiPrefix}/graphql`,
+    method: ['POST', 'OPTIONS'],
+    handler: fastifyApolloHandler(apolloServer, {
+      context: async (request): Promise<TGraphQLContext> => {
+        return { user: (request as TRequestWithUser)?.user };
+      },
+    }) as any,
+  });
 
   // JWT Auth
   fastifyInstance.addHook('preHandler', async (request: any, reply) => {
@@ -92,17 +94,17 @@ async function bootstrap(): Promise<void> {
   app.useGlobalFilters(new RestExceptionFilter());
 
   // Plugins, extensions, etc.
-  fastifyInstance.register(require('fastify-cookie'), {
+  fastifyInstance.register(require('@fastify/cookie'), {
     secret: authSettings.cookieSecret,
   });
-  app.register(require('fastify-cors'), corsHandler);
+  app.register(require('@fastify/cors'), corsHandler);
 
   if (envMode.envMode !== 'dev') {
-    app.register(require('fastify-helmet'));
-    app.register(require('fastify-csrf'));
+    app.register(require('@fastify/helmet'));
+    app.register(require('@fastify/csrf'));
   }
 
-  app.register(require('fastify-multipart'));
+  app.register(require('@fastify/multipart'));
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
 
   // Setup SwaggerUI

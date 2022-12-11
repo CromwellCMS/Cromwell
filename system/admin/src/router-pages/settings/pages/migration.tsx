@@ -1,10 +1,11 @@
-import React, { useCallback, useState } from 'react';
-import { TBreadcrumbs } from '../../../components/breadcrumbs';
-import { Controller, FormProvider, useForm, useFormContext } from 'react-hook-form';
-import { Switch } from '@headlessui/react';
-import { DownloadIcon } from '@heroicons/react/24/solid';
-import { ArrowSmUpIcon } from '@heroicons/react/24/outline';
 import { getRestApiClient } from '@cromwell/core-frontend';
+import { Switch } from '@headlessui/react';
+import { ArrowSmallUpIcon } from '@heroicons/react/24/outline';
+import { ArrowDownTrayIcon } from '@heroicons/react/24/solid';
+import React, { useCallback, useState } from 'react';
+import { Controller, FormProvider, useForm, useFormContext } from 'react-hook-form';
+
+import { TBreadcrumbs } from '../../../components/breadcrumbs';
 import { LoadingStatus } from '../../../components/loadBox/LoadingStatus';
 import { toast } from '../../../components/toast/toast';
 
@@ -254,7 +255,7 @@ export const MigrationSettingsPage = () => {
               onClick={methods.handleSubmit(exportDB)}
               className="rounded-xl font-bold bg-indigo-600 bg-opacity-0 h-20 mt-4 w-full transform transition-all group hover:bg-opacity-100 hover:shadow-md hover:text-white"
             >
-              <DownloadIcon className="font-bold h-5 mr-3 w-5 inline-block group-hover:animate-bounce" />
+              <ArrowDownTrayIcon className="font-bold h-5 mr-3 w-5 inline-block group-hover:animate-bounce" />
               download backup
             </button>
           </div>
@@ -294,7 +295,7 @@ export const MigrationSettingsPage = () => {
                 override ? 'bg-red-600' : 'bg-indigo-600'
               } bg-opacity-0 h-20 mt-4 w-full transform transition-all group hover:bg-opacity-100 hover:shadow-md hover:text-white`}
             >
-              <ArrowSmUpIcon className="font-bold h-5 mr-3 w-5 inline-block group-hover:animate-bounce" />
+              <ArrowSmallUpIcon className="font-bold h-5 mr-3 w-5 inline-block group-hover:animate-bounce" />
               Import backup
             </button>
           </div>

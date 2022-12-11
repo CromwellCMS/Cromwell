@@ -5,6 +5,7 @@ class FramePortal extends React.Component<{
   setIframe?: (iframe: HTMLIFrameElement) => void;
   className?: string;
   id?: string;
+  children?: React.ReactNode;
 }> {
   private containerEl: Element;
   private iframe: HTMLIFrameElement;
@@ -52,15 +53,14 @@ class FramePortal extends React.Component<{
 }
 
 const observeDOM = (function () {
-  //@ts-ignore
-  var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+  const MutationObserver = window.MutationObserver || (window as any).WebKitMutationObserver;
 
   return function (obj, callback) {
     if (!obj || obj.nodeType !== 1) return;
 
     if (MutationObserver) {
       // define a new observer
-      var mutationObserver = new MutationObserver(callback);
+      const mutationObserver = new MutationObserver(callback);
 
       // have the observer observe foo for changes in children
       mutationObserver.observe(obj, { childList: true, subtree: true });

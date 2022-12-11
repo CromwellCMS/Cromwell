@@ -1,7 +1,7 @@
 const fs = require('fs-extra');
 const { resolve } = require('path');
 const { spawn, spawnSync } = require('child_process');
-const { getAdminPanelServiceBuildDir } = require('@cromwell/core-backend/dist/helpers/paths');
+const { getAdminPanelServiceBuildDir, getAdminPanelDir } = require('@cromwell/core-backend/dist/helpers/paths');
 const yargs = require('yargs-parser');
 
 // 'build' | 'dev' | 'prod'
@@ -11,48 +11,33 @@ const main = () => {
   const args = yargs(process.argv.slice(2));
   const buildDir = getAdminPanelServiceBuildDir();
 
-  const isServiceBuilt = () => {
+  const isServerBuilt = () => {
     if (fs.existsSync(buildDir)) {
-      const files = fs.readdirSync(buildDir);
-      const webapp = files.find((file) => file.startsWith('webapp') && file.endsWith('.js'));
-      return webapp && fs.existsSync(resolve(buildDir, 'server.js'));
+      return fs.existsSync(resolve(buildDir, 'server.js'));
     }
   };
 
-  const buildService = (dev = false) => {
+  const buildServer = () => {
     // Cleanup old build
     const fs = require('fs-extra');
     fs.removeSync(getAdminPanelServiceBuildDir());
 
     spawnSync(`npx --no-install rollup -c`, [], { shell: true, stdio: 'inherit', cwd: __dirname });
+  };
 
-    if (dev) return;
-
-    console.error('\nStart bundling at ' + new Date() + '\n');
-
-    spawnSync('npx webpack', [], { shell: true, stdio: 'inherit', cwd: __dirname });
-
-    // Move type declarations
-    const declarations = resolve(getAdminPanelServiceBuildDir(), 'types/system/admin/src');
-    if (fs.pathExistsSync(declarations)) {
-      const typesTemp = resolve(getAdminPanelServiceBuildDir(), 'types2');
-      const typesDest = resolve(getAdminPanelServiceBuildDir(), 'types');
-      fs.moveSync(declarations, typesTemp);
-      fs.removeSync(typesDest);
-      fs.moveSync(typesTemp, typesDest);
-    }
-
-    console.error(cyan('\nBundle created at ' + new Date() + '\n'));
+  const buildWebApp = () => {
+    spawnSync('npx next build', [], { shell: true, stdio: 'inherit', cwd: __dirname });
   };
 
   if (scriptName === 'build') {
-    buildService();
+    buildServer();
+    buildWebApp();
     return;
   }
 
   if (scriptName === 'dev') {
-    if (!isServiceBuilt()) {
-      buildService(true);
+    if (!isServerBuilt()) {
+      buildServer();
     }
 
     spawn(`node ${resolve(buildDir, 'server.js')}`, ['development', args.port ? '--port=' + args.port : ''], {
@@ -66,8 +51,11 @@ const main = () => {
   }
 
   if (scriptName === 'prod') {
-    if (!isServiceBuilt()) {
-      buildService();
+    if (!isServerBuilt()) {
+      buildServer();
+    }
+    if (!fs.existsSync(resolve(getAdminPanelDir(), 'build/.next'))) {
+      buildWebApp();
     }
 
     require(resolve(buildDir, 'server.js'));

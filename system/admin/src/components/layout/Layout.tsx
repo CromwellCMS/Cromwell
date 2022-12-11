@@ -3,6 +3,7 @@ import { LayoutPortal } from '@helpers/LayoutPortal';
 import { getPageInfos } from '@helpers/navigation';
 import { ThemeProvider } from '@mui/material';
 import { store } from '@redux/store';
+import Head from 'next/head';
 import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
 import { Provider as ReduxProvider } from 'react-redux-ts';
@@ -27,6 +28,16 @@ function Layout() {
   return (
     <ReduxProvider store={store}>
       <ThemeProvider theme={theme}>
+        <Head>
+          <meta charSet="UTF-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+          <link rel="shortcut icon" type="image/png" href="/admin/static/icon_small.png" />
+          <title>Cromwell CMS Admin Panel</title>
+          <link
+            href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;900&display=swap"
+            rel="stylesheet"
+          />
+        </Head>
         <div suppressHydrationWarning className="min-h-screen bg-gray-100 relative dark:bg-gray-800">
           <div className="flex items-start justify-between">
             <BrowserRouter basename={'admin'}>

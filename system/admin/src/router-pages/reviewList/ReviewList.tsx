@@ -1,6 +1,6 @@
 import { EDBEntity, TProduct, TProductReview, TProductReviewFilter } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
-import { BadgeCheckIcon, BookOpenIcon, CheckIcon, ClockIcon } from '@heroicons/react/24/outline';
+import { BookOpenIcon, CheckBadgeIcon, CheckIcon, ClockIcon } from '@heroicons/react/24/outline';
 import { Box, Rating, Tooltip } from '@mui/material';
 import React, { useRef, useState } from 'react';
 
@@ -169,7 +169,7 @@ export default function ProductReviewTable() {
                 <Tooltip title="Approve">
                   <span>
                     <IconButton onClick={() => handleApproveReview(entity, inst)}>
-                      <BadgeCheckIcon className="h-4 text-gray-300 w-4 cursor-pointer" />
+                      <CheckBadgeIcon className="h-4 text-gray-300 w-4 cursor-pointer" />
                     </IconButton>
                   </span>
                 </Tooltip>
@@ -213,7 +213,7 @@ export default function ProductReviewTable() {
               }}
               className="flex items-center rounded-lg py-2 font-bold bg-indigo-600 mt-4 my-2 text-sm text-white px-3 uppercase self-center hover:bg-indigo-500 disabled:bg-gray-700"
             >
-              <BadgeCheckIcon className="h-5 w-5 mr-1 text-white-900 cursor-pointer" />
+              <CheckBadgeIcon className="h-5 w-5 mr-1 text-white-900 cursor-pointer" />
               Approve
             </button>
           )}

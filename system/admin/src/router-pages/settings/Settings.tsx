@@ -26,18 +26,15 @@ export const SettingsPage = () => {
         <Route path={`acl`} element={<ACLSettingsPage />} />
         <Route path={`acl/:roleId`} element={<CustomRoleSettingsPage />} />
         <Route path={`custom-data`} element={<CustomDataPage />} />
-        <Route
-          path={`custom-data/product`}
-          element={() => <DefaultEntitySettingsPage entityType={EDBEntity.Product} />}
-        />
+        <Route path={`custom-data/product`} element={<DefaultEntitySettingsPage entityType={EDBEntity.Product} />} />
         <Route
           path={`custom-data/category`}
-          element={() => <DefaultEntitySettingsPage entityType={EDBEntity.ProductCategory} />}
+          element={<DefaultEntitySettingsPage entityType={EDBEntity.ProductCategory} />}
         />
-        <Route path={`custom-data/post`} element={() => <DefaultEntitySettingsPage entityType={EDBEntity.Post} />} />
-        <Route path={`custom-data/tag`} element={() => <DefaultEntitySettingsPage entityType={EDBEntity.Tag} />} />
-        <Route path={`custom-data/user`} element={() => <DefaultEntitySettingsPage entityType={EDBEntity.User} />} />
-        <Route path={`custom-data/general`} element={() => <DefaultEntitySettingsPage entityType={EDBEntity.CMS} />} />
+        <Route path={`custom-data/post`} element={<DefaultEntitySettingsPage entityType={EDBEntity.Post} />} />
+        <Route path={`custom-data/tag`} element={<DefaultEntitySettingsPage entityType={EDBEntity.Tag} />} />
+        <Route path={`custom-data/user`} element={<DefaultEntitySettingsPage entityType={EDBEntity.User} />} />
+        <Route path={`custom-data/general`} element={<DefaultEntitySettingsPage entityType={EDBEntity.CMS} />} />
         <Route path={`custom-data/:entityType`} element={<CustomEntitySettingsPage />} />
         <Route path={`migration`} element={<MigrationSettingsPage />} />
         <Route element={<SettingsIndexPage />} />

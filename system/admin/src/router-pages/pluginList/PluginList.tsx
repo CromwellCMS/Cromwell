@@ -1,6 +1,5 @@
 import { TCCSVersion, TPackageCromwellConfig, TPluginEntity } from '@cromwell/core';
 import { getGraphQLClient, getRestApiClient } from '@cromwell/core-frontend';
-import { Button, Grid, IconButton, LinearProgress, Tooltip } from '@mui/material';
 import {
   AddCircleOutline as AddCircleOutlineIcon,
   Close as CloseIcon,
@@ -10,7 +9,9 @@ import {
   Settings as SettingsIcon,
   Update as UpdateIcon,
 } from '@mui/icons-material';
+import { Button, Grid, IconButton, LinearProgress, Tooltip } from '@mui/material';
 import React from 'react';
+import { Location, NavigateFunction, Params, useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import MarketModal from '../../components/market/MarketModal';
 import { askConfirmation } from '../../components/modal/Confirmation';
@@ -23,7 +24,7 @@ import commonStyles from '../../styles/common.module.scss';
 import styles from './PluginList.module.scss';
 
 class PluginList extends React.Component<
-  {},
+  { children?: React.ReactNode; location: Location; navigate: NavigateFunction; params: Readonly<Params<string>> },
   {
     isLoading: boolean;
     pluginPackages: TPackageCromwellConfig[];
@@ -124,7 +125,7 @@ class PluginList extends React.Component<
 
   private handleOpenPluginPage = (pluginName: string) => () => {
     const route = `${pluginPageInfo.baseRoute}?pluginName=${pluginName}`;
-    this.props.history.push(route);
+    this.props.navigate(route);
   };
 
   private handleDeletePlugin = (info: TPackageCromwellConfig) => async () => {
@@ -176,7 +177,7 @@ class PluginList extends React.Component<
   };
 
   private handleOpenMarket = () => {
-    this.props.history?.push(pluginMarketPageInfo.route);
+    this.props.navigate(pluginMarketPageInfo.route);
   };
 
   private handleShowUpdate = (plugin?: TPluginEntity, info?: TPackageCromwellConfig, update?: TCCSVersion) => () => {
@@ -378,4 +379,10 @@ const UpdateModalContent = (props: {
   );
 };
 
-export default PluginList;
+export default function ComponentWithRouterProp(props: { children?: React.ReactNode }) {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const params = useParams();
+
+  return <PluginList {...props} location={location} navigate={navigate} params={params} />;
+}

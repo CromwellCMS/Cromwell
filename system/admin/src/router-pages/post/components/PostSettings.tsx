@@ -126,7 +126,7 @@ const PostSettings = (props: {
           className={styles.settingItem}
           options={props.allTags ?? []}
           value={getValue('tags')?.map((tag) => (props.allTags ?? []).find((allTag) => allTag.name === tag.name)) ?? []}
-          getOptionLabel={(option) => option.name}
+          getOptionLabel={(option) => (typeof option === 'object' ? option.name : option)}
           onChange={handleChangeTags}
           label="Tags"
         />

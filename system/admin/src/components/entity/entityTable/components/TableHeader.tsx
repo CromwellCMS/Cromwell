@@ -1,5 +1,5 @@
 import { TBaseFilter, TBasePageEntity, TCustomEntityColumn } from '@cromwell/core';
-import { ChevronDownIcon, TableIcon, XIcon } from '@heroicons/react/24/outline';
+import { ChevronDownIcon, TableCellsIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { Close as CloseIcon } from '@mui/icons-material';
 import { Popover, Theme, Tooltip } from '@mui/material';
 import { useTheme } from '@mui/styles';
@@ -308,7 +308,7 @@ export function TableHeader<TEntityType extends TBasePageEntity, TFilterType ext
             onClick={toggleConfigureColumns}
             ref={configureColumnsButtonRef}
           >
-            <TableIcon className="h-5 mr-1 bottom-[1.5px] w-5 relative inline" />
+            <TableCellsIcon className="h-5 mr-1 bottom-[1.5px] w-5 relative inline" />
             <span className="rounded-lg bg-indigo-200 mr-1 px-1">
               {tableColumns.filter((col) => col.visible).length}
             </span>
@@ -365,7 +365,7 @@ export function TableHeader<TEntityType extends TBasePageEntity, TFilterType ext
                 width: columnSearch?.type === 'Date' || columnSearch?.type === 'Datetime' ? '400px' : '300px',
               }}
             >
-              <XIcon className="w-4 h-5 absolute top-1 right-1 cursor-pointer" onClick={closeColumnSearch} />
+              <XMarkIcon className="w-4 h-5 absolute top-1 right-1 cursor-pointer" onClick={closeColumnSearch} />
               <SearchContent
                 getAutocompleteValueFromSearch={getAutocompleteValueFromSearch}
                 currentSearchRef={currentSearchRef}

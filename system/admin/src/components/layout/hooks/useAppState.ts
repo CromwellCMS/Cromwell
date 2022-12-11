@@ -20,6 +20,17 @@ const initApp = async () => {
   const restClient = getRestApiClient();
   const graphClient = getGraphQLClient();
 
+  const env =
+    (await fetch('/configs/env.json')
+      .then((res) => res.json())
+      .catch(console.error)) || null;
+
+  console.log('env', env);
+  if (env?.cmsSettings) {
+    setStoreItem('cmsSettings', env.cmsSettings);
+    setStoreItem('environment', env.environment);
+  }
+
   const request = async <T>(req: Promise<T>): Promise<T> => {
     try {
       return await req;

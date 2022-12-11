@@ -35,10 +35,11 @@ import styles from './EntityEdit.module.scss';
 import { ElevationScroll } from './helpers';
 import { InputField } from './InputField';
 
-type TEntityEditProps<TEntityType extends TBasePageEntity, TFilterType extends TBaseEntityFilter> = TEntityPageProps<
-  TEntityType,
-  TFilterType
-> & {
+type TEntityEditProps<
+  TEntityType extends TBasePageEntity,
+  TFilterType extends TBaseEntityFilter,
+  TEntityInputType = TEntityType,
+> = TEntityPageProps<TEntityType, TFilterType, TEntityInputType> & {
   fields?: TEditField<TEntityType>[];
   onSave?: (entity: Omit<TEntityType, 'id'>) => Promise<Omit<TEntityType, 'id'>>;
   classes?: {
@@ -46,8 +47,12 @@ type TEntityEditProps<TEntityType extends TBasePageEntity, TFilterType extends T
   };
 };
 
-class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseEntityFilter> extends React.Component<
-  TEntityEditProps<TEntityType, TFilterType> & {
+class EntityEdit<
+  TEntityType extends TBasePageEntity,
+  TFilterType extends TBaseEntityFilter,
+  TEntityInputType = TEntityType,
+> extends React.Component<
+  TEntityEditProps<TEntityType, TFilterType, TEntityInputType> & {
     // history;
     // match;
     location: Location;
@@ -225,7 +230,7 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
 
     if (entityId === 'new') {
       try {
-        const newData = await this.props.create(inputData);
+        const newData = await this.props.create(inputData as TEntityInputType);
         toast.success(`Created ${(this.props.entityType ?? this.props.entityCategory).toLocaleLowerCase()}`);
 
         this.props.navigate(`${this.props.entityBaseRoute}/${newData.id}`, { replace: true });
@@ -238,7 +243,7 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
       }
     } else {
       try {
-        await this.props.update(parseInt(entityId), inputData);
+        await this.props.update(parseInt(entityId), inputData as TEntityInputType);
         const updatedData = await this.getEntity(parseInt(entityId));
         this.setState({ entityData: updatedData });
         toast.success('Saved!');
@@ -503,7 +508,8 @@ class EntityEdit<TEntityType extends TBasePageEntity, TFilterType extends TBaseE
 export default function ComponentWithRouterProp<
   TEntityType extends TBasePageEntity,
   TFilterType extends TBaseEntityFilter,
->(props: TEntityEditProps<TEntityType, TFilterType>) {
+  TEntityInputType = TEntityType,
+>(props: TEntityEditProps<TEntityType, TFilterType, TEntityInputType>) {
   const location = useLocation();
   const navigate = useNavigate();
   const params = useParams();

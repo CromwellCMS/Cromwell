@@ -19,14 +19,14 @@
     "build": "node startup.js build",
     "dev": "npx next dev",
     "build:server": "npx rollup -c",
+    "watch:server": "npx rollup -cw",
     "format": "prettier --write --ignore-unknown \"**/*.+(js|jsx|json|css|scss|md|ts|tsx)\"",
     "add": "yarn workspace @cromwell/admin-panel add",
     "dev_old": "node startup.js dev",
     "prod": "node startup.js prod",
     "test": "npx --no-install jest",
     "test:watch": "npx --no-install jest --watch",
-    "typecheck": "npx tsc",
-    "watch:server": "npx rollup -cw"
+    "typecheck": "tsc --noEmit"
   },
   "browserslist": {
     "production": [

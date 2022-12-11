@@ -1,10 +1,11 @@
 import { TCromwellBlock } from '@cromwell/core';
 import { useForceUpdate } from '@cromwell/core-frontend';
 import React from 'react';
+
 import { usePageBuilder } from '../../hooks/usePageBuilder';
 import { useThemeEditor } from '../../hooks/useThemeEditor';
 
-export const TextBlockEditor = ({ block }: { block?: TCromwellBlock }) => {
+export const TextBlockEditor = ({ block }: { block?: TCromwellBlock; children?: React.ReactNode }) => {
   const data = block?.getData();
   const blockValue = data?.text?.content ?? (block?.props.children as string);
   const rerender = useForceUpdate();

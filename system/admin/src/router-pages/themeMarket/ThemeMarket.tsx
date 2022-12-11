@@ -1,8 +1,7 @@
 import { getBlockInstance, TCCSModuleInfo, TPackageCromwellConfig } from '@cromwell/core';
 import { CList, getCentralServerClient, getRestApiClient, TCList } from '@cromwell/core-frontend';
 import { Grid, Skeleton, TextField } from '@mui/material';
-import React, { Component, useState } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
+import React, { Component } from 'react';
 import { debounce } from 'throttle-debounce';
 
 import MarketItem, { ListItemProps } from '../../components/market/MarketItem';
@@ -13,21 +12,8 @@ import { toast } from '../../components/toast/toast';
 import commonStyles from '../../styles/common.module.scss';
 import styles from './ThemeMarket.module.scss';
 
-export const ThemeStore = (props: RouteComponentProps) => {
-  const [isLoading, setLoading] = useState(false);
-  const [installedThemes, setInstalledThemes] = useState<TPackageCromwellConfig[]>([]);
-  const [openedTheme, setOpenedTheme] = useState<TCCSModuleInfo | undefined>();
-
-  return (
-    <div className="">
-      <div className="grid grid-cols-1 gap-4"></div>
-    </div>
-  );
-};
-
-// export default ThemeStore;
 export default class ThemeMarket extends Component<
-  Partial<RouteComponentProps>,
+  { children?: React.ReactNode },
   {
     installedThemes: TPackageCromwellConfig[];
     isLoading: boolean;

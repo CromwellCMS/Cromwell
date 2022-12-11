@@ -1,5 +1,5 @@
 import { Menu, Transition } from '@headlessui/react';
-import { ChevronRightIcon, DotsVerticalIcon } from '@heroicons/react/24/outline';
+import { ChevronRightIcon, EllipsisVerticalIcon } from '@heroicons/react/24/outline';
 import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -25,7 +25,7 @@ export const TBreadcrumbs = (props: BreadcrumbProps) => {
           <Menu as="div" className="text-center relative inline-block">
             <div>
               <Menu.Button className="font-medium text-sm text-gray-500 self-center inline-flex justify-center focus:outline-none focus-visible:ring-white focus-visible:ring-2 focus-visible:ring-opacity-75">
-                <DotsVerticalIcon
+                <EllipsisVerticalIcon
                   className="h-5 top-1 text-gray-500 w-5 relative inline-block self-center md:top-1 lg:top-[0.5px] hover:text-indigo-600"
                   aria-hidden="true"
                 />

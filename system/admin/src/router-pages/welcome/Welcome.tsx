@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { CmsSettingsForm } from './components/CmsSettingsForm';
 import { UserForm } from './components/UserForm';
 
 export default function WelcomePage() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const [step, setStep] = useState<'account' | 'settings'>('account');
 
   const onAccountSuccess = () => {
@@ -13,7 +13,7 @@ export default function WelcomePage() {
   };
 
   const onSettingsSuccess = () => {
-    history?.push?.(`/`);
+    navigate(`/`);
   };
 
   return (

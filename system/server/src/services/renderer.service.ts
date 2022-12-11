@@ -84,7 +84,6 @@ export class RendererService {
 
     const response = await fetch(url, {
       method: options?.method ?? 'get',
-      credentials: 'include',
       body: typeof input === 'string' ? input : input ? JSON.stringify(input) : undefined,
       headers: Object.assign(
         { 'Content-Type': 'application/json' },

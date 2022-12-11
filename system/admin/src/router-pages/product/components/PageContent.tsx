@@ -3,7 +3,7 @@ import { getGraphQLClient } from '@cromwell/core-frontend';
 import { Box } from '@mui/material';
 import queryString from 'query-string';
 import React, { useContext, useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 import { TFieldsComponentProps } from '../../../components/entity/types';
 import { SearchInput } from '../../../components/inputs/Search/SearchInput';
@@ -18,7 +18,7 @@ import { VariantsTab } from './VariantsTab';
 
 export const PageContent = ({ entityData, canValidate }: TFieldsComponentProps<TProduct>) => {
   const client = getGraphQLClient();
-  const history = useHistory();
+  const location = useLocation();
   const productRef = React.useRef<TProduct | null>(entityData);
   const context = useContext(ProductContext);
   const [mainCategory, setMainCategory] = useState<TProductCategory | null>(null);
@@ -68,15 +68,9 @@ export const PageContent = ({ entityData, canValidate }: TFieldsComponentProps<T
   }, []);
 
   useEffect(() => {
-    const unlisten = history.listen((location) => {
-      const parsed = queryString.parse(location.search);
-      if (location.pathname.startsWith(productPageInfo.baseRoute + '/')) changeTab(Number(parsed.tab ?? '0'));
-    });
-
-    return () => {
-      unlisten();
-    };
-  }, [changeTab]);
+    const parsed = queryString.parse(location.search);
+    if (location.pathname.startsWith(productPageInfo.baseRoute + '/')) changeTab(Number(parsed.tab ?? '0'));
+  }, [location]);
 
   const getMainCategory = async () => {
     if (productRef.current?.mainCategoryId) {

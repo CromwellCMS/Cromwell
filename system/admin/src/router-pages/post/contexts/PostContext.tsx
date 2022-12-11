@@ -1,7 +1,6 @@
 import { getStoreItem, TPost, TPostInput, TUser } from '@cromwell/core';
+import { usePrompt } from '@hooks/useBlocker';
 import React, { useRef, useState } from 'react';
-import { useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
 
 export const PostContext = React.createContext<{
   settingsOpen: boolean;
@@ -19,7 +18,8 @@ export const PostContextProvider = (props: { children: React.ReactNode }) => {
   const getEditorDataRef = useRef<(() => Promise<{ content: string; delta: string }>) | null>(null);
   const dataRef = useRef<TPost | null>(null);
   const hasChangesRef = useRef<boolean>(false);
-  const history = useHistory();
+
+  usePrompt('Your unsaved changes will be lost. Do you want to discard and leave this page?', hasChangesRef.current);
 
   const getInput = async (): Promise<TPostInput> => {
     const data = dataRef.current;
@@ -47,17 +47,6 @@ export const PostContextProvider = (props: { children: React.ReactNode }) => {
       customMeta: data.customMeta,
     };
   };
-
-  useEffect(() => {
-    const unregisterBlock = history.block(() => {
-      if (hasChangesRef.current)
-        return 'Your unsaved changes will be lost. Do you want to discard and leave this page?';
-    });
-
-    return () => {
-      unregisterBlock();
-    };
-  }, []);
 
   return (
     <PostContext.Provider

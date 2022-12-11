@@ -26,7 +26,11 @@ export type TBaseEntityFilter = TBaseFilter & {
   entityType?: string;
 };
 
-export type TEntityPageProps<TEntityType extends TBasePageEntity, TFilterType extends TBaseEntityFilter> = {
+export type TEntityPageProps<
+  TEntityType extends TBasePageEntity,
+  TFilterType extends TBaseEntityFilter,
+  TEntityInputType = TEntityType,
+> = {
   /**
    * Category of entity to display. Supports default types
    */
@@ -98,8 +102,8 @@ export type TEntityPageProps<TEntityType extends TBasePageEntity, TFilterType ex
    * API methods called on user actions
    */
   getById?: (id: number, customFragment?: DocumentNode, customFragmentName?: string) => Promise<TEntityType>;
-  update?: (id: number, input: Omit<TEntityType, 'id'>) => Promise<TEntityType>;
-  create?: (input: Omit<TEntityType, 'id'>) => Promise<TEntityType>;
+  update?: (id: number, input: Omit<TEntityInputType, 'id'>) => Promise<TEntityType>;
+  create?: (input: Omit<TEntityInputType, 'id'>) => Promise<TEntityType>;
   deleteOne?: (id: number) => any;
   deleteMany?: (input: TDeleteManyInput, filter: TFilterType) => any;
   getMany?: (options: {
