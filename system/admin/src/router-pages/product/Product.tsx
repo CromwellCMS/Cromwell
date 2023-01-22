@@ -29,6 +29,12 @@ export default function ProductPage() {
         listLabel="Products"
         entityLabel="Product"
         defaultPageName="product"
+        styles={{
+          content: {
+            backgroundColor: 'transparent',
+            padding: 0,
+          },
+        }}
         getById={(id) => {
           return client.getProductById(
             id,

@@ -1,8 +1,20 @@
-import useScrollTrigger from '@mui/material/useScrollTrigger';
-import clsx from 'clsx';
+import { TBasePageEntity } from '@cromwell/core';
+import {
+  getCheckboxField,
+  getColorField,
+  getCustomField,
+  getDatepickerField,
+  getGalleryField,
+  getImageField,
+  getSelectField,
+  getSimpleTextField,
+  getTextEditorField,
+  TFieldDefaultComponent,
+} from '@helpers/customFields';
 import React from 'react';
 
-import styles from './EntityEdit.module.scss';
+import { TBaseEntityFilter, TEditField, TFieldsComponentProps } from '../types';
+import { TEntityEditProps } from './type';
 
 export const setValueOfTextEditorField = (value?: string | null) => {
   let data: {
@@ -28,16 +40,113 @@ export const getInitialValueOfTextEditorField = (value: any, entityData: any) =>
     json: entityData.descriptionDelta ? JSON.parse(entityData.descriptionDelta) : undefined,
   });
 
-export function ElevationScroll(props) {
-  const trigger = useScrollTrigger({
-    disableHysteresis: true,
-    threshold: 0,
-    target: document.getElementById('main-scroll-container'),
-  });
+export type EntityEditContextType<
+  TEntityType extends TBasePageEntity,
+  TFilterType extends TBaseEntityFilter,
+  TEntityInputType = TEntityType,
+> = {
+  pageProps: TEntityEditProps<TEntityType, TFilterType, TEntityInputType>;
+  fieldProps: TFieldsComponentProps<TEntityType>;
+};
 
-  const bgStyle = 'bg-gray-100 bg-opacity-60 w-fudropll back-filter backdrop-blur-lg';
+export const EntityEditContext = React.createContext<EntityEditContextType<TBasePageEntity, TBaseEntityFilter>>(
+  {} as any,
+);
 
-  return React.cloneElement(props.children, {
-    className: trigger ? clsx(styles.header, styles.headerElevated, bgStyle) : clsx(styles.header, bgStyle),
-  });
+export function EntityEditContextProvider<
+  TEntityType extends TBasePageEntity,
+  TFilterType extends TBaseEntityFilter,
+  TEntityInputType = TEntityType,
+>({
+  value,
+  children,
+}: {
+  value: EntityEditContextType<TEntityType, TFilterType, TEntityInputType>;
+  children: React.ReactNode;
+}) {
+  return <EntityEditContext.Provider value={value as any}>{children}</EntityEditContext.Provider>;
+}
+
+function getIdFromField<TEntityType extends TBasePageEntity>(field: TEditField<TEntityType>, entityCategory: string) {
+  return `${entityCategory}_${field.key}`;
+}
+
+export function getCachedField<TEntityType extends TBasePageEntity>(
+  field: TEditField<TEntityType>,
+  entityCategory: string,
+):
+  | {
+      component: TFieldDefaultComponent;
+      saveData: () => string | Promise<string>;
+      value?: any;
+    }
+  | undefined {
+  if (field.type === 'Simple text') {
+    return getSimpleTextField({
+      ...field,
+      id: getIdFromField(field, entityCategory),
+    });
+  }
+  if (field.type === 'Currency') {
+    return getSimpleTextField({
+      simpleTextType: 'currency',
+      ...field,
+      id: getIdFromField(field, entityCategory),
+    });
+  }
+  if (field.type === 'Text editor') {
+    return getTextEditorField({
+      ...field,
+      id: getIdFromField(field, entityCategory),
+    });
+  }
+  if (field.type === 'Select') {
+    return getSelectField({
+      ...field,
+      id: getIdFromField(field, entityCategory),
+    });
+  }
+  if (field.type === 'Image') {
+    return getImageField({
+      ...field,
+      id: getIdFromField(field, entityCategory),
+    });
+  }
+  if (field.type === 'Gallery') {
+    return getGalleryField({
+      ...field,
+      id: getIdFromField(field, entityCategory),
+    });
+  }
+  if (field.type === 'Color') {
+    return getColorField({
+      ...field,
+      id: getIdFromField(field, entityCategory),
+    });
+  }
+  if (field.type === 'Checkbox') {
+    return getCheckboxField({
+      ...field,
+      id: getIdFromField(field, entityCategory),
+    });
+  }
+  if (field.type === 'Date') {
+    return getDatepickerField({
+      ...field,
+      id: getIdFromField(field, entityCategory),
+    });
+  }
+  if (field.type === 'Datetime') {
+    return getDatepickerField({
+      dateType: 'datetime',
+      ...field,
+      id: getIdFromField(field, entityCategory),
+    });
+  }
+  if (field.type === 'custom') {
+    return getCustomField({
+      ...field,
+      id: getIdFromField(field, entityCategory),
+    });
+  }
 }

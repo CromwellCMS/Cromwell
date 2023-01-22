@@ -29,7 +29,6 @@ function PostEdit() {
       entityBaseRoute={postPageInfo.baseRoute}
       listLabel="Posts"
       entityLabel=""
-      disableMeta
       onSave={() => {
         context.hasChangesRef.current = false;
         return context.getInput();

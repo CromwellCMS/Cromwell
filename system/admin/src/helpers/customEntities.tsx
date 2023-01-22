@@ -66,7 +66,6 @@ export const getCustomEntityPages = (): TPageInfo[] => {
       columns: entity.columns,
       listLabel: entity.listLabel,
       entityLabel: entity.entityLabel,
-      renderFields: () => <></>,
       getInput: () => ({ entityType: entity.entityType }),
       getById: (...args) => client.getCustomEntityById(entity.entityType, ...args),
       deleteOne: (...args) => client.deleteCustomEntity(entity.entityType, ...args),

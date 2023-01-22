@@ -1,14 +1,16 @@
+import { EntityCustomFields } from '@components/entity/entityEdit/components/EntityCustomFields';
+import { EntityMetaFields } from '@components/entity/entityEdit/components/EntityMetaFields';
+import { TFieldsComponentProps } from '@components/entity/types';
+import { SearchInput } from '@components/inputs/Search/SearchInput';
 import { TAttribute, TPagedParams, TProduct, TProductCategory } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
+import { useForceUpdate } from '@helpers/forceUpdate';
 import { Box } from '@mui/material';
 import queryString from 'query-string';
 import React, { useContext, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
-import { TFieldsComponentProps } from '../../../components/entity/types';
-import { SearchInput } from '../../../components/inputs/Search/SearchInput';
 import { productPageInfo } from '../../../constants/PageInfos';
-import { useForceUpdate } from '../../../helpers/forceUpdate';
 import { ProductContext } from '../contexts/Product';
 import { useTabs } from '../hooks/useTabs';
 import styles from '../Product.module.scss';
@@ -97,7 +99,7 @@ export const PageContent = ({ entityData, canValidate }: TFieldsComponentProps<T
   return (
     <Box className={styles.PageContent}>
       {activeTabNum === 0 && (
-        <>
+        <Box sx={{ backgroundColor: '#fff', padding: '20px', borderRadius: '10px' }}>
           <MainInfoCard product={productRef.current} setProdData={setProdData} canValidate={canValidate} />
           <SearchInput<TProductCategory>
             multiple
@@ -124,7 +126,9 @@ export const PageContent = ({ entityData, canValidate }: TFieldsComponentProps<T
             label={'Main category'}
             style={{ margin: '15px 0' }}
           />
-        </>
+          <EntityMetaFields />
+          <EntityCustomFields />
+        </Box>
       )}
       {activeTabNum === 1 && (
         <>

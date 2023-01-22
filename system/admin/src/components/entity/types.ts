@@ -89,11 +89,6 @@ export type TEntityPageProps<
   disableMeta?: boolean;
 
   /**
-   * Get JSX input fields for entity properties
-   */
-  renderFields?: (data: TEntityType) => JSX.Element;
-
-  /**
    * Get user input data on "save" button click
    */
   getInput?: () => Omit<TEntityType, 'id'>;
@@ -119,12 +114,11 @@ export type TEntityPageProps<
     getTableContent?: (props: TListItemProps<TEntityType, TFilterType>) => JSX.Element;
     getEntityFields?: (props: TFieldsComponentProps<TEntityType>) => JSX.Element;
     getEntityHeaderCenter?: (props: TFieldsComponentProps<TEntityType>) => JSX.Element;
+    /**
+     * Show additional actions per record, appear near edit/delete buttons. Use together with `customActionsWidth`.
+     */
+    getItemCustomActions?: (args: { data: TEntityType; changeData: (data: TEntityType) => void }) => JSX.Element;
   };
-
-  /**
-   * Show additional actions per record, appear near edit/delete buttons. Use together with `customActionsWidth`.
-   */
-  getItemCustomActions?: (entity: TEntityType, itemInstance: React.Component<any>) => JSX.Element;
 
   /** Define actions width to properly render columns (otherwise table layout will be broken) */
   customActionsWidth?: number;
@@ -218,9 +212,12 @@ export type TEntityEditState<TEntityType> = {
   notFound?: boolean;
   isSaving?: boolean;
   canValidate?: boolean;
+  frontendUrl?: string;
 };
 
 export type TFieldsComponentProps<TEntityType> = TEntityEditState<TEntityType> & {
   refetchMeta: () => Promise<Record<string, string>>;
   onSave: () => Promise<void>;
+  goBack: () => void;
+  handleInputChange: (key: keyof TEntityType, val: any) => void;
 };

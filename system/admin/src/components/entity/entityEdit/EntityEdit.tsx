@@ -1,51 +1,19 @@
 import { gql } from '@apollo/client';
 import { getStoreItem, resolvePageRoute, serviceLocator, TBasePageEntity } from '@cromwell/core';
-import { ChevronLeftIcon } from '@heroicons/react/24/outline';
-import { OpenInNew as OpenInNewIcon } from '@mui/icons-material';
-import { Grid, Skeleton, Tooltip } from '@mui/material';
-import AppBar from '@mui/material/AppBar';
+import { getCustomMetaFor, getCustomMetaKeysFor } from '@helpers/customFields';
+import { Box, Skeleton } from '@mui/material';
 import clsx from 'clsx';
 import React from 'react';
 import { Location, NavigateFunction, Params, useLocation, useNavigate, useParams } from 'react-router-dom';
 
-import {
-  getCheckboxField,
-  getColorField,
-  getCustomField,
-  getCustomMetaFor,
-  getCustomMetaKeysFor,
-  getDatepickerField,
-  getGalleryField,
-  getImageField,
-  getSelectField,
-  getSimpleTextField,
-  getTextEditorField,
-  RenderCustomFields,
-  TFieldDefaultComponent,
-} from '../../../helpers/customFields';
-import commonStyles from '../../../styles/common.module.scss';
-import { IconButton } from '../../buttons/IconButton';
-import { TextButton } from '../../buttons/TextButton';
-import { AutocompleteInput } from '../../inputs/AutocompleteInput';
-import { TextInput } from '../../inputs/TextInput/TextInput';
 import { toast } from '../../toast/toast';
-import { TBaseEntityFilter, TEditField, TEntityEditState, TEntityPageProps, TFieldsComponentProps } from '../types';
+import { TBaseEntityFilter, TEntityEditState, TFieldsComponentProps } from '../types';
 import { customGraphQlPropertyToFragment } from '../utils';
+import { EntityFields } from './components/EntityFields';
+import { EntityHeader } from './components/EntityHeader';
 import styles from './EntityEdit.module.scss';
-import { ElevationScroll } from './helpers';
-import { InputField } from './InputField';
-
-type TEntityEditProps<
-  TEntityType extends TBasePageEntity,
-  TFilterType extends TBaseEntityFilter,
-  TEntityInputType = TEntityType,
-> = TEntityPageProps<TEntityType, TFilterType, TEntityInputType> & {
-  fields?: TEditField<TEntityType>[];
-  onSave?: (entity: Omit<TEntityType, 'id'>) => Promise<Omit<TEntityType, 'id'>>;
-  classes?: {
-    content?: string;
-  };
-};
+import { EntityEditContextProvider, getCachedField } from './helpers';
+import { TEntityEditProps } from './type';
 
 class EntityEdit<
   TEntityType extends TBasePageEntity,
@@ -53,8 +21,6 @@ class EntityEdit<
   TEntityInputType = TEntityType,
 > extends React.Component<
   TEntityEditProps<TEntityType, TFilterType, TEntityInputType> & {
-    // history;
-    // match;
     location: Location;
     navigate: NavigateFunction;
     params: Readonly<Params<string>>;
@@ -183,7 +149,7 @@ class EntityEdit<
         {},
         ...(await Promise.all(
           this.props?.fields?.map(async (field) => {
-            const cached = this.getCachedField(field);
+            const cached = getCachedField(field, this.props.entityCategory);
             const value = (await cached?.saveData?.()) ?? cached?.value;
 
             if (field?.saveValue) return await field.saveValue(value);
@@ -255,89 +221,6 @@ class EntityEdit<
     this.setState({ isSaving: false, canValidate: false });
   };
 
-  private getIdFromField = (field: TEditField<TEntityType>) => {
-    return `${this.props.entityCategory}_${field.key}`;
-  };
-
-  private getCachedField = (
-    field: TEditField<TEntityType>,
-  ):
-    | {
-        component: TFieldDefaultComponent;
-        saveData: () => string | Promise<string>;
-        value?: any;
-      }
-    | undefined => {
-    if (field.type === 'Simple text') {
-      return getSimpleTextField({
-        ...field,
-        id: this.getIdFromField(field),
-      });
-    }
-    if (field.type === 'Currency') {
-      return getSimpleTextField({
-        simpleTextType: 'currency',
-        ...field,
-        id: this.getIdFromField(field),
-      });
-    }
-    if (field.type === 'Text editor') {
-      return getTextEditorField({
-        ...field,
-        id: this.getIdFromField(field),
-      });
-    }
-    if (field.type === 'Select') {
-      return getSelectField({
-        ...field,
-        id: this.getIdFromField(field),
-      });
-    }
-    if (field.type === 'Image') {
-      return getImageField({
-        ...field,
-        id: this.getIdFromField(field),
-      });
-    }
-    if (field.type === 'Gallery') {
-      return getGalleryField({
-        ...field,
-        id: this.getIdFromField(field),
-      });
-    }
-    if (field.type === 'Color') {
-      return getColorField({
-        ...field,
-        id: this.getIdFromField(field),
-      });
-    }
-    if (field.type === 'Checkbox') {
-      return getCheckboxField({
-        ...field,
-        id: this.getIdFromField(field),
-      });
-    }
-    if (field.type === 'Date') {
-      return getDatepickerField({
-        ...field,
-        id: this.getIdFromField(field),
-      });
-    }
-    if (field.type === 'Datetime') {
-      return getDatepickerField({
-        dateType: 'datetime',
-        ...field,
-        id: this.getIdFromField(field),
-      });
-    }
-    if (field.type === 'custom') {
-      return getCustomField({
-        ...field,
-        id: this.getIdFromField(field),
-      });
-    }
-  };
-
   public goBack = () => {
     if (this.prevRoute) this.props.navigate(this.prevRoute);
     else if (this.props.entityListRoute) this.props.navigate(this.props.entityListRoute);
@@ -345,8 +228,8 @@ class EntityEdit<
   };
 
   render() {
-    const { entityType, entityCategory, entityLabel, classes = {}, customElements } = this.props;
-    const { entityData, notFound, isLoading, isSaving } = this.state ?? {};
+    const { classes = {} } = this.props;
+    const { entityData, notFound, isLoading } = this.state ?? {};
 
     if (notFound) {
       return (
@@ -358,11 +241,11 @@ class EntityEdit<
       );
     }
 
-    let pageFullUrl;
+    let frontendUrl;
     if (entityData) {
       const pageName = this.props.defaultPageName ?? this.props.entityType ?? this.props.entityCategory;
       if (getStoreItem('defaultPages')?.[pageName]) {
-        pageFullUrl =
+        frontendUrl =
           serviceLocator.getFrontendUrl() + resolvePageRoute(pageName, { slug: entityData.slug ?? entityData.id + '' });
       }
     }
@@ -371,136 +254,24 @@ class EntityEdit<
       ...(this.state ?? {}),
       refetchMeta: this.refetchMeta,
       onSave: this.handleSave,
+      goBack: this.goBack,
+      handleInputChange: this.handleInputChange,
+      frontendUrl,
     };
 
     return (
-      <div className={styles.EntityEdit}>
-        <ElevationScroll>
-          <AppBar position="sticky" color="transparent" elevation={0}>
-            <div className={styles.headerLeft}>
-              <IconButton onClick={this.goBack} className="mr-2">
-                <ChevronLeftIcon className="h-6 w-6 text-gray-600 hover:text-indigo:-400" />
-              </IconButton>
-              <p className={styles.pageTitle}>{entityLabel ?? entityType ?? entityCategory}</p>
-            </div>
-            {customElements?.getEntityHeaderCenter?.(elementProps)}
-            <div className={styles.headerActions}>
-              {pageFullUrl && (
-                <Tooltip title={`Open ${(entityType ?? entityCategory).toLocaleLowerCase()} in the new tab`}>
-                  <IconButton
-                    className={clsx(styles.openPageBtn, 'w-9 h-9')}
-                    aria-label="open"
-                    onClick={() => {
-                      window.open(pageFullUrl, '_blank');
-                    }}
-                  >
-                    <OpenInNewIcon style={{ width: '100%', height: '100%' }} />
-                  </IconButton>
-                </Tooltip>
-              )}
-              <div className={commonStyles.center}>
-                <TextButton className={styles.saveBtn} disabled={isSaving} onClick={this.handleSave}>
-                  Save
-                </TextButton>
-              </div>
-            </div>
-          </AppBar>
-        </ElevationScroll>
-
-        <div className={clsx(styles.content, classes.content)}>
-          {isLoading &&
-            Array(8)
-              .fill(1)
-              .map((it, index) => <Skeleton style={{ marginBottom: '10px' }} key={index} height={'50px'} />)}
-          {!isLoading && (
-            <>
-              {(entityData && customElements?.getEntityFields?.(elementProps)) ||
-                (entityData && !!this.props?.fields?.length && (
-                  <Grid container spacing={3}>
-                    {this.props.fields.map((field) => {
-                      const fieldCache = this.getCachedField(field);
-                      return (
-                        <InputField
-                          key={field.key}
-                          fieldCache={fieldCache}
-                          field={field}
-                          canValidate={this.state?.canValidate}
-                          entityData={entityData}
-                        />
-                      );
-                    })}
-                    <Grid item xs={12}></Grid>
-                  </Grid>
-                ))}
-              {entityData && this.props.renderFields?.(entityData)}
-              {entityData && !!getCustomMetaKeysFor(entityType ?? entityCategory).length && (
-                <Grid container spacing={3}>
-                  <Grid item xs={12}>
-                    <RenderCustomFields
-                      entityType={entityType ?? entityCategory}
-                      entityData={entityData}
-                      refetchMeta={this.refetchMeta}
-                    />
-                  </Grid>
-                </Grid>
-              )}
-              {!this.props.disableMeta && (
-                <Grid container spacing={3}>
-                  <Grid item xs={12}>
-                    <TextInput
-                      label="Page URL"
-                      value={entityData?.slug ?? ''}
-                      className={styles.defaultField}
-                      onChange={(e) => {
-                        this.handleInputChange('slug', e.target.value);
-                      }}
-                      description={pageFullUrl}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <TextInput
-                      label="Meta title"
-                      value={entityData?.pageTitle ?? ''}
-                      className={styles.defaultField}
-                      onChange={(e) => {
-                        this.handleInputChange('pageTitle', e.target.value);
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <TextInput
-                      label="Meta description"
-                      value={entityData?.pageDescription ?? ''}
-                      className={styles.defaultField}
-                      onChange={(e) => {
-                        this.handleInputChange('pageDescription', e.target.value);
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <AutocompleteInput
-                      multiple
-                      freeSolo
-                      options={[]}
-                      className={styles.defaultField}
-                      value={entityData?.meta?.keywords ?? []}
-                      getOptionLabel={(option) => option as any}
-                      onChange={(e, newVal) => {
-                        this.handleInputChange('meta', {
-                          ...(entityData.meta ?? {}),
-                          keywords: newVal,
-                        });
-                      }}
-                      label="Meta keywords"
-                      tooltip="Press ENTER to add"
-                    />
-                  </Grid>
-                </Grid>
-              )}
-            </>
-          )}
-        </div>
-      </div>
+      <EntityEditContextProvider value={{ pageProps: this.props, fieldProps: elementProps }}>
+        <Box className={styles.EntityEdit}>
+          <EntityHeader />
+          <Box className={clsx(styles.content, classes.content)} sx={this.props.styles?.content}>
+            {isLoading &&
+              Array(8)
+                .fill(1)
+                .map((it, index) => <Skeleton style={{ marginBottom: '10px' }} key={index} height={'50px'} />)}
+            <EntityFields />
+          </Box>
+        </Box>
+      </EntityEditContextProvider>
     );
   }
 }

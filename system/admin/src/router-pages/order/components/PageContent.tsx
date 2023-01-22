@@ -1,9 +1,11 @@
+import { EntityCustomFields } from '@components/entity/entityEdit/components/EntityCustomFields';
+import { EntityMetaFields } from '@components/entity/entityEdit/components/EntityMetaFields';
 import { TOrder, TProduct, TStoreListItem } from '@cromwell/core';
 import { getCStore, getGraphQLClient } from '@cromwell/core-frontend';
 import { Close as CloseIcon, DeleteForever as DeleteForeverIcon } from '@mui/icons-material';
 import { Box, Grid, IconButton, Skeleton } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 import { TFieldsComponentProps } from '../../../components/entity/types';
 import { AutocompleteInput } from '../../../components/inputs/AutocompleteInput';
@@ -29,6 +31,7 @@ export function PageContent(
   const [data, setData] = useState<TOrder | null>(props.entityData);
   const [cartLoading, setCartLoading] = useState<boolean>(false);
   const [cartProducts, setCartProducts] = useState<TProduct[]>([]);
+  const location = useLocation();
 
   const cartInfo = cstore.getCartTotal();
   const updatedCartTotal = cartInfo.total ?? 0;
@@ -226,6 +229,7 @@ export function PageContent(
                 disabled
               />
             </Grid>
+            <EntityCustomFields />
           </Grid>
         </div>
         {!!cstore.getCoupons()?.length && (
@@ -309,7 +313,7 @@ export function PageContent(
                         <Link
                           className={styles.productName}
                           to={productLink}
-                          state={{ prevRoute: window.location.pathname + window.location.search }}
+                          state={{ prevRoute: location.pathname + location.search }}
                         >
                           {product.name}
                         </Link>

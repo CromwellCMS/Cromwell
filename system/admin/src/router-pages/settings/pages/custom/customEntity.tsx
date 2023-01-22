@@ -1,3 +1,4 @@
+import { settingsPageInfo } from '@constants/PageInfos';
 import { TAdminCustomEntity } from '@cromwell/core';
 import React, { useState } from 'react';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
@@ -73,7 +74,7 @@ const CustomEntityForm = ({ entity }: { entity: TAdminCustomEntity }) => {
     if (saved) {
       reset(data);
       if (entity.entityType !== inputs.entityType) {
-        navigate(`/settings/custom-data/${inputs.entityType}`, { replace: true });
+        navigate(`${settingsPageInfo.route}/custom-data/${inputs.entityType}`, { replace: true });
       }
     }
   };

@@ -1,6 +1,6 @@
 import queryString from 'query-string';
 import { useCallback, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { ProductContext, TProductStore } from '../contexts/Product';
 
@@ -9,6 +9,7 @@ export function useTabs(init?: {
   setStore: (value: TProductStore) => void;
 }): [number, (v: number) => void] {
   const navigate = useNavigate();
+  const location = useLocation();
   const context = useContext(ProductContext);
 
   const setStore = init?.setStore ?? context.setStore ?? (() => {});
@@ -24,7 +25,7 @@ export function useTabs(init?: {
         if (value != parsed.tab) {
           parsed.tab = value;
           if (!value || value == '0') delete parsed.tab;
-          navigate(`${window.location.pathname}?${queryString.stringify(parsed)}`);
+          navigate(`${location.pathname}?${queryString.stringify(parsed)}`);
         }
       }
     },

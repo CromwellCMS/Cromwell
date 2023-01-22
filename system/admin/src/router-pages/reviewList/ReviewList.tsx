@@ -27,7 +27,10 @@ export default function ProductReviewTable() {
     textOverflow: 'ellipsis',
   };
 
-  const handleApproveReview = async (data: TProductReview, inst?: React.Component<any>): Promise<boolean> => {
+  const handleApproveReview = async (
+    data: TProductReview,
+    changeData?: (data: TProductReview) => void,
+  ): Promise<boolean> => {
     const review = await client.getProductReviewById(data.id);
     try {
       await client?.updateProductReview(data.id, {
@@ -44,10 +47,10 @@ export default function ProductReviewTable() {
       }
       approvedToast.current = toast.success('Approved!');
 
-      if (inst) {
-        inst.props.data.approved = true;
-        inst.forceUpdate();
-      }
+      changeData?.({
+        ...data,
+        approved: true,
+      });
       return true;
     } catch (e) {
       toast.error('Failed to save');
@@ -162,27 +165,29 @@ export default function ProductReviewTable() {
             getValueView: (value) => formatTimeAgo(value),
           },
         ]}
-        getItemCustomActions={(entity, inst) => {
-          return (
-            <Box display="flex" alignItems="center">
-              {!entity?.approved && (
-                <Tooltip title="Approve">
+        customElements={{
+          getItemCustomActions: ({ data, changeData }) => {
+            return (
+              <Box display="flex" alignItems="center">
+                {!data?.approved && (
+                  <Tooltip title="Approve">
+                    <span>
+                      <IconButton onClick={() => handleApproveReview(data, changeData)}>
+                        <CheckBadgeIcon className="h-4 text-gray-300 w-4 cursor-pointer" />
+                      </IconButton>
+                    </span>
+                  </Tooltip>
+                )}
+                <Tooltip title="Open">
                   <span>
-                    <IconButton onClick={() => handleApproveReview(entity, inst)}>
-                      <CheckBadgeIcon className="h-4 text-gray-300 w-4 cursor-pointer" />
+                    <IconButton onClick={() => handleOpenReview(data)}>
+                      <BookOpenIcon className="h-4 text-gray-300 w-4 cursor-pointer" />
                     </IconButton>
                   </span>
                 </Tooltip>
-              )}
-              <Tooltip title="Open">
-                <span>
-                  <IconButton onClick={() => handleOpenReview(entity)}>
-                    <BookOpenIcon className="h-4 text-gray-300 w-4 cursor-pointer" />
-                  </IconButton>
-                </span>
-              </Tooltip>
-            </Box>
-          );
+              </Box>
+            );
+          },
         }}
         customActionsWidth={80}
       />

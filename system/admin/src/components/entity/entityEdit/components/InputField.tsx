@@ -3,8 +3,8 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { Grid, Tooltip } from '@mui/material';
 import React from 'react';
 
-import { TFieldDefaultComponent } from '../../../helpers/customFields';
-import { useForceUpdate } from '../../../helpers/forceUpdate';
+import { TFieldDefaultComponent } from '../../../../helpers/customFields';
+import { useForceUpdate } from '../../../../helpers/forceUpdate';
 
 export function InputField({
   field,
