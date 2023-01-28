@@ -554,11 +554,16 @@ class FileManager
           )}
           {this.state.isLoading && <LoadBox absolute />}
         </div>
-        <div style={{ display: 'none' }} ref={this.photoPreviewContainer} className={styles.photoPreviewContainer}>
+        <div
+          style={{ display: 'none' }}
+          ref={this.photoPreviewContainer}
+          className={styles.photoPreviewContainer}
+          onClick={this.closePreview}
+        >
           <IconButton className={styles.photoPreviewCloseBtn} onClick={this.closePreview}>
             <CancelIcon className={styles.photoPreviewCloseIcon} />
           </IconButton>
-          <img className={styles.photoPreview} ref={this.photoPreview} />
+          <img className={styles.photoPreview} ref={this.photoPreview} onClick={(event) => event.stopPropagation()} />
         </div>
         <div style={{ display: 'none' }}>
           <input type="file" id="hidden-file-upload-input" multiple />

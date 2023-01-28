@@ -1,3 +1,6 @@
+import { getFileManager } from '@components/fileManager/helpers';
+import { MarketIcon } from '@components/icons/marketicon';
+import { StackIcon } from '@components/icons/stackIcon';
 import {
   ArrowsUpDownIcon,
   CloudIcon,
@@ -7,21 +10,17 @@ import {
   UserGroupIcon,
 } from '@heroicons/react/24/outline';
 import { RectangleGroupIcon } from '@heroicons/react/24/solid';
+import { useAdminSettings } from '@pages/settings/hooks/useAdminSettings';
 import React from 'react';
 
-import { TBreadcrumbs } from '../../../components/breadcrumbs';
-import { getFileManager } from '../../../components/fileManager/helpers';
-import { MarketIcon } from '../../../components/icons/marketicon';
-import { StackIcon } from '../../../components/icons/stackIcon';
 import { SettingItem } from '../components/settingItem';
 
-const titlePath = [{ title: 'Settings' }];
-
 export const SettingsIndexPage = () => {
+  useAdminSettings({});
+
   return (
     <>
-      <TBreadcrumbs path={titlePath} />
-      <div className="grid gap-6 grid-cols-1 xl:grid-cols-2">
+      <div className="grid gap-6 grid-cols-1 max-w-[1200px]">
         <div className="bg-white rounded-lg shadow-lg w-full p-4">
           <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
             <SettingItem

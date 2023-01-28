@@ -374,13 +374,7 @@ export class CRestApiClient {
    * Get admin CMS settings
    * @auth admin
    */
-  public getAdminCmsSettings = async (
-    options?: TRequestOptions,
-  ): Promise<
-    TCmsSettings & {
-      robotsContent?: string;
-    }
-  > => {
+  public getAdminCmsSettings = async (options?: TRequestOptions): Promise<TCmsSettings> => {
     return this.get(`v1/cms/admin-settings`, options);
   };
 

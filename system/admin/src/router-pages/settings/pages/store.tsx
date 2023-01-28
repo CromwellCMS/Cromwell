@@ -1,22 +1,29 @@
+import { RegisteredTextInput } from '@components/inputs/TextInput';
 import { getCStore } from '@cromwell/core-frontend';
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 
-import { TBreadcrumbs } from '../../../components/breadcrumbs';
 import { GrabIcon } from '../../../components/icons/grabIcon';
-import { TextInput } from '../../../components/inputs/TextInput/TextInput';
-import { TAdminCmsSettingsType, useAdminSettings } from '../../../hooks/useAdminSettings';
 import { DraggableCurrenciesList } from '../components/draggableCurrencies';
+import {
+  SettingsPageInfo,
+  TAdminCmsSettingsType,
+  useAdminSettings,
+  useAdminSettingsContext,
+} from '../hooks/useAdminSettings';
 
 type FormType = Pick<TAdminCmsSettingsType, 'defaultShippingPrice' | 'currencies'>;
 
-const titlePath = [
-  { title: 'Settings', link: '/settings/' },
-  { title: 'Store', link: '/settings/store' },
-];
+const info: SettingsPageInfo = {
+  breadcrumbs: [
+    { title: 'Settings', link: '/settings/' },
+    { title: 'Store', link: '/settings/store' },
+  ],
+  saveVisible: true,
+};
 
 export const StoreSettingsPage = () => {
-  const { adminSettings, saveStoreSettings } = useAdminSettings();
+  const { adminSettings, saveStoreSettings } = useAdminSettingsContext();
   const methods = useForm<FormType>({
     defaultValues: {
       ...adminSettings,
@@ -39,22 +46,19 @@ export const StoreSettingsPage = () => {
     })
     .reduce((acc, cur) => acc || cur, false);
 
+  const isDirty = methods.formState.isDirty;
+
+  useAdminSettings({
+    ...info,
+    saveDisabled: !isDirty,
+    onSave: () => {
+      methods.handleSubmit(onSubmit)();
+    },
+  });
+
   return (
     <FormProvider {...methods}>
       <form className="relative" onSubmit={methods.handleSubmit(onSubmit)}>
-        <div className="flex flex-row bg-gray-100 bg-opacity-60 w-full top-0 z-10 gap-2 backdrop-filter backdrop-blur-lg justify-between sticky">
-          <div className="w-full max-w-4xl px-1 lg:px-0">
-            <TBreadcrumbs path={titlePath} />
-            <button
-              type="submit"
-              disabled={!methods.formState.isDirty}
-              className="rounded-lg font-bold bg-indigo-600 my-2 text-sm text-white py-1 px-4 uppercase self-center float-right hover:bg-indigo-500 disabled:bg-gray-700"
-            >
-              save
-            </button>
-          </div>
-        </div>
-
         <div className="flex flex-col z-4 gap-6 relative lg:flex-row">
           <div className="max-h-min my-4 lg:max-w-[13rem] top-16 self-start lg:order-2 lg:sticky">
             <h2 className="font-bold text-gray-700 col-span-1">Shipping Settings</h2>
@@ -68,11 +72,12 @@ export const StoreSettingsPage = () => {
             }`}
           >
             <div className="grid gap-2 grid-cols-1 lg:grid-cols-2">
-              <TextInput
+              <RegisteredTextInput<TAdminCmsSettingsType>
                 label="Standard shipping price"
                 placeholder="Enter shipping price"
                 prefix={<span className="text-indigo-500">{cstore.getActiveCurrencySymbol()}</span>}
-                {...methods.register('defaultShippingPrice', { valueAsNumber: true })}
+                name="defaultShippingPrice"
+                type="number"
               />
             </div>
           </div>

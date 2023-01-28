@@ -1,14 +1,19 @@
-import React from 'react';
-import { TAdminCmsSettingsType, useAdminSettings } from '../../../hooks/useAdminSettings';
-import { useForm, FormProvider, Controller } from 'react-hook-form';
-import { TextInput } from '../../../components/inputs/TextInput/TextInput';
-import { CustomFieldSettings } from '../components/customFields';
+import { RegisteredTextInput } from '@components/inputs/TextInput';
 import { EDBEntity } from '@cromwell/core';
+import React from 'react';
+import { Controller, FormProvider, useForm } from 'react-hook-form';
+
 import { ImageInput } from '../../../components/inputs/Image/ImageInput';
-import { RegisteredSelectField } from '../components/registeredSelectField';
 import { languages } from '../../../constants/languages';
 import { timezones } from '../../../constants/timezones';
-import { TBreadcrumbs } from '../../../components/breadcrumbs';
+import { CustomFieldSettings } from '../components/customFields';
+import { RegisteredSelectField } from '../components/registeredSelectField';
+import {
+  SettingsPageInfo,
+  TAdminCmsSettingsType,
+  useAdminSettings,
+  useAdminSettingsContext,
+} from '../hooks/useAdminSettings';
 
 type Lang = ArrayElement<typeof languages>;
 type TZ = ArrayElement<typeof timezones>;
@@ -38,17 +43,18 @@ const getTZValue = (tz?: TZ) => tz?.value;
 
 const getLangValue = (lang?: Lang) => lang?.code;
 
-const titlePath = [
-  { title: 'Settings', link: '/settings/' },
-  { title: 'General', link: '/settings/general' },
-];
+const info: SettingsPageInfo = {
+  breadcrumbs: [
+    { title: 'Settings', link: '/settings/' },
+    { title: 'General', link: '/settings/general' },
+  ],
+  saveVisible: true,
+};
 
 export const GeneralSettingsPage = () => {
-  const { adminSettings, saveAdminCmsSettings } = useAdminSettings();
+  const { adminSettings, saveAdminCmsSettings } = useAdminSettingsContext();
   const form = useForm<TAdminCmsSettingsType>({
-    defaultValues: {
-      ...adminSettings,
-    },
+    defaultValues: adminSettings,
   });
 
   const onSubmit = async (data: any) => {
@@ -57,22 +63,17 @@ export const GeneralSettingsPage = () => {
     form.reset(data);
   };
 
+  useAdminSettings({
+    ...info,
+    saveDisabled: !form.formState.isDirty,
+    onSave: () => {
+      form.handleSubmit(onSubmit)();
+    },
+  });
+
   return (
     <FormProvider {...form}>
       <form className="relative" onSubmit={form.handleSubmit(onSubmit)}>
-        <div className="flex flex-row bg-gray-100 bg-opacity-60 w-full top-0 z-10 gap-2 backdrop-filter backdrop-blur-lg justify-between sticky">
-          <div className="w-full max-w-4xl px-1 lg:px-0">
-            <TBreadcrumbs path={titlePath} />
-            <button
-              type="submit"
-              disabled={!form.formState.isDirty}
-              className="rounded-lg font-bold bg-indigo-600 my-2 text-sm text-white py-1 px-4 uppercase self-center float-right hover:bg-indigo-500 disabled:bg-gray-700"
-            >
-              save
-            </button>
-          </div>
-        </div>
-
         <div className="flex flex-col gap-2 relative lg:flex-row lg:gap-6">
           <div className="max-h-min my-1 lg:max-w-[13rem] top-16 self-start lg:order-2 lg:my-4 lg:sticky">
             <h2 className="font-bold text-gray-700 col-span-1">System settings</h2>
@@ -88,11 +89,10 @@ export const GeneralSettingsPage = () => {
             }`}
           >
             <div className="grid gap-2 grid-cols-1 lg:grid-cols-2">
-              <TextInput
+              <RegisteredTextInput<TAdminCmsSettingsType>
+                name="url"
                 label="Website URL"
                 placeholder="https://your-website.com"
-                //@ts-ignore
-                {...form.register('url')}
               />
               <RegisteredSelectField
                 options={languages}
@@ -119,7 +119,7 @@ export const GeneralSettingsPage = () => {
                   control={form.control}
                   render={({ field }) => (
                     <ImageInput
-                      key={field.name}
+                      key={String(field.name)}
                       onChange={(value) => field.onChange(value ?? '')}
                       value={field.value}
                       id="logo"

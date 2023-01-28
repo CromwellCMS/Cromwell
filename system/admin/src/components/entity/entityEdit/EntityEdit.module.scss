@@ -5,24 +5,29 @@
   max-width: 900px;
   margin: 0 auto;
   width: 100%;
+}
 
-  .header {
-    padding: 10px;
-    width: 100%;
-    margin-bottom: 15px;
-    min-height: 46px;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    top: -1px;
-    border-radius: 15px;
-  }
+.header {
+  padding: 10px;
+  width: 100%;
+  margin-bottom: 15px;
+  min-height: 46px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  top: -1px;
+  border-radius: 15px;
+  transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  box-shadow: none;
+  position: sticky;
+  z-index: 10101;
+  color: inherit;
+}
 
-  .headerElevated {
-    box-shadow: 0 8px 15px 0 rgb(0 0 0 / 9%);
-    background-color: rgba(243, 244, 246, var(--tw-bg-opacity));
-  }
+.header.headerElevated {
+  box-shadow: 0 8px 15px 0 rgb(0 0 0 / 9%);
+  background-color: rgba(243, 244, 246, var(--tw-bg-opacity));
 }
 
 .pageTitle {
@@ -67,8 +72,7 @@ button.openPageBtn {
   @include styledScrollBar;
   border: 1px solid #bbb;
   border-radius: 5px;
-  max-height: 400px;
-  overflow: auto;
+  min-height: 400px;
   padding: 15px 30px;
 }
 

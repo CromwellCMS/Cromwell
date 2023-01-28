@@ -1,7 +1,7 @@
 import { TCromwellBlock } from '@cromwell/core';
+import { destroyEditor, getEditorData, getEditorHtml, initTextEditor } from '@helpers/editor';
 import React, { useEffect } from 'react';
 
-import { destroyEditor, getEditorData, getEditorHtml, initTextEditor } from '../../../../helpers/editor/editor';
 import { usePageBuilder } from '../../hooks/usePageBuilder';
 
 const editorId = 'blockEditor';
@@ -14,9 +14,7 @@ export const EditorBlockEditor = ({
   setSidebarWidth?: any;
 }) => {
   const { createBlockProps, updateFramesPosition } = usePageBuilder();
-  const data = block?.getData();
-  // const blockValue = data.html?.innerHTML as string;
-  // const editor = useRef()
+  // const data = block?.getData();
 
   useEffect(() => {
     setSidebarWidth(850);

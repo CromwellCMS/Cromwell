@@ -25,7 +25,6 @@ const initApp = async () => {
       .then((res) => res.json())
       .catch(console.error)) || null;
 
-  console.log('env', env);
   if (env?.cmsSettings) {
     setStoreItem('cmsSettings', env.cmsSettings);
     setStoreItem('environment', env.environment);

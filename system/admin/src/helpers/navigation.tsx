@@ -216,7 +216,7 @@ export const getSideBarLinks = (): TSidebarLink[] => {
     {
       id: 'settings_page',
       title: 'Settings',
-      route: settingsPageInfo.route,
+      route: settingsPageInfo.baseRoute,
       icon: <CogIcon className="h-5 w-5" />,
       permissions: ['read_cms_settings'],
     },

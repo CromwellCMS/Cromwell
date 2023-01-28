@@ -14,7 +14,7 @@ let EditorDelimiter: any; // typeof import('@editorjs/delimiter');
 // let EditorRaw: typeof import('@editorjs/raw');
 let EditorTable: typeof import('@editorjs/table');
 let EditorMarker: typeof import('@editorjs/marker');
-// let EditorCode: typeof import('@editorjs/code');
+let EditorCode: typeof import('@editorjs/code');
 let EditorLink: typeof import('@editorjs/link');
 let EditorWarning: typeof import('@editorjs/warning');
 let InlineCode: typeof import('@editorjs/inline-code');
@@ -32,7 +32,7 @@ const importDependencies = async () => {
       // EditorRaw,
       EditorTable,
       EditorMarker,
-      // EditorCode,
+      EditorCode,
       EditorLink,
       EditorWarning,
       InlineCode,
@@ -47,7 +47,7 @@ const importDependencies = async () => {
       // await import('@editorjs/raw'),
       await import('@editorjs/table'),
       await import('@editorjs/marker'),
-      // await import('@editorjs/code'),
+      await import('@editorjs/code'),
       await import('@editorjs/link'),
       await import('@editorjs/warning'),
       await import('@editorjs/inline-code'),
@@ -129,12 +129,12 @@ const getTools = (readOnly?: boolean) => ({
     inlineToolbar: !readOnly,
     shortcut: 'CMD+SHIFT+M',
   },
-  // code: {
-  //     class: EditorCode.default,
-  //     inlineToolbar: true,
-  // },
+  'code editor': {
+    class: EditorCode.default,
+    inlineToolbar: true,
+  },
   code: {
-    class: InlineCode,
+    class: InlineCode.default,
     inlineToolbar: true,
   },
   linkTool: {

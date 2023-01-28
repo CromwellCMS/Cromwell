@@ -1,11 +1,11 @@
 import { getRandStr } from '@cromwell/core';
+import { getEditorData, getEditorHtml, initTextEditor } from '@helpers/editor';
 import React, { useEffect, useRef, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
-import { getEditorData, getEditorHtml, initTextEditor } from '../../../helpers/editor/editor';
 
 export const CustomTextEditorInputField = ({ label, name }: { id?: string; label?: any; name?: string }) => {
   const [editorId] = useState('editor_' + getRandStr(12));
-  const { watch, setValue, getValues } = useFormContext();
+  const { setValue, getValues } = useFormContext();
 
   const initialValueRef = useRef<null | any>(getValues(name));
 

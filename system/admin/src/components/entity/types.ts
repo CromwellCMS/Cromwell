@@ -60,7 +60,7 @@ export type TEntityPageProps<
   /**
    * How to name this list / page?
    */
-  listLabel: string;
+  listLabel?: string;
 
   /**
    * Page to open when user clicks "edit" in list view page

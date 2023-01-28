@@ -10,7 +10,7 @@ import { SwitchInput } from '../../../../components/inputs/SwitchInput';
 import { TextInput } from '../../../../components/inputs/TextInput/TextInput';
 import { toast } from '../../../../exports';
 import { slugify } from '../../../../helpers/slugify';
-import { useAdminSettings } from '../../../../hooks/useAdminSettings';
+import { useAdminSettings } from '../../hooks/useAdminSettings';
 
 const path = [
   { title: 'Settings', link: '/settings/' },

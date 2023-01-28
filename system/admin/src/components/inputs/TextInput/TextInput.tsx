@@ -9,11 +9,13 @@ export interface InputBaseComponentProps extends React.HTMLAttributes<HTMLInputE
 }
 
 export type TextInputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'prefix'> & {
-  label?: any;
+  label?: string | JSX.Element;
+  palceholder?: string;
   prefix?: any;
   overlay?: any;
   description?: any;
   error?: any;
+  fixedHeight?: boolean;
   baseSize?: 'small' | 'medium' | 'large';
   inputComponent?: React.ElementType<InputBaseComponentProps>;
   startAdornment?: React.ReactNode;

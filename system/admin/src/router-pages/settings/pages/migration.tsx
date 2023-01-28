@@ -2,10 +2,10 @@ import { getRestApiClient } from '@cromwell/core-frontend';
 import { Switch } from '@headlessui/react';
 import { ArrowSmallUpIcon } from '@heroicons/react/24/outline';
 import { ArrowDownTrayIcon } from '@heroicons/react/24/solid';
+import { SettingsPageInfo, useAdminSettings } from '@pages/settings/hooks/useAdminSettings';
 import React, { useCallback, useState } from 'react';
 import { Controller, FormProvider, useForm, useFormContext } from 'react-hook-form';
 
-import { TBreadcrumbs } from '../../../components/breadcrumbs';
 import { LoadingStatus } from '../../../components/loadBox/LoadingStatus';
 import { toast } from '../../../components/toast/toast';
 
@@ -97,13 +97,16 @@ const exportOptions = [
   },
 ];
 
-const titlePath = [
-  { title: 'Settings', link: '/settings/' },
-  {
-    title: 'Backup & Migration',
-    link: '/settings/migration',
-  },
-];
+const info: SettingsPageInfo = {
+  breadcrumbs: [
+    { title: 'Settings', link: '/settings/' },
+    {
+      title: 'Backup & Migration',
+      link: '/settings/migration',
+    },
+  ],
+  saveVisible: false,
+};
 
 const ControlledBackupOption = ({
   name = '',
@@ -225,15 +228,13 @@ export const MigrationSettingsPage = () => {
 
   const override = methods.watch('importOverride', false);
 
+  useAdminSettings({
+    ...info,
+  });
+
   return (
     <FormProvider {...methods}>
       <form className="relative" onSubmit={methods.handleSubmit(onSubmit)}>
-        <div className="flex flex-row bg-gray-100 bg-opacity-60 w-full top-0 z-10 gap-2 backdrop-filter backdrop-blur-lg justify-between sticky">
-          <div className="w-full max-w-4xl px-1 lg:px-0">
-            <TBreadcrumbs path={titlePath} />
-          </div>
-        </div>
-
         <div className="flex flex-col z-4 gap-6 relative lg:flex-row">
           <div className="max-h-min my-4 lg:max-w-[13rem] top-16 self-start lg:order-2 lg:sticky">
             <h2 className="font-bold text-gray-700 col-span-1">Backups</h2>

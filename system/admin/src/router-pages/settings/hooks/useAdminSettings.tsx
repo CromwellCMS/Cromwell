@@ -1,16 +1,10 @@
-import { setStoreItem, TAdminCustomEntity, TAdminCustomField, TCmsConfig, TPermission, TRole } from '@cromwell/core';
-import { CustomEntity } from '@cromwell/core-backend';
+import { BreadcrumbItem } from '@components/breadcrumbs';
+import { toast } from '@components/toast/toast';
+import { setStoreItem, TAdminCustomEntity, TAdminCustomField, TCmsSettings, TPermission, TRole } from '@cromwell/core';
 import { getGraphQLClient, getRestApiClient, useCmsSettings } from '@cromwell/core-frontend';
 import React, { useCallback, useEffect, useState } from 'react';
-import { toast } from '../components/toast/toast';
 
-const client = getRestApiClient();
-
-type AsyncReturnType<T extends (...args: any) => Promise<any>> = T extends (...args: any) => Promise<infer R> ? R : any;
-
-type CustomEntityType = ArrayElement<TAdminCmsSettingsType['customEntities']>;
-
-export type TAdminCmsSettingsType = AsyncReturnType<typeof client.getAdminCmsSettings>;
+export type TAdminCmsSettingsType = TCmsSettings;
 
 const uniqBy = (arr: any[], predicate?: any) => {
   const cb = typeof predicate === 'function' ? predicate : (o) => o[predicate];
@@ -28,15 +22,20 @@ const uniqBy = (arr: any[], predicate?: any) => {
   ];
 };
 
-const useAdminSettingsContext = () => {
+const defaultBreadcrumbs: BreadcrumbItem[] = [{ title: 'Settings', link: '/settings/' }];
+
+const useAdminSettingsStore = () => {
   const cmsSets = useCmsSettings();
   const [adminSettings, setAdminSettings] = useState<TAdminCmsSettingsType>(null);
   const [roles, setRoles] = useState<TRole[]>([]);
   const [permissions, setPermissions] = useState<TPermission[]>([]);
+  const [breadcrumbs, setBreadcrumbs] = useState<BreadcrumbItem[]>(defaultBreadcrumbs);
+  const [saveDisabled, setSaveDisabled] = useState<boolean>(true);
+  const [saveVisible, setSaveVisible] = useState<boolean>(false);
+  const [onSave, setOnSave] = useState<() => void>(undefined);
+  const client = getRestApiClient();
 
   const getAdminCmsSettings = useCallback(async () => {
-    const client = getRestApiClient();
-
     try {
       const settings = await client.getAdminCmsSettings();
 
@@ -89,14 +88,12 @@ const useAdminSettingsContext = () => {
   );
 
   const addRole = useCallback(async (role: Partial<TRole>) => {
-    const data = await getGraphQLClient().createRole({
+    await getGraphQLClient().createRole({
       title: role.title,
       name: role.name,
       permissions: role.permissions,
       isEnabled: role.isEnabled,
     });
-
-    console.log(data);
 
     return true;
   }, []);
@@ -107,8 +104,8 @@ const useAdminSettingsContext = () => {
       const newSettings: TAdminCmsSettingsType = {
         ...old,
         ...newData,
-        currencies: uniqBy([...old?.currencies, ...newData?.currencies], 'tag'),
-        customFields: uniqBy([...old?.customFields, ...newData?.customFields], 'id'),
+        currencies: uniqBy([...(old?.currencies || []), ...(newData?.currencies || [])], 'tag'),
+        customFields: uniqBy([...(old?.customFields || []), ...(newData?.customFields || [])], 'id'),
         customMeta: {
           ...(old?.customMeta || {}),
           ...(newData.customMeta || {}),
@@ -132,7 +129,7 @@ const useAdminSettingsContext = () => {
       const newSettings: TAdminCmsSettingsType = {
         ...old,
         ...newData,
-        currencies: [...newData?.currencies],
+        currencies: [...(newData?.currencies || [])],
       };
 
       return await __saveSettings(newSettings);
@@ -232,20 +229,65 @@ const useAdminSettingsContext = () => {
     permissions,
     findRole,
     saveRole,
+    breadcrumbs,
+    setBreadcrumbs,
+    saveDisabled,
+    setSaveDisabled,
+    saveVisible,
+    setSaveVisible,
+    onSave,
+    setOnSave: (value) =>
+      setOnSave(() => {
+        return value;
+      }),
   };
 };
 
-export const useAdminSettings = () => {
+export const useAdminSettingsContext = () => {
   return React.useContext(AdminSettingsContext);
 };
 
-type ContextType = ReturnType<typeof useAdminSettingsContext>;
+export type SettingsPageInfo = {
+  breadcrumbs?: BreadcrumbItem[];
+  saveVisible?: boolean;
+  saveDisabled?: boolean;
+  onSave?: () => void;
+};
+
+export const useAdminSettings = ({ breadcrumbs, saveVisible, onSave, saveDisabled }: SettingsPageInfo = {}) => {
+  const settings = useAdminSettingsContext();
+  const { setBreadcrumbs, setSaveVisible, setOnSave, setSaveDisabled } = settings;
+
+  useEffect(() => {
+    setBreadcrumbs(breadcrumbs || defaultBreadcrumbs);
+    setSaveVisible(saveVisible || false);
+    if (onSave) {
+      setOnSave(() => {
+        onSave?.();
+      });
+    } else {
+      setOnSave(undefined);
+    }
+
+    return () => {
+      setOnSave(undefined);
+    };
+  }, []);
+
+  useEffect(() => {
+    setSaveDisabled(saveDisabled);
+  }, [saveDisabled]);
+
+  return settings;
+};
+
+type ContextType = ReturnType<typeof useAdminSettingsStore>;
 const Empty = {} as ContextType;
 
 const AdminSettingsContext = React.createContext<ContextType>(Empty);
 
 export const AdminSettingsContextProvider = ({ children }) => {
-  const value = useAdminSettingsContext();
+  const value = useAdminSettingsStore();
 
   useEffect(() => {
     const initialize = async () => {

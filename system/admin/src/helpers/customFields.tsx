@@ -1,3 +1,4 @@
+import { TextEditor } from '@components/inputs/TextEditor';
 import {
   EDBEntity,
   getRandStr,
@@ -6,20 +7,19 @@ import {
   TCustomFieldSimpleTextType,
   TImageSettings,
 } from '@cromwell/core';
+import { getEditorData, getEditorHtml } from '@helpers/editor';
 import { Visibility as VisibilityIcon, VisibilityOff as VisibilityOffIcon } from '@mui/icons-material';
 import { CheckboxProps, IconButton, InputAdornment } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import { debounce } from 'throttle-debounce';
 
-import { ColorInput, ColorInputProps } from '../components/inputs/ColorInput';
-import entityEditStyles from '../components/entity/entityEdit/EntityEdit.module.scss';
 import { CheckboxInput } from '../components/inputs/CheckboxInput';
+import { ColorInput, ColorInputProps } from '../components/inputs/ColorInput';
 import { DateInput, DateInputProps, DateInputType } from '../components/inputs/DateInput/DateInput';
-import { SelectInput, SelectInputProps } from '../components/inputs/SelectInput';
-import { TextInput, TextInputProps } from '../components/inputs/TextInput/TextInput';
 import { GalleryPicker, GalleryPickerProps } from '../components/inputs/GalleryInput/GalleryInput';
 import { ImageInput, ImageInputProps } from '../components/inputs/Image/ImageInput';
-import { destroyEditor, getEditorData, getEditorHtml, initTextEditor } from './editor/editor';
+import { SelectInput, SelectInputProps } from '../components/inputs/SelectInput';
+import { TextInput, TextInputProps } from '../components/inputs/TextInput/TextInput';
 import { useForceUpdate } from './forceUpdate';
 import { NumberFormatCustom } from './NumberFormatCustom';
 
@@ -311,89 +311,10 @@ export const getTextEditorField = (settings: { id: string; label?: string; props
     editorId: undefined,
   };
 
-  class TextEditorCustomField extends React.Component<{
-    initialValue: string | undefined;
-    entity: TBasePageEntity;
-    onChange?: (value: any) => void;
-  }> {
-    public editorId: string;
-    public initialValue: string;
-    public initPromise: null | Promise<void>;
-
-    constructor(props: any) {
-      super(props);
-
-      this.editorId = 'editor_' + getRandStr(12);
-      this.initialValue = this.editorId;
-      state.editorId = this.editorId;
-    }
-
-    componentDidMount() {
-      this.checkUpdate();
-    }
-
-    componentDidUpdate() {
-      this.checkUpdate();
-    }
-
-    componentWillUnmount() {
-      destroyEditor(this.editorId);
-    }
-
-    private checkUpdate = () => {
-      if (this.props.initialValue !== this.initialValue) {
-        this.initialValue = this.props.initialValue;
-        this.initEditor();
-      }
-    };
-
-    private initEditor = async () => {
-      let data:
-        | {
-            html: string;
-            json: string;
-          }
-        | undefined = undefined;
-      if (this.initPromise) await this.initPromise;
-      let initDone;
-      this.initPromise = new Promise((done) => (initDone = done));
-
-      const target = document.getElementById(this.editorId);
-      if (!target) return;
-      await destroyEditor(this.editorId);
-      target.innerHTML = '';
-
-      if (this.initialValue) {
-        try {
-          data = JSON.parse(this.initialValue);
-        } catch (error) {
-          console.error(error);
-        }
-      }
-
-      await initTextEditor({
-        htmlId: this.editorId,
-        data: data?.json,
-        placeholder: settings.label,
-        onChange: () => {
-          this.props.onChange?.(null);
-        },
-      });
-
-      initDone();
-    };
-
-    render() {
-      return (
-        <div style={{ margin: '15px 0' }} className={entityEditStyles.descriptionEditor}>
-          <div style={{ height: '350px' }} id={this.editorId}></div>
-        </div>
-      );
-    }
-  }
-
   fieldsCache[id] = {
-    component: TextEditorCustomField,
+    component: (props) => (
+      <TextEditor {...props} {...settings} {...settings.props} getId={(id) => (state.editorId = id)} />
+    ),
     saveData: async () => {
       const json = await getEditorData(state.editorId);
       if (!json?.blocks?.length) return null;

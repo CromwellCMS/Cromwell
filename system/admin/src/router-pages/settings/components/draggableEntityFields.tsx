@@ -17,7 +17,7 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import { FieldArrayWithId, useFieldArray, UseFieldArrayRemove, useFormContext } from 'react-hook-form';
 import { TextInput } from '../../../components/inputs/TextInput/TextInput';
-import { TAdminCmsSettingsType } from '../../../hooks/useAdminSettings';
+import { TAdminCmsSettingsType } from '../hooks/useAdminSettings';
 import { GrabIcon } from '../../../components/icons/grabIcon';
 import { PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { getRandStr, TCustomFieldType } from '@cromwell/core';

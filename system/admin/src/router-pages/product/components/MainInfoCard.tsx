@@ -1,16 +1,16 @@
+import { GalleryPicker } from '@components/inputs/GalleryInput/GalleryInput';
+import { SelectInput } from '@components/inputs/SelectInput';
+import { SwitchInput } from '@components/inputs/SwitchInput';
+import { TextInput } from '@components/inputs/TextInput/TextInput';
 import { EDBEntity, getRandStr, TProduct, TProductVariant, TStockStatus } from '@cromwell/core';
+import { getCustomMetaFor, RenderCustomFields } from '@helpers/customFields';
+import { getEditorData, getEditorHtml, initTextEditor } from '@helpers/editor';
+import { useForceUpdate } from '@helpers/forceUpdate';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { Grid, Tooltip } from '@mui/material';
 import React, { useEffect, useMemo, useRef } from 'react';
 import { debounce } from 'throttle-debounce';
 
-import { GalleryPicker } from '../../../components/inputs/GalleryInput/GalleryInput';
-import { SelectInput } from '../../../components/inputs/SelectInput';
-import { SwitchInput } from '../../../components/inputs/SwitchInput';
-import { TextInput } from '../../../components/inputs/TextInput/TextInput';
-import { getCustomMetaFor, RenderCustomFields } from '../../../helpers/customFields';
-import { getEditorData, getEditorHtml, initTextEditor } from '../../../helpers/editor/editor';
-import { useForceUpdate } from '../../../helpers/forceUpdate';
 import styles from '../Product.module.scss';
 
 const MainInfoCard = (props: {

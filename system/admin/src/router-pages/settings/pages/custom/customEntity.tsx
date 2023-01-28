@@ -9,7 +9,7 @@ import { TBreadcrumbs } from '../../../../components/breadcrumbs';
 import { ImageInput } from '../../../../components/inputs/Image/ImageInput';
 import { TextInput } from '../../../../components/inputs/TextInput/TextInput';
 import { slugify } from '../../../../helpers/slugify';
-import { TAdminCmsSettingsType, useAdminSettings } from '../../../../hooks/useAdminSettings';
+import { TAdminCmsSettingsType, useAdminSettings } from '../../hooks/useAdminSettings';
 import { DraggableEntityFields } from '../../components/draggableEntityFields';
 
 const titlePath = [

@@ -7,7 +7,6 @@ export const SettingItem = ({
   title,
   description,
   warning,
-  children,
   className = '',
   icon,
 }: {
@@ -27,7 +26,7 @@ export const SettingItem = ({
         </div>
       )
     : ({ children }) => (
-        <Link to={href} className="flex flex-row transform transition-all gap-2 group">
+        <Link to={href} className="flex flex-row transform transition-all gap-2 group no-underline hover:no-underline">
           {children}
         </Link>
       );
@@ -35,16 +34,16 @@ export const SettingItem = ({
   return (
     <Wrapper>
       <div
-        className={`rounded-lg flex bg-gray-200 shadow-inner text-center p-2 text-indigo-400 w-12 col-span-1 aspect-square group-hover:bg-indigo-100 group-hover:text-indigo-600 ${
+        className={`rounded-lg flex bg-gray-200 shadow-inner text-center p-2 text-indigo-400 w-12 h-12 col-span-1 aspect-square group-hover:bg-indigo-100 group-hover:text-indigo-600 ${
           className ?? ''
         }`}
       >
         {icon}
       </div>
       <div className="col-span-3">
-        <p className="font-bold text-gray-700 group-hover:text-indigo-500">{title}</p>
-        <p className="text-xs text-gray-400 group-hover:text-gray-700">{description}</p>
-        <p className="text-xs text-transparent group-hover:text-red-400">{warning}</p>
+        <p className="font-bold mb-1 text-gray-700 group-hover:text-indigo-500">{title}</p>
+        <p className="text-xs mt-1 text-gray-400 group-hover:text-gray-700">{description}</p>
+        <p className="text-xs mt-0 text-transparent group-hover:text-red-400">{warning}</p>
       </div>
     </Wrapper>
   );

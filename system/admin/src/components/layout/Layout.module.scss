@@ -52,7 +52,8 @@
 }
 
 .toastContainer {
-  z-index: 99999;
+  z-index: 10110;
+  position: relative;
 
   .Toastify {
     font-size: 16px;

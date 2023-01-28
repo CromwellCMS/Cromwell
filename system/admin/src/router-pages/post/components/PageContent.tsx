@@ -1,10 +1,10 @@
+import { TFieldsComponentProps } from '@components/entity/types';
 import { TPost } from '@cromwell/core';
+import { getEditorData, getEditorHtml, initTextEditor } from '@helpers/editor';
+import { useForceUpdate } from '@helpers/forceUpdate';
 import { Skeleton } from '@mui/material';
 import React, { useContext, useEffect } from 'react';
 
-import { TFieldsComponentProps } from '../../../components/entity/types';
-import { getEditorData, getEditorHtml, initTextEditor } from '../../../helpers/editor/editor';
-import { useForceUpdate } from '../../../helpers/forceUpdate';
 import { PostContext } from '../contexts/PostContext';
 import styles from './Post.module.scss';
 

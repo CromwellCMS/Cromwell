@@ -1,10 +1,11 @@
+import { RegisteredTextInput } from '@components/inputs/TextInput';
 import { EDBEntity, TImageSettings } from '@cromwell/core';
 import React, { useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
-import { TextInput } from '../../../components/inputs/TextInput/TextInput';
-import { ImageInput } from '../../../components/inputs/Image/ImageInput';
+
 import { GalleryPicker } from '../../../components/inputs/GalleryInput/GalleryInput';
-import { useAdminSettings } from '../../../hooks/useAdminSettings';
+import { ImageInput } from '../../../components/inputs/Image/ImageInput';
+import { TAdminCmsSettingsType, useAdminSettings } from '../hooks/useAdminSettings';
 import { CustomTextEditorInputField } from './customTextEditorInputField';
 import { RegisteredSelectField } from './registeredSelectField';
 
@@ -15,12 +16,8 @@ export const CustomFieldSettings = (props: {
   const { entityType } = props;
   const { adminSettings } = useAdminSettings();
   const [updatedMeta, setUpdatedMeta] = useState<Record<string, string> | null>(null);
-  const { register, watch } = useFormContext();
+  const { watch } = useFormContext();
   // console.log(adminSettings);
-
-  // useEffect(() => {
-
-  // }, [])
 
   const fields = adminSettings?.customFields?.filter((k) => k.entityType === entityType) || [];
 
@@ -30,7 +27,13 @@ export const CustomFieldSettings = (props: {
         .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
         .map((field) => {
           if (field.fieldType === 'Simple text') {
-            return <TextInput key={field.id} label={field.label} {...register(`customMeta.${field.key}`)} />;
+            return (
+              <RegisteredTextInput<TAdminCmsSettingsType>
+                key={field.id}
+                label={field.label}
+                name={`customMeta.${field.key}`}
+              />
+            );
           }
 
           if (field.fieldType === 'Image') {
@@ -70,11 +73,11 @@ export const CustomFieldSettings = (props: {
           if (field.fieldType === 'Color') {
             const overlay = watch(`customMeta.${field.key}`);
             return (
-              <TextInput
+              <CustomTextEditorInputField
                 key={field.id}
                 label={field.label}
                 overlay={overlay}
-                {...register(`customMeta.${field.key}`)}
+                name={`customMeta.${field.key}`}
                 type="color"
               />
             );

@@ -1,0 +1,9 @@
+@import '../../../styles/common.module.scss';
+
+.descriptionEditor {
+  @include styledScrollBar;
+  border: 1px solid #bbb;
+  border-radius: 5px;
+  min-height: 400px;
+  padding: 15px 30px;
+}

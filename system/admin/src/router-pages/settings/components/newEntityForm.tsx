@@ -8,7 +8,7 @@ import { ImageInput } from '../../../components/inputs/Image/ImageInput';
 import { TextInput } from '../../../components/inputs/TextInput/TextInput';
 import { baseEntityColumns } from '../../../helpers/customEntities';
 import { slugify } from '../../../helpers/slugify';
-import { useAdminSettings } from '../../../hooks/useAdminSettings';
+import { useAdminSettings } from '../hooks/useAdminSettings';
 
 type FormType = TAdminCustomEntity;
 

@@ -126,7 +126,7 @@ export function VariantsTab({
                 justifyContent: 'space-between',
                 alignItems: 'center',
                 px: 1,
-                borderBottom: expandedVariants[variant.id] && '1px solid #ddd',
+                borderBottom: expandedVariants[variant.id] && '2px dashed #ddd',
               }}
             >
               <Box sx={{ display: 'flex', alignItems: 'center', px: 1 }} flexWrap="wrap" justifyContent="space-between">

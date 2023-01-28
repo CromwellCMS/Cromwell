@@ -21,8 +21,12 @@ export function AutocompleteInput<T>(
       PopperComponent={inlineOptions ? InlinePopperComponent({ paperStyle }) : StyledPopper}
       ListboxProps={{ className: commonStyles.styledScrollBarList }}
       {...rest}
-      renderInput={({ size, InputProps, inputProps, ...rest }) => {
-        // eslint-disable-line @typescript-eslint/no-unused-vars
+      renderInput={({
+        size, // eslint-disable-line @typescript-eslint/no-unused-vars
+        InputProps,
+        inputProps,
+        ...rest
+      }) => {
         let content: JSX.Element = (
           <div ref={InputProps.ref}>
             <TextInput

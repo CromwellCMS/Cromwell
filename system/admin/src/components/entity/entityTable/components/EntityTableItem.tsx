@@ -142,17 +142,27 @@ function EntityTableItem<TEntityType extends TBasePageEntity, TFilterType extend
 
             const TooltipContent = (props: { title: string }): any => {
               let title;
-              if (
-                col.type === 'Color' ||
-                col.type === 'Image' ||
-                col.type === 'Date' ||
-                col.type === 'Datetime' ||
-                col.type === 'Time'
-              )
+              if (col.type === 'Color' || col.type === 'Date' || col.type === 'Datetime' || col.type === 'Time') {
                 title = props.title;
-              const element = columnRefs.current[col.name]?.current;
-              // Ellipsis
-              if (element && element.offsetWidth < element.scrollWidth) title = props.title;
+              } else {
+                const element = columnRefs.current[col.name]?.current;
+                // Ellipsis
+                if (element && element.offsetWidth < element.scrollWidth) title = props.title;
+              }
+
+              if (col.type === 'Image') {
+                title = (
+                  <a
+                    href={props.title}
+                    target="_blank"
+                    rel="noreferrer"
+                    draggable={false}
+                    style={{ userSelect: 'text', wordBreak: 'break-all', width: '100%', display: 'inline' }}
+                  >
+                    {props.title}
+                  </a>
+                );
+              }
               if (title) return <div className={styles.tooltip}>{title}</div>;
               return null;
             };

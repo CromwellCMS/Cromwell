@@ -183,7 +183,7 @@ export const welcomePageInfo: TPageInfo = {
 
 export const settingsPageInfo: TPageInfo = {
   name: 'Settings',
-  route: '/settings',
+  route: '/settings/*',
   baseRoute: '/settings',
   component: SettingsPage,
   permissions: ['read_cms_settings'],

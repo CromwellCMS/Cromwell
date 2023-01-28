@@ -1,7 +1,10 @@
+import { TBreadcrumbs } from '@components/breadcrumbs';
+import { PageStickyHeader } from '@components/entity/entityEdit/components/EntityHeader';
 import { EDBEntity } from '@cromwell/core';
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
-import { AdminSettingsContextProvider, useAdminSettings } from '../../hooks/useAdminSettings';
+
+import { AdminSettingsContextProvider, useAdminSettings, useAdminSettingsContext } from './hooks/useAdminSettings';
 import { SettingsIndexPage } from './pages';
 import { ACLSettingsPage } from './pages/acl';
 import { CodeSettingsPage } from './pages/code';
@@ -13,11 +16,28 @@ import { GeneralSettingsPage } from './pages/general';
 import { MigrationSettingsPage } from './pages/migration';
 import { SEOSettingsPage } from './pages/seo';
 import { StoreSettingsPage } from './pages/store';
+
 // import SettingsOld from "./SettingsOld"
 
 export const SettingsPage = () => {
+  const settings = useAdminSettingsContext();
+
   return (
-    <div className="p-2 md:p-4">
+    <div className="p-3 md:p-4">
+      <PageStickyHeader
+        hideSaveButton={!settings.saveVisible}
+        disableSaveButton={settings.saveDisabled}
+        onSave={settings.onSave}
+        sx={{
+          maxWidth: '900px',
+          padding: '10px 20px',
+        }}
+        leftContent={
+          <h1 className="flex items-center font-500 text-gray-700 h-8 text-base max-w-[50%] overflow-x-auto whitespace-nowrap md:h-9 md:text-xl lg:max-w-fit lg:h-10 lg:text-2xl">
+            <TBreadcrumbs path={settings.breadcrumbs} />
+          </h1>
+        }
+      />
       <Routes>
         <Route path={`general`} element={<GeneralSettingsPage />} />
         <Route path={`store`} element={<StoreSettingsPage />} />
@@ -37,15 +57,14 @@ export const SettingsPage = () => {
         <Route path={`custom-data/general`} element={<DefaultEntitySettingsPage entityType={EDBEntity.CMS} />} />
         <Route path={`custom-data/:entityType`} element={<CustomEntitySettingsPage />} />
         <Route path={`migration`} element={<MigrationSettingsPage />} />
-        <Route element={<SettingsIndexPage />} />
-        {/* <Route path={`general`} component={SettingsIndexPage} /> */}
+        <Route index element={<SettingsIndexPage />} />
       </Routes>
     </div>
   );
 };
 
 const SettingsPageLoader = ({ children }: { children?: any }) => {
-  const { adminSettings } = useAdminSettings();
+  const { adminSettings } = useAdminSettings({});
 
   if (!adminSettings) {
     return (

@@ -1,5 +1,4 @@
 import { EntityCustomFields } from '@components/entity/entityEdit/components/EntityCustomFields';
-import { EntityMetaFields } from '@components/entity/entityEdit/components/EntityMetaFields';
 import { TOrder, TProduct, TStoreListItem } from '@cromwell/core';
 import { getCStore, getGraphQLClient } from '@cromwell/core-frontend';
 import { Close as CloseIcon, DeleteForever as DeleteForeverIcon } from '@mui/icons-material';
@@ -304,7 +303,7 @@ export function PageContent(
                 return (
                   <Grid key={i} className={styles.cartItem} container>
                     <Grid item xs={1} className={styles.itemBlock}>
-                      <Link to={productLink} state={{ prevRoute: window.location.pathname + window.location.search }}>
+                      <Link to={productLink} state={{ prevRoute: location.pathname + location.search }}>
                         <img src={product.mainImage} className={styles.mainImage} />
                       </Link>
                     </Grid>

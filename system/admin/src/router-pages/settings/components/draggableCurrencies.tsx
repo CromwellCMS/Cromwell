@@ -1,3 +1,4 @@
+import { RegisteredTextInput } from '@components/inputs/TextInput';
 import {
   closestCenter,
   DndContext,
@@ -19,8 +20,7 @@ import React from 'react';
 import { FieldArrayWithId, useFieldArray, UseFieldArrayRemove, useFormContext } from 'react-hook-form';
 
 import { GrabIcon } from '../../../components/icons/grabIcon';
-import { TextInput } from '../../../components/inputs/TextInput/TextInput';
-import { TAdminCmsSettingsType } from '../../../hooks/useAdminSettings';
+import { TAdminCmsSettingsType } from '../hooks/useAdminSettings';
 
 type FormType = Pick<TAdminCmsSettingsType, 'defaultShippingPrice' | 'currencies'>;
 
@@ -32,7 +32,7 @@ export function CurrencyItem(props: {
   primary?: boolean;
 }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: props.id });
-  const { register, watch, getValues } = useFormContext();
+  const { watch, getValues } = useFormContext();
   const { idx, remove, primary } = props;
   const symbol = watch(`currencies.${idx}.symbol`, getValues(`currencies.${idx}.symbol`));
 
@@ -56,10 +56,10 @@ export function CurrencyItem(props: {
       <div className="flex flex-row gap-1 justify-between">
         <div className="font-bold mr-2 text-2xl text-indigo-600">{symbol}</div>
         <div className="w-full grid gap-4 grid-cols-1 justify-self-stretch lg:grid-cols-2">
-          <TextInput label="Title" {...register(`currencies.${idx}.title`)} />
-          <TextInput label="Tag (Short Code)" {...register(`currencies.${idx}.tag`)} />
-          <TextInput label="Ratio" {...register(`currencies.${idx}.ratio`)} />
-          <TextInput label="Symbol" {...register(`currencies.${idx}.symbol`)} />
+          <RegisteredTextInput<TAdminCmsSettingsType> name={`currencies.${idx}.title`} label="Title" />
+          <RegisteredTextInput<TAdminCmsSettingsType> name={`currencies.${idx}.tag`} label="Tag (Short Code)" />
+          <RegisteredTextInput<TAdminCmsSettingsType> name={`currencies.${idx}.ratio`} label="Ratio" />
+          <RegisteredTextInput<TAdminCmsSettingsType> name={`currencies.${idx}.symbol`} label="Symbol" />
           <div />
           <div
             onClick={() => remove(idx)}

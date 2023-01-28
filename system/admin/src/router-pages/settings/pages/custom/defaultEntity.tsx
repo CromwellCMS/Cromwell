@@ -4,7 +4,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
 import { ActionButton } from '../../../../components/actionButton';
 import { TBreadcrumbs } from '../../../../components/breadcrumbs';
-import { TAdminCmsSettingsType, useAdminSettings } from '../../../../hooks/useAdminSettings';
+import { TAdminCmsSettingsType, useAdminSettings } from '../../hooks/useAdminSettings';
 import { DraggableEntityFields } from '../../components/draggableEntityFields';
 
 const titlePath = [

@@ -13,9 +13,18 @@ div.toast {
   min-height: 30px;
   border-radius: 6px;
 
+  &:global(.Toastify__toast) {
+    backdrop-filter: blur(8px);
+    border-radius: 10px;
+  }
+
   :global(.Toastify__toast-body) {
     margin: 0;
     padding: 0;
+  }
+
+  :global(.Toastify__toast-icon) {
+    display: none;
   }
 
   :global(.Toastify__close-button) {
@@ -33,6 +42,7 @@ div.alert {
   display: flex;
   align-items: center;
   padding: 10px 15px;
+  backdrop-filter: blur(8px);
 
   :global(.MuiAlert-icon) {
     padding: 0;
@@ -46,7 +56,4 @@ div.alert {
       word-break: break-word;
     }
   }
-}
-
-:global(.modeDark) {
 }

@@ -3,21 +3,28 @@ import { getRestApiClient } from '@cromwell/core-frontend';
 import React, { useState } from 'react';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
 
-import { TBreadcrumbs } from '../../../components/breadcrumbs';
 import { LoadingStatus } from '../../../components/loadBox/LoadingStatus';
 import { toast } from '../../../components/toast/toast';
-import { TAdminCmsSettingsType, useAdminSettings } from '../../../hooks/useAdminSettings';
+import {
+  SettingsPageInfo,
+  TAdminCmsSettingsType,
+  useAdminSettings,
+  useAdminSettingsContext,
+} from '../hooks/useAdminSettings';
 
 type FormType = Pick<TAdminCmsSettingsType, 'robotsContent'>;
 
-const titlePath = [
-  { title: 'Settings', link: '/settings/' },
-  { title: 'SEO', link: '/settings/seo' },
-];
+const info: SettingsPageInfo = {
+  breadcrumbs: [
+    { title: 'Settings', link: '/settings/' },
+    { title: 'SEO', link: '/settings/seo' },
+  ],
+  saveVisible: true,
+};
 
 export const SEOSettingsPage = () => {
   const [rebuildingSitemap, setRebuilding] = useState(false);
-  const { adminSettings, saveCodeSettings } = useAdminSettings();
+  const { adminSettings, saveCodeSettings } = useAdminSettingsContext();
   const methods = useForm<FormType>({
     defaultValues: {
       ...adminSettings,
@@ -44,22 +51,17 @@ export const SEOSettingsPage = () => {
 
   const isDirty = methods.formState.isDirty;
 
+  useAdminSettings({
+    ...info,
+    saveDisabled: !isDirty,
+    onSave: () => {
+      methods.handleSubmit(onSubmit)();
+    },
+  });
+
   return (
     <FormProvider {...methods}>
       <form className="relative" onSubmit={methods.handleSubmit(onSubmit)}>
-        <div className="flex flex-row bg-gray-100 bg-opacity-60 w-full top-0 z-10 gap-2 backdrop-filter backdrop-blur-lg justify-between sticky">
-          <div className="w-full max-w-4xl px-1 lg:px-0">
-            <TBreadcrumbs path={titlePath} />
-            <button
-              type="submit"
-              disabled={!methods.formState.isDirty}
-              className="rounded-lg font-bold bg-indigo-600 my-2 text-sm text-white py-1 px-4 uppercase self-center float-right hover:bg-indigo-500 disabled:bg-gray-700"
-            >
-              save
-            </button>
-          </div>
-        </div>
-
         <div className="flex flex-col z-4 gap-6 relative lg:flex-row">
           <div className="max-h-min my-4 lg:max-w-[13rem] top-16 self-start lg:order-2 lg:sticky">
             <h2 className="font-bold text-gray-700 col-span-1">SEO Settings</h2>

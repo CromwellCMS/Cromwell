@@ -7,7 +7,7 @@ import { ActionButton } from '../../../components/actionButton';
 import { SwitchInput } from '../../../components/inputs/SwitchInput';
 import { TextInput } from '../../../components/inputs/TextInput/TextInput';
 import { slugify } from '../../../helpers/slugify';
-import { useAdminSettings } from '../../../hooks/useAdminSettings';
+import { useAdminSettings } from '../hooks/useAdminSettings';
 
 type FormType = TRoleInput;
 
