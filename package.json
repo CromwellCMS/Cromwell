@@ -54,9 +54,6 @@
         "toolkits/commerce",
         "website"
     ],
-    "engines": {
-        "node": "16.x"
-    },
     "cromwell": {
         "themes": [
             "@cromwell/theme-store",

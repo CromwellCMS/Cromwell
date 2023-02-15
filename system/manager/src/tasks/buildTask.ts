@@ -254,7 +254,12 @@ const requireDevDeps = () => {
 
 // Copied from rollup's repo
 const onRollupEvent = (done?: (success: boolean) => void) => (event: RollupWatcherEvent) => {
-    requireDevDeps();
+    try {
+        requireDevDeps();
+    } catch (error) {
+        console.error(error)
+    }
+    if (!handleError) return;
 
     let input = (event as any)?.input;
     switch (event.code) {
