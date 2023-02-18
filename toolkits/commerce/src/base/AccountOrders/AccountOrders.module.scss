@@ -1,39 +1,38 @@
 @import '../common.module.scss';
 
 .AccountOrders {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 .order {
-    @include paper;
-    margin-bottom: 40px;
-    padding: 15px;
+  @include paper;
+  margin-bottom: 40px;
+  padding: 15px;
 }
 
 .orderTitle {
-    font-size: 20px;
-    margin: 0;
+  font-size: 20px;
+  margin: 0;
 }
 
 .orderCart {
-    padding: 15px 0;
+  padding: 15px 0;
 }
 
-
 .detailsRow {
-    display: flex;
-    justify-content: space-between;
-    border-bottom: 1px dashed #bbb;
-    margin: 15px 0;
-    max-width: 500px;
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px dashed #bbb;
+  margin: 15px 0;
+  max-width: 500px;
 }
 
 .totalText {
-    font-size: 18px;
-    font-weight: 500;
-    margin: 0;
+  font-size: 18px;
+  font-weight: 500;
+  margin: 0;
 }
 
 .detailsText {
-    margin: 0;
+  margin: 0;
 }

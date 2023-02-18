@@ -1,19 +1,15 @@
+import { ImageInput } from '@components/inputs/Image/ImageInput';
+import { RegisteredSelectInput } from '@components/inputs/SelectInput';
 import { RegisteredTextInput } from '@components/inputs/TextInput';
-import { EDBEntity } from '@cromwell/core';
+import { languages } from '@constants/languages';
+import { timezones } from '@constants/timezones';
+import { EDBEntity, TCmsPublicSettings } from '@cromwell/core';
+import { RenderCustomFields } from '@helpers/customFields';
 import React from 'react';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
 
-import { ImageInput } from '../../../components/inputs/Image/ImageInput';
-import { languages } from '../../../constants/languages';
-import { timezones } from '../../../constants/timezones';
-import { CustomFieldSettings } from '../components/customFields';
-import { RegisteredSelectField } from '../components/registeredSelectField';
-import {
-  SettingsPageInfo,
-  TAdminCmsSettingsType,
-  useAdminSettings,
-  useAdminSettingsContext,
-} from '../hooks/useAdminSettings';
+import { SettingsPageInfo, useAdminSettings, useAdminSettingsContext } from '../hooks/useAdminSettings';
+import { TAdminCmsSettingsType } from '../types';
 
 type Lang = ArrayElement<typeof languages>;
 type TZ = ArrayElement<typeof timezones>;
@@ -52,14 +48,13 @@ const info: SettingsPageInfo = {
 };
 
 export const GeneralSettingsPage = () => {
-  const { adminSettings, saveAdminCmsSettings } = useAdminSettingsContext();
-  const form = useForm<TAdminCmsSettingsType>({
+  const { adminSettings, saveAdminCmsSettings, getAdminCmsSettings } = useAdminSettingsContext();
+  const form = useForm<TCmsPublicSettings>({
     defaultValues: adminSettings,
   });
 
   const onSubmit = async (data: any) => {
     await saveAdminCmsSettings(data);
-
     form.reset(data);
   };
 
@@ -94,21 +89,19 @@ export const GeneralSettingsPage = () => {
                 label="Website URL"
                 placeholder="https://your-website.com"
               />
-              <RegisteredSelectField
+              <RegisteredSelectInput
                 options={languages}
                 getDisplayValue={getLangLabel}
                 getValue={getLangValue}
-                inferValue={(v: string) => languages.find((l) => l.code === v)}
                 name={`language`}
                 label={'Language'}
                 disabled
               />
               <div className="col-span-2">
-                <RegisteredSelectField
+                <RegisteredSelectInput
                   options={timezones}
                   getDisplayValue={getTZLabel}
                   getValue={getTZValue}
-                  inferValue={(v: string) => timezones.find((l) => l.value === parseInt(v))}
                   name={`timezone`}
                   label={'Timezone'}
                 />
@@ -147,8 +140,27 @@ export const GeneralSettingsPage = () => {
                   )}
                 />
               </div>
-              <div />
-              <CustomFieldSettings entityType={EDBEntity.CMS} />
+              <div className="col-span-2"></div>
+              <Controller
+                name="customMeta"
+                control={form.control}
+                render={({ field: formField }) => (
+                  <RenderCustomFields
+                    entityType={EDBEntity.CMS}
+                    entityData={{
+                      id: 1,
+                      customMeta: formField.value,
+                    }}
+                    refetchMeta={() => getAdminCmsSettings().then((data) => data?.customMeta)}
+                    onChange={(customField, value) =>
+                      formField.onChange({
+                        ...formField.value,
+                        [customField.key]: value,
+                      })
+                    }
+                  />
+                )}
+              />
             </div>
           </div>
         </div>

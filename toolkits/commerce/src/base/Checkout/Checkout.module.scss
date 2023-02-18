@@ -1,85 +1,85 @@
 .Checkout {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 .blockTitle {
-    font-size: 20px;
-    font-weight: 400;
-    margin: 20px 0px;
-    text-transform: uppercase;
-    color: #888;
+  font-size: 20px;
+  font-weight: 400;
+  margin: 20px 0px;
+  text-transform: uppercase;
+  color: #888;
 }
 
 .delimiter {
-    width: 100%;
-    border-bottom: 2px solid #eee;
-    margin: 40px 0px;
+  width: 100%;
+  border-bottom: 2px solid #eee;
+  margin: 40px 0px;
 }
 
 .detailsRow {
-    display: flex;
-    justify-content: space-between;
-    border-bottom: 1px dashed #bbb;
-    margin: 15px 0;
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px dashed #bbb;
+  margin: 15px 0;
 }
 
 .detailsRowName {
-    margin: 0;
-    line-height: 1.5;
-    font-size: 1em;
+  margin: 0;
+  line-height: 1.5;
+  font-size: 1em;
 }
 
 .detailsRowValue {
-    margin: 0;
-    line-height: 1.5;
-    font-size: 1em;
-    font-weight: 500;
+  margin: 0;
+  line-height: 1.5;
+  font-size: 1em;
+  font-weight: 500;
 }
 
 .withoutDiscountText {
-    margin: 0;
-    line-height: 1.5;
-    color: #999;
+  margin: 0;
+  line-height: 1.5;
+  color: #999;
 }
 
 .withoutDiscountValue {
-    margin: 0;
-    line-height: 1.5;
-    color: #999;
-    text-decoration: line-through;
+  margin: 0;
+  line-height: 1.5;
+  color: #999;
+  text-decoration: line-through;
 }
 
 .totalText {
-    margin: 0;
-    line-height: 1.5;
-    font-size: 24px;
-    font-weight: 500;
+  margin: 0;
+  line-height: 1.5;
+  font-size: 24px;
+  font-weight: 500;
 }
 
 .totalValue {
-    margin: 0;
-    line-height: 1.5;
-    font-size: 24px;
-    font-weight: 500;
+  margin: 0;
+  line-height: 1.5;
+  font-size: 24px;
+  font-weight: 500;
 }
 
 .loadBoxCover {
-    position: absolute;
-    top: -10px;
-    left: -10px;
-    right: -10px;
-    bottom: -10px;
-    z-index: 10;
-    background-color: rgba(0, 0, 0, 0.3);
-    border-radius: 10px;
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  z-index: 10;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
 }
 
 .actionsBlock {
-    margin-top: 20px;
+  margin-top: 20px;
 }
 
 .placedOrderText {
-    margin: 0;
-    line-height: 1.5;
-    font-size: 18px;
+  margin: 0;
+  line-height: 1.5;
+  font-size: 18px;
 }

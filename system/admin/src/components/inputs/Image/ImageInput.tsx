@@ -32,7 +32,7 @@ export type ImageInputProps = {
   centerImage?: boolean;
 };
 
-export const ImageInput = ({ centerImage = true, ...props }: ImageInputProps) => {
+export const ImageInput = (props: ImageInputProps) => {
   const [internalValue, setInternalValue] = useState<string | undefined>();
   const value = props.value !== undefined && props.value !== '' ? props.value : internalValue;
   const [zoom, setZoom] = useState(!(props?.backgroundSize === 'contain'));
@@ -58,25 +58,23 @@ export const ImageInput = ({ centerImage = true, ...props }: ImageInputProps) =>
     }
   }, []);
 
-  const getDimension = (dimension: string | number) =>
-    dimension && (typeof dimension === 'number' ? dimension + 'px' : dimension);
+  // const getDimension = (dimension: string | number) =>
+  //   dimension && (typeof dimension === 'number' ? dimension + 'px' : dimension);
   const objectFit = zoom ? 'cover' : 'contain';
 
-  const element = (
-    <div className={`relative w-full h-64 ${props.className ?? ''}`} style={{ ...(props.style ?? {}) }}>
+  return (
+    <div className={`relative flex flex-col w-full h-64 ${props.className ?? ''}`} style={{ ...(props.style ?? {}) }}>
       {props.label && (
         <label htmlFor={props.id} className="font-bold block active:text-indigo-500">
           {props.label}
         </label>
       )}
-      <div
-        className={`rounded-md select-none overflow-hidden relative bg-gray-200 w-full h-[calc(100%-24px)] flex flex-col`}
-      >
+      <div className={`rounded-md select-none relative bg-gray-200 w-full h-[100%] min-h-[20px] flex flex-col`}>
         {value && (
           <img
             className={`${
               zoom ? 'h-full top-0 w-full' : 'h-[calc(100%-44px)] top-2 w-[calc(100%-8px)]'
-            } left-0 absolute rounded-sm`}
+            } left-0 absolute rounded-md overflow-hidden`}
             src={value}
             style={{
               objectFit: objectFit,
@@ -85,7 +83,7 @@ export const ImageInput = ({ centerImage = true, ...props }: ImageInputProps) =>
         )}
         <div
           onClick={pickImage}
-          className={`bg-black bg-opacity-0 h-[calc(100%-16px)] w-full group block group-hover:bg-opacity-10`}
+          className={`bg-black bg-opacity-0 h-[calc(100%-16px)] rounded-md overflow-hidden min-h-[10px] w-full group block group-hover:bg-opacity-10`}
         >
           <div className="bg-black cursor-pointer flex h-full mx-auto bg-opacity-0 w-full self-center relative group-hover:bg-opacity-10">
             <span className="bg-black rounded-lg mx-auto bg-opacity-30 text-center text-xs text-white opacity-0 py-1 transform px-2 transition-all left-1/2 -translate-x-1/2 absolute self-center backdrop-filter backdrop-blur-md group-hover:opacity-100 ">
@@ -137,7 +135,7 @@ export const ImageInput = ({ centerImage = true, ...props }: ImageInputProps) =>
             onChange={(e) => {
               setImage(e.target.value);
             }}
-            className={`bg-black border-none ${
+            className={`border-none ${
               value ? 'bg-opacity-30' : 'bg-opacity-0'
             } shadow-none text-stroke-sm stroke-light-50 backdrop-filter backdrop-blur-md !rounded-none !text-xs !text-white`}
           />
@@ -145,5 +143,4 @@ export const ImageInput = ({ centerImage = true, ...props }: ImageInputProps) =>
       </div>
     </div>
   );
-  return element;
 };

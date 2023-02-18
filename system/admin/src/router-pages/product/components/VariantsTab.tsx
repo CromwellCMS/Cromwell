@@ -127,6 +127,7 @@ export function VariantsTab({
                 alignItems: 'center',
                 px: 1,
                 borderBottom: expandedVariants[variant.id] && '2px dashed #ddd',
+                minHeight: '50px',
               }}
             >
               <Box sx={{ display: 'flex', alignItems: 'center', px: 1 }} flexWrap="wrap" justifyContent="space-between">
@@ -185,7 +186,11 @@ export function VariantsTab({
       </Box>
       <Box sx={{ width: '100%', my: 4, display: 'flex' }}>
         <Box sx={{ mx: 'auto', display: 'flex' }}>
-          <TextButton style={{ marginRight: '15px' }} onClick={handleAddProductVariant}>
+          <TextButton
+            style={{ marginRight: '15px' }}
+            onClick={handleAddProductVariant}
+            disabled={!usedVariantAttributes?.length}
+          >
             <PlusIcon className="w-5 h-5 mr-1" />
             Add product variant
           </TextButton>

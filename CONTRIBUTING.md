@@ -19,7 +19,6 @@ Wait for team members to leave a feedback on your issue.
 
 Read [Core development guide](https://github.com/CromwellCMS/Cromwell/tree/master/system)
 
-
 ## Submitting Changes
 
 Workflow:

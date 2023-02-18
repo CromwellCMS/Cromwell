@@ -5,12 +5,8 @@ import { FormProvider, useForm } from 'react-hook-form';
 
 import { GrabIcon } from '../../../components/icons/grabIcon';
 import { DraggableCurrenciesList } from '../components/draggableCurrencies';
-import {
-  SettingsPageInfo,
-  TAdminCmsSettingsType,
-  useAdminSettings,
-  useAdminSettingsContext,
-} from '../hooks/useAdminSettings';
+import { SettingsPageInfo, useAdminSettings, useAdminSettingsContext } from '../hooks/useAdminSettings';
+import { TAdminCmsSettingsType } from '../types';
 
 type FormType = Pick<TAdminCmsSettingsType, 'defaultShippingPrice' | 'currencies'>;
 

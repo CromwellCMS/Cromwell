@@ -10,17 +10,17 @@ export type BreadcrumbItem = {
 
 export type BreadcrumbProps = {
   path?: BreadcrumbItem[];
+  maxVisible?: number;
 };
 
 export const TBreadcrumbs = (props: BreadcrumbProps) => {
-  const { path = [] } = props;
-
-  const [last, penultimate, ...rest] = [...path].reverse();
-  const lastTwo = [penultimate, last].filter((k) => k);
+  const { path = [], maxVisible = 2 } = props;
+  const visiblePath = [...path].reverse().slice(0, maxVisible).reverse();
+  const restPath = [...path].reverse().slice(maxVisible, path.length).reverse();
 
   return (
     <>
-      {rest && rest.length > 0 && (
+      {restPath && restPath.length > 0 && (
         <>
           <Menu as="div" className="text-center relative inline-block">
             <div>
@@ -42,7 +42,7 @@ export const TBreadcrumbs = (props: BreadcrumbProps) => {
             >
               <Menu.Items className="divide-y bg-white rounded-md divide-gray-100 shadow-lg ring-black mt-2 origin-top-left left-0 ring-1 ring-opacity-5 w-56 absolute focus:outline-none">
                 <div className="py-1 px-1">
-                  {rest.map((itm, idx) => (
+                  {restPath.map((itm, idx) => (
                     <Link key={idx} to={itm.link}>
                       <Menu.Item>
                         {({ active }) => (
@@ -64,8 +64,8 @@ export const TBreadcrumbs = (props: BreadcrumbProps) => {
           <ChevronRightIcon className="h-7 mr-2 mb-[3px] text-gray-300 w-7 inline-block" />
         </>
       )}
-      {lastTwo.map((itm, idx) => {
-        if (idx === lastTwo.length - 1) {
+      {visiblePath.map((itm, idx) => {
+        if (idx === visiblePath.length - 1) {
           return (
             <span key={idx} className="text-black inline-block">
               {itm.title}
@@ -74,7 +74,7 @@ export const TBreadcrumbs = (props: BreadcrumbProps) => {
         }
 
         return (
-          <React.Fragment key={idx}>
+          <React.Fragment key={idx + itm.title}>
             <Link to={itm.link} className="text-gray-500 inline-block hover:text-indigo-600">
               {itm.title}
             </Link>

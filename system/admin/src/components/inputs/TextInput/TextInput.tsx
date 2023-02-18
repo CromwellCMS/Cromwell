@@ -1,7 +1,6 @@
+import { NumberFormatCustom } from '@helpers/NumberFormatCustom';
 import clsx from 'clsx';
 import React, { ForwardedRef, useState } from 'react';
-
-import { NumberFormatCustom } from '../../../helpers/NumberFormatCustom';
 
 export interface InputBaseComponentProps extends React.HTMLAttributes<HTMLInputElement> {
   // Accommodate arbitrary additional props coming from the `inputProps` prop
@@ -14,7 +13,7 @@ export type TextInputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, '
   prefix?: any;
   overlay?: any;
   description?: any;
-  error?: any;
+  error?: React.ReactNode;
   fixedHeight?: boolean;
   baseSize?: 'small' | 'medium' | 'large';
   inputComponent?: React.ElementType<InputBaseComponentProps>;
@@ -99,7 +98,7 @@ export const TextInput = React.forwardRef(
           <label className="w-full group active:text-indigo-500">
             <p className="font-bold pb-1 pl-[2px] text-gray-700">{label}</p>
             {inputField}
-            <p className={`text-xs ${error ? 'text-red-500' : 'text-gray-400 group-hover:text-gray-600'}`}>
+            <p className={`text-xs mt-[3px] ${error ? 'text-red-500' : 'text-gray-400 group-hover:text-gray-600'}`}>
               {!error && description}
               {error ? error : ''}
             </p>

@@ -1,70 +1,70 @@
-@import "../variables.scss";
-@import "../common.module.scss";
+@import '../variables.scss';
+@import '../common.module.scss';
 
 .BlogPost {
-    @include paper;
-    box-shadow: none;
-    padding: 30px 0;
-    margin: 0 auto;
+  @include paper;
+  box-shadow: none;
+  padding: 30px 0;
+  margin: 0 auto;
 
-    :global(#text-editor) {
-        * {
-            font-size: 16px;
-            font-family: "Roboto", "sans-serif";
-        }
-
-        h1 {
-            font-size: 28px;
-            font-weight: 600;
-        }
-        h2 {
-            font-size: 24px;
-            font-weight: 600;
-        }
-        h3 {
-            font-size: 20px;
-            font-weight: 500;
-        }
+  :global(#text-editor) {
+    * {
+      font-size: 16px;
+      font-family: 'Roboto', 'sans-serif';
     }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 600;
+    }
+    h2 {
+      font-size: 24px;
+      font-weight: 600;
+    }
+    h3 {
+      font-size: 20px;
+      font-weight: 500;
+    }
+  }
 }
 
 .postContent {
-    max-width: 700px;
-    width: 100%;
-    margin: 0 auto;
-    padding: 0 15px;
+  max-width: 700px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 15px;
 }
 
 .postTitle {
-    font-weight: 500;
-    font-size: 36px;
-    margin: 10px 0;
+  font-weight: 500;
+  font-size: 36px;
+  margin: 10px 0;
 }
 
 .mainImage {
-    width: 100%;
-    object-fit: cover;
-    height: 550px;
-    margin-bottom: 20px;
-    border-radius: 10px;
+  width: 100%;
+  object-fit: cover;
+  height: 550px;
+  margin-bottom: 20px;
+  border-radius: 10px;
 }
 
 .notFound {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 400px;
-    font-size: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 400px;
+  font-size: 30px;
 }
 
 .postInfo {
-    margin: 15px 0;
-    margin-bottom: 40px;
+  margin: 15px 0;
+  margin-bottom: 40px;
 }
 
 @media screen and (max-width: $mobileBreakpoint) {
-    .mainImage {
-        height: 300px;
-    }
+  .mainImage {
+    height: 300px;
+  }
 }

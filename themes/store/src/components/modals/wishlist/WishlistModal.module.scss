@@ -1,59 +1,59 @@
-@import "../../../styles/common.module.scss";
+@import '../../../styles/common.module.scss';
 
 .wishlistModal {
-    height: 70vh;
-    min-height: 500px;
-    max-height: 90vh;
-    max-width: 100vw;
-    width: 900px;
-    position: relative;
+  height: 70vh;
+  min-height: 500px;
+  max-height: 90vh;
+  max-width: 100vw;
+  width: 900px;
+  position: relative;
 
-    display: flex;
-    flex-direction: column;
-    background-color: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    border-radius: 10px;
-    outline: none;
+  display: flex;
+  flex-direction: column;
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-radius: 10px;
+  outline: none;
 
-    .list {
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        padding: 15px;
-    }
+  .list {
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    padding: 15px;
+  }
 
-    .closeBtn {
-        position: absolute;
-        top: 5px;
-        right: 10px;
-        z-index: 555;
-        @include paper;
-        border-radius: 100%;
-    }
+  .closeBtn {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    z-index: 555;
+    @include paper;
+    border-radius: 100%;
+  }
 
-    .modalTitle {
-        font-size: 24px;
-        margin: 10px 15px 20px 15px;
-    }
+  .modalTitle {
+    font-size: 24px;
+    margin: 10px 15px 20px 15px;
+  }
 
-    .checkoutBtn {
-        margin: 15px auto 0;
-    }
+  .checkoutBtn {
+    margin: 15px auto 0;
+  }
 
-    .productCard {
-        margin-bottom: 15px;
-    }
+  .productCard {
+    margin-bottom: 15px;
+  }
 }
 
 @media screen and (max-width: $mobileBreakpoint) {
-    .wishlistModal {
-        height: 90vh;
-        width: 380px;
+  .wishlistModal {
+    height: 90vh;
+    width: 380px;
 
-        .productCard {
-            margin: auto;
-            margin-bottom: 15px;
-        }
+    .productCard {
+      margin: auto;
+      margin-bottom: 15px;
     }
+  }
 }

@@ -1,31 +1,31 @@
-@import "../../../styles/common.module.scss";
+@import '../../../styles/common.module.scss';
 
 .ProductQuickView {
+  @include paper;
+  background-color: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  width: 800px;
+  min-height: 300px;
+  max-height: 90vh;
+  max-width: 95vw;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+
+  .closeBtn {
     @include paper;
-    background-color: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    width: 800px;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    z-index: 10;
+    border-radius: 100%;
+  }
+
+  .list {
+    overflow: auto;
+    height: 100%;
     min-height: 300px;
-    max-height: 90vh;
-    max-width: 95vw;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-
-    .closeBtn {
-        @include paper;
-        position: absolute;
-        top: 5px;
-        right: 5px;
-        z-index: 10;
-        border-radius: 100%;
-    }
-
-    .list {
-        overflow: auto;
-        height: 100%;
-        min-height: 300px;
-        @include styledScrollBar;
-    }
+    @include styledScrollBar;
+  }
 }

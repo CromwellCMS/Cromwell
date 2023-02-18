@@ -32,45 +32,45 @@ a {
   text-decoration: initial;
 }
 
-:global(.MuiButtonBase-root.MuiIconButton-root) {
+.MuiButtonBase-root.MuiIconButton-root {
   color: #333;
 }
 
-:global(div.react-grid-item.react-grid-placeholder) {
-  background-color: #bbb;
+div.react-grid-item.react-grid-placeholder {
+  background-color: rgb(162, 162, 162);
   border-radius: 5px;
 }
 
-:global(.modeDark) {
-  :global(div.react-grid-item.react-grid-placeholder) {
+.modeDark {
+  div.react-grid-item.react-grid-placeholder {
     background-color: #777;
   }
 
-  :global(div.Mui-disabled) {
+  div.Mui-disabled {
     -webkit-text-fill-color: #aaa;
   }
 
-  :global(input.Mui-disabled) {
+  input.Mui-disabled {
     -webkit-text-fill-color: #aaa;
   }
 
-  :global(.MuiChip-root) {
+  .MuiChip-root {
     background-color: #555;
   }
 
-  :global(.MuiInput-underline:before) {
+  .MuiInput-underline:before {
     border-bottom: 1px solid #aaa;
   }
 
-  :global(.MuiInput-underline:hover:not(.Mui-disabled):before) {
+  .MuiInput-underline:hover:not(.Mui-disabled):before {
     border-bottom: 2px solid #fff;
   }
 
-  :global(.MuiOutlinedInput-notchedOutline) {
+  .MuiOutlinedInput-notchedOutline {
     border-color: #aaa;
   }
 
-  :global(.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline) {
+  .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
     border-color: #fff;
   }
 
@@ -78,7 +78,7 @@ a {
     background-color: #777;
   }
 
-  :global(.MuiPaper-root.MuiMenu-paper) {
+  .MuiPaper-root.MuiMenu-paper {
     background-color: #333;
 
     * {
@@ -86,7 +86,7 @@ a {
     }
   }
 
-  :global(.MuiList-root.MuiMenu-list) {
+  .MuiList-root.MuiMenu-list {
     @include styledScrollBar;
     background-color: #222;
     border-radius: 6px;
@@ -96,11 +96,11 @@ a {
     }
   }
 
-  :global(.MuiPaginationItem-page.Mui-selected) {
+  .MuiPaginationItem-page.Mui-selected {
     background-color: #222;
   }
 
-  :global(.MuiChip-root.MuiAutocomplete-tag) {
+  .MuiChip-root.MuiAutocomplete-tag {
     background-color: #444;
 
     * {
@@ -109,18 +109,18 @@ a {
   }
 }
 
-:global(.crw-text-editor) {
-  :global(.tc-wrap) {
+.crw-text-editor {
+  .tc-wrap {
     height: unset;
   }
 
-  :global(.image-tool--loading .image-tool__image) {
+  .image-tool--loading .image-tool__image {
     background-color: transparent;
     border: none;
   }
 }
 
-:global(.modeDark .crw-text-editor) {
+.modeDark .crw-text-editor {
   *::selection {
     background-color: #777;
   }
@@ -129,41 +129,41 @@ a {
     color: #eee;
   }
 
-  :global(.ce-inline-toolbar) {
+  .ce-inline-toolbar {
     background-color: #222;
     border: 1px solid #222;
   }
 
-  :global(.ce-inline-tool:hover) {
+  .ce-inline-tool:hover {
     background-color: #444;
   }
 
-  :global(.ce-inline-toolbar__dropdown:hover) {
+  .ce-inline-toolbar__dropdown:hover {
     background-color: #444;
   }
 
-  :global(.ce-conversion-tool:hover) {
+  .ce-conversion-tool:hover {
     background-color: #444;
   }
 
-  :global(.ce-settings__button:hover) {
+  .ce-settings__button:hover {
     background-color: #444;
   }
 
-  :global(.cdx-settings-button:hover) {
+  .cdx-settings-button:hover {
     background-color: #555;
   }
 
-  :global(.cdx-settings-button--active) {
+  .cdx-settings-button--active {
     background-color: #444;
   }
 
-  :global(.ce-conversion-toolbar) {
+  .ce-conversion-toolbar {
     background-color: #222;
     border: 1px solid #222;
   }
 
-  :global(.ce-toolbar__settings-btn) {
+  .ce-toolbar__settings-btn {
     background-color: #222;
     border: 1px solid #222;
     width: 22px;
@@ -172,41 +172,41 @@ a {
     filter: invert(100%);
   }
 
-  :global(.codex-editor--narrow .ce-toolbox) {
+  .codex-editor--narrow .ce-toolbox {
     background-color: #222;
   }
 
-  :global(.ce-settings) {
-    background-color: #222;
-    border: 1px solid #222;
-  }
-
-  :global(.ce-inline-tool-input) {
+  .ce-settings {
     background-color: #222;
     border: 1px solid #222;
   }
 
-  :global(.tc-row--selected) {
+  .ce-inline-tool-input {
+    background-color: #222;
+    border: 1px solid #222;
+  }
+
+  .tc-row--selected {
     background-color: #555;
   }
 
-  :global(.tc-popover) {
+  .tc-popover {
     background-color: #222;
     border: 1px solid #222;
   }
 
-  :global(.ce-block--selected .ce-block__content),
-  :global(.tc-cell--selected) {
+  .ce-block--selected .ce-block__content,
+  .tc-cell--selected {
     background-color: #666;
   }
 
-  :global(.tc-add-column:hover),
-  :global(.tc-add-row:hover),
-  :global(.tc-add-row:hover:before) {
+  .tc-add-column:hover,
+  .tc-add-row:hover,
+  .tc-add-row:hover:before {
     background-color: #666;
   }
 
-  :global(.tc-popover__item-icon) {
+  .tc-popover__item-icon {
     color: #222;
 
     * {
@@ -214,11 +214,11 @@ a {
     }
   }
 
-  :global(.tc-row--selected:after) {
+  .tc-row--selected:after {
     background-color: #777;
   }
 
-  :global(.tc-toolbox__toggler) svg {
+  .tc-toolbox__toggler svg {
     background-color: #fff;
     border-radius: 5px;
     color: #333;
@@ -228,54 +228,59 @@ a {
     }
   }
 
-  :global(.ce-code__textarea) {
+  .ce-code__textarea {
     background-color: #222;
   }
 
-  :global(.ce-conversion-tool) svg {
+  .ce-conversion-tool svg {
     fill: #333;
   }
 
-  :global(.ce-toolbar) {
+  .ce-toolbar {
     background-color: #222;
   }
 
-  :global(.cdx-button) {
+  .cdx-button {
     background-color: #222;
   }
 }
 
-body :global(.ct) {
+body .ct {
   z-index: 99;
 }
 
 // body,
-// :global(#root) {
+// #root{
 //     overflow: hidden;
 // }
 
-:global(div.MuiToolbar-regular) {
+div.MuiToolbar-regular {
   min-height: 50px;
 }
 
-:global(.MuiPickersDay-daySelected) p {
+.MuiPickersDay-daySelected p {
   color: #fff;
 }
 
-:global(.fontSize) {
+.fontSize {
   position: relative;
 }
 
-:global(.chart) {
+.chart {
   text {
     font-family: 'Untitled Sans', sans-serif;
   }
 }
 
-:global(.visx-axis-tick) {
+.visx-axis-tick {
   text {
     font-size: 12px;
     font-weight: 400;
     fill: #666666;
   }
+}
+
+#headlessui-portal-root {
+  position: relative;
+  z-index: 1102;
 }

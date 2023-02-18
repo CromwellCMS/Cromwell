@@ -1,93 +1,93 @@
-@import "../variables.scss";
+@import '../variables.scss';
 
 .content {
-    display: flex;
+  display: flex;
 
-    :global(.productFilter_card) {
-        background-color: #fff;
-    }
+  :global(.productFilter_card) {
+    background-color: #fff;
+  }
 }
 
 .sidebar {
-    width: 25%;
+  width: 25%;
 }
 
 .main {
-    width: 75%;
-    padding-bottom: 30px;
-    padding-left: 20px;
+  width: 75%;
+  padding-bottom: 30px;
+  padding-left: 20px;
 }
 
 .productList {
-    display: flex;
-    flex-wrap: wrap;
-    padding: 20px;
-    padding-right: 0;
+  display: flex;
+  flex-wrap: wrap;
+  padding: 20px;
+  padding-right: 0;
 }
 
 .productWrapper {
-    width: 25%;
-    margin: 0;
-    margin-bottom: 15px;
-    padding: 5px;
+  width: 25%;
+  margin: 0;
+  margin-bottom: 15px;
+  padding: 5px;
 }
 
 .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 20px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 20px 0;
 }
 
 .title {
-    font-size: 26px;
-    margin-left: 15px;
+  font-size: 26px;
+  margin-left: 15px;
 }
 
 .sort {
-    min-width: 100px;
+  min-width: 100px;
 }
 
 .description {
-    margin-top: 30px;
-    background-color: #fff;
-    border-radius: 6px;
-    padding: 15px;
+  margin-top: 30px;
+  background-color: #fff;
+  border-radius: 6px;
+  padding: 15px;
 }
 
 @media (max-width: 985px) {
-    .productWrapper {
-        width: 33%;
-    }
+  .productWrapper {
+    width: 33%;
+  }
 }
 
 @media (max-width: 725px) {
-    .productWrapper {
-        width: 50%;
-    }
+  .productWrapper {
+    width: 50%;
+  }
 }
 
 @media (max-width: 498px) {
-    .product {
-        min-width: 70px;
-    }
+  .product {
+    min-width: 70px;
+  }
 }
 
 @media screen and (max-width: $mobileBreakpoint) {
-    .sidebar {
-        height: 0;
-        width: 0;
-        overflow: hidden;
-    }
+  .sidebar {
+    height: 0;
+    width: 0;
+    overflow: hidden;
+  }
 
-    .main {
-        width: 100%;
-        padding-left: 0;
-    }
+  .main {
+    width: 100%;
+    padding-left: 0;
+  }
 
-    .productList {
-        padding: 20px;
-        padding-right: 5px;
-        padding-left: 5px;
-    }
+  .productList {
+    padding: 20px;
+    padding-right: 5px;
+    padding-left: 5px;
+  }
 }

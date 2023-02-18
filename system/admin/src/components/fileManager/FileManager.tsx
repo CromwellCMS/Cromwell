@@ -431,6 +431,7 @@ class FileManager
         blurSelector="#root"
         onClose={this.handleClose}
         disableEnforceFocus
+        modalClassName={styles.modalWrapper}
       >
         <div className={styles.header}>
           <div className={styles.headerLeft}>

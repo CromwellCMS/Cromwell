@@ -5,7 +5,7 @@ import { SearchInput } from '@components/inputs/Search/SearchInput';
 import { TAttribute, TPagedParams, TProduct, TProductCategory } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
 import { useForceUpdate } from '@helpers/forceUpdate';
-import { Box } from '@mui/material';
+import { Box, Grid } from '@mui/material';
 import queryString from 'query-string';
 import React, { useContext, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
@@ -99,35 +99,39 @@ export const PageContent = ({ entityData, canValidate }: TFieldsComponentProps<T
   return (
     <Box className={styles.PageContent}>
       {activeTabNum === 0 && (
-        <Box sx={{ backgroundColor: '#fff', padding: '20px', borderRadius: '10px' }}>
+        <Box sx={{ padding: '20px', borderRadius: '10px' }} className={styles.paper}>
           <MainInfoCard product={productRef.current} setProdData={setProdData} canValidate={canValidate} />
-          <SearchInput<TProductCategory>
-            multiple
-            loader={handleSearchCategory}
-            onSelect={handleChangeCategories}
-            getOptionLabel={(data) =>
-              `${data.name} (id: ${data.id}${data?.parent?.id ? `; parent id: ${data.parent.id}` : ''})`
-            }
-            getOptionValue={(data) => data.name}
-            fullWidth
-            defaultValue={productRef.current.categories ?? []}
-            label={'Categories'}
-            style={{ margin: '25px 0' }}
-          />
-          <SearchInput<TProductCategory>
-            loader={handleSearchCategory}
-            onSelect={handleMainCategoryChange}
-            getOptionLabel={(data) =>
-              `${data.name} (id: ${data.id}${data?.parent?.id ? `; parent id: ${data.parent.id}` : ''})`
-            }
-            getOptionValue={(data) => data.name}
-            fullWidth
-            defaultValue={mainCategory}
-            label={'Main category'}
-            style={{ margin: '15px 0' }}
-          />
-          <EntityMetaFields />
-          <EntityCustomFields />
+          <Grid container spacing={3} sx={{ mt: '15px' }}>
+            <Grid item xs={12} sm={12}>
+              <SearchInput<TProductCategory>
+                multiple
+                loader={handleSearchCategory}
+                onSelect={handleChangeCategories}
+                getOptionLabel={(data) =>
+                  `${data.name} (id: ${data.id}${data?.parent?.id ? `; parent id: ${data.parent.id}` : ''})`
+                }
+                getOptionValue={(data) => data.name}
+                fullWidth
+                defaultValue={productRef.current.categories ?? []}
+                label={'Categories'}
+              />
+            </Grid>
+            <Grid item xs={12} sm={12}>
+              <SearchInput<TProductCategory>
+                loader={handleSearchCategory}
+                onSelect={handleMainCategoryChange}
+                getOptionLabel={(data) =>
+                  `${data.name} (id: ${data.id}${data?.parent?.id ? `; parent id: ${data.parent.id}` : ''})`
+                }
+                getOptionValue={(data) => data.name}
+                fullWidth
+                defaultValue={mainCategory}
+                label={'Main category'}
+              />
+            </Grid>
+            <EntityMetaFields />
+            <EntityCustomFields />
+          </Grid>
         </Box>
       )}
       {activeTabNum === 1 && (

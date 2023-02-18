@@ -1,48 +1,48 @@
-@import "../../../styles/common.module.scss";
-@import "../../../styles/variables.scss";
+@import '../../../styles/common.module.scss';
+@import '../../../styles/variables.scss';
 
 .cartModal {
-    @include paper;
-    width: 600px;
-    height: 500px;
-    max-height: 90vh;
-    max-width: 100vw;
-    display: flex;
-    flex-direction: column;
-    background-color: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
+  @include paper;
+  width: 600px;
+  height: 500px;
+  max-height: 90vh;
+  max-width: 100vw;
+  display: flex;
+  flex-direction: column;
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-radius: 10px;
+  outline: none;
+  position: relative;
+  overflow: hidden;
+
+  .cartList {
     border-radius: 10px;
-    outline: none;
-    position: relative;
-    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    min-height: 100px;
+    padding: 20px 0 10px 20px;
+  }
 
-    .cartList {
-        border-radius: 10px;
-        width: 100%;
-        height: 100%;
-        min-height: 100px;
-        padding: 20px 0 10px 20px;
-    }
+  .checkoutBtn {
+    margin: 15px auto 15px;
+  }
 
-    .checkoutBtn {
-        margin: 15px auto 15px;
-    }
+  .closeBtn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    z-index: 5;
+  }
 
-    .closeBtn {
-        position: absolute;
-        top: 5px;
-        right: 5px;
-        z-index: 5;
-    }
-
-    .cartTotal {
-        font-size: 20px;
-    }
+  .cartTotal {
+    font-size: 20px;
+  }
 }
 
 @media screen and (max-width: $mobileBreakpoint) {
-    .cartModal {
-        height: 90vh;
-    }
+  .cartModal {
+    height: 90vh;
+  }
 }

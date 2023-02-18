@@ -1,28 +1,28 @@
 .CategoryList {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 .productList {
-    display: flex;
-    flex-wrap: wrap;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .productWrapper {
-    width: 25%;
-    margin: 0;
-    margin-bottom: 15px;
-    padding: 5px;
-    box-sizing: border-box;
+  width: 25%;
+  margin: 0;
+  margin-bottom: 15px;
+  padding: 5px;
+  box-sizing: border-box;
 }
 
 @media (max-width: 985px) {
-    .productWrapper {
-        width: 33%;
-    }
+  .productWrapper {
+    width: 33%;
+  }
 }
 
 @media (max-width: 725px) {
-    .productWrapper {
-        width: 50%;
-    }
+  .productWrapper {
+    width: 50%;
+  }
 }

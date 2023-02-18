@@ -1,12 +1,12 @@
-import React from 'react';
+import { getRandStr, TCustomFieldType } from '@cromwell/core';
 import {
-  DndContext,
   closestCenter,
+  DndContext,
+  DragEndEvent,
   KeyboardSensor,
   PointerSensor,
   useSensor,
   useSensors,
-  DragEndEvent,
 } from '@dnd-kit/core';
 import {
   SortableContext,
@@ -15,15 +15,15 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { FieldArrayWithId, useFieldArray, UseFieldArrayRemove, useFormContext } from 'react-hook-form';
-import { TextInput } from '../../../components/inputs/TextInput/TextInput';
-import { TAdminCmsSettingsType } from '../hooks/useAdminSettings';
-import { GrabIcon } from '../../../components/icons/grabIcon';
 import { PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
-import { getRandStr, TCustomFieldType } from '@cromwell/core';
-import { CustomEntityFormType } from '../pages/custom/customEntity';
-import { RegisteredSelectField } from './registeredSelectField';
-import { slugify } from '../../../helpers/slugify';
+import React from 'react';
+import { FieldArrayWithId, useFieldArray, UseFieldArrayRemove, useFormContext } from 'react-hook-form';
+
+import { GrabIcon } from '@components/icons/grabIcon';
+import { RegisteredTextInput } from '@components/inputs/TextInput';
+import { slugify } from '@helpers/slugify';
+import { CustomEntityFormType, TAdminCmsSettingsType } from '../types';
+import { RegisteredSelectInput } from '@components/inputs/SelectInput';
 
 type AdminSettings = Pick<TAdminCmsSettingsType, 'customFields'>;
 
@@ -41,10 +41,6 @@ const selectOptions: Options[] = [
   { value: 'Color', label: 'Colorpicker' },
 ];
 
-const getValue = (v: Options) => v.value;
-const getLabel = (v: Options) => v.label;
-const inferValue = (v: string) => selectOptions.find((k) => k.value === v);
-
 export function EntityFieldItem(props: {
   idx?: number;
   id?: any;
@@ -52,7 +48,7 @@ export function EntityFieldItem(props: {
   remove?: UseFieldArrayRemove;
 }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: props.id });
-  const { register, watch, getValues, setValue } = useFormContext<CustomEntityFormType>();
+  const { watch, getValues, setValue } = useFormContext<CustomEntityFormType>();
   const { idx, remove } = props;
 
   const optionMethods = useFieldArray({
@@ -77,21 +73,20 @@ export function EntityFieldItem(props: {
     >
       <div className="flex flex-row gap-1 justify-between">
         <div className="w-full grid gap-4 grid-cols-1 justify-self-stretch lg:grid-cols-2">
-          <TextInput label="ID" disabled {...register(`customFields.${idx}.id`)} />
-          <TextInput
-            label="Label"
-            {...register(`customFields.${idx}.label`, {
-              onChange: (e) => {
-                setValue(`customFields.${idx}.key`, slugify(e.target.value));
-              },
-            })}
+          <RegisteredTextInput name={`customFields.${idx}.id`} label="ID" disabled />
+          <RegisteredTextInput name={`customFields.${idx}.label`} label="Label" registerOptions={{ required: true }} />
+          <RegisteredTextInput
+            name={`customFields.${idx}.key`}
+            label="Key (internal)"
+            onChange={(e) => {
+              setValue(`customFields.${idx}.key`, slugify(e.target.value));
+            }}
+            registerOptions={{ required: true }}
           />
-          <TextInput label="Key (internal)" {...register(`customFields.${idx}.key`)} />
-          <RegisteredSelectField
+          <RegisteredSelectInput<Options>
             options={selectOptions}
-            getDisplayValue={getLabel}
-            getValue={getValue}
-            inferValue={inferValue}
+            getDisplayValue={(v) => v.label}
+            getValue={(v) => v.value}
             label="Input Type"
             name={`customFields.${idx}.fieldType`}
           />
@@ -113,11 +108,11 @@ export function EntityFieldItem(props: {
                 <div className="rounded-md flex flex-col bg-gray-200 shadow-inner min-h-[25px] p-1 gap-1">
                   {optionMethods.fields.map((option, oIdx) => (
                     <div key={oIdx} className="flex flex-row w-full gap-1">
-                      <TextInput
+                      <RegisteredTextInput
+                        name={`customFields.${idx}.options.${oIdx}`}
                         key={oIdx}
                         label={<span className="text-xs">Option {oIdx + 1}</span>}
                         className="!text-xs"
-                        {...register(`customFields.${idx}.options.${oIdx}`, {})}
                       />
                       <button
                         onClick={() => optionMethods.remove(oIdx)}
@@ -156,6 +151,18 @@ export const DraggableEntityFields = ({ entityType }: { entityType: string }) =>
     name: 'customFields',
     keyName: 'id',
   });
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (active.id !== over.id) {
+      const activeItm = fields.find((f) => f.id === active.id);
+      const overItm = fields.find((f) => f.id === over.id);
+      const activeIndex = fields.indexOf(activeItm);
+      const overIndex = fields.indexOf(overItm);
+      move(activeIndex, overIndex);
+    }
+  };
 
   const sensors = useSensors(
     // useSensor(TouchSensor),
@@ -203,16 +210,4 @@ export const DraggableEntityFields = ({ entityType }: { entityType: string }) =>
       </div>
     </div>
   );
-
-  function handleDragEnd(event: DragEndEvent) {
-    const { active, over } = event;
-
-    if (active.id !== over.id) {
-      const activeItm = fields.find((f) => f.id === active.id);
-      const overItm = fields.find((f) => f.id === over.id);
-      const activeIndex = fields.indexOf(activeItm);
-      const overIndex = fields.indexOf(overItm);
-      move(activeIndex, overIndex);
-    }
-  }
 };

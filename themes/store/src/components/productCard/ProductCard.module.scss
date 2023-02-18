@@ -1,13 +1,13 @@
 .Product {
-    z-index: 3;
-    transition-property: box-shadow, z-index;
-    transition-duration: 0.3s;
-    background-color: #fff;
-    border-radius: 8px;
-    overflow: hidden;
+  z-index: 3;
+  transition-property: box-shadow, z-index;
+  transition-duration: 0.3s;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
 
-    &:hover {
-        box-shadow: 0 3px 7px 0 rgba(0, 0, 0, 0.1), 0 0px 24px 0 rgba(0, 0, 0, 0.1);
-        z-index: 5;
-    }
+  &:hover {
+    box-shadow: 0 3px 7px 0 rgba(0, 0, 0, 0.1), 0 0px 24px 0 rgba(0, 0, 0, 0.1);
+    z-index: 5;
+  }
 }

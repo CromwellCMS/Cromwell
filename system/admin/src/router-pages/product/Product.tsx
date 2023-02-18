@@ -33,6 +33,7 @@ export default function ProductPage() {
           content: {
             backgroundColor: 'transparent',
             padding: 0,
+            boxShadow: 'none',
           },
         }}
         getById={(id) => {

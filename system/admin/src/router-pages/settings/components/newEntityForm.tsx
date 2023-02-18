@@ -1,21 +1,21 @@
+import { TextButton } from '@components/buttons/TextButton';
+import { ImageInput } from '@components/inputs/Image/ImageInput';
+import { TextInput } from '@components/inputs/TextInput/TextInput';
 import { TAdminCustomEntity } from '@cromwell/core';
 import { Dialog, Transition } from '@headlessui/react';
+import { baseEntityColumns } from '@helpers/customEntities';
+import { slugify } from '@helpers/slugify';
 import React, { Fragment, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 
-import { ActionButton } from '../../../components/actionButton';
-import { ImageInput } from '../../../components/inputs/Image/ImageInput';
-import { TextInput } from '../../../components/inputs/TextInput/TextInput';
-import { baseEntityColumns } from '../../../helpers/customEntities';
-import { slugify } from '../../../helpers/slugify';
 import { useAdminSettings } from '../hooks/useAdminSettings';
 
 type FormType = TAdminCustomEntity;
 
-export const NewEntityForm = ({ show = false, onToggle = (v: boolean) => {} }) => {
-  const { adminSettings, saveCodeSettings, addCustomEntityToDB } = useAdminSettings();
+export const NewEntityForm = ({ show, onToggle }: { show: boolean; onToggle: (show: boolean) => void }) => {
+  const { adminSettings, addCustomEntityToDB } = useAdminSettings();
   const [uniqError, setUniqError] = useState(false);
-  const { register, watch, control, setValue, handleSubmit, setError } = useForm<FormType>({
+  const { register, control, setValue, handleSubmit } = useForm<FormType>({
     defaultValues: {
       entityType: '',
       listLabel: '',
@@ -91,7 +91,7 @@ export const NewEntityForm = ({ show = false, onToggle = (v: boolean) => {} }) =
                       required: true,
                       onChange: (event) => {
                         const val = event.target.value;
-                        setValue('entityType', slugify(val));
+                        setValue('entityType', slugify(val), { shouldDirty: true });
                       },
                     })}
                   />
@@ -115,7 +115,7 @@ export const NewEntityForm = ({ show = false, onToggle = (v: boolean) => {} }) =
                     {...register('entityType', {
                       required: true,
                       onChange: (event) => {
-                        setValue('entityType', slugify(event.target.value));
+                        setValue('entityType', slugify(event.target.value), { shouldDirty: true });
                       },
                     })}
                   />
@@ -143,15 +143,17 @@ export const NewEntityForm = ({ show = false, onToggle = (v: boolean) => {} }) =
                 </div>
 
                 <div className="flex flex-row mt-4 justify-end">
-                  <button
+                  <TextButton
                     onClick={() => {
                       onToggle(false);
                     }}
-                    className="bg-transparent mx-1 text-center text-sm py-1 px-2 text-gray-600 hover:text-indigo-500"
+                    variant="outlined"
                   >
-                    cancel
-                  </button>
-                  <ActionButton type="submit">save</ActionButton>
+                    Cancel
+                  </TextButton>
+                  <TextButton className="ml-4" type="submit">
+                    Save
+                  </TextButton>
                 </div>
               </div>
             </Transition.Child>

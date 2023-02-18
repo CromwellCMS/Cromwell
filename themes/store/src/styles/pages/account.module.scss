@@ -1,38 +1,38 @@
-@import "../variables.scss";
-@import "../common.module.scss";
+@import '../variables.scss';
+@import '../common.module.scss';
 
 .AccountPage {
-    position: relative;
-    padding: 20px;
+  position: relative;
+  padding: 20px;
 }
 
 .container {
-    max-width: 900px;
-    margin: 0 auto;
+  max-width: 900px;
+  margin: 0 auto;
 }
 
 .subheader {
-    font-size: 26px;
-    margin-top: 15px;
-    margin-bottom: 15px;
+  font-size: 26px;
+  margin-top: 15px;
+  margin-bottom: 15px;
 }
 
 .accountContact {
-    @include paper;
-    max-width: 600px;
-    margin-bottom: 40px;
-    padding: 15px;
+  @include paper;
+  max-width: 600px;
+  margin-bottom: 40px;
+  padding: 15px;
 }
 
 .signInBlock {
-    display: flex;
-    margin: 20px 0 20px 0;
+  display: flex;
+  margin: 20px 0 20px 0;
 
-    .signInBtn {
-        margin-right: 15px;
-    }
+  .signInBtn {
+    margin-right: 15px;
+  }
 }
 
 .orderCart {
-    padding: 15px 0;
+  padding: 15px 0;
 }

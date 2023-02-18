@@ -5,12 +5,8 @@ import { Controller, FormProvider, useForm } from 'react-hook-form';
 
 import { LoadingStatus } from '../../../components/loadBox/LoadingStatus';
 import { toast } from '../../../components/toast/toast';
-import {
-  SettingsPageInfo,
-  TAdminCmsSettingsType,
-  useAdminSettings,
-  useAdminSettingsContext,
-} from '../hooks/useAdminSettings';
+import { SettingsPageInfo, useAdminSettings, useAdminSettingsContext } from '../hooks/useAdminSettings';
+import { TAdminCmsSettingsType } from '../types';
 
 type FormType = Pick<TAdminCmsSettingsType, 'robotsContent'>;
 

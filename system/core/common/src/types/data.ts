@@ -226,9 +226,12 @@ export type TCmsConfig = {
 /**
  * Merged info form cmsconfig.json and settings from DB
  */
-export type TCmsSettings = TCmsConfig & TCmsPublicSettings & TCmsAdminSettings & TCmsInternalSettings & {
-  robotsContent?: string;
-};
+export type TCmsSettings = TCmsConfig &
+  TCmsPublicSettings &
+  TCmsAdminSettings &
+  TCmsInternalSettings & {
+    robotsContent?: string;
+  };
 
 export type TRollupConfig = {
   main: Record<string, any>;

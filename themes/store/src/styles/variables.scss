@@ -1,14 +1,13 @@
 $bg: #fff;
 $text: #2e2e2e;
 
-$primary: #9900CC; //#330099
+$primary: #9900cc; //#330099
 $secondary: #333;
 
 $primaryTextOver: #fff;
 
 $mobileBreakpoint: 600px;
 
-
 :export {
-    primary: $primary;
+  primary: $primary;
 }

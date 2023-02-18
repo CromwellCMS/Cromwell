@@ -1,227 +1,226 @@
-@import "../../styles/variables.scss";
+@import '../../styles/variables.scss';
 
 .ProductDetails {
-    margin: 20px 0;
-    border-radius: 8px;
-    overflow: hidden;
+  margin: 20px 0;
+  border-radius: 8px;
+  overflow: hidden;
 
-    &.compact {
-        box-shadow: none;
-        margin: 0;
-    }
+  &.compact {
+    box-shadow: none;
+    margin: 0;
+  }
 }
 
 .productNotFound {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 400px;
-    font-size: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 400px;
+  font-size: 30px;
 }
 
 .mainBlock {
-    display: flex;
-    flex-direction: column;
-    width: 78%;
+  display: flex;
+  flex-direction: column;
+  width: 78%;
 }
 
 .imageAndCaptionBlock {
-    display: flex;
-    width: 100%;
+  display: flex;
+  width: 100%;
 }
 
 .imageBlock {
-    width: 65%;
+  width: 65%;
 }
 
 .captionBlock {
-    width: 35%;
-    padding: 15px;
+  width: 35%;
+  padding: 15px;
 }
 
 .productName {
-    font-size: 26px;
-    margin: 15px 0;
-    font-weight: 500;
+  font-size: 26px;
+  margin: 15px 0;
+  font-weight: 500;
 }
 
 .ratingBlock {
-    display: flex;
+  display: flex;
 }
 
 .ratingCaption {
-    margin-left: 10px;
-    color: #333;
-    text-decoration: underline;
-    cursor: pointer;
+  margin-left: 10px;
+  color: #333;
+  text-decoration: underline;
+  cursor: pointer;
 }
 
 .priceBlock {
-    margin: 15px 0;
-    display: flex;
-    align-items: center;
+  margin: 15px 0;
+  display: flex;
+  align-items: center;
 }
 
 .oldPrice {
-    font-size: 22px;
-    text-decoration: line-through;
-    color: #aaa;
-    margin-right: 10px;
-    font-weight: 600;
+  font-size: 22px;
+  text-decoration: line-through;
+  color: #aaa;
+  margin-right: 10px;
+  font-weight: 600;
 }
 
 .price {
-    font-size: 26px;
-    font-weight: 900;
+  font-size: 26px;
+  font-weight: 900;
 }
 
 .infoBlock {
-    display: flex;
-    flex-direction: column;
-    width: 35%;
+  display: flex;
+  flex-direction: column;
+  width: 35%;
 }
 
 .advantagesBlock {
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .advantageItem {
-    display: flex;
-    align-items: center;
-    flex-wrap: nowrap;
-    padding: 20px 15px;
-    border-bottom: 1px solid #ddd;
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  padding: 20px 15px;
+  border-bottom: 1px solid #ddd;
 }
 
 .advantageItemHeader {
-    font-weight: 400;
-    font-size: 16px;
+  font-weight: 400;
+  font-size: 16px;
 }
 
 .advantageItemText {
-    margin-left: 20px;
-    flex-direction: column;
+  margin-left: 20px;
+  flex-direction: column;
 }
 
 .tabsBlock {
-    position: relative;
-    padding-right: 20px;
-    width: 65%;
+  position: relative;
+  padding-right: 20px;
+  width: 65%;
 }
 
 .tab {
-    margin-top: 10px;
-    padding: 15px;
+  margin-top: 10px;
+  padding: 15px;
 }
 
 .productActionsBlock {
-    display: flex;
-    flex-wrap: wrap;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 div.tabsHeader {
-    box-shadow: 0 3px 6px 0 rgb(0 0 0 / 4%), 0 0 10px 3px rgb(0 0 0 / 5%);
-    margin: 0 15px;
-    border-radius: 30px;
+  box-shadow: 0 3px 6px 0 rgb(0 0 0 / 4%), 0 0 10px 3px rgb(0 0 0 / 5%);
+  margin: 0 15px;
+  border-radius: 30px;
 }
 
 .tabDescription {
-    padding: 10px 0 30px 10px;
+  padding: 10px 0 30px 10px;
 }
 
 .tabsAndSidebar {
-    display: flex;
+  display: flex;
 }
 
 .delimiter {
-    height: 10px;
-    margin: 15px 0 25px;
-    border-bottom: 1px solid #ddd;
+  height: 10px;
+  margin: 15px 0 25px;
+  border-bottom: 1px solid #ddd;
 }
 
 .compact {
-    .imageBlock {
-        width: 60%;
-    }
+  .imageBlock {
+    width: 60%;
+  }
 
-    .captionBlock {
-        width: 40%;
-    }
+  .captionBlock {
+    width: 40%;
+  }
 
-    .tabsBlock {
-        padding-right: 0;
-        width: 100%;
-    }
+  .tabsBlock {
+    padding-right: 0;
+    width: 100%;
+  }
 
-    .infoBlock {
-        display: none;
-    }
+  .infoBlock {
+    display: none;
+  }
 }
 
 @media screen and (max-width: 980px) {
-    .imageBlock {
-        width: 60%;
-    }
+  .imageBlock {
+    width: 60%;
+  }
 
-    .captionBlock {
-        width: 40%;
-    }
+  .captionBlock {
+    width: 40%;
+  }
 
-    .tabsBlock {
-        padding-right: 0;
-        width: 60%;
-    }
+  .tabsBlock {
+    padding-right: 0;
+    width: 60%;
+  }
 
-    .infoBlock {
-        width: 40%;
-    }
+  .infoBlock {
+    width: 40%;
+  }
 }
 
-
 @media screen and (max-width: $mobileBreakpoint) {
-    .mainBlock {
-        width: 100%;
-    }
+  .mainBlock {
+    width: 100%;
+  }
 
-    .infoBlock {
-        display: none;
-    }
+  .infoBlock {
+    display: none;
+  }
 
-    .imageAndCaptionBlock {
-        flex-direction: column;
+  .imageAndCaptionBlock {
+    flex-direction: column;
+  }
+
+  .imageBlock {
+    width: 100%;
+  }
+
+  .captionBlock {
+    width: 100%;
+  }
+
+  .compact {
+    .captionBlock {
+      width: 100%;
     }
 
     .imageBlock {
-        width: 100%;
+      width: 100%;
     }
+  }
 
-    .captionBlock {
-        width: 100%;
-    }
+  .tabsAndSidebar {
+    flex-direction: column;
+  }
 
-    .compact {
-        .captionBlock {
-            width: 100%;
-        }
+  .tabsBlock {
+    padding-right: 0;
+    width: 100%;
+  }
 
-        .imageBlock {
-            width: 100%;
-        }
-    }
-
-    .tabsAndSidebar {
-        flex-direction: column;
-    }
-
-    .tabsBlock {
-        padding-right: 0;
-        width: 100%;
-    }
-
-    div.tabsHeader {
-        margin: 0;
-    }
+  div.tabsHeader {
+    margin: 0;
+  }
 }

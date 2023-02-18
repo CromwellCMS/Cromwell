@@ -1,5 +1,9 @@
 @import '../../styles/common.module.scss';
 
+.modalWrapper {
+  z-index: 1102;
+}
+
 .FileManager {
   width: 810px;
   height: 660px;

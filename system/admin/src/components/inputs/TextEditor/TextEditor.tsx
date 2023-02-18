@@ -8,10 +8,11 @@ export class TextEditor extends React.Component<{
   initialValue: string | undefined;
   entity: TBasePageEntity;
   onChange?: (value: any) => void;
-  label?: string;
+  label?: React.ReactNode;
   placeholder?: string;
   fixedHeight?: boolean;
   getId?: (id: string) => void;
+  id?: string;
 }> {
   public editorId: string;
   public initialValue: string;
@@ -83,16 +84,23 @@ export class TextEditor extends React.Component<{
     this.props?.getId?.(this.editorId);
 
     return (
-      <div
-        style={{
-          margin: '15px 0',
-          overflow: this.props?.fixedHeight ? 'auto' : undefined,
-          maxHeight: this.props?.fixedHeight ? '400px' : undefined,
-        }}
-        className={styles.descriptionEditor}
-      >
-        <div style={{ minHeight: '350px' }} id={this.editorId}></div>
-      </div>
+      <>
+        {this.props.label && (
+          <label htmlFor={this.props.id} className="font-bold block active:text-indigo-500">
+            {this.props.label}
+          </label>
+        )}
+        <div
+          style={{
+            margin: '15px 0',
+            overflow: this.props?.fixedHeight ? 'auto' : undefined,
+            maxHeight: this.props?.fixedHeight ? '400px' : undefined,
+          }}
+          className={styles.descriptionEditor}
+        >
+          <div style={{ minHeight: '350px' }} id={this.editorId}></div>
+        </div>
+      </>
     );
   }
 }

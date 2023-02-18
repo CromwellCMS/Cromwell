@@ -8,9 +8,9 @@ import { AdminSettingsContextProvider, useAdminSettings, useAdminSettingsContext
 import { SettingsIndexPage } from './pages';
 import { ACLSettingsPage } from './pages/acl';
 import { CodeSettingsPage } from './pages/code';
-import { CustomEntitySettingsPage } from './pages/custom/customEntity';
-import { CustomRoleSettingsPage } from './pages/custom/customRole';
-import { DefaultEntitySettingsPage } from './pages/custom/defaultEntity';
+import { CustomEntitySettingsPage } from './pages/custom/CustomEntity';
+import { CustomRoleSettingsPage } from './pages/custom/CustomRole';
+import { DefaultEntitySettingsPage } from './pages/custom/DefaultEntity';
 import { CustomDataPage } from './pages/customData';
 import { GeneralSettingsPage } from './pages/general';
 import { MigrationSettingsPage } from './pages/migration';
@@ -34,7 +34,7 @@ export const SettingsPage = () => {
         }}
         leftContent={
           <h1 className="flex items-center font-500 text-gray-700 h-8 text-base max-w-[50%] overflow-x-auto whitespace-nowrap md:h-9 md:text-xl lg:max-w-fit lg:h-10 lg:text-2xl">
-            <TBreadcrumbs path={settings.breadcrumbs} />
+            <TBreadcrumbs path={settings.breadcrumbs} maxVisible={4} />
           </h1>
         }
       />

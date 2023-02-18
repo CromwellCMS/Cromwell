@@ -2,12 +2,8 @@ import { CodeEditor } from '@components/inputs/CodeEditor';
 import React from 'react';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
 
-import {
-  SettingsPageInfo,
-  TAdminCmsSettingsType,
-  useAdminSettings,
-  useAdminSettingsContext,
-} from '../hooks/useAdminSettings';
+import { SettingsPageInfo, useAdminSettings, useAdminSettingsContext } from '../hooks/useAdminSettings';
+import { TAdminCmsSettingsType } from '../types';
 
 type FormType = Pick<TAdminCmsSettingsType, 'headHtml' | 'footerHtml'>;
 

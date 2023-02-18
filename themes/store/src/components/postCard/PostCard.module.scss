@@ -1,188 +1,188 @@
-@import "../../styles/variables.scss";
-@import "../../styles/common.module.scss";
+@import '../../styles/variables.scss';
+@import '../../styles/common.module.scss';
 
 ._onHoverLink {
-    @extend .onHoverLink;
+  @extend .onHoverLink;
 }
 
 ._onHoverLinkContainer {
-    @extend .onHoverLinkContainer;
+  @extend .onHoverLinkContainer;
 }
 
 .PostCard {
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    z-index: 3;
-    width: 100%;
-    max-width: 900px;
-    min-width: 170px;
-    border-radius: 8px;
-    transition-property: box-shadow, z-index;
-    transition-duration: 0.3s;
-    background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  max-width: 900px;
+  min-width: 170px;
+  border-radius: 8px;
+  transition-property: box-shadow, z-index;
+  transition-duration: 0.3s;
+  background-color: #fff;
 }
 
 .imageBlock {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    overflow: hidden;
-    border-radius: 8px;
-    // height: 300px;
-    width: 100%;
-    height: 220px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  // height: 300px;
+  width: 100%;
+  height: 220px;
 
-    a {
-        width: 100%;
-        height: 100%;
-    }
+  a {
+    width: 100%;
+    height: 100%;
+  }
 }
 
 .caption {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    padding: 0 15px 10px 15px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 0 15px 10px 15px;
 }
 
 .authorBlock {
-    display: flex;
-    align-items: center;
-    // margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  // margin-bottom: 10px;
 }
 
 .titleBlock {
-    margin-bottom: 10px;
-    margin-top: 10px;
+  margin-bottom: 10px;
+  margin-top: 10px;
 }
 
 .title {
-    color: $text;
-    font-size: 22px;
-    line-height: 25px;
-    font-weight: 500;
+  color: $text;
+  font-size: 22px;
+  line-height: 25px;
+  font-weight: 500;
 }
 
 .authorBlock .avatar {
-    width: 40px;
-    height: 40px;
-    margin-right: 10px;
-    border-radius: 100%;
-    background-size: cover;
-    background-position: center;
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+  border-radius: 100%;
+  background-size: cover;
+  background-position: center;
 }
 
 .authorName {
-    font-weight: 500;
-    line-height: 18px;
+  font-weight: 500;
+  line-height: 18px;
 }
 
 .excerpt {
-    margin-bottom: 15px;
-    max-height: 70px;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  margin-bottom: 15px;
+  max-height: 70px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .dateAndReadInfo {
-    display: flex;
-    flex-wrap: wrap;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .publishDate {
-    font-size: 14px;
-    margin-right: 8px;
+  font-size: 14px;
+  margin-right: 8px;
 }
 
 .readTime {
-    font-size: 14px;
-    display: flex;
-    align-items: center;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
 }
 
 .readTime::before {
-    content: "";
-    width: 4px;
-    height: 4px;
-    background-color: #333;
-    margin-right: 8px;
-    display: block;
-    border-radius: 100%;
+  content: '';
+  width: 4px;
+  height: 4px;
+  background-color: #333;
+  margin-right: 8px;
+  display: block;
+  border-radius: 100%;
 }
 
 .tagsBlock {
-    display: flex;
-    flex-wrap: wrap;
-    margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 10px;
 }
 
 .tag {
-    margin-bottom: 5px;
-    margin-right: 5px;
-    padding: 0px 6px;
-    font-size: 13px;
-    border: 1px solid #555;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: 0.3s;
-    color: #333;
+  margin-bottom: 5px;
+  margin-right: 5px;
+  padding: 0px 6px;
+  font-size: 13px;
+  border: 1px solid #555;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+  color: #333;
 }
 
 .tag:hover {
-    background-color: #333;
-    color: #fff;
+  background-color: #333;
+  color: #fff;
 }
 
 .coverImage {
-    border-radius: 8px;
+  border-radius: 8px;
 
-    .caption {
-        position: absolute;
-        bottom: 0;
-        z-index: 2;
-        color: #fff;
-    }
+  .caption {
+    position: absolute;
+    bottom: 0;
+    z-index: 2;
+    color: #fff;
+  }
 
-    .tag {
-        color: #fff;
-        border: 1px solid #fff;
-    }
+  .tag {
+    color: #fff;
+    border: 1px solid #fff;
+  }
 
-    .tag:hover {
-        background-color: #fff;
-        color: #222;
-    }
+  .tag:hover {
+    background-color: #fff;
+    color: #222;
+  }
 
-    .title {
-        color: #fff;
-    }
+  .title {
+    color: #fff;
+  }
 
-    &._onHoverLinkContainer:hover ._onHoverLink {
-        color: #fff;
-    }
+  &._onHoverLinkContainer:hover ._onHoverLink {
+    color: #fff;
+  }
 
-    .onHoverLink:before {
-        color: #fff;
-    }
+  .onHoverLink:before {
+    color: #fff;
+  }
 
-    .readTime::before {
-        content: "";
-        background-color: #fff;
-    }
+  .readTime::before {
+    content: '';
+    background-color: #fff;
+  }
 }
 
 .overlay {
-    position: absolute;
-    top: 0;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 1;
-    // background-color: rgba($color: #000000, $alpha: 0.2);
-    background: linear-gradient(0deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0) 100%);
-    border-radius: 8px;
+  position: absolute;
+  top: 0;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  // background-color: rgba($color: #000000, $alpha: 0.2);
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0) 100%);
+  border-radius: 8px;
 }

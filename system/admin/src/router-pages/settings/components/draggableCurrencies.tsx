@@ -1,3 +1,4 @@
+import { GrabIcon } from '@components/icons/grabIcon';
 import { RegisteredTextInput } from '@components/inputs/TextInput';
 import {
   closestCenter,
@@ -19,8 +20,7 @@ import { PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 import React from 'react';
 import { FieldArrayWithId, useFieldArray, UseFieldArrayRemove, useFormContext } from 'react-hook-form';
 
-import { GrabIcon } from '../../../components/icons/grabIcon';
-import { TAdminCmsSettingsType } from '../hooks/useAdminSettings';
+import { TAdminCmsSettingsType } from '../types';
 
 type FormType = Pick<TAdminCmsSettingsType, 'defaultShippingPrice' | 'currencies'>;
 
@@ -56,10 +56,10 @@ export function CurrencyItem(props: {
       <div className="flex flex-row gap-1 justify-between">
         <div className="font-bold mr-2 text-2xl text-indigo-600">{symbol}</div>
         <div className="w-full grid gap-4 grid-cols-1 justify-self-stretch lg:grid-cols-2">
-          <RegisteredTextInput<TAdminCmsSettingsType> name={`currencies.${idx}.title`} label="Title" />
-          <RegisteredTextInput<TAdminCmsSettingsType> name={`currencies.${idx}.tag`} label="Tag (Short Code)" />
-          <RegisteredTextInput<TAdminCmsSettingsType> name={`currencies.${idx}.ratio`} label="Ratio" />
-          <RegisteredTextInput<TAdminCmsSettingsType> name={`currencies.${idx}.symbol`} label="Symbol" />
+          <RegisteredTextInput name={`currencies.${idx}.title`} label="Title" />
+          <RegisteredTextInput name={`currencies.${idx}.tag`} label="Tag (Short Code)" />
+          <RegisteredTextInput name={`currencies.${idx}.ratio`} label="Ratio" />
+          <RegisteredTextInput name={`currencies.${idx}.symbol`} label="Symbol" />
           <div />
           <div
             onClick={() => remove(idx)}

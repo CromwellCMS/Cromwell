@@ -118,7 +118,7 @@ export const CustomDataPage = () => {
           </div>
         </div>
       </div>
-      <NewEntityForm show={showEntityForm} onToggle={setShowEntityForm} />
+      <NewEntityForm show={showEntityForm} onToggle={(show) => setShowEntityForm(show)} />
     </>
   );
 };

@@ -16,6 +16,7 @@ By default command `npx cromwell start` will launch all three services, but it's
 ## Deployment
 
 Install Nginx and place default config at `/etc/nginx/nginx.conf` to proxy CMS services and serve static files:
+
 ```nginx title="nginx.conf"
 worker_processes 5;
 worker_rlimit_nofile 8192;
@@ -80,15 +81,18 @@ http {
   }
 }
 ```
+
 Replace root path by your path to the project.
 
 ## Load balancing
-For heavily loaded websites you will need to distribute traffic between instances on multiple machines. Even if it's not the case for you, it is still recommended to do if you have enough RAM on you server. It will provide higher fault-tolerance (in case if one server goes down).  
+
+For heavily loaded websites you will need to distribute traffic between instances on multiple machines. Even if it's not the case for you, it is still recommended to do if you have enough RAM on you server. It will provide higher fault-tolerance (in case if one server goes down).
 
 For group of server to work together in load balancing we need to make proper configurations.  
 In this example let's configure multiple instances of API server.
 
 #### 1. Create and run projects on all machines
+
 Run `npx @cromwell/cli create my-website-name`. Connect to a database server, as in [configuration guide](/docs/overview/configuration#nodejs)
 
 #### 2. Provide URL to server group
@@ -96,6 +100,7 @@ Run `npx @cromwell/cli create my-website-name`. Connect to a database server, as
 If any CMS service cannot be found at default location, you need to provide a URL to it in the config, so other services will know where to find it. As in the example, Next.js server will still look for API server at default `http://localhost:4016`. To fix the issue specify `apiUrl` in the [cmsconfig.json](/docs/overview/configuration#config-options).
 In example with load balancing, you need to set public address of Nginx webserver. Place this config on machines with other services, such as Next.js or Admin panel.
 If you configured Nginx with your domain, and you planning for it to do load-balancing then:
+
 ```diff title="diff: cmsconfig.json"
  {
 +  "apiUrl": "example.com",
@@ -104,7 +109,7 @@ If you configured Nginx with your domain, and you planning for it to do load-bal
 
 #### 3. Setup interservice authentication
 
-Data requests from Next.js server contain a token in headers, so API server can serve private data (settings of Plugins configured in admin panel may contain secret API tokens for integrated services: Stripe, etc, so it is protected by authentication). For authentication to work you need to add `serviceSecret` in `cmsconfig.json` as described in [configuration doc](/docs/overview/configuration#config-options).  
+Data requests from Next.js server contain a token in headers, so API server can serve private data (settings of Plugins configured in admin panel may contain secret API tokens for integrated services: Stripe, etc, so it is protected by authentication). For authentication to work you need to add `serviceSecret` in `cmsconfig.json` as described in [configuration doc](/docs/overview/configuration#config-options).
 
 ```diff title="diff: cmsconfig.json"
  {
@@ -114,7 +119,6 @@ Data requests from Next.js server contain a token in headers, so API server can 
 ```
 
 Place this config on all machines
-
 
 #### 4. User authentication
 
@@ -136,6 +140,7 @@ Run `npx crw s --sv s` to launch only API server. First time you can launch it t
 #### 6. Configure load balancer
 
 If you are decided to use [Nginx as load-balancer](https://docs.nginx.com/nginx/admin-guide/load-balancer/http-load-balancer/) then you need to modify Nginx config to enable Round Robin method:
+
 ```diff title="diff: nginx.conf"
  http {
    upstream api {
@@ -145,17 +150,19 @@ If you are decided to use [Nginx as load-balancer](https://docs.nginx.com/nginx/
    }
 ```
 
-
 ## Multiple instances on one machine
 
-For smaller websites it also can be beneficial to set up load balancing on one machine if it has enough RAM. 2 GB or more can be sufficient. 
+For smaller websites it also can be beneficial to set up load balancing on one machine if it has enough RAM. 2 GB or more can be sufficient.
 
 In one project just run servers on different ports with commands:
+
 ```sh
 npx crw s --sv s -p 4016
 npx crw s --sv s -p 4017
 ```
+
 Edit Nginx config:
+
 ```diff title="diff: nginx.conf"
  http {
    upstream api {
@@ -165,6 +172,7 @@ Edit Nginx config:
 ```
 
 Provide URL to the server group:
+
 ```diff title="diff: cmsconfig.json"
  {
 +  "apiUrl": "example.com",
@@ -173,9 +181,8 @@ Provide URL to the server group:
 
 No further configuration with tokens is required, since tokens will be synchronized inside one project.
 
-
 ## Caveats
 
-CMS services must have an access to the same file system. For example, a user can install a plugin or upload a file. If you host API servers on different machines, you need to configure a third party service that will emulate a shared file system for all of them.  
+CMS services must have an access to the same file system. For example, a user can install a plugin or upload a file. If you host API servers on different machines, you need to configure a third party service that will emulate a shared file system for all of them.
 
 [For example, you can host on AWS EC2 and configure EFS for EC2 instances.](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AmazonEFS.html)

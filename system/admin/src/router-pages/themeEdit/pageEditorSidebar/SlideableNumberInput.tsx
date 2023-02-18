@@ -162,7 +162,7 @@ export const SlideableNumberInput = ({
   );
 
   const resetValue = useCallback(() => {
-    setValue('', 'px');
+    setValue('', 'px', { shouldDirty: true });
   }, [setValue]);
 
   return (

@@ -1,23 +1,23 @@
 .CImageHoverEffect {
-    position: relative;
-    border-radius: 10px;
-    overflow: hidden;
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
 
-    &::before {
-        content: "";
-        position: absolute;
-        pointer-events: none;
-        z-index: 2;
-        background-color: #000;
-        opacity: 0;
-        transition: 0.3s;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-    }
+  &::before {
+    content: '';
+    position: absolute;
+    pointer-events: none;
+    z-index: 2;
+    background-color: #000;
+    opacity: 0;
+    transition: 0.3s;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
 }
 
 .CImageHoverEffect:hover::before {
-    opacity: 0.3;
+  opacity: 0.3;
 }

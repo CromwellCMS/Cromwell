@@ -1,139 +1,139 @@
 .container {
-    position: relative;
+  position: relative;
 }
 
 .imageOverlay {
-    background-color: #fff;
+  background-color: #fff;
 }
 
 .navBtn {
-    position: absolute;
-    top: calc(50% - 20px);
-    border: 0;
-    background-color: transparent;
-    padding: 0;
-    outline: none;
+  position: absolute;
+  top: calc(50% - 20px);
+  border: 0;
+  background-color: transparent;
+  padding: 0;
+  outline: none;
 }
 .navBtnBack {
-    left: 5px;
+  left: 5px;
 }
 .navBtnNext {
-    right: 5px;
+  right: 5px;
 }
 
 .navBtnContent {
-    display: block;
-    width: 55px;
-    height: 55px;
-    background-color: rgba($color: #fff, $alpha: 0.6);
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' class='MuiSvgIcon-root jss80 MuiSvgIcon-fontSizeLarge' focusable='false' viewBox='0 0 24 24' aria-hidden='true'%3E%3Cpath d='M11.67 3.87L9.9 2.1 0 12l9.9 9.9 1.77-1.77L3.54 12z'%3E%3C/path%3E%3C/svg%3E");
-    background-position: 15px center;
-    background-repeat: no-repeat;
-    background-size: 40px;
-    border-radius: 100%;
-    opacity: 0.3;
-    transition-property: opacity, box-shadow;
-    transition-duration: 0.4s;
+  display: block;
+  width: 55px;
+  height: 55px;
+  background-color: rgba($color: #fff, $alpha: 0.6);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' class='MuiSvgIcon-root jss80 MuiSvgIcon-fontSizeLarge' focusable='false' viewBox='0 0 24 24' aria-hidden='true'%3E%3Cpath d='M11.67 3.87L9.9 2.1 0 12l9.9 9.9 1.77-1.77L3.54 12z'%3E%3C/path%3E%3C/svg%3E");
+  background-position: 15px center;
+  background-repeat: no-repeat;
+  background-size: 40px;
+  border-radius: 100%;
+  opacity: 0.3;
+  transition-property: opacity, box-shadow;
+  transition-duration: 0.4s;
 }
 
 .navBtnContent:hover {
-    opacity: 1;
-    box-shadow: 0 3px 6px 0 rgb(0 0 0 / 4%), 0 0 10px 3px rgb(0 0 0 / 5%);
+  opacity: 1;
+  box-shadow: 0 3px 6px 0 rgb(0 0 0 / 4%), 0 0 10px 3px rgb(0 0 0 / 5%);
 }
 
 button[disabled] .navBtnContent {
-    opacity: 0.1;
-    cursor: initial;
+  opacity: 0.1;
+  cursor: initial;
 }
 
 .btnNext {
-    transform: rotate(180deg);
+  transform: rotate(180deg);
 }
 
 .thumbnail {
-    // padding: 5px;
-    cursor: pointer;
+  // padding: 5px;
+  cursor: pointer;
 }
 
 .thumbInner {
-    padding: 8px;
+  padding: 8px;
 }
 
 .thumbnailImg {
-    object-fit: cover;
-    border-radius: 8px;
+  object-fit: cover;
+  border-radius: 8px;
 }
 
 .activeThumb {
-    .thumbnailImg {
-        box-shadow: 0 3px 6px 0 rgb(0 0 0 / 4%), 0 0 10px 3px rgb(0 0 0 / 5%);
-    }
+  .thumbnailImg {
+    box-shadow: 0 3px 6px 0 rgb(0 0 0 / 4%), 0 0 10px 3px rgb(0 0 0 / 5%);
+  }
 }
 
 .dotContainer {
-    position: absolute;
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    bottom: 0;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  bottom: 0;
 }
 
 .dotGroup {
-    margin-bottom: 6px;
+  margin-bottom: 6px;
 
-    button {
-        border: 0;
-        background-color: transparent;
-        padding: 0;
-        width: 10px;
-        height: 10px;
-        border-radius: 100%;
-        background-color: #fff;
-        box-shadow: 0 3px 6px 0 rgb(0 0 0 / 4%), 0 0 10px 3px rgb(0 0 0 / 5%);
-        margin: 0 3px;
-        transition: 0.3s;
-        outline: none;
-    }
+  button {
+    border: 0;
+    background-color: transparent;
+    padding: 0;
+    width: 10px;
+    height: 10px;
+    border-radius: 100%;
+    background-color: #fff;
+    box-shadow: 0 3px 6px 0 rgb(0 0 0 / 4%), 0 0 10px 3px rgb(0 0 0 / 5%);
+    margin: 0 3px;
+    transition: 0.3s;
+    outline: none;
+  }
 
-    button[disabled] {
-        background-color: #333;
-        border: 2px solid #fff;
-    }
+  button[disabled] {
+    background-color: #333;
+    border: 2px solid #fff;
+  }
 }
 
 .max {
-    height: 100%;
-    width: 100%;
+  height: 100%;
+  width: 100%;
 }
 
 .cover {
-    background-size: cover;
+  background-size: cover;
 }
 .contain {
-    background-size: contain;
+  background-size: contain;
 }
 
 .slideCover {
-    object-fit: cover;
-    > div {
-        background-size: cover !important;
-    }
+  object-fit: cover;
+  > div {
+    background-size: cover !important;
+  }
 }
 .slideContain {
-    object-fit: contain;
-    > div {
-        background-size: contain !important;
-        background-position: center;
-        background-repeat: no-repeat;
-    }
+  object-fit: contain;
+  > div {
+    background-size: contain !important;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
 }
 
 .modal {
-    > div {
-        z-index: 5000 !important;
-    }
+  > div {
+    z-index: 5000 !important;
+  }
 }
 
 .thumbs {
-    margin-top: 15px;
+  margin-top: 15px;
 }

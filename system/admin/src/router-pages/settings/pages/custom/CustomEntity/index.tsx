@@ -1,30 +1,26 @@
+import { ImageInput } from '@components/inputs/Image/ImageInput';
+import { RegisteredTextInput } from '@components/inputs/TextInput';
 import { settingsPageInfo } from '@constants/PageInfos';
 import { TAdminCustomEntity } from '@cromwell/core';
+import { slugify } from '@helpers/slugify';
+import { CustomEntityFormType } from '@pages/settings/types';
 import React, { useState } from 'react';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { ActionButton } from '../../../../components/actionButton';
-import { TBreadcrumbs } from '../../../../components/breadcrumbs';
-import { ImageInput } from '../../../../components/inputs/Image/ImageInput';
-import { TextInput } from '../../../../components/inputs/TextInput/TextInput';
-import { slugify } from '../../../../helpers/slugify';
-import { TAdminCmsSettingsType, useAdminSettings } from '../../hooks/useAdminSettings';
-import { DraggableEntityFields } from '../../components/draggableEntityFields';
+import { DraggableEntityFields } from '../../../components/draggableEntityFields';
+import { SettingsPageInfo, useAdminSettings, useAdminSettingsContext } from '../../../hooks/useAdminSettings';
 
-const titlePath = [
-  { title: 'Settings', link: '/settings/' },
-  { title: 'Custom Data', link: '/settings/custom-data' },
-];
-
-export type CustomField = ArrayElement<TAdminCmsSettingsType['customFields']>;
-
-export type CustomEntityFormType = TAdminCustomEntity & {
-  customFields: CustomField[];
+const info: SettingsPageInfo = {
+  breadcrumbs: [
+    { title: 'Settings', link: '/settings/' },
+    { title: 'Custom Data', link: '/settings/custom-data' },
+  ],
+  saveVisible: true,
 };
 
 export const CustomEntitySettingsPage = () => {
-  const { adminSettings } = useAdminSettings();
+  const { adminSettings } = useAdminSettingsContext();
   const params = useParams<{ entityType?: string }>();
 
   const entity = adminSettings.customEntities.find((e) => e.entityType === params.entityType);
@@ -37,7 +33,8 @@ export const CustomEntitySettingsPage = () => {
 };
 
 const CustomEntityForm = ({ entity }: { entity: TAdminCustomEntity }) => {
-  const { adminSettings, saveCustomEntity } = useAdminSettings();
+  const { adminSettings, saveCustomEntity } = useAdminSettingsContext();
+
   const navigate = useNavigate();
   const [uniqError, setUniqError] = useState(false);
   const methods = useForm<CustomEntityFormType>({
@@ -47,10 +44,9 @@ const CustomEntityForm = ({ entity }: { entity: TAdminCustomEntity }) => {
     },
   });
 
-  const { register, formState, watch, setValue, control, reset, handleSubmit } = methods;
+  const { formState, watch, setValue, control, reset, handleSubmit } = methods;
 
   const entityLabel = watch('entityLabel', entity.entityLabel);
-
   const entityType = watch('entityType', entity.entityType);
 
   const onSubmit = async (data: CustomEntityFormType) => {
@@ -74,10 +70,25 @@ const CustomEntityForm = ({ entity }: { entity: TAdminCustomEntity }) => {
     if (saved) {
       reset(data);
       if (entity.entityType !== inputs.entityType) {
-        navigate(`${settingsPageInfo.route}/custom-data/${inputs.entityType}`, { replace: true });
+        navigate(`${settingsPageInfo.baseRoute}/custom-data/${inputs.entityType}`, { replace: true });
       }
     }
   };
+
+  useAdminSettings({
+    ...info,
+    saveDisabled: !formState.isDirty,
+    breadcrumbs: [
+      ...info.breadcrumbs,
+      {
+        title: entity?.entityLabel,
+        link: `/settings/custom-data/${entity?.entityType}`,
+      },
+    ],
+    onSave: () => {
+      handleSubmit(onSubmit)();
+    },
+  });
 
   const dirtyCustomFields = !!formState.dirtyFields.customFields;
   const dirtyDefinition =
@@ -89,22 +100,6 @@ const CustomEntityForm = ({ entity }: { entity: TAdminCustomEntity }) => {
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="flex flex-row bg-gray-100 bg-opacity-60 w-full top-0 z-10 gap-2 backdrop-filter backdrop-blur-lg justify-between sticky">
-          <div className="w-full max-w-4xl px-1 lg:px-0">
-            <TBreadcrumbs
-              path={[
-                ...titlePath,
-                {
-                  title: entity?.entityLabel,
-                  link: `/settings/custom-data/${entity?.entityType}`,
-                },
-              ]}
-            />
-            <ActionButton disabled={!formState.isDirty} type="submit" uppercase bold>
-              save
-            </ActionButton>
-          </div>
-        </div>
         <div className="flex flex-col gap-2 relative lg:flex-row lg:gap-6">
           <div className="max-h-min my-1 top-16 self-start lg:order-2 lg:my-4 lg:sticky">
             <h2 className="font-bold text-gray-700 col-span-1">{entityLabel} definition</h2>
@@ -118,29 +113,24 @@ const CustomEntityForm = ({ entity }: { entity: TAdminCustomEntity }) => {
             }`}
           >
             <div className="grid gap-2 grid-cols-1 lg:grid-cols-2">
-              <TextInput
+              <RegisteredTextInput
+                name="entityLabel"
                 label="Entity Label"
                 placeholder="My Custom Entity"
                 required
                 description="Singular title for the entity."
-                {...register('entityLabel', {
-                  required: true,
-                  onChange: (event) => {
-                    const val = event.target.value;
-                    setValue('entityType', slugify(val));
-                  },
-                })}
+                registerOptions={{ required: true }}
               />
-              <TextInput
+              <RegisteredTextInput
+                name="listLabel"
                 label="Plural label"
                 placeholder="My Custom Entities"
                 required
                 description="Plural title for the entity."
-                {...register('listLabel', {
-                  required: true,
-                })}
+                registerOptions={{ required: true }}
               />
-              <TextInput
+              <RegisteredTextInput
+                name="entityType"
                 label="Entity Type"
                 placeholder="my-custom-entity"
                 required
@@ -149,13 +139,11 @@ const CustomEntityForm = ({ entity }: { entity: TAdminCustomEntity }) => {
                     ? 'An Entity with the same Entity Type already exists. Please change the entity type.'
                     : null
                 }
+                onChange={(event) => {
+                  setValue('entityType', slugify(event.target.value.replace(' ', '-')), { shouldDirty: true });
+                }}
+                registerOptions={{ required: true }}
                 description="The entity type is the unique identifier and used in the url. There's no need to change this value unless you want a different url identifier."
-                {...register('entityType', {
-                  required: true,
-                  onChange: (event) => {
-                    setValue('entityType', slugify(event.target.value.replace(' ', '-')));
-                  },
-                })}
               />
               <div>
                 <Controller

@@ -24,7 +24,7 @@ export function EntityFields() {
   // Default render
   return (
     <Grid container spacing={3}>
-      {fields.map((field) => {
+      {fields?.map((field) => {
         const fieldCache = getCachedField(field, entityCategory);
         return (
           <InputField

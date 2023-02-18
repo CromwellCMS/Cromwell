@@ -1,45 +1,45 @@
-@import "../common.module.scss";
+@import '../common.module.scss';
 
 .CartList {
-    box-sizing: border-box;
-    height: 100%;
+  box-sizing: border-box;
+  height: 100%;
 }
 
 .productList {
-    height: 100%;
-    overflow: auto;
-    @include styledScrollBar;
-    box-sizing: border-box;
+  height: 100%;
+  overflow: auto;
+  @include styledScrollBar;
+  box-sizing: border-box;
 }
 
 .cartHeader {
-    display: flex;
-    justify-content: space-between;
-    box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  box-sizing: border-box;
 }
 
 .cartTotal {
-    display: flex;
-    box-sizing: border-box;
+  display: flex;
+  box-sizing: border-box;
 }
 
 .cartTotalText {
-    font-weight: 500;
-    margin: 0;
-    line-height: 1.5;
-    margin-right: 10px;
+  font-weight: 500;
+  margin: 0;
+  line-height: 1.5;
+  margin-right: 10px;
 }
 
 .price {
-    margin: 0;
-    line-height: 1.5;
-    font-weight: 400;
+  margin: 0;
+  line-height: 1.5;
+  font-weight: 400;
 }
 
 .oldPrice {
-    text-decoration: line-through;
-    opacity: 0.7;
-    margin: 0;
-    line-height: 1.5;
-    margin-right: 10px;
+  text-decoration: line-through;
+  opacity: 0.7;
+  margin: 0;
+  line-height: 1.5;
+  margin-right: 10px;
 }

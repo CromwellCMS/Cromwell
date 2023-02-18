@@ -1,4 +1,11 @@
+import { CheckboxInput } from '@components/inputs/CheckboxInput';
+import { ColorInput, ColorInputProps } from '@components/inputs/ColorInput';
+import { DateInput, DateInputProps, DateInputType } from '@components/inputs/DateInput/DateInput';
+import { GalleryPicker, GalleryPickerProps } from '@components/inputs/GalleryInput/GalleryInput';
+import { ImageInput, ImageInputProps } from '@components/inputs/Image/ImageInput';
+import { SelectInput, SelectInputProps } from '@components/inputs/SelectInput';
 import { TextEditor } from '@components/inputs/TextEditor';
+import { TextInput, TextInputProps } from '@components/inputs/TextInput/TextInput';
 import {
   EDBEntity,
   getRandStr,
@@ -8,163 +15,14 @@ import {
   TImageSettings,
 } from '@cromwell/core';
 import { getEditorData, getEditorHtml } from '@helpers/editor';
+import { NumberFormatCustom } from '@helpers/NumberFormatCustom';
 import { Visibility as VisibilityIcon, VisibilityOff as VisibilityOffIcon } from '@mui/icons-material';
 import { CheckboxProps, IconButton, InputAdornment } from '@mui/material';
-import React, { useEffect, useRef, useState } from 'react';
-import { debounce } from 'throttle-debounce';
+import React, { useState } from 'react';
 
-import { CheckboxInput } from '../components/inputs/CheckboxInput';
-import { ColorInput, ColorInputProps } from '../components/inputs/ColorInput';
-import { DateInput, DateInputProps, DateInputType } from '../components/inputs/DateInput/DateInput';
-import { GalleryPicker, GalleryPickerProps } from '../components/inputs/GalleryInput/GalleryInput';
-import { ImageInput, ImageInputProps } from '../components/inputs/Image/ImageInput';
-import { SelectInput, SelectInputProps } from '../components/inputs/SelectInput';
-import { TextInput, TextInputProps } from '../components/inputs/TextInput/TextInput';
-import { useForceUpdate } from './forceUpdate';
-import { NumberFormatCustom } from './NumberFormatCustom';
-
-export type TRegisteredCustomField = TAdminCustomField & {
-  component: React.ComponentType<{
-    initialValue: string | undefined;
-    entity: TBasePageEntity;
-    onChange?: (value: any) => void;
-  }>;
-  saveData: () => string | Promise<string>;
-};
-
-export type TFieldDefaultComponent = React.ComponentType<{
-  initialValue: string | undefined;
-  entity: TBasePageEntity;
-  canValidate?: boolean;
-  error?: boolean;
-  options?: (
-    | {
-        value: string | number | undefined;
-        label: string;
-      }
-    | string
-    | number
-    | undefined
-  )[];
-  onChange?: (value: any) => void;
-}>;
-
-const customFields: Record<EDBEntity | string, Record<string, TRegisteredCustomField>> = {};
-const customFieldsForceUpdates: Partial<Record<EDBEntity, () => void>> = {};
-const onFieldRegisterListeners: Record<string, (field: TRegisteredCustomField) => any> = {};
-
-const fieldsCache: Record<
-  string,
-  {
-    component: TFieldDefaultComponent;
-    saveData: () => string | Promise<string>;
-    value?: any;
-  }
-> = {};
-
-export const registerCustomField = (field: TRegisteredCustomField) => {
-  if (!customFields[field.entityType]) customFields[field.entityType] = {};
-  customFields[field.entityType][field.key] = field;
-  customFieldsForceUpdates[field.entityType]?.();
-  Object.values(onFieldRegisterListeners).forEach((listener) => listener(field));
-};
-
-export const unregisterCustomField = (entityType: string, key: string) => {
-  if (customFields[entityType]) {
-    delete customFields[entityType][key];
-    customFieldsForceUpdates[entityType]?.();
-  }
-};
-
-export const addOnFieldRegisterEventListener = (id: string, listener: (field: TRegisteredCustomField) => any) => {
-  onFieldRegisterListeners[id] = listener;
-};
-export const removeOnFieldRegisterEventListener = (id: string) => {
-  delete onFieldRegisterListeners[id];
-};
-
-export const RenderCustomFields = (props: {
-  entityType: EDBEntity | string;
-  entityData: TBasePageEntity;
-  refetchMeta: () => Promise<Record<string, string> | undefined | null>;
-  onChange?: (field: TRegisteredCustomField, value: any) => void;
-  onDidMount?: () => void;
-}) => {
-  const { entityType, entityData, refetchMeta, onChange, onDidMount } = props;
-  const forceUpdate = useForceUpdate();
-  customFieldsForceUpdates[entityType] = forceUpdate;
-  const [updatedMeta, setUpdatedMeta] = useState<Record<string, string> | null>(null);
-
-  useEffect(() => {
-    // If some field registered after this page has fetched entity data, we need to
-    // re-request data for this field to get its custom meta
-    const onFieldRegistered = debounce(300, async () => {
-      const newMeta = await refetchMeta();
-      if (newMeta) setUpdatedMeta(newMeta);
-    });
-
-    addOnFieldRegisterEventListener(entityType, onFieldRegistered);
-    onDidMount?.();
-
-    return () => {
-      removeOnFieldRegisterEventListener(entityType);
-      delete customFieldsForceUpdates[entityType];
-    };
-  }, []);
-
-  // Just update the values that are undefined, but leave the rest
-  // for user input to be untouched
-  const customMeta = Object.assign({}, updatedMeta, entityData?.customMeta);
-
-  return (
-    <>
-      {Object.values(customFields[entityType] ?? {})
-        .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
-        .map((field) => {
-          const Comp = field.component;
-          return (
-            <Comp
-              key={field.key}
-              initialValue={customMeta?.[field.key]}
-              entity={entityData}
-              onChange={(value) => onChange?.(field, value)}
-            />
-          );
-        })}
-    </>
-  );
-};
-
-export const getCustomMetaFor = async (entityType: EDBEntity | string): Promise<Record<string, string>> => {
-  return Object.assign(
-    {},
-    ...(await Promise.all(
-      Object.values(customFields[entityType] ?? {}).map(async (field) => {
-        return {
-          [field.key]: await field.saveData(),
-        };
-      }),
-    )),
-  );
-};
-
-export const getCustomMetaKeysFor = (entityType: EDBEntity | string): string[] => {
-  return Object.values(customFields[entityType] ?? {}).map((field) => field.key);
-};
-
-export const getCustomFieldsFor = (entityType: EDBEntity | string): TRegisteredCustomField[] => {
-  return Object.values(customFields[entityType] ?? {});
-};
-
-const useInitialValue = (initialValue: any): [any, React.Dispatch<React.SetStateAction<any>>] => {
-  const [value, setValue] = useState(initialValue);
-  const initialValueRef = useRef(initialValue);
-  if (initialValue !== initialValueRef.current) {
-    initialValueRef.current = initialValue;
-    setValue(initialValue);
-  }
-  return [value, setValue];
-};
+import { registerCustomField } from './helpers';
+import { useInitialValue } from './hooks';
+import { fieldsCache } from './state';
 
 export const getCustomField = (settings: {
   id: string;

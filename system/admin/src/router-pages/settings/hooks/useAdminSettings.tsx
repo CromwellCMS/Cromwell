@@ -1,10 +1,10 @@
 import { BreadcrumbItem } from '@components/breadcrumbs';
 import { toast } from '@components/toast/toast';
-import { setStoreItem, TAdminCustomEntity, TAdminCustomField, TCmsSettings, TPermission, TRole } from '@cromwell/core';
+import { setStoreItem, TAdminCustomEntity, TAdminCustomField, TPermission, TRole } from '@cromwell/core';
 import { getGraphQLClient, getRestApiClient, useCmsSettings } from '@cromwell/core-frontend';
 import React, { useCallback, useEffect, useState } from 'react';
 
-export type TAdminCmsSettingsType = TCmsSettings;
+import { TAdminCmsSettingsType } from '../types';
 
 const uniqBy = (arr: any[], predicate?: any) => {
   const cb = typeof predicate === 'function' ? predicate : (o) => o[predicate];
@@ -48,6 +48,8 @@ const useAdminSettingsStore = () => {
         if (!settings.customMeta) settings.customMeta = {};
         setAdminSettings(settings);
       }
+
+      return settings;
     } catch (e) {
       console.error(e);
     }

@@ -1,45 +1,45 @@
-@import "../../../styles/common.module.scss";
+@import '../../../styles/common.module.scss';
 
 .SingIn {
-    @include paper;
-    background-color: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    width: 400px;
-    min-height: 300px;
-    max-height: 90vh;
-    max-width: 90vw;
+  @include paper;
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  width: 400px;
+  min-height: 300px;
+  max-height: 90vh;
+  max-width: 90vw;
 }
 
 .tabs {
-    width: 100%;
-    border-bottom: 1px solid #ccc;
+  width: 100%;
+  border-bottom: 1px solid #ccc;
 }
 
 .tab {
-    width: 50%;
+  width: 50%;
 }
 
 .loginForm {
-    padding: 20px;
+  padding: 20px;
 }
 
 div.textField {
-    margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 
 button.loginBtn {
-    margin: 20px auto 0 auto;
+  margin: 20px auto 0 auto;
 }
 
 .forgotPassText {
-    text-decoration: underline;
-    font-size: 14px;
-    cursor: pointer;
+  text-decoration: underline;
+  font-size: 14px;
+  cursor: pointer;
 }
 
 .resetPassInstructions {
-    font-size: 14px;
-    font-weight: 500;
-    margin-bottom: 15px;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 15px;
 }

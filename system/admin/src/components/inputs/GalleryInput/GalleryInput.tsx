@@ -123,93 +123,95 @@ export class GalleryPicker extends Component<
     return (
       <div className={clsx('w-full relative', this.props.className)} style={this.props.style}>
         {this.props.label && <p className="font-bold pb-1 pl-[2px] text-gray-700">{this.props.label}</p>}
-        {images?.length === 0 && (
-          <div className="flex h-[150px] w-full top-6 left-0 z-10 absolute">
-            <span className="font-bold mx-auto text-base p-1 text-gray-700 self-center">
-              No Images. Tap on + to add an image
-            </span>
-          </div>
-        )}
-        <ResponsiveGridLayout
-          margin={[0, 0]}
-          isResizable={false}
-          breakpoints={{ xs: 480, xxs: 0 }}
-          rowHeight={144}
-          layouts={this.getGridLayout(images)}
-          onLayoutChange={this.onLayoutChange(images)}
-          cols={{ xs: 1, xxs: 1 }}
-          draggableHandle=".draggableHandle"
-          className="rounded-lg bg-gray-100 min-h-[150px] py-2 px-1"
-        >
-          {images.map((image, index) => {
-            return (
-              <div key={(image?.id ?? index) + ''} className={'!h-36 w-full flex flex-row gap-1'}>
-                <GrabIcon className="rounded-md cursor-grab h-7 mr-2 p-1 w-7 self-center draggableHandle hover:bg-indigo-100" />
-                <ImageItem
-                  draggableHandleClass="draggableHandle"
-                  key={(image?.id ?? index) + ''}
-                  data={image}
-                  hideSrc={this.props.hideSrc}
-                  itemProps={{
-                    onImageChange: this.onImageChange,
-                    classes: this.props.classes?.imageInput,
-                    allImages: images,
-                  }}
-                />
-                {this.props.editLink && (
-                  <LinkIcon
-                    onClick={(event) => this.handleShowLink(index, event)}
-                    className="rounded-md cursor-pointer h-7 mr-2 p-1 w-7 self-center hover:bg-indigo-100"
+        <div className="rounded-lg bg-gray-100 ">
+          {images?.length === 0 && (
+            <div className="flex w-full top-[45%] left-0 z-10 absolute">
+              <span className="font-bold mx-auto text-base p-1 text-gray-700 self-center">
+                No Images. Tap on + to add an image
+              </span>
+            </div>
+          )}
+          <ResponsiveGridLayout
+            margin={[5, 15]}
+            isResizable={false}
+            breakpoints={{ xs: 480, xxs: 0 }}
+            rowHeight={144}
+            layouts={this.getGridLayout(images)}
+            onLayoutChange={this.onLayoutChange(images)}
+            cols={{ xs: 1, xxs: 1 }}
+            draggableHandle=".draggableHandle"
+            className="min-h-[150px] py-2 px-1"
+          >
+            {images.map((image, index) => {
+              return (
+                <div key={(image?.id ?? index) + ''} className={'!h-36 w-full flex flex-row gap-1'}>
+                  <GrabIcon className="rounded-md cursor-grab h-7 mr-2 p-1 w-7 self-center draggableHandle hover:bg-indigo-100" />
+                  <ImageItem
+                    draggableHandleClass="draggableHandle"
+                    key={(image?.id ?? index) + ''}
+                    data={image}
+                    hideSrc={this.props.hideSrc}
+                    itemProps={{
+                      onImageChange: this.onImageChange,
+                      classes: this.props.classes?.imageInput,
+                      allImages: images,
+                    }}
                   />
-                )}
-                <TrashIcon
-                  onClick={() => this.handleRemoveImage(index)}
-                  className="rounded-md cursor-pointer h-7 mr-2 p-1 text-gray-600 w-7 self-center hover:bg-indigo-100 hover:text-red-600"
-                />
-                {this.props.editLink && this.state?.editableLink === index && (
-                  <Popover
-                    elevation={0}
-                    classes={{ paper: styles.popover }}
-                    open={this.state?.editableLink === index}
-                    anchorEl={this.editableLinkRef}
-                    onClose={this.handleCloseLinkEdit}
-                    anchorOrigin={{
-                      vertical: 'bottom',
-                      horizontal: 'left',
-                    }}
-                    transformOrigin={{
-                      vertical: 'top',
-                      horizontal: 'left',
-                    }}
-                  >
-                    <TextField
-                      fullWidth
-                      onChange={(e) => this.handleChangeImageLink(e.target.value)}
-                      value={this.state?.editableLinkText ?? ''}
-                      label="Link"
-                      variant="standard"
+                  {this.props.editLink && (
+                    <LinkIcon
+                      onClick={(event) => this.handleShowLink(index, event)}
+                      className="rounded-md cursor-pointer h-7 mr-2 p-1 w-7 self-center hover:bg-indigo-100"
                     />
-                  </Popover>
-                )}
-              </div>
-            );
-          })}
-        </ResponsiveGridLayout>
-        <div className="flex flex-row w-full gap-2 justify-between">
-          <Tooltip title="Add image">
-            <IconButton className={styles.galleryAddImageBtn} aria-label="add image" onClick={this.handleAddImage}>
-              <AddIcon />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Clear all images">
-            <IconButton
-              className={styles.galleryAddImageBtn}
-              aria-label="clear image"
-              onClick={this.handleDeleteAllImages}
-            >
-              <FillTrashIcon className="h-6 text-gray-500 w-6 hover:text-red-500" />
-            </IconButton>
-          </Tooltip>
+                  )}
+                  <TrashIcon
+                    onClick={() => this.handleRemoveImage(index)}
+                    className="rounded-md cursor-pointer h-7 mr-2 p-1 text-gray-600 w-7 self-center hover:bg-indigo-100 hover:text-red-600"
+                  />
+                  {this.props.editLink && this.state?.editableLink === index && (
+                    <Popover
+                      elevation={0}
+                      classes={{ paper: styles.popover }}
+                      open={this.state?.editableLink === index}
+                      anchorEl={this.editableLinkRef}
+                      onClose={this.handleCloseLinkEdit}
+                      anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'left',
+                      }}
+                      transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'left',
+                      }}
+                    >
+                      <TextField
+                        fullWidth
+                        onChange={(e) => this.handleChangeImageLink(e.target.value)}
+                        value={this.state?.editableLinkText ?? ''}
+                        label="Link"
+                        variant="standard"
+                      />
+                    </Popover>
+                  )}
+                </div>
+              );
+            })}
+          </ResponsiveGridLayout>
+          <div className="flex flex-row w-full gap-2 justify-between">
+            <Tooltip title="Add image">
+              <IconButton className={styles.galleryAddImageBtn} aria-label="add image" onClick={this.handleAddImage}>
+                <AddIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Clear all images">
+              <IconButton
+                className={styles.galleryAddImageBtn}
+                aria-label="clear image"
+                onClick={this.handleDeleteAllImages}
+              >
+                <FillTrashIcon className="h-6 text-gray-500 w-6 hover:text-red-500" />
+              </IconButton>
+            </Tooltip>
+          </div>
         </div>
       </div>
     );

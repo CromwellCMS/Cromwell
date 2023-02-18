@@ -1,126 +1,26 @@
-import { TPermission, TPermissionName } from '@cromwell/core';
-import { Switch } from '@headlessui/react';
+import { SwitchInput } from '@components/inputs/SwitchInput';
+import { RegisteredTextInput } from '@components/inputs/TextInput';
+import { toast } from '@components/toast';
+import { TPermissionName, TRole } from '@cromwell/core';
+import { slugify } from '@helpers/slugify';
 import React, { useMemo } from 'react';
-import { Controller, FormProvider, useForm, useFormContext } from 'react-hook-form';
+import { Controller, FormProvider, useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
 
-import { ActionButton } from '../../../../components/actionButton';
-import { TBreadcrumbs } from '../../../../components/breadcrumbs';
-import { SwitchInput } from '../../../../components/inputs/SwitchInput';
-import { TextInput } from '../../../../components/inputs/TextInput/TextInput';
-import { toast } from '../../../../exports';
-import { slugify } from '../../../../helpers/slugify';
-import { useAdminSettings } from '../../hooks/useAdminSettings';
+import { SettingsPageInfo, useAdminSettings, useAdminSettingsContext } from '../../../hooks/useAdminSettings';
+import { ControlledPermissionCategory } from './PermissionCategory';
+import { ControlledPermissionOption } from './PermissionOption';
 
-const path = [
-  { title: 'Settings', link: '/settings/' },
-  { title: 'ACL', link: '/settings/acl' },
-];
-
-const ControlledPermissionOption = ({ name = '', data = null }: { name: string; data?: TPermission }) => {
-  const { control } = useFormContext();
-
-  return (
-    <Controller
-      name={name}
-      control={control}
-      render={({ field }) => (
-        <PermissionOption
-          value={field.value}
-          onChange={field.onChange}
-          label={data?.title}
-          description={data?.description}
-        />
-      )}
-    />
-  );
-};
-
-const ControlledPermissionCategory = ({
-  fields = [],
-  title = '',
-  description = '',
-}: {
-  fields?: string[];
-  title?: string;
-  description?: string;
-}) => {
-  const { setValue, watch } = useFormContext();
-
-  const value = watch(fields).reduce((a, v) => a && v, true);
-
-  const onChange = (next: boolean) => {
-    for (const field of fields) {
-      setValue(field, next);
-    }
-  };
-
-  return (
-    <div className="-mb-2 ml-4 block basis-full">
-      <div className="flex flex-row mt-8 justify-between">
-        <h2 className="font-bold basis-full">{title}</h2>
-        <Switch checked={value} onChange={onChange} className="h-full w-full">
-          <div className={`mx-2 mr-4 w-full h-full p-3 relative`}>
-            <div
-              className={`${value ? 'bg-indigo-800' : 'bg-gray-500'}
-          absolute right-1 top-1 inline-flex flex-shrink-0 h-[16px] w-[32px] border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus-visible:ring-2  focus-visible:ring-white focus-visible:ring-opacity-75`}
-            >
-              <span
-                aria-hidden="true"
-                className={`${value ? 'translate-x-[15px]' : 'translate-x-0'}
-              pointer-events-none inline-block h-[12px] w-[12px] rounded-full bg-white shadow-lg transform ring-0 transition ease-in-out duration-200`}
-              />
-            </div>
-          </div>
-        </Switch>
-      </div>
-      <p className="text-xs text-gray-700">{description}</p>
-    </div>
-  );
-};
-
-const PermissionOption = ({
-  value = false,
-  onChange = () => false,
-  label = '',
-  readerText = 'Use setting',
-  description = '',
-}: {
-  value?: boolean;
-  onChange?: (v?: boolean) => any;
-  readerText?: string;
-  label?: any;
-  description?: any;
-}) => {
-  return (
-    <div className="h-full w-full">
-      <Switch checked={value} onChange={onChange} className="h-full w-full">
-        <div
-          className={`border rounded-lg shadow-md m-2 w-full h-full p-3 relative ${
-            value ? 'shadow-indigo-400 border-indigo-500' : 'bg-white'
-          }`}
-        >
-          <div
-            className={`${value ? 'bg-indigo-800' : 'bg-gray-500'}
-          absolute right-1 top-1 inline-flex flex-shrink-0 h-[16px] w-[32px] border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus-visible:ring-2  focus-visible:ring-white focus-visible:ring-opacity-75`}
-          >
-            <span className="sr-only">{readerText}</span>
-            <span
-              aria-hidden="true"
-              className={`${value ? 'translate-x-[15px]' : 'translate-x-0'}
-              pointer-events-none inline-block h-[12px] w-[12px] rounded-full bg-white shadow-lg transform ring-0 transition ease-in-out duration-200`}
-            />
-          </div>
-          <p className="text-base text-left">{label}</p>
-          <p className="text-xs text-left text-gray-500">{description}</p>
-        </div>
-      </Switch>
-    </div>
-  );
+const info: SettingsPageInfo = {
+  breadcrumbs: [
+    { title: 'Settings', link: '/settings/' },
+    { title: 'ACL', link: '/settings/acl' },
+  ],
+  saveVisible: true,
 };
 
 export const CustomRoleSettingsPage = () => {
-  const { findRole, permissions, saveRole } = useAdminSettings();
+  const { findRole, permissions, saveRole, getRoles } = useAdminSettingsContext();
   const { roleId } = useParams<{ roleId?: string }>();
   const role = useMemo(() => {
     return findRole(parseInt(roleId));
@@ -194,16 +94,6 @@ export const CustomRoleSettingsPage = () => {
     };
   }, [permissions]);
 
-  const titlePath = useMemo(() => {
-    return [
-      ...path,
-      {
-        title: role?.title || 'Not found',
-        link: `/settings/acl/${role?.id}`,
-      },
-    ];
-  }, [role]);
-
   const onSubmit = async (data: { title?: string; name?: string; permissions: typeof permissionMap }) => {
     const { title, name, permissions } = data;
     const permissionList = Object.keys(permissions).filter((p) => permissions[p]) as TPermissionName[];
@@ -217,29 +107,34 @@ export const CustomRoleSettingsPage = () => {
 
     try {
       await saveRole(newRole);
+      await getRoles();
       toast.success(`Role saved`);
     } catch (e) {
       toast.error(`Could not save role.`);
     }
   };
 
-  const { register, setValue, formState, control } = methods;
+  const { setValue, formState, control } = methods;
 
   const dirtyDefinition = formState.dirtyFields.isEnabled || formState.dirtyFields.title || formState.dirtyFields.name;
   const dirtyPermissions = !!formState.dirtyFields.permissions;
 
+  useAdminSettings({
+    ...info,
+    breadcrumbs: [
+      ...info.breadcrumbs,
+      {
+        title: role?.title || 'Not found',
+        link: `/settings/acl/${role?.id}`,
+      },
+    ],
+    saveDisabled: !dirtyDefinition && !dirtyPermissions,
+    onSave: methods.handleSubmit(onSubmit),
+  });
+
   return (
     <FormProvider {...methods}>
       <form className="relative" onSubmit={methods.handleSubmit(onSubmit)}>
-        <div className="flex flex-row bg-gray-100 bg-opacity-60 w-full top-0 z-10 gap-2 backdrop-filter backdrop-blur-lg justify-between sticky">
-          <div className="w-full max-w-4xl px-1 lg:px-0">
-            <TBreadcrumbs path={titlePath} />
-            <ActionButton type="submit" uppercase bold>
-              save
-            </ActionButton>
-          </div>
-        </div>
-
         <div className="flex flex-col gap-2 relative lg:flex-row lg:gap-6">
           <div className="max-h-min my-1 top-16 self-start lg:order-2 lg:my-4 lg:sticky">
             <h2 className="font-bold text-gray-700 col-span-1">{role?.title} definition</h2>
@@ -253,27 +148,27 @@ export const CustomRoleSettingsPage = () => {
             }`}
           >
             <div className="grid gap-2 grid-cols-1 lg:grid-cols-2">
-              <TextInput
+              <RegisteredTextInput<TRole>
+                name="title"
                 label="Title"
                 placeholder="Custom Role"
                 required
+                registerOptions={{ required: true }}
                 description="Title for the role."
-                {...register('title', {
-                  required: true,
-                  onChange: (event) => {
-                    const val = event.target.value;
-                    setValue('name', slugify(val));
-                  },
-                })}
+                error={methods.formState.errors.title ? 'Title is required' : undefined}
               />
-              <TextInput
+              <RegisteredTextInput<TRole>
+                name="name"
+                onChange={(event) => {
+                  const val = event.target.value;
+                  setValue('name', slugify(val), { shouldDirty: true });
+                }}
+                error={methods.formState.errors.name ? 'Name is required' : undefined}
                 label="Name key"
                 placeholder="Will be filled automatically"
-                required
                 description="Internal key for role (will be automatically set)."
-                {...register('name', {
-                  required: true,
-                })}
+                required
+                registerOptions={{ required: true }}
               />
               <div>
                 <Controller

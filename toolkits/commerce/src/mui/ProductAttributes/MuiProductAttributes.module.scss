@@ -1,42 +1,42 @@
 body .attributeValue {
-    margin-right: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #aaa;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #aaa;
 }
 
 body .attributeValueChecked {
-    box-shadow: none;
-    border: 2px solid #333;
-    font-weight: 900;
+  box-shadow: none;
+  border: 2px solid #333;
+  font-weight: 900;
 }
 
 .attributeValueIcon {
-    width: 20px;
-    height: 20px;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: contain;
-    margin-right: 10px;
+  width: 20px;
+  height: 20px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  margin-right: 10px;
 }
 
 .attrTitle {
-    font-weight: 500;
+  font-weight: 500;
 }
 
 .attributeValueText {
-    margin: 0;
+  margin: 0;
 }
 
 .invalidAttributeTitle {
-    color: #aa2e25;
-    font-weight: 500;
+  color: #aa2e25;
+  font-weight: 500;
 }
 
 .invalidAttributeValue {
-    background-color: #ff000021;
-    border: 2px solid #d9443a;
+  background-color: #ff000021;
+  border: 2px solid #d9443a;
 
-    .attributeValueText {
-        color: #aa2e25;
-    }
+  .attributeValueText {
+    color: #aa2e25;
+  }
 }

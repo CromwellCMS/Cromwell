@@ -1,87 +1,87 @@
-@import "../../components/header/Header.module.scss";
-@import "../common.module.scss";
+@import '../../components/header/Header.module.scss';
+@import '../common.module.scss';
 
 .IndexPage {
-    padding: 0 0 20px 0;
+  padding: 0 0 20px 0;
 
-    header.appBar {
-        background-color: transparent;
-    }
+  header.appBar {
+    background-color: transparent;
+  }
 }
 
 .mainPostsWrapper {
-    display: flex;
-    flex-wrap: wrap;
-    width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
 }
 
 .main {
-    position: relative;
+  position: relative;
 }
 
 .titleWrapper {
-    padding: 200px 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
+  padding: 200px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 
 .title {
-    font-size: 48px;
-    font-weight: 500;
-    color: #fff;
-    margin-bottom: 10px;
-    border-bottom: 3px solid #fff;
+  font-size: 48px;
+  font-weight: 500;
+  color: #fff;
+  margin-bottom: 10px;
+  border-bottom: 3px solid #fff;
 }
 
 .description {
-    font-size: 22px;
-    max-width: 700px;
-    color: #fff;
-    text-align: center;
+  font-size: 22px;
+  max-width: 700px;
+  color: #fff;
+  text-align: center;
 }
 
 div.coverImage {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background-color: #000;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #000;
 
-    img {
-        height: 100%;
-        opacity: 0.85;
-    }
+  img {
+    height: 100%;
+    opacity: 0.85;
+  }
 }
 
 .postBigWrapper {
-    width: 50%;
-    margin: 0;
-    margin-bottom: 15px;
-    padding: 15px;
+  width: 50%;
+  margin: 0;
+  margin-bottom: 15px;
+  padding: 15px;
 }
 
 .postBigContent {
-    // @include paperElevated;
-    background-color: transparent;
-    box-shadow: 0 0 25px 2px rgba(0, 0, 0, 0.4);
+  // @include paperElevated;
+  background-color: transparent;
+  box-shadow: 0 0 25px 2px rgba(0, 0, 0, 0.4);
 }
 
 .postGrid {
-    display: flex;
-    flex-wrap: wrap;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .latestText {
-    font-weight: 500;
-    font-size: 26px;
-    margin: 20px 15px 10px 15px;
+  font-weight: 500;
+  font-size: 26px;
+  margin: 20px 15px 10px 15px;
 }
 
 @media (max-width: 900px) {
-    .postBigWrapper {
-        width: 100%;
-    }
+  .postBigWrapper {
+    width: 100%;
+  }
 }

@@ -1,4 +1,5 @@
 import { Modal as MuiModal } from '@mui/material';
+import clsx from 'clsx';
 import React, { useEffect, useRef } from 'react';
 
 import styles from './Modal.module.scss';
@@ -9,6 +10,7 @@ const Modal = (props: {
   onClose?: () => void;
   blurSelector?: string;
   className?: string;
+  modalClassName?: string;
   disableEnforceFocus?: boolean;
 }) => {
   const blurred = useRef(false);
@@ -49,7 +51,7 @@ const Modal = (props: {
       disableEnforceFocus={props.disableEnforceFocus}
       open={props.open}
       onClose={props.onClose}
-      className={styles.Modal}
+      className={clsx(styles.Modal, props.modalClassName)}
     >
       <div className={`${styles.modalContent} ${props.className ?? ''}`}>{props.children}</div>
     </MuiModal>
