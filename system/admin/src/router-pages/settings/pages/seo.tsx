@@ -60,11 +60,16 @@ export const SEOSettingsPage = () => {
       <form className="relative" onSubmit={methods.handleSubmit(onSubmit)}>
         <div className="flex flex-col z-4 gap-6 relative lg:flex-row">
           <div className="max-h-min my-4 lg:max-w-[13rem] top-16 self-start lg:order-2 lg:sticky">
-            <h2 className="font-bold text-gray-700 col-span-1">SEO Settings</h2>
+            <h2 className="font-bold text-gray-700 col-span-1 text-2xl mb-5">SEO Settings</h2>
             <p>Configure your SEO settings here.</p>
             <p className="text-red-600">
               Warning: This is a feature for tech-experts. Please use with caution. Wrong configurations may expose
               pages to bots.
+            </p>
+            <p>
+              <a href="https://cromwellcms.com/docs/features/seo" target="_blank" rel="noreferrer">
+                Read more in docs
+              </a>
             </p>
             <p className={`${isDirty ? 'text-indigo-500' : 'text-transparent'}`}>You have unsaved changes</p>
           </div>

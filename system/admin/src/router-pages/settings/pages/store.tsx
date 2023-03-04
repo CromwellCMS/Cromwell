@@ -57,7 +57,7 @@ export const StoreSettingsPage = () => {
       <form className="relative" onSubmit={methods.handleSubmit(onSubmit)}>
         <div className="flex flex-col z-4 gap-6 relative lg:flex-row">
           <div className="max-h-min my-4 lg:max-w-[13rem] top-16 self-start lg:order-2 lg:sticky">
-            <h2 className="font-bold text-gray-700 col-span-1">Shipping Settings</h2>
+            <h2 className="font-bold text-gray-700 col-span-1 text-2xl mb-3">Shipping Settings</h2>
             <p>Configure your shipping details</p>
             <p className={`${shippingDirty ? 'text-indigo-500' : 'text-transparent'}`}>You have unsaved changes</p>
           </div>
@@ -81,7 +81,7 @@ export const StoreSettingsPage = () => {
 
         <div className="flex flex-col mt-6 gap-6 relative lg:flex-row">
           <div className="flex-shrink max-h-min my-4 lg:max-w-[13rem] top-16 self-start lg:order-2 lg:sticky">
-            <h2 className="font-bold text-gray-700 col-span-1">Currency Settings</h2>
+            <h2 className="font-bold text-gray-700 col-span-1 text-2xl mb-3">Currency Settings</h2>
             <p>
               Add currencies, exchange rates and set your primary currency. To change a currency to primary, drag it
               from <GrabIcon className="h-4 mx-1 w-4 inline-block" /> to the top of the list.

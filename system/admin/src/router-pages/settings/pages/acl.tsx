@@ -23,7 +23,7 @@ export const ACLSettingsPage = () => {
     <>
       <div className="flex flex-col z-4 gap-6 relative lg:flex-row">
         <div className="max-h-min my-4 top-16 self-start lg:order-2 lg:max-w-[13rem] lg:sticky">
-          <h2 className="font-bold text-gray-700 col-span-1">Access Control List</h2>
+          <h2 className="font-bold text-gray-700 col-span-1 text-2xl mb-3">Access Control List</h2>
           {/* <p>Select an Entity or add a new one.</p> */}
           {/* <p className="text-red-600">
             Warning: Changes to custom data are permanent.

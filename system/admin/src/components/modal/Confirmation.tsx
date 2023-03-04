@@ -57,6 +57,7 @@ export class ConfirmPrompt extends React.Component<
 
   constructor(props) {
     super(props);
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     confirmPromptInst = this;
   }
 

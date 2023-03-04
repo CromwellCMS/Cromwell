@@ -38,7 +38,6 @@ import {
   tagListPageInfo,
   tagPageInfo,
   themeEditPageInfo,
-  themeListPageInfo,
   themeMarketPageInfo,
   TPageInfo,
   TSidebarLink,
@@ -67,7 +66,6 @@ export const getPageInfos = (): TPageInfo[] => {
   const defaultPageInfos: TPageInfo[] = [
     homePageInfo,
     themeEditPageInfo,
-    themeListPageInfo,
     productListInfo,
     productPageInfo,
     pluginListPageInfo,
@@ -193,7 +191,7 @@ export const getSideBarLinks = (): TSidebarLink[] => {
     },
     ...getCustomEntitySidebarLinks(),
     {
-      id: '5_themeListPage',
+      id: '5_themeEditorPage',
       title: 'Theme Editor',
       route: themeEditPageInfo.route,
       icon: <RectangleGroupIcon className="h-5 w-5" />,

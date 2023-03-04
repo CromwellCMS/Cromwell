@@ -30,9 +30,14 @@ export const CustomDataPage = () => {
     <>
       <div className="flex flex-col z-4 gap-6 relative lg:flex-row">
         <div className="max-h-min my-4 top-16 self-start lg:order-2 lg:max-w-[13rem] lg:sticky">
-          <h2 className="font-bold text-gray-700 col-span-1">Custom Data</h2>
+          <h2 className="font-bold text-gray-700 col-span-1 text-2xl mb-3">Custom Data</h2>
           <p>Select an Entity or add a new one.</p>
           <p className="text-red-600">Warning: Changes to custom data are permanent.</p>
+          <p>
+            <a href="https://cromwellcms.com/docs/features/custom-data" target="_blank" rel="noreferrer">
+              Read more in docs
+            </a>
+          </p>
         </div>
 
         <div className={`bg-white rounded-lg shadow-lg w-full p-4 max-w-4xl border border-white`}>

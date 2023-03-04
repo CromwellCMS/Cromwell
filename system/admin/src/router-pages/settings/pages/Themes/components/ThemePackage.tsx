@@ -1,5 +1,6 @@
+import { TextButton } from '@components/buttons/TextButton';
+import { themeEditPageInfo } from '@constants/PageInfos';
 import { TCCSVersion, TPackageCromwellConfig } from '@cromwell/core';
-import { getRestApiClient } from '@cromwell/core-frontend';
 import { Menu, Transition } from '@headlessui/react';
 import {
   ArrowUpCircleIcon,
@@ -8,10 +9,8 @@ import {
   TrashIcon,
 } from '@heroicons/react/24/outline';
 import { ArrowPathIcon, EllipsisVerticalIcon, PencilIcon } from '@heroicons/react/24/solid';
-import React, { Fragment, useCallback } from 'react';
+import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
-
-import { themeEditPageInfo } from '../../../constants/PageInfos';
 
 export const ThemePackage = ({
   isActive,
@@ -20,10 +19,9 @@ export const ThemePackage = ({
   isUnderUpdate,
   info,
   isChangingTheme,
-  setDeleteModal,
-  setChangingTheme,
-  updateConfig,
-  installable = false,
+  onDeleteTheme,
+  onActivateTheme,
+  onUpdateTheme,
 }: {
   isActive?: boolean;
   isInstalled?: boolean;
@@ -31,26 +29,11 @@ export const ThemePackage = ({
   isChangingTheme?: boolean;
   availableUpdate?: TCCSVersion;
   info: TPackageCromwellConfig;
-  setDeleteModal: React.Dispatch<React.SetStateAction<boolean>>;
-  setChangingTheme: React.Dispatch<React.SetStateAction<boolean>>;
-  updateConfig: () => Promise<any>;
+  onActivateTheme: () => Promise<any>;
+  onDeleteTheme: () => Promise<any>;
+  onUpdateTheme: () => Promise<any>;
   installable?: boolean;
 }) => {
-  const onActivate = useCallback(async () => {
-    const client = getRestApiClient();
-    setChangingTheme(true);
-
-    let success;
-    try {
-      success = await client.changeTheme(info.name);
-      await updateConfig();
-    } catch (e) {
-      console.error(e);
-    }
-
-    setChangingTheme(false);
-  }, [info, updateConfig]);
-
   return (
     <div className="flex flex-col w-full my-2 mr-2 max-w-2xl gap-2">
       <div
@@ -59,7 +42,7 @@ export const ThemePackage = ({
         }`}
       >
         <div className="flex flex-col xl:flex-row">
-          <div className="h-full h-48 w-48 mx-auto xl:mb-0 mb-3">
+          <div className="h-48 w-48 mx-auto xl:mb-0 mb-3">
             <div
               style={{
                 backgroundImage: `url("data:image/png;base64,${info.image}")`,
@@ -106,21 +89,18 @@ export const ThemePackage = ({
             <div className="flex space-x-1 text-sm font-medium">
               <div className="flex-auto flex space-x-1">
                 {isInstalled && isActive && (
-                  <Link to={`${themeEditPageInfo.baseRoute}`}>
-                    <button className="px-4 py-2 leading-5 text-white transition-colors duration-200 transform bg-indigo-700 rounded hover:bg-indigo-500 focus:outline-none">
-                      <PencilIcon className="w-4 h-4 inline mr-2" />
+                  <Link to={`${themeEditPageInfo.baseRoute}`} className="no-underline">
+                    <TextButton>
+                      <PencilIcon className="w-3 h-3 inline mr-2" />
                       Edit Theme
-                    </button>
+                    </TextButton>
                   </Link>
                 )}
                 {isInstalled && !isActive && (
-                  <button
-                    onClick={onActivate}
-                    className="px-4 py-2 leading-5 text-indigo-600 hover:text-indigo-500 rounded focus:outline-none"
-                  >
+                  <TextButton onClick={onActivateTheme} variant="outlined">
                     <CursorArrowRippleIcon className="w-4 h-4 inline mr-2" />
                     Activate Theme
-                  </button>
+                  </TextButton>
                 )}
                 <Menu as="div" className="relative inline-block text-left">
                   <div>
@@ -143,6 +123,7 @@ export const ThemePackage = ({
                           <Menu.Item>
                             {({ active }) => (
                               <button
+                                onClick={onUpdateTheme}
                                 className={`${
                                   active ? 'bg-violet-500 text-white' : 'text-gray-900 bg-violet-100 dark:bg-violet-900'
                                 } group flex rounded-md items-center animate-pulse w-full px-2 py-2 text-sm`}
@@ -165,21 +146,25 @@ export const ThemePackage = ({
                             </button>
                           )}
                         </Menu.Item>
-                        <hr className="my-2" />
-                        <Menu.Item>
-                          {({ active }) => (
-                            <button
-                              disabled={isUnderUpdate || isChangingTheme}
-                              onClick={() => setDeleteModal(true)}
-                              className={`${
-                                active ? 'bg-red-500 text-white' : 'text-red-600'
-                              } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
-                            >
-                              <TrashIcon className="w-4 h-4 inline mr-2" />
-                              Delete Theme
-                            </button>
-                          )}
-                        </Menu.Item>
+                        {!isActive && (
+                          <>
+                            <hr className="my-2" />
+                            <Menu.Item>
+                              {({ active }) => (
+                                <button
+                                  disabled={isUnderUpdate || isChangingTheme}
+                                  onClick={onDeleteTheme}
+                                  className={`${
+                                    active ? 'bg-red-500 text-white' : 'text-red-600'
+                                  } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
+                                >
+                                  <TrashIcon className="w-4 h-4 inline mr-2" />
+                                  Delete Theme
+                                </button>
+                              )}
+                            </Menu.Item>
+                          </>
+                        )}
                       </div>
                     </Menu.Items>
                   </Transition>

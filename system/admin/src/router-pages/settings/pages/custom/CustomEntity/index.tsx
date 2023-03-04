@@ -102,7 +102,7 @@ const CustomEntityForm = ({ entity }: { entity: TAdminCustomEntity }) => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="flex flex-col gap-2 relative lg:flex-row lg:gap-6">
           <div className="max-h-min my-1 top-16 self-start lg:order-2 lg:my-4 lg:sticky">
-            <h2 className="font-bold text-gray-700 col-span-1">{entityLabel} definition</h2>
+            <h2 className="font-bold text-gray-700 col-span-1 text-2xl mb-3">{entityLabel} definition</h2>
             <p>Edit entity definition</p>
             <p className={`${dirtyDefinition ? 'text-indigo-500' : 'text-transparent'}`}>You have unsaved changes</p>
           </div>
@@ -169,7 +169,7 @@ const CustomEntityForm = ({ entity }: { entity: TAdminCustomEntity }) => {
 
         <div className="flex flex-col mt-10 gap-2 relative lg:flex-row lg:gap-6">
           <div className="max-h-min my-1 top-16 self-start lg:order-2 lg:my-4 lg:sticky">
-            <h2 className="font-bold text-gray-700 col-span-1">{entityLabel} custom fields</h2>
+            <h2 className="font-bold text-gray-700 col-span-1 text-2xl mb-3">{entityLabel} custom fields</h2>
             <p>Customize fields for {entityLabel}</p>
             <p className={`${dirtyCustomFields ? 'text-indigo-500' : 'text-transparent'}`}>You have unsaved changes</p>
           </div>

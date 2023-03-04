@@ -1,5 +1,7 @@
 import { useContext, useEffect, useCallback } from 'react';
 import { UNSAFE_NavigationContext as NavigationContext } from 'react-router-dom';
+import { History } from 'history';
+
 /**
  * Blocks all navigation attempts. This is useful for preventing the page from
  * changing until some condition is met, like saving form data.
@@ -9,12 +11,12 @@ import { UNSAFE_NavigationContext as NavigationContext } from 'react-router-dom'
  * @see https://reactrouter.com/api/useBlocker
  */
 export function useBlocker(blocker, when = true) {
-  const { navigator } = useContext(NavigationContext);
+  const navigator = useContext(NavigationContext).navigator as History;
 
   useEffect(() => {
     if (!when) return;
 
-    const unblock = (navigator as any).block((tx) => {
+    const unblock = navigator.block((tx) => {
       const autoUnblockingTx = {
         ...tx,
         retry() {

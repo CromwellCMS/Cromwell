@@ -237,9 +237,14 @@ export const MigrationSettingsPage = () => {
       <form className="relative" onSubmit={methods.handleSubmit(onSubmit)}>
         <div className="flex flex-col z-4 gap-6 relative lg:flex-row">
           <div className="max-h-min my-4 lg:max-w-[13rem] top-16 self-start lg:order-2 lg:sticky">
-            <h2 className="font-bold text-gray-700 col-span-1">Backups</h2>
+            <h2 className="font-bold text-gray-700 col-span-1 text-2xl mb-3">Backups</h2>
             <p>Backup your system with all data.</p>
             <p>Files are in Excel format (.xlsx)</p>
+            <p>
+              <a href="https://cromwellcms.com/docs/features/migration" target="_blank" rel="noreferrer">
+                Read more in docs
+              </a>
+            </p>
             {/* <p className="text-red-600">Warning: This is a feature for tech-experts.</p> */}
           </div>
 
@@ -264,7 +269,7 @@ export const MigrationSettingsPage = () => {
 
         <div className="flex flex-col mt-10 z-4 gap-6 relative lg:flex-row">
           <div className="max-h-min my-4 lg:max-w-[13rem] top-16 self-start lg:order-2 lg:sticky">
-            <h2 className="font-bold text-gray-700 col-span-1">Import</h2>
+            <h2 className="font-bold text-gray-700 col-span-1 text-2xl mb-3">Import</h2>
             <p>Import your backup</p>
             <p className="text-red-600">Warning: This may override all your data. Use with caution.</p>
           </div>

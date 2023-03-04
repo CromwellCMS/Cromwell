@@ -137,7 +137,7 @@ export const CustomRoleSettingsPage = () => {
       <form className="relative" onSubmit={methods.handleSubmit(onSubmit)}>
         <div className="flex flex-col gap-2 relative lg:flex-row lg:gap-6">
           <div className="max-h-min my-1 top-16 self-start lg:order-2 lg:my-4 lg:sticky">
-            <h2 className="font-bold text-gray-700 col-span-1">{role?.title} definition</h2>
+            <h2 className="font-bold text-gray-700 col-span-1 text-2xl mb-3">{role?.title} definition</h2>
             <p>Edit Role definition</p>
             <p className={`${dirtyDefinition ? 'text-indigo-500' : 'text-transparent'}`}>You have unsaved changes</p>
           </div>
@@ -192,7 +192,7 @@ export const CustomRoleSettingsPage = () => {
 
         <div className="flex flex-col mt-8 z-4 gap-6 relative lg:flex-row">
           <div className="max-h-min my-4 top-16 self-start lg:order-2 lg:max-w-[13rem] lg:sticky">
-            <h2 className="font-bold text-gray-700 col-span-1">Permissions</h2>
+            <h2 className="font-bold text-gray-700 col-span-1 text-2xl mb-3">Permissions</h2>
             <p>Set permissions for {role?.title}.</p>
             <p className="text-red-600">Warning: Wrong configuration may expose features to roles!</p>
             <p className={`${dirtyPermissions ? 'text-indigo-500' : 'text-transparent'}`}>You have unsaved changes</p>

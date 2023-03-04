@@ -5,6 +5,7 @@ import { languages } from '@constants/languages';
 import { timezones } from '@constants/timezones';
 import { EDBEntity, TCmsPublicSettings } from '@cromwell/core';
 import { RenderCustomFields } from '@helpers/customFields';
+import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import React from 'react';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
 
@@ -71,7 +72,7 @@ export const GeneralSettingsPage = () => {
       <form className="relative" onSubmit={form.handleSubmit(onSubmit)}>
         <div className="flex flex-col gap-2 relative lg:flex-row lg:gap-6">
           <div className="max-h-min my-1 lg:max-w-[13rem] top-16 self-start lg:order-2 lg:my-4 lg:sticky">
-            <h2 className="font-bold text-gray-700 col-span-1">System settings</h2>
+            <h2 className="font-bold text-gray-700 col-span-1 text-2xl mb-3">System settings</h2>
             <p>Configure global settings for the whole system.</p>
             <p className={`${form.formState.isDirty ? 'text-indigo-500' : 'text-transparent'}`}>
               You have unsaved changes
@@ -140,6 +141,41 @@ export const GeneralSettingsPage = () => {
                   )}
                 />
               </div>
+              <div className="col-span-2"></div>
+              <RegisteredTextInput<TAdminCmsSettingsType>
+                name="sendFromEmail"
+                label={
+                  <span>
+                    Send e-mails from
+                    <a
+                      href="https://cromwellcms.com/docs/features/mail"
+                      className="inline ml-1"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <InformationCircleIcon className="h-5 w-5 inline" />
+                    </a>
+                  </span>
+                }
+                placeholder="contact@your-website.com"
+              />
+              <RegisteredTextInput<TAdminCmsSettingsType>
+                name="smtpConnectionString"
+                label={
+                  <span>
+                    SMTP Connection String
+                    <a
+                      href="https://cromwellcms.com/docs/features/mail"
+                      className="inline ml-1"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <InformationCircleIcon className="h-5 w-5 inline" />
+                    </a>
+                  </span>
+                }
+                placeholder="smtps://username:password@smtp.example.com"
+              />
               <div className="col-span-2"></div>
               <Controller
                 name="customMeta"

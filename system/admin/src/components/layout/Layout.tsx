@@ -7,7 +7,7 @@ import Head from 'next/head';
 import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
 import { Provider as ReduxProvider } from 'react-redux-ts';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 
 import Page404 from '../../router-pages/404/404page';
@@ -15,6 +15,7 @@ import PageErrorBoundary from '../errorBoundaries/PageErrorBoundary';
 import FileManager from '../fileManager/FileManager';
 import { ConfirmPrompt } from '../modal/Confirmation';
 import SideNav from '../sideNav/SideNav';
+import { BrowserRouter } from './components/BrowserRouter';
 import { useAppState } from './hooks/useAppState';
 import { useTheme } from './hooks/useTheme';
 import styles from './Layout.module.scss';
@@ -40,7 +41,7 @@ function Layout() {
         </Head>
         <div suppressHydrationWarning className="min-h-screen bg-gray-100 relative dark:bg-gray-800">
           <div className="flex items-start justify-between">
-            <BrowserRouter basename={'admin'}>
+            <BrowserRouter>
               <SideNav />
               <div className={styles.main} id="main-scroll-container">
                 {/* <Toolbar className={styles.dummyToolbar} /> */}

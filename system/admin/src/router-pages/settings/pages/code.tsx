@@ -44,7 +44,7 @@ export const CodeSettingsPage = () => {
       <form className="relative" onSubmit={methods.handleSubmit(onSubmit)}>
         <div className="flex flex-col z-4 gap-6 relative lg:flex-row">
           <div className="max-h-min my-4 lg:max-w-[13rem] top-16 self-start lg:order-2 lg:sticky">
-            <h2 className="font-bold text-gray-700 col-span-1">Code Injection</h2>
+            <h2 className="font-bold text-gray-700 col-span-1 text-2xl mb-3">Code Injection</h2>
             <p>
               Code under Head will be placed on the {'<head></head>'} section of the website. Footer HTML will be placed
               at the bottom of {'<body />'}.

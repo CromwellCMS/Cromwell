@@ -22,7 +22,7 @@ export const SettingsIndexPage = () => {
     <>
       <div className="grid gap-6 grid-cols-1 max-w-[1200px]">
         <div className="bg-white rounded-lg shadow-lg w-full p-4">
-          <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
+          <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
             <SettingItem
               href="/settings/general"
               icon={<CogIcon className="mx-auto h-8 w-8 self-center" />}
@@ -60,7 +60,7 @@ export const SettingsIndexPage = () => {
             />
 
             <SettingItem
-              href="/themes"
+              href="/settings/themes"
               icon={<RectangleGroupIcon className="mx-auto h-8 w-8 self-center" />}
               title="Themes"
               description="Customize, add a new theme or change the current active theme."

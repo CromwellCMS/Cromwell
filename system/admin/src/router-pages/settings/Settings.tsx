@@ -16,6 +16,7 @@ import { GeneralSettingsPage } from './pages/general';
 import { MigrationSettingsPage } from './pages/migration';
 import { SEOSettingsPage } from './pages/seo';
 import { StoreSettingsPage } from './pages/store';
+import { ThemeListing } from './pages/Themes';
 
 // import SettingsOld from "./SettingsOld"
 
@@ -23,7 +24,7 @@ export const SettingsPage = () => {
   const settings = useAdminSettingsContext();
 
   return (
-    <div className="p-3 md:p-4">
+    <div className="p-3 md:p-4 max-w-[1200px] w-[100%] mx-auto">
       <PageStickyHeader
         hideSaveButton={!settings.saveVisible}
         disableSaveButton={settings.saveDisabled}
@@ -46,7 +47,7 @@ export const SettingsPage = () => {
         <Route path={`acl`} element={<ACLSettingsPage />} />
         <Route path={`acl/:roleId`} element={<CustomRoleSettingsPage />} />
         <Route path={`custom-data`} element={<CustomDataPage />} />
-        <Route path={`custom-data/product`} element={<DefaultEntitySettingsPage entityType={EDBEntity.Product} />} />
+        <Route path={`crustom-data/poduct`} element={<DefaultEntitySettingsPage entityType={EDBEntity.Product} />} />
         <Route
           path={`custom-data/category`}
           element={<DefaultEntitySettingsPage entityType={EDBEntity.ProductCategory} />}
@@ -57,6 +58,7 @@ export const SettingsPage = () => {
         <Route path={`custom-data/general`} element={<DefaultEntitySettingsPage entityType={EDBEntity.CMS} />} />
         <Route path={`custom-data/:entityType`} element={<CustomEntitySettingsPage />} />
         <Route path={`migration`} element={<MigrationSettingsPage />} />
+        <Route path={`themes`} element={<ThemeListing />} />
         <Route index element={<SettingsIndexPage />} />
       </Routes>
     </div>

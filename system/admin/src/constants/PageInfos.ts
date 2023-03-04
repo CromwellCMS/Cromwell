@@ -20,7 +20,6 @@ const SettingsPage = lazy(() => import('../router-pages/settings/Settings'));
 const TagPage = lazy(() => import('../router-pages/tag/Tag'));
 const TagListPage = lazy(() => import('../router-pages/tagList/TagList'));
 const ThemeEditPage = lazy(() => import('../router-pages/themeEdit/ThemeEdit'));
-const ThemeListPage = lazy(() => import('../router-pages/themeList/ThemeList'));
 const UserPage = lazy(() => import('../router-pages/user/User'));
 const UserListPage = lazy(() => import('../router-pages/userList/UserList'));
 const WelcomePage = lazy(() => import('../router-pages/welcome/Welcome'));
@@ -56,12 +55,6 @@ export const homePageInfo: TPageInfo = {
   route: '/',
   component: DashboardPage,
   permissions: ['read_cms_statistics'],
-};
-export const themeListPageInfo: TPageInfo = {
-  name: 'ThemeList',
-  route: '/themes',
-  component: ThemeListPage,
-  permissions: ['read_themes'],
 };
 export const themeEditPageInfo: TPageInfo = {
   name: 'ThemeEdit',

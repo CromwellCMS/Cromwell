@@ -43,7 +43,7 @@ export const SettingItem = ({
       <div className="col-span-3">
         <p className="font-bold mb-1 text-gray-700 group-hover:text-indigo-500">{title}</p>
         <p className="text-xs mt-1 text-gray-400 group-hover:text-gray-700">{description}</p>
-        <p className="text-xs mt-0 text-transparent group-hover:text-red-400">{warning}</p>
+        <p className="text-xs mt-0 text-transparent group-hover:text-red-400 absolute bottom-[-10px]">{warning}</p>
       </div>
     </Wrapper>
   );
