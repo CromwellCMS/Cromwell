@@ -53,16 +53,15 @@ export function PageContent(props: TFieldsComponentProps<TPost>) {
   }, [props.entityData]);
 
   return (
-    <div className={styles.Post}>
+    <div
+      className={styles.Post}
+      style={{
+        margin: '0 0 20px 0',
+      }}
+    >
       {isLoading && (
         <>
-          <Skeleton
-            width="100%"
-            height="100px"
-            style={{
-              margin: '0 0 20px 0',
-            }}
-          />
+          <Skeleton width="100%" height="100px" />
           {textPreloader}
         </>
       )}

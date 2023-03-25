@@ -29,13 +29,6 @@ export default function ProductPage() {
         listLabel="Products"
         entityLabel="Product"
         defaultPageName="product"
-        styles={{
-          content: {
-            backgroundColor: 'transparent',
-            padding: 0,
-            boxShadow: 'none',
-          },
-        }}
         getById={(id) => {
           return client.getProductById(
             id,
@@ -164,7 +157,6 @@ export default function ProductPage() {
           getEntityHeaderCenter: () => <Header />,
         }}
         disableMeta={activeTabNum !== 0}
-        classes={{ content: activeTabNum !== 0 ? 'bg-transparent border-0' : '' }}
       />
     </ProductContext.Provider>
   );

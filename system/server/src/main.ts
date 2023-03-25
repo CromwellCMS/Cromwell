@@ -1,3 +1,4 @@
+import '@cromwell/server/src/helpers/patches';
 import 'reflect-metadata';
 
 import { ApolloServer } from '@apollo/server';
@@ -61,13 +62,13 @@ async function bootstrap(): Promise<void> {
   const apolloServer = new ApolloServer({
     schema,
     introspection: envMode.envMode === 'dev',
+    formatError: getErrorFormatter(envMode),
     plugins: [
       fastifyApolloDrainPlugin(fastifyInstance),
       envMode.envMode === 'dev'
         ? ApolloServerPluginLandingPageLocalDefault({ footer: false })
         : ApolloServerPluginLandingPageDisabled(),
     ],
-    formatError: getErrorFormatter(envMode),
   });
 
   await apolloServer.start();

@@ -22,12 +22,6 @@ export default function OrderPage() {
       listLabel="Orders"
       disableMeta
       entityLabel="Order"
-      styles={{
-        content: {
-          backgroundColor: 'transparent',
-          padding: 0,
-        },
-      }}
       getById={(id) => {
         const metaKeys = getCustomMetaKeysFor(EDBEntity.Order);
 
@@ -50,7 +44,6 @@ export default function OrderPage() {
       update={client.updateOrder}
       create={client.createOrder}
       deleteOne={client.deleteOrder}
-      classes={{ content: 'bg-transparent border-0 p-0' }}
       customElements={{
         getEntityFields: (props) => (
           <PageContent {...props} cstoreRef={cstoreRef} dataRef={dataRef} cartUpdatedRef={cartUpdatedRef} />

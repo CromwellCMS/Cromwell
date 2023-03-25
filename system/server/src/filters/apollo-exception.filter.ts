@@ -3,6 +3,8 @@ import { HttpStatus } from '@nestjs/common';
 import { TEnv } from '../helpers/settings';
 
 export const getErrorFormatter = (env: TEnv) => (err: any) => {
+  console.error(err);
+
   return {
     message: err.originalError?.message,
     path: err.path,

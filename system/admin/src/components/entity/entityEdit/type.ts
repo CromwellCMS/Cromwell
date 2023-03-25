@@ -11,9 +11,9 @@ export type TEntityEditProps<
   fields?: TEditField<TEntityType>[];
   onSave?: (entity: Omit<TEntityType, 'id'>) => Promise<Omit<TEntityType, 'id'>>;
   classes?: {
-    content?: string;
+    fields?: string;
   };
   styles?: {
-    content?: SxProps;
+    fields?: SxProps;
   };
 };

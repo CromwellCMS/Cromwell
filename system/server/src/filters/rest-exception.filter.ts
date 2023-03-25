@@ -9,6 +9,7 @@ export class RestExceptionFilter implements NestExceptionFilter {
     const request = ctx.getRequest<Request>();
     const status = exception.getStatus();
     const message = exception.message || 'Internal error';
+    console.error(exception);
 
     response.status(status).send({
       message,

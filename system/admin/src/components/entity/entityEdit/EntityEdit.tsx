@@ -228,7 +228,6 @@ class EntityEdit<
   };
 
   render() {
-    const { classes = {} } = this.props;
     const { entityData, notFound, isLoading } = this.state ?? {};
 
     if (notFound) {
@@ -263,13 +262,16 @@ class EntityEdit<
       <EntityEditContextProvider value={{ pageProps: this.props, fieldProps: elementProps }}>
         <Box className={styles.EntityEdit}>
           <EntityHeader />
-          <Box className={clsx(styles.content, classes.content)} sx={this.props.styles?.content}>
-            {isLoading &&
-              Array(8)
+          {isLoading && (
+            <Box className={clsx(styles.fields)}>
+              {Array(8)
                 .fill(1)
-                .map((it, index) => <Skeleton style={{ marginBottom: '10px' }} key={index} height={'50px'} />)}
-            <EntityFields />
-          </Box>
+                .map((it, index) => (
+                  <Skeleton style={{ marginBottom: '10px' }} key={index} height={'50px'} />
+                ))}
+            </Box>
+          )}
+          <EntityFields />
         </Box>
       </EntityEditContextProvider>
     );
