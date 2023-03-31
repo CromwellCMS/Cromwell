@@ -1,34 +1,26 @@
-import { TCmsDashboardLayout, TCmsStats, TProductReview } from '@cromwell/core';
-import React, { Suspense, useEffect, useState } from 'react';
-import { DashboardContextProvider, useDashboard } from '../../hooks/useDashboard';
-import { Responsive, WidthProvider } from 'react-grid-layout';
-import { PageViewsWidget } from './widgets/pageViews';
-import { ProductRatingWidget } from './widgets/productRating';
-import { SalesValueWidget } from './widgets/salesValue';
-import useLongPress from '../../hooks/useLongPress';
-import { SalesLastWeekWidget } from './widgets/salesLastWeek';
-import { OrdersLastWeekWidget } from './widgets/ordersLastWeek';
+import { TextButton } from '@components/buttons/TextButton';
 import { CogIcon } from '@heroicons/react/24/outline';
-import { PageViewsList } from './widgets/pageViewsList';
-import { WidgetPanel } from './widgets/widgetPanel';
+import { DashboardContextProvider, useDashboard } from '@hooks/useDashboard';
+import useLongPress from '@hooks/useLongPress';
+import React, { useEffect, useState } from 'react';
+import { Responsive, WidthProvider } from 'react-grid-layout';
+
 import { AddWidgetMenu } from './components/addWidgetMenu';
+import { OrdersLastWeekWidget } from './widgets/ordersLastWeek';
+import { PageViewsWidget } from './widgets/pageViews';
+import { PageViewsList } from './widgets/pageViewsList';
+import { ProductRatingWidget } from './widgets/productRating';
 import { ProductReviewsList } from './widgets/productReviews';
+import { SalesLastWeekWidget } from './widgets/salesLastWeek';
+import { SalesValueWidget } from './widgets/salesValue';
+import { WidgetPanel } from './widgets/widgetPanel';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
 const Dashboard = () => {
   const [isEditing, setEditing] = useState(false);
-  const {
-    isLoadingLayout,
-    getLayout,
-    layout,
-    saveLayout,
-    setLayout,
-    getReviews,
-    getStats,
-    resetToSnapshot,
-    customWidgets,
-  } = useDashboard();
+  const { isLoadingLayout, layout, saveLayout, setLayout, getReviews, getStats, resetToSnapshot, customWidgets } =
+    useDashboard();
   const longPressEvent = useLongPress(
     () => {
       setEditing(true);
@@ -51,30 +43,30 @@ const Dashboard = () => {
       <div
         className={`${
           isEditing ? 'bg-white shadow-md top-2 rounded-lg ' : ''
-        } sticky top-0 backdrop-filter backdrop-blur-xl z-[40] flex flex-row py-2 px-4 justify-between transform transition-all`}
+        } sticky top-0 backdrop-filter backdrop-blur-xl z-[40] flex flex-row py-3 px-4 justify-between transform transition-all items-center`}
       >
-        <h1 className="font-bold text-3xl inline-block">{isEditing ? 'Edit' : 'Dashboard'}</h1>
+        <h1 className="font-bold text-2xl inline-block">{isEditing ? 'Edit' : 'Dashboard'}</h1>
         {isEditing && <AddWidgetMenu />}
         {isEditing && (
-          <div className="inline-block self-center">
-            <button
-              className="mx-1 text-xs py-1"
+          <div className="flex self-center">
+            <TextButton
+              variant="outlined"
+              className="mx-1 text-xs py-1 mr-2"
               onClick={() => {
                 resetToSnapshot();
                 setEditing(false);
               }}
             >
-              cancel
-            </button>
-            <button
+              Cancel
+            </TextButton>
+            <TextButton
               onClick={async () => {
                 await saveLayout();
                 setEditing(false);
               }}
-              className="rounded-lg bg-indigo-700 shadow-lg mx-2 text-xs text-white text-center py-1 px-6 transform transition-all hover:bg-indigo-600 hover:shadow-xl"
             >
-              save
-            </button>
+              Save
+            </TextButton>
           </div>
         )}
         {!isEditing && (
@@ -109,73 +101,53 @@ const Dashboard = () => {
         >
           {layout?.lg
             ?.map((item) => {
+              let content;
+
               if (item.i === 'productRating') {
-                return (
-                  <div key="productRating" className="h-full w-full">
-                    <ProductRatingWidget id="productRating" isEditing={isEditing} />
-                  </div>
-                );
+                content = <ProductRatingWidget id="productRating" isEditing={isEditing} />;
               }
 
               if (item.i === 'salesValue') {
-                return (
-                  <div key="salesValue" className="h-full w-full">
-                    <SalesValueWidget id="salesValue" isEditing={isEditing} />
-                  </div>
-                );
+                content = <SalesValueWidget id="salesValue" isEditing={isEditing} />;
               }
 
               if (item.i === 'pageViews') {
-                return (
-                  <div key="pageViews" className="h-full w-full">
-                    <PageViewsWidget id="pageViews" isEditing={isEditing} />
-                  </div>
-                );
+                content = <PageViewsWidget id="pageViews" isEditing={isEditing} />;
               }
 
               if (item.i === 'salesValueLastWeek') {
-                return (
-                  <div key="salesValueLastWeek" className="h-full w-full">
-                    <SalesLastWeekWidget id="salesValueLastWeek" isEditing={isEditing} />
-                  </div>
-                );
+                content = <SalesLastWeekWidget id="salesValueLastWeek" isEditing={isEditing} />;
               }
 
               if (item.i === 'pageViewsStats') {
-                return (
-                  <div key="pageViewsStats" className="h-full w-full">
-                    <PageViewsList id="pageViewsStats" isEditing={isEditing} />
-                  </div>
-                );
+                content = <PageViewsList id="pageViewsStats" isEditing={isEditing} />;
               }
 
               if (item.i === 'productReviews') {
-                return (
-                  <div key="productReviews" className="h-full w-full">
-                    <ProductReviewsList id="productReviews" isEditing={isEditing} />
-                  </div>
-                );
+                content = <ProductReviewsList id="productReviews" isEditing={isEditing} />;
               }
 
               if (item.i === 'ordersLastWeek') {
-                return (
-                  <div key="ordersLastWeek" className="h-full w-full">
-                    <OrdersLastWeekWidget id="ordersLastWeek" isEditing={isEditing} />
-                  </div>
+                content = <OrdersLastWeekWidget id="ordersLastWeek" isEditing={isEditing} />;
+              }
+
+              if (!content) {
+                const widgetName = item.i.replace('$widget_', '');
+                const widget = customWidgets.find((k) => k.key === widgetName);
+                content = (
+                  <WidgetPanel isEditing={isEditing} id={widgetName}>
+                    {widget}
+                  </WidgetPanel>
                 );
               }
 
-              const widget = customWidgets.find((k) => k.key === item.i.replace('$widget_', ''));
-
               return (
-                <div key={item.i} className="h-full w-full">
-                  <WidgetPanel isEditing={isEditing} id={item.i}>
-                    {widget}
-                  </WidgetPanel>
+                <div key={item.i} id={item.i.replace('$widget_', '')} className="h-full w-full">
+                  {content}
                 </div>
               );
             })
-            .filter((k) => k)}
+            .filter(Boolean)}
         </ResponsiveGridLayout>
       </div>
     </div>

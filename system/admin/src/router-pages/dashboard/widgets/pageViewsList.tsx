@@ -1,18 +1,23 @@
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/solid';
+import { useDashboard } from '@hooks/useDashboard';
 import React from 'react';
 
-import { useDashboard } from '../../../hooks/useDashboard';
 import { WidgetPanel } from './widgetPanel';
 
 export const PageViewsList = ({ isEditing = false, id = 'pageViewsStats' }) => {
   const { stats, isLoadingStats } = useDashboard();
-  // console.log(stats);
   return (
     <WidgetPanel isEditing={isEditing} id={id}>
-      <div className="h-full">
-        <h3 className="bg-white pb-2 w-[calc(100%-10px)] block">Page views</h3>
+      <div className="h-full flex flex-col">
+        <h3 className="bg-white pb-2 w-[calc(100%-10px)] block text-xl">Page views</h3>
 
-        {!isLoadingStats && (
+        {!isLoadingStats && !stats?.topPageViews?.length && (
+          <div className="flex center h-full">
+            <p className="text-lg">no data yet</p>
+          </div>
+        )}
+
+        {!isLoadingStats && !!stats?.topPageViews?.length && (
           <div className="h-[calc(100%-26px)] grid grid-cols-1 relative overflow-y-auto scrollbar-slim">
             {stats?.topPageViews?.map((pageView, idx) => (
               <div

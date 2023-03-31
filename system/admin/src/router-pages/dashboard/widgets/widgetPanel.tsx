@@ -12,10 +12,12 @@ export const WidgetPanel = ({
   isEditing = false,
   id,
   children,
+  style,
 }: {
   isEditing?: boolean;
   id: string;
   children?: any;
+  style?: React.CSSProperties;
 }) => {
   const { deleteWidget } = useDashboard();
   return (
@@ -23,6 +25,7 @@ export const WidgetPanel = ({
       style={{
         animationDelay: `${randomNumber(-1, 0)}s`,
         animationDuration: `${randomNumber(0.3, 0.5)}s`,
+        ...style,
       }}
       className={`bg-white relative rounded-xl h-full w-full p-4 shadow-md ${
         isEditing ? styles.wiggler + ' shadow-indigo-300' : ''

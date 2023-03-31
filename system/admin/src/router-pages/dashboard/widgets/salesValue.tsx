@@ -1,9 +1,10 @@
-import React, { useEffect } from 'react';
-import { useDashboard } from '../../../hooks/useDashboard';
+import { useDashboard } from '@hooks/useDashboard';
+import React from 'react';
+
 import { WidgetPanel } from './widgetPanel';
 
 export const SalesValueWidget = ({ isEditing = false, id = 'salesValue' }) => {
-  const { stats, isLoadingStats, getStats, cstore } = useDashboard();
+  const { stats, isLoadingStats, cstore } = useDashboard();
 
   return (
     <WidgetPanel isEditing={isEditing} id={id}>
@@ -13,9 +14,9 @@ export const SalesValueWidget = ({ isEditing = false, id = 'salesValue' }) => {
           style={{ backgroundImage: 'url(/admin/static/dashboard-sales.png)' }}
         ></div>
         <div className={'col-span-2' + ' draggableCancel'}>
-          <h3 className="block">Sales value</h3>
+          <h3 className="block text-xl">Sales value</h3>
           <p
-            className={`${isLoadingStats ? 'animate-pulse w-full rounded-md h-6 bg-gray-200' : 'font-bold text-2xl'}`}
+            className={`${isLoadingStats ? 'animate-pulse w-full rounded-md h-6 bg-gray-200' : 'font-bold text-xl'}`}
             id="pageViews"
           >
             {cstore.getActiveCurrencySymbol()}
@@ -24,7 +25,7 @@ export const SalesValueWidget = ({ isEditing = false, id = 'salesValue' }) => {
           <p
             className={`${
               isLoadingStats ? 'animate-pulse w-full rounded-md h-6 bg-gray-200' : ''
-            } text-xs text-gray-500`}
+            } text-xs text-gray-500 m-0`}
           >
             {!isLoadingStats && <span>from {stats?.orders ?? 0} orders</span>}
           </p>

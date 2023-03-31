@@ -1,19 +1,20 @@
-import React, { useMemo, useCallback, useRef } from 'react';
-import { AreaClosed, Line, Bar } from '@visx/shape';
 import { curveMonotoneX } from '@visx/curve';
-import { GridRows, GridColumns } from '@visx/grid';
-import { scaleTime, scaleLinear } from '@visx/scale';
-import { withTooltip, Tooltip, TooltipWithBounds, defaultStyles } from '@visx/tooltip';
-import { WithTooltipProvidedProps } from '@visx/tooltip/lib/enhancers/withTooltip';
 import { localPoint } from '@visx/event';
 import { LinearGradient } from '@visx/gradient';
-import { max, extent, bisector } from 'd3-array';
+import { GridColumns, GridRows } from '@visx/grid';
+import { scaleLinear, scaleTime } from '@visx/scale';
+import { AreaClosed, Bar, Line } from '@visx/shape';
+import { defaultStyles, Tooltip, TooltipWithBounds, withTooltip } from '@visx/tooltip';
+import { WithTooltipProvidedProps } from '@visx/tooltip/lib/enhancers/withTooltip';
+import { bisector, extent, max } from 'd3-array';
 import { timeFormat } from 'd3-time-format';
+import React, { useCallback, useMemo, useRef } from 'react';
 
 export const background = '#3b6978';
 export const background2 = '#204051';
 export const accentColor = '#edffea';
 export const accentColorDark = '#75daad';
+
 const tooltipStyles = {
   ...defaultStyles,
   background,

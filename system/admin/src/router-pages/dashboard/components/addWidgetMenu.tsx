@@ -1,16 +1,16 @@
 import { Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
+import { useDashboard } from '@hooks/useDashboard';
 import React, { Fragment } from 'react';
-import { useDashboard } from '../../../hooks/useDashboard';
 
-export const AddWidgetMenu = (props: any) => {
+export const AddWidgetMenu = () => {
   const { widgetList, addWidget } = useDashboard();
 
   return (
     <Menu as="div" className="text-left relative inline-block">
       <div>
         <Menu.Button className=" rounded-md font-medium text-sm w-full py-2 px-4 text-indigo-600 inline-flex justify-center hover:bg-indigo-100 focus:outline-none focus-visible:ring-white focus-visible:ring-2 focus-visible:ring-opacity-75">
-          add
+          Add
           <ChevronDownIcon className="h-5 -mr-1 ml-2 text-violet-400 w-5 hover:text-violet-300" aria-hidden="true" />
         </Menu.Button>
       </div>

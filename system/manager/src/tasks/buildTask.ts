@@ -89,7 +89,7 @@ export const buildTask = async (watch?: boolean, port?: string) => {
       console.error(`Failed to build ${moduleInfo.type}`);
       return false;
     }
-    console.log(`Successfully build ${moduleInfo.type}`);
+    console.log(`Successfully built ${moduleInfo.type}`);
   }
 };
 

@@ -43,11 +43,11 @@ export const getGlobalStyles: () => StyledGlobalStylesProps['styles'] = () => {
       paddingBottom: '0.5rem',
       borderRadius: '8px !important',
     },
-    '.RsuiteDateRangePicker .rs-picker-daterange .rs-picker-toggle.rs-btn .rs-picker-toggle-caret, .RsuiteDateRangePicker .rs-picker-daterange .rs-picker-toggle.rs-btn .rs-picker-toggle-clean':
-      {
-        height: '32px',
-        fontSize: '14px',
-      },
+    // '.RsuiteDateRangePicker .rs-picker-daterange .rs-picker-toggle.rs-btn .rs-picker-toggle-caret, .RsuiteDateRangePicker .rs-picker-daterange .rs-picker-toggle.rs-btn .rs-picker-toggle-clean':
+    //   {
+    //     height: '32px',
+    //     fontSize: '14px',
+    //   },
     '.RsuiteDateRangePicker .rs-picker-daterange .rs-picker-toggle.rs-btn .rs-picker-toggle-clean': {
       marginRight: '3px',
     },

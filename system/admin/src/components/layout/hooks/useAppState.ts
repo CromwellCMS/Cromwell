@@ -21,7 +21,7 @@ const initApp = async () => {
   const graphClient = getGraphQLClient();
 
   const env =
-    (await fetch('/configs/env.json')
+    (await fetch('/configs/public-env.json')
       .then((res) => res.json())
       .catch(console.error)) || null;
 

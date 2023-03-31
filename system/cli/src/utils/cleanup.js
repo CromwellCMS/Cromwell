@@ -11,6 +11,9 @@ const folders = [];
 const addFolder = (folderName) => fs.pathExistsSync(folderName) && folders.push(folderName);
 
 for (const folder of [
+  join(systemDir, 'core/backend/.cromwell'),
+  join(systemDir, 'core/frontend/.cromwell'),
+
   join(systemDir, 'core/backend/node_modules'),
   join(systemDir, 'core/common/node_modules'),
   join(systemDir, 'core/frontend/node_modules'),
@@ -44,6 +47,7 @@ for (const folder of [
   join(systemDir, 'renderer/package-lock.json'),
 
   join(systemDir, 'admin/.cromwell'),
+  join(systemDir, 'admin/.next'),
   join(systemDir, 'admin/node_modules'),
   join(systemDir, 'admin/build'),
   join(systemDir, 'admin/.tsbuildinfo'),

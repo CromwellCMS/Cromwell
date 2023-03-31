@@ -40,6 +40,7 @@ const start = async () => {
   const port = args.port ?? 4064;
 
   if (isProduction) {
+    spawnSync(`next -p ${port}`, { shell: true, cwd: getAdminPanelServiceBuildDir(), stdio: 'inherit' });
   } else {
     spawnSync(`next dev -p ${port}`, { shell: true, cwd: getAdminPanelDir(), stdio: 'inherit' });
   }
@@ -123,7 +124,7 @@ const outputEnv = async ({ isProduction, configsDir }: HelperOptions) => {
     console.error(error);
   }
 
-  fs.outputJSONSync(resolve(configsDir, 'env.json'), {
+  fs.outputJSONSync(resolve(configsDir, 'public-env.json'), {
     cmsSettings: {
       domain: cmsSettings?.domain,
       url: cmsSettings?.url,

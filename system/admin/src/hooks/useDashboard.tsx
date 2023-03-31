@@ -37,8 +37,6 @@ const defaultWidgetList = [
   { id: 'pageViewsStats', title: 'Top Page Views' },
 ];
 
-const defaultWidgetKeys = defaultWidgetList.map((k) => k.id);
-
 type ArrayElement<ArrayType extends readonly unknown[]> = ArrayType extends readonly (infer ElementType)[]
   ? ElementType
   : never;
@@ -155,6 +153,13 @@ const useDashboardContext = () => {
         lg: [...(oldLayout?.lg ?? []), getDefaultLayout(widgetKey)],
       };
     });
+
+    setTimeout(() => {
+      const element = document.getElementById(widgetKey);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+      }
+    }, 100);
   }, []);
 
   const saveLayout = useCallback(async () => {

@@ -1,6 +1,6 @@
 const fs = require('fs-extra');
 const { resolve } = require('path');
-const { spawn, spawnSync } = require('child_process');
+const { spawnSync } = require('child_process');
 const { getAdminPanelServiceBuildDir, getAdminPanelDir } = require('@cromwell/core-backend/dist/helpers/paths');
 const yargs = require('yargs-parser');
 
@@ -10,19 +10,22 @@ const scriptName = process.argv[2];
 const main = () => {
   const args = yargs(process.argv.slice(2));
   const buildDir = getAdminPanelServiceBuildDir();
+  const buildServerPath = resolve(buildDir, 'server.js');
+  const serverCompileDir = resolve(getAdminPanelDir(), 'server');
 
   const isServerBuilt = () => {
-    if (fs.existsSync(buildDir)) {
-      return fs.existsSync(resolve(buildDir, 'server.js'));
-    }
+    return fs.pathExistsSync(buildServerPath);
   };
 
   const buildServer = () => {
     // Cleanup old build
-    const fs = require('fs-extra');
-    fs.removeSync(getAdminPanelServiceBuildDir());
+    fs.removeSync(buildDir);
 
-    spawnSync(`npx --no-install rollup -c`, [], { shell: true, stdio: 'inherit', cwd: __dirname });
+    spawnSync(`npx --no-install tsc --project server/tsconfig.json --outDir ${buildDir}`, [], {
+      shell: true,
+      stdio: 'inherit',
+      cwd: serverCompileDir,
+    });
   };
 
   const buildWebApp = () => {
@@ -32,22 +35,22 @@ const main = () => {
   if (scriptName === 'build') {
     buildServer();
     buildWebApp();
-    return;
   }
 
   if (scriptName === 'dev') {
-    if (!isServerBuilt()) {
-      buildServer();
-    }
+    const { watchAndRestartServer } = require('@cromwell/utils/src/watchAndRestartServer');
 
-    spawn(`node ${resolve(buildDir, 'server.js')}`, ['development', args.port ? '--port=' + args.port : ''], {
-      shell: true,
-      stdio: 'inherit',
-      cwd: process.cwd(),
-      env: { NODE_ENV: 'development' },
+    fs.ensureDirSync(buildDir);
+    if (fs.pathExistsSync(buildServerPath)) fs.removeSync(buildServerPath);
+
+    watchAndRestartServer({
+      port: args.port || 4064,
+      compileCommand: `npx --no-install tsc --project server/tsconfig.json --outDir ${buildDir} --watch`,
+      compileDir: serverCompileDir,
+      buildOutputDir: buildDir,
+      buildServerPath: buildServerPath,
+      serverArgs: ['development', args.port ? '--port=' + args.port : ''],
     });
-
-    return;
   }
 
   if (scriptName === 'prod') {

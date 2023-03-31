@@ -1,10 +1,11 @@
-import React from 'react';
-import { useDashboard } from '../../../hooks/useDashboard';
-import { WidgetPanel } from './widgetPanel';
-import { format } from 'date-fns';
-import { AnimatedAxis, AnimatedGrid, AnimatedBarSeries, Tooltip, XYChart } from '@visx/xychart';
-import { useResizeDetector } from 'react-resize-detector';
+import { useDashboard } from '@hooks/useDashboard';
 import { LinearGradient } from '@visx/gradient';
+import { AnimatedAxis, AnimatedBarSeries, AnimatedGrid, Tooltip, XYChart } from '@visx/xychart';
+import { format } from 'date-fns';
+import React from 'react';
+import { useResizeDetector } from 'react-resize-detector';
+
+import { WidgetPanel } from './widgetPanel';
 
 function numFormat(num, digits) {
   const lookup = [
@@ -27,7 +28,7 @@ function numFormat(num, digits) {
 }
 
 export const OrdersLastWeekWidget = ({ isEditing = false, id = 'ordersLastWeek' }) => {
-  const { stats, isLoadingStats, cstore } = useDashboard();
+  const { stats, isLoadingStats } = useDashboard();
   const { width, height, ref } = useResizeDetector();
 
   const accessors = {
@@ -39,7 +40,7 @@ export const OrdersLastWeekWidget = ({ isEditing = false, id = 'ordersLastWeek' 
     <WidgetPanel isEditing={isEditing} id={id}>
       <div className="h-full w-full">
         <div className={'col-span-2' + ' draggableCancel'}>
-          <h3 className="block">Orders last week</h3>
+          <h3 className="block text-xl">Orders last week</h3>
           <p
             className={`${isLoadingStats ? 'animate-pulse w-full rounded-md h-6 bg-gray-200' : 'font-bold text-2xl'}`}
             id="ordersLastWeek"
