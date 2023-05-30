@@ -62,7 +62,7 @@ export const createGenericEntity = <
     @Authorized<string>(`read_${entityName.toLowerCase()}s`)
     @Query(() => PagedEntity)
     async [getPagedPath](
-      @Arg('pagedParams') pagedParams: PagedParamsInput<EntityType>,
+      @Arg('pagedParams', () => PagedParamsInput) pagedParams: PagedParamsInput<EntityType>,
     ): Promise<TPagedList<EntityType>> {
       return this.repository.getPaged(pagedParams);
     }
@@ -75,7 +75,7 @@ export const createGenericEntity = <
 
     @Authorized<string>(`read_${entityName.toLowerCase()}s`)
     @Query(() => EntityClass)
-    async [getBySlugPath](@Arg('slug') slug: string): Promise<EntityType | undefined> {
+    async [getBySlugPath](@Arg('slug', () => String) slug: string): Promise<EntityType | undefined> {
       return this.repository.getBySlug(slug);
     }
 

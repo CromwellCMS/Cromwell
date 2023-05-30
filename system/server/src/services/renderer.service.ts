@@ -1,8 +1,8 @@
 import { serviceLocator } from '@cromwell/core';
-import { getAuthSettings, getLogger, getThemeConfigs, TAuthSettings, getCmsSettings } from '@cromwell/core-backend';
-import { Injectable } from '@nestjs/common';
+import { getAuthSettings, getCmsSettings, getLogger, getThemeConfigs, TAuthSettings } from '@cromwell/core-backend';
 import fetch from 'node-fetch';
-import { Container, Service } from 'typedi';
+import { getDIService } from 'src/helpers/utils';
+import { Service } from 'typedi';
 
 import { CmsSettingsDto } from '../dto/cms-settings.dto';
 import { ThemeConfigDto } from '../dto/theme-config.dto';
@@ -10,12 +10,9 @@ import { ThemeService } from './theme.service';
 
 const logger = getLogger();
 
-@Injectable()
 @Service()
 export class RendererService {
-  private get themeService() {
-    return Container.get(ThemeService);
-  }
+  private themeService = getDIService(ThemeService);
 
   private authSettings: TAuthSettings;
 

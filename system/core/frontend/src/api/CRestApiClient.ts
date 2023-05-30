@@ -148,17 +148,25 @@ export class CRestApiClient {
   };
 
   /** @internal */
-  private logError = (route: string, e?: any) => {
-    console.error(`CRestApiClient route: ${route}` + e);
+  private logError = (url: string, e?: any) => {
+    console.error(`CRestApiClient route: ${url}` + e);
   };
 
   /** @internal */
-  private throwError(errorInfo: TRestApiErrorInfo, route: string, options?: TRequestOptions) {
+  private throwError({
+    url,
+    errorInfo,
+    options,
+  }: {
+    url: string;
+    errorInfo: TRestApiErrorInfo;
+    options?: TRequestOptions;
+  }) {
     for (const cb of Object.values(this.onErrorCallbacks)) {
       cb(errorInfo);
     }
     if (!options?.disableLog)
-      this.logError(route, `Request failed, status: ${errorInfo.statusCode}. ${errorInfo.message}`);
+      this.logError(url, `Request failed, status: ${errorInfo.statusCode}. ${errorInfo.message}`);
 
     throw Object.assign(new Error(), errorInfo);
   }
@@ -170,11 +178,12 @@ export class CRestApiClient {
   public fetch = async <T = any>(route: string, options?: TRequestOptions): Promise<T> => {
     if (this.initializePromise) await this.initializePromise;
     const baseUrl = this.getBaseUrl();
+    const url = `${baseUrl}/${route}`;
     const input = options?.input;
     let data;
     let errorInfo: TRestApiErrorInfo | null = null;
     try {
-      const res = await fetch(`${baseUrl}/${route}`, {
+      const res = await fetch(url, {
         method: options?.method ?? 'get',
         credentials: 'include',
         body: typeof input === 'string' ? input : input ? JSON.stringify(input) : undefined,
@@ -196,7 +205,7 @@ export class CRestApiClient {
     }
 
     if (errorInfo) {
-      this.throwError(errorInfo, route, options);
+      this.throwError({ url, errorInfo, options });
     }
 
     return data;
@@ -611,7 +620,7 @@ export class CRestApiClient {
     });
     const [data, errorInfo] = await this.handleError(response, await response.blob(), url, options?.disableLog);
     if (errorInfo) {
-      this.throwError(errorInfo, url, options);
+      this.throwError({ errorInfo, url, options });
     }
 
     const a = document.createElement('a');
@@ -645,7 +654,7 @@ export class CRestApiClient {
     });
     const [data, errorInfo] = await this.handleError(response, response.body, url, options?.disableLog);
     if (errorInfo) {
-      this.throwError(errorInfo, url, options);
+      this.throwError({ errorInfo, url, options });
     }
     return data;
   };

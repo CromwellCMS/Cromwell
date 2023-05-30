@@ -73,7 +73,10 @@ export class OrderResolver {
 
   @Authorized<TPermissionName>('read_orders')
   @Query(() => Order)
-  async [getOneBySlugPath](@Ctx() ctx: TGraphQLContext, @Arg('slug') slug: string): Promise<TOrder | undefined> {
+  async [getOneBySlugPath](
+    @Ctx() ctx: TGraphQLContext,
+    @Arg('slug', () => String) slug: string,
+  ): Promise<TOrder | undefined> {
     return getBySlugWithFilters('Order', ctx, ['read_orders'], ['read_orders'], slug, (...args) =>
       this.repository.getOrderBySlug(...args),
     );
@@ -83,8 +86,8 @@ export class OrderResolver {
   @Query(() => PagedOrder)
   async [getManyPath](
     @Ctx() ctx: TGraphQLContext,
-    @Arg('pagedParams', { nullable: true }) pagedParams?: PagedParamsInput<TOrder>,
-    @Arg('filterParams', { nullable: true }) filterParams?: OrderFilterInput,
+    @Arg('pagedParams', () => PagedParamsInput, { nullable: true }) pagedParams?: PagedParamsInput<TOrder>,
+    @Arg('filterParams', () => OrderFilterInput, { nullable: true }) filterParams?: OrderFilterInput,
   ): Promise<TPagedList<TOrder> | undefined> {
     return getManyWithFilters('Order', ctx, ['read_orders'], ['read_orders'], pagedParams, filterParams, (...args) =>
       this.repository.getFilteredOrders(...args),
@@ -96,7 +99,7 @@ export class OrderResolver {
   async [getOrdersOfUser](
     @Ctx() ctx: TGraphQLContext,
     @Arg('userId', () => Int) userId: number,
-    @Arg('pagedParams', { nullable: true }) pagedParams?: PagedParamsInput<TOrder>,
+    @Arg('pagedParams', () => PagedParamsInput, { nullable: true }) pagedParams?: PagedParamsInput<TOrder>,
   ): Promise<TPagedList<TOrder> | undefined> {
     this.checkUserAccess(ctx, userId);
     return getManyWithFilters(
@@ -112,7 +115,7 @@ export class OrderResolver {
 
   @Authorized<TPermissionName>('update_order')
   @Mutation(() => Order)
-  async [createPath](@Ctx() ctx: TGraphQLContext, @Arg('data') data: OrderInput): Promise<TOrder> {
+  async [createPath](@Ctx() ctx: TGraphQLContext, @Arg('data', () => OrderInput) data: OrderInput): Promise<TOrder> {
     return createWithFilters('Order', ctx, ['update_order'], data, (...args) => this.repository.createOrder(...args));
   }
 
@@ -121,7 +124,7 @@ export class OrderResolver {
   async [updatePath](
     @Ctx() ctx: TGraphQLContext,
     @Arg('id', () => Int) id: number,
-    @Arg('data') data: OrderInput,
+    @Arg('data', () => OrderInput) data: OrderInput,
   ): Promise<TOrder> {
     return updateWithFilters('Order', ctx, ['create_order'], data, id, (...args) =>
       this.repository.updateOrder(...args),
@@ -138,8 +141,8 @@ export class OrderResolver {
   @Mutation(() => Boolean)
   async [deleteManyPath](
     @Ctx() ctx: TGraphQLContext,
-    @Arg('input') input: DeleteManyInput,
-    @Arg('filterParams', { nullable: true }) filterParams?: OrderFilterInput,
+    @Arg('input', () => DeleteManyInput) input: DeleteManyInput,
+    @Arg('filterParams', () => OrderFilterInput, { nullable: true }) filterParams?: OrderFilterInput,
   ): Promise<boolean | undefined> {
     return deleteManyWithFilters('Order', ctx, ['delete_order'], input, filterParams, (...args) =>
       this.repository.deleteManyFilteredOrders(...args),

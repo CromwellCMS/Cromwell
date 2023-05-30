@@ -1,4 +1,4 @@
-import { getLogger, JwtAuthGuard, TRequestWithUser, validateEmail } from '@cromwell/core-backend';
+import { getLogger, TRequestWithUser, validateEmail } from '@cromwell/core-backend';
 import {
   Body,
   Controller,
@@ -9,11 +9,11 @@ import {
   Request,
   Response,
   UnauthorizedException,
-  UseGuards,
 } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
+import { Throttle } from '@nestjs/throttler';
 import { FastifyReply } from 'fastify';
+import { getDIService } from 'src/helpers/utils';
 
 import { AccessTokensDto, UpdateAccessTokenDto, UpdateAccessTokenResponseDto } from '../dto/access-tokens.dto';
 import { CreateUserDto } from '../dto/create-user.dto';
@@ -28,10 +28,9 @@ const logger = getLogger();
 @ApiTags('Auth')
 @Controller('v1/auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  private authService = getDIService(AuthService);
 
   @Post('login')
-  @UseGuards(ThrottlerGuard)
   @Throttle(10, 30)
   @ApiOperation({
     description: 'Authenticates a human user via cookies.',
@@ -58,18 +57,21 @@ export class AuthController {
     req.user = authInfo.userInfo;
 
     if (authInfo.refreshToken && authInfo.accessToken) {
-      this.authService.setAccessTokenCookie(response, req, this.authService.getAccessTokenInfo(authInfo.accessToken));
-
-      this.authService.setRefreshTokenCookie(
+      await this.authService.setAccessTokenCookie(
         response,
         req,
-        this.authService.getRefreshTokenInfo(authInfo.refreshToken),
+        await this.authService.getAccessTokenInfo(authInfo.accessToken),
+      );
+
+      await this.authService.setRefreshTokenCookie(
+        response,
+        req,
+        await this.authService.getRefreshTokenInfo(authInfo.refreshToken),
       );
     }
     response.code(200).send(authInfo.userDto);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Post('log-out')
   @ApiOperation({
     description: 'Logs user out who was logged via cookies',
@@ -83,12 +85,11 @@ export class AuthController {
       }
     }
 
-    this.authService.clearTokenCookies(response, request);
+    await this.authService.clearTokenCookies(response, request);
     response.code(200).send(true);
   }
 
   @Post('get-tokens')
-  @UseGuards(ThrottlerGuard)
   @Throttle(10, 30)
   @ApiOperation({
     description: 'Get access/refresh tokens for programmatic API access',
@@ -110,7 +111,6 @@ export class AuthController {
   }
 
   @Post('update-access-token')
-  @UseGuards(ThrottlerGuard)
   @Throttle(10, 30)
   @ApiOperation({
     description: 'Update access token using refresh token',
@@ -127,7 +127,7 @@ export class AuthController {
     const authUserInfo = this.authService.payloadToUserInfo(refreshTokenPayload);
 
     // Check if token is in DB and was not blacklisted
-    const isValid = await this.authService.dbCheckRefreshToken(input.refreshToken, authUserInfo);
+    const isValid = await this.authService.dbCheckRefreshToken(input.refreshToken, authUserInfo.id);
     if (!isValid) throw new UnauthorizedException('Refresh token is not valid');
 
     const newAccessToken = await this.authService.generateAccessToken(authUserInfo);
@@ -138,7 +138,6 @@ export class AuthController {
   }
 
   @Post('sign-up')
-  @UseGuards(ThrottlerGuard)
   @Throttle(4, 40)
   @ApiOperation({
     description: 'Register new user',
@@ -155,7 +154,6 @@ export class AuthController {
   }
 
   @Post('forgot-password')
-  @UseGuards(ThrottlerGuard)
   @Throttle(8, 600)
   @ApiOperation({
     description: 'Send an e-mail with reset code for a user account',
@@ -173,7 +171,6 @@ export class AuthController {
   }
 
   @Post('reset-password')
-  @UseGuards(ThrottlerGuard)
   @Throttle(6, 600)
   @ApiOperation({
     description: 'Set a new password for user with provided secret code',
@@ -190,7 +187,6 @@ export class AuthController {
     return this.authService.resetUserPassword(input);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get('user-info')
   @ApiOperation({
     description: 'Get info about currently logged in user',

@@ -284,3 +284,7 @@ div.MuiToolbar-regular {
   position: relative;
   z-index: 1102;
 }
+
+body p + p {
+  margin-top: unset;
+}

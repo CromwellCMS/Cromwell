@@ -1,22 +1,23 @@
 import { setStoreItem, TCmsSettings } from '@cromwell/core';
 import {
-  adminPanelMessages,
   getAdminPanelDir,
   getAdminPanelServiceBuildDir,
   getAdminPanelStaticDir,
   getAdminPanelTempDir,
   getAdminPanelWebPublicDir,
   getAdminPanelWebServiceBuildDir,
+  getLogger,
   getPublicDir,
   readCMSConfigSync,
 } from '@cromwell/core-backend';
 import { getRestApiClient } from '@cromwell/core-frontend';
-import { spawnSync } from 'child_process';
 import fs from 'fs-extra';
 import normalizePath from 'normalize-path';
 import { resolve } from 'path';
 import symlinkDir from 'symlink-dir';
 import yargs from 'yargs-parser';
+
+const logger = getLogger();
 
 const start = async () => {
   const args = yargs(process.argv.slice(2));
@@ -37,13 +38,7 @@ const start = async () => {
 
   await outputEnv({ isProduction, configsDir });
 
-  const port = args.port ?? 4064;
-
-  if (isProduction) {
-    spawnSync(`next -p ${port}`, { shell: true, cwd: getAdminPanelServiceBuildDir(), stdio: 'inherit' });
-  } else {
-    spawnSync(`next dev -p ${port}`, { shell: true, cwd: getAdminPanelDir(), stdio: 'inherit' });
-  }
+  logger.info('Admin startup successfully ran');
 };
 
 const linkFiles = async ({ isProduction, configsDir }: HelperOptions) => {
@@ -154,10 +149,6 @@ const outputEnv = async ({ isProduction, configsDir }: HelperOptions) => {
   });
 };
 
-try {
-  start();
-} catch (e) {
-  console.error(e);
-  if (process.send) process.send(adminPanelMessages.onStartErrorMessage);
-}
+start().catch((e) => console.error(e));
+
 type HelperOptions = { isProduction: boolean; configsDir: string };

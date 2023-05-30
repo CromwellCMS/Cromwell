@@ -44,7 +44,7 @@ export class AttributeResolver {
   @Query(() => PagedAttribute)
   async [getManyPath](
     @Ctx() ctx: TGraphQLContext,
-    @Arg('pagedParams', { nullable: true }) pagedParams?: PagedParamsInput<TAttribute>,
+    @Arg('pagedParams', () => PagedParamsInput, { nullable: true }) pagedParams?: PagedParamsInput<TAttribute>,
     @Arg('filterParams', () => BaseFilterInput, { nullable: true }) filterParams?: BaseFilterInput,
   ): Promise<TPagedList<TAttribute> | undefined> {
     return getManyWithFilters('Attribute', ctx, [], ['read_attributes'], pagedParams, filterParams, (...args) =>
@@ -54,7 +54,10 @@ export class AttributeResolver {
 
   @Authorized<TPermissionName>('create_attribute')
   @Mutation(() => Attribute)
-  async [createPath](@Ctx() ctx: TGraphQLContext, @Arg('data') data: AttributeInput): Promise<TAttribute> {
+  async [createPath](
+    @Ctx() ctx: TGraphQLContext,
+    @Arg('data', () => AttributeInput) data: AttributeInput,
+  ): Promise<TAttribute> {
     return createWithFilters('Attribute', ctx, ['create_attribute'], data, (...args) =>
       this.repository.createAttribute(...args),
     );
@@ -65,7 +68,7 @@ export class AttributeResolver {
   async [updatePath](
     @Ctx() ctx: TGraphQLContext,
     @Arg('id', () => Int) id: number,
-    @Arg('data') data: AttributeInput,
+    @Arg('data', () => AttributeInput) data: AttributeInput,
   ): Promise<TAttribute> {
     return updateWithFilters('Attribute', ctx, ['update_attribute'], data, id, (...args) =>
       this.repository.updateAttribute(...args),
@@ -84,7 +87,7 @@ export class AttributeResolver {
   @Mutation(() => Boolean)
   async [deleteManyPath](
     @Ctx() ctx: TGraphQLContext,
-    @Arg('input') input: DeleteManyInput,
+    @Arg('input', () => DeleteManyInput) input: DeleteManyInput,
     @Arg('filterParams', () => BaseFilterInput, { nullable: true }) filterParams?: BaseFilterInput,
   ): Promise<boolean | undefined> {
     return deleteManyWithFilters('Attribute', ctx, ['delete_attribute'], input, filterParams, (...args) =>

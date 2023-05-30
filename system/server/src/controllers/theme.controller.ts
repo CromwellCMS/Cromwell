@@ -1,7 +1,8 @@
 import { TPackageCromwellConfig, TPageConfig, TPageInfo, TThemeConfig } from '@cromwell/core';
-import { getLogger, getThemeConfigs, JwtAuthGuard, DefaultPermissions } from '@cromwell/core-backend';
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, Post, Query, UseGuards } from '@nestjs/common';
+import { AuthGuard, getLogger, getThemeConfigs } from '@cromwell/core-backend';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Post, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { getDIService } from 'src/helpers/utils';
 
 import { ModuleInfoDto } from '../dto/module-info.dto';
 import { PageConfigDto } from '../dto/page-config.dto';
@@ -9,7 +10,6 @@ import { PageInfoDto } from '../dto/page-info.dto';
 import { ThemeConfigDto } from '../dto/theme-config.dto';
 import { ThemePaletteDto } from '../dto/theme-palette.dto';
 import { UpdateInfoDto } from '../dto/update-info.dto';
-import { CmsService } from '../services/cms.service';
 import { ThemeService } from '../services/theme.service';
 
 const logger = getLogger();
@@ -18,7 +18,7 @@ const logger = getLogger();
 @ApiTags('Themes')
 @Controller('v1/theme')
 export class ThemeController {
-  constructor(private readonly themeService: ThemeService, private readonly cmsService: CmsService) {}
+  private themeService = getDIService(ThemeService);
 
   @Get('page')
   @ApiOperation({
@@ -44,8 +44,7 @@ export class ThemeController {
   }
 
   @Post('page')
-  @UseGuards(JwtAuthGuard)
-  @DefaultPermissions('update_theme_settings')
+  @AuthGuard({ permissions: ['update_theme_settings'] })
   @ApiOperation({
     description: `Saves page config for specified Page by pageRoute in query param. 
             Modifications (TCromwellBlockData) must contain only newly added mods or an empty array. 
@@ -70,8 +69,7 @@ export class ThemeController {
   }
 
   @Delete('page')
-  @UseGuards(JwtAuthGuard)
-  @DefaultPermissions('update_theme_settings')
+  @AuthGuard({ permissions: ['update_theme_settings'] })
   @ApiOperation({
     description: `Deletes virtual page in both configs`,
     parameters: [
@@ -95,8 +93,7 @@ export class ThemeController {
   }
 
   @Get('page/reset')
-  @UseGuards(JwtAuthGuard)
-  @DefaultPermissions('update_theme_settings')
+  @AuthGuard({ permissions: ['update_theme_settings'] })
   @ApiOperation({
     description: `Deletes user config of a page`,
     parameters: [
@@ -134,8 +131,7 @@ export class ThemeController {
   }
 
   @Post('palette')
-  @UseGuards(JwtAuthGuard)
-  @DefaultPermissions('update_theme_settings')
+  @AuthGuard({ permissions: ['update_theme_settings'] })
   @ApiOperation({
     description: `Update palette of an active theme`,
     parameters: [{ name: 'themeName', in: 'query', required: true }],
@@ -155,8 +151,7 @@ export class ThemeController {
   }
 
   @Get('plugins')
-  @UseGuards(JwtAuthGuard)
-  @DefaultPermissions('read_theme_settings')
+  @AuthGuard({ permissions: ['read_theme_settings'] })
   @ApiOperation({
     description: `Returns plugins' configs at specified Page by pageRoute in query param. Output contains theme's original modifications overwritten by user's modifications.`,
     parameters: [
@@ -178,8 +173,7 @@ export class ThemeController {
   }
 
   @Get('plugin-names')
-  @UseGuards(JwtAuthGuard)
-  @DefaultPermissions('read_theme_settings')
+  @AuthGuard({ permissions: ['read_theme_settings'] })
   @ApiOperation({
     description: `Returns array of plugin names at all pages.`,
     parameters: [{ name: 'themeName', in: 'query', required: true }],
@@ -295,8 +289,7 @@ export class ThemeController {
   }
 
   @Get('check-update')
-  @UseGuards(JwtAuthGuard)
-  @DefaultPermissions('read_theme_settings')
+  @AuthGuard({ permissions: ['read_theme_settings'] })
   @ApiOperation({
     description: `Returns available Update for specified Theme`,
     parameters: [{ name: 'themeName', in: 'query', required: true }],
@@ -315,8 +308,7 @@ export class ThemeController {
   }
 
   @Get('update')
-  @UseGuards(JwtAuthGuard)
-  @DefaultPermissions('update_theme')
+  @AuthGuard({ permissions: ['update_theme'] })
   @ApiOperation({
     description: `Updates a Theme to latest version`,
     parameters: [{ name: 'themeName', in: 'query', required: true }],
@@ -333,8 +325,7 @@ export class ThemeController {
   }
 
   @Get('install')
-  @UseGuards(JwtAuthGuard)
-  @DefaultPermissions('install_theme')
+  @AuthGuard({ permissions: ['install_theme'] })
   @ApiOperation({
     description: `Installs a Theme`,
     parameters: [{ name: 'themeName', in: 'query', required: true }],
@@ -351,8 +342,7 @@ export class ThemeController {
   }
 
   @Get('delete')
-  @UseGuards(JwtAuthGuard)
-  @DefaultPermissions('uninstall_theme')
+  @AuthGuard({ permissions: ['uninstall_theme'] })
   @ApiOperation({
     description: `Deletes a Theme`,
     parameters: [{ name: 'themeName', in: 'query', required: true }],

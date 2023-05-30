@@ -4,12 +4,13 @@ const withTM = require('next-transpile-modules')([
 ]);
 
 module.exports = withTM({
+  basePath: '/admin',
   async rewrites() {
     return [
       // Rewrite everything to `pages/index`
       {
-        source: '/admin/:any*',
-        destination: '/admin/',
+        source: '/:any*',
+        destination: '/',
       },
     ];
   },

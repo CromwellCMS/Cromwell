@@ -121,8 +121,6 @@ export * from './helpers/data-filters';
 export {
   getCurrentRoles,
   getUserRole,
-  DefaultPermissions,
-  CustomPermissions,
   registerPermission,
   getPermissions,
   registerPermissionCategory,

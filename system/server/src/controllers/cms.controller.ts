@@ -1,11 +1,10 @@
 import { TOrder, TPackageCromwellConfig, TProductReview } from '@cromwell/core';
 import {
-  DefaultPermissions,
+  AuthGuard,
   getCmsSettings,
   getLogger,
   getPermissions,
   getPublicDir,
-  JwtAuthGuard,
   ProductReviewInput,
   TRequestWithUser,
 } from '@cromwell/core-backend';
@@ -23,14 +22,13 @@ import {
   Request,
   Response,
   UnauthorizedException,
-  UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
+import { Throttle } from '@nestjs/throttler';
 import { FastifyReply } from 'fastify';
 import fs from 'fs-extra';
 import { join } from 'path';
-import { Container } from 'typedi';
+import { getDIService } from 'src/helpers/utils';
 
 import { AdminCmsSettingsDto } from '../dto/admin-cms-settings.dto';
 import { CmsSettingsDto } from '../dto/cms-settings.dto';
@@ -60,17 +58,12 @@ const logger = getLogger();
 @ApiTags('CMS')
 @Controller('v1/cms')
 export class CmsController {
-  private get pluginService() {
-    return Container.get(PluginService);
-  }
-
-  constructor(
-    private readonly cmsService: CmsService,
-    private readonly themeService: ThemeService,
-    private readonly migrationService: MigrationService,
-    private readonly storeService: StoreService,
-    private readonly statsService: StatsService,
-  ) {}
+  private pluginService = getDIService(PluginService);
+  private cmsService = getDIService(CmsService);
+  private themeService = getDIService(ThemeService);
+  private migrationService = getDIService(MigrationService);
+  private storeService = getDIService(StoreService);
+  private statsService = getDIService(StatsService);
 
   @Get('settings')
   @ApiOperation({ description: 'Returns public CMS settings from DB and cmsconfig.json' })
@@ -88,8 +81,7 @@ export class CmsController {
   }
 
   @Get('admin-settings')
-  @UseGuards(JwtAuthGuard)
-  @DefaultPermissions('read_cms_settings')
+  @AuthGuard({ permissions: ['read_cms_settings'] })
   @ApiOperation({ description: 'Returns admin CMS settings from DB and cmsconfig.json' })
   @ApiResponse({
     status: 200,
@@ -101,8 +93,7 @@ export class CmsController {
   }
 
   @Post('admin-settings')
-  @UseGuards(JwtAuthGuard)
-  @DefaultPermissions('update_cms_settings')
+  @AuthGuard({ permissions: ['update_cms_settings'] })
   @ApiOperation({
     description: 'Updates CMS config',
   })
@@ -118,8 +109,7 @@ export class CmsController {
   }
 
   @Get('themes')
-  @UseGuards(JwtAuthGuard)
-  @DefaultPermissions('read_themes')
+  @AuthGuard({ permissions: ['read_themes'] })
   @ApiOperation({ description: 'Returns info from configs of all themes present in "themes" directory' })
   @ApiResponse({
     status: 200,
@@ -132,8 +122,7 @@ export class CmsController {
   }
 
   @Get('plugins')
-  @UseGuards(JwtAuthGuard)
-  @DefaultPermissions('read_plugins')
+  @AuthGuard({ permissions: ['read_plugins'] })
   @ApiOperation({ description: 'Returns info for all plugins present in "plugins" directory' })
   @ApiResponse({
     status: 200,
@@ -146,8 +135,7 @@ export class CmsController {
   }
 
   @Get('read-public-dir')
-  @UseGuards(JwtAuthGuard)
-  @DefaultPermissions('read_public_directories')
+  @AuthGuard({ permissions: ['read_public_directories'] })
   @ApiOperation({
     description: 'Read files and directories in specified subfolder of "public" files',
     parameters: [{ name: 'path', in: 'query' }],
@@ -165,8 +153,7 @@ export class CmsController {
   }
 
   @Get('create-public-dir')
-  @UseGuards(JwtAuthGuard)
-  @DefaultPermissions('create_public_directory')
+  @AuthGuard({ permissions: ['create_public_directory'] })
   @ApiOperation({
     description: 'Creates new directory in specified subfolder of "public" files',
     parameters: [
@@ -189,8 +176,7 @@ export class CmsController {
   }
 
   @Get('remove-public-dir')
-  @UseGuards(JwtAuthGuard)
-  @DefaultPermissions('remove_public_directory')
+  @AuthGuard({ permissions: ['remove_public_directory'] })
   @ApiOperation({
     description: 'Removes directory in specified subfolder of "public" files',
     parameters: [
@@ -212,8 +198,7 @@ export class CmsController {
   }
 
   @Post('upload-public-file')
-  @UseGuards(JwtAuthGuard)
-  @DefaultPermissions('upload_file')
+  @AuthGuard({ permissions: ['upload_file'] })
   @Header('content-type', 'multipart/form-data')
   @ApiOperation({
     description: 'Uploads a file to specified subfolder of "public" files',
@@ -244,8 +229,7 @@ export class CmsController {
   }
 
   @Get('download-public-file')
-  @UseGuards(JwtAuthGuard)
-  @DefaultPermissions('download_file')
+  @AuthGuard({ permissions: ['download_file'] })
   @ApiOperation({
     description: 'Downloads a file from specified subfolder of "public" files',
     parameters: [
@@ -287,8 +271,7 @@ export class CmsController {
   }
 
   @Get('change-theme')
-  @UseGuards(JwtAuthGuard)
-  @DefaultPermissions('change_theme')
+  @AuthGuard({ permissions: ['change_theme'] })
   @ApiOperation({
     description: `Makes specified theme as active one and restarts Renderer`,
     parameters: [{ name: 'themeName', in: 'query', required: true }],
@@ -306,8 +289,7 @@ export class CmsController {
   }
 
   @Get('activate-theme')
-  @UseGuards(JwtAuthGuard)
-  @DefaultPermissions('activate_theme')
+  @AuthGuard({ permissions: ['activate_theme'] })
   @ApiOperation({
     description: `Activates/enables (installs in DB) downloaded theme. Does NOT make it as currently used by Renderer. See "change-theme"`,
     parameters: [{ name: 'themeName', in: 'query', required: true }],
@@ -325,8 +307,7 @@ export class CmsController {
   }
 
   @Get('activate-plugin')
-  @UseGuards(JwtAuthGuard)
-  @DefaultPermissions('activate_plugin')
+  @AuthGuard({ permissions: ['activate_plugin'] })
   @ApiOperation({
     description: 'Activates downloaded plugin.',
     parameters: [{ name: 'pluginName', in: 'query', required: true }],
@@ -344,7 +325,6 @@ export class CmsController {
   }
 
   @Post('get-order-total')
-  @UseGuards(ThrottlerGuard)
   @Throttle(4, 1)
   @ApiOperation({
     description: 'Calculates cart total sum plus shipping costs',
@@ -364,7 +344,6 @@ export class CmsController {
   }
 
   @Post('create-payment-session')
-  @UseGuards(ThrottlerGuard)
   @Throttle(5, 20)
   @ApiOperation({
     description: 'Creates new payment session',
@@ -384,7 +363,6 @@ export class CmsController {
   }
 
   @Post('place-order')
-  @UseGuards(ThrottlerGuard)
   @Throttle(3, 20)
   @ApiOperation({
     description: 'Creates new Order in the shop',
@@ -404,7 +382,6 @@ export class CmsController {
   }
 
   @Post('place-product-review')
-  @UseGuards(ThrottlerGuard)
   @Throttle(2, 20)
   @ApiOperation({
     description: 'Creates new Review for a product in the shop',
@@ -424,7 +401,6 @@ export class CmsController {
   }
 
   @Post('view-page')
-  @UseGuards(ThrottlerGuard)
   @Throttle(5, 1)
   @ApiOperation({
     description: `Increments views number for a page in page_stats table`,
@@ -441,7 +417,6 @@ export class CmsController {
     return true;
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get('dashboard-settings')
   @ApiOperation({
     description: 'Get current dashboard layout',
@@ -458,7 +433,6 @@ export class CmsController {
     return layout;
   }
 
-  @UseGuards(JwtAuthGuard)
   @Post('dashboard-settings')
   @ApiOperation({
     description: 'Save dashboard layout for user',
@@ -483,8 +457,7 @@ export class CmsController {
   }
 
   @Get('statistics')
-  @UseGuards(JwtAuthGuard)
-  @DefaultPermissions('read_cms_statistics')
+  @AuthGuard({ permissions: ['read_cms_statistics'] })
   @ApiOperation({
     description: `Returns CMS stats for AdminPanel dashboard`,
   })
@@ -497,8 +470,7 @@ export class CmsController {
   }
 
   @Get('system')
-  @UseGuards(JwtAuthGuard)
-  @DefaultPermissions('read_system_info')
+  @AuthGuard({ permissions: ['read_system_info'] })
   @ApiOperation({
     description: `Returns system info and usage`,
   })
@@ -511,8 +483,7 @@ export class CmsController {
   }
 
   @Get('status')
-  @UseGuards(JwtAuthGuard)
-  @DefaultPermissions('read_cms_status')
+  @AuthGuard({ permissions: ['read_cms_status'] })
   @ApiOperation({
     description: `Returns Updates available and other info for AdminPanel NotificationCenter`,
   })
@@ -525,8 +496,7 @@ export class CmsController {
   }
 
   @Get('launch-update')
-  @UseGuards(JwtAuthGuard)
-  @DefaultPermissions('update_cms')
+  @AuthGuard({ permissions: ['update_cms'] })
   @ApiOperation({
     description: `Launches CMS update`,
   })
@@ -539,8 +509,7 @@ export class CmsController {
   }
 
   @Post('export-db')
-  @UseGuards(JwtAuthGuard)
-  @DefaultPermissions('export_db')
+  @AuthGuard({ permissions: ['export_db'] })
   @ApiOperation({
     description: `Exports DB into Excel file`,
   })
@@ -561,8 +530,7 @@ export class CmsController {
   }
 
   @Post('import-db')
-  @UseGuards(JwtAuthGuard)
-  @DefaultPermissions('import_db')
+  @AuthGuard({ permissions: ['import_db'] })
   @ApiOperation({
     description: 'Import DB from Excel files',
     parameters: [{ name: 'removeSurplus', in: 'query' }],
@@ -581,8 +549,7 @@ export class CmsController {
   }
 
   @Get('build-sitemap')
-  @UseGuards(JwtAuthGuard)
-  @DefaultPermissions('update_cms_settings')
+  @AuthGuard({ permissions: ['update_cms_settings'] })
   @ApiOperation({ description: 'Builds sitemap at /default_sitemap.xml' })
   @ApiResponse({
     status: 200,
@@ -594,8 +561,7 @@ export class CmsController {
   }
 
   @Get('permissions')
-  @UseGuards(JwtAuthGuard)
-  @DefaultPermissions('read_permissions')
+  @AuthGuard({ permissions: ['read_permissions'] })
   @ApiOperation({ description: 'Returns list of all available/registered permissions' })
   @ApiResponse({
     status: 200,

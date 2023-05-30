@@ -15,7 +15,9 @@ export default class PluginProductShowcaseResolver {
   }
 
   @Query(() => PagedProduct)
-  async pluginProductShowcase(@Arg('slug', { nullable: true }) slug?: string): Promise<TPagedList<TProduct>> {
+  async pluginProductShowcase(
+    @Arg('slug', () => String, { nullable: true }) slug?: string,
+  ): Promise<TPagedList<TProduct>> {
     logger.log('ProductShowcaseResolver::productShowcase slug:' + slug);
     const timestamp = Date.now();
 

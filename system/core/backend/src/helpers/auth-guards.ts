@@ -1,11 +1,10 @@
 import { getStoreItem, matchPermissions, TPermissionName } from '@cromwell/core';
-import { CanActivate, ExecutionContext, HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
+import { HttpException, HttpStatus, SetMetadata } from '@nestjs/common';
 
 import { checkRoles, getPermissions } from './auth-roles-permissions';
-import { TAuthUserInfo, TGraphQLContext, TRequestWithUser } from './types';
+import { TAuthUserInfo, TGraphQLContext } from './types';
 
-const checkRegisteredPermissions = (permissions: TPermissionName[]) => {
+export const checkRegisteredPermissions = (permissions: TPermissionName[]) => {
   if (!permissions?.length) return;
   const allPermissions = getPermissions();
   permissions.forEach((permission) => {
@@ -17,23 +16,11 @@ const checkRegisteredPermissions = (permissions: TPermissionName[]) => {
   });
 };
 
-@Injectable()
-export class JwtAuthGuard implements CanActivate {
-  constructor(private reflector: Reflector) {}
-
-  async canActivate(context: ExecutionContext): Promise<boolean> {
-    if (getStoreItem('cmsSettings')?.installed === false) return true;
-
-    const request: TRequestWithUser = context.switchToHttp().getRequest();
-    if (!request.user?.id) return false;
-
-    await checkRoles();
-    const permissions = this.reflector.get<TPermissionName[]>('permissions', context.getHandler());
-    checkRegisteredPermissions(permissions);
-
-    return matchPermissions(request.user, permissions);
-  }
-}
+export const AuthGuard = ({
+  permissions = [],
+  customPermissions = [],
+}: { permissions?: TPermissionName[]; customPermissions?: string[] } = {}): MethodDecorator =>
+  SetMetadata('permissions', { permissions, customPermissions });
 
 export const graphQlAuthChecker = async (
   options?: {
@@ -46,6 +33,7 @@ export const graphQlAuthChecker = async (
 ) => {
   const { context } = options ?? {};
   if (!permissions || permissions.length === 0) return true;
+
   if (getStoreItem('cmsSettings')?.installed === false) return true;
   checkRegisteredPermissions(permissions);
 

@@ -25,7 +25,7 @@ import {
   sendEmail,
 } from '@cromwell/core-backend';
 import { getCStore } from '@cromwell/core-frontend';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus } from '@nestjs/common';
 import { format } from 'date-fns';
 import { Service } from 'typedi';
 import { getCustomRepository } from 'typeorm';
@@ -36,7 +36,6 @@ import { serverFireAction } from '../helpers/server-fire-action';
 
 const logger = getLogger();
 
-@Injectable()
 @Service()
 export class StoreService {
   async calcOrderTotal(input: CreateOrderDto): Promise<OrderTotalDto> {

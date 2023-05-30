@@ -17,9 +17,6 @@
   ],
   "scripts": {
     "build": "node startup.js build",
-    "dev": "npx next dev",
-    "build:server": "npx rollup -c",
-    "watch:server": "npx rollup -cw",
     "format": "prettier --write --ignore-unknown \"**/*.+(js|jsx|json|css|scss|md|ts|tsx)\"",
     "add": "yarn workspace @cromwell/admin-panel add",
     "dev_old": "node startup.js dev",
@@ -97,7 +94,7 @@
     "javascript-time-ago": "2.5.9",
     "json-to-graphql-query": "2.2.4",
     "middie": "7.1.0",
-    "next": "13.0.2",
+    "next": "13.4.4",
     "next-transpile-modules": "^10.0.0",
     "object-assign": "4.1.1",
     "pretty-bytes": "6.0.0",

@@ -12,7 +12,6 @@ import {
   User,
   UserRepository,
 } from '@cromwell/core-backend';
-import { Injectable } from '@nestjs/common';
 import { Service } from 'typedi';
 import { getCustomRepository, getManager } from 'typeorm';
 import { DateUtils } from 'typeorm/util/DateUtils';
@@ -22,7 +21,6 @@ import { PageStatsDto } from '../dto/page-stats.dto';
 import { SystemUsageDto } from '../dto/system-usage.dto';
 import { getSysInfo, getSysUsageInfo } from '../helpers/monitor-client';
 
-@Injectable()
 @Service()
 export class StatsService {
   private cpuLoads: {

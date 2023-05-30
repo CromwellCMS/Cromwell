@@ -97,7 +97,7 @@ export const defaultCmsConfig: TCmsConfig = {
   frontendUrl: serviceLocator.defaultLocations.frontendUrl,
   centralServerUrl: serviceLocator.defaultLocations.centralServerUrl,
   useWatch: true,
-  accessTokenExpirationTime: 600,
+  accessTokenExpirationTime: 60,
   refreshTokenExpirationTime: 1296000,
   defaultSettings: {
     internalSettings: {

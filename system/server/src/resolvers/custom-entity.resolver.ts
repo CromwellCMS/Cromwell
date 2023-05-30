@@ -20,6 +20,7 @@ import {
 } from '@cromwell/core-backend';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { GraphQLJSONObject } from 'graphql-type-json';
+import { getDIService } from 'src/helpers/utils';
 import { throttle } from 'throttle-debounce';
 import { Arg, Ctx, FieldResolver, Int, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { Container } from 'typedi';
@@ -48,10 +49,7 @@ const viewsKey: keyof TCustomEntity = 'views';
 @Resolver(CustomEntity)
 export class CustomEntityResolver {
   private repository = getCustomRepository(CustomEntityRepository);
-
-  private get cmsService() {
-    return Container.get(CmsService);
-  }
+  private cmsService = getDIService(CmsService);
 
   private customEntities: TAdminCustomEntity[] = [];
 
@@ -108,7 +106,7 @@ export class CustomEntityResolver {
   @Query(() => CustomEntity)
   async [getOneByIdPath](
     @Ctx() ctx: TGraphQLContext,
-    @Arg('entityType') entityType: string,
+    @Arg('entityType', () => String) entityType: string,
     @Arg('id', () => Int) id: number,
   ): Promise<TCustomEntity | undefined> {
     const permissions = await this.checkPermissions(entityType, 'read', ctx);
@@ -121,8 +119,8 @@ export class CustomEntityResolver {
   @Query(() => CustomEntity)
   async [getOneBySlugPath](
     @Ctx() ctx: TGraphQLContext,
-    @Arg('entityType') entityType: string,
-    @Arg('slug') slug: string,
+    @Arg('entityType', () => String) entityType: string,
+    @Arg('slug', () => String) slug: string,
   ): Promise<TCustomEntity | undefined> {
     const permissions = await this.checkPermissions(entityType, 'read', ctx);
     const getAllPermissions = [...new Set([...permissions, 'read_custom_entities'])] as TPermissionName[];
@@ -134,8 +132,8 @@ export class CustomEntityResolver {
   @Query(() => PagedCustomEntity)
   async [getManyPath](
     @Ctx() ctx: TGraphQLContext,
-    @Arg('pagedParams', { nullable: true }) pagedParams?: PagedParamsInput<TCustomEntity>,
-    @Arg('filterParams', { nullable: true }) filterParams?: CustomEntityFilterInput,
+    @Arg('pagedParams', () => PagedParamsInput, { nullable: true }) pagedParams?: PagedParamsInput<TCustomEntity>,
+    @Arg('filterParams', () => CustomEntityFilterInput, { nullable: true }) filterParams?: CustomEntityFilterInput,
   ): Promise<TPagedList<TCustomEntity> | undefined> {
     const permissions = await this.checkPermissions(filterParams?.entityType, 'read', ctx);
     const getAllPermissions = [...new Set([...permissions, 'read_custom_entities'])] as TPermissionName[];
@@ -151,7 +149,10 @@ export class CustomEntityResolver {
   }
 
   @Mutation(() => CustomEntity)
-  async [createPath](@Ctx() ctx: TGraphQLContext, @Arg('data') data: CustomEntityInput): Promise<TCustomEntity> {
+  async [createPath](
+    @Ctx() ctx: TGraphQLContext,
+    @Arg('data', () => CustomEntityInput) data: CustomEntityInput,
+  ): Promise<TCustomEntity> {
     const permissions = await this.checkPermissions(data?.entityType, 'create', ctx);
     return createWithFilters('CustomEntity', ctx, permissions, data, (...args) =>
       this.repository.createCustomEntity(...args),
@@ -162,7 +163,7 @@ export class CustomEntityResolver {
   async [updatePath](
     @Ctx() ctx: TGraphQLContext,
     @Arg('id', () => Int) id: number,
-    @Arg('data') data: CustomEntityInput,
+    @Arg('data', () => CustomEntityInput) data: CustomEntityInput,
   ): Promise<TCustomEntity | undefined> {
     const permissions = await this.checkPermissions(data?.entityType, 'update', ctx);
     return updateWithFilters('CustomEntity', ctx, permissions, data, id, (...args) =>
@@ -173,7 +174,7 @@ export class CustomEntityResolver {
   @Mutation(() => Boolean)
   async [deletePath](
     @Ctx() ctx: TGraphQLContext,
-    @Arg('entityType') entityType: string,
+    @Arg('entityType', () => String) entityType: string,
     @Arg('id', () => Int) id: number,
   ): Promise<boolean> {
     const permissions = await this.checkPermissions(entityType, 'delete', ctx);
@@ -185,8 +186,8 @@ export class CustomEntityResolver {
   @Mutation(() => Boolean)
   async [deleteManyPath](
     @Ctx() ctx: TGraphQLContext,
-    @Arg('input') input: DeleteManyInput,
-    @Arg('filterParams', { nullable: true }) filterParams?: CustomEntityFilterInput,
+    @Arg('input', () => DeleteManyInput) input: DeleteManyInput,
+    @Arg('filterParams', () => CustomEntityFilterInput, { nullable: true }) filterParams?: CustomEntityFilterInput,
   ): Promise<boolean | undefined> {
     const permissions = await this.checkPermissions(filterParams?.entityType, 'delete', ctx);
     return deleteManyWithFilters('CustomEntity', ctx, permissions, input, filterParams, (...args) =>

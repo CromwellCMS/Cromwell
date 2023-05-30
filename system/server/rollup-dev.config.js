@@ -1,4 +1,4 @@
-import { getServerBuildMonitorPath, getServerBuildPath, getServerBuildProxyPath } from '@cromwell/core-backend';
+import { getServerBuildMonitorPath } from '@cromwell/core-backend';
 import nodeResolve from '@rollup/plugin-node-resolve';
 import { isAbsolute, resolve } from 'path';
 import typescript from 'rollup-plugin-ts-compiler';
@@ -25,30 +25,6 @@ const getPlugins = () => [
 ];
 
 export default [
-  {
-    input: resolve(__dirname, 'src/main.ts'),
-    output: [
-      {
-        file: getServerBuildPath(),
-        format: 'cjs',
-      },
-    ],
-    external: external,
-    plugins: [...getPlugins()],
-    watch: watchOptions,
-  },
-  {
-    input: resolve(__dirname, 'src/proxy.ts'),
-    output: [
-      {
-        file: getServerBuildProxyPath(),
-        format: 'cjs',
-      },
-    ],
-    external: external,
-    plugins: [...getPlugins()],
-    watch: watchOptions,
-  },
   {
     input: resolve(__dirname, 'src/monitor.ts'),
     output: [

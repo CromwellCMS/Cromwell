@@ -17,7 +17,8 @@
     "moduleResolution": "node",
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "noEmit": true
+    "noEmit": true,
+    "incremental": true
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],
   "exclude": ["build", "node_modules"]

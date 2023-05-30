@@ -1,14 +1,8 @@
 import { TFrontendBundle } from '@cromwell/core';
-import {
-  findPlugin,
-  getLogger,
-  getPluginSettings,
-  JwtAuthGuard,
-  DefaultPermissions,
-  savePluginSettings,
-} from '@cromwell/core-backend';
-import { Body, Controller, Get, HttpException, HttpStatus, Post, Query, UseGuards } from '@nestjs/common';
+import { AuthGuard, findPlugin, getLogger, getPluginSettings, savePluginSettings } from '@cromwell/core-backend';
+import { Body, Controller, Get, HttpException, HttpStatus, Post, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { getDIService } from 'src/helpers/utils';
 
 import { FrontendBundleDto } from '../dto/frontend-bundle.dto';
 import { PluginEntityDto } from '../dto/plugin-entity.dto';
@@ -21,11 +15,10 @@ const logger = getLogger();
 @ApiTags('Plugins')
 @Controller('v1/plugin')
 export class PluginController {
-  constructor(private readonly pluginService: PluginService) {}
+  private pluginService = getDIService(PluginService);
 
   @Get('settings')
-  @UseGuards(JwtAuthGuard)
-  @DefaultPermissions('read_plugin_settings')
+  @AuthGuard({ permissions: ['read_plugin_settings'] })
   @ApiOperation({
     description: 'Returns JSON settings of a plugin by pluginName.',
     parameters: [{ name: 'pluginName', in: 'query', required: true }],
@@ -43,8 +36,7 @@ export class PluginController {
   }
 
   @Post('settings')
-  @UseGuards(JwtAuthGuard)
-  @DefaultPermissions('update_plugin_settings')
+  @AuthGuard({ permissions: ['update_plugin_settings'] })
   @ApiOperation({
     description: 'Saves JSON settings of a plugin by pluginName.',
     parameters: [{ name: 'pluginName', in: 'query', required: true }],
@@ -63,8 +55,7 @@ export class PluginController {
   }
 
   @Get('entity')
-  @UseGuards(JwtAuthGuard)
-  @DefaultPermissions('read_plugins')
+  @AuthGuard({ permissions: ['read_plugins'] })
   @ApiOperation({
     description: 'Returns DB record of a plugin by pluginName.',
     parameters: [{ name: 'pluginName', in: 'query', required: true }],
@@ -78,8 +69,11 @@ export class PluginController {
     logger.log('PluginController::getPluginEntity ' + pluginName);
 
     if (!pluginName) throw new HttpException(`Invalid plugin name: ${pluginName}`, HttpStatus.NOT_ACCEPTABLE);
-
-    return new PluginEntityDto().parse(await findPlugin(pluginName));
+    const plugin = await findPlugin(pluginName);
+    if (!plugin) {
+      throw new HttpException(`Plugin not found: ${pluginName}`, HttpStatus.NOT_FOUND);
+    }
+    return new PluginEntityDto().parse(plugin);
   }
 
   @Get('frontend-bundle')
@@ -103,8 +97,7 @@ export class PluginController {
   }
 
   @Get('admin-bundle')
-  @UseGuards(JwtAuthGuard)
-  @DefaultPermissions('read_plugins')
+  @AuthGuard({ permissions: ['read_plugins'] })
   @ApiOperation({
     description: `Returns plugin's JS admin bundle info.`,
     parameters: [{ name: 'pluginName', in: 'query', required: true }],
@@ -125,8 +118,7 @@ export class PluginController {
   }
 
   @Get('check-update')
-  @UseGuards(JwtAuthGuard)
-  @DefaultPermissions('read_plugins')
+  @AuthGuard({ permissions: ['read_plugins'] })
   @ApiOperation({
     description: `Returns available Update for sepcified Plugin`,
     parameters: [{ name: 'pluginName', in: 'query', required: true }],
@@ -144,8 +136,7 @@ export class PluginController {
   }
 
   @Get('update')
-  @UseGuards(JwtAuthGuard)
-  @DefaultPermissions('update_plugin')
+  @AuthGuard({ permissions: ['update_plugin'] })
   @ApiOperation({
     description: `Updates a Plugin to latest version`,
     parameters: [{ name: 'pluginName', in: 'query', required: true }],
@@ -161,8 +152,7 @@ export class PluginController {
   }
 
   @Get('install')
-  @UseGuards(JwtAuthGuard)
-  @DefaultPermissions('install_plugin')
+  @AuthGuard({ permissions: ['install_plugin'] })
   @ApiOperation({
     description: `Installs a Plugin`,
     parameters: [{ name: 'pluginName', in: 'query', required: true }],
@@ -178,8 +168,7 @@ export class PluginController {
   }
 
   @Get('delete')
-  @UseGuards(JwtAuthGuard)
-  @DefaultPermissions('uninstall_plugin')
+  @AuthGuard({ permissions: ['uninstall_plugin'] })
   @ApiOperation({
     description: `Uninstall a Plugin`,
     parameters: [{ name: 'pluginName', in: 'query', required: true }],

@@ -262,10 +262,15 @@ export const childSendMessage = async (message: IPCMessageType, payload?: any): 
 
   let responseResolver;
   const responsePromise = new Promise<IPCMessage>((res) => (responseResolver = res));
+
   const cb = (message) => {
-    message = JSON.parse(message);
-    if (message.id === messageId) {
-      responseResolver(message);
+    try {
+      message = JSON.parse(message);
+      if (message.id === messageId) {
+        responseResolver(message);
+      }
+    } catch (error) {
+      logger.error(error, 'message: ', message);
     }
   };
   onMessageCallbacks.push(cb);
@@ -375,7 +380,7 @@ const parentRegisterChild = (child: ChildProcess, childInfo: ServerInfo) => {
         }
       }
     } catch (error) {
-      logger.error(error);
+      logger.error(error, 'message: ', msg);
     }
   });
 };

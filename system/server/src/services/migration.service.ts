@@ -58,9 +58,10 @@ import {
   User,
   UserRepository,
 } from '@cromwell/core-backend';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus } from '@nestjs/common';
 import cryptoRandomString from 'crypto-random-string';
-import { Container, Service } from 'typedi';
+import { getDIService } from 'src/helpers/utils';
+import { Service } from 'typedi';
 import { getCustomRepository } from 'typeorm';
 
 import { CmsService } from './cms.service';
@@ -90,12 +91,9 @@ type TImportOptions = {
   removeSurplus?: boolean | null;
 };
 
-@Injectable()
 @Service()
 export class MigrationService {
-  private get cmsService() {
-    return Container.get(CmsService);
-  }
+  private cmsService = getDIService(CmsService);
 
   private _xlsxPopulate;
   private get xlsxPopulate() {

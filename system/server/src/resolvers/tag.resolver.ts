@@ -43,7 +43,7 @@ export class TagResolver {
   }
 
   @Query(() => Tag)
-  async [getOneBySlugPath](@Ctx() ctx: TGraphQLContext, @Arg('slug') slug: string): Promise<TTag> {
+  async [getOneBySlugPath](@Ctx() ctx: TGraphQLContext, @Arg('slug', () => String) slug: string): Promise<TTag> {
     return getBySlugWithFilters('Tag', ctx, [], ['read_tags'], slug, (...args) =>
       this.repository.getTagBySlug(...args),
     );
@@ -52,7 +52,7 @@ export class TagResolver {
   @Query(() => PagedTag)
   async [getManyPath](
     @Ctx() ctx: TGraphQLContext,
-    @Arg('pagedParams', { nullable: true }) pagedParams?: PagedParamsInput<TTag>,
+    @Arg('pagedParams', () => PagedParamsInput, { nullable: true }) pagedParams?: PagedParamsInput<TTag>,
     @Arg('filterParams', () => BaseFilterInput, { nullable: true }) filterParams?: BaseFilterInput,
   ): Promise<TPagedList<TTag> | undefined> {
     return getManyWithFilters('Tag', ctx, [], ['read_tags'], pagedParams, filterParams, (...args) =>
@@ -62,7 +62,7 @@ export class TagResolver {
 
   @Authorized<TPermissionName>('create_tag')
   @Mutation(() => Tag)
-  async [createPath](@Ctx() ctx: TGraphQLContext, @Arg('data') data: TagInput): Promise<TTag> {
+  async [createPath](@Ctx() ctx: TGraphQLContext, @Arg('data', () => TagInput) data: TagInput): Promise<TTag> {
     return createWithFilters('Tag', ctx, ['create_tag'], data, (...args) => this.repository.createTag(...args));
   }
 
@@ -71,7 +71,7 @@ export class TagResolver {
   async [updatePath](
     @Ctx() ctx: TGraphQLContext,
     @Arg('id', () => Int) id: number,
-    @Arg('data') data: TagInput,
+    @Arg('data', () => TagInput) data: TagInput,
   ): Promise<TTag | undefined> {
     return updateWithFilters('Tag', ctx, ['update_tag'], data, id, (...args) => this.repository.updateTag(...args));
   }
@@ -86,7 +86,7 @@ export class TagResolver {
   @Mutation(() => Boolean)
   async [deleteManyPath](
     @Ctx() ctx: TGraphQLContext,
-    @Arg('input') input: DeleteManyInput,
+    @Arg('input', () => DeleteManyInput) input: DeleteManyInput,
     @Arg('filterParams', () => BaseFilterInput, { nullable: true }) filterParams?: BaseFilterInput,
   ): Promise<boolean | undefined> {
     return deleteManyWithFilters('Tag', ctx, ['delete_tag'], input, filterParams, (...args) =>

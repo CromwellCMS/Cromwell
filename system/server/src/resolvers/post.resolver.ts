@@ -87,7 +87,10 @@ export class PostResolver {
   }
 
   @Query(() => Post)
-  async [getOneBySlugPath](@Ctx() ctx: TGraphQLContext, @Arg('slug') slug: string): Promise<TPost | undefined> {
+  async [getOneBySlugPath](
+    @Ctx() ctx: TGraphQLContext,
+    @Arg('slug', () => String) slug: string,
+  ): Promise<TPost | undefined> {
     return getBySlugWithFilters('Post', ctx, [], ['read_posts'], slug, async (slug) => {
       const post = this.filterDrafts([await this.repository.getPostBySlug(slug)], ctx)[0];
       if (!post) throw new HttpException(`Post ${slug} not found!`, HttpStatus.NOT_FOUND);
@@ -98,8 +101,8 @@ export class PostResolver {
   @Query(() => PagedPost)
   async [getManyPath](
     @Ctx() ctx: TGraphQLContext,
-    @Arg('pagedParams', { nullable: true }) pagedParams?: PagedParamsInput<TPost>,
-    @Arg('filterParams', { nullable: true }) filterParams?: PostFilterInput,
+    @Arg('pagedParams', () => PagedParamsInput, { nullable: true }) pagedParams?: PagedParamsInput<TPost>,
+    @Arg('filterParams', () => PostFilterInput, { nullable: true }) filterParams?: PostFilterInput,
   ): Promise<TPagedList<TPost> | undefined> {
     if (!this.canGetDraft(ctx)) {
       // No auth, return only published posts
@@ -113,7 +116,7 @@ export class PostResolver {
 
   @Authorized<TPermissionName>('create_post')
   @Mutation(() => Post)
-  async [createPath](@Ctx() ctx: TGraphQLContext, @Arg('data') data: CreatePost): Promise<TPost> {
+  async [createPath](@Ctx() ctx: TGraphQLContext, @Arg('data', () => CreatePost) data: CreatePost): Promise<TPost> {
     return createWithFilters('Post', ctx, ['create_post'], data, (...args) => this.repository.createPost(...args));
   }
 
@@ -122,7 +125,7 @@ export class PostResolver {
   async [updatePath](
     @Ctx() ctx: TGraphQLContext,
     @Arg('id', () => Int) id: number,
-    @Arg('data') data: UpdatePost,
+    @Arg('data', () => UpdatePost) data: UpdatePost,
   ): Promise<TPost> {
     return updateWithFilters('Post', ctx, ['update_post'], data, id, (...args) => this.repository.updatePost(...args));
   }
@@ -137,8 +140,8 @@ export class PostResolver {
   @Mutation(() => Boolean)
   async [deleteManyPath](
     @Ctx() ctx: TGraphQLContext,
-    @Arg('input') input: DeleteManyInput,
-    @Arg('filterParams', { nullable: true }) filterParams?: PostFilterInput,
+    @Arg('input', () => DeleteManyInput) input: DeleteManyInput,
+    @Arg('filterParams', () => PostFilterInput, { nullable: true }) filterParams?: PostFilterInput,
   ): Promise<boolean | undefined> {
     return deleteManyWithFilters('Post', ctx, ['delete_post'], input, filterParams, (...args) =>
       this.repository.deleteManyFilteredPosts(...args),

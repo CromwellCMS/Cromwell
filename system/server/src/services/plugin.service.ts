@@ -31,12 +31,13 @@ import {
   runShellCommand,
 } from '@cromwell/core-backend';
 import { getCentralServerClient } from '@cromwell/core-frontend';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus } from '@nestjs/common';
 import decache from 'decache';
 import fs from 'fs-extra';
 import normalizePath from 'normalize-path';
 import { resolve } from 'path';
-import { Container, Service } from 'typedi';
+import { getDIService } from 'src/helpers/utils';
+import { Service } from 'typedi';
 import { getConnection, getCustomRepository } from 'typeorm';
 
 import { serverFireAction } from '../helpers/server-fire-action';
@@ -53,12 +54,9 @@ import { CmsService } from './cms.service';
 
 const logger = getLogger();
 
-@Injectable()
 @Service()
 export class PluginService {
-  private get cmsService() {
-    return Container.get(CmsService);
-  }
+  private cmsService = getDIService(CmsService);
 
   constructor() {
     this.init();

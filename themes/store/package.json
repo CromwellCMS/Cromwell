@@ -143,7 +143,7 @@
     "@cromwell/renderer": "^2.1.5",
     "@cromwell/toolkit-commerce": "^1.0.4",
     "@cromwell/utils": "^2.0.17",
-    "next": "13.0.2",
+    "next": "13.4.4",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   }

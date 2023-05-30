@@ -100,7 +100,7 @@
     "graphql-tag": "2.12.5",
     "graphql": "15.5.1",
     "graphql-tools": "8.1.0",
-    "next": "13.0.2",
+    "next": "13.4.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-html-parser": "2.0.2",

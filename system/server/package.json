@@ -72,6 +72,7 @@
     "graphql-type-json": "0.3.2",
     "handlebars": "4.7.7",
     "http-proxy": "1.18.1",
+    "jsonwebtoken": "^9.0.0",
     "node-cleanup": "2.1.2",
     "node-fetch": "2.6.1",
     "normalize-path": "3.0.0",
@@ -82,8 +83,8 @@
     "symlink-dir": "5.0.1",
     "systeminformation": "5.8.0",
     "tcp-port-used": "1.0.2",
-    "tree-kill": "1.2.2",
     "throttle-debounce": "3.0.1",
+    "tree-kill": "1.2.2",
     "tslib": "2.4.1",
     "type-graphql": "1.1.1",
     "typedi": "0.10.0",
@@ -103,6 +104,7 @@
     "@rollup/plugin-node-resolve": "13.0.4",
     "@types/fs-extra": "9.0.12",
     "@types/get-port": "4.2.0",
+    "@types/http-proxy": "^1.17.11",
     "@types/jest": "29.2.2",
     "@types/node": "18.11.12",
     "@types/node-cleanup": "2.1.2",
@@ -119,6 +121,7 @@
     "supertest": "6.1.5",
     "ts-jest": "29.0.3",
     "ts-node": "10.9.1",
+    "tsx": "^3.12.7",
     "typescript": "4.8.4"
   }
 }

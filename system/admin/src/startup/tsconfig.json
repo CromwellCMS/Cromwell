@@ -16,5 +16,5 @@
     "resolveJsonModule": true
   },
   "exclude": ["node_modules", ".cromwell", "build"],
-  "include": ["src/**/*.ts"]
+  "include": ["**/*.ts"]
 }

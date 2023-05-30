@@ -53,8 +53,8 @@ export class ProductReviewResolver {
   @Query(() => PagedProductReview)
   async [getManyPath](
     @Ctx() ctx: TGraphQLContext,
-    @Arg('pagedParams', { nullable: true }) pagedParams?: PagedParamsInput<TProductReview>,
-    @Arg('filterParams', { nullable: true }) filterParams?: ProductReviewFilter,
+    @Arg('pagedParams', () => PagedParamsInput, { nullable: true }) pagedParams?: PagedParamsInput<TProductReview>,
+    @Arg('filterParams', () => ProductReviewFilter, { nullable: true }) filterParams?: ProductReviewFilter,
   ): Promise<TPagedList<TProductReview> | undefined> {
     const settings = await getCmsSettings();
     if (!settings.showUnapprovedReviews && !matchPermissions(ctx.user, ['read_product_reviews'])) {
@@ -75,7 +75,10 @@ export class ProductReviewResolver {
 
   @Authorized<TPermissionName>('create_product_review')
   @Mutation(() => ProductReview)
-  async [createPath](@Ctx() ctx: TGraphQLContext, @Arg('data') data: ProductReviewInput): Promise<TProductReview> {
+  async [createPath](
+    @Ctx() ctx: TGraphQLContext,
+    @Arg('data', () => ProductReviewInput) data: ProductReviewInput,
+  ): Promise<TProductReview> {
     return createWithFilters('ProductReview', ctx, ['create_product_review'], data, (...args) =>
       this.repository.createProductReview(...args),
     );
@@ -86,7 +89,7 @@ export class ProductReviewResolver {
   async [updatePath](
     @Ctx() ctx: TGraphQLContext,
     @Arg('id', () => Int) id: number,
-    @Arg('data') data: ProductReviewInput,
+    @Arg('data', () => ProductReviewInput) data: ProductReviewInput,
   ): Promise<TProductReview> {
     return updateWithFilters('ProductReview', ctx, ['update_product_review'], data, id, (...args) =>
       this.repository.updateProductReview(...args),
@@ -105,8 +108,8 @@ export class ProductReviewResolver {
   @Mutation(() => Boolean)
   async [deleteManyPath](
     @Ctx() ctx: TGraphQLContext,
-    @Arg('input') input: DeleteManyInput,
-    @Arg('filterParams', { nullable: true }) filterParams?: ProductReviewFilter,
+    @Arg('input', () => DeleteManyInput) input: DeleteManyInput,
+    @Arg('filterParams', () => ProductReviewFilter, { nullable: true }) filterParams?: ProductReviewFilter,
   ): Promise<boolean | undefined> {
     return deleteManyWithFilters('ProductReview', ctx, ['delete_product_review'], input, filterParams, (...args) =>
       this.repository.deleteManyFilteredProductReviews(...args),

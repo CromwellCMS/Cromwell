@@ -71,7 +71,7 @@ export class ProductResolver {
   }
 
   @Query(() => Product, { nullable: true })
-  async [getOneBySlugPath](@Ctx() ctx: TGraphQLContext, @Arg('slug') slug: string): Promise<TProduct> {
+  async [getOneBySlugPath](@Ctx() ctx: TGraphQLContext, @Arg('slug', () => String) slug: string): Promise<TProduct> {
     return getBySlugWithFilters('Product', ctx, [], ['read_products'], slug, (slug) =>
       this.repository.getProductBySlug(slug, { withRating: true }),
     );
@@ -80,8 +80,8 @@ export class ProductResolver {
   @Query(() => FilteredProduct)
   async [getManyPath](
     @Ctx() ctx: TGraphQLContext,
-    @Arg('pagedParams', { nullable: true }) pagedParams?: PagedParamsInput<TProduct>,
-    @Arg('filterParams', { nullable: true }) filterParams?: ProductFilterInput,
+    @Arg('pagedParams', () => PagedParamsInput, { nullable: true }) pagedParams?: PagedParamsInput<TProduct>,
+    @Arg('filterParams', () => ProductFilterInput, { nullable: true }) filterParams?: ProductFilterInput,
   ): Promise<TPagedList<TProduct>> {
     return getManyWithFilters('Product', ctx, [], ['read_products'], pagedParams, filterParams, (...args) =>
       this.repository.getFilteredProducts(...args),
@@ -90,7 +90,10 @@ export class ProductResolver {
 
   @Authorized<TPermissionName>('create_product')
   @Mutation(() => Product)
-  async [createPath](@Ctx() ctx: TGraphQLContext, @Arg('data') data: CreateProduct): Promise<TProduct> {
+  async [createPath](
+    @Ctx() ctx: TGraphQLContext,
+    @Arg('data', () => CreateProduct) data: CreateProduct,
+  ): Promise<TProduct> {
     return createWithFilters('Product', ctx, ['create_product'], data, (...args) =>
       this.repository.createProduct(...args),
     );
@@ -101,7 +104,7 @@ export class ProductResolver {
   async [updatePath](
     @Ctx() ctx: TGraphQLContext,
     @Arg('id', () => Int) id: number,
-    @Arg('data') data: UpdateProduct,
+    @Arg('data', () => UpdateProduct) data: UpdateProduct,
   ): Promise<TProduct> {
     return updateWithFilters('Product', ctx, ['update_product'], data, id, (...args) =>
       this.repository.updateProduct(...args),
@@ -120,8 +123,8 @@ export class ProductResolver {
   @Mutation(() => Boolean)
   async [deleteManyPath](
     @Ctx() ctx: TGraphQLContext,
-    @Arg('input') input: DeleteManyInput,
-    @Arg('filterParams', { nullable: true }) filterParams?: ProductFilterInput,
+    @Arg('input', () => DeleteManyInput) input: DeleteManyInput,
+    @Arg('filterParams', () => ProductFilterInput, { nullable: true }) filterParams?: ProductFilterInput,
   ): Promise<boolean | undefined> {
     return deleteManyWithFilters('Product', ctx, ['delete_product'], input, filterParams, (...args) =>
       this.repository.deleteManyFilteredProducts(...args),
@@ -142,7 +145,7 @@ export class ProductResolver {
   async [reviewsKey](
     @Ctx() ctx: TGraphQLContext,
     @Root() product: Product,
-    @Arg('pagedParams', { nullable: true }) pagedParams: PagedParamsInput<TProductReview>,
+    @Arg('pagedParams', () => PagedParamsInput, { nullable: true }) pagedParams: PagedParamsInput<TProductReview>,
   ): Promise<TPagedList<TProductReview>> {
     const filterParams: TProductReviewFilter = {
       productId: product.id,

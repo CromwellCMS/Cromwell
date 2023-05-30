@@ -7,6 +7,7 @@ import nodeCleanup from 'node-cleanup';
 import yargs from 'yargs-parser';
 
 import { closeAllServers, getServerPort, launchServerManager, serverAliveWatcher } from './helpers/server-manager';
+import { loadEnv } from './helpers/settings';
 
 const logger = getLogger();
 
@@ -20,7 +21,7 @@ async function main(): Promise<void> {
 
   const port = process.env.API_PORT ?? argsPort ?? 4016;
 
-  // Start a proxy at the server port. Actual server will be launched at random port.
+  // Start a proxy at the server port. Actual server will be launched at 4032 or next available port.
   // This way we can dynamically spawn new server instances and switch between them via proxy
   // with zero downtime. Why do we need this? For example, when a plugin installed, server has to restart
   // to apply plugin's backend. Outage is not an option for production server, right?
@@ -29,10 +30,21 @@ async function main(): Promise<void> {
     logger.error(err);
   });
 
+  const { envMode } = loadEnv();
+
   const server = http.createServer((req, res) => {
-    const getErrorCallback = (message: string) => (err) => {
-      logger.error(message, err);
+    res.setHeader('Access-Control-Allow-Origin', req.headers.origin || '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+
+    const getErrorCallback = (message: string) => (err, req, res) => {
+      if (envMode !== 'dev') {
+        logger.error(message, err);
+      }
+
       res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.writeContinue();
       res.end(
         JSON.stringify(
           {
@@ -46,7 +58,12 @@ async function main(): Promise<void> {
     };
 
     const proxyApiServer = () => {
-      const serverPort = getServerPort();
+      let serverPort = getServerPort();
+
+      if (!serverPort && envMode === 'dev') {
+        serverPort = 4032;
+      }
+
       if (serverPort) {
         proxy.web(
           req,
@@ -77,7 +94,7 @@ async function main(): Promise<void> {
           req,
           res,
           {
-            target: serviceLocator.getAdminUrl(),
+            target: serviceLocator.getAdminUrl() as string,
           },
           getErrorCallback('INTERNAL SERVER ERROR. Proxy: Admin service is down'),
         );
@@ -88,7 +105,7 @@ async function main(): Promise<void> {
           req,
           res,
           {
-            target: serviceLocator.getFrontendUrl(),
+            target: serviceLocator.getFrontendUrl() as string,
           },
           getErrorCallback('INTERNAL SERVER ERROR. Proxy: Renderer service is down'),
         );
@@ -98,13 +115,17 @@ async function main(): Promise<void> {
     }
   });
 
-  await launchServerManager(argsPort, args.init);
+  if (envMode !== 'dev') {
+    await launchServerManager(argsPort, args.init);
+
+    setTimeout(() => {
+      serverAliveWatcher();
+    }, 1000);
+  }
 
   server.on('error', (err) => logger.log(err));
   await server.listen(port);
   logger.info(`Proxy Server is running on: http://localhost:${port}`);
-
-  serverAliveWatcher();
 }
 
 nodeCleanup(() => {

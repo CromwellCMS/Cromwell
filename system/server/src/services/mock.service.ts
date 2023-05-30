@@ -26,7 +26,6 @@ import {
   TagRepository,
   UserRepository,
 } from '@cromwell/core-backend';
-import { Injectable } from '@nestjs/common';
 import cryptoRandomString from 'crypto-random-string';
 import nameGenerator from 'project-name-generator';
 import { Service } from 'typedi';
@@ -36,7 +35,6 @@ import { resetAllPagesCache } from '../helpers/reset-page';
 
 const logger = getLogger();
 
-@Injectable()
 @Service()
 export class MockService {
   private productRepo = getCustomRepository(ProductRepository);

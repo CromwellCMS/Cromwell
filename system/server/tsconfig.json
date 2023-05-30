@@ -13,7 +13,8 @@
     "esModuleInterop": true,
     "moduleResolution": "node",
     "skipLibCheck": true,
-    "types": ["node", "jest"]
+    "types": ["node", "jest"],
+    "incremental": true
   },
   "exclude": ["node_modules", ".cromwell", "build", "migration"],
   "include": ["src/**/*.ts"]

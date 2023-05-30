@@ -1,22 +1,16 @@
 const fs = require('fs-extra');
-const { spawnSync } = require('child_process');
-const {
-  getServerDir,
-  getServerBuildProxyPath,
-  getServerBuildDir,
-} = require('@cromwell/core-backend/dist/helpers/paths');
+const { spawnSync, spawn } = require('child_process');
+const { getServerDir, getServerBuildProxyPath } = require('@cromwell/core-backend/dist/helpers/paths');
 const { serverMessages } = require('@cromwell/core-backend/dist/helpers/constants');
-const normalizePath = require('normalize-path');
 
 // 'build' | 'prod' | 'dev'
 const scriptName = process.argv[2];
 const serverRootDir = getServerDir();
-const buildDir = normalizePath(getServerBuildDir());
 const buildProxyPath = getServerBuildProxyPath();
 
 const buildServer = () => {
   const npmRunPath = require('npm-run-path');
-  spawnSync(`npx --no-install rollup -c`, [], {
+  spawnSync(`npx --no-install rollup -c ./rollup-prod.config.js`, [], {
     shell: true,
     stdio: 'inherit',
     cwd: serverRootDir,
@@ -32,19 +26,37 @@ const runDevScript = () => {
   if (!isServiceBuild()) {
     buildServer();
   }
-  const { watchAndRestartServer } = require('@cromwell/utils/src/watchAndRestartServer');
 
-  const yargs = require('yargs-parser');
-  const port = process.env.API_PORT || Number(yargs(process.argv.slice(2))) || 4016;
+  const spawnOptions = { shell: true, stdio: 'pipe' };
 
-  watchAndRestartServer({
-    port,
-    compileCommand: `npx --no-install rollup -cw`,
-    compileDir: serverRootDir,
-    buildOutputDir: buildDir,
-    buildServerPath: buildProxyPath,
-    serverArgs: process.argv.slice(2),
-  });
+  const processes = [
+    spawn(`npx --no-install rollup -c ./rollup-dev.config.js -w`, [], { ...spawnOptions, cwd: serverRootDir }),
+    spawn(
+      `npx tsx watch --tsconfig ./system/server/tsconfig.json ./system/server/src/main.ts`,
+      process.argv.slice(2),
+      spawnOptions,
+    ),
+    spawn(
+      `npx tsx watch --tsconfig ./system/server/tsconfig.json ./system/server/src/proxy.ts `,
+      process.argv.slice(2),
+      spawnOptions,
+    ),
+  ];
+
+  const buffToText = (buff) => {
+    let str = buff && buff.toString ? buff.toString() : buff;
+    // Remove some terminal control characters
+    str = str.replace(/\033\[[ABCD]/g, '');
+    // eslint-disable-next-line no-control-regex
+    str = str.replace(/\x1b[abcd]/g, '');
+    return str;
+  };
+
+  for (const proc of processes) {
+    // eslint-disable-next-line no-console
+    proc.stdout.on('data', (buff) => console.log(buffToText(buff)));
+    proc.stderr.on('data', (buff) => console.error(buffToText(buff)));
+  }
 
   setTimeout(() => {
     process.send(serverMessages.onStartMessage);

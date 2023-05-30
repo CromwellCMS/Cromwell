@@ -47,7 +47,7 @@ export class CouponResolver {
   @Query(() => PagedCoupon)
   async [getManyPath](
     @Ctx() ctx: TGraphQLContext,
-    @Arg('pagedParams', { nullable: true }) pagedParams?: PagedParamsInput<TCoupon>,
+    @Arg('pagedParams', () => PagedParamsInput, { nullable: true }) pagedParams?: PagedParamsInput<TCoupon>,
     @Arg('filterParams', () => BaseFilterInput, { nullable: true }) filterParams?: BaseFilterInput,
   ): Promise<TPagedList<TCoupon> | undefined> {
     return getManyWithFilters('Coupon', ctx, ['read_coupons'], ['read_coupons'], pagedParams, filterParams, (...args) =>
@@ -57,7 +57,7 @@ export class CouponResolver {
 
   @Authorized<TPermissionName>('create_coupon')
   @Mutation(() => Coupon)
-  async [createPath](@Ctx() ctx: TGraphQLContext, @Arg('data') data: CouponInput): Promise<TCoupon> {
+  async [createPath](@Ctx() ctx: TGraphQLContext, @Arg('data', () => CouponInput) data: CouponInput): Promise<TCoupon> {
     return createWithFilters('Coupon', ctx, ['create_coupon'], data, (...args) =>
       this.repository.createCoupon(...args),
     );
@@ -68,7 +68,7 @@ export class CouponResolver {
   async [updatePath](
     @Ctx() ctx: TGraphQLContext,
     @Arg('id', () => Int) id: number,
-    @Arg('data') data: CouponInput,
+    @Arg('data', () => CouponInput) data: CouponInput,
   ): Promise<TCoupon | undefined> {
     return updateWithFilters('Coupon', ctx, ['update_coupon'], data, id, (...args) =>
       this.repository.updateCoupon(...args),
@@ -85,7 +85,7 @@ export class CouponResolver {
   @Mutation(() => Boolean)
   async [deleteManyPath](
     @Ctx() ctx: TGraphQLContext,
-    @Arg('input') input: DeleteManyInput,
+    @Arg('input', () => DeleteManyInput) input: DeleteManyInput,
     @Arg('filterParams', () => BaseFilterInput, { nullable: true }) filterParams?: BaseFilterInput,
   ): Promise<boolean | undefined> {
     return deleteManyWithFilters('Coupon', ctx, ['delete_coupon'], input, filterParams, (...args) =>

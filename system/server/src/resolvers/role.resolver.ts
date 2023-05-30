@@ -46,7 +46,7 @@ export class RoleResolver {
   @Query(() => PagedRole)
   async [getManyPath](
     @Ctx() ctx: TGraphQLContext,
-    @Arg('pagedParams', { nullable: true }) pagedParams?: PagedParamsInput<TRole>,
+    @Arg('pagedParams', () => PagedParamsInput, { nullable: true }) pagedParams?: PagedParamsInput<TRole>,
     @Arg('filterParams', () => BaseFilterInput, { nullable: true }) filterParams?: BaseFilterInput,
   ): Promise<TPagedList<TRole> | undefined> {
     return getManyWithFilters('Role', ctx, ['read_roles'], ['read_roles'], pagedParams, filterParams, (...args) =>
@@ -56,7 +56,7 @@ export class RoleResolver {
 
   @Authorized<TPermissionName>('create_role')
   @Mutation(() => Role)
-  async [createPath](@Ctx() ctx: TGraphQLContext, @Arg('data') data: RoleInput): Promise<TRole> {
+  async [createPath](@Ctx() ctx: TGraphQLContext, @Arg('data', () => RoleInput) data: RoleInput): Promise<TRole> {
     return createWithFilters('Role', ctx, ['create_role'], data, (...args) => this.repository.createRole(...args));
   }
 
@@ -65,7 +65,7 @@ export class RoleResolver {
   async [updatePath](
     @Ctx() ctx: TGraphQLContext,
     @Arg('id', () => Int) id: number,
-    @Arg('data') data: RoleInput,
+    @Arg('data', () => RoleInput) data: RoleInput,
   ): Promise<TRole | undefined> {
     return updateWithFilters('Role', ctx, ['update_role'], data, id, (...args) => this.repository.updateRole(...args));
   }
@@ -80,7 +80,7 @@ export class RoleResolver {
   @Mutation(() => Boolean)
   async [deleteManyPath](
     @Ctx() ctx: TGraphQLContext,
-    @Arg('input') input: DeleteManyInput,
+    @Arg('input', () => DeleteManyInput) input: DeleteManyInput,
     @Arg('filterParams', () => BaseFilterInput, { nullable: true }) filterParams?: BaseFilterInput,
   ): Promise<boolean | undefined> {
     return deleteManyWithFilters('Role', ctx, ['delete_role'], input, filterParams, (...args) =>

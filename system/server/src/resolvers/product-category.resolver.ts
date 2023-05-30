@@ -65,7 +65,7 @@ export class ProductCategoryResolver {
   }
 
   @Query(() => ProductCategory)
-  async [getOneBySlugPath](@Ctx() ctx: TGraphQLContext, @Arg('slug') slug: string) {
+  async [getOneBySlugPath](@Ctx() ctx: TGraphQLContext, @Arg('slug', () => String) slug: string) {
     return getBySlugWithFilters('ProductCategory', ctx, [], ['read_product_categories'], slug, (...args) =>
       this.repository.getProductCategoryBySlug(...args),
     );
@@ -74,8 +74,9 @@ export class ProductCategoryResolver {
   @Query(() => PagedProductCategory)
   async [getManyPath](
     @Ctx() ctx: TGraphQLContext,
-    @Arg('pagedParams', { nullable: true }) pagedParams?: PagedParamsInput<TProductCategory>,
-    @Arg('filterParams', { nullable: true }) filterParams?: ProductCategoryFilterInput,
+    @Arg('pagedParams', () => PagedParamsInput, { nullable: true }) pagedParams?: PagedParamsInput<TProductCategory>,
+    @Arg('filterParams', () => ProductCategoryFilterInput, { nullable: true })
+    filterParams?: ProductCategoryFilterInput,
   ): Promise<TPagedList<TProductCategory>> {
     return getManyWithFilters(
       'ProductCategory',
@@ -109,7 +110,10 @@ export class ProductCategoryResolver {
 
   @Authorized<TPermissionName>('create_product_category')
   @Mutation(() => ProductCategory)
-  async [createPath](@Ctx() ctx: TGraphQLContext, @Arg('data') data: CreateProductCategory) {
+  async [createPath](
+    @Ctx() ctx: TGraphQLContext,
+    @Arg('data', () => CreateProductCategory) data: CreateProductCategory,
+  ) {
     return createWithFilters('ProductCategory', ctx, ['create_product_category'], data, (...args) =>
       this.repository.createProductCategory(...args),
     );
@@ -120,7 +124,7 @@ export class ProductCategoryResolver {
   async [updatePath](
     @Ctx() ctx: TGraphQLContext,
     @Arg('id', () => Int) id: number,
-    @Arg('data') data: UpdateProductCategory,
+    @Arg('data', () => UpdateProductCategory) data: UpdateProductCategory,
   ) {
     return updateWithFilters('ProductCategory', ctx, ['update_product_category'], data, id, (...args) =>
       this.repository.updateProductCategory(...args),
@@ -139,8 +143,9 @@ export class ProductCategoryResolver {
   @Mutation(() => Boolean)
   async [deleteManyPath](
     @Ctx() ctx: TGraphQLContext,
-    @Arg('input') input: DeleteManyInput,
-    @Arg('filterParams', { nullable: true }) filterParams?: ProductCategoryFilterInput,
+    @Arg('input', () => DeleteManyInput) input: DeleteManyInput,
+    @Arg('filterParams', () => ProductCategoryFilterInput, { nullable: true })
+    filterParams?: ProductCategoryFilterInput,
   ): Promise<boolean | undefined> {
     return deleteManyWithFilters('ProductCategory', ctx, ['delete_product_category'], input, filterParams, (...args) =>
       this.repository.deleteManyCategories(...args),
@@ -151,8 +156,8 @@ export class ProductCategoryResolver {
   async [productsKey](
     @Ctx() ctx: TGraphQLContext,
     @Root() productCategory: ProductCategory,
-    @Arg('pagedParams') pagedParams: PagedParamsInput<TProduct>,
-    @Arg('filterParams', { nullable: true }) filterParams?: ProductFilterInput,
+    @Arg('pagedParams', () => PagedParamsInput) pagedParams: PagedParamsInput<TProduct>,
+    @Arg('filterParams', () => ProductFilterInput, { nullable: true }) filterParams?: ProductFilterInput,
   ): Promise<TPagedList<TProduct>> {
     if (!filterParams) filterParams = {};
     filterParams.categoryId = productCategory.id;

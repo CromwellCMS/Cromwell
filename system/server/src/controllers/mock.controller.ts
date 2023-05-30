@@ -1,6 +1,7 @@
 import { getLogger } from '@cromwell/core-backend';
 import { Controller, Get, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { getDIService } from 'src/helpers/utils';
 
 import { MockService } from '../services/mock.service';
 
@@ -10,7 +11,7 @@ const logger = getLogger();
 @ApiTags('Mock')
 @Controller('v1/mock')
 export class MockController {
-  constructor(private readonly mockService: MockService) {}
+  private mockService = getDIService(MockService);
 
   @Get('all')
   @ApiOperation({ description: 'Use all available mocks' })

@@ -1,18 +1,8 @@
 import { matchPermissions, TPermissionName } from '@cromwell/core';
-import { CustomPermissions, JwtAuthGuard, TRequestWithUser } from '@cromwell/core-backend';
-import {
-  Body,
-  Controller,
-  ForbiddenException,
-  Get,
-  HttpException,
-  HttpStatus,
-  Post,
-  Request,
-  UseGuards,
-} from '@nestjs/common';
+import { AuthGuard, TRequestWithUser } from '@cromwell/core-backend';
+import { Body, Controller, ForbiddenException, Get, HttpException, HttpStatus, Post, Request } from '@nestjs/common';
 import { ApiBody, ApiForbiddenResponse, ApiOperation, ApiProperty, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
+import { Throttle } from '@nestjs/throttler';
 import { IsNotEmpty } from 'class-validator';
 import { getManager } from 'typeorm';
 
@@ -29,8 +19,7 @@ class PluginNewsletterSubscription {
 @Controller('plugin-newsletter')
 class PluginNewsletterController {
   @Post('subscribe')
-  /** Use ThrottlerGuard to limit number of requests from one IP address. Allow max 4 requests in 20 seconds: */
-  @UseGuards(ThrottlerGuard)
+  /** Use Throttle to limit number of requests from one IP address. Allow max 4 requests in 20 seconds: */
   @Throttle(4, 20)
   @ApiOperation({ description: 'Post email to subscribe for newsletters' })
   @ApiResponse({
@@ -63,9 +52,8 @@ class PluginNewsletterController {
    * Added for documentation purposes of custom Controllers.
    * */
   @Get('stats')
-  /** You can restrict route access by assigning JwtAuthGuard and passing allowed permissions in the decorator: */
-  @UseGuards(JwtAuthGuard)
-  @CustomPermissions(newsletterPermissions.stats.name)
+  /** You can restrict route access by assigning AuthGuard and passing allowed permissions in the decorator: */
+  @AuthGuard({ customPermissions: [newsletterPermissions.stats.name] })
   @ApiOperation({ description: 'Get newsletters count' })
   @ApiResponse({
     status: 200,

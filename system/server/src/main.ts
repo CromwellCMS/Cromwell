@@ -18,10 +18,10 @@ import {
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import Fastify from 'fastify';
 import getPort from 'get-port';
 import { buildSchema } from 'type-graphql';
+import Container from 'typedi';
 
 import { getErrorFormatter } from './filters/apollo-exception.filter';
 import { RestExceptionFilter } from './filters/rest-exception.filter';
@@ -31,7 +31,9 @@ import { getResolvers } from './helpers/get-resolvers';
 import { childRegister } from './helpers/server-manager';
 import { checkCmsVersion, checkConfigs, loadEnv } from './helpers/settings';
 import { AppModule } from './modules/app.module';
-import { authServiceInst } from './services/auth.service';
+import { AuthService } from './services/auth.service';
+
+// import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 const logger = getLogger();
 
@@ -85,11 +87,13 @@ async function bootstrap(): Promise<void> {
 
   // JWT Auth
   fastifyInstance.addHook('preHandler', async (request: any, reply) => {
-    await authServiceInst?.processRequest(request, reply);
+    await Container.get(AuthService).processRequest(request, reply);
   });
 
   // REST API
-  const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter(fastifyInstance as any));
+  const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter(fastifyInstance as any), {
+    logger: false,
+  });
 
   app.setGlobalPrefix(apiPrefix);
   app.useGlobalFilters(new RestExceptionFilter());
@@ -108,12 +112,13 @@ async function bootstrap(): Promise<void> {
   app.register(require('@fastify/multipart'));
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
 
-  // Setup SwaggerUI
-  if (envMode.envMode === 'dev') {
-    const options = new DocumentBuilder().setTitle('Cromwell API Server').setVersion('1.0.0').addBearerAuth().build();
-    const document = SwaggerModule.createDocument(app, options);
-    SwaggerModule.setup(`/${apiPrefix}/api-docs`, app, document);
-  }
+  // Swagger is broken, error comes from inside the package. TODO: investigate
+  // // Setup SwaggerUI
+  // if (envMode.envMode === 'dev') {
+  //   const options = new DocumentBuilder().setTitle('Cromwell API Server').setVersion('1.0.0').addBearerAuth().build();
+  //   const document = SwaggerModule.createDocument(app, options);
+  //   SwaggerModule.setup(`/${apiPrefix}/api-docs`, app, document);
+  // }
 
   const port = parseInt(
     (

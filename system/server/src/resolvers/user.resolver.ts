@@ -53,7 +53,7 @@ export class UserResolver {
 
   @Authorized<TPermissionName>('read_users')
   @Query(() => User)
-  async [getOneBySlugPath](@Ctx() ctx: TGraphQLContext, @Arg('slug') slug: string): Promise<TUser> {
+  async [getOneBySlugPath](@Ctx() ctx: TGraphQLContext, @Arg('slug', () => String) slug: string): Promise<TUser> {
     return getBySlugWithFilters('User', ctx, ['read_users'], ['read_users'], slug, (...args) =>
       this.repository.getUserBySlug(...args),
     );
@@ -61,7 +61,10 @@ export class UserResolver {
 
   @Authorized<TPermissionName>('read_users')
   @Query(() => User)
-  async [getOneByEmailPath](@Ctx() ctx: TGraphQLContext, @Arg('email') email: string): Promise<User | undefined> {
+  async [getOneByEmailPath](
+    @Ctx() ctx: TGraphQLContext,
+    @Arg('email', () => String) email: string,
+  ): Promise<User | undefined> {
     return this.repository.getUserByEmail(email);
   }
 
@@ -69,8 +72,8 @@ export class UserResolver {
   @Query(() => PagedUser)
   async [getManyPath](
     @Ctx() ctx: TGraphQLContext,
-    @Arg('pagedParams', { nullable: true }) pagedParams?: PagedParamsInput<TUser>,
-    @Arg('filterParams', { nullable: true }) filterParams?: UserFilterInput,
+    @Arg('pagedParams', () => PagedParamsInput, { nullable: true }) pagedParams?: PagedParamsInput<TUser>,
+    @Arg('filterParams', () => UserFilterInput, { nullable: true }) filterParams?: UserFilterInput,
   ): Promise<TPagedList<TUser> | undefined> {
     return getManyWithFilters('User', ctx, ['read_users'], ['read_users'], pagedParams, filterParams, (...args) =>
       this.repository.getFilteredUsers(...args),
@@ -79,7 +82,7 @@ export class UserResolver {
 
   @Authorized<TPermissionName>('create_user')
   @Mutation(() => User)
-  async [createPath](@Ctx() ctx: TGraphQLContext, @Arg('data') data: CreateUser): Promise<TUser> {
+  async [createPath](@Ctx() ctx: TGraphQLContext, @Arg('data', () => CreateUser) data: CreateUser): Promise<TUser> {
     return createWithFilters('User', ctx, ['create_user'], data, (...args) => this.repository.createUser(...args));
   }
 
@@ -88,7 +91,7 @@ export class UserResolver {
   async [updatePath](
     @Ctx() ctx: TGraphQLContext,
     @Arg('id', () => Int) id: number,
-    @Arg('data') data: UpdateUser,
+    @Arg('data', () => UpdateUser) data: UpdateUser,
   ): Promise<TUser> {
     return updateWithFilters('User', ctx, ['update_user', 'update_my_user'], data, id, async (id, data) => {
       const oldUser = await this.repository.getUserById(id);
@@ -118,8 +121,8 @@ export class UserResolver {
   @Mutation(() => Boolean)
   async [deleteManyPath](
     @Ctx() ctx: TGraphQLContext,
-    @Arg('input') input: DeleteManyInput,
-    @Arg('filterParams', { nullable: true }) filterParams?: UserFilterInput,
+    @Arg('input', () => DeleteManyInput) input: DeleteManyInput,
+    @Arg('filterParams', () => UserFilterInput, { nullable: true }) filterParams?: UserFilterInput,
   ): Promise<boolean | undefined> {
     return deleteManyWithFilters('User', ctx, ['delete_user'], input, filterParams, (...args) =>
       this.repository.deleteManyFilteredUsers(...args),

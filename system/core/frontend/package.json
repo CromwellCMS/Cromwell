@@ -81,6 +81,6 @@
     "typescript-plugin-css-modules": "3.4.0"
   },
   "peerDependencies": {
-    "next": "13.0.2"
+    "next": "13.4.4"
   }
 }

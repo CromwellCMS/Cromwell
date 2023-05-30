@@ -35,14 +35,15 @@ import {
   User,
 } from '@cromwell/core-backend';
 import { getCentralServerClient } from '@cromwell/core-frontend';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus } from '@nestjs/common';
 import archiver from 'archiver';
 import { format } from 'date-fns';
 import { FastifyReply } from 'fastify';
 import fs from 'fs-extra';
 import { join, resolve } from 'path';
+import { getDIService } from 'src/helpers/utils';
 import { pipeline } from 'stream';
-import { Container, Service } from 'typedi';
+import { Service } from 'typedi';
 import { getConnection, getCustomRepository, Repository } from 'typeorm';
 import * as util from 'util';
 
@@ -60,7 +61,7 @@ import {
   setPendingRestart,
   startTransaction,
 } from '../helpers/state-manager';
-import { authServiceInst } from './auth.service';
+import { AuthService } from './auth.service';
 import { MockService } from './mock.service';
 import { PluginService } from './plugin.service';
 import { ThemeService } from './theme.service';
@@ -68,20 +69,12 @@ import { ThemeService } from './theme.service';
 const logger = getLogger();
 const pump = util.promisify(pipeline);
 
-@Injectable()
 @Service()
 export class CmsService {
-  private get pluginService() {
-    return Container.get(PluginService);
-  }
-
-  private get themeService() {
-    return Container.get(ThemeService);
-  }
-
-  private get mockService() {
-    return Container.get(MockService);
-  }
+  private themeService = getDIService(ThemeService);
+  private pluginService = getDIService(PluginService);
+  private mockService = getDIService(MockService);
+  private authService = getDIService(AuthService);
 
   private isRunningNpm = false;
   private checkedYarn = false;
@@ -220,7 +213,7 @@ export class CmsService {
 
     input.user.roles = [adminRole.name];
 
-    return await authServiceInst!.createUser(input.user);
+    return await this.authService.createUser(input.user);
   }
 
   public async setupCmsSecondStep(input: SetupSecondStepDto) {

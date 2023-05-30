@@ -1,5 +1,4 @@
-import { TCustomPermission, TPermission, TPermissionName, TRole, TPermissionCategory } from '@cromwell/core';
-import { SetMetadata } from '@nestjs/common';
+import { TCustomPermission, TPermission, TPermissionCategory, TPermissionName, TRole } from '@cromwell/core';
 import { getCustomRepository } from 'typeorm';
 
 import { RoleRepository } from '../repositories/role.repository';
@@ -24,12 +23,6 @@ export const getUserRole = (role: string) => {
   checkRoles();
   return roles.find((r) => r.name === role);
 };
-
-/** Nest.js guard */
-export const DefaultPermissions = (...permissions: TPermissionName[]) => SetMetadata('permissions', permissions);
-
-export const CustomPermissions = <TCustomPermissions = string>(...permissions: TCustomPermissions[]) =>
-  SetMetadata('permissions', permissions);
 
 const permissions: Record<string, TCustomPermission> = {};
 

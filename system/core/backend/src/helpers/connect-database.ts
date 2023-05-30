@@ -47,7 +47,10 @@ export const connectDatabase = async ({
       logSchemaBuild: logger.log,
       logMigration: logger.info,
       log: (level, message) => {
-        if (level === 'info') logger.info(message);
+        if (level === 'info') {
+          if (message?.startsWith?.('All classes found using')) return;
+          logger.info(message);
+        }
         if (level === 'warn') logger.warn(message);
         if (level === 'log') logger.log(message);
       },

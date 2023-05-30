@@ -51,8 +51,7 @@ export const getAuthSettings = async (options?: { serverCachePath?: string }): P
     serviceSecret:
       cmsConfig.serviceSecret ?? cachedSettings?.serviceSecret ?? cryptoRandomString({ length: 16, type: 'url-safe' }),
 
-    /** 10 min by default */
-    expirationAccessTime: cmsConfig.accessTokenExpirationTime ?? 600,
+    expirationAccessTime: cmsConfig.accessTokenExpirationTime ?? 60,
     /** 15 days by default */
     expirationRefreshTime: cmsConfig.refreshTokenExpirationTime ?? 1296000,
 
