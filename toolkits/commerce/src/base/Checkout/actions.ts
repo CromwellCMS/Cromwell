@@ -15,7 +15,7 @@ import { getCStore, getRestApiClient, useUserInfo } from '@cromwell/core-fronten
 import queryString from 'query-string';
 import React, { useEffect, useRef, useState } from 'react';
 
-import { notifier as baseNotifier } from '../../helpers/notifier';
+import { getNotifier } from '../../helpers/notifier';
 import { moduleState } from '../../helpers/state';
 import { CheckoutProps } from './Checkout';
 import { DefaultCheckoutFields, getDefaultCheckoutFields } from './DefaultElements';
@@ -30,7 +30,7 @@ export const usuCheckoutActions = (config: {
 }) => {
   const cstore = getCStore();
   const {
-    notifier = baseNotifier,
+    notifier = getNotifier(),
     notifierOptions = {},
     fields = getDefaultCheckoutFields(config.checkoutProps),
     text,

@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useRef, useState } from 'react';
+import { createContext, useContext, useRef } from 'react';
 
 export const ContextualBarCtx = createContext({
   ref: null,

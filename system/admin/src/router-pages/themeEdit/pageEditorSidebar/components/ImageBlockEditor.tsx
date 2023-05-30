@@ -35,12 +35,6 @@ export const ImageBlockEditor = ({ block }: { block?: TCromwellBlock }) => {
     rerender();
   };
 
-  const handleNumberInput = (name: keyof TCromwellBlockData['image']) => (value: any) => {
-    let val = parseInt(value);
-    if (isNaN(val)) val = undefined;
-    handleChange(name, val);
-  };
-
   const handleTextInput = (name: keyof TCromwellBlockData['image']) => (value: any) => {
     let val = value;
     if (val === '' || !val) val = undefined;

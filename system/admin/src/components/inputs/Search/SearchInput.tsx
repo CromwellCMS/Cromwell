@@ -224,7 +224,8 @@ export class SearchInput<TItemData extends { id: number | string }> extends Reac
             }
           }}
           PopperComponent={() => <></>}
-          renderInput={({ size, InputProps, inputProps, ...rest }) => {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          renderInput={({ InputProps, inputProps, size, ...rest }) => {
             return (
               <div ref={this.searchAnchorRef}>
                 <div ref={InputProps.ref}>

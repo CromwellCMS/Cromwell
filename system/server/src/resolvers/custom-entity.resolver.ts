@@ -20,10 +20,8 @@ import {
 } from '@cromwell/core-backend';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { GraphQLJSONObject } from 'graphql-type-json';
-import { getDIService } from 'src/helpers/utils';
 import { throttle } from 'throttle-debounce';
 import { Arg, Ctx, FieldResolver, Int, Mutation, Query, Resolver, Root } from 'type-graphql';
-import { Container } from 'typedi';
 import { getCustomRepository } from 'typeorm';
 
 import {
@@ -35,6 +33,7 @@ import {
   getManyWithFilters,
   updateWithFilters,
 } from '../helpers/data-filters';
+import { getDIService } from '../helpers/utils';
 import { CmsService } from '../services/cms.service';
 
 const getOneBySlugPath = GraphQLPaths.CustomEntity.getOneBySlug;

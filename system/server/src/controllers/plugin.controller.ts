@@ -2,11 +2,11 @@ import { TFrontendBundle } from '@cromwell/core';
 import { AuthGuard, findPlugin, getLogger, getPluginSettings, savePluginSettings } from '@cromwell/core-backend';
 import { Body, Controller, Get, HttpException, HttpStatus, Post, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { getDIService } from 'src/helpers/utils';
 
 import { FrontendBundleDto } from '../dto/frontend-bundle.dto';
 import { PluginEntityDto } from '../dto/plugin-entity.dto';
 import { UpdateInfoDto } from '../dto/update-info.dto';
+import { getDIService } from '../helpers/utils';
 import { PluginService } from '../services/plugin.service';
 
 const logger = getLogger();

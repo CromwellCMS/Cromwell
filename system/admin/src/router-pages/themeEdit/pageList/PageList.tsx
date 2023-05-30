@@ -1,22 +1,20 @@
-import { getRandStr, sleep } from '@cromwell/core';
+import { getRandStr } from '@cromwell/core';
 import { PlusIcon } from '@heroicons/react/24/outline';
 import React, { useEffect, useState } from 'react';
-import { usePageBuilder } from '../hooks/usePageBuilder';
+
 import { useThemeEditor } from '../hooks/useThemeEditor';
-import { TExtendedPageInfo } from '../ThemeEdit';
 import { PageItem } from './PageItem';
 
 export const PageList = () => {
-  const { pageInfos, handleOpenPage, editingPageConfig, setPageInfos, setChangedPageInfo, hasUnsavedModifications } =
-    useThemeEditor();
+  const { pageInfos, handleOpenPage, setPageInfos, setChangedPageInfo } = useThemeEditor();
   // const [pageCount, setPageCount] = useState(pageInfos.length)
   const [pageAdded, setPageAdded] = useState(false);
-  const info = pageInfos?.map((p) => {
-    if (p.id === editingPageConfig?.id) {
-      return Object.assign({}, p, editingPageConfig);
-    }
-    return p;
-  });
+  // const info = pageInfos?.map((p) => {
+  //   if (p.id === editingPageConfig?.id) {
+  //     return Object.assign({}, p, editingPageConfig);
+  //   }
+  //   return p;
+  // });
   const defaultPages = pageInfos?.filter((p) => !p.isVirtual);
   const customPages = pageInfos?.filter((p) => p.isVirtual);
 

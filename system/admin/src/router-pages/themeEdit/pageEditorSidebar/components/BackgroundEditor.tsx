@@ -5,7 +5,6 @@ import { ColorPickerField } from './ColorPickerField';
 export const BackgroundEditor = ({
   styles,
   handleStyleChange,
-  block,
 }: {
   styles?: CSSProperties;
   block?: TCromwellBlock;

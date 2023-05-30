@@ -9,6 +9,7 @@ import { TExtendedPageConfig } from '../../ThemeEdit';
 import { TextAreaInput, TextInput } from './TextInput';
 
 export const PageMetaSettings = ({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onInputChange = (inp: string, val: any) => {},
   config = null,
 }: {
@@ -75,10 +76,7 @@ export const PageSettings = () => {
     overrideConfig,
     setChangedPageInfo,
     resetModifications,
-    setPageInfos,
-    themeName,
     pageInfos,
-    init,
     handleOpenPage,
   } = useThemeEditor();
   const { resetCurrentPage, deletePage } = usePageBuilder();

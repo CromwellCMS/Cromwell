@@ -39,5 +39,5 @@ export {
 
 export { moduleState, useModuleState } from './helpers/state';
 export { useProductVariants } from './helpers/useProductVariants';
-export { notifier } from './helpers/notifier';
+export { defaultNotifier, setNotifier } from './helpers/notifier';
 export { muiNotifier } from './mui/Notifier/Notifier';

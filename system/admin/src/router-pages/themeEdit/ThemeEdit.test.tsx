@@ -47,11 +47,6 @@ jest.mock('@cromwell/core-frontend', () => {
   };
 });
 
-import { render, screen } from '@testing-library/react';
-import { BrowserRouter as Router } from 'react-router-dom';
-
-import ThemeEditPage from './ThemeEdit';
-
 describe('ThemeEdit page', () => {
   it('renders sidebar with pages', async () => {
     // render(<Router><ThemeEditPage /></Router>);

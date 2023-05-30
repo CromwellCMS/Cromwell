@@ -6,7 +6,6 @@ import {
   TCromwellBlockType,
   TCromwellStore,
   TPageConfig,
-  TPluginEntity,
 } from '@cromwell/core';
 import {
   blockCssClass,
@@ -16,6 +15,7 @@ import {
   pageRootContainerId,
 } from '@cromwell/core-frontend';
 import React, { useEffect, useRef, useState } from 'react';
+
 import { askConfirmation } from '../../../components/modal/Confirmation';
 import { toast } from '../../../exports';
 import { Draggable } from '../../../helpers/Draggable/Draggable';
@@ -47,7 +47,7 @@ type THistoryItem = {
   global: string;
 };
 
-const unsavedPrompt = 'Your unsaved changes will be lost. Do you want to discard and leave this page?';
+// const unsavedPrompt = 'Your unsaved changes will be lost. Do you want to discard and leave this page?';
 
 const usePageBuilderContext = () => {
   const {
@@ -61,15 +61,12 @@ const usePageBuilderContext = () => {
     plugins,
     editingPageConfig,
     pageConfigOverrides,
-    overrideConfig,
     forceUpdate,
     setEditingPageConfig,
     setChangedPageInfo,
     setLoading,
     handleOpenPage,
-    pageInfos,
     themePalette,
-    setThemePalette,
     setPageInfos,
     themeName,
   } = useThemeEditor();
@@ -101,7 +98,6 @@ const usePageBuilderContext = () => {
   });
 
   const {
-    hoveredFrames,
     selectedFrames,
     invisibleSelectedFrames,
     onBlockHoverEnd,
@@ -110,7 +106,6 @@ const usePageBuilderContext = () => {
     updateFramesPosition,
     draggable,
     onAnyElementScroll,
-    setFramePosition,
   } = useEditorFrames({
     getBlockById,
     getBlockElementById,
@@ -128,7 +123,6 @@ const usePageBuilderContext = () => {
     selectBlock,
     deselectBlock,
     deselectCurrentBlock,
-    onBlockDeSelected,
     onBlockSelected,
     onMouseUp,
     onTryToInsert,

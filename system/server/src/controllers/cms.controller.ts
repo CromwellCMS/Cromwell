@@ -28,7 +28,6 @@ import { Throttle } from '@nestjs/throttler';
 import { FastifyReply } from 'fastify';
 import fs from 'fs-extra';
 import { join } from 'path';
-import { getDIService } from 'src/helpers/utils';
 
 import { AdminCmsSettingsDto } from '../dto/admin-cms-settings.dto';
 import { CmsSettingsDto } from '../dto/cms-settings.dto';
@@ -45,6 +44,7 @@ import { SetupFirstStepDto, SetupSecondStepDto } from '../dto/setup.dto';
 import { SystemUsageDto } from '../dto/system-usage.dto';
 import { publicSystemDirs } from '../helpers/constants';
 import { resetAllPagesCache } from '../helpers/reset-page';
+import { getDIService } from '../helpers/utils';
 import { CmsService } from '../services/cms.service';
 import { MigrationService } from '../services/migration.service';
 import { PluginService } from '../services/plugin.service';

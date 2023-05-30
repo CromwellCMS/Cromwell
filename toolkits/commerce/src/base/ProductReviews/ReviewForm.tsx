@@ -3,6 +3,7 @@ import { CContainer, CText, getRestApiClient, useUserInfo } from '@cromwell/core
 import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
 
+import { getNotifier } from '../../helpers/notifier';
 import { BaseAlert } from '../shared/Alert';
 import { BaseButton } from '../shared/Button';
 import { BaseRating } from '../shared/Rating';
@@ -18,7 +19,7 @@ export type ReviewFormProps = {
 };
 
 /** @internal */
-export const ReviewForm = ({ productId, notifier, parentProps }: ReviewFormProps) => {
+export const ReviewForm = ({ productId, notifier = getNotifier(), parentProps }: ReviewFormProps) => {
   const userInfo = useUserInfo();
   const [name, setName] = useState(userInfo?.fullName ?? '');
   const [rating, setRating] = useState<number | null>(0);

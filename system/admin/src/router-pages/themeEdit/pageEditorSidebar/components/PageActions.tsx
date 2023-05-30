@@ -14,15 +14,8 @@ import { usePageBuilder } from '../../hooks/usePageBuilder';
 import { useThemeEditor } from '../../hooks/useThemeEditor';
 
 export const PageActions = () => {
-  const {
-    undoModification,
-    redoModification,
-    hasUnsavedModifications,
-    changedModifications,
-    history,
-    undoneHistory,
-    savePage,
-  } = usePageBuilder();
+  const { undoModification, redoModification, hasUnsavedModifications, history, undoneHistory, savePage } =
+    usePageBuilder();
   const { editingPageConfig, themeConfig, overrideConfig, setChangedPageInfo, setEditingPageConfig } = useThemeEditor();
   const config = editingPageConfig;
   const [, forceUpdate] = useState(0);

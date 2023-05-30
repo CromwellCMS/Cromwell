@@ -1,17 +1,9 @@
-import {
-  getStoreItem,
-  sleep,
-  TCromwellBlockData,
-  TCromwellStore,
-  TPageConfig,
-  TPalette,
-  TPluginEntity,
-  TThemeConfig,
-} from '@cromwell/core';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { TExtendedPageConfig, TExtendedPageInfo } from '../ThemeEdit';
-import queryString from 'query-string';
+import { getStoreItem, TCromwellBlockData, TPageConfig, TPalette, TPluginEntity, TThemeConfig } from '@cromwell/core';
 import { getGraphQLClient, getRestApiClient } from '@cromwell/core-frontend';
+import queryString from 'query-string';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+
+import { TExtendedPageConfig, TExtendedPageInfo } from '../ThemeEdit';
 
 const unsavedPrompt = 'Your unsaved changes will be lost. Do you want to discard and leave this page?';
 
@@ -32,7 +24,6 @@ const useThemeEditorContext = () => {
   const [themeConfig, setThemeConfig] = useState<TThemeConfig>(null);
   // const [isChangingPage, setIsChangingPage] = useState(false);
   const pageFrameRef = useRef<HTMLIFrameElement>();
-  const pageBuilderContent = useRef<HTMLDivElement>();
   const [frameWidth, setFrameWidth] = useState<0 | 1 | 2 | 3 | 4>(4);
 
   const hasUnsavedModifications = changedPalette || !!(changedPageInfo || changedModifications?.length > 0);

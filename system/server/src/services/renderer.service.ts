@@ -1,11 +1,11 @@
 import { serviceLocator } from '@cromwell/core';
 import { getAuthSettings, getCmsSettings, getLogger, getThemeConfigs, TAuthSettings } from '@cromwell/core-backend';
 import fetch from 'node-fetch';
-import { getDIService } from 'src/helpers/utils';
 import { Service } from 'typedi';
 
 import { CmsSettingsDto } from '../dto/cms-settings.dto';
 import { ThemeConfigDto } from '../dto/theme-config.dto';
+import { getDIService } from '../helpers/utils';
 import { ThemeService } from './theme.service';
 
 const logger = getLogger();

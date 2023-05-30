@@ -6,7 +6,6 @@ import { StyleNumberField } from './StyleNumberField';
 export const MarginEditor = ({
   styles,
   handleStyleChange,
-  block,
 }: {
   styles?: CSSProperties;
   handleStyleChange: (name: keyof React.CSSProperties, value: any) => void;

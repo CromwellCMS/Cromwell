@@ -41,7 +41,6 @@ import { format } from 'date-fns';
 import { FastifyReply } from 'fastify';
 import fs from 'fs-extra';
 import { join, resolve } from 'path';
-import { getDIService } from 'src/helpers/utils';
 import { pipeline } from 'stream';
 import { Service } from 'typedi';
 import { getConnection, getCustomRepository, Repository } from 'typeorm';
@@ -61,6 +60,7 @@ import {
   setPendingRestart,
   startTransaction,
 } from '../helpers/state-manager';
+import { getDIService } from '../helpers/utils';
 import { AuthService } from './auth.service';
 import { MockService } from './mock.service';
 import { PluginService } from './plugin.service';

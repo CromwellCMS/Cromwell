@@ -1,5 +1,5 @@
-import { fireEvent, render, screen, act } from '@testing-library/react';
-import { getStoreItem, TUser } from '@cromwell/core';
+import { render, screen } from '@testing-library/react';
+import { TUser } from '@cromwell/core';
 import React from 'react';
 
 const testData: TUser = {
@@ -39,7 +39,7 @@ describe('Welcome page', () => {
   it('logs in, fetches user data', async () => {
     render(<WelcomePage />);
 
-    const loginBtn = await screen.findByText('Create');
+    await screen.findByText('Create');
 
     const emailInput = document.getElementById('email-input');
     expect(emailInput).toBeTruthy();

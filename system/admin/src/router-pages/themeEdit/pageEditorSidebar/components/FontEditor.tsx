@@ -136,7 +136,6 @@ const MenuCenterIcon = (props: React.HTMLAttributes<SVGElement>) => {
 export const FontEditor = ({
   styles,
   handleStyleChange,
-  block,
 }: {
   styles?: CSSProperties;
   block?: TCromwellBlock;

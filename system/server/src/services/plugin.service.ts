@@ -36,7 +36,6 @@ import decache from 'decache';
 import fs from 'fs-extra';
 import normalizePath from 'normalize-path';
 import { resolve } from 'path';
-import { getDIService } from 'src/helpers/utils';
 import { Service } from 'typedi';
 import { getConnection, getCustomRepository } from 'typeorm';
 
@@ -50,6 +49,7 @@ import {
   setPendingRestart,
   startTransaction,
 } from '../helpers/state-manager';
+import { getDIService } from '../helpers/utils';
 import { CmsService } from './cms.service';
 
 const logger = getLogger();

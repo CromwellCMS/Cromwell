@@ -13,7 +13,6 @@ import {
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
 import { FastifyReply } from 'fastify';
-import { getDIService } from 'src/helpers/utils';
 
 import { AccessTokensDto, UpdateAccessTokenDto, UpdateAccessTokenResponseDto } from '../dto/access-tokens.dto';
 import { CreateUserDto } from '../dto/create-user.dto';
@@ -21,6 +20,7 @@ import { LoginDto } from '../dto/login.dto';
 import { ResetPasswordDto } from '../dto/reset-password.dto';
 import { UserDto } from '../dto/user.dto';
 import { TLoginInfo } from '../helpers/constants';
+import { getDIService } from '../helpers/utils';
 import { AuthService } from '../services/auth.service';
 
 const logger = getLogger();

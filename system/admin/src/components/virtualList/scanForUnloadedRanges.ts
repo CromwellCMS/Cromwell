@@ -12,7 +12,6 @@ export function scanForUnloadedRanges({
   startIndex: number;
   stopIndex: number;
 }): Ranges {
-  console.log('Scanning', startIndex, stopIndex);
   const unloadedRanges: Ranges = [];
   let rangeStartIndex = null;
   let rangeStopIndex = null;

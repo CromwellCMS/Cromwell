@@ -2,7 +2,6 @@ import { TPackageCromwellConfig, TPageConfig, TPageInfo, TThemeConfig } from '@c
 import { AuthGuard, getLogger, getThemeConfigs } from '@cromwell/core-backend';
 import { Body, Controller, Delete, Get, HttpException, HttpStatus, Post, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { getDIService } from 'src/helpers/utils';
 
 import { ModuleInfoDto } from '../dto/module-info.dto';
 import { PageConfigDto } from '../dto/page-config.dto';
@@ -10,6 +9,7 @@ import { PageInfoDto } from '../dto/page-info.dto';
 import { ThemeConfigDto } from '../dto/theme-config.dto';
 import { ThemePaletteDto } from '../dto/theme-palette.dto';
 import { UpdateInfoDto } from '../dto/update-info.dto';
+import { getDIService } from '../helpers/utils';
 import { ThemeService } from '../services/theme.service';
 
 const logger = getLogger();

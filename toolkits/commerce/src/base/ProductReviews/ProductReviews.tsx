@@ -13,6 +13,7 @@ import clsx from 'clsx';
 import { useRouter } from 'next/router';
 import React, { useEffect, useRef } from 'react';
 
+import { getNotifier } from '../../helpers/notifier';
 import { TBaseAlert } from '../shared/Alert';
 import { TBaseButton } from '../shared/Button';
 import { TBaseRating } from '../shared/Rating';
@@ -101,7 +102,7 @@ const ListItem = (props: TReviewListItemProps) => {
  * Displays customer reviews of a product. Fetches data client-side
  */
 export function ProductReviews(props: ProductReviewsProps) {
-  const { productId, listProps, notifier, elements, classes, disableEdit } = props;
+  const { productId, listProps, notifier = getNotifier(), elements, classes, disableEdit } = props;
   const reviewsInst = useRef<TCromwellBlock<TCList> | undefined>();
   const client = getGraphQLClient();
   const router = useRouter();

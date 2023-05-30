@@ -13,7 +13,7 @@ import commonStyles from '../../styles/common.module.scss';
 import styles from './PluginMarket.module.scss';
 
 export default class PluginMarket extends Component<
-  {},
+  Record<string, never>,
   {
     installedPlugins: TPackageCromwellConfig[];
     isLoading: boolean;

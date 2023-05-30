@@ -1,12 +1,12 @@
 import { TCromwellBlock } from '@cromwell/core';
 import React, { useState } from 'react';
-import { usePageBuilder } from '../../hooks/usePageBuilder';
-import { useThemeEditor } from '../../hooks/useThemeEditor';
+// import { usePageBuilder } from '../../hooks/usePageBuilder';
+// import { useThemeEditor } from '../../hooks/useThemeEditor';
 import { EditorBlockEditor } from './EditorBlockEditor';
 import { HTMLBlockEditor } from './HTMLBlockEditor';
 import { ImageBlockEditor } from './ImageBlockEditor';
 import { TextBlockEditor } from './TextBlockEditor';
-import { ThirdPartyPluginEditor } from './ThirdPartyPluginEditor';
+// import { ThirdPartyPluginEditor } from './ThirdPartyPluginEditor';
 
 export const PluginEditor = ({
   block,
@@ -17,12 +17,12 @@ export const PluginEditor = ({
 }) => {
   // console.log("BLOG RERENDER", block);
   const data = block?.getData();
-  const { createBlockProps, updateFramesPosition } = usePageBuilder();
   // const [data, setData] = useState(block?.getData());
-  const { forceUpdate } = useThemeEditor();
   const [showHelp, setShowHelp] = useState(false);
 
-  const blockProps = createBlockProps(block);
+  // const { forceUpdate } = useThemeEditor();
+  // const { createBlockProps, updateFramesPosition } = usePageBuilder();
+  // const blockProps = createBlockProps(block);
 
   const type = data?.type;
 

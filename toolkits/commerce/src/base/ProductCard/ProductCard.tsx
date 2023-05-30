@@ -12,7 +12,7 @@ import clsx from 'clsx';
 import Image, { ImageProps } from 'next/image';
 import React from 'react';
 
-import { notifier as baseNotifier, NotifierActionOptions } from '../../helpers/notifier';
+import { getNotifier, NotifierActionOptions } from '../../helpers/notifier';
 import { useImageLoader } from '../../helpers/useImageLoader';
 import { useProductLink } from '../../helpers/useLinks';
 import { useStoreAttributes } from '../../helpers/useStoreAttributes';
@@ -122,7 +122,7 @@ export function ProductCard(props: ProductCardProps) {
   const {
     product,
     onOpenCart,
-    notifier = baseNotifier,
+    notifier = getNotifier(),
     notifierOptions = {},
     elements = {},
     imageProps,

@@ -33,7 +33,6 @@ import { HttpException, HttpStatus } from '@nestjs/common';
 import decache from 'decache';
 import fs from 'fs-extra';
 import { resolve } from 'path';
-import { getDIService } from 'src/helpers/utils';
 import { Service } from 'typedi';
 import { getConnection, getCustomRepository } from 'typeorm';
 
@@ -41,6 +40,7 @@ import { resetAllPagesCache } from '../helpers/reset-page';
 import { serverFireAction } from '../helpers/server-fire-action';
 import { childSendMessage } from '../helpers/server-manager';
 import { endTransaction, restartService, setPendingKill, startTransaction } from '../helpers/state-manager';
+import { getDIService } from '../helpers/utils';
 import { CmsService } from './cms.service';
 import { PluginService } from './plugin.service';
 

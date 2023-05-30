@@ -60,10 +60,10 @@ import {
 } from '@cromwell/core-backend';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import cryptoRandomString from 'crypto-random-string';
-import { getDIService } from 'src/helpers/utils';
 import { Service } from 'typedi';
 import { getCustomRepository } from 'typeorm';
 
+import { getDIService } from '../helpers/utils';
 import { CmsService } from './cms.service';
 
 enum ESheetNames {

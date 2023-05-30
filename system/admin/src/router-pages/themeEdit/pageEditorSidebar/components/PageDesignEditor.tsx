@@ -1,5 +1,5 @@
 import { TCromwellBlock } from '@cromwell/core';
-import React, { CSSProperties, useCallback, useEffect, useState } from 'react';
+import React, { CSSProperties, useCallback, useState } from 'react';
 import { usePageBuilder } from '../../hooks/usePageBuilder';
 import { useThemeEditor } from '../../hooks/useThemeEditor';
 import { BackgroundEditor } from './BackgroundEditor';

@@ -30,7 +30,7 @@ async function main(): Promise<void> {
     logger.error(err);
   });
 
-  const { envMode } = loadEnv();
+  const { envMode, scriptName } = loadEnv();
 
   const server = http.createServer((req, res) => {
     res.setHeader('Access-Control-Allow-Origin', req.headers.origin || '*');
@@ -60,7 +60,7 @@ async function main(): Promise<void> {
     const proxyApiServer = () => {
       let serverPort = getServerPort();
 
-      if (!serverPort && envMode === 'dev') {
+      if (!serverPort && scriptName === 'dev') {
         serverPort = 4032;
       }
 
@@ -115,7 +115,7 @@ async function main(): Promise<void> {
     }
   });
 
-  if (envMode !== 'dev') {
+  if (scriptName !== 'dev') {
     await launchServerManager(argsPort, args.init);
 
     setTimeout(() => {

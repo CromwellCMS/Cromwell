@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import { Draggable } from '../../../helpers/Draggable/Draggable';
 
 export const useEditorFrames = ({
@@ -9,6 +9,7 @@ export const useEditorFrames = ({
   editorWidgetWrapperCroppedRef,
   contentWindowRef,
   selectableFrameMargin,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   pageFrameRef,
 }) => {
   const hoveredFrames = useRef<Record<string, HTMLElement>>({});

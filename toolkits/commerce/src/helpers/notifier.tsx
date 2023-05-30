@@ -77,4 +77,21 @@ export class Notifier implements TCromwellNotify {
 }
 
 /** @internal */
-export const notifier = new Notifier();
+export const defaultNotifier = new Notifier();
+
+/** @internal */
+const notifierState: {
+  defaultNotifier: TCromwellNotify;
+  customNotifier?: TCromwellNotify;
+} = {
+  defaultNotifier,
+};
+
+/** @internal */
+export function getNotifier() {
+  return notifierState.customNotifier ?? notifierState.defaultNotifier;
+}
+
+export function setNotifier(notifier: TCromwellNotify) {
+  notifierState.customNotifier = notifier;
+}

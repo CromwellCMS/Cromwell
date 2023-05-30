@@ -29,7 +29,6 @@ const DragLabel = ({
   min = -Infinity,
   max = Infinity,
   boundingRef = { current: null },
-  dataType = 'px',
 }: {
   value?: any;
   setValue: any;

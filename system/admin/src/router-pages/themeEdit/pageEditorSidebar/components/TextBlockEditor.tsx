@@ -27,17 +27,17 @@ export const TextBlockEditor = ({ block }: { block?: TCromwellBlock; children?: 
     // console.log(block?.getData())
   };
 
-  const handleChangeLink = (value: string) => {
-    const data = block?.getData();
-    if (!data.text) data.text = {};
-    if (!value || value === '') value = undefined;
-    data.text.href = value;
-    blockProps.modifyData?.(data);
+  // const handleChangeLink = (value: string) => {
+  //   const data = block?.getData();
+  //   if (!data.text) data.text = {};
+  //   if (!value || value === '') value = undefined;
+  //   data.text.href = value;
+  //   blockProps.modifyData?.(data);
 
-    // modifyData()
-    rerender();
-    block?.rerender();
-  };
+  //   // modifyData()
+  //   rerender();
+  //   block?.rerender();
+  // };
 
   return (
     <div className="text-xs p-2">

@@ -49,9 +49,7 @@ export const InfiniteLoader = ({
     for (let i = 0; i < unloadedRanges.length; i += 2) {
       const startIndex = unloadedRanges[i];
       const stopIndex = unloadedRanges[i + 1];
-      console.log(unloadedRanges.length, startIndex, stopIndex);
       const promise = loadMore(startIndex, stopIndex);
-      console.log('loading more');
 
       if (promise != null) {
         promise.then(() => {
@@ -104,14 +102,6 @@ export const InfiniteLoader = ({
     },
     [isItemLoaded, itemCount, threshold, minimumBatchSize],
   );
-
-  const resetloadMoreItemsCache = useCallback((autoReload = false) => {
-    _memoizedUnloadedRanges.current = [];
-
-    if (autoReload) {
-      _ensureRowsLoaded(_lastRenderedStartIndex.current, _lastRenderedStopIndex.current);
-    }
-  }, []);
 
   const _onItemsRendered: onItemsRendered = useCallback(
     ({ visibleStartIndex, visibleStopIndex }: onItemsRenderedParams) => {

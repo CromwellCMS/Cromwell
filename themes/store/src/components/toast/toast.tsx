@@ -1,4 +1,5 @@
-import { setStoreItem, TCromwellNotify } from '@cromwell/core';
+import { TCromwellNotify } from '@cromwell/core';
+import { setNotifier } from '@cromwell/toolkit-commerce';
 import { Alert } from '@mui/material';
 import React from 'react';
 import { toast as toastify, ToastOptions } from 'react-toastify';
@@ -7,41 +8,41 @@ import styles from './toast.module.scss';
 
 class Toast implements TCromwellNotify {
   success(text: string, options?: ToastOptions) {
-    toastify.info(
+    toastify.success(
       <div className={styles.container}>
         <Alert severity="success" className={styles.alert}>
           {text}
         </Alert>
       </div>,
       {
-        className: styles.toast,
         ...(options ?? {}),
+        className: styles.toast,
       },
     );
   }
   warning(text: string, options?: ToastOptions) {
-    toastify.info(
+    toastify.warn(
       <div className={styles.success}>
         <Alert severity="warning" className={styles.alert}>
           {text}
         </Alert>
       </div>,
       {
-        className: styles.toast,
         ...(options ?? {}),
+        className: styles.toast,
       },
     );
   }
   error(text: string, options?: ToastOptions) {
-    toastify.info(
+    toastify.error(
       <div className={styles.success}>
         <Alert severity="error" className={styles.alert}>
           {text}
         </Alert>
       </div>,
       {
-        className: styles.toast,
         ...(options ?? {}),
+        className: styles.toast,
       },
     );
   }
@@ -53,8 +54,8 @@ class Toast implements TCromwellNotify {
         </Alert>
       </div>,
       {
-        className: styles.toast,
         ...(options ?? {}),
+        className: styles.toast,
       },
     );
   }
@@ -65,4 +66,4 @@ class Toast implements TCromwellNotify {
 
 export const toast = new Toast();
 
-setStoreItem('notifier', toast);
+setNotifier(toast);

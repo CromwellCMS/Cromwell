@@ -1,12 +1,11 @@
 import { TCromwellBlock } from '@cromwell/core';
 import { Switch } from '@headlessui/react';
-import React, { CSSProperties, useCallback, useEffect, useState } from 'react';
+import React, { CSSProperties, useCallback, useState } from 'react';
 import { StyleNumberField } from './StyleNumberField';
 
 export const PaddingEditor = ({
   styles,
   handleStyleChange,
-  block,
 }: {
   styles?: CSSProperties;
   handleStyleChange: (name: keyof React.CSSProperties, value: any) => void;

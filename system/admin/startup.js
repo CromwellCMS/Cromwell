@@ -13,6 +13,7 @@ const main = () => {
   const buildDir = normalizePath(getAdminPanelServiceBuildDir());
   const buildStartupPath = resolve(buildDir, 'startup.js');
   const startupCompileDir = resolve(getAdminPanelDir(), 'src/startup');
+  const nextBuildDir = resolve(getAdminPanelDir(), 'build/.next');
 
   const isStartupBuilt = () => {
     return fs.pathExistsSync(buildStartupPath);
@@ -20,7 +21,7 @@ const main = () => {
 
   const buildStartupScript = () => {
     // Cleanup old build
-    fs.removeSync(buildDir);
+    if (fs.pathExistsSync(buildStartupPath)) fs.removeSync(buildStartupPath);
 
     spawnSync(
       `npx --no-install tsc --outDir ${buildDir} --project ${normalizePath(join(startupCompileDir, 'tsconfig.json'))}`,
@@ -34,7 +35,17 @@ const main = () => {
   };
 
   const buildWebApp = () => {
+    const nextTempBuildDir = resolve(getAdminPanelDir(), '.next');
+    if (fs.pathExistsSync(nextTempBuildDir)) fs.removeSync(nextTempBuildDir);
+    if (fs.pathExistsSync(nextBuildDir)) fs.removeSync(nextBuildDir);
+
     spawnSync('npx next build', [], { shell: true, stdio: 'inherit', cwd: __dirname });
+
+    setTimeout(() => {
+      if (fs.pathExistsSync(nextTempBuildDir)) {
+        fs.moveSync(nextTempBuildDir, nextBuildDir);
+      }
+    }, 200);
   };
 
   if (scriptName === 'build') {
@@ -50,7 +61,6 @@ const main = () => {
       [],
       {
         shell: true,
-        // detached: true,
         stdio: 'pipe',
       },
     );
@@ -78,8 +88,15 @@ const main = () => {
       buildWebApp();
     }
 
-    spawnSync(`node ${normalizePath(buildStartupPath)} production`);
-    spawnSync(`next -p ${args.port || 4064}`, { shell: true, cwd: getAdminPanelServiceBuildDir(), stdio: 'inherit' });
+    spawnSync(`node ${normalizePath(buildStartupPath)} production`, {
+      shell: true,
+      stdio: 'inherit',
+    });
+    spawnSync(`next start -p ${args.port || 4064}`, {
+      shell: true,
+      cwd: getAdminPanelServiceBuildDir(),
+      stdio: 'inherit',
+    });
   }
 };
 

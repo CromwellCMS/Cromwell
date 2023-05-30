@@ -40,7 +40,7 @@ export type TBlockMenuProps = {
 
 export const BlockMenu = () => {
   const { selectedFrames, selectedBlock, selectedEditableBlock, createBlockProps } = usePageBuilder();
-  const { pageFrameRef, forceUpdate } = useThemeEditor();
+  const { pageFrameRef } = useThemeEditor();
   const frame = selectedFrames.current?.[selectedBlock.current?.id];
   const blockProps = createBlockProps(selectedEditableBlock.current);
   const [showTopbar, setShowTopbar] = useState(true);

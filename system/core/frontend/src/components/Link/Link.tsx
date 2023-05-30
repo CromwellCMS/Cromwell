@@ -14,8 +14,8 @@ export const Link = (props: TLinkProps) => {
 
   if (href && NextLink && isValidElementType(NextLink)) {
     return (
-      <NextLink href={href}>
-        <a {...(anchorProps ?? {})}>{children ?? ''}</a>
+      <NextLink href={href} {...(anchorProps ?? {})}>
+        {children ?? ''}
       </NextLink>
     );
   }

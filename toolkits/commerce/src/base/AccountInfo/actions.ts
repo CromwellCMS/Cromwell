@@ -2,7 +2,7 @@ import { onStoreChange, removeOnStoreChange, TUpdateUser, TUser } from '@cromwel
 import { getGraphQLClient, getRestApiClient, useUserInfo } from '@cromwell/core-frontend';
 import { useEffect, useState } from 'react';
 
-import { notifier as baseNotifier } from '../../helpers/notifier';
+import { getNotifier } from '../../helpers/notifier';
 import { AccountInfoProps } from './AccountInfo';
 import { DefaultAccountFields, getDefaultAccountFields } from './DefaultElements';
 
@@ -11,7 +11,7 @@ export const useAccountActions = (config: { props: AccountInfoProps }) => {
   const {
     fields = getDefaultAccountFields(config.props),
     text,
-    notifier = baseNotifier,
+    notifier = getNotifier(),
     notifierOptions = {},
   } = config.props;
   const userInfo = useUserInfo();

@@ -24,15 +24,12 @@ const getWithoutUnit = (value?: any) => {
 };
 
 export const StyleNumberField = ({
-  dataType = 'px',
   handleStyleChange,
   value = '',
   label,
   keyName,
-  name,
   min,
   max,
-  options = [],
 }: {
   dataType: 'px' | 'string' | 'rem' | '%' | 'em' | 'vh' | 'vw';
   handleStyleChange: (name: keyof React.CSSProperties, value: any, withType?: any) => void;

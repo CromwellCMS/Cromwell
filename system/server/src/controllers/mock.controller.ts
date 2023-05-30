@@ -1,8 +1,8 @@
 import { getLogger } from '@cromwell/core-backend';
 import { Controller, Get, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { getDIService } from 'src/helpers/utils';
 
+import { getDIService } from '../helpers/utils';
 import { MockService } from '../services/mock.service';
 
 const logger = getLogger();

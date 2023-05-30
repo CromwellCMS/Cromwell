@@ -3,7 +3,7 @@ import { CContainer, getCStore, useForceUpdate } from '@cromwell/core-frontend';
 import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
 
-import { notifier as baseNotifier, NotifierActionOptions } from '../../helpers/notifier';
+import { getNotifier, NotifierActionOptions } from '../../helpers/notifier';
 import { useModuleState } from '../../helpers/state';
 import { useStoreAttributes } from '../../helpers/useStoreAttributes';
 import {
@@ -95,7 +95,7 @@ export function ProductActions(props: ProductActionsProps) {
     onCartOpen,
     modifiedProduct = (product?.id ? moduleState.products[product?.id]?.modifiedProduct : undefined) ?? product,
     onWishlistOpen,
-    notifier = baseNotifier,
+    notifier = getNotifier(),
     notifierOptions = {},
     elements = {},
     disableEdit,

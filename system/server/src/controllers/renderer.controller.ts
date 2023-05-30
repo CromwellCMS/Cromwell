@@ -1,8 +1,8 @@
 import { AuthGuard, getLogger } from '@cromwell/core-backend';
 import { Controller, Get, HttpException, HttpStatus, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { getDIService } from 'src/helpers/utils';
 
+import { getDIService } from '../helpers/utils';
 import { RendererService } from '../services/renderer.service';
 
 const logger = getLogger();

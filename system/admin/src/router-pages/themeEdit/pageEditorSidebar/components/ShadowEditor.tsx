@@ -76,7 +76,6 @@ const shadowOptions = [
 export const ShadowEditor = ({
   styles,
   handleStyleChange,
-  block,
 }: {
   styles?: CSSProperties;
   block?: TCromwellBlock;
@@ -87,7 +86,6 @@ export const ShadowEditor = ({
   const [internalValue, setInternalValue] = useState(styles?.boxShadow);
 
   const colorUpdate = (id, nextColor) => {
-    console.log('NXT', nextColor, nextColor === '', extractColor('///'));
     if (nextColor === '' || !nextColor) {
       setBgColor(extractColor('///'));
     } else {

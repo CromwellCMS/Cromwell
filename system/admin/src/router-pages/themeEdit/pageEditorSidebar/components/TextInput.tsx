@@ -1,6 +1,4 @@
-import React, { useCallback, useRef } from 'react';
-import { useFormContext } from 'react-hook-form';
-import { XCircleIcon } from '@heroicons/react/24/solid';
+import React from 'react';
 
 type InputProps = React.ComponentProps<'input'> & {
   label?: string;

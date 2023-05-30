@@ -1,5 +1,5 @@
 import { TCromwellBlock } from '@cromwell/core';
-import React, { CSSProperties, useCallback, useEffect, useState } from 'react';
+import React, { CSSProperties, useCallback } from 'react';
 import { MarginEditor } from './MarginEditor';
 import { PaddingEditor } from './PaddingEditor';
 import { StyleNumberField } from './StyleNumberField';

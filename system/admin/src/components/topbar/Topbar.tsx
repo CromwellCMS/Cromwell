@@ -37,7 +37,7 @@ export const Topbar = () => {
   const currentInfo = pageInfos.find((i) => i.route === window.location.pathname.replace('/admin', ''));
 
   const userInfo: TUser | undefined = getStoreItem('userInfo');
-  const [optionsOpen, setOptionsOpen] = useState<boolean>(false);
+  const [, setOptionsOpen] = useState<boolean>(false);
   const [cmsInfoOpen, setCmsInfoOpen] = useState(false);
   const [systemMonitorOpen, setSystemMonitorOpen] = useState(false);
   const forceUpdate = useForceUpdate();
@@ -107,6 +107,7 @@ const NotificationMenu = connect(mapStateToProps)((props: TPropsType) => {
 
   const nothingToShow = !isUpdating && !showUpdateAvailable && notifications?.length === 0;
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleStartUpdate = async () => {
     store.setStateProp({
       prop: 'status',
