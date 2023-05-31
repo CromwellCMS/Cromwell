@@ -111,7 +111,7 @@ const makeServer = async (init?: boolean): Promise<ServerInfo> => {
 
 const closeServer = async (info: ServerInfo) => {
   const env = loadEnv();
-  if (env.envMode === 'dev') logger.info(`Proxy manager: killing API server at port: ${info.port}...`);
+  if (env.envMode === 'dev') logger.log(`Proxy manager: killing API server at port: ${info.port}...`);
   info.childInst?.kill();
 };
 
@@ -122,7 +122,7 @@ const restartServer = async () => {
     return;
   }
   const env = loadEnv();
-  if (env.envMode === 'dev') logger.info('Proxy manager: restarting API server...');
+  if (env.envMode === 'dev') logger.log('Proxy manager: restarting API server...');
 
   isRestarting = true;
 
@@ -193,7 +193,7 @@ export const serverAliveWatcher = async () => {
 
   // Watch for other created servers that aren't active and kill them.
   // Basically they shouldn't be created in the first place, but we have
-  // IPC API for child servers and they can create new instances, so who knows...
+  // IPC API for child servers and they can create new instances.
   for (const info of Object.values(madeServers)) {
     if (info?.port && info.port !== activeServer.port && info.childInst) {
       if (await checkServerAlive(info)) {
@@ -202,6 +202,7 @@ export const serverAliveWatcher = async () => {
           try {
             if (info?.port && info.port !== activeServer.port && (await tcpPortUsed.check(info.port, '127.0.0.1'))) {
               // If after 50 seconds it's still alive and is not active, kill it
+              logger.log('Proxy manager watcher: found unused API server at ' + info.port);
               await closeServer(info);
               info.childInst = undefined;
               info.port = undefined;
@@ -358,6 +359,7 @@ const parentRegisterChild = (child: ChildProcess, childInfo: ServerInfo) => {
       }
 
       if (message.message === 'kill-me') {
+        logger.log(`Killing child server, received "kill-me" message`);
         await closeServer({
           childInst: child,
         });
@@ -365,6 +367,7 @@ const parentRegisterChild = (child: ChildProcess, childInfo: ServerInfo) => {
       }
 
       if (message.message === 'restart-me') {
+        logger.log(`Restarting child server, received "restart-me" message`);
         await restartServer();
         return;
       }

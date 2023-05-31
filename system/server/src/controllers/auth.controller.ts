@@ -45,7 +45,7 @@ export class AuthController {
     try {
       authInfo = await this.authService.logIn(input);
     } catch (error) {
-      logger.error(error);
+      logger.log(error);
     }
 
     if (!authInfo) {
@@ -81,7 +81,7 @@ export class AuthController {
       try {
         await this.authService.removeRefreshTokens(request.user);
       } catch (error) {
-        logger.error(error);
+        logger.log(error);
       }
     }
 

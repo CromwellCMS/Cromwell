@@ -63,7 +63,8 @@ async function bootstrap(): Promise<void> {
 
   const apolloServer = new ApolloServer({
     schema,
-    introspection: envMode.envMode === 'dev',
+    // introspection: envMode.envMode === 'dev',
+    introspection: true,
     formatError: getErrorFormatter(envMode),
     plugins: [
       fastifyApolloDrainPlugin(fastifyInstance),
@@ -106,7 +107,6 @@ async function bootstrap(): Promise<void> {
 
   if (envMode.envMode !== 'dev') {
     app.register(require('@fastify/helmet'));
-    app.register(require('@fastify/csrf'));
   }
 
   app.register(require('@fastify/multipart'));

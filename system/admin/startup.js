@@ -1,22 +1,34 @@
 const fs = require('fs-extra');
 const { resolve, join } = require('path');
 const { spawnSync, spawn } = require('child_process');
-const { getAdminPanelServiceBuildDir, getAdminPanelDir } = require('@cromwell/core-backend/dist/helpers/paths');
+const {
+  getAdminPanelServiceBuildDir,
+  getAdminPanelDir,
+  getAdminPanelTempDir,
+} = require('@cromwell/core-backend/dist/helpers/paths');
 const yargs = require('yargs-parser');
 const normalizePath = require('normalize-path');
+const { adminPanelMessages } = require('@cromwell/core-backend/dist/helpers/constants');
+const { getLogger } = require('@cromwell/core-backend/dist/helpers/logger');
 
 // 'build' | 'dev' | 'prod'
 const scriptName = process.argv[2];
 
-const main = () => {
+const logger = getLogger();
+
+const main = async () => {
   const args = yargs(process.argv.slice(2));
   const buildDir = normalizePath(getAdminPanelServiceBuildDir());
   const buildStartupPath = resolve(buildDir, 'startup.js');
   const startupCompileDir = resolve(getAdminPanelDir(), 'src/startup');
   const nextBuildDir = resolve(getAdminPanelDir(), 'build/.next');
+  const nextTempBuildDir = resolve(getAdminPanelDir(), '.next');
 
   const isStartupBuilt = () => {
     return fs.pathExistsSync(buildStartupPath);
+  };
+  const isAdminBuilt = () => {
+    return fs.pathExistsSync(join(nextBuildDir, 'BUILD_ID'));
   };
 
   const buildStartupScript = () => {
@@ -35,25 +47,25 @@ const main = () => {
   };
 
   const buildWebApp = () => {
-    const nextTempBuildDir = resolve(getAdminPanelDir(), '.next');
+    logger.info('Building Admin app...');
     if (fs.pathExistsSync(nextTempBuildDir)) fs.removeSync(nextTempBuildDir);
     if (fs.pathExistsSync(nextBuildDir)) fs.removeSync(nextBuildDir);
 
-    spawnSync('npx next build', [], { shell: true, stdio: 'inherit', cwd: __dirname });
+    spawnSync('npx --no-install next build', [], { shell: true, stdio: 'inherit', cwd: __dirname });
 
     setTimeout(() => {
-      if (fs.pathExistsSync(nextTempBuildDir)) {
+      if (fs.pathExistsSync(join(nextTempBuildDir, 'BUILD_ID'))) {
         fs.moveSync(nextTempBuildDir, nextBuildDir);
+      } else {
+        if (fs.pathExistsSync(nextTempBuildDir)) {
+          logger.error('Failed to build Admin');
+          fs.removeSync(nextTempBuildDir);
+        }
       }
     }, 200);
   };
 
-  if (scriptName === 'build') {
-    buildStartupScript();
-    buildWebApp();
-  }
-
-  if (scriptName === 'dev') {
+  const runDev = () => {
     fs.ensureDirSync(buildDir);
 
     const startupProc = spawn(
@@ -77,27 +89,53 @@ const main = () => {
     startupProc.stdout.on('data', (buff) => console.log(buffToText(buff)));
     startupProc.stderr.on('data', (buff) => console.error(buffToText(buff)));
 
-    spawn(`next dev -p ${args.port || 4064}`, { shell: true, cwd: getAdminPanelDir(), stdio: 'inherit' });
-  }
+    setTimeout(() => {
+      if (process.send) process.send(adminPanelMessages.onStartMessage);
+    }, 1000);
 
-  if (scriptName === 'prod') {
+    spawn(`npx --no-install next dev -p ${args.port || 4064}`, {
+      shell: true,
+      cwd: getAdminPanelDir(),
+      stdio: 'inherit',
+    });
+  };
+
+  const runProd = async () => {
     if (!isStartupBuilt()) {
       buildStartupScript();
     }
-    if (!fs.existsSync(resolve(getAdminPanelDir(), 'build/.next'))) {
+    if (!isAdminBuilt()) {
       buildWebApp();
+      await new Promise((res) => setTimeout(res, 2000));
     }
+
+    if (process.send) process.send(adminPanelMessages.onStartMessage);
 
     spawnSync(`node ${normalizePath(buildStartupPath)} production`, {
       shell: true,
       stdio: 'inherit',
     });
-    spawnSync(`next start -p ${args.port || 4064}`, {
+    spawnSync(`npx --no-install next start -p ${args.port || 4064}`, {
       shell: true,
-      cwd: getAdminPanelServiceBuildDir(),
+      cwd: getAdminPanelTempDir(),
       stdio: 'inherit',
     });
+  };
+
+  if (scriptName === 'build') {
+    await buildStartupScript();
+    await buildWebApp();
+  }
+
+  if (scriptName === 'dev') {
+    await runDev();
+  }
+
+  if (scriptName === 'prod') {
+    await runProd();
   }
 };
 
-main();
+main().catch(() => {
+  if (process.send) process.send(adminPanelMessages.onStartErrorMessage);
+});

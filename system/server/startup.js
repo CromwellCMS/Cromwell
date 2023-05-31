@@ -56,6 +56,7 @@ const runDevScript = () => {
     // eslint-disable-next-line no-console
     proc.stdout.on('data', (buff) => console.log(buffToText(buff)));
     proc.stderr.on('data', (buff) => console.error(buffToText(buff)));
+    proc.on('message', process.send);
   }
 
   setTimeout(() => {

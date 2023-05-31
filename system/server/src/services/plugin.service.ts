@@ -159,7 +159,7 @@ export class PluginService {
       return await getCentralServerClient().checkPluginUpdate(pluginName, pckg?.version ?? '0', isBeta);
     } catch (error: any) {
       if (error.statusCode === 404) return;
-      getLogger(false).error(error);
+      getLogger(false).log(error);
     }
   }
 
@@ -168,7 +168,7 @@ export class PluginService {
       return await getCentralServerClient().getPluginInfo(pluginName);
     } catch (error: any) {
       if (error.statusCode === 404) return;
-      getLogger(false).error(error);
+      getLogger(false).log(error);
     }
   }
 
@@ -335,7 +335,7 @@ export class PluginService {
     return true;
   }
 
-  public async activatePlugin(pluginName: string): Promise<boolean> {
+  public async activatePlugin(pluginName: string, { noRestart }: { noRestart?: boolean } = {}): Promise<boolean> {
     const transactionId = getRandStr(8);
     startTransaction(transactionId);
 
@@ -434,7 +434,7 @@ export class PluginService {
           await serverFireAction('update_plugin', { pluginName });
 
           // We need restart to apply other backend parts like entities/controllers/etc
-          if (pluginExports?.backendPath && !getManagerState().isPendingAnyAction()) {
+          if (pluginExports?.backendPath && !getManagerState().isPendingAnyAction() && !noRestart) {
             setPendingRestart(2000);
           }
         }
@@ -460,7 +460,7 @@ export class PluginService {
         await serverFireAction('install_plugin', { pluginName });
 
         // We need restart to apply other backend parts like entities/controllers/etc
-        if (pluginExports.backendPath && !getManagerState().isPendingAnyAction()) {
+        if (pluginExports.backendPath && !getManagerState().isPendingAnyAction() && !noRestart) {
           setPendingRestart(2000);
         }
       } catch (e) {

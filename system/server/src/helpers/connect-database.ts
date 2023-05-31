@@ -57,7 +57,7 @@ const checkData = async (init: boolean) => {
     const pckg = pluginPackages.find((p) => p.name === ent.name);
     if (pckg?.version && pckg.version !== ent.version && ent.name) {
       try {
-        await pluginService.activatePlugin(ent.name);
+        await pluginService.activatePlugin(ent.name, { noRestart: true });
       } catch (error) {
         logger.error('Server connectDatabase: failed to activate plugin ' + ent.name, error);
       }
@@ -81,7 +81,7 @@ const checkData = async (init: boolean) => {
   const promises3 = cmsModules.plugins.map(async (pluginName) => {
     if (!dbPlugins.find((plugin) => plugin.name === pluginName)) {
       try {
-        await pluginService.activatePlugin(pluginName);
+        await pluginService.activatePlugin(pluginName, { noRestart: true });
       } catch (error) {
         logger.error('Server connectDatabase: failed to activate plugin ' + pluginName, error);
       }

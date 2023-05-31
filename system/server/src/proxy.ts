@@ -39,7 +39,7 @@ async function main(): Promise<void> {
     res.setHeader('Access-Control-Allow-Credentials', 'true');
 
     const getErrorCallback = (message: string) => (err, req, res) => {
-      if (envMode !== 'dev') {
+      if (envMode === 'dev') {
         logger.error(message, err);
       }
 

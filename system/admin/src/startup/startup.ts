@@ -46,40 +46,43 @@ const linkFiles = async ({ isProduction, configsDir }: HelperOptions) => {
   const webTempDir = normalizePath(getAdminPanelTempDir());
   const adminPanelStaticDir = normalizePath(getAdminPanelStaticDir());
 
-  if (!fs.pathExistsSync(webTempDir)) await fs.ensureDir(webTempDir);
+  await fs.remove(webTempDir).catch((e) => logger.error(e));
+  await fs.ensureDir(webTempDir);
   fs.ensureDirSync(configsDir);
 
   if (isProduction) {
-    const publicDir = normalizePath(getAdminPanelWebPublicDir());
-    const publicConfigsDir = resolve(publicDir, 'admin-configs');
+    const tempPublicDir = normalizePath(getAdminPanelWebPublicDir());
+    const tempPublicStaticDir = normalizePath(resolve(tempPublicDir, 'admin/static'));
+    const publicConfigsDir = resolve(tempPublicDir, 'admin-configs');
+    const serviceBuildDir = getAdminPanelServiceBuildDir();
+    const webTempServiceLink = getAdminPanelWebServiceBuildDir();
+    const serviceNextBuildDir = resolve(serviceBuildDir, '.next');
+    const tempNextBuildDir = resolve(webTempDir, '.next');
 
     // console.log('publicDir', publicDir);
 
     // Link public dir in project root to admin panel temp public dir for Fastify web server
     if (fs.pathExistsSync(projectPublicDir)) {
-      if (!fs.pathExistsSync(publicDir)) {
-        await symlinkDir(projectPublicDir, publicDir);
+      if (!fs.pathExistsSync(tempPublicDir)) {
+        await symlinkDir(projectPublicDir, tempPublicDir);
       }
     } else {
-      fs.ensureDirSync(publicDir);
+      fs.ensureDirSync(tempPublicDir);
     }
 
     // Link service build dir
-    const serviceBuildDir = getAdminPanelServiceBuildDir();
-    const webTempServiceLink = getAdminPanelWebServiceBuildDir();
     if (!fs.pathExistsSync(webTempServiceLink) && fs.pathExistsSync(serviceBuildDir)) {
       await symlinkDir(serviceBuildDir, webTempServiceLink);
     }
 
     // Link admin static
-    if (adminPanelStaticDir && !fs.pathExistsSync(resolve(publicDir, 'admin/static'))) {
-      await symlinkDir(adminPanelStaticDir, resolve(publicDir, 'admin/static'));
+    if (adminPanelStaticDir && !fs.pathExistsSync(tempPublicStaticDir)) {
+      await symlinkDir(adminPanelStaticDir, tempPublicStaticDir);
     }
 
     // Link prod next.js build
-    const serviceNextBuildDir = resolve(serviceBuildDir, '.next');
-    const tempNextBuildDir = resolve(webTempDir, '.next');
-    if (!fs.pathExistsSync(tempNextBuildDir) && fs.pathExistsSync(serviceNextBuildDir)) {
+
+    if (!fs.existsSync(tempNextBuildDir) && fs.existsSync(serviceNextBuildDir)) {
       await symlinkDir(serviceNextBuildDir, tempNextBuildDir);
     }
 
@@ -87,10 +90,13 @@ const linkFiles = async ({ isProduction, configsDir }: HelperOptions) => {
     if (!fs.pathExistsSync(publicConfigsDir)) {
       await symlinkDir(configsDir, publicConfigsDir);
     }
+
+    fs.copyFileSync(resolve(getAdminPanelDir(), 'next.config.js'), resolve(webTempDir, 'next.config.js'));
   } else {
     // Link public dir in project root to admin panel temp public dir
     const publicDir = resolve(getAdminPanelDir(), 'public');
     const publicConfigsDir = resolve(publicDir, 'admin-configs');
+    const tempPublicStaticDir = normalizePath(resolve(publicDir, 'admin/static'));
 
     if (fs.pathExistsSync(projectPublicDir)) {
       if (!fs.pathExistsSync(publicDir)) {
@@ -101,8 +107,8 @@ const linkFiles = async ({ isProduction, configsDir }: HelperOptions) => {
     }
 
     // Link admin static
-    if (adminPanelStaticDir && !fs.pathExistsSync(resolve(publicDir, 'admin/static'))) {
-      await symlinkDir(adminPanelStaticDir, resolve(publicDir, 'admin/static'));
+    if (adminPanelStaticDir && !fs.pathExistsSync(tempPublicStaticDir)) {
+      await symlinkDir(adminPanelStaticDir, tempPublicStaticDir);
     }
 
     // Link env config

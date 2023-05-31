@@ -1,5 +1,7 @@
-import { Catch, ExceptionFilter as NestExceptionFilter, HttpException, ArgumentsHost } from '@nestjs/common';
+import { ArgumentsHost, Catch, ExceptionFilter as NestExceptionFilter, HttpException } from '@nestjs/common';
 import { FastifyReply } from 'fastify';
+
+import { loadEnv } from '../helpers/settings';
 
 @Catch(HttpException)
 export class RestExceptionFilter implements NestExceptionFilter {
@@ -9,7 +11,11 @@ export class RestExceptionFilter implements NestExceptionFilter {
     const request = ctx.getRequest<Request>();
     const status = exception.getStatus();
     const message = exception.message || 'Internal error';
-    console.error(exception);
+
+    const { envMode } = loadEnv();
+    if (envMode !== 'prod' || (envMode === 'prod' && !status)) {
+      console.error(exception);
+    }
 
     response.status(status).send({
       message,

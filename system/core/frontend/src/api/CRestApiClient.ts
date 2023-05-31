@@ -149,7 +149,7 @@ export class CRestApiClient {
 
   /** @internal */
   private logError = (url: string, e?: any) => {
-    console.error(`CRestApiClient route: ${url}` + e);
+    console.error(`CRestApiClient route: ${url} ` + e);
   };
 
   /** @internal */

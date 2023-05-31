@@ -128,7 +128,7 @@ export const downloadBundle = async (moduleName: string, saveTo: string) => {
   const stats = await moduleDownloader(url, resolve(saveTo, moduleName));
 
   if (!stats.success || stats.downloaded === 0) {
-    logger.error(`Failed to download module ${moduleName}` + stats.error);
+    logger.log(`Failed to download module ${moduleName}` + stats.error);
     await fs.remove(resolve(saveTo, moduleName));
   }
 };
@@ -145,7 +145,7 @@ export const downloadBundleZipped = async (moduleName: string, saveTo: string): 
     }
     responseBody = response.body;
   } catch (e) {
-    logger.error(`Failed to download module ${moduleName}` + e);
+    logger.log(`Failed to download module ${moduleName}` + e);
     return false;
   }
 

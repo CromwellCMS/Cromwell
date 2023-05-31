@@ -8,7 +8,7 @@ const projectRootDir = process.cwd();
 const systemDir = resolve(projectRootDir, 'system');
 
 const folders = [];
-const addFolder = (folderName) => fs.pathExistsSync(folderName) && folders.push(folderName);
+const addFolder = (folderName) => folders.push(folderName);
 
 for (const folder of [
   join(systemDir, 'core/backend/.cromwell'),
@@ -39,6 +39,7 @@ for (const folder of [
   join(systemDir, 'server/build'),
   join(systemDir, 'server/.tsbuildinfo'),
   join(systemDir, 'server/package-lock.json'),
+  join(systemDir, 'server/public'),
 
   join(systemDir, 'renderer/node_modules'),
   join(systemDir, 'renderer/build'),
@@ -52,6 +53,7 @@ for (const folder of [
   join(systemDir, 'admin/build'),
   join(systemDir, 'admin/.tsbuildinfo'),
   join(systemDir, 'admin/package-lock.json'),
+  join(systemDir, 'admin/public'),
 
   join(systemDir, 'manager/.cromwell'),
   join(systemDir, 'manager/node_modules'),
@@ -76,8 +78,12 @@ for (const folder of [
   join(projectRootDir, 'website/node_modules'),
   join(projectRootDir, 'website/.tsbuildinfo'),
   join(projectRootDir, 'website/package-lock.json'),
-
   join(systemDir, '.cromwell'),
+
+  join(projectRootDir, 'public/admin'),
+  join(projectRootDir, 'public/plugins'),
+  join(projectRootDir, 'public/themes'),
+  join(projectRootDir, 'public/admin-configs'),
 
   join(projectRootDir, 'package-lock.json'),
   join(projectRootDir, 'lerna-debug.log'),
@@ -101,6 +107,7 @@ if (fs.existsSync(themesDir)) {
     addFolder(resolve(themeDir, '.cromwell'));
     addFolder(resolve(themeDir, 'build'));
     addFolder(resolve(themeDir, '.tsbuildinfo'));
+    addFolder(resolve(themeDir, 'public'));
   }
 }
 
@@ -140,12 +147,10 @@ if (fs.existsSync(toolkitsDir)) {
 // console.log(files);
 
 folders.forEach((path) => {
-  if (fs.pathExistsSync(path)) {
-    console.log('Removing: ' + path);
-    try {
-      fs.removeSync(path);
-    } catch (e) {
-      console.log(e);
-    }
+  console.log('Removing: ' + path);
+  try {
+    fs.removeSync(path);
+  } catch (e) {
+    console.log(e);
   }
 });

@@ -1,6 +1,7 @@
 import { TCmsSettings, TServiceVersions } from '@cromwell/core';
 
 import { getCmsSettings, getCmsEntity } from './cms-settings';
+import { getLogger } from './logger';
 
 /** @internal */
 export const extractServiceVersion = (
@@ -18,6 +19,7 @@ export const extractServiceVersion = (
 export const incrementServiceVersion = async (serviceName: keyof TServiceVersions) => {
   const cms = await getCmsEntity();
   if (!cms) throw new Error('incrementServiceVersion: could not load CMS settings');
+  getLogger().info(`Incrementing Service version for ${serviceName}`);
 
   const versions: TServiceVersions = cms.internalSettings?.versions ?? {};
   const sVer = versions?.[serviceName];

@@ -16,7 +16,6 @@ import fs from 'fs-extra';
 import isRunning from 'is-running';
 import logSymbols from 'log-symbols';
 import nodeCleanup from 'node-cleanup';
-import { resolve } from 'path';
 import tcpPortUsed from 'tcp-port-used';
 import treeKill from 'tree-kill';
 
@@ -144,8 +143,8 @@ export const startSystem = async (options: TStartOptions) => {
     mode: cmsconfig.env ?? isDevelopment ? 'dev' : 'prod',
   });
 
+  // eslint-disable-next-line
   console.log(
-    // eslint-disable-line
     colors.brightBlue('Starting Cromwell CMS...') +
       '\n\n' +
       colors.blue('● Start time:') +
@@ -194,8 +193,8 @@ export const startSystem = async (options: TStartOptions) => {
   });
 
   if (serverSuccess && adminSuccess && rendererSuccess) {
+    // eslint-disable-next-line
     console.log(
-      // eslint-disable-line
       '\n' +
         logSymbols.success +
         colors.brightGreen(` CMS is running.\n\n`) +
@@ -231,7 +230,7 @@ export const startServiceByName = async (options: TStartOptions) => {
     const success = await startAdminPanel(isDevelopment ? 'dev' : 'prod', {
       port: !startAll ? port : undefined,
     });
-    if (!startAll) {
+    if (success && !startAll) {
       logger.info(`Admin Panel has started at http://localhost:${port ?? 4064}/admin/`);
     }
     return success;
@@ -242,7 +241,7 @@ export const startServiceByName = async (options: TStartOptions) => {
     const success = await startRenderer(isDevelopment ? 'dev' : 'prod', {
       port: !startAll ? port : undefined,
     });
-    if (!startAll) {
+    if (success && !startAll) {
       logger.info(`Renderer has started at http://localhost:${port ?? 4128}`);
     }
     return success;
@@ -250,7 +249,7 @@ export const startServiceByName = async (options: TStartOptions) => {
 
   if (serviceName === 'server' || serviceName === 's') {
     const success = await startServer(isDevelopment ? 'dev' : 'prod', port, init);
-    if (!startAll) {
+    if (success && !startAll) {
       logger.info(`API server has started at http://localhost:${port ?? 4016}`);
     }
     return success;

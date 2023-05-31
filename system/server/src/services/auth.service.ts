@@ -64,7 +64,7 @@ export class AuthService {
         if (isValid) return user;
       }
     } catch (e) {
-      logger.error(e);
+      logger.log(e);
     }
 
     return null;
@@ -345,7 +345,7 @@ export class AuthService {
       const tokens = user.refreshTokens.split(this.tokensDelimiter);
       if (tokens.includes(refreshToken)) return user;
     } catch (e) {
-      logger.error(e);
+      logger.log(e);
     }
     return undefined;
   }

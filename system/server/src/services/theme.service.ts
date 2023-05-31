@@ -641,7 +641,7 @@ export class ThemeService {
       return await getCentralServerClient().checkThemeUpdate(name, pckg?.version ?? '0', isBeta);
     } catch (error: any) {
       if (error.statusCode === 404) return;
-      getLogger(false).error(error);
+      getLogger(false).log(error);
     }
   }
 
@@ -650,7 +650,7 @@ export class ThemeService {
       return await getCentralServerClient().getThemeInfo(name);
     } catch (error: any) {
       if (error.statusCode === 404) return;
-      getLogger(false).error(error);
+      getLogger(false).log(error);
     }
   }
 
