@@ -1,19 +1,18 @@
 import { setStoreItem, TCmsSettings } from '@cromwell/core';
+import { readCMSConfigSync } from '@cromwell/core-backend/dist/helpers/cms-settings';
+import { getLogger } from '@cromwell/core-backend/dist/helpers/logger';
 import {
   getAdminPanelDir,
   getAdminPanelServiceBuildDir,
   getAdminPanelStaticDir,
   getAdminPanelTempDir,
   getAdminPanelWebPublicDir,
-  getAdminPanelWebServiceBuildDir,
-  getLogger,
   getPublicDir,
-  readCMSConfigSync,
-} from '@cromwell/core-backend';
-import { getRestApiClient } from '@cromwell/core-frontend';
+} from '@cromwell/core-backend/dist/helpers/paths';
+import { getRestApiClient } from '@cromwell/core-frontend/dist/api/CRestApiClient';
 import fs from 'fs-extra';
 import normalizePath from 'normalize-path';
-import { resolve } from 'path';
+import { join, resolve } from 'path';
 import symlinkDir from 'symlink-dir';
 import yargs from 'yargs-parser';
 
@@ -32,32 +31,38 @@ const start = async () => {
   if (!isDevelopment && !isProduction)
     throw `devServer::startDevServer: process.argv[2] is invalid - ${env} valid values - "development" and "production"`;
 
-  const configsDir = resolve(getAdminPanelTempDir(), 'admin-configs');
+  const configsDir = isDevelopment
+    ? resolve(getAdminPanelTempDir(getAdminPanelDir() as string), 'configs')
+    : resolve(getAdminPanelTempDir(), 'configs');
 
   await linkFiles({ isProduction, configsDir });
 
   await outputEnv({ isProduction, configsDir });
+
+  await startProdServer(args.port);
 
   logger.info('Admin startup successfully ran');
 };
 
 const linkFiles = async ({ isProduction, configsDir }: HelperOptions) => {
   const projectPublicDir = normalizePath(getPublicDir());
-  const webTempDir = normalizePath(getAdminPanelTempDir());
   const adminPanelStaticDir = normalizePath(getAdminPanelStaticDir());
+  const webTempDir = normalizePath(getAdminPanelTempDir());
+  const adminPublicStaticDir = resolve(projectPublicDir, 'admin/static');
 
-  await fs.remove(webTempDir).catch((e) => logger.error(e));
-  await fs.ensureDir(webTempDir);
+  if (!fs.pathExistsSync(webTempDir)) await fs.ensureDir(webTempDir);
   fs.ensureDirSync(configsDir);
 
   if (isProduction) {
     const tempPublicDir = normalizePath(getAdminPanelWebPublicDir());
-    const tempPublicStaticDir = normalizePath(resolve(tempPublicDir, 'admin/static'));
-    const publicConfigsDir = resolve(tempPublicDir, 'admin-configs');
-    const serviceBuildDir = getAdminPanelServiceBuildDir();
-    const webTempServiceLink = getAdminPanelWebServiceBuildDir();
-    const serviceNextBuildDir = resolve(serviceBuildDir, '.next');
+    const serviceNextBuildDir = resolve(getAdminPanelServiceBuildDir(), '.next');
     const tempNextBuildDir = resolve(webTempDir, '.next');
+
+    // Remove old links
+    await fs.remove(tempPublicDir).catch(() => null);
+    await fs.remove(tempNextBuildDir).catch(() => null);
+
+    await new Promise((res) => setTimeout(res, 500));
 
     // console.log('publicDir', publicDir);
 
@@ -70,33 +75,22 @@ const linkFiles = async ({ isProduction, configsDir }: HelperOptions) => {
       fs.ensureDirSync(tempPublicDir);
     }
 
-    // Link service build dir
-    if (!fs.pathExistsSync(webTempServiceLink) && fs.pathExistsSync(serviceBuildDir)) {
-      await symlinkDir(serviceBuildDir, webTempServiceLink);
-    }
-
-    // Link admin static
-    if (adminPanelStaticDir && !fs.pathExistsSync(tempPublicStaticDir)) {
-      await symlinkDir(adminPanelStaticDir, tempPublicStaticDir);
+    // Copy admin static
+    if (adminPanelStaticDir) {
+      await fs.copy(adminPanelStaticDir, adminPublicStaticDir);
     }
 
     // Link prod next.js build
-
     if (!fs.existsSync(tempNextBuildDir) && fs.existsSync(serviceNextBuildDir)) {
       await symlinkDir(serviceNextBuildDir, tempNextBuildDir);
-    }
-
-    // Link env config
-    if (!fs.pathExistsSync(publicConfigsDir)) {
-      await symlinkDir(configsDir, publicConfigsDir);
     }
 
     fs.copyFileSync(resolve(getAdminPanelDir(), 'next.config.js'), resolve(webTempDir, 'next.config.js'));
   } else {
     // Link public dir in project root to admin panel temp public dir
     const publicDir = resolve(getAdminPanelDir(), 'public');
-    const publicConfigsDir = resolve(publicDir, 'admin-configs');
-    const tempPublicStaticDir = normalizePath(resolve(publicDir, 'admin/static'));
+
+    fs.ensureDirSync(projectPublicDir);
 
     if (fs.pathExistsSync(projectPublicDir)) {
       if (!fs.pathExistsSync(publicDir)) {
@@ -106,15 +100,7 @@ const linkFiles = async ({ isProduction, configsDir }: HelperOptions) => {
       fs.ensureDirSync(publicDir);
     }
 
-    // Link admin static
-    if (adminPanelStaticDir && !fs.pathExistsSync(tempPublicStaticDir)) {
-      await symlinkDir(adminPanelStaticDir, tempPublicStaticDir);
-    }
-
-    // Link env config
-    if (!fs.pathExistsSync(publicConfigsDir)) {
-      await symlinkDir(configsDir, publicConfigsDir);
-    }
+    await fs.copy(adminPanelStaticDir, adminPublicStaticDir);
   }
 };
 
@@ -156,6 +142,51 @@ const outputEnv = async ({ isProduction, configsDir }: HelperOptions) => {
       isAdminPanel: true,
       mode: isProduction ? 'prod' : 'dev',
     },
+  });
+};
+
+const startProdServer = (port: number) => {
+  // start fastify server:
+  const fastify = require('fastify')({ logger: false });
+  const fastifyStatic = require('@fastify/static');
+  const mime = require('mime-types');
+
+  fastify.register(fastifyStatic, {
+    root: join(getAdminPanelTempDir(), 'public'),
+    prefix: '/',
+  });
+
+  fastify.get('/admin/api/public-env', function () {
+    const configPath = resolve(process.cwd(), '.cromwell/admin/configs/public-env.json');
+    return fs.readJsonSync(configPath);
+  });
+
+  fastify.get('/admin*', async function (req, reply) {
+    const publicPath = normalizePath(req.raw.url).replace(/^(\.\.(\/|\\|$))+/, '');
+    if (publicPath.indexOf('\0') !== -1) {
+      throw new Error('Poison Null Bytes');
+    }
+
+    if (publicPath.startsWith('/admin/_next/static')) {
+      const filePath = join(getAdminPanelTempDir(), '.next/static', publicPath.replace('/admin/_next/static', ''));
+      reply.type(mime.lookup(filePath));
+      return reply.send(fs.createReadStream(filePath));
+    }
+
+    if (publicPath.startsWith('/admin/static')) {
+      const filePath = join(getAdminPanelTempDir(), 'public/admin/static', publicPath.replace('/admin/static', ''));
+      reply.type(mime.lookup(filePath));
+      return reply.send(fs.createReadStream(filePath));
+    }
+
+    return reply
+      .type('text/html')
+      .send(fs.createReadStream(join(getAdminPanelTempDir(), '.next/server/pages/index.html')));
+  });
+
+  fastify.listen({ port }, (err, address) => {
+    if (err) throw err;
+    logger.info(`Admin panel server listening on ${address}`);
   });
 };
 

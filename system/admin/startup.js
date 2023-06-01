@@ -1,11 +1,7 @@
 const fs = require('fs-extra');
 const { resolve, join } = require('path');
 const { spawnSync, spawn } = require('child_process');
-const {
-  getAdminPanelServiceBuildDir,
-  getAdminPanelDir,
-  getAdminPanelTempDir,
-} = require('@cromwell/core-backend/dist/helpers/paths');
+const { getAdminPanelServiceBuildDir, getAdminPanelDir } = require('@cromwell/core-backend/dist/helpers/paths');
 const yargs = require('yargs-parser');
 const normalizePath = require('normalize-path');
 const { adminPanelMessages } = require('@cromwell/core-backend/dist/helpers/constants');
@@ -18,22 +14,23 @@ const logger = getLogger();
 
 const main = async () => {
   const args = yargs(process.argv.slice(2));
+  const port = args.port || 4064;
   const buildDir = normalizePath(getAdminPanelServiceBuildDir());
-  const buildStartupPath = resolve(buildDir, 'startup.js');
+  const buildServerPath = resolve(buildDir, 'server.js');
   const startupCompileDir = resolve(getAdminPanelDir(), 'src/startup');
   const nextBuildDir = resolve(getAdminPanelDir(), 'build/.next');
   const nextTempBuildDir = resolve(getAdminPanelDir(), '.next');
 
-  const isStartupBuilt = () => {
-    return fs.pathExistsSync(buildStartupPath);
+  const isServerBuilt = () => {
+    return fs.pathExistsSync(buildServerPath);
   };
   const isAdminBuilt = () => {
     return fs.pathExistsSync(join(nextBuildDir, 'BUILD_ID'));
   };
 
-  const buildStartupScript = () => {
+  const buildServerScript = () => {
     // Cleanup old build
-    if (fs.pathExistsSync(buildStartupPath)) fs.removeSync(buildStartupPath);
+    if (fs.pathExistsSync(buildServerPath)) fs.removeSync(buildServerPath);
 
     spawnSync(
       `npx --no-install tsc --outDir ${buildDir} --project ${normalizePath(join(startupCompileDir, 'tsconfig.json'))}`,
@@ -68,8 +65,8 @@ const main = async () => {
   const runDev = () => {
     fs.ensureDirSync(buildDir);
 
-    const startupProc = spawn(
-      `npx --no-install tsx watch ${normalizePath(join(startupCompileDir, 'startup.ts'))} development`,
+    const serverProc = spawn(
+      `npx --no-install tsx watch ${normalizePath(join(startupCompileDir, 'server.ts'))} development`,
       [],
       {
         shell: true,
@@ -86,14 +83,14 @@ const main = async () => {
     };
 
     // eslint-disable-next-line no-console
-    startupProc.stdout.on('data', (buff) => console.log(buffToText(buff)));
-    startupProc.stderr.on('data', (buff) => console.error(buffToText(buff)));
+    serverProc.stdout.on('data', (buff) => console.log(buffToText(buff)));
+    serverProc.stderr.on('data', (buff) => console.error(buffToText(buff)));
 
     setTimeout(() => {
       if (process.send) process.send(adminPanelMessages.onStartMessage);
     }, 1000);
 
-    spawn(`npx --no-install next dev -p ${args.port || 4064}`, {
+    spawn(`npx --no-install next dev -p ${port}`, {
       shell: true,
       cwd: getAdminPanelDir(),
       stdio: 'inherit',
@@ -101,8 +98,8 @@ const main = async () => {
   };
 
   const runProd = async () => {
-    if (!isStartupBuilt()) {
-      buildStartupScript();
+    if (!isServerBuilt()) {
+      buildServerScript();
     }
     if (!isAdminBuilt()) {
       buildWebApp();
@@ -111,19 +108,14 @@ const main = async () => {
 
     if (process.send) process.send(adminPanelMessages.onStartMessage);
 
-    spawnSync(`node ${normalizePath(buildStartupPath)} production`, {
+    spawnSync(`node ${normalizePath(buildServerPath)} production --port ${port}`, {
       shell: true,
-      stdio: 'inherit',
-    });
-    spawnSync(`npx --no-install next start -p ${args.port || 4064}`, {
-      shell: true,
-      cwd: getAdminPanelTempDir(),
       stdio: 'inherit',
     });
   };
 
   if (scriptName === 'build') {
-    await buildStartupScript();
+    await buildServerScript();
     await buildWebApp();
   }
 

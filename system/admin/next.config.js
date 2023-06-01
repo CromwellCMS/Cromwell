@@ -3,9 +3,12 @@ const withTM = require('next-transpile-modules')([
   '@uiw/react-textarea-code-editor',
 ]);
 
-module.exports = withTM({
+const config = {
   basePath: '/admin',
-  async rewrites() {
+};
+
+if (process.env.NODE_ENV === 'development') {
+  config.rewrites = () => {
     return [
       // Rewrite everything to `pages/index`
       {
@@ -13,5 +16,9 @@ module.exports = withTM({
         destination: '/',
       },
     ];
-  },
-});
+  };
+} else {
+  config.output = 'export';
+}
+
+module.exports = withTM(config);
