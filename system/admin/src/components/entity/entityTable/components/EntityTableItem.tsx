@@ -42,6 +42,7 @@ function EntityTableItem<TEntityType extends TBasePageEntity, TFilterType extend
   const location = useLocation();
 
   const { listItemProps, numberOnScreen } = props;
+  const { tableProps } = listItemProps;
   const data: TEntityType = forcedData || props.data;
   const cstore = getCStore();
   let selected = false;
@@ -132,12 +133,12 @@ function EntityTableItem<TEntityType extends TBasePageEntity, TFilterType extend
             if (col.getValueView) {
               content = (
                 <div className={styles.ellipsis} ref={columnRefs.current[col.name]}>
-                  {col.getValueView(value)}
+                  {col.getValueView(value, data)}
                 </div>
               );
             }
             if (col.getTooltipValueView) {
-              tooltipValue = <div style={{ whiteSpace: 'pre-line' }}>{col.getTooltipValueView(value)}</div>;
+              tooltipValue = <div style={{ whiteSpace: 'pre-line' }}>{col.getTooltipValueView(value, data)}</div>;
             }
 
             const TooltipContent = (props: { title: string }): any => {
@@ -167,8 +168,8 @@ function EntityTableItem<TEntityType extends TBasePageEntity, TFilterType extend
               return null;
             };
 
-            return (
-              <div className={styles.column} key={col.name} style={listItemProps.getColumnStyles(col, tableColumns)}>
+            if (!col.disableTooltip) {
+              content = (
                 <Tooltip
                   classes={{ popper: styles.cellTooltipPaper }}
                   title={<TooltipContent title={tooltipValue ?? ''} />}
@@ -176,6 +177,12 @@ function EntityTableItem<TEntityType extends TBasePageEntity, TFilterType extend
                 >
                   {content ?? <></>}
                 </Tooltip>
+              );
+            }
+
+            return (
+              <div className={styles.column} key={col.name} style={listItemProps.getColumnStyles(col, tableColumns)}>
+                {content}
               </div>
             );
           })}
@@ -204,7 +211,7 @@ function EntityTableItem<TEntityType extends TBasePageEntity, TFilterType extend
               </IconButton>
             </Link>
           )}
-          {data?.id && (
+          {!tableProps.hideDelete && data?.id && (
             <IconButton className="ml-0" onClick={() => listItemProps.handleDeleteBtnClick(data)}>
               <TrashIcon aria-label="delete" className="h-4 text-gray-300 w-4" />
             </IconButton>

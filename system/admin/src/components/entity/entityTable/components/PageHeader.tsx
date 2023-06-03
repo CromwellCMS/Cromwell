@@ -1,3 +1,4 @@
+import { SideNavMobileButton } from '@components/sideNav/ResponsiveSideNav';
 import { TBasePageEntity } from '@cromwell/core';
 import { Tooltip } from '@mui/material';
 import clsx from 'clsx';
@@ -25,6 +26,7 @@ export function PageHeader<TEntityType extends TBasePageEntity, TFilterType exte
   return (
     <div className={styles.pageHeader}>
       <div style={{ display: 'flex', alignItems: 'center' }}>
+        <SideNavMobileButton />
         <h1 className={styles.pageTitle}>{tableProps.listLabel}</h1>
         {tableProps.customElements?.getHeaderLeftActions?.(props)}
       </div>
@@ -39,11 +41,13 @@ export function PageHeader<TEntityType extends TBasePageEntity, TFilterType exte
             </span>
           </Tooltip>
         )}
-        <DeleteSelectedButton
-          style={{ marginRight: '10px' }}
-          onClick={handleDeleteSelected}
-          totalElements={totalElements}
-        />
+        {!tableProps.hideDelete && (
+          <DeleteSelectedButton
+            style={{ marginRight: '10px' }}
+            onClick={handleDeleteSelected}
+            totalElements={totalElements}
+          />
+        )}
         {tableProps.entityBaseRoute && !tableProps.hideAddNew && (
           <TextButton onClick={handleCreate}>Add new</TextButton>
         )}

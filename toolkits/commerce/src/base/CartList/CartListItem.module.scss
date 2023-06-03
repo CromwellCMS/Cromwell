@@ -13,6 +13,7 @@
 }
 
 .imageBlock {
+  display: flex;
   min-width: 100px;
   max-width: 100px;
   max-height: 100px;
@@ -21,11 +22,10 @@
 
 .imageLink {
   width: 100%;
-  height: 100%;
 }
 
 .image {
-  object-fit: contain;
+  object-fit: cover;
   width: 100%;
   height: 100%;
 }

@@ -1,15 +1,15 @@
 import { getStoreItem, onStoreChange, TUser } from '@cromwell/core';
+import { useForceUpdate } from '@helpers/forceUpdate';
+import { getLinkByInfo, getPageInfos, getSideBarLinks } from '@helpers/navigation';
 import { EyeIcon } from '@heroicons/react/24/solid';
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
-import { useForceUpdate } from '../../helpers/forceUpdate';
-import { getLinkByInfo, getPageInfos, getSideBarLinks } from '../../helpers/navigation';
 import { store } from '../../redux/store';
 import Topbar from '../topbar/Topbar';
 import SideNavLink from './SideNavLink';
 
-export const SideNav = () => {
+export const SideNav = ({ screen }: { screen: 'mobile' | 'desktop' }) => {
   const pageInfos = getPageInfos();
   const currentInfo = pageInfos.find((i) => i.route === window.location.pathname.replace('/admin', ''));
   const currentLink = getLinkByInfo(currentInfo);
@@ -48,7 +48,11 @@ export const SideNav = () => {
 
   return (
     <>
-      <div className="bg-white max-h-full rounded-2xl shadow-lg my-4 mb-4 ml-4 transform-gpu transition-all top-4 shadow-indigo-200 w-80 z-[90] hidden sticky lg:block dark:bg-gray-700">
+      <div
+        className={`bg-white h-full shadow-lg ${
+          screen === 'desktop' ? 'my-4 mb-4 ml-4 top-4 rounded-2xl' : ''
+        } shadow-indigo-200 w-80 z-[90] lg:block dark:bg-gray-700`}
+      >
         <div className="h-full rounded-2xl">
           <div className="flex py-2 items-center justify-center relative">
             <Link to="/">

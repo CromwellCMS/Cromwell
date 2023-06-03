@@ -33,6 +33,7 @@ export {
   TAppPropsContext,
   AppPropsContext,
   useAppPropsContext,
+  usePageCmsProps,
 } from './constants';
 export { getGraphQLClient, TCGraphQLClient, TGraphQLErrorInfo } from './api/CGraphQLClient';
 export { getRestApiClient, TCRestApiClient, TRestApiErrorInfo, TRequestOptions } from './api/CRestApiClient';

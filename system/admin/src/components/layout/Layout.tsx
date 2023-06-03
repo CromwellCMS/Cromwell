@@ -1,3 +1,4 @@
+import { ResponsiveSideNav } from '@components/sideNav/ResponsiveSideNav';
 import { getStoreItem, matchPermissions } from '@cromwell/core';
 import { LayoutPortal } from '@helpers/LayoutPortal';
 import { getPageInfos } from '@helpers/navigation';
@@ -14,7 +15,6 @@ import Page404 from '../../router-pages/404/404page';
 import PageErrorBoundary from '../errorBoundaries/PageErrorBoundary';
 import FileManager from '../fileManager/FileManager';
 import { ConfirmPrompt } from '../modal/Confirmation';
-import SideNav from '../sideNav/SideNav';
 import { BrowserRouter } from './components/BrowserRouter';
 import { useAppState } from './hooks/useAppState';
 import { useTheme } from './hooks/useTheme';
@@ -38,7 +38,7 @@ function Layout() {
         <div suppressHydrationWarning className="min-h-screen bg-gray-100 relative dark:bg-gray-800">
           <div className="flex items-start justify-between">
             <BrowserRouter>
-              <SideNav />
+              <ResponsiveSideNav />
               <div className={styles.main} id="main-scroll-container">
                 {/* <Toolbar className={styles.dummyToolbar} /> */}
                 <Routes>

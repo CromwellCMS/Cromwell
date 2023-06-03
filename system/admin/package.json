@@ -66,6 +66,7 @@
     "@editorjs/warning": "1.2.0",
     "@emotion/react": "11.10.5",
     "@emotion/styled": "11.10.5",
+    "@fastify/compress": "6.4.0",
     "@headlessui/react": "1.7.4",
     "@heroicons/react": "2.0.13",
     "@loadable/component": "5.15.2",
@@ -77,6 +78,7 @@
     "@mui/styled-engine": "5.10.16",
     "@mui/utils": "5.10.16",
     "@mui/types": "7.2.2",
+    "@react-hook/window-size": "3.1.1",
     "@uiw/react-textarea-code-editor": "2.0.6",
     "@visx/curve": "2.1.0",
     "@visx/gradient": "2.10.0",
@@ -124,7 +126,8 @@
     "symlink-dir": "5.0.1",
     "throttle-debounce": "3.0.1",
     "tslib": "2.4.1",
-    "yargs-parser": "20.2.9"
+    "yargs-parser": "20.2.9",
+    "zustand": "4.3.8"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "20.0.0",

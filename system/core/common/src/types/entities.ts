@@ -872,6 +872,7 @@ export type TCustomEntityColumn = {
   maxWidth?: string;
   order?: number;
   visible?: boolean;
+  disableTooltip?: boolean;
   exactSearch?: boolean;
   multipleOptions?: boolean;
   searchOptions?: {
@@ -883,8 +884,8 @@ export type TCustomEntityColumn = {
   customGraphQlProperty?: TCustomGraphQlProperty;
   disableSort?: boolean;
   disableSearch?: boolean;
-  getValueView?: (value: any) => React.ReactNode;
-  getTooltipValueView?: (value: any) => React.ReactNode;
+  getValueView?: (value: any, entity: any) => React.ReactNode;
+  getTooltipValueView?: (value: any, entity: any) => React.ReactNode;
   applyFilter?: <TFilter extends TBaseFilter>(value: any, filter: TFilter) => TFilter;
 };
 

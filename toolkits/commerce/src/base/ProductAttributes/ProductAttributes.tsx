@@ -14,6 +14,7 @@ export type ProductAttributesProps = {
       | 'attribute'
       | 'headerWrapper'
       | 'valuesWrapper'
+      | 'attributeValue'
       | 'attributeValueIcon'
       | 'attributeValueText'
       | 'productAttributesValidate'
@@ -35,6 +36,17 @@ export type ProductAttributesProps = {
       icon?: string;
       attribute?: TAttribute;
       attributeInstance?: TAttributeInstance;
+      classes?: Partial<
+        Record<
+          | 'attributeValue'
+          | 'attributeValueIcon'
+          | 'attributeValueText'
+          | 'productAttributesValidate'
+          | 'attributeValueChecked'
+          | 'invalidAttributeValue',
+          string
+        >
+      >;
     }>;
     /** Title of attribute block */
     AttributeTitle?: React.ComponentType<{
@@ -188,6 +200,7 @@ export function ProductAttributes(props: ProductAttributesProps): JSX.Element {
                         key={value}
                         className={clsx(
                           styles.attributeValue,
+                          classes?.attributeValue,
                           isChecked && styles.attributeValueChecked,
                           isChecked && classes?.attributeValueChecked,
                           !isValid && styles.invalidAttributeValue,

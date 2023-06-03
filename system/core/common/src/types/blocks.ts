@@ -313,6 +313,8 @@ export type TGallerySettings = {
   };
   classes?: {
     navBtn?: string;
+    slide?: string;
+    slideContainer?: string;
   };
 };
 

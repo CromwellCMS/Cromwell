@@ -3,7 +3,7 @@ import { Link } from '@cromwell/core-frontend';
 import React, { useState } from 'react';
 
 import { TInstanceSettings, TMainMenuItem, TMainMenuSettings } from '../types';
-import { DefaultIconButton, DefaultMenuItem, DefaultPopover, ExpandMoreIcon } from './DefaultElements';
+import { DefaultIconButton, DefaultMenuItemTitle, DefaultPopover, ExpandMoreIcon } from './DefaultElements';
 
 const MainMenu = (props: TFrontendPluginProps<TMainMenuSettings, TInstanceSettings>) => {
   const items = props?.data?.items ?? [];
@@ -11,8 +11,10 @@ const MainMenu = (props: TFrontendPluginProps<TMainMenuSettings, TInstanceSettin
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const isMobile = props.instanceSettings?.mobile || false;
 
+  const classes = props.instanceSettings?.classes || {};
+
   const {
-    MenuItem = DefaultMenuItem,
+    MenuItemTitle = DefaultMenuItemTitle,
     IconButton = DefaultIconButton,
     Popover = DefaultPopover,
   } = props.instanceSettings?.elements ?? {};
@@ -49,6 +51,7 @@ const MainMenu = (props: TFrontendPluginProps<TMainMenuSettings, TInstanceSettin
         width: '100%',
         position: 'relative',
       }}
+      className={classes.wrapper}
     >
       {items.map((i, index) => {
         const isActive = activeItem === i.title;
@@ -63,77 +66,64 @@ const MainMenu = (props: TFrontendPluginProps<TMainMenuSettings, TInstanceSettin
             {i.sublinks?.length &&
               i.sublinks.map((sub, subIndex) => {
                 return (
-                  <MenuItem key={subIndex}>
-                    <Link href={sub.href + ''} style={{ textDecoration: 'none' }}>
-                      <p
-                        style={{
-                          margin: 0,
-                          color: '#111',
-                          fontWeight: 400,
-                        }}
-                      >
-                        {sub?.title ?? ''}
-                      </p>
-                    </Link>
-                  </MenuItem>
+                  <Link href={sub.href + ''} style={{ textDecoration: 'none' }}>
+                    <MenuItemTitle
+                      key={subIndex}
+                      className={classes.menuItemTitleContainer}
+                      menuItemTitleText={classes.menuItemTitleText}
+                    >
+                      {sub?.title ?? ''}
+                    </MenuItemTitle>
+                  </Link>
                 );
               })}
           </div>
         );
+
+        let menuTitle = (
+          <MenuItemTitle className={classes.menuItemTitleContainer} menuItemTitleText={classes.menuItemTitleText}>
+            {i.title}
+            {isMobile && (i.sublinks?.length || i.html) && (
+              <IconButton onClick={handleItemMobileClick(i)}>
+                <ExpandMoreIcon
+                  style={{
+                    transform: isActive ? 'rotate(180deg)' : '',
+                    transition: '0.3s',
+                  }}
+                />
+              </IconButton>
+            )}
+          </MenuItemTitle>
+        );
+
+        if (i.href) {
+          menuTitle = (
+            <Link href={i.href} key={index} style={{ textDecoration: 'none' }}>
+              {menuTitle}
+            </Link>
+          );
+        }
 
         const menuItem = (
           <div
             key={index}
             onMouseLeave={handlePopoverClose}
             onMouseOver={handleItemMouseOver(i)}
+            className={classes.menuItem}
             style={{
               position: 'relative',
             }}
           >
-            <MenuItem>
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                }}
-              >
-                <p
-                  style={{
-                    margin: 0,
-                    color: '#111',
-                    fontWeight: 400,
-                  }}
-                >
-                  {i.title}
-                </p>
-                {isMobile && (i.sublinks?.length || i.html) && (
-                  <IconButton onClick={handleItemMobileClick(i)}>
-                    <ExpandMoreIcon
-                      style={{
-                        transform: isActive ? 'rotate(180deg)' : '',
-                        transition: '0.3s',
-                      }}
-                    />
-                  </IconButton>
-                )}
-              </div>
-              {(i.sublinks?.length || i.html) && isMobile && isActive && menuSubitems}
-              {(i.sublinks?.length || i.html) && !isMobile && (
-                <Popover id={i.title} open={isActive} anchorEl={anchorEl}>
-                  {menuSubitems}
-                </Popover>
-              )}
-            </MenuItem>
+            {menuTitle}
+            {(i.sublinks?.length || i.html) && isMobile && isActive && menuSubitems}
+            {(i.sublinks?.length || i.html) && !isMobile && (
+              <Popover id={i.title} open={isActive} anchorEl={anchorEl}>
+                {menuSubitems}
+              </Popover>
+            )}
           </div>
         );
 
-        if (i.href) {
-          return (
-            <Link href={i.href} key={index} style={{ textDecoration: 'none' }}>
-              {menuItem}
-            </Link>
-          );
-        }
         return menuItem;
       })}
     </div>

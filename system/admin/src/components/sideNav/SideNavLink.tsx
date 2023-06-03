@@ -1,11 +1,12 @@
-import { TUser, matchPermissions } from '@cromwell/core';
+import { TSidebarLink } from '@constants/PageInfos';
+import { matchPermissions, TUser } from '@cromwell/core';
 import { useCmsSettings } from '@cromwell/core-frontend';
 import { Disclosure, Transition } from '@headlessui/react';
 import { ChevronRightIcon } from '@heroicons/react/24/solid';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import { TSidebarLink } from '../../constants/PageInfos';
+import { useMobileSidebarStore } from './ResponsiveSideNav';
 
 const SideNavLink = (props: {
   data: TSidebarLink;
@@ -19,6 +20,7 @@ const SideNavLink = (props: {
   const { data, userInfo, expanded } = props;
   const isExpanded = expanded === data.id;
   const settings = useCmsSettings();
+  const setMobileDrawerOpen = useMobileSidebarStore((state) => state.setOpen);
 
   if (data.module && !settings?.modules?.[data.module]) return null;
 
@@ -29,6 +31,11 @@ const SideNavLink = (props: {
   // Don't show sidebar category if no sub links permitted to access
   if (!data.route && !data.subLinks.some(hasPermission)) return null;
 
+  const onLinkClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setMobileDrawerOpen(false);
+  };
+
   if (props.data.route) {
     return (
       <Link
@@ -37,7 +44,7 @@ const SideNavLink = (props: {
             ? 'font-thin text-indigo-500 flex items-center p-4 my-2 transition-colors duration-200 justify-start bg-gradient-to-r from-white to-indigo-100 border-r-4 border-indigo-500 dark:from-gray-700 dark:to-gray-800'
             : 'font-thin text-gray-500 dark:text-gray-200 flex items-center p-4 my-2 transition-colors duration-200 justify-start hover:text-indigo-500 hover:border-r-4 hover:border-indigo-300'
         } ${props.minimize ? 'w-6 h-6' : ' w-full'}`}
-        onClick={(e) => e.stopPropagation()}
+        onClick={onLinkClick}
         to={props.data.route}
       >
         <span className="text-left">{props.data.icon}</span>

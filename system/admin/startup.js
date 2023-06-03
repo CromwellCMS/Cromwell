@@ -98,6 +98,10 @@ const main = async () => {
   };
 
   const runProd = async () => {
+    if (args.r) {
+      fs.removeSync(buildServerPath);
+    }
+
     if (!isServerBuilt()) {
       buildServerScript();
     }

@@ -32,7 +32,11 @@ export class PluginController {
 
     if (!pluginName) throw new HttpException(`Invalid plugin name: ${pluginName}`, HttpStatus.NOT_ACCEPTABLE);
 
-    return getPluginSettings(pluginName);
+    const settings = await getPluginSettings(pluginName);
+    if (!settings) {
+      throw new HttpException(`Plugin not found: ${pluginName}`, HttpStatus.NOT_FOUND);
+    }
+    return settings;
   }
 
   @Post('settings')

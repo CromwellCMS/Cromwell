@@ -196,7 +196,7 @@ button.galleryAddImageBtn {
 
 .descriptionEditor {
   @include styledScrollBar;
-  border: 1px solid #bbb;
+  border: 2px solid #e5e7eb;
   border-radius: 5px;
   max-height: 400px;
   overflow: auto;

@@ -1,9 +1,14 @@
-import { alpha, Box, useTheme } from '@mui/material';
+import { alpha, Box, SxProps, useTheme } from '@mui/material';
 import React from 'react';
 
 export const IconButton = React.forwardRef(
-  (props: React.PropsWithChildren<React.ButtonHTMLAttributes<HTMLButtonElement>>, ref) => {
-    const { children, ...buttonProps } = props;
+  (
+    props: React.PropsWithChildren<React.ButtonHTMLAttributes<HTMLButtonElement>> & {
+      sx?: SxProps;
+    },
+    ref,
+  ) => {
+    const { children, sx, ...buttonProps } = props;
     const theme = useTheme();
     return (
       <Box
@@ -24,6 +29,7 @@ export const IconButton = React.forwardRef(
             borderColor: theme.palette.primary.main,
             backgroundColor: alpha(theme.palette.primary.main, 0.2),
           },
+          ...sx,
         }}
       >
         {children}

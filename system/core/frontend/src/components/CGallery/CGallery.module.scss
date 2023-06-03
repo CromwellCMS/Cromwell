@@ -117,6 +117,7 @@ button[disabled] .navBtnContent {
   object-fit: cover;
   > div {
     background-size: cover !important;
+    background-position: center;
   }
 }
 .slideContain {

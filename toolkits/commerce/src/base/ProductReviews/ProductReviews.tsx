@@ -87,6 +87,11 @@ export type ProductReviewsProps = {
    * Disable editing of inner blocks in Theme editor
    */
   disableEdit?: boolean;
+
+  /**
+   * Hide "Write review" form.
+   */
+  disableWriteReview?: boolean;
 };
 
 /** @internal */
@@ -102,7 +107,7 @@ const ListItem = (props: TReviewListItemProps) => {
  * Displays customer reviews of a product. Fetches data client-side
  */
 export function ProductReviews(props: ProductReviewsProps) {
-  const { productId, listProps, notifier = getNotifier(), elements, classes, disableEdit } = props;
+  const { productId, listProps, notifier = getNotifier(), elements, classes, disableEdit, disableWriteReview } = props;
   const reviewsInst = useRef<TCromwellBlock<TCList> | undefined>();
   const client = getGraphQLClient();
   const router = useRouter();
@@ -160,7 +165,7 @@ export function ProductReviews(props: ProductReviewsProps) {
           }}
           {...((listProps as Partial<TCListProps<TProductReview, TReviewListItemProps>>) ?? {})}
         />
-        <Form productId={productId} notifier={notifier} parentProps={props} />
+        {!disableWriteReview && <Form productId={productId} notifier={notifier} parentProps={props} />}
       </CContainer>
     </CContainer>
   );

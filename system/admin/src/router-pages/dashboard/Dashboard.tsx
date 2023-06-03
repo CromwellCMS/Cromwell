@@ -1,4 +1,5 @@
 import { TextButton } from '@components/buttons/TextButton';
+import { SideNavMobileButton } from '@components/sideNav/ResponsiveSideNav';
 import { CogIcon } from '@heroicons/react/24/outline';
 import { DashboardContextProvider, useDashboard } from '@hooks/useDashboard';
 import useLongPress from '@hooks/useLongPress';
@@ -45,6 +46,7 @@ const Dashboard = () => {
           isEditing ? 'bg-white shadow-md top-2 rounded-lg ' : ''
         } sticky top-0 backdrop-filter backdrop-blur-xl z-[40] flex flex-row py-3 px-4 justify-between transform transition-all items-center`}
       >
+        <SideNavMobileButton />
         <h1 className="font-bold text-2xl inline-block">{isEditing ? 'Edit' : 'Dashboard'}</h1>
         {isEditing && <AddWidgetMenu />}
         {isEditing && (

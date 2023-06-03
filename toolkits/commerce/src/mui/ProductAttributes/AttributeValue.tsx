@@ -10,7 +10,7 @@ type CompType = Required<Required<ProductAttributesProps>['elements']>['Attribut
 
 /** @internal */
 export const AttributeValue: CompType = (props) => {
-  const { checked, valid, canValidate } = props;
+  const { checked, valid, canValidate, classes } = props;
   return (
     <Button
       color="inherit"
@@ -19,8 +19,11 @@ export const AttributeValue: CompType = (props) => {
       variant={checked ? 'contained' : 'outlined'}
       className={clsx(
         styles.attributeValue,
+        classes?.attributeValue,
         canValidate && !valid && styles.invalidAttributeValue,
+        canValidate && !valid && classes?.invalidAttributeValue,
         checked && styles.attributeValueChecked,
+        checked && classes?.attributeValueChecked,
       )}
     >
       {props.icon && <div style={{ backgroundImage: `url(${props.icon}` }} className={styles.attributeValueIcon}></div>}

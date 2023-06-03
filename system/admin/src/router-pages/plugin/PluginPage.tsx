@@ -7,8 +7,8 @@ import styles from './PluginPage.module.scss';
 const pluginsSettings: Record<string, any> = {};
 const pluginInfos: Record<string, TPackageCromwellConfig> = {};
 
-const PluginPage = (props) => {
-  const urlParams = new URLSearchParams(props?.location?.search);
+const PluginPage = () => {
+  const urlParams = new URLSearchParams(window.location?.search);
   const pluginName = urlParams.get('pluginName');
   const apiClient = getRestApiClient();
   const [canShow, setCanShow] = useState(false);

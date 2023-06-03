@@ -13,7 +13,16 @@ import styles from './ProductSearch.module.scss';
 export type ProductSearchProps = {
   classes?: Partial<
     Record<
-      'root' | 'content' | 'notFoundText' | 'item' | 'itemImage' | 'itemTitle' | 'priceBlock' | 'oldPrice' | 'price',
+      | 'root'
+      | 'content'
+      | 'notFoundText'
+      | 'item'
+      | 'itemImage'
+      | 'itemTitle'
+      | 'priceBlock'
+      | 'oldPrice'
+      | 'price'
+      | 'textField',
       string
     >
   >;
@@ -128,6 +137,7 @@ export function ProductSearch(props: ProductSearchProps) {
   return (
     <div className={clsx(styles.ProductSearch, classes?.root)} ref={searchAnchorRef}>
       <TextField
+        className={classes?.textField}
         label={text?.searchLabel ?? 'Search...'}
         onChange={(event) => handleSearchInput(event.currentTarget.value)}
       />

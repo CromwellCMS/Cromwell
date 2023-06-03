@@ -1,6 +1,7 @@
 import { getRandStr, TAttribute, TProduct, TProductVariant } from '@cromwell/core';
-import { PencilIcon, TrashIcon, PlusIcon, CogIcon } from '@heroicons/react/24/outline';
-import { Box, Collapse, Popover } from '@mui/material';
+import { CogIcon, PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { InformationCircleIcon } from '@heroicons/react/24/solid';
+import { Box, Collapse, Popover, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import clone from 'rfdc';
 
@@ -10,14 +11,14 @@ import { SelectInput } from '../../../components/inputs/SelectInput';
 import { SwitchInput } from '../../../components/inputs/SwitchInput';
 import { askConfirmation } from '../../../components/modal/Confirmation';
 import commonStyles from '../../../styles/common.module.scss';
-import MainInfoCard from './MainInfoCard';
 import styles from '../Product.module.scss';
+import MainInfoCard from './MainInfoCard';
 
 export function VariantsTab({
   product,
   setProdData,
   forceUpdate,
-  usedVariantAttributes,
+  usedVariantAttributes = [],
   attributes,
   setUsedVariantAttributes,
 }: {
@@ -25,7 +26,7 @@ export function VariantsTab({
   attributes: TAttribute[];
   setProdData: (data: TProduct) => void;
   forceUpdate: () => void;
-  usedVariantAttributes: string[];
+  usedVariantAttributes: string[] | undefined;
   setUsedVariantAttributes: (value: string[]) => void;
 }) {
   const [expandedVariants, setExpandedVariants] = useState<Record<string, boolean>>({});
@@ -106,6 +107,7 @@ export function VariantsTab({
       setUsedVariantAttributes(usedVariantAttributes.filter((a) => a !== key));
 
       const newProduct = clone({ proto: true })(product);
+      if (!newProduct.variants) newProduct.variants = [];
       newProduct.variants = newProduct.variants.map((v) => {
         if (v.attributes) delete v.attributes[key];
         return v;
@@ -138,10 +140,10 @@ export function VariantsTab({
                       label={attr.key}
                       key={attr.key}
                       options={[
-                        ...attr.values.map((value) => ({
+                        ...(attr.values?.map((value) => ({
                           label: value.value,
                           value: value.value,
-                        })),
+                        })) ?? []),
                         {
                           label: 'any',
                           value: 'any',
@@ -184,6 +186,13 @@ export function VariantsTab({
           </Box>
         ))}
       </Box>
+      {!usedVariantAttributes?.length && (
+        <Box sx={{ display: 'flex', justifyContent: 'center', p: '40px 0' }}>
+          <InformationCircleIcon className="w-6 h-6 fill-blue-500 mr-2" />
+          <Typography>Assign some attributes first to create new variants</Typography>
+        </Box>
+      )}
+
       <Box sx={{ width: '100%', my: 4, display: 'flex' }}>
         <Box sx={{ mx: 'auto', display: 'flex' }}>
           <TextButton
@@ -210,7 +219,7 @@ export function VariantsTab({
             }}
           >
             <div className={styles.newAttributesList}>
-              {attributes.map((attr) => {
+              {attributes?.map((attr) => {
                 return (
                   <div
                     key={attr.key}

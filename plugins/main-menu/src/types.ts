@@ -5,10 +5,15 @@ export type TMainMenuSettings = {
   mobileBreakpoint?: number;
 };
 
+export type MenuItemTitleProps = {
+  children?: React.ReactNode;
+  menuItemTitleText?: string;
+} & JSX.IntrinsicElements['div'];
+
 export type TInstanceSettings = {
   mobile?: boolean;
   elements?: {
-    MenuItem?: React.ComponentType<{ children?: React.ReactNode }>;
+    MenuItemTitle?: React.ComponentType<MenuItemTitleProps>;
     IconButton?: React.ComponentType<{
       children?: React.ReactNode;
       onClick: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void;
@@ -19,6 +24,12 @@ export type TInstanceSettings = {
       open: boolean;
       anchorEl?: HTMLElement | null;
     }>;
+  };
+  classes?: {
+    wrapper?: string;
+    menuItem?: string;
+    menuItemTitleContainer?: string;
+    menuItemTitleText?: string;
   };
 };
 

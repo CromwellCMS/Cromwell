@@ -7,6 +7,7 @@ import {
   TCromwellBlockData,
   TCromwellBlockType,
   TCromwellPageCoreProps,
+  TPageCmsProps,
 } from '@cromwell/core';
 import loadable from '@loadable/component';
 import React, { ComponentType } from 'react';
@@ -90,4 +91,8 @@ export const AppPropsContext = React.createContext<TAppPropsContext>({});
 
 export const useAppPropsContext = <TProps = unknown>(): TAppPropsContext<TProps> => {
   return React.useContext<TAppPropsContext<TProps>>(AppPropsContext as any);
+};
+
+export const usePageCmsProps = (): TPageCmsProps => {
+  return React.useContext<TAppPropsContext<Record<string, never>>>(AppPropsContext as any).pageProps?.cmsProps ?? {};
 };

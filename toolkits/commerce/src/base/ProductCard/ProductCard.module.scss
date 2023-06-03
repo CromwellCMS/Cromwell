@@ -42,10 +42,15 @@
 }
 
 .productName {
-  font-size: 18px;
+  font-size: 16px;
   text-align: center;
   margin: 0;
   line-height: 1.5;
+  width: 100%;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
 }
 
 .productNameContainer {

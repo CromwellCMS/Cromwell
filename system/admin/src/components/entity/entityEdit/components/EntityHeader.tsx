@@ -72,9 +72,7 @@ export function PageStickyHeader({
             <p className={styles.pageTitle}>{title}</p>
           </div>
         )}
-
         {centerContent}
-
         <div className={styles.headerActions}>
           {frontendUrl && (
             <Tooltip title={frontendUrlTooltip}>

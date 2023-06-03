@@ -1,6 +1,8 @@
 import { TBreadcrumbs } from '@components/breadcrumbs';
 import { PageStickyHeader } from '@components/entity/entityEdit/components/EntityHeader';
+import { SideNavMobileButton } from '@components/sideNav/ResponsiveSideNav';
 import { EDBEntity } from '@cromwell/core';
+import { Box } from '@mui/material';
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 
@@ -34,9 +36,12 @@ export const SettingsPage = () => {
           padding: '10px 20px',
         }}
         leftContent={
-          <h1 className="flex items-center font-500 text-gray-700 h-8 text-base max-w-[50%] overflow-x-auto whitespace-nowrap md:h-9 md:text-xl lg:max-w-fit lg:h-10 lg:text-2xl">
-            <TBreadcrumbs path={settings.breadcrumbs} maxVisible={4} />
-          </h1>
+          <Box className="flex">
+            <SideNavMobileButton />
+            <h1 className="flex items-center font-500 text-gray-700 h-8 text-base whitespace-nowrap md:h-9 md:text-xl lg:max-w-fit lg:h-10 lg:text-2xl">
+              <TBreadcrumbs path={settings.breadcrumbs} maxVisible={4} />
+            </h1>
+          </Box>
         }
       />
       <Routes>

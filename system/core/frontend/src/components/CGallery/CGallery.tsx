@@ -159,7 +159,7 @@ export class CGallery extends React.Component<TCGalleryProps> {
           }}
         />
         <div
-          className={styles.container}
+          className={clsx(styles.container)}
           style={{
             height: containerHeight ? containerHeight + 'px' : '100%',
             width: gallerySettings.width ? gallerySettings.width + 'px' : '100%',
@@ -229,6 +229,7 @@ export class CGallery extends React.Component<TCGalleryProps> {
                     onClick={() => this.onSlideClick(index)}
                     index={index}
                     key={`slide_${index}`}
+                    className={gallerySettings?.classes?.slide}
                     style={{
                       height: containerHeight && height + 'px',
                       // width: slideWidth && slideWidth + 'px',

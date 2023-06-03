@@ -1,4 +1,4 @@
-import { moduleMetaInfoFileName, TFrontendDependency, TScriptMetaInfo } from '@cromwell/core';
+import { getStoreItem, moduleMetaInfoFileName, TFrontendDependency, TScriptMetaInfo } from '@cromwell/core';
 import { getBundledModulesDir, getLogger } from '@cromwell/core-backend';
 import colorsdef from 'colors/safe';
 import extractZip from 'extract-zip';
@@ -113,11 +113,15 @@ export const downloader = async (options?: {
     }
   }
 
-  if (downloads > 0) {
-    readline.clearLine(process.stdout, -1);
-    readline.clearLine(process.stdout, 0);
-    console.log('\n');
-    console.log(colors.cyan(`Downloaded ${successfulDownloads}/${downloads} modules`));
+  if (getStoreItem('environment')?.mode === 'dev') {
+    if (downloads > 0) {
+      readline.clearLine(process.stdout, -1);
+      readline.clearLine(process.stdout, 0);
+      // eslint-disable-next-line no-console
+      console.log('\n');
+      // eslint-disable-next-line no-console
+      console.log(colors.cyan(`Downloaded ${successfulDownloads}/${downloads} modules`));
+    }
   }
 };
 

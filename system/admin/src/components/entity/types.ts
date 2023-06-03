@@ -84,6 +84,11 @@ export type TEntityPageProps<
   hideAddNew?: boolean;
 
   /**
+   * Hide delete buttons
+   */
+  hideDelete?: boolean;
+
+  /**
    * Disable meta fields such as title, description, etc.
    */
   disableMeta?: boolean;
