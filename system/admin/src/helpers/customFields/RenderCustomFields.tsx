@@ -10,7 +10,7 @@ import { TRegisteredCustomField } from './types';
 export const RenderCustomFields = (props: {
   entityType: EDBEntity | string;
   entityData: TBasePageEntity;
-  refetchMeta: () => Promise<Record<string, string> | undefined | null>;
+  refetchMeta: () => Promise<Record<string, string | null | undefined> | undefined | null>;
   onChange?: (field: TRegisteredCustomField, value: any) => void;
   onDidMount?: () => void;
   FieldWrapper?: React.ComponentType<{ children: React.ReactNode }>;
@@ -18,7 +18,7 @@ export const RenderCustomFields = (props: {
   const { entityType, entityData, refetchMeta, onChange, onDidMount, FieldWrapper } = props;
   const forceUpdate = useForceUpdate();
   customFieldsForceUpdates[entityType] = forceUpdate;
-  const [updatedMeta, setUpdatedMeta] = useState<Record<string, string> | null>(null);
+  const [updatedMeta, setUpdatedMeta] = useState<Record<string, string | null | undefined> | null>(null);
 
   useEffect(() => {
     // If some field registered after this page has fetched entity data, we need to

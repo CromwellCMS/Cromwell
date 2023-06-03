@@ -25,6 +25,7 @@ module.exports = {
     'react/prop-types': 'off',
     'no-empty': 'off',
     'no-console': ['warn', { allow: ['warn', 'error'] }],
+    '@typescript-eslint/no-non-null-assertion': 'off',
     '@typescript-eslint/ban-ts-comment': 'off',
   },
 };

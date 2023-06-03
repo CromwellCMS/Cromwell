@@ -122,13 +122,13 @@ export class AuthController {
   })
   async updateAccessToken(@Body() input: UpdateAccessTokenDto): Promise<UpdateAccessTokenResponseDto> {
     const refreshTokenPayload = await this.authService.validateRefreshToken(input.refreshToken);
-    if (!refreshTokenPayload) throw new UnauthorizedException('Refresh token is not valid');
+    if (!refreshTokenPayload) throw new UnauthorizedException('updateAccessToken: Refresh token is not valid');
 
     const authUserInfo = this.authService.payloadToUserInfo(refreshTokenPayload);
 
     // Check if token is in DB and was not blacklisted
     const isValid = await this.authService.dbCheckRefreshToken(input.refreshToken, authUserInfo.id);
-    if (!isValid) throw new UnauthorizedException('Refresh token is not valid');
+    if (!isValid) throw new UnauthorizedException('updateAccessToken: Refresh token is not valid');
 
     const newAccessToken = await this.authService.generateAccessToken(authUserInfo);
 

@@ -15,7 +15,6 @@ import { Link } from 'react-router-dom';
 
 type TPlugin = {
   id: number;
-  packageName: string;
   package: TPackageCromwellConfig;
   entity?: TPluginEntity;
 };
@@ -30,7 +29,7 @@ export default function PluginList() {
     }),
   );
 
-  const getPlugins = async (): Promise<TPlugin[]> => {
+  const getPlugins = async (): Promise<TPlugin[] | undefined> => {
     try {
       const [pluginPackages, pluginEntities] = await Promise.all([
         // Read node_modules and get packages
@@ -39,12 +38,11 @@ export default function PluginList() {
         graphQLClient.getAllEntities('Plugin', graphQLClient.PluginFragment, 'PluginFragment'),
       ]);
 
-      return pluginPackages.map((pckg) => {
+      return pluginPackages?.map((pckg) => {
         const pluginEntity = (pluginEntities as TPluginEntity[])?.find((ent) => ent.name === pckg.name);
 
         return {
           id: `?pluginName=${pckg.name}` as any, // for router
-          packageName: pckg.name,
           package: pckg,
           entity: pluginEntity,
         };
@@ -59,14 +57,14 @@ export default function PluginList() {
       .then(pluginsResolver.current)
       .catch((error) => {
         console.error(error);
-        pluginsResolver.current([]);
+        pluginsResolver.current?.([]);
       });
   }, []);
 
   const reloadPlugins = () => {
     pluginsPromise.current = new Promise((done) => {
       getPlugins()
-        .then(done)
+        .then((plugins) => done(plugins ?? []))
         .catch((error) => {
           console.error(error);
           done([]);
@@ -75,12 +73,12 @@ export default function PluginList() {
     return pluginsPromise.current;
   };
 
-  const handleActivatePlugin = async (pluginName: string) => {
+  const handleActivatePlugin = async (pluginName?: string) => {
     if (isPageLoading) return;
     setIsPageLoading(true);
     let success = false;
     try {
-      success = await getRestApiClient()?.activatePlugin(pluginName);
+      success = await getRestApiClient()?.activatePlugin(pluginName!);
       await this.getPluginList();
     } catch (e) {
       console.error(e);
@@ -105,7 +103,7 @@ export default function PluginList() {
     setIsPageLoading(true);
 
     try {
-      await getRestApiClient().deletePlugin(pluginName);
+      await getRestApiClient().deletePlugin(pluginName!);
 
       toast.info('Plugin deleted');
     } catch (error) {
@@ -148,6 +146,8 @@ export default function PluginList() {
               label: 'Icon',
               type: 'Image',
               visible: true,
+              disableSearch: true,
+              disableSort: true,
               disableTooltip: true,
               getValueView: (value: string, plugin: TPlugin) => {
                 const pluginIcon = plugin?.package?.icon;
@@ -179,6 +179,8 @@ export default function PluginList() {
               label: 'Title',
               type: 'Simple text',
               visible: true,
+              disableSearch: true,
+              disableSort: true,
               getValueView: (value: string, plugin: TPlugin) => {
                 return plugin?.package?.title;
               },
@@ -191,6 +193,8 @@ export default function PluginList() {
               label: 'Package',
               type: 'Simple text',
               visible: true,
+              disableSearch: true,
+              disableSort: true,
               getValueView: (value: string, plugin: TPlugin) => {
                 return plugin?.package?.name;
               },
@@ -203,6 +207,8 @@ export default function PluginList() {
               label: 'Version',
               type: 'Simple text',
               visible: true,
+              disableSearch: true,
+              disableSort: true,
               disableTooltip: true,
               getValueView: (value: string, plugin: TPlugin) => {
                 return (

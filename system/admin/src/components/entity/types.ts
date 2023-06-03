@@ -101,7 +101,11 @@ export type TEntityPageProps<
   /**
    * API methods called on user actions
    */
-  getById?: (id: number, customFragment?: DocumentNode, customFragmentName?: string) => Promise<TEntityType>;
+  getById?: (
+    id: number,
+    customFragment?: DocumentNode,
+    customFragmentName?: string,
+  ) => Promise<TEntityType | undefined>;
   update?: (id: number, input: Omit<TEntityInputType, 'id'>) => Promise<TEntityType>;
   create?: (input: Omit<TEntityInputType, 'id'>) => Promise<TEntityType>;
   deleteOne?: (id: number) => any;
@@ -183,7 +187,7 @@ export type TListItemProps<TEntityType extends TBasePageEntity, TFilterType exte
   searchStore: TSearchStore;
   tableProps: TEntityPageProps<TEntityType, TFilterType>;
   actionsWidth: number;
-  totalElements: number;
+  totalElements: number | null;
   handleDeleteBtnClick: (item: TEntityType) => void;
   toggleSelection?: (item: TEntityType) => void;
   getColumns: () => TCustomEntityColumn[];
@@ -221,7 +225,7 @@ export type TEntityEditState<TEntityType> = {
 };
 
 export type TFieldsComponentProps<TEntityType> = TEntityEditState<TEntityType> & {
-  refetchMeta: () => Promise<Record<string, string>>;
+  refetchMeta: () => Promise<Record<string, string | null> | null | undefined>;
   onSave: () => Promise<void>;
   goBack: () => void;
   handleInputChange: (key: keyof TEntityType, val: any) => void;

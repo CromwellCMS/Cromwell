@@ -12,6 +12,7 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "strictPropertyInitialization": false,
+    "strictNullChecks": true,
     "resolveJsonModule": true,
     "noImplicitAny": false,
     "moduleResolution": "node",

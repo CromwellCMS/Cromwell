@@ -86,7 +86,7 @@ export function DateInput(props: DateInputProps) {
 
     content = (
       <DateRangePicker
-        container={() => containerRef.current}
+        container={() => containerRef.current!}
         format={format}
         value={dateRangeValue}
         placement={placement}
@@ -109,9 +109,9 @@ export function DateInput(props: DateInputProps) {
 
     content = (
       <DatePicker
-        value={new Date((value ?? internalValue) as Date | null)}
+        value={new Date((value ?? internalValue) as Date)}
         format={format}
-        container={() => containerRef.current}
+        container={() => containerRef.current!}
         onChange={handleChange}
         placement={placement}
         disabledDate={disabledDate}

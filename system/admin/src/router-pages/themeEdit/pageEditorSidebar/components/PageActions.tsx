@@ -1,3 +1,4 @@
+import { SideNavToggleButton } from '@components/sideNav/ResponsiveSideNav';
 import { TPageConfig } from '@cromwell/core';
 import { Listbox, Transition } from '@headlessui/react';
 import {
@@ -74,13 +75,24 @@ export const PageActions = () => {
   };
 
   if (!editingPageConfig) {
-    return <div className="bg-black flex flex-row h-12 w-full p-2 py-3 justify-between" />;
+    return (
+      <div className="bg-black flex flex-row h-12 w-full p-2 py-3 justify-between">
+        <div className="top-[7px] absolute">
+          <SideNavToggleButton />
+        </div>
+      </div>
+    );
   }
 
   return (
     <div className="bg-black flex flex-row h-12 w-full p-2 py-3 justify-between">
-      <div className="h-9 justify-self-end">
-        <DeviceSwitcher />
+      <div className="flex">
+        <div className="top-[-4px] w-[36px] relative">
+          <SideNavToggleButton />
+        </div>
+        <div className="h-9 justify-self-end">
+          <DeviceSwitcher />
+        </div>
       </div>
       <div className="">
         {editingPageConfig && (

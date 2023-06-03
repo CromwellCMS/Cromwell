@@ -1,29 +1,26 @@
-import { getStoreItem, TUser } from '@cromwell/core';
-import { getRestApiClient } from '@cromwell/core-frontend';
+import { getRestApiClient, useUserInfo } from '@cromwell/core-frontend';
 import { Menu, Transition } from '@headlessui/react';
 import { BellIcon } from '@heroicons/react/24/outline';
 import {
+  ArrowLeftOnRectangleIcon,
+  ArrowPathIcon,
+  BoltIcon,
   CpuChipIcon,
   ExclamationCircleIcon,
   InboxIcon,
   InformationCircleIcon,
-  BoltIcon,
-  ArrowLeftOnRectangleIcon,
+  LifebuoyIcon,
   PhotoIcon,
   QuestionMarkCircleIcon,
-  ArrowPathIcon,
-  LifebuoyIcon,
   UserCircleIcon,
   XCircleIcon,
 } from '@heroicons/react/24/solid';
-
 import React, { Fragment, useState } from 'react';
 import { connect, PropsType } from 'react-redux-ts';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { loginPageInfo, userPageInfo } from '../../constants/PageInfos';
 import { useForceUpdate } from '../../helpers/forceUpdate';
-import { getPageInfos } from '../../helpers/navigation';
 import { updateStatus } from '../../redux/helpers';
 import { store, TAppState } from '../../redux/store';
 import CmsInfo from '../cmsInfo/CmsInfo';
@@ -33,10 +30,7 @@ import SystemMonitor from '../systemMonitor/SystemMonitor';
 import { toast } from '../toast/toast';
 
 export const Topbar = () => {
-  const pageInfos = getPageInfos();
-  const currentInfo = pageInfos.find((i) => i.route === window.location.pathname.replace('/admin', ''));
-
-  const userInfo: TUser | undefined = getStoreItem('userInfo');
+  const userInfo = useUserInfo();
   const [, setOptionsOpen] = useState<boolean>(false);
   const [cmsInfoOpen, setCmsInfoOpen] = useState(false);
   const [systemMonitorOpen, setSystemMonitorOpen] = useState(false);
@@ -61,8 +55,6 @@ export const Topbar = () => {
   const openDocs = () => {
     window.open('https://cromwellcms.com/docs/overview/intro', '_blank');
   };
-
-  if (currentInfo?.disableSidebar) return <></>;
 
   return (
     <header className="w-full lg:max-w-xs rounded-xl bg-white dark:bg-gray-700 items-center h-16 z-40 sticky top-0">

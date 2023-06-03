@@ -1,5 +1,6 @@
 import './ThemeEdit.module.scss';
 
+import { SwipeableSideNav } from '@components/sideNav/ResponsiveSideNav';
 import { TPageConfig, TPageInfo } from '@cromwell/core';
 import { ChevronLeftIcon } from '@heroicons/react/24/outline';
 import React from 'react';
@@ -23,6 +24,7 @@ export const InnerThemeEditor: React.FC = () => {
 
   return (
     <div className={`w-full h-full relative`}>
+      <SwipeableSideNav />
       <div className="flex flex-row builder select-none">
         <div
           className={`bg-white transform transition-all ${

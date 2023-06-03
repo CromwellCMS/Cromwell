@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client';
-import { EDBEntity } from '@cromwell/core';
+import { EDBEntity, TProduct } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
 import queryString from 'query-string';
 import React, { useState } from 'react';
@@ -92,7 +92,7 @@ export default function ProductPage() {
           );
         }}
         onSave={async (data) => {
-          const product = Object.assign({}, data, store.productRef.data);
+          const product = Object.assign({}, data, store.productRef?.data);
 
           const productAttributes = product.attributes?.map((attr) => ({
             key: attr.key,
@@ -103,7 +103,7 @@ export default function ProductPage() {
               : [],
           }));
 
-          const categoryIds = product.categories?.map((cat) => cat.id);
+          const categoryIds = product?.categories?.map((cat) => cat.id) || [];
           if (product.mainCategoryId && !categoryIds.includes(product.mainCategoryId)) {
             categoryIds.push(product.mainCategoryId);
           }
@@ -147,7 +147,7 @@ export default function ProductPage() {
             })),
             customMeta: Object.assign({}, product.customMeta, await getCustomMetaFor(EDBEntity.Product)),
             isEnabled: product.isEnabled,
-          };
+          } as Omit<TProduct, 'id'>;
         }}
         update={client.updateProduct}
         create={client.createProduct}

@@ -13,8 +13,8 @@ export function useTabs(init?: {
   const context = useContext(ProductContext);
 
   const setStore = init?.setStore ?? context.setStore ?? (() => {});
-  const store = init?.store ?? context.store ?? {};
-
+  const store = init?.store ?? context.store!;
+  
   const changeTab = useCallback(
     (value) => {
       if (value == store.tab || (!value && !store.tab)) return;

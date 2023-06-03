@@ -57,7 +57,7 @@ export function EntityMetaFields() {
           getOptionLabel={(option) => option as any}
           onChange={(e, newVal) => {
             handleInputChange('meta', {
-              ...(entityData.meta ?? {}),
+              ...(entityData?.meta ?? {}),
               keywords: newVal,
             });
           }}

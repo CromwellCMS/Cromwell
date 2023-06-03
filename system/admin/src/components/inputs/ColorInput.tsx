@@ -10,12 +10,12 @@ export type ColorInputProps = {
   value?: string;
   className?: string;
   style?: React.CSSProperties;
-  onChange?: (color: string) => void;
+  onChange?: (color: string | null) => void;
 };
 
 export function ColorInput(props: ColorInputProps) {
-  const colorRef = useRef<string | null>(null);
-  const prevValue = useRef<string | null>(null);
+  const colorRef = useRef<string | null | undefined>(null);
+  const prevValue = useRef<string | null | undefined>(null);
   const inputAnchorRef = useRef<HTMLInputElement | null>(null);
   const [open, setOpen] = useState(false);
   const forceUpdate = useForceUpdate();
@@ -38,7 +38,7 @@ export function ColorInput(props: ColorInputProps) {
   };
 
   const handleApply = () => {
-    props.onChange?.(colorRef.current);
+    props.onChange?.(colorRef.current || null);
   };
 
   const handleInputChange = (event) => {
@@ -54,13 +54,13 @@ export function ColorInput(props: ColorInputProps) {
           <div className="flex items-center mr-2">
             <div
               className="w-8 h-8 rounded-full border-2 cursor-pointer"
-              style={{ backgroundColor: colorRef.current }}
+              style={{ backgroundColor: colorRef.current || undefined }}
             ></div>
           </div>
         }
         className={props.className}
         label={props.label}
-        value={colorRef.current}
+        value={colorRef.current || undefined}
         ref={inputAnchorRef}
         onChange={handleInputChange}
         onClick={() => setOpen(true)}

@@ -47,7 +47,7 @@ export const MarginEditor = ({
 
   useEffect(() => {
     setMXAuto(styles?.marginLeft === 'auto' && styles?.marginRight === 'auto');
-    setIndividual(!!styles?.marginLeft || !!styles?.marginTop || !!styles?.marginBottom || !!styles.marginRight);
+    setIndividual(!!styles?.marginLeft || !!styles?.marginTop || !!styles?.marginBottom || !!styles?.marginRight);
   }, [styles]);
 
   return (
@@ -91,7 +91,7 @@ export const MarginEditor = ({
             {!mxAuto && (
               <>
                 <StyleNumberField
-                  value={styles.marginLeft}
+                  value={styles?.marginLeft}
                   keyName="marginLeft"
                   label="L"
                   min={0}
@@ -100,7 +100,7 @@ export const MarginEditor = ({
                 />
 
                 <StyleNumberField
-                  value={styles.marginRight}
+                  value={styles?.marginRight}
                   keyName="marginRight"
                   label="R"
                   min={0}
@@ -111,7 +111,7 @@ export const MarginEditor = ({
             )}
 
             <StyleNumberField
-              value={styles.marginTop}
+              value={styles?.marginTop}
               keyName="marginTop"
               label="T"
               min={0}
@@ -120,7 +120,7 @@ export const MarginEditor = ({
             />
 
             <StyleNumberField
-              value={styles.marginBottom}
+              value={styles?.marginBottom}
               keyName="marginBottom"
               label="B"
               min={0}
@@ -133,7 +133,7 @@ export const MarginEditor = ({
       {!individual && (
         <div className="grid gap-1 grid-cols-2">
           <StyleNumberField
-            value={styles.margin}
+            value={styles?.margin}
             keyName="margin"
             label="M"
             min={0}

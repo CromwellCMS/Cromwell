@@ -1,9 +1,6 @@
-import { IconButton, MenuItem } from '@mui/material';
-import {
-  Description as DescriptionIcon,
-  FolderOpen as FolderOpenIcon,
-  ZoomIn as ZoomInIcon,
-} from '@mui/icons-material';
+import { IconButton } from '@components/buttons/IconButton';
+import { DocumentTextIcon, FolderIcon, MagnifyingGlassPlusIcon } from '@heroicons/react/24/outline';
+import { MenuItem, Tooltip } from '@mui/material';
 import React from 'react';
 import LazyLoad from 'react-lazy-load';
 
@@ -11,7 +8,7 @@ import styles from './FileManager.module.scss';
 import { TItemType } from './types';
 
 export type ListItemProps = {
-  selectedFileName?: string;
+  selectedFileName?: string | null;
   currentPath?: string;
   getItemType: (fileName: string) => TItemType;
   normalize: (fileName: string) => string;
@@ -32,7 +29,7 @@ export const FileItem = (props: TFileItemProps) => {
   const isSelected = selectedFileName === item;
 
   if (itemType === 'file') {
-    ItemIcon = <DescriptionIcon className={styles.itemIcon} />;
+    ItemIcon = <DocumentTextIcon className={styles.itemIcon} />;
   }
   if (itemType === 'image') {
     ItemIcon = (
@@ -44,8 +41,10 @@ export const FileItem = (props: TFileItemProps) => {
     );
   }
   if (itemType === 'folder') {
-    ItemIcon = <FolderOpenIcon className={styles.itemIcon} />;
+    ItemIcon = <FolderIcon className={styles.itemIcon} />;
   }
+
+  const currentLink = window.location.origin + normalize(`/${currentPath}/${item}`);
 
   return (
     <MenuItem
@@ -62,11 +61,21 @@ export const FileItem = (props: TFileItemProps) => {
             openPreview(item);
           }}
         >
-          <ZoomInIcon />
+          <MagnifyingGlassPlusIcon className="w-4 h-4" />
         </IconButton>
       )}
       {ItemIcon}
-      <p>{item}</p>
+      <div className={styles.itemTextContainer}>
+        <Tooltip
+          title={
+            <a href={currentLink} className={styles.itemTextTooltip} target="_blank" rel="noreferrer">
+              {currentLink}
+            </a>
+          }
+        >
+          <p className={styles.itemText}>{item}</p>
+        </Tooltip>
+      </div>
     </MenuItem>
   );
 };

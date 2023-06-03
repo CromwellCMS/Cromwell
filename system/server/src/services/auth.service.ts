@@ -4,6 +4,7 @@ import {
   getAuthSettings,
   getBcrypt,
   getCmsSettings,
+  getCurrentRoles,
   getEmailTemplate,
   getLogger,
   getUserRole,
@@ -220,7 +221,11 @@ export class AuthService {
       throw new UnauthorizedException('payloadToUserInfo: Payload is not valid');
 
     const roles = roleNames.map(getUserRole).filter((r) => r && r.isEnabled !== false) as TRole[];
-    if (!roles.length) throw new UnauthorizedException('User has no valid roles for authentication');
+    if (!roles.length) {
+      logger.log('Current roles: ', getCurrentRoles(), 'Payload roles: ', roleNames);
+      throw new UnauthorizedException('User has no valid roles for authentication');
+    }
+
     return {
       id: payload.sub,
       email: payload.username,
@@ -446,13 +451,13 @@ export class AuthService {
       if (!refreshToken || refreshToken === 'null') throw new UnauthorizedException('Refresh token is not set');
 
       const refreshTokenPayload = await this.validateRefreshToken(refreshToken);
-      if (!refreshTokenPayload) throw new UnauthorizedException('Refresh token is not valid');
+      if (!refreshTokenPayload) throw new UnauthorizedException('Refresh token is not valid 1');
 
       const authUserInfo = this.payloadToUserInfo(refreshTokenPayload);
 
       // Check that token is in DB and was not blacklisted
       const validUser = await this.dbCheckRefreshToken(refreshToken, authUserInfo?.id);
-      if (!validUser) throw new UnauthorizedException('Refresh token is not valid');
+      if (!validUser) throw new UnauthorizedException('Refresh token is not valid 2');
       if (!validUser?.roles?.length) {
         throw new UnauthorizedException('User has no roles');
       }

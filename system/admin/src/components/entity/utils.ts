@@ -1,7 +1,7 @@
 import { TCustomGraphQlProperty } from '@cromwell/core';
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
 
-export const customGraphQlPropertyToFragment = (properties: TCustomGraphQlProperty[]): string => {
+export const customGraphQlPropertyToFragment = (properties?: TCustomGraphQlProperty[]): string => {
   if (!properties?.length) return '';
   const customProperties = {};
   for (const property of properties) {

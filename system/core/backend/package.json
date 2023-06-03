@@ -19,6 +19,7 @@
     "build": "npx rollup -c",
     "test": "npx --no-install jest",
     "watch": "npx rollup -cw",
+    "typecheck": "tsc --noEmit",
     "format": "prettier --write --ignore-unknown \"**/*.+(js|jsx|json|css|md|ts|tsx)\""
   },
   "dependencies": {

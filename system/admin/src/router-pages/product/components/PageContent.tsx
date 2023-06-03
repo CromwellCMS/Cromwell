@@ -21,22 +21,22 @@ import { VariantsTab } from './VariantsTab';
 export const PageContent = ({ entityData, canValidate }: TFieldsComponentProps<TProduct>) => {
   const client = getGraphQLClient();
   const location = useLocation();
-  const productRef = React.useRef<TProduct | null>(entityData);
+  const productRef = React.useRef<TProduct | null | undefined>(entityData);
   const context = useContext(ProductContext);
   const [mainCategory, setMainCategory] = useState<TProductCategory | null>(null);
   const [activeTabNum, changeTab] = useTabs();
   const [attributes, setAttributes] = useState<TAttribute[]>([]);
   const [usedVariantAttributes, setUsedVariantAttributes] = useState<string[]>(
-    entityData.variants?.reduce((prev, curr) => {
+    entityData?.variants?.reduce((prev: string[], curr) => {
       Object.entries(curr.attributes ?? {}).forEach(([key]) => {
-        if (!prev.includes(key)) prev.push(key);
+        if (key && !prev.includes(key)) prev.push(key);
       });
       return prev;
-    }, []),
+    }, []) || [],
   );
   const forceUpdate = useForceUpdate();
 
-  if (!context.store.productRef.data) {
+  if (!context.store.productRef.data && productRef.current) {
     context.store.productRef.data = productRef.current;
   }
 
@@ -96,6 +96,13 @@ export const PageContent = ({ entityData, canValidate }: TFieldsComponentProps<T
     }
   };
 
+  if (!productRef.current)
+    return (
+      <Box className={styles.PageContent}>
+        <h1>Product not found</h1>
+      </Box>
+    );
+
   return (
     <Box className={styles.PageContent}>
       {activeTabNum === 0 && (
@@ -110,7 +117,7 @@ export const PageContent = ({ entityData, canValidate }: TFieldsComponentProps<T
                 getOptionLabel={(data) =>
                   `${data.name} (id: ${data.id}${data?.parent?.id ? `; parent id: ${data.parent.id}` : ''})`
                 }
-                getOptionValue={(data) => data.name}
+                getOptionValue={(data) => data.name || ''}
                 fullWidth
                 defaultValue={productRef.current.categories ?? []}
                 label={'Categories'}
@@ -123,7 +130,7 @@ export const PageContent = ({ entityData, canValidate }: TFieldsComponentProps<T
                 getOptionLabel={(data) =>
                   `${data.name} (id: ${data.id}${data?.parent?.id ? `; parent id: ${data.parent.id}` : ''})`
                 }
-                getOptionValue={(data) => data.name}
+                getOptionValue={(data) => data.name || ''}
                 fullWidth
                 defaultValue={mainCategory}
                 label={'Main category'}

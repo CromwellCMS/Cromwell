@@ -43,6 +43,6 @@ describe('EntityEdit page', () => {
       />,
     );
 
-    await screen.findByDisplayValue(testData.slug);
+    await screen.findByDisplayValue(testData.slug!);
   });
 });

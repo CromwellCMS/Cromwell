@@ -1,5 +1,11 @@
 import { gql } from '@apollo/client';
-import { getStoreItem, resolvePageRoute, serviceLocator, TBasePageEntity } from '@cromwell/core';
+import {
+  getStoreItem,
+  resolvePageRoute,
+  serviceLocator,
+  TBasePageEntity,
+  TCustomGraphQlProperty,
+} from '@cromwell/core';
 import { getCustomMetaFor, getCustomMetaKeysFor } from '@helpers/customFields';
 import { Box, Skeleton } from '@mui/material';
 import clsx from 'clsx';
@@ -37,7 +43,7 @@ class EntityEdit<
     this.prevRoute = (this.props.location.state as any)?.prevRoute;
     this.setState({ isLoading: true });
     const entityId = this.props.params?.id;
-    let entityData: TEntityType;
+    let entityData: TEntityType | undefined;
 
     if (entityId === 'new') {
       entityData = {} as any;
@@ -62,7 +68,7 @@ class EntityEdit<
   };
 
   private getEntity = async (entityId: number) => {
-    let data: TEntityType;
+    let data: TEntityType | undefined;
     if (!this.props.getById) {
       console.error('this.props.getById in not defined, you must provide "getById" prop for entity to be displayed');
       return;
@@ -87,7 +93,7 @@ class EntityEdit<
 
     const customFragments = fields.map((field) => field.customGraphQlFragment).filter(Boolean);
     const customProperties = customGraphQlPropertyToFragment(
-      fields.map((c) => c.customGraphQlProperty).filter(Boolean),
+      fields.map((c) => c.customGraphQlProperty).filter(Boolean) as TCustomGraphQlProperty[],
     );
     const metaKeys = getCustomMetaKeysFor(this.props.entityType ?? this.props.entityCategory);
 
@@ -208,14 +214,18 @@ class EntityEdit<
         console.error(e);
       }
     } else {
-      try {
-        await this.props.update(parseInt(entityId), inputData as TEntityInputType);
-        const updatedData = await this.getEntity(parseInt(entityId));
-        this.setState({ entityData: updatedData });
-        toast.success('Saved!');
-      } catch (e) {
-        toast.error('Failed to save');
-        console.error(e);
+      if (!entityId) {
+        toast.error('Failed to save: no entity id');
+      } else {
+        try {
+          await this.props.update(parseInt(entityId), inputData as TEntityInputType);
+          const updatedData = await this.getEntity(parseInt(entityId));
+          this.setState({ entityData: updatedData });
+          toast.success('Saved!');
+        } catch (e) {
+          toast.error('Failed to save');
+          console.error(e);
+        }
       }
     }
     this.setState({ isSaving: false, canValidate: false });

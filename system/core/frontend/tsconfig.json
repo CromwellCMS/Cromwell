@@ -11,6 +11,8 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "strictPropertyInitialization": false,
+    "skipLibCheck": true,
+    "strictNullChecks": true,
     "resolveJsonModule": true,
     "noImplicitAny": false,
     "removeComments": false,

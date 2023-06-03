@@ -4,7 +4,7 @@ import { alpha, SimplePaletteColorOptions } from '@mui/material';
 
 export const getGlobalStyles: () => StyledGlobalStylesProps['styles'] = () => {
   const palette = getPalette();
-  const mainColor = (palette.primary as SimplePaletteColorOptions).main;
+  const mainColor = (palette?.primary as SimplePaletteColorOptions)?.main || '#333';
 
   return {
     '.RsuiteDateRangePicker': {

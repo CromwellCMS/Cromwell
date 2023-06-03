@@ -1,4 +1,4 @@
-import { ResponsiveSideNav } from '@components/sideNav/ResponsiveSideNav';
+import { LayoutSideNav } from '@components/sideNav/ResponsiveSideNav';
 import { getStoreItem, matchPermissions } from '@cromwell/core';
 import { LayoutPortal } from '@helpers/LayoutPortal';
 import { getPageInfos } from '@helpers/navigation';
@@ -38,7 +38,7 @@ function Layout() {
         <div suppressHydrationWarning className="min-h-screen bg-gray-100 relative dark:bg-gray-800">
           <div className="flex items-start justify-between">
             <BrowserRouter>
-              <ResponsiveSideNav />
+              <LayoutSideNav />
               <div className={styles.main} id="main-scroll-container">
                 {/* <Toolbar className={styles.dummyToolbar} /> */}
                 <Routes>

@@ -1,21 +1,23 @@
+import { IconButton } from '@components/buttons/IconButton';
+import { TextButton } from '@components/buttons/TextButton';
 import { getBlockInstance, isServer } from '@cromwell/core';
 import { CList, getRestApiClient, TCList } from '@cromwell/core-frontend';
-import { Breadcrumbs, Button, IconButton, TextField, Tooltip } from '@mui/material';
 import {
-  ArrowBack as ArrowBackIcon,
-  ArrowDownward as ArrowDownwardIcon,
-  ArrowForward as ArrowForwardIcon,
-  Cancel as CancelIcon,
-  CheckCircleOutline as CheckCircleOutlineIcon,
-  CreateNewFolder as CreateNewFolderIcon,
-  DeleteForever as DeleteForeverIcon,
-  Home as HomeIcon,
-  NavigateNext as NavigateNextIcon,
-  Publish as PublishIcon,
-} from '@mui/icons-material';
+  ArrowLeftCircleIcon,
+  ArrowRightCircleIcon,
+  ChevronRightIcon,
+  CloudArrowDownIcon,
+  CloudArrowUpIcon,
+  FolderPlusIcon,
+  HomeIcon,
+  PaperAirplaneIcon,
+  TrashIcon,
+  XCircleIcon,
+} from '@heroicons/react/24/outline';
+import { ArrowPathIcon } from '@heroicons/react/24/solid';
+import { Breadcrumbs, TextField, Tooltip } from '@mui/material';
 import React from 'react';
 
-import LoadBox from '../loadBox/LoadBox';
 import { LoadingStatus } from '../loadBox/LoadingStatus';
 import { askConfirmation } from '../modal/Confirmation';
 import Modal from '../modal/Modal';
@@ -36,7 +38,7 @@ class FileManager
 {
   private filePromise: Promise<string | undefined> | null = null;
   private fileResolver: (fileName?: string) => void;
-  private currentPath: string | null = '/';
+  private currentPath: string = '/';
   private previousPaths: string[] = [];
   private nextPaths: string[] = [];
   private currentItems: string[] | null | undefined = null;
@@ -97,7 +99,8 @@ class FileManager
       for (let i = 0; i < ev.dataTransfer.items.length; i++) {
         // If dropped items aren't files, reject them
         if (ev.dataTransfer.items[i].kind === 'file') {
-          files.push(ev.dataTransfer.items[i].getAsFile());
+          const file = ev.dataTransfer.items[i].getAsFile();
+          if (file) files.push(file);
         }
       }
     } else {
@@ -139,7 +142,7 @@ class FileManager
   private fetchCurrentItems = async () => {
     this.setState({ isLoading: true });
     try {
-      this.currentItems = await this.getFilesInPath(this.currentPath);
+      this.currentItems = (await this.getFilesInPath(this.currentPath)) || [];
       this.currentItems.sort((a, b) => (a < b ? -1 : 1));
       this.currentItems = [
         ...this.currentItems.filter((item) => this.getItemType(item) === 'folder'),
@@ -179,7 +182,7 @@ class FileManager
     return getRestApiClient()?.readPublicDir(path, { disableLog: true });
   };
 
-  private createFolder = async (dirName?: string) => {
+  private createFolder = async (dirName: string) => {
     try {
       await getRestApiClient()?.createPublicDir(dirName, this.currentPath);
     } catch (e) {
@@ -190,8 +193,9 @@ class FileManager
   private getItemType = (fileName): TItemType => {
     let itemType: TItemType = 'folder';
     if (fileName.includes('.')) {
-      const extension = fileName.split('.').splice(-1, 1)[0];
-      if (extension === 'jpg' || extension === 'jpeg' || extension === 'png' || extension === 'svg') {
+      const extension = fileName.split('.').splice(-1, 1)[0].toLowerCase();
+      const supportedImageExtensions = ['jpg', 'jpeg', 'png', 'svg', 'webp', 'gif', 'bmp', 'ico'];
+      if (supportedImageExtensions.includes(extension)) {
         itemType = 'image';
       } else {
         itemType = 'file';
@@ -202,14 +206,20 @@ class FileManager
 
   private goBack = () => {
     this.nextPaths.push(this.currentPath);
-    this.currentPath = this.previousPaths.pop();
-    this.applyNavigate();
+    const prev = this.previousPaths.pop();
+    if (prev) {
+      this.currentPath = prev;
+      this.applyNavigate();
+    }
   };
 
   private goForward = () => {
     this.previousPaths.push(this.currentPath);
-    this.currentPath = this.nextPaths.pop();
-    this.applyNavigate();
+    const next = this.nextPaths.pop();
+    if (next) {
+      this.currentPath = next;
+      this.applyNavigate();
+    }
   };
 
   private openFolder = (folderName: string) => {
@@ -237,18 +247,20 @@ class FileManager
     // Find page of selected file
     const itemToOpen = fullPath.split('/').pop();
     let index = 0;
-    this.currentItems.forEach((item, idx) => item === itemToOpen && (index = idx));
+    this.currentItems?.forEach((item, idx) => item === itemToOpen && (index = idx));
 
     const list = getBlockInstance<TCList>(this.listId)?.getContentInstance();
     const page = Math.ceil((index + 1) / this.pageSize);
     list?.openPage(page);
 
-    setTimeout(() => {
-      if (isSelecting) {
-        this.selectItem(itemToOpen);
-        this.selectedItem?.scrollIntoView();
-      }
-    }, 100);
+    if (itemToOpen) {
+      setTimeout(() => {
+        if (isSelecting) {
+          this.selectItem(itemToOpen);
+          this.selectedItem?.scrollIntoView();
+        }
+      }, 100);
+    }
   };
 
   private applyNavigate = () => {
@@ -288,12 +300,15 @@ class FileManager
       item.classList.remove(styles.selectedItem);
     });
 
+    this.selectedFileName = itemName;
+
     const target = document.getElementById('item__' + itemName) as HTMLLIElement | undefined;
     const itemType = this.getItemType(itemName);
 
-    this.selectedItem = target;
-    this.selectedFileName = itemName;
-    this.selectedItem?.classList.add(styles.selectedItem);
+    if (target) {
+      this.selectedItem = target;
+      this.selectedItem?.classList.add(styles.selectedItem);
+    }
 
     if (this.state.isSelecting && this.selectButton.current && itemType !== 'folder') {
       if (this.state.selectingType === 'image') {
@@ -323,8 +338,8 @@ class FileManager
   };
 
   private closePreview = () => {
-    this.photoPreviewContainer.current.style.display = 'none';
-    this.photoPreview.current.src = '';
+    if (this.photoPreviewContainer.current) this.photoPreviewContainer.current.style.display = 'none';
+    if (this.photoPreview.current) this.photoPreview.current.src = '';
   };
 
   private handleApplySelect = () => {
@@ -402,23 +417,24 @@ class FileManager
     if (!input) return;
 
     input.click();
+  };
 
-    input.addEventListener('change', async (e: any) => {
-      // Get the selected file from the input element
-      const files = e.target?.files;
-      if (!files?.length) return;
+  private onFileInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target?.files;
+    if (!files?.length) return;
 
-      this.setState({ isLoading: true });
+    this.setState({ isLoading: true });
 
-      try {
-        await getRestApiClient()?.uploadPublicFiles(this.currentPath, files);
-        await this.fetchCurrentItems();
-      } catch (e) {
-        console.error(e);
-      }
+    try {
+      await getRestApiClient()?.uploadPublicFiles(this.currentPath, Array.from(files));
+      await this.fetchCurrentItems();
+    } catch (e) {
+      console.error(e);
+    }
 
-      this.setState({ isLoading: false });
-    });
+    e.target.files = new DataTransfer().files;
+
+    this.setState({ isLoading: false });
   };
 
   render() {
@@ -438,44 +454,34 @@ class FileManager
             <Tooltip title="Back">
               <span>
                 <IconButton className={styles.action} disabled={this.previousPaths.length === 0} onClick={this.goBack}>
-                  <ArrowBackIcon />
+                  <ArrowLeftCircleIcon className="w-6 h-6" />
                 </IconButton>
               </span>
             </Tooltip>
             <Tooltip title="Forward">
               <span>
                 <IconButton className={styles.action} disabled={this.nextPaths.length === 0} onClick={this.goForward}>
-                  <ArrowForwardIcon />
+                  <ArrowRightCircleIcon className="w-6 h-6" />
                 </IconButton>
               </span>
             </Tooltip>
             <Tooltip title="Create folder">
               <IconButton className={styles.action} onClick={this.handleCreateFolder} ref={this.createFolderBtn}>
-                <CreateNewFolderIcon />
+                <FolderPlusIcon className="w-6 h-6" />
               </IconButton>
             </Tooltip>
             <div ref={this.createFolderWindow} className={styles.createFolderWindow} style={{ display: 'none' }}>
-              <TextField variant="standard" id="create-new-folder-input" />
+              <TextField variant="standard" id="create-new-folder-input" placeholder="Folder name" />
               <IconButton onClick={this.handleApplyCreateFolder}>
-                <CheckCircleOutlineIcon />
+                <PaperAirplaneIcon className="w-6 h-6" />
               </IconButton>
               <IconButton onClick={this.handleCloseCreateFolder}>
-                <CancelIcon />
+                <XCircleIcon className="w-6 h-6" />
               </IconButton>
             </div>
             <Tooltip title="Upload file">
               <IconButton onClick={this.handleUploadFile} className={styles.action}>
-                <PublishIcon />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Delete">
-              <IconButton
-                className={styles.action}
-                ref={this.deleteItemBtn}
-                style={{ opacity: '0.5' }}
-                onClick={this.handleDeleteItem}
-              >
-                <DeleteForeverIcon />
+                <CloudArrowUpIcon className="w-6 h-6" />
               </IconButton>
             </Tooltip>
             <Tooltip title="Download file">
@@ -485,36 +491,44 @@ class FileManager
                 style={{ opacity: '0.5' }}
                 onClick={this.handleDownloadItem}
               >
-                <ArrowDownwardIcon />
+                <CloudArrowDownIcon className="w-6 h-6" />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Delete">
+              <IconButton
+                className={styles.action}
+                ref={this.deleteItemBtn}
+                style={{ opacity: '0.5' }}
+                onClick={this.handleDeleteItem}
+              >
+                <TrashIcon className="w-6 h-6" />
               </IconButton>
             </Tooltip>
           </div>
           <div className={styles.headerRight}>
             {this.state.isSelecting && (
-              <Button
-                variant="contained"
-                color="primary"
+              <TextButton
+                variant="filled"
                 className={styles.selectBtn}
-                size="small"
                 onClick={this.handleApplySelect}
                 ref={this.selectButton}
                 style={{ opacity: '0.5' }}
                 role="button"
               >
                 Select
-              </Button>
+              </TextButton>
             )}
             <Tooltip title="Close">
               <IconButton className={styles.action} onClick={this.handleClose}>
-                <CancelIcon />
+                <XCircleIcon className="w-6 h-6" />
               </IconButton>
             </Tooltip>
           </div>
         </div>
         <div className={styles.breadcrumbs}>
-          <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
+          <Breadcrumbs separator={<ChevronRightIcon className="w-4 h-4" />} aria-label="breadcrumb">
             <div className={styles.pathChunk} onClick={() => this.openPath('/')} key={'/'}>
-              <HomeIcon style={{ fontSize: '21px' }} />
+              <HomeIcon className="w-5 h-5" />
             </div>
             {breadcrumbsPath.split('/').map((pathChunk, index) => {
               const fullPath = breadcrumbsPath
@@ -553,7 +567,11 @@ class FileManager
               }}
             />
           )}
-          {this.state.isLoading && <LoadBox absolute />}
+          {this.state.isLoading && (
+            <div className="flex flex-row h-full w-full top-0 left-0 z-30 absolute backdrop-filter backdrop-blur-md items-center">
+              <ArrowPathIcon className="bg-white rounded-full mx-auto h-16 p-2 animate-spin fill-indigo-600 w-16 self-center" />
+            </div>
+          )}
         </div>
         <div
           style={{ display: 'none' }}
@@ -562,12 +580,12 @@ class FileManager
           onClick={this.closePreview}
         >
           <IconButton className={styles.photoPreviewCloseBtn} onClick={this.closePreview}>
-            <CancelIcon className={styles.photoPreviewCloseIcon} />
+            <XCircleIcon className={styles.photoPreviewCloseIcon} />
           </IconButton>
           <img className={styles.photoPreview} ref={this.photoPreview} onClick={(event) => event.stopPropagation()} />
         </div>
         <div style={{ display: 'none' }}>
-          <input type="file" id="hidden-file-upload-input" multiple />
+          <input type="file" id="hidden-file-upload-input" multiple onChange={(e) => this.onFileInputChange(e)} />
         </div>
         <LoadingStatus isActive={this.state?.hasLoadingStatus} />
       </Modal>

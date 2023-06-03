@@ -218,8 +218,8 @@ export class CmsController {
   ): Promise<string> {
     logger.log('CmsController::uploadFile');
     try {
-      const fullPath = join(getPublicDir(), inPath ?? '');
-      await this.cmsService.uploadFile(req, fullPath);
+      const dirPath = join(getPublicDir(), inPath ?? '');
+      await this.cmsService.uploadFile(req, dirPath);
     } catch (error) {
       logger.error(error);
       return 'false';

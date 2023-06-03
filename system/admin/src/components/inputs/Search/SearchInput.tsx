@@ -21,7 +21,7 @@ export class SearchInput<TItemData extends { id: number | string }> extends Reac
     onSelect?: (data: TItemData | TItemData[] | null) => void;
     className?: string;
     fullWidth?: boolean;
-    defaultValue?: TItemData | TItemData[];
+    defaultValue?: TItemData | TItemData[] | null;
     label?: string;
     variant?: 'standard' | 'outlined' | 'filled';
     multiple?: boolean;

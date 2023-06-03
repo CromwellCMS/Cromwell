@@ -12,7 +12,7 @@ import React from 'react';
 import EntityEdit from '../components/entity/entityEdit/EntityEdit';
 import EntityTable from '../components/entity/entityTable/EntityTable';
 import { TEntityPageProps } from '../components/entity/types';
-import sidebarStyles from '../components/sidebar/Sidebar.module.scss';
+import commonStyles from '../styles/common.module.scss';
 import { TPageInfo, TSidebarLink } from '../constants/PageInfos';
 import { store } from '../redux/store';
 import { formatTimeAgo } from './time';
@@ -58,7 +58,7 @@ export const getCustomEntityPages = (): TPageInfo[] => {
     const entityRoutes = getEntityRoutes(entity);
     const client = getGraphQLClient();
 
-    const entityPageProps: TEntityPageProps<TCustomEntity, Partial<TCustomEntityFilter>> = {
+    const entityPageProps: TEntityPageProps<TCustomEntity, TCustomEntityFilter> = {
       entityCategory: EDBEntity.CustomEntity,
       entityBaseRoute: entityRoutes.entityBaseRoute,
       entityListRoute: entityRoutes.entityListRoute,
@@ -111,7 +111,7 @@ export const getCustomEntitySidebarLinks = (): TSidebarLink[] => {
       icon:
         entity.icon &&
         React.createElement('div', {
-          className: sidebarStyles.customIcon,
+          className: commonStyles.customIcon,
           style: { backgroundImage: `url(${entity.icon})` },
         }),
       permissions: ['read_custom_entity', entity.permissions?.read as any].filter(Boolean),

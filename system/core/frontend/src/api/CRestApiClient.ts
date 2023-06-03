@@ -454,7 +454,7 @@ export class CRestApiClient {
    */
   public uploadPublicFiles = async (
     inPath: string,
-    files: File[],
+    files: File[] ,
     options?: TRequestOptions,
   ): Promise<boolean | null | undefined> => {
     const formData = new FormData();

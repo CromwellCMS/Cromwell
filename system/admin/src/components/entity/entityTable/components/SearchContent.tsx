@@ -10,7 +10,7 @@ import { TGetAutocompleteValueFromSearch } from './TableHeader';
 
 export function SearchContent(props: {
   columnSearch: TCustomEntityColumn | null;
-  currentSearchRef: { current: string | number | boolean | Date | null };
+  currentSearchRef: { current: string | number | boolean | Date | null | undefined };
   getAutocompleteValueFromSearch: TGetAutocompleteValueFromSearch;
 }) {
   const { columnSearch, currentSearchRef } = props;

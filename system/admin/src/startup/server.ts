@@ -15,6 +15,7 @@ import normalizePath from 'normalize-path';
 import { join, resolve } from 'path';
 import symlinkDir from 'symlink-dir';
 import yargs from 'yargs-parser';
+import type { FastifyReply, FastifyRequest } from 'fastify';
 
 const logger = getLogger();
 
@@ -146,22 +147,12 @@ const outputEnv = async ({ isProduction, configsDir }: HelperOptions) => {
 };
 
 const startProdServer = (port: number) => {
+  const tempPublicDir = normalizePath(getAdminPanelWebPublicDir());
   // start fastify server:
   const fastify = require('fastify')({ logger: false });
-  const fastifyStatic = require('@fastify/static');
   const mime = require('mime-types');
 
-  fastify.register(fastifyStatic, {
-    root: join(getAdminPanelTempDir(), 'public'),
-    prefix: '/',
-  });
-
-  fastify.get('/admin/api/public-env', function () {
-    const configPath = resolve(process.cwd(), '.cromwell/admin/configs/public-env.json');
-    return fs.readJsonSync(configPath);
-  });
-
-  fastify.get('/admin*', async function (req, reply) {
+  fastify.get('/*', async function (req: FastifyRequest, reply: FastifyReply) {
     const publicPath = normalizePath(req.raw.url).replace(/^(\.\.(\/|\\|$))+/, '');
     if (publicPath.indexOf('\0') !== -1) {
       throw new Error('Poison Null Bytes');
@@ -179,9 +170,24 @@ const startProdServer = (port: number) => {
       return reply.send(fs.createReadStream(filePath));
     }
 
-    return reply
-      .type('text/html')
-      .send(fs.createReadStream(join(getAdminPanelTempDir(), '.next/server/pages/index.html')));
+    if (publicPath.startsWith('/admin')) {
+      return reply
+        .type('text/html')
+        .send(fs.createReadStream(join(getAdminPanelTempDir(), '.next/server/pages/index.html')));
+    }
+
+    const pathInPublicDir = join(tempPublicDir, publicPath);
+    if ((await fs.lstat(pathInPublicDir)).isFile()) {
+      reply.type(mime.lookup(pathInPublicDir));
+      return reply.send(fs.createReadStream(pathInPublicDir));
+    }
+
+    return reply.status(404).send('Not found');
+  });
+
+  fastify.get('/admin/api/public-env', function () {
+    const configPath = resolve(process.cwd(), '.cromwell/admin/configs/public-env.json');
+    return fs.readJsonSync(configPath);
   });
 
   fastify.listen({ port }, (err, address) => {

@@ -14,11 +14,13 @@ const PluginPage = () => {
   const [canShow, setCanShow] = useState(false);
 
   useEffect(() => {
+    if (!pluginName) return;
+
     const getInfos = async () => {
       try {
-        const allInfos: TPackageCromwellConfig[] = await getRestApiClient()?.getPluginList();
+        const allInfos: TPackageCromwellConfig[] = (await getRestApiClient()?.getPluginList()) || [];
         const info = allInfos.find((inf) => inf.name === pluginName);
-        if (info) {
+        if (info && pluginName) {
           pluginInfos[pluginName] = info;
         }
       } catch (e) {
@@ -46,15 +48,17 @@ const PluginPage = () => {
 
   return (
     <div className={styles.PluginPage}>
-      <AdminPanelWidgetPlace
-        widgetName="PluginSettings"
-        pluginName={pluginName}
-        widgetProps={{
-          pluginName,
-          pluginSettings: pluginsSettings[pluginName] ?? {},
-          pluginInfo: pluginInfos[pluginName] ?? {},
-        }}
-      />
+      {pluginName && (
+        <AdminPanelWidgetPlace
+          widgetName="PluginSettings"
+          pluginName={pluginName}
+          widgetProps={{
+            pluginName,
+            pluginSettings: pluginsSettings[pluginName] ?? {},
+            pluginInfo: pluginInfos[pluginName] ?? {},
+          }}
+        />
+      )}
     </div>
   );
 };

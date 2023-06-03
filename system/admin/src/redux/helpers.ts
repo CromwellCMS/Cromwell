@@ -24,7 +24,7 @@ export const toggleSelectAll = () => {
   });
 };
 
-export const countSelectedItems = (totalElements?: number) => {
+export const countSelectedItems = (totalElements?: number | null) => {
   let selectedItemsCount: number = Object.values(store.getState().selectedItems ?? {}).filter(Boolean).length;
   if (store.getState().allSelected) {
     selectedItemsCount = totalElements ? totalElements - selectedItemsCount : 0;

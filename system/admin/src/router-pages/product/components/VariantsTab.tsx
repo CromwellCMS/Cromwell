@@ -57,7 +57,7 @@ export function VariantsTab({
       [id]: !expandedVariants[id],
     });
     setTimeout(() => {
-      document.getElementById(`variant-${id}`).scrollIntoView();
+      document.getElementById(`variant-${id}`)?.scrollIntoView();
 
       const getScrollParent = (node) => {
         if (!node) return;
@@ -75,22 +75,25 @@ export function VariantsTab({
   const handleDeleteVariant = async (variant: TProductVariant) => {
     if (!(await askConfirmation({ title: 'Delete variant?' }))) return;
     const newProduct = clone({ proto: true })(product);
-    newProduct.variants = newProduct.variants.filter((v) => variant.id !== v.id);
+    newProduct.variants = newProduct.variants?.filter((v) => variant.id !== v.id) || [];
     setProdData(newProduct);
     forceUpdate();
   };
 
   const onAttributeChange = (variant: TProductVariant, attribute: TAttribute, value: string | number) => {
     const newProduct = clone({ proto: true })(product);
-    newProduct.variants = newProduct.variants.map((v) => {
-      if (v.id === variant.id) {
-        v.attributes = {
-          ...(v.attributes ?? {}),
-          [attribute.key]: value,
-        };
-      }
-      return v;
-    });
+    if (!attribute.key) return;
+
+    newProduct.variants =
+      newProduct.variants?.map((v) => {
+        if (v.id === variant.id) {
+          v.attributes = {
+            ...(v.attributes ?? {}),
+            [attribute.key!]: value,
+          };
+        }
+        return v;
+      }) || [];
     setProdData(newProduct);
     forceUpdate();
   };
@@ -128,16 +131,16 @@ export function VariantsTab({
                 justifyContent: 'space-between',
                 alignItems: 'center',
                 px: 1,
-                borderBottom: expandedVariants[variant.id] && '2px dashed #ddd',
+                borderBottom: expandedVariants[variant.id] ? '2px dashed #ddd' : undefined,
                 minHeight: '50px',
               }}
             >
               <Box sx={{ display: 'flex', alignItems: 'center', px: 1 }} flexWrap="wrap" justifyContent="space-between">
                 {attributes
-                  ?.filter((attr) => usedVariantAttributes.includes(attr.key))
+                  ?.filter((attr) => attr.key && usedVariantAttributes.includes(attr.key))
                   ?.map((attr) => (
                     <SelectInput
-                      label={attr.key}
+                      label={attr.key!}
                       key={attr.key}
                       options={[
                         ...(attr.values?.map((value) => ({
@@ -149,7 +152,7 @@ export function VariantsTab({
                           value: 'any',
                         },
                       ]}
-                      value={variant.attributes?.[attr.key] ?? 'any'}
+                      value={variant.attributes?.[attr.key!] ?? 'any'}
                       style={{ margin: '10px 15px 10px 0', minWidth: '100px' }}
                       onChange={(value) => onAttributeChange(variant, attr, value)}
                     />
@@ -220,6 +223,7 @@ export function VariantsTab({
           >
             <div className={styles.newAttributesList}>
               {attributes?.map((attr) => {
+                if (!attr.key) return null;
                 return (
                   <div
                     key={attr.key}
@@ -234,9 +238,9 @@ export function VariantsTab({
                   >
                     <div className={commonStyles.center}>
                       <SwitchInput
-                        value={!!usedVariantAttributes.includes(attr.key)}
-                        onChange={() => onUsedAttributeChange(attr.key)}
-                        label={attr.key}
+                        value={!!usedVariantAttributes.includes(attr.key!)}
+                        onChange={() => onUsedAttributeChange(attr.key!)}
+                        label={attr.key!}
                       />
                     </div>
                   </div>

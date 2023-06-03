@@ -61,8 +61,8 @@ export const themeEditPageInfo: TPageInfo = {
   route: '/theme-editor',
   baseRoute: '/theme-editor',
   component: ThemeEditPage,
-  minimizeSidebar: true,
   disableSidebar: true,
+  // minimizeSidebar: true,
   permissions: ['read_themes'],
 };
 export const productListInfo: TPageInfo = {

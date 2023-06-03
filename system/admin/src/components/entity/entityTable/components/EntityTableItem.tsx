@@ -25,7 +25,7 @@ const mapStateToProps = (state: TAppState) => {
 type TEntityTableItemProps<TEntityType extends TBasePageEntity, TFilterType extends TBaseEntityFilter> = PropsType<
   PropsType,
   {
-    data?: TEntityType;
+    data: TEntityType;
     numberOnScreen?: number;
     listItemProps: TListItemProps<TEntityType, TFilterType>;
     // prevItemProps?: {}
@@ -51,9 +51,9 @@ function EntityTableItem<TEntityType extends TBasePageEntity, TFilterType extend
   const tableColumns = props.listItemProps.getColumns();
 
   return (
-    <div className={clsx(styles.listItem)} style={{ backgroundColor: numberOnScreen % 2 ? '#fafafa' : '#eee' }}>
+    <div className={clsx(styles.listItem)} style={{ backgroundColor: (numberOnScreen || 0) % 2 ? '#fafafa' : '#eee' }}>
       <div className={commonStyles.center}>
-        <CheckboxInput checked={selected} onChange={() => props.listItemProps.toggleSelection(data)} />
+        <CheckboxInput checked={selected} onChange={() => props.listItemProps.toggleSelection?.(data)} />
       </div>
       <div className={styles.columns}>
         {!!tableColumns?.length &&

@@ -1,5 +1,11 @@
 import { gql } from '@apollo/client';
-import { getBlockInstance, TBasePageEntity, TCustomEntityColumn, TPagedParams } from '@cromwell/core';
+import {
+  getBlockInstance,
+  TBasePageEntity,
+  TCustomEntityColumn,
+  TCustomGraphQlProperty,
+  TPagedParams,
+} from '@cromwell/core';
 import { CList, TCList } from '@cromwell/core-frontend';
 import queryString from 'query-string';
 import React from 'react';
@@ -90,7 +96,7 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
     if (!itemToDelete?.id) return false;
 
     try {
-      await this.props.deleteOne(itemToDelete.id);
+      await this.props.deleteOne!(itemToDelete.id);
       toast.success(`${this.props.entityLabel ?? 'Item'} deleted`);
     } catch (e) {
       console.error(e);
@@ -118,7 +124,7 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
     this.setState({ isLoading: true });
     this.totalElements = 0;
     try {
-      await this.props.deleteMany(input, filterInput);
+      await this.props.deleteMany!(input, filterInput);
       toast.success(`${this.props.entityLabel ?? 'Items'} deleted`);
     } catch (e) {
       console.error(e);
@@ -160,8 +166,8 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
     if (store.filters) {
       filterInput.filters = store.filters.filter((filter) => {
         if (!filter.key) return false;
-        const col = tableColumns.find((col) => col.name === filter.key);
-        if (col.applyFilter) return false;
+        const col = tableColumns?.find((col) => col.name === filter.key);
+        if (col?.applyFilter) return false;
         return true;
       });
     } else {
@@ -211,7 +217,7 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
       .map((col) => col.customGraphQlFragment);
 
     const customProperties = customGraphQlPropertyToFragment(
-      tableColumns.map((c) => c.customGraphQlProperty).filter(Boolean),
+      tableColumns.map((c) => c.customGraphQlProperty).filter(Boolean) as TCustomGraphQlProperty[],
     );
 
     const data =
@@ -255,7 +261,7 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
       ...(this.props.columns ?? []),
       ...customFields.map(
         (field): TCustomEntityColumn => ({
-          label: field.column?.label ?? field.label,
+          label: field.column?.label || field.label || '',
           name: field.key,
           meta: true,
           type: field.column?.type ?? field.fieldType,
@@ -267,8 +273,8 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
       .filter((col) => col.type !== 'Text editor' && col.type !== 'Gallery')
       .map((col) => ({
         ...col,
-        visible: store.sortedColumns[col.name]?.visible ?? col.visible,
-        order: store.sortedColumns[col.name]?.order ?? col.order,
+        visible: store.sortedColumns?.[col.name]?.visible ?? col.visible ?? false,
+        order: store.sortedColumns?.[col.name]?.order ?? col.order,
       }))
       .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
   };

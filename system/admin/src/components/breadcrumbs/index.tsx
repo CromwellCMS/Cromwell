@@ -42,8 +42,8 @@ export const TBreadcrumbs = (props: BreadcrumbProps) => {
             >
               <Menu.Items className="divide-y bg-white rounded-md divide-gray-100 shadow-lg ring-black mt-2 origin-top-left left-0 ring-1 ring-opacity-5 w-56 absolute focus:outline-none">
                 <div className="py-1 px-1">
-                  {restPath.map((itm, idx) => (
-                    <Link key={idx} to={itm.link}>
+                  {restPath.map((itm, idx) => {
+                    let content = (
                       <Menu.Item>
                         {({ active }) => (
                           <button
@@ -55,8 +55,17 @@ export const TBreadcrumbs = (props: BreadcrumbProps) => {
                           </button>
                         )}
                       </Menu.Item>
-                    </Link>
-                  ))}
+                    );
+
+                    if (itm.link) {
+                      content = (
+                        <Link key={idx} to={itm.link}>
+                          {content}
+                        </Link>
+                      );
+                    }
+                    return content;
+                  })}
                 </div>
               </Menu.Items>
             </Transition>
@@ -73,11 +82,19 @@ export const TBreadcrumbs = (props: BreadcrumbProps) => {
           );
         }
 
+        let content: React.ReactNode = itm.title;
+
+        if (itm.link) {
+          content = (
+            <Link to={itm.link} className="text-gray-500 inline-block hover:text-indigo-600">
+              {content}
+            </Link>
+          );
+        }
+
         return (
           <React.Fragment key={idx + itm.title}>
-            <Link to={itm.link} className="text-gray-500 inline-block hover:text-indigo-600">
-              {itm.title}
-            </Link>
+            {content}
             <ChevronRightIcon className="h-7 mx-2 mb-[3px] text-gray-300 w-7 inline-block" />
           </React.Fragment>
         );

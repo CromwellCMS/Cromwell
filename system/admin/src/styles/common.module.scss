@@ -115,3 +115,10 @@
 //     background-color: #eee;
 //   }
 // }
+
+.customIcon {
+  @include bckgrContain;
+  width: 24px;
+  height: 24px;
+  opacity: 0.6;
+}

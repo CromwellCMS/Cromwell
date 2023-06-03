@@ -9,8 +9,10 @@
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
+    "strictNullChecks": true,
     "strictPropertyInitialization": false,
     "resolveJsonModule": true,
+    "skipLibCheck": true,
     "noImplicitAny": false,
     "removeComments": false,
     "moduleResolution": "node"

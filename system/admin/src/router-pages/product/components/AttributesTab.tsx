@@ -57,7 +57,7 @@ export function AttributesTab(props: {
     const newVals: TAttributeInstanceValue[] = [];
     val.forEach((newVal) => {
       let hasVal = false;
-      prod.attributes[prodAttrIdx].values.forEach((prodVal) => {
+      prod.attributes?.[prodAttrIdx]?.values.forEach((prodVal) => {
         if (prodVal.value === newVal) {
           newVals.push(prodVal);
           hasVal = true;
@@ -83,8 +83,8 @@ export function AttributesTab(props: {
           const attribute = attributes.find((a) => a.key === prodAttr.key);
           if (!attribute) return null;
 
-          const leftValues = attribute.values.filter((v) => !prodAttr.values.some((pv) => pv.value === v.value));
-          const rightValues = prodAttr.values.map((v) => v.value);
+          const leftValues = attribute.values?.filter((v) => !prodAttr.values.some((pv) => pv.value === v.value)) || [];
+          const rightValues = prodAttr.values?.map((v) => v.value) || [];
 
           return (
             <div className={styles.attributeBlock} key={prodAttr.key}>
@@ -129,11 +129,12 @@ export function AttributesTab(props: {
           <Fade {...TransitionProps} timeout={350}>
             <div className={styles.newAttributesList}>
               {leftAttributesToAdd.map((attr) => {
+                if (!attr.key) return null;
                 return (
                   <MenuItem
                     disableRipple
                     key={attr.key}
-                    onClick={() => addAttribute(attr.key)}
+                    onClick={() => addAttribute(attr.key!)}
                     className={styles.newAttributeOption}
                   >
                     {attr.title ?? attr.key ?? ''}

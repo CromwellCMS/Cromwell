@@ -45,7 +45,8 @@ export type TGetAutocompleteValueFromSearch = (
       value: string;
       label: string;
     }[]
-  | null;
+  | null
+  | undefined;
 
 export function TableHeader<TEntityType extends TBasePageEntity, TFilterType extends TBaseEntityFilter>(
   props: PropsType<TEntityType, TFilterType>,
@@ -54,8 +55,8 @@ export function TableHeader<TEntityType extends TBasePageEntity, TFilterType ext
     props;
   const tableColumns = getColumns();
 
-  const currentSearchRef = useRef<string | number | boolean | Date>('');
-  const configureColumnsButtonRef = useRef<HTMLDivElement>();
+  const currentSearchRef = useRef<string | number | boolean | Date | null | undefined>('');
+  const configureColumnsButtonRef = useRef<HTMLDivElement | null>(null);
   const forceUpdate = useForceUpdate();
   const { allSelected }: ReturnType<typeof mapStateToProps> = useSelector(mapStateToProps);
   const [columnSearch, setColumnSearch] = useState<TCustomEntityColumn | null>(null);
@@ -63,12 +64,14 @@ export function TableHeader<TEntityType extends TBasePageEntity, TFilterType ext
   const theme = useTheme<Theme>();
 
   const getAutocompleteValueFromSearch: TGetAutocompleteValueFromSearch = (value, column) => {
-    if (!column.searchOptions) return null;
+    if (!column?.searchOptions) return null;
     if (column?.multipleOptions && value && typeof value === 'string') {
       try {
         const searches = JSON.parse(value);
         if (Array.isArray(searches)) {
-          return searches.map((search) => column.searchOptions.find((opt) => opt.value === search));
+          return searches.map((search) =>
+            column.searchOptions?.find((opt) => opt.value === search),
+          ) as ReturnType<TGetAutocompleteValueFromSearch>;
         }
       } catch (error) {
         console.error(error);
@@ -105,7 +108,7 @@ export function TableHeader<TEntityType extends TBasePageEntity, TFilterType ext
     }
 
     const getFilter = () => {
-      const base: TBaseFilter['filters'][0] = {
+      const base: Required<TBaseFilter>['filters'][0] = {
         key: columnSearch.name,
         inMeta: columnSearch.meta,
         exact: columnSearch.exactSearch,
@@ -164,17 +167,19 @@ export function TableHeader<TEntityType extends TBasePageEntity, TFilterType ext
     const sameColumn = store.sortBy?.column.name === column.name;
     store.sortBy = {
       column,
-      sort: !sameColumn ? 'DESC' : store.sortBy.sort === 'DESC' ? 'ASC' : 'DESC',
+      sort: !sameColumn ? 'DESC' : store.sortBy?.sort === 'DESC' ? 'ASC' : 'DESC',
     };
     forceUpdate();
     resetList();
   };
 
   const changeColumnsOrder = (columns: TColumnConfigureItemData[]) => {
+    if (!searchStore.sortedColumns) searchStore.sortedColumns = {};
+
     columns.forEach((item, idx) => {
-      if (!searchStore.sortedColumns[item.column.name])
-        searchStore.sortedColumns[item.column.name] = { name: item.column.name };
-      searchStore.sortedColumns[item.column.name].order = idx;
+      if (!searchStore.sortedColumns![item.column.name])
+        searchStore.sortedColumns![item.column.name] = { name: item.column.name };
+      searchStore.sortedColumns![item.column.name].order = idx;
     });
   };
 
@@ -253,7 +258,7 @@ export function TableHeader<TEntityType extends TBasePageEntity, TFilterType ext
                   enterDelay={500}
                 >
                   <p
-                    onClick={col.disableSearch ? null : () => openColumnSearch(col)}
+                    onClick={col.disableSearch ? undefined : () => openColumnSearch(col)}
                     className={clsx(styles.ellipsis, styles.columnNameText)}
                     style={{
                       cursor: !col.disableSearch ? 'pointer' : 'initial',
@@ -304,7 +309,7 @@ export function TableHeader<TEntityType extends TBasePageEntity, TFilterType ext
           }}
         >
           <div
-            className={`${open ? 'text-indigo-700' : ''} font-bold flex-none cursor-pointer text-xs`}
+            className={`${configureColumnsOpen ? 'text-indigo-700' : ''} font-bold flex-none cursor-pointer text-xs`}
             onClick={toggleConfigureColumns}
             ref={configureColumnsButtonRef}
           >
@@ -334,11 +339,14 @@ export function TableHeader<TEntityType extends TBasePageEntity, TFilterType ext
                 Reset
               </TextButton>
               <DraggableList<TColumnConfigureItemData>
-                data={tableColumns.map((col) => ({
-                  id: col.name,
-                  column: col,
-                  sortedColumns: sortedColumns,
-                }))}
+                data={tableColumns.map(
+                  (col) =>
+                    ({
+                      id: col.name,
+                      column: col,
+                      sortedColumns: sortedColumns,
+                    } as TColumnConfigureItemData),
+                )}
                 onChange={changeColumnsOrder}
                 component={ColumnConfigureItem}
               />
@@ -346,7 +354,7 @@ export function TableHeader<TEntityType extends TBasePageEntity, TFilterType ext
           </Popover>
           <Popover
             open={!!columnSearch}
-            anchorEl={() => document.getElementById(`column_${columnSearch?.name}`)}
+            anchorEl={() => document.getElementById(`column_${columnSearch?.name}`)!}
             onClose={closeColumnSearch}
             classes={{ paper: styles.popoverPaper }}
             anchorOrigin={{

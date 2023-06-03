@@ -20,7 +20,7 @@ class FramePortal extends React.Component<{
       <iframe
         id={this.props.id}
         title={this.props.id}
-        ref={(el) => (this.iframe = el)}
+        ref={(el) => (this.iframe = el!)}
         className={this.props.className}
       >
         {ReactDOM.createPortal(this.props.children, this.containerEl)}
@@ -30,7 +30,10 @@ class FramePortal extends React.Component<{
 
   componentDidMount() {
     this.props.setIframe?.(this.iframe);
-    this.iframe.contentWindow.CromwellStore = window.CromwellStore;
+
+    if (this.iframe.contentWindow) {
+      this.iframe.contentWindow.CromwellStore = window.CromwellStore;
+    }
 
     const headMap = new Map();
     const updateHead = () => {
@@ -38,7 +41,10 @@ class FramePortal extends React.Component<{
         if (!headMap.has(child)) {
           const childCopy = child.cloneNode(true);
           headMap.set(child, childCopy);
-          this.iframe.contentDocument.head.appendChild(childCopy);
+
+          if (this.iframe.contentDocument) {
+            this.iframe.contentDocument.head.appendChild(childCopy);
+          }
         }
       });
     };
@@ -48,7 +54,9 @@ class FramePortal extends React.Component<{
       updateHead();
     });
 
-    this.iframe.contentDocument.body.appendChild(this.containerEl);
+    if (this.iframe.contentDocument) {
+      this.iframe.contentDocument.body.appendChild(this.containerEl);
+    }
   }
 }
 
@@ -68,7 +76,8 @@ const observeDOM = (function () {
     }
 
     // browser support fallback
-    else if (window.addEventListener) {
+    // eslint-disable-next-line
+    else if (!!window.addEventListener) {
       obj.addEventListener('DOMNodeInserted', callback, false);
       obj.addEventListener('DOMNodeRemoved', callback, false);
     }

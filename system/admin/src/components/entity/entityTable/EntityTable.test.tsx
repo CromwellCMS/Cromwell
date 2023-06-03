@@ -15,7 +15,7 @@ jest.mock('@cromwell/core-frontend', () => {
         const ListItem = props.ListItem;
         return () => (
           <div>
-            {items.elements.map((it) => {
+            {items.elements?.map((it) => {
               return <ListItem key={it.id} data={it} listItemProps={props.listItemProps} />;
             })}
           </div>
@@ -67,7 +67,7 @@ const columns: TCustomEntityColumn[] = [
 describe('EntityTable component', () => {
   it('renders table', async () => {
     render(
-      <Provider store={store}>
+      <Provider store={store as any}>
         <Router>
           <EntityTableComp
             entityCategory={EDBEntity.CustomEntity}
@@ -84,7 +84,7 @@ describe('EntityTable component', () => {
     await screen.findByText(columns[1].label);
 
     // Data
-    await screen.findByText(testData.elements?.[0].name);
-    await screen.findByText(testData.elements?.[1].name);
+    await screen.findByText(testData.elements![0].name!);
+    await screen.findByText(testData.elements![1].name!);
   });
 });

@@ -32,9 +32,12 @@ const MainInfoCard = (props: {
   const product = productRef.current;
 
   const setProdData = (data: TProduct) => {
-    Object.keys(data).forEach((key) => {
-      productRef.current[key] = data[key];
-    });
+    if (!productRef.current) productRef.current = { ...data };
+    else {
+      Object.keys(data).forEach((key) => {
+        productRef.current![key] = data[key];
+      });
+    }
     props.setProdData(data);
   };
 
@@ -53,17 +56,19 @@ const MainInfoCard = (props: {
     }
 
     const updateText = debounce(300, async () => {
-      const description = await getEditorHtml(editorId);
-      const descriptionDelta = JSON.stringify(await getEditorData(editorId));
+      if (productRef.current) {
+        const description = await getEditorHtml(editorId);
+        const descriptionDelta = JSON.stringify(await getEditorData(editorId));
 
-      productRef.current.description = description;
-      productRef.current.descriptionDelta = descriptionDelta;
+        productRef.current.description = description;
+        productRef.current.descriptionDelta = descriptionDelta;
 
-      props.setProdData({
-        ...productRef.current,
-        description,
-        descriptionDelta,
-      });
+        props.setProdData({
+          ...productRef.current,
+          description,
+          descriptionDelta,
+        });
+      }
     });
 
     await initTextEditor({
@@ -138,7 +143,7 @@ const MainInfoCard = (props: {
           className={styles.textField}
           type="number"
           onChange={(e) => {
-            let val = parseInt(e.target.value);
+            let val: number | null = parseInt(e.target.value);
             if (isNaN(val)) val = null;
             if (val && val < 0) val = 0;
             handleChange('stockAmount', val);

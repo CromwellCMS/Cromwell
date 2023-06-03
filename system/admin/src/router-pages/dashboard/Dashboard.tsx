@@ -134,17 +134,19 @@ const Dashboard = () => {
               }
 
               if (!content) {
-                const widgetName = item.i.replace('$widget_', '');
+                const widgetName = item.i?.replace('$widget_', '');
                 const widget = customWidgets.find((k) => k.key === widgetName);
-                content = (
-                  <WidgetPanel isEditing={isEditing} id={widgetName}>
-                    {widget}
-                  </WidgetPanel>
-                );
+                if (widgetName && widget) {
+                  content = (
+                    <WidgetPanel isEditing={isEditing} id={widgetName}>
+                      {widget}
+                    </WidgetPanel>
+                  );
+                }
               }
 
               return (
-                <div key={item.i} id={item.i.replace('$widget_', '')} className="h-full w-full">
+                <div key={item.i} id={item.i?.replace('$widget_', '')} className="h-full w-full">
                   {content}
                 </div>
               );
