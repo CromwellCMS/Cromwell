@@ -94,7 +94,6 @@ export class PluginService {
     pluginName: string,
     bundleType: 'admin' | 'frontend' | 'backend',
   ): Promise<TFrontendBundle | undefined> {
-    logger.log('PluginService::getPluginBundle');
     let out: TFrontendBundle | undefined = undefined;
     let pathGetter: ((distDir: string) => string) | undefined = undefined;
     let cjsPathGetter: ((distDir: string) => string) | undefined = undefined;

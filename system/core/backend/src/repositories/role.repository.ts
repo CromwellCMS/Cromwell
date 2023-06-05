@@ -17,17 +17,14 @@ export class RoleRepository extends BaseRepository<Role> {
   }
 
   async getRoles(params?: TPagedParams<TRole>): Promise<TPagedList<Role>> {
-    logger.log('RoleRepository::getRoles');
     return this.getPaged(params);
   }
 
   async getRoleById(id: number): Promise<Role> {
-    logger.log('RoleRepository::getRoleById id: ' + id);
     return this.getById(id);
   }
 
   async getRoleByName(name: string): Promise<Role> {
-    logger.log('RoleRepository::getRoleByName name: ' + name);
     const entity = await this.findOne({
       where: { name },
     });
@@ -37,7 +34,6 @@ export class RoleRepository extends BaseRepository<Role> {
   }
 
   async getRolesByIds(ids: number[]): Promise<Role[]> {
-    logger.log('RoleRepository::getRolesByIds ids: ' + ids.join(', '));
     return this.findByIds(ids);
   }
 
@@ -53,7 +49,6 @@ export class RoleRepository extends BaseRepository<Role> {
   }
 
   async createRole(inputData: TRoleInput, id?: number | null): Promise<Role> {
-    logger.log('RoleRepository::createRole');
     const role = new Role();
     if (id) role.id = id;
 
@@ -64,7 +59,6 @@ export class RoleRepository extends BaseRepository<Role> {
   }
 
   async updateRole(id: number, inputData: TRoleInput): Promise<Role> {
-    logger.log('RoleRepository::updateRole id: ' + id);
     const role = await this.getById(id);
 
     await this.handleBaseRoleInput(role, inputData, 'update');
@@ -74,8 +68,6 @@ export class RoleRepository extends BaseRepository<Role> {
   }
 
   async deleteRole(id: number): Promise<boolean> {
-    logger.log('RoleRepository::deleteRole; id: ' + id);
-
     const role = await this.getRoleById(id);
     if (!role) {
       logger.error('RoleRepository::deleteRole failed to find Role by id');

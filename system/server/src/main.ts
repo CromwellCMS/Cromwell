@@ -15,10 +15,12 @@ import {
   TGraphQLContext,
   TRequestWithUser,
 } from '@cromwell/core-backend';
+import { checkRoles } from '@cromwell/core-backend/dist/helpers/auth-roles-permissions';
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import Fastify from 'fastify';
+import multer from 'fastify-multer';
 import getPort from 'get-port';
 import { buildSchema } from 'type-graphql';
 import Container from 'typedi';
@@ -109,7 +111,8 @@ async function bootstrap(): Promise<void> {
     app.register(require('@fastify/helmet'));
   }
 
-  app.register(require('@fastify/multipart'));
+  app.register(multer.contentParser);
+
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
 
   // Swagger is broken, error comes from inside the package. TODO: investigate
@@ -127,6 +130,8 @@ async function bootstrap(): Promise<void> {
       })) + ''
     ).replace(/[^0-9]/g, ''),
   );
+
+  await checkRoles();
 
   await app.listen(port && !isNaN(port) ? port : 4032, '::');
   logger.info(`API Server is running on: ${await app.getUrl()}`);

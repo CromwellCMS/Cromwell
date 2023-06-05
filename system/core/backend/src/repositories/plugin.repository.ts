@@ -16,17 +16,14 @@ export class PluginRepository extends BaseRepository<PluginEntity> {
   }
 
   async getPlugins(params?: TPagedParams<TPluginEntity>): Promise<TPagedList<PluginEntity>> {
-    logger.log('PluginRepository::getPlugins');
     return this.getPaged(params);
   }
 
   async getPluginById(id: number): Promise<PluginEntity> {
-    logger.log('PluginRepository::getPluginById id: ' + id);
     return this.getById(id);
   }
 
   async getPluginBySlug(slug: string): Promise<PluginEntity> {
-    logger.log('PluginRepository::getPluginBySlug slug: ' + slug);
     return this.getBySlug(slug);
   }
 
@@ -45,7 +42,6 @@ export class PluginRepository extends BaseRepository<PluginEntity> {
   }
 
   async createPlugin(createPlugin: TPluginEntityInput): Promise<PluginEntity> {
-    logger.log('PluginRepository::createPlugin');
     const plugin = new PluginEntity();
 
     await this.handleBasePluginInput(plugin, createPlugin, 'create');
@@ -54,7 +50,6 @@ export class PluginRepository extends BaseRepository<PluginEntity> {
   }
 
   async updatePlugin(id: number, updatePlugin: TPluginEntityInput): Promise<PluginEntity> {
-    logger.log('PluginRepository::updatePlugin id: ' + id);
     const plugin = await this.getById(id);
     if (!plugin) throw new HttpException(`Plugin ${id} not found!`, HttpStatus.NOT_FOUND);
 
@@ -64,8 +59,6 @@ export class PluginRepository extends BaseRepository<PluginEntity> {
   }
 
   async deletePlugin(id: number): Promise<boolean> {
-    logger.log('PluginRepository::deletePlugin; id: ' + id);
-
     const plugin = await this.getPluginById(id);
     if (!plugin) {
       logger.error('PluginRepository::deletePlugin failed to find Plugin by id');

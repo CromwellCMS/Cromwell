@@ -23,22 +23,18 @@ export class CustomEntityRepository extends BaseRepository<CustomEntity> {
   }
 
   async getCustomEntities(params?: TPagedParams<TCustomEntity>): Promise<TPagedList<CustomEntity>> {
-    logger.log('CustomEntityRepository::getCustomEntities');
     return this.getPaged(params);
   }
 
   async getCustomEntityById(id: number): Promise<CustomEntity> {
-    logger.log('CustomEntityRepository::getCustomEntityById id: ' + id);
     return this.getById(id);
   }
 
   async getCustomEntitiesByIds(ids: number[]): Promise<CustomEntity[]> {
-    logger.log('CustomEntityRepository::getCustomEntitiesByIds ids: ' + ids.join(', '));
     return this.findByIds(ids);
   }
 
   async getCustomEntityBySlug(slug: string): Promise<CustomEntity> {
-    logger.log('CustomEntityRepository::getCustomEntityBySlug slug: ' + slug);
     return this.getBySlug(slug);
   }
 
@@ -58,7 +54,6 @@ export class CustomEntityRepository extends BaseRepository<CustomEntity> {
   }
 
   async createCustomEntity(inputData: TCustomEntityInput, id?: number | null): Promise<CustomEntity> {
-    logger.log('CustomEntityRepository::createCustomEntity');
     const customEntity = new CustomEntity();
     if (id) customEntity.id = id;
 
@@ -68,7 +63,6 @@ export class CustomEntityRepository extends BaseRepository<CustomEntity> {
   }
 
   async updateCustomEntity(id: number, inputData: TCustomEntityInput): Promise<CustomEntity> {
-    logger.log('CustomEntityRepository::updateCustomEntity id: ' + id);
     const customEntity = await this.getById(id);
 
     await this.handleBaseCustomEntityInput(customEntity, inputData, 'update');
@@ -77,8 +71,6 @@ export class CustomEntityRepository extends BaseRepository<CustomEntity> {
   }
 
   async deleteCustomEntity(id: number): Promise<boolean> {
-    logger.log('CustomEntityRepository::deleteCustomEntity; id: ' + id);
-
     const customEntity = await this.getCustomEntityById(id);
     if (!customEntity) {
       logger.error('CustomEntityRepository::deleteCustomEntity failed to find CustomEntity by id');

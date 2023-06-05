@@ -19,6 +19,7 @@ import {
   Post,
   Query,
   Req,
+  Res,
   Request,
   Response,
   UnauthorizedException,
@@ -215,17 +216,11 @@ export class CmsController {
     @Query('inPath') inPath: string,
     @Query('fileName') fileName: string,
     @Req() req: any,
-  ): Promise<string> {
+    @Res() res: FastifyReply,
+  ) {
     logger.log('CmsController::uploadFile');
-    try {
-      const dirPath = join(getPublicDir(), inPath ?? '');
-      await this.cmsService.uploadFile(req, dirPath);
-    } catch (error) {
-      logger.error(error);
-      return 'false';
-    }
-
-    return 'true';
+    const result = await this.cmsService.uploadFile(req, res);
+    res.status(result.success ? 200 : 500).send(JSON.stringify(result));
   }
 
   @Get('download-public-file')

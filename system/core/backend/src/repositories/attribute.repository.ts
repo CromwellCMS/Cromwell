@@ -27,19 +27,16 @@ export class AttributeRepository extends BaseRepository<Attribute> {
   }
 
   async getAttributes(params?: TPagedParams<TAttribute>): Promise<TPagedList<Attribute>> {
-    logger.log('AttributeRepository::getAttributes');
     const qb = this.createQueryBuilder(this.metadata.tablePath);
     qb.leftJoinAndSelect(`${this.metadata.tablePath}.values`, AttributeValue.getRepository().metadata.tablePath);
     return await getPaged<Attribute>(qb, this.metadata.tablePath, params);
   }
 
   async getAttribute(id: number): Promise<Attribute> {
-    logger.log('AttributeRepository::getAttribute; id: ' + id);
     return this.getById(id, ['values']);
   }
 
   async getAttributeByKey(key: string): Promise<Attribute> {
-    logger.log('AttributeRepository::getAttributeByKey; key: ' + key);
     const attribute = await this.findOne({
       where: { key },
       relations: ['values'],
@@ -49,8 +46,6 @@ export class AttributeRepository extends BaseRepository<Attribute> {
   }
 
   async getAttributeInstancesOfProduct(productId: number): Promise<AttributeToProduct[]> {
-    logger.log('AttributeRepository::getAttributeInstancesOfProduct; productId: ' + productId);
-
     return AttributeToProduct.getRepository().find({
       where: { productId },
     });
@@ -119,7 +114,6 @@ export class AttributeRepository extends BaseRepository<Attribute> {
   }
 
   async createAttribute(createAttribute: TAttributeInput, id?: number | null): Promise<Attribute> {
-    logger.log('AttributeRepository::createAttribute');
     const attribute = new Attribute();
     if (id) attribute.id = id;
 
@@ -129,8 +123,6 @@ export class AttributeRepository extends BaseRepository<Attribute> {
   }
 
   async updateAttribute(id: number, updateAttribute: TAttributeInput): Promise<Attribute> {
-    logger.log('AttributeRepository::updateAttribute; id: ' + id);
-
     const attribute = await this.getById(id, ['values']);
     if (!attribute) throw new HttpException(`Attribute ${id} not found!`, HttpStatus.NOT_FOUND);
 
@@ -140,7 +132,6 @@ export class AttributeRepository extends BaseRepository<Attribute> {
   }
 
   async deleteAttribute(id: number): Promise<boolean> {
-    logger.log('AttributeRepository::deleteAttribute; id: ' + id);
     return this.deleteEntity(id);
   }
 

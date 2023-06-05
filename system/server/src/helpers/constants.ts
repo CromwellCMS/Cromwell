@@ -1,4 +1,6 @@
-import { TAuthUserInfo } from '@cromwell/core-backend';
+import { getPublicDir, TAuthUserInfo } from '@cromwell/core-backend';
+import multer from 'fastify-multer';
+import { join } from 'path';
 
 import { UserDto } from '../dto/user.dto';
 
@@ -31,3 +33,13 @@ export type Writeable<T> = {
 export type DeepWriteable<T> = {
   -readonly [P in keyof T]: DeepWriteable<T[P]>;
 };
+
+export const multerPublicStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const fileDir = join(getPublicDir(), (req.query as any).inPath || '');
+    cb(null, fileDir);
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname);
+  },
+});

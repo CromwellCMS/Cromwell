@@ -31,7 +31,6 @@ export class ProductReviewRepository extends BaseRepository<ProductReview> {
   }
 
   async getProductReview(id: number): Promise<ProductReview> {
-    logger.log('ProductReviewRepository::getProductReview id: ' + id);
     return this.getById(id);
   }
 
@@ -71,7 +70,6 @@ export class ProductReviewRepository extends BaseRepository<ProductReview> {
   }
 
   async createProductReview(createProductReview: TProductReviewInput, id?: number | null): Promise<ProductReview> {
-    logger.log('ProductReviewRepository::createProductReview');
     const productReview = new ProductReview();
     if (id) productReview.id = id;
 
@@ -82,7 +80,6 @@ export class ProductReviewRepository extends BaseRepository<ProductReview> {
   }
 
   async updateProductReview(id: number, updateProductReview: TProductReviewInput): Promise<ProductReview> {
-    logger.log('ProductReviewRepository::updateProductReview; id: ' + id);
     const productReview = await this.getById(id);
 
     await this.handleProductReviewInput(productReview, updateProductReview, 'update');
@@ -91,8 +88,6 @@ export class ProductReviewRepository extends BaseRepository<ProductReview> {
   }
 
   async deleteProductReview(id: number): Promise<boolean> {
-    logger.log('ProductReviewRepository::deleteProductReview; id: ' + id);
-
     const productReview = await this.getProductReview(id);
     if (!productReview) {
       return false;

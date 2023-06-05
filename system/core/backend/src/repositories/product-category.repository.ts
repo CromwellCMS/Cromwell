@@ -55,18 +55,15 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
   quote = (str: string) => wrapInQuotes(this.dbType, str);
 
   async getProductCategories(params?: TPagedParams<TProductCategory>): Promise<TPagedList<ProductCategory>> {
-    logger.log('ProductCategoryRepository::getProductCategories');
     const qb = this.createQueryBuilder(this.metadata.tablePath);
     return getPaged<ProductCategory>(qb, this.metadata.tablePath, params);
   }
 
   async getProductCategoriesById(ids: number[]): Promise<ProductCategory[]> {
-    logger.log('ProductCategoryRepository::getProductCategoriesById ids: ' + ids.join(', '));
     return this.findByIds(ids);
   }
 
   async getProductCategoryById(id: number): Promise<ProductCategory> {
-    logger.log('ProductCategoryRepository::getProductCategoryById id: ' + id);
     const category = await this.findOne({
       where: { id },
     });
@@ -75,7 +72,6 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
   }
 
   async getProductCategoryBySlug(slug: string): Promise<ProductCategory> {
-    logger.log('ProductCategoryRepository::getProductCategoryBySlug slug: ' + slug);
     const category = await this.findOne({
       where: { slug },
     });
@@ -114,7 +110,6 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
     createProductCategory: CreateProductCategory,
     id?: number | null,
   ): Promise<ProductCategory> {
-    logger.log('ProductCategoryRepository::createProductCategory');
     const productCategory = new ProductCategory();
     if (id) productCategory.id = id;
 
@@ -124,7 +119,6 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
   }
 
   async updateProductCategory(id: number, updateProductCategory: UpdateProductCategory): Promise<ProductCategory> {
-    logger.log('ProductCategoryRepository::updateProductCategory id: ' + id);
     const productCategory = await this.getProductCategoryById(id);
     if (!productCategory) throw new HttpException(`ProductCategory ${id} not found!`, HttpStatus.NOT_FOUND);
 
@@ -134,7 +128,6 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
   }
 
   async deleteProductCategory(id: number): Promise<boolean> {
-    logger.log('ProductCategoryRepository::deleteProductCategory id: ' + id);
     const productCategory = await this.getProductCategoryById(id);
     if (!productCategory) throw new HttpException(`ProductCategory ${id} not found!`, HttpStatus.NOT_FOUND);
 
@@ -182,7 +175,6 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
   }
 
   async getCategoriesOfProduct(productId: number): Promise<TProductCategory[]> {
-    logger.log('ProductCategoryRepository::getCategoriesOfProduct id: ' + productId);
     const qb = this.createQueryBuilder(this.metadata.tablePath);
     applyGetManyFromOne(
       qb,
@@ -196,12 +188,10 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
   }
 
   async getChildCategories(category: ProductCategory): Promise<ProductCategory[]> {
-    logger.log('ProductCategoryRepository::getChildCategories id: ' + category.id);
     return (await this.findDescendantsTree(category))?.children ?? [];
   }
 
   async getParentCategory(category: ProductCategory): Promise<ProductCategory | undefined | null> {
-    logger.log('ProductCategoryRepository::getParentCategory id: ' + category.id);
     return (await this.findAncestorsTree(category))?.parent;
   }
 

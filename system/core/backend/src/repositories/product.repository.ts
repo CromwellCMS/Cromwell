@@ -86,13 +86,11 @@ export class ProductRepository extends BaseRepository<Product> {
   }
 
   async getProducts(params?: TPagedParams<TProduct>): Promise<TPagedList<Product>> {
-    logger.log('ProductRepository::getProducts');
     const qb = this.createQueryBuilder(this.metadata.tablePath);
     return await this.applyAndGetPagedProducts(qb, params);
   }
 
   async getProductById(id: number, options?: TGetProductOptions): Promise<Product> {
-    logger.log('ProductRepository::getProductById id: ' + id);
     const qb = this.createQueryBuilder(this.metadata.tablePath).select();
 
     if (options?.withRating) {
@@ -107,7 +105,6 @@ export class ProductRepository extends BaseRepository<Product> {
   }
 
   async getProductBySlug(slug: string, options?: TGetProductOptions): Promise<Product> {
-    logger.log('ProductRepository::getProductBySlug slug: ' + slug);
     const qb = this.createQueryBuilder(this.metadata.tablePath).select();
 
     if (options?.withRating) {
@@ -252,7 +249,6 @@ export class ProductRepository extends BaseRepository<Product> {
   }
 
   async createProduct(createProduct: TProductInput, id?: number | null): Promise<Product> {
-    logger.log('ProductRepository::createProduct');
     const product = new Product();
     if (id) product.id = id;
 
@@ -262,7 +258,6 @@ export class ProductRepository extends BaseRepository<Product> {
   }
 
   async updateProduct(id: number, updateProduct: TProductInput): Promise<Product> {
-    logger.log('ProductRepository::updateProduct id: ' + id);
     const product = await this.findOne({
       where: { id },
       relations: ['categories', 'attributeValues'],
@@ -275,7 +270,6 @@ export class ProductRepository extends BaseRepository<Product> {
   }
 
   async deleteProduct(id: number): Promise<boolean> {
-    logger.log('ProductRepository::deleteProduct; id: ' + id);
     const product = await this.getProductById(id);
     if (!product) {
       logger.error('ProductRepository::deleteProduct failed to find product by id');
@@ -286,7 +280,6 @@ export class ProductRepository extends BaseRepository<Product> {
   }
 
   async getProductsFromCategory(categoryId: number, params?: TPagedParams<TProduct>): Promise<TPagedList<Product>> {
-    logger.log('ProductRepository::getProductsFromCategory id: ' + categoryId);
     const categoryTable = getCustomRepository(ProductCategoryRepository).metadata.tablePath;
     const qb = this.createQueryBuilder(this.metadata.tablePath).select();
     applyGetManyFromOne(qb, this.metadata.tablePath, 'categories', categoryTable, categoryId);
@@ -297,7 +290,6 @@ export class ProductRepository extends BaseRepository<Product> {
     productId: number,
     params?: TPagedParams<TProductReview>,
   ): Promise<TPagedList<ProductReview>> {
-    logger.log('ProductRepository::getReviewsOfProduct id: ' + productId);
     const reviewTable = getCustomRepository(ProductReviewRepository).metadata.tablePath;
 
     const qb = getCustomRepository(ProductReviewRepository).createQueryBuilder(reviewTable).select();
@@ -306,7 +298,6 @@ export class ProductRepository extends BaseRepository<Product> {
   }
 
   async getProductRating(productId: number): Promise<TProductRating> {
-    logger.log('ProductRepository::getProductRating id: ' + productId);
     const reviewTable = getCustomRepository(ProductReviewRepository).metadata.tablePath;
     const qb = getCustomRepository(ProductReviewRepository).createQueryBuilder(reviewTable).select();
     applyGetManyFromOne(qb, reviewTable, 'product', this.metadata.tablePath, productId);
@@ -400,8 +391,6 @@ export class ProductRepository extends BaseRepository<Product> {
     pagedParams?: TPagedParams<TProduct>,
     filterParams?: TProductFilter,
   ): Promise<TFilteredProductList> {
-    logger.log('ProductRepository::getFilteredProducts');
-
     const getQb = (shouldApplyPriceFilter = true): SelectQueryBuilder<Product> => {
       const qb = this.createQueryBuilder(this.metadata.tablePath).select();
 

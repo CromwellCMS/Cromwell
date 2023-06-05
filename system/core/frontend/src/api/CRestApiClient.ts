@@ -454,13 +454,14 @@ export class CRestApiClient {
    */
   public uploadPublicFiles = async (
     inPath: string,
-    files: File[] ,
+    files: File[],
     options?: TRequestOptions,
   ): Promise<boolean | null | undefined> => {
     const formData = new FormData();
     for (const file of files) {
-      formData.append(file.name, file);
+      formData.append('files', file);
     }
+
     const response = await fetch(`${this.getBaseUrl()}/v1/cms/upload-public-file?inPath=${inPath ?? '/'}`, {
       method: 'POST',
       credentials: 'include',

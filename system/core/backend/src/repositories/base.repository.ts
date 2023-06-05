@@ -41,18 +41,15 @@ export class BaseRepository<
   quote = (str: string) => wrapInQuotes(this.dbType, str);
 
   async getPaged(params?: TPagedParams<EntityType>): Promise<TPagedList<EntityType>> {
-    logger.log('BaseRepository::getPaged');
     const qb = this.createQueryBuilder(this.metadata.tablePath);
     return await getPaged(qb, this.metadata.tablePath, params);
   }
 
   async getAll(): Promise<EntityType[]> {
-    logger.log('BaseRepository::getAll');
     return this.find();
   }
 
   async getById(id: number, relations?: string[]): Promise<EntityType> {
-    logger.log('BaseRepository::getById');
     const entity = await this.findOne({
       where: { id },
       relations,
@@ -63,7 +60,6 @@ export class BaseRepository<
   }
 
   async getBySlug(slug: string, relations?: string[]): Promise<EntityType> {
-    logger.log('BaseRepository::getBySlug');
     const entity = await this.findOne({
       where: { slug },
       relations,
@@ -73,7 +69,6 @@ export class BaseRepository<
   }
 
   async createEntity(input: EntityInputType, id?: number | null): Promise<EntityType> {
-    logger.log('BaseRepository::createEntity');
     const entity = new this.EntityClass();
     if (id) entity.id = id;
 
@@ -84,7 +79,6 @@ export class BaseRepository<
   }
 
   async updateEntity(id: number, input: EntityInputType): Promise<EntityType> {
-    logger.log('BaseRepository::updateEntity');
     const entity = await this.findOne({
       where: { id },
     });
@@ -97,7 +91,6 @@ export class BaseRepository<
   }
 
   async deleteEntity(id: number): Promise<boolean> {
-    logger.log('BaseRepository::deleteEntity ' + this.metadata.tablePath);
     const entity = await this.getById(id);
     if (!entity) {
       logger.error(`BaseRepository::deleteEntity failed to find ${this.metadata.tablePath} ${id} by id: ${id}`);
@@ -128,7 +121,6 @@ export class BaseRepository<
   }
 
   async deleteMany(input: TDeleteManyInput) {
-    logger.log('BaseRepository::deleteMany ' + this.metadata.tablePath, input);
     const qb = this.createQueryBuilder().delete().from<EntityType>(this.metadata.tablePath);
     this.applyDeleteMany(qb, input);
     await qb.execute();
@@ -176,7 +168,6 @@ export class BaseRepository<
   }
 
   async getFilteredEntities(pagedParams?: TPagedParams<EntityType>, filterParams?: TBaseFilter) {
-    logger.log('BaseRepository::getFilteredEntities ' + this.metadata.tablePath, pagedParams, filterParams);
     const qb = this.createQueryBuilder(this.metadata.tablePath).select();
     this.applyBaseFilter(qb, filterParams);
     return await getPaged<EntityType>(qb, this.metadata.tablePath, pagedParams);

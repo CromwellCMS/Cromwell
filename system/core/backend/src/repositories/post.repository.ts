@@ -22,17 +22,14 @@ export class PostRepository extends BaseRepository<Post> {
   }
 
   async getPosts(params?: TPagedParams<TPost>): Promise<TPagedList<Post>> {
-    logger.log('PostRepository::getPosts');
     return this.getPaged(params);
   }
 
   async getPostById(id: number): Promise<Post> {
-    logger.log('PostRepository::getPostById id: ' + id);
     return this.getById(id);
   }
 
   async getPostBySlug(slug: string): Promise<Post> {
-    logger.log('PostRepository::getPostBySlug slug: ' + slug);
     return this.getBySlug(slug);
   }
 
@@ -84,7 +81,6 @@ export class PostRepository extends BaseRepository<Post> {
   }
 
   async createPost(createPost: TPostInput, id?: number | null): Promise<Post> {
-    logger.log('PostRepository::createPost');
     const post = new Post();
     if (id) post.id = id;
 
@@ -94,7 +90,6 @@ export class PostRepository extends BaseRepository<Post> {
   }
 
   async updatePost(id: number, updatePost: TPostInput): Promise<Post> {
-    logger.log('PostRepository::updatePost id: ' + id);
     const post = await this.getById(id);
 
     await this.handleBasePostInput(post, updatePost, 'update');
@@ -103,8 +98,6 @@ export class PostRepository extends BaseRepository<Post> {
   }
 
   async deletePost(id: number): Promise<boolean> {
-    logger.log('PostRepository::deletePost; id: ' + id);
-
     const post = await this.getPostById(id);
     if (!post) {
       logger.error('PostRepository::deletePost failed to find post by id');

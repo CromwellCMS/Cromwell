@@ -111,8 +111,6 @@ export class PluginController {
     type: FrontendBundleDto,
   })
   async getPluginAdminBundle(@Query('pluginName') pluginName: string): Promise<TFrontendBundle | undefined> {
-    logger.log('PluginController::getPluginAdminBundle');
-
     if (!pluginName) throw new HttpException(`Invalid plugin name: ${pluginName}`, HttpStatus.NOT_ACCEPTABLE);
 
     const bundle = await this.pluginService.getPluginBundle(pluginName, 'admin');

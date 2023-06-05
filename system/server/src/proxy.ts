@@ -38,8 +38,8 @@ async function main(): Promise<void> {
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     res.setHeader('Access-Control-Allow-Credentials', 'true');
 
-    const getErrorCallback = (message: string) => (err, req, res) => {
-      if (envMode === 'dev') {
+    const getErrorCallback = (message: string | null) => (err, req, res) => {
+      if (envMode === 'dev' && message) {
         logger.error(message, err);
       }
 
@@ -71,7 +71,7 @@ async function main(): Promise<void> {
           {
             target: `http://localhost:${serverPort}`,
           },
-          getErrorCallback('INTERNAL SERVER ERROR. Proxy: Server is down'),
+          getErrorCallback(scriptName === 'dev' ? null : 'INTERNAL SERVER ERROR. Proxy: Server is down'),
         );
       } else {
         res.writeHead(500, { 'Content-Type': 'application/json' });

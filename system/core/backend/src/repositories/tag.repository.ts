@@ -15,22 +15,18 @@ export class TagRepository extends BaseRepository<Tag> {
   }
 
   async getTags(params?: TPagedParams<TTag>): Promise<TPagedList<Tag>> {
-    logger.log('TagRepository::getTags');
     return this.getPaged(params);
   }
 
   async getTagById(id: number): Promise<Tag> {
-    logger.log('TagRepository::getTagById id: ' + id);
     return this.getById(id);
   }
 
   async getTagsByIds(ids: number[]): Promise<Tag[]> {
-    logger.log('TagRepository::getTagsByIds ids: ' + ids.join(', '));
     return this.findByIds(ids);
   }
 
   async getTagBySlug(slug: string): Promise<Tag> {
-    logger.log('TagRepository::getTagBySlug slug: ' + slug);
     return this.getBySlug(slug);
   }
 
@@ -49,7 +45,6 @@ export class TagRepository extends BaseRepository<Tag> {
   }
 
   async createTag(inputData: TTagInput, id?: number | null): Promise<Tag> {
-    logger.log('TagRepository::createTag');
     const tag = new Tag();
     if (id) tag.id = id;
 
@@ -59,7 +54,6 @@ export class TagRepository extends BaseRepository<Tag> {
   }
 
   async updateTag(id: number, inputData: TTagInput): Promise<Tag> {
-    logger.log('TagRepository::updateTag id: ' + id);
     const tag = await this.getById(id);
 
     await this.handleBaseTagInput(tag, inputData, 'update');
@@ -68,8 +62,6 @@ export class TagRepository extends BaseRepository<Tag> {
   }
 
   async deleteTag(id: number): Promise<boolean> {
-    logger.log('TagRepository::deleteTag; id: ' + id);
-
     const tag = await this.getTagById(id);
     if (!tag) {
       logger.error('TagRepository::deleteTag failed to find Tag by id');

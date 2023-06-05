@@ -1,4 +1,4 @@
-import { sleep, TCreateUser, TRole } from '@cromwell/core';
+import { getStoreItem, sleep, TCreateUser, TRole } from '@cromwell/core';
 import {
   bcryptSaltRounds,
   getAuthSettings,
@@ -13,7 +13,8 @@ import {
   TAuthUserInfo,
   TRequestWithUser,
   TTokenInfo,
-  TTokenPayload,
+  TTokenPayloadInput,
+  TTokenPayloadOutput,
   User,
   UserRepository,
 } from '@cromwell/core-backend';
@@ -21,7 +22,7 @@ import { HttpException, HttpStatus, UnauthorizedException } from '@nestjs/common
 import cryptoRandomString from 'crypto-random-string';
 import { FastifyReply } from 'fastify';
 import { Service } from 'typedi';
-import { getCustomRepository } from 'typeorm';
+import { ConnectionOptions, FindOneOptions, getConnection, getCustomRepository } from 'typeorm';
 import jwt from 'jsonwebtoken';
 
 import { LoginDto } from '../dto/login.dto';
@@ -215,7 +216,7 @@ export class AuthService {
     return getBcrypt().compare(plain, hash);
   }
 
-  payloadToUserInfo(payload: TTokenPayload): TAuthUserInfo {
+  payloadToUserInfo(payload: TTokenPayloadOutput): TAuthUserInfo {
     const roleNames: string[] = payload.roles && JSON.parse(payload.roles);
     if (!payload.username || !payload.sub || !roleNames?.length)
       throw new UnauthorizedException('payloadToUserInfo: Payload is not valid');
@@ -234,8 +235,8 @@ export class AuthService {
   }
 
   async generateAccessToken(user: TAuthUserInfo) {
-    const payload: TTokenPayload = {
-      username: user.email,
+    const payload: TTokenPayloadInput = {
+      username: user.email as string,
       sub: user.id,
       roles: JSON.stringify(user.roles.map((r) => r.name).filter(Boolean) as string[]),
     };
@@ -264,8 +265,8 @@ export class AuthService {
   }
 
   async generateRefreshToken(userInfo: TAuthUserInfo): Promise<TTokenInfo> {
-    const payload: TTokenPayload = {
-      username: userInfo.email,
+    const payload: TTokenPayloadInput = {
+      username: userInfo.email as string,
       sub: userInfo.id,
       roles: JSON.stringify(userInfo.roles.map((r) => r.name).filter(Boolean) as string[]),
     };
@@ -293,20 +294,33 @@ export class AuthService {
     };
   }
 
-  async saveRefreshToken(userInfo: TAuthUserInfo, newToken: string, user?: User) {
-    if (!user) user = await getCustomRepository(UserRepository).getUserById(userInfo.id);
-    if (!user) {
-      return false;
-    }
-    let tokens = (user.refreshTokens ?? '').split(this.tokensDelimiter);
-    tokens.push(newToken);
-    if (tokens.length > 10) {
-      tokens = tokens.slice(tokens.length - 10, tokens.length);
-    }
+  async saveRefreshToken(userInfo: TAuthUserInfo, newToken: string) {
+    const dbType = (getStoreItem('dbInfo')?.dbType as ConnectionOptions['type']) ?? getConnection().options.type;
 
-    user.refreshTokens = tokens.join(this.tokensDelimiter);
-    await getCustomRepository(UserRepository).save(user);
-    return true;
+    const result = await getConnection().transaction(async (transactionalEntityManager): Promise<boolean> => {
+      const findOptions: FindOneOptions<User> = {
+        where: { id: userInfo.id },
+      };
+
+      if (dbType !== 'sqlite' && dbType !== 'sqljs' && dbType !== 'better-sqlite3') {
+        findOptions.lock = { mode: 'pessimistic_write' };
+      }
+
+      const user = await transactionalEntityManager.findOne(User, findOptions);
+
+      if (!user) {
+        return false;
+      }
+
+      const tokens = (user.refreshTokens ?? '').split(this.tokensDelimiter).slice(0, 10).filter(Boolean);
+      tokens.unshift(newToken);
+
+      user.refreshTokens = tokens.join(this.tokensDelimiter);
+      await transactionalEntityManager.save(User, user);
+      return true;
+    });
+
+    return result;
   }
 
   async removeRefreshTokens(userInfo: TAuthUserInfo) {
@@ -318,13 +332,13 @@ export class AuthService {
     await getCustomRepository(UserRepository).save(user);
   }
 
-  async updateRefreshToken(userInfo: TAuthUserInfo, user?: User) {
+  async updateRefreshToken(userInfo: TAuthUserInfo) {
     const newToken = await this.generateRefreshToken(userInfo);
-    const success = await this.saveRefreshToken(userInfo, newToken.token, user);
+    const success = await this.saveRefreshToken(userInfo, newToken.token);
     if (success) return newToken;
   }
 
-  async validateAccessToken(accessToken: string): Promise<TTokenPayload | undefined> {
+  async validateAccessToken(accessToken: string): Promise<TTokenPayloadOutput | undefined> {
     try {
       return (await jwt.verify(accessToken, (await this.authSettings).accessSecret)) as any;
     } catch (e) {
@@ -332,7 +346,7 @@ export class AuthService {
     }
   }
 
-  async validateRefreshToken(refreshToken: string): Promise<TTokenPayload | undefined> {
+  async validateRefreshToken(refreshToken: string): Promise<TTokenPayloadOutput | undefined> {
     try {
       return (await jwt.verify(refreshToken, (await this.authSettings).refreshSecret)) as any;
     } catch (e) {
@@ -472,14 +486,19 @@ export class AuthService {
 
       // Create new access token
       const newAccessToken = await this.generateAccessToken(updatedUserInfo);
-
-      // Update refresh token
-      const newRefreshToken = await this.updateRefreshToken(updatedUserInfo, validUser);
-
-      if (!newRefreshToken) throw new UnauthorizedException('Failed to update refresh token');
-
       await this.setAccessTokenCookie(response, request, newAccessToken);
-      await this.setRefreshTokenCookie(response, request, newRefreshToken);
+
+      // check if less than one day left until token `refreshTokenPayload` is expired
+      // and update refresh token if so, to avoid user being logged out.
+      const isRefreshAboutToExpire = refreshTokenPayload.exp - Math.floor(Date.now() / 1000) < 60 * 60 * 24;
+
+      if (isRefreshAboutToExpire) {
+        // Update refresh token
+        const newRefreshToken = await this.updateRefreshToken(updatedUserInfo);
+
+        if (!newRefreshToken) throw new UnauthorizedException('Failed to update refresh token');
+        await this.setRefreshTokenCookie(response, request, newRefreshToken);
+      }
 
       return authUserInfo;
     } catch (err: any) {

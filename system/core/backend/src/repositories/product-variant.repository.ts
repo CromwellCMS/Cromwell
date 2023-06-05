@@ -31,7 +31,6 @@ export class ProductVariantRepository extends BaseRepository<ProductVariant> {
   }
 
   async getProductVariant(id: number): Promise<ProductVariant> {
-    logger.log('ProductVariantRepository::getProductVariant id: ' + id);
     return this.getById(id);
   }
 
@@ -73,7 +72,6 @@ export class ProductVariantRepository extends BaseRepository<ProductVariant> {
     id?: number | null,
     product?: Product,
   ): Promise<ProductVariant> {
-    logger.log('ProductVariantRepository::createProductVariant');
     const productVariant = new ProductVariant();
     if (id) productVariant.id = id;
 
@@ -88,7 +86,6 @@ export class ProductVariantRepository extends BaseRepository<ProductVariant> {
     updateProductVariant: TProductVariantInput,
     product?: Product,
   ): Promise<ProductVariant> {
-    logger.log('ProductVariantRepository::updateProductVariant; id: ' + id);
     const productVariant = await this.getById(id);
 
     await this.handleProductVariantInput(productVariant, updateProductVariant, 'update', product);
@@ -97,8 +94,6 @@ export class ProductVariantRepository extends BaseRepository<ProductVariant> {
   }
 
   async deleteProductVariant(id: number): Promise<boolean> {
-    logger.log('ProductVariantRepository::deleteProductVariant; id: ' + id);
-
     const productVariant = await this.getProductVariant(id);
     if (!productVariant) {
       return false;

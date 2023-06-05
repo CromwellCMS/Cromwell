@@ -38,18 +38,18 @@ import { getCentralServerClient } from '@cromwell/core-frontend';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import archiver from 'archiver';
 import { format } from 'date-fns';
-import { FastifyReply } from 'fastify';
+import { FastifyReply, FastifyRequest } from 'fastify';
+import multer from 'fastify-multer';
 import fs from 'fs-extra';
 import { join, resolve } from 'path';
-import { pipeline } from 'stream';
 import { Service } from 'typedi';
 import { getConnection, getCustomRepository, Repository } from 'typeorm';
-import * as util from 'util';
 
 import { AdminCmsSettingsDto } from '../dto/admin-cms-settings.dto';
 import { CmsStatusDto } from '../dto/cms-status.dto';
 import { DashboardSettingsDto } from '../dto/dashboard-settings.dto';
 import { SetupFirstStepDto, SetupSecondStepDto } from '../dto/setup.dto';
+import { multerPublicStorage } from '../helpers/constants';
 import { resetAllPagesCache } from '../helpers/reset-page';
 import { serverFireAction } from '../helpers/server-fire-action';
 import { childSendMessage } from '../helpers/server-manager';
@@ -67,7 +67,6 @@ import { PluginService } from './plugin.service';
 import { ThemeService } from './theme.service';
 
 const logger = getLogger();
-const pump = util.promisify(pipeline);
 
 @Service()
 export class CmsService {
@@ -122,15 +121,30 @@ export class CmsService {
     return false;
   }
 
-  async uploadFile(req: any, dirName: string): Promise<any> {
-    if (!req.isMultipart()) {
-      return;
-    }
-    const parts = req.files();
-    for await (const part of parts) {
-      const fullPath = join(`${dirName}/${part.filename}`);
-      await pump(part.file, fs.createWriteStream(fullPath));
-    }
+  async uploadFile(req: FastifyRequest, reply: FastifyReply): Promise<{ success: boolean; error?: string }> {
+    const uploadHandler = (req: FastifyRequest, reply: FastifyReply, done: (err?: any) => void) => {
+      (multer({ storage: multerPublicStorage }).array('files') as any)(req, reply, done);
+    };
+
+    return new Promise<{ success: boolean; error?: string }>((resolve) => {
+      uploadHandler(req, reply, (err) => {
+        if (err instanceof multer.MulterError) {
+          // A Multer error occurred when uploading.
+          logger.error('Failed to upload files', err);
+          resolve({ success: false, error: err + '' });
+          return;
+        } else if (err) {
+          // An unknown error occurred when uploading.
+          logger.error('Failed to upload files', err);
+          resolve({ success: false, error: err + '' });
+          return;
+        }
+
+        // Everything went fine.
+        resolve({ success: true });
+        return;
+      });
+    });
   }
 
   async downloadFile(response: FastifyReply, inPath: string, fileName: string) {

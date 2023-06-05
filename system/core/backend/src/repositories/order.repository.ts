@@ -21,17 +21,14 @@ export class OrderRepository extends BaseRepository<Order> {
   }
 
   async getOrders(params?: TPagedParams<TOrder>): Promise<TPagedList<Order>> {
-    logger.log('OrderRepository::getOrders');
     return this.getPaged(params);
   }
 
   async getOrderById(id: number): Promise<Order> {
-    logger.log('OrderRepository::getOrderById id: ' + id);
     return this.getById(id);
   }
 
   async getOrderBySlug(slug: string): Promise<Order> {
-    logger.log('OrderRepository::getOrderBySlug slug: ' + slug);
     return this.getBySlug(slug);
   }
 
@@ -72,7 +69,6 @@ export class OrderRepository extends BaseRepository<Order> {
   }
 
   async createOrder(inputData: TOrderInput, id?: number | null): Promise<Order> {
-    logger.log('OrderRepository::createOrder');
     let order = new Order();
     if (id) order.id = id;
 
@@ -82,7 +78,6 @@ export class OrderRepository extends BaseRepository<Order> {
   }
 
   async updateOrder(id: number, inputData: TOrderInput): Promise<Order> {
-    logger.log('OrderRepository::updateOrder id: ' + id);
     let order = await this.getById(id);
 
     await this.handleBaseOrderInput(order, inputData);
@@ -91,8 +86,6 @@ export class OrderRepository extends BaseRepository<Order> {
   }
 
   async deleteOrder(id: number): Promise<boolean> {
-    logger.log('OrderRepository::deleteOrder; id: ' + id);
-
     const order = await this.getOrderById(id);
     if (!order) {
       logger.log('OrderRepository::deleteOrder failed to find Order by id');

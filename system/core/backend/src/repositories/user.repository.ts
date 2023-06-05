@@ -28,20 +28,16 @@ export class UserRepository extends BaseRepository<User> {
   }
 
   async getUsers(params?: TPagedParams<TUser>): Promise<TPagedList<User>> {
-    logger.log('UserRepository::getUsers');
     const qb = this.createQueryBuilder(this.metadata.tablePath);
     qb.leftJoinAndSelect(`${this.metadata.tablePath}.roles`, getCustomRepository(RoleRepository).metadata.tablePath);
     return await getPaged<User>(qb, this.metadata.tablePath, params);
   }
 
   async getUserById(id: number): Promise<User> {
-    logger.log('UserRepository::getUserById id: ' + id);
     return this.getById(id, ['roles']);
   }
 
   async getUserByEmail(email: string): Promise<User> {
-    logger.log('UserRepository::getUserByEmail email: ' + email);
-
     const user = await this.findOne({
       where: { email },
       relations: ['roles'],
@@ -51,7 +47,6 @@ export class UserRepository extends BaseRepository<User> {
   }
 
   async getUserBySlug(slug: string): Promise<User> {
-    logger.log('UserRepository::getUserBySlug slug: ' + slug);
     return this.getBySlug(slug, ['roles']);
   }
 
@@ -94,7 +89,6 @@ export class UserRepository extends BaseRepository<User> {
   }
 
   async createUser(createUser: TCreateUser, id?: number | null, passwordType?: 'hash' | 'plain'): Promise<User> {
-    logger.log('UserRepository::createUser');
     if (!createUser.password || !createUser.email)
       throw new HttpException('No credentials provided', HttpStatus.BAD_REQUEST);
 
@@ -128,7 +122,6 @@ export class UserRepository extends BaseRepository<User> {
   }
 
   async updateUser(id: number, updateUser: TUpdateUser): Promise<User> {
-    logger.log('UserRepository::updateUser id: ' + id);
     const user = await this.getById(id);
 
     await this.handleUserInput(user, updateUser, 'update');
@@ -137,8 +130,6 @@ export class UserRepository extends BaseRepository<User> {
   }
 
   async deleteUser(id: number): Promise<boolean> {
-    logger.log('UserRepository::deleteUser; id: ' + id);
-
     const user = await this.getUserById(id);
     if (!user) {
       logger.error('UserRepository::deleteUser failed to find user by id');

@@ -15,22 +15,18 @@ export class CouponRepository extends BaseRepository<Coupon> {
   }
 
   async getCoupons(params?: TPagedParams<TCoupon>): Promise<TPagedList<Coupon>> {
-    logger.log('CouponRepository::getCoupons');
     return this.getPaged(params);
   }
 
   async getCouponById(id: number): Promise<Coupon> {
-    logger.log('CouponRepository::getCouponById id: ' + id);
     return this.getById(id);
   }
 
   async getCouponsByIds(ids: number[]): Promise<Coupon[]> {
-    logger.log('CouponRepository::getCouponsByIds ids: ' + ids.join(', '));
     return this.findByIds(ids);
   }
 
   async getCouponsByCodes(codes: string[]): Promise<Coupon[]> {
-    logger.log('CouponRepository::getCouponsByCodes');
     if (!codes?.length) return [];
     const qb = this.createQueryBuilder(this.metadata.tablePath);
 
@@ -63,7 +59,6 @@ export class CouponRepository extends BaseRepository<Coupon> {
   }
 
   async createCoupon(inputData: TCouponInput, id?: number | null): Promise<Coupon> {
-    logger.log('CouponRepository::createCoupon');
     const coupon = new Coupon();
     if (id) coupon.id = id;
 
@@ -73,7 +68,6 @@ export class CouponRepository extends BaseRepository<Coupon> {
   }
 
   async updateCoupon(id: number, inputData: TCouponInput): Promise<Coupon> {
-    logger.log('CouponRepository::updateCoupon id: ' + id);
     const coupon = await this.getById(id);
 
     await this.handleBaseCouponInput(coupon, inputData, 'update');
@@ -82,8 +76,6 @@ export class CouponRepository extends BaseRepository<Coupon> {
   }
 
   async deleteCoupon(id: number): Promise<boolean> {
-    logger.log('CouponRepository::deleteCoupon; id: ' + id);
-
     const coupon = await this.getCouponById(id);
     if (!coupon) {
       logger.error('CouponRepository::deleteCoupon failed to find Coupon by id');

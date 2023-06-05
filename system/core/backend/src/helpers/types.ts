@@ -43,10 +43,18 @@ export type TAuthUserInfo = {
   roles: TRole[];
 };
 
-export type TTokenPayload = {
+export type TTokenPayloadInput = {
+  sub: number;
+  username: string;
+  roles: string;
+};
+
+export type TTokenPayloadOutput = {
   sub: number;
   username?: string | null;
   roles: string;
+  iat: number;
+  exp: number;
 };
 
 export type TRequestWithUser = FastifyRequest & {
