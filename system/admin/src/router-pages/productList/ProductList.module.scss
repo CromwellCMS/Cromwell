@@ -142,7 +142,7 @@ div.filterDrawer {
   @include paperElevated;
   @include styledScrollBar;
   width: 280px;
-  padding-right: 7px;
+  padding: 10px;
 }
 
 .filterHeader {
@@ -153,6 +153,8 @@ div.filterDrawer {
 
   > h3 {
     font-weight: 500;
+    color: rgb(87, 87, 87);
+    font-size: 24px;
   }
 }
 

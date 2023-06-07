@@ -347,7 +347,7 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
               usePagination
               listItemProps={{ ...itemProps }}
               useQueryPagination
-              loader={this.getManyFilteredItems}
+              loader={({ pagedParams }) => this.getManyFilteredItems(pagedParams)}
               cssClasses={{
                 scrollBox: styles.list,
                 contentWrapper: styles.listContent,

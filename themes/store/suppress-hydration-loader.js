@@ -19,6 +19,7 @@ module.exports = function (source) {
 
       // For prod
       source = source.replace(/throw [^;]*\(418\)\);/g, 'console.warn("Hydration failed");');
+      source = source.replace(/throw [^;]*\(425\)\);/g, 'console.warn("Hydration failed");');
     }
   }
 

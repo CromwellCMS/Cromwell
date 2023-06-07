@@ -243,10 +243,14 @@ export function ProductCard(props: ProductCardProps) {
             <Image
               alt={product?.name || ''}
               loader={imageLoader}
-              objectFit="contain"
-              layout="fill"
               unoptimized={!imageProps ? true : undefined}
+              sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw"
+              fill
               {...(imageProps ?? {})}
+              style={{
+                objectFit: 'cover',
+                ...(imageProps ?? {}).style,
+              }}
               className={clsx(classes?.image, imageProps?.className)}
               src={mainImage}
             />

@@ -1,4 +1,4 @@
-import { getBlockInstance, TCCSModuleInfo, TPackageCromwellConfig } from '@cromwell/core';
+import { getBlockInstance, TCCSModuleInfo, TPackageCromwellConfig, TPagedParams } from '@cromwell/core';
 import { CList, getCentralServerClient, getRestApiClient, TCList } from '@cromwell/core-frontend';
 import { Grid, Skeleton, TextField } from '@mui/material';
 import React, { Component } from 'react';
@@ -55,8 +55,8 @@ export default class ThemeMarket extends Component<
     }
   };
 
-  public loadList = async (props) => {
-    return getCentralServerClient().getThemeList(props, this.filterInput);
+  public loadList = async ({ pagedParams }: { pagedParams: TPagedParams<TCCSModuleInfo> }) => {
+    return getCentralServerClient().getThemeList(pagedParams, this.filterInput);
   };
 
   public openTheme = (info: TCCSModuleInfo) => {

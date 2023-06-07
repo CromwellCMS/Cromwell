@@ -51,15 +51,13 @@ export type TCListProps<DataType, ListItemProps> = {
    * Needed if dataList wasn't provided. Doesn't work with dataLst.
    * If returned data is TPagedList, then will use pagination. If returned data is an array, then it won't be called anymore
    */
-  loader?: (
-    params: TPagedParams<DataType>,
-  ) => Promise<TPagedList<DataType> | DataType[] | undefined | null> | undefined | null;
+  loader?: TListLoader<DataType, ListItemProps>;
 
   /** Page size to first use in TPagedParams of "loader". After first batch recieved will use pageSize from pagedMeta if pagedMeta has it */
   pageSize?: number;
 
   /** First batch / page. Can be used with "loader". Supposed to be used in SSR to prerender page  */
-  firstBatch?: TPagedList<DataType> | null;
+  firstBatch?: TPagedList<DataType> | (() => TPagedList<DataType> | null | undefined) | null;
 
   /** Max pages to render at screen. 10 by default */
   maxDomPages?: number;
@@ -125,6 +123,21 @@ export type TCList<DataType = any, ListItemProps = any> = {
   setPagedParams: (val: TPagedParams<DataType>) => void;
   /** Get currently used params in "loader" prop */
   getPagedParams: () => TPagedParams<DataType>;
+  /** Re-render */
+  rerenderData: () => void;
+  /** Get usage some stats that the list recorded */
+  getListStats: () => TListStats;
+
+  /**
+   * Register custom data loader. When new data has to be loaded (for example new page is requested),
+   * CList will collect registered loaders and the one with the highest priority will be used.
+   * Loader getter will provide current context and your app might decide whether or not provide custom loader.
+   * If in particular case custom loader is not needed - loader getter can return undefined and
+   * default loader will be used.
+   * With this feature custom product filters can be implemented. Check `@cromwell/plugin-product-filter` to see how it used.
+   */
+  registerLoaderGetter: (key: string, getter: TLoaderGetter<DataType>) => void;
+  unregisterLoaderGetter: (key: string) => void;
 };
 
 export type TListenerType = 'componentDidUpdate';
@@ -137,3 +150,28 @@ export type TListItemProps<DataType, ListItemProps> = {
   numberOnScreen?: number;
   prevItemProps?: TListItemProps<DataType, ListItemProps>;
 };
+
+export type TListStats = { lastPageSize?: number };
+
+export type TListLoaderArgs<DataType, ListItemProps = any> = {
+  pagedParams: TPagedParams<DataType>;
+  listProps: TCListProps<DataType, ListItemProps>;
+  listStats: TListStats;
+  currentPageNum: number;
+};
+
+export type TListLoaderResult<DataType> =
+  | Promise<TPagedList<DataType> | DataType[] | undefined | null>
+  | undefined
+  | null;
+
+export type TListLoader<DataType, ListItemProps> = (
+  args: TListLoaderArgs<DataType, ListItemProps>,
+) => TListLoaderResult<DataType>;
+
+export type TLoaderGetter<DataType, ListItemProps = any> = (args: TListLoaderArgs<DataType, ListItemProps>) =>
+  | {
+      loader?: TListLoader<DataType, ListItemProps>;
+      priority?: number;
+    }
+  | undefined;

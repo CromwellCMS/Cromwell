@@ -44,6 +44,7 @@ import fs from 'fs-extra';
 import { join, resolve } from 'path';
 import { Service } from 'typedi';
 import { getConnection, getCustomRepository, Repository } from 'typeorm';
+import mime from 'mime-types';
 
 import { AdminCmsSettingsDto } from '../dto/admin-cms-settings.dto';
 import { CmsStatusDto } from '../dto/cms-status.dto';
@@ -157,21 +158,26 @@ export class CmsService {
 
     if ((await fs.lstat(fullPath)).isFile()) {
       response.header('Content-Disposition', `attachment; filename=${fileName}`);
+      const mimeType = mime.lookup(fullPath);
+      if (mimeType) response.type(mimeType);
+
       try {
         const readStream = fs.createReadStream(fullPath);
-        response.type('text/html').send(readStream);
+        response.send(readStream);
       } catch (error) {
         logger.error(error);
         response.code(500).send({ message: error + '' });
       }
     } else {
       response.header('Content-Disposition', `attachment; filename=${fileName}.zip`);
+      response.type('application/zip');
+
       // zip the directory
       const archive = archiver('zip', {
         zlib: { level: 9 },
       });
       archive.directory(fullPath, '/' + fileName);
-      response.type('text/html').send(archive);
+      response.send(archive);
       await archive.finalize();
     }
   }

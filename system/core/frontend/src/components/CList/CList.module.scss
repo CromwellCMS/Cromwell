@@ -98,6 +98,7 @@
   .none {
     display: none;
   }
+
   .listOverlay {
     position: absolute;
     z-index: 10;
@@ -105,7 +106,11 @@
     bottom: 0px;
     left: 0px;
     right: 0px;
-    background-color: rgba(0, 0, 0, 0.4);
+    background-color: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    border-radius: 8px;
+    padding: 15px;
   }
 
   .throbber {

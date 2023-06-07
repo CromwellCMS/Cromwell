@@ -128,8 +128,8 @@ export class SearchInput<TItemData extends { id: number | string }> extends Reac
     list.init();
   });
 
-  private loadMore = (params: TPagedParams<TItemData>) => {
-    return this.fetchItems(this.state.searchText, params);
+  private loadMore = ({ pagedParams }: { pagedParams: TPagedParams<TItemData> }) => {
+    return this.fetchItems(this.state.searchText, pagedParams);
   };
 
   private handleSearchInput = (searchText: string) => {

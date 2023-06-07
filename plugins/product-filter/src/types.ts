@@ -1,4 +1,4 @@
-import { TFilteredProductList, TProductCategory, TProductFilter } from '@cromwell/core';
+import { TAttribute, TProductCategory, TProductFilter, TProductFilterMeta } from '@cromwell/core';
 
 export type TProductFilterSettings = {
   listId?: string;
@@ -12,7 +12,7 @@ export type TProductFilterSettings = {
 };
 
 export type IFrontendFilter = {
-  updateFilterMeta: (filteredList: TFilteredProductList | undefined) => void;
+  setFilterMeta: (filterMeta: TProductFilterMeta | undefined) => void;
   handleMobileOpen: () => any;
   handleMobileClose: () => any;
   setFilter: (filterParams: TProductFilter) => void;
@@ -29,4 +29,15 @@ export type TInstanceSettings = {
    * skip default handler (navigate to category)
    * */
   onCategoryClick?: (category: TProductCategory) => boolean;
+};
+
+export type TInitialFilterData = {
+  attributes?: TAttribute[];
+  filterMeta?: TProductFilterMeta;
+  productCategory?: TProductCategory;
+};
+
+export type TPluginProductFilterData = {
+  slug?: string | string[] | null;
+  pluginSettings?: TProductFilterSettings;
 };

@@ -4,6 +4,7 @@ import { ConnectionOptions } from 'typeorm';
 import { ESharedComponentNames, systemPackages } from '../constants';
 import { TCromwellBlock, TCromwellBlockData } from './blocks';
 import {
+  TBasePageEntity,
   TCmsAdminSettings,
   TCmsEnabledModules,
   TCmsEntityCore,
@@ -180,7 +181,7 @@ export type TPagedList<Entity> = {
   elements?: Entity[];
 };
 
-export type TPagedParams<Entity> = {
+export type TPagedParams<Entity = TBasePageEntity> = {
   pageNumber?: number;
   pageSize?: number;
   orderBy?: keyof Entity;

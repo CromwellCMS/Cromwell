@@ -90,8 +90,6 @@ export class PluginController {
     type: FrontendBundleDto,
   })
   async getPluginFrontendBundle(@Query('pluginName') pluginName: string): Promise<TFrontendBundle | undefined> {
-    logger.log('PluginController::getPluginFrontendBundle');
-
     if (!pluginName) throw new HttpException(`Invalid plugin name: ${pluginName}`, HttpStatus.NOT_ACCEPTABLE);
 
     const bundle = await this.pluginService.getPluginBundle(pluginName, 'frontend');

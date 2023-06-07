@@ -1,12 +1,16 @@
 import {
+  getBlockInstance,
+  getRandStr,
   resolvePageRoute,
   TAttributeValue,
   TFilteredProductList,
   TFrontendPluginProps,
+  TProduct,
   TProductCategory,
   TProductFilter,
+  TProductFilterMeta,
 } from '@cromwell/core';
-import { getGraphQLClient, iconFromPath, LoadBox } from '@cromwell/core-frontend';
+import { iconFromPath, LoadBox, TCList } from '@cromwell/core-frontend';
 import {
   Card,
   CardHeader,
@@ -31,9 +35,9 @@ import React from 'react';
 import { debounce } from 'throttle-debounce';
 
 import { defaultSettings } from '../../constants';
-import { IFrontendFilter, TInstanceSettings } from '../../types';
-import { filterCList, getInitialData, setListProps, TInitialData, TProductFilterData } from '../service';
+import { IFrontendFilter, TInitialFilterData, TInstanceSettings, TPluginProductFilterData } from '../../types';
 import { styles } from '../styles';
+import { getAttributes, getCategoryBySlug, getFilteredProducts } from '../utils/queries';
 import { Slider } from './Slider';
 
 const ExpandMoreIcon = iconFromPath(<path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"></path>);
@@ -53,15 +57,22 @@ type FilterState = {
 type FilterProps = {
   router?: NextRouter;
   isMobile?: boolean;
-} & TFrontendPluginProps<TProductFilterData, TInstanceSettings>;
+} & TFrontendPluginProps<TPluginProductFilterData, TInstanceSettings>;
 
-class ProductFilter extends React.Component<FilterProps, FilterState> implements IFrontendFilter {
-  private priceRange: number[] = [];
+export class ProductFilter extends React.Component<FilterProps, FilterState> implements IFrontendFilter {
+  private priceRange: (number | undefined)[] = [];
   private search: string = '';
   private collapsedByDefault = false;
   private checkedAttrs: Record<string, string[]> = {};
-  private client = getGraphQLClient();
-  private initialData?: TInitialData;
+  private initialData?: TInitialFilterData;
+  /** Cached fetched categories { [slug]: category } */
+  private cachedCategories: Record<string, TProductCategory | Promise<TProductCategory | undefined>> = {};
+  private isFilterApplied: boolean = false;
+  private lastPageSlug: string | null = null;
+  private lastAppliedFilterStr: string | null = null;
+  private instanceId = getRandStr(12);
+  private fullInstanceId = `@cromwell/plugin-product-filter__${this.instanceId}`;
+  private searchInputId = `${this.instanceId}_search`;
 
   constructor(props) {
     super(props);
@@ -83,27 +94,112 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
   }
 
   componentWillUnmount() {
+    this.isFilterApplied = false;
     this.props.router?.events?.off('routeChangeComplete', this.routeChangeComplete);
+
+    const { list } = this.getCList();
+    if (list) {
+      list.unregisterLoaderGetter(this.fullInstanceId);
+    }
   }
 
   private routeChangeComplete = () => {
-    this.init();
+    const slug: string = this.getCurrentCategorySlug();
+    if (slug && this.lastPageSlug !== slug) {
+      this.lastPageSlug = slug;
+      this.init();
+    }
   };
 
   private async init() {
-    this.setState({ isLoading: true });
+    this.isFilterApplied = false;
+    this.checkedAttrs = {};
+    this.priceRange = [];
+    this.search = '';
+    this.lastAppliedFilterStr = null;
 
-    try {
-      this.initialData = await getInitialData(this.props.data?.slug as any);
-    } catch (error) {
-      console.error(error);
+    this.setState({ isLoading: true });
+    const slug: string = this.getCurrentCategorySlug();
+
+    this.cachedCategories[slug] = new Promise<TProductCategory | undefined>((resolve) => {
+      (async () => {
+        try {
+          this.initialData = await this.getInitialData(slug);
+        } catch (error) {
+          console.error(error);
+        }
+        resolve(this.initialData?.productCategory);
+      })();
+    });
+
+    const result = await this.cachedCategories[slug];
+    if (result) {
+      this.cachedCategories[slug] = result;
+    } else {
+      delete this.cachedCategories[slug];
     }
+
     const filterMeta = this.initialData?.filterMeta;
+
     this.setState({
       minPrice: filterMeta?.minPrice ?? 0,
       maxPrice: filterMeta?.maxPrice ?? 0,
       isLoading: false,
     });
+  }
+
+  private async getInitialData(slug?: string): Promise<TInitialFilterData> {
+    // const timestamp = Date.now();
+    const [{ productCategory, filterMeta }, attributes] = await Promise.all([
+      getCategoryBySlug(slug).then(async (productCategory) => {
+        let filterMeta: TProductFilterMeta | undefined;
+
+        if (productCategory?.id) {
+          const result = await getFilteredProducts({
+            // Just to get filterMeta to show min/max price on the filter, products are not needed
+            pagedParams: { pageSize: 1 },
+            categoryId: productCategory.id,
+          });
+          filterMeta = result?.filterMeta;
+        }
+
+        return { productCategory, filterMeta };
+      }),
+      getAttributes(),
+    ]);
+
+    // const timestamp2 = Date.now();
+    // console.log('ProductFilter::getStaticProps time elapsed: ' + (timestamp2 - timestamp) + 'ms');
+
+    return {
+      productCategory,
+      attributes,
+      filterMeta,
+    };
+  }
+
+  public getProductListId() {
+    const { instanceSettings } = this.props;
+    const { pluginSettings } = this.props.data ?? {};
+    const productListId = instanceSettings?.listId ?? pluginSettings?.listId;
+    return productListId;
+  }
+
+  public getCurrentCategorySlug() {
+    const slug: string = this.props.router?.query?.slug || (this.props.data?.slug as any);
+    return slug;
+  }
+
+  public async getCurrentCategory() {
+    const slug: string = this.getCurrentCategorySlug();
+
+    if (this.cachedCategories[slug]) return this.cachedCategories[slug];
+
+    if (slug === this.props.router?.query?.slug) {
+      // category may not load yet. await and check promise
+      await new Promise((res) => setTimeout(res, 100));
+      return await this.cachedCategories[slug];
+    }
   }
 
   private handleSetAttribute = (key: string, checks: string[]) => {
@@ -113,54 +209,129 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
     this.applyFilter();
   };
 
-  public updateFilterMeta = (filteredList: TFilteredProductList | undefined) => {
-    if (filteredList && filteredList.filterMeta) {
-      if (filteredList.filterMeta.minPrice !== undefined)
-        this.setState({
-          minPrice: filteredList.filterMeta.minPrice,
-        });
-      if (filteredList.filterMeta.maxPrice !== undefined)
-        this.setState({
-          maxPrice: filteredList.filterMeta.maxPrice,
-        });
-    }
+  public setFilterMeta = (filterMeta: TProductFilterMeta | undefined) => {
+    if (filterMeta?.minPrice !== undefined && filterMeta?.minPrice !== null)
+      this.setState({
+        minPrice: filterMeta.minPrice,
+      });
+    if (filterMeta?.maxPrice)
+      this.setState({
+        maxPrice: filterMeta.maxPrice,
+      });
   };
 
-  private getFilterParams = (): TProductFilter => {
-    return {
-      attributes: Object.keys(this.checkedAttrs).map((key) => ({
-        key,
-        values: this.checkedAttrs[key],
-      })),
+  public getFilterParams = (): TProductFilter => {
+    const filter: TProductFilter = {
+      attributes: Object.keys(this.checkedAttrs)
+        .map((key) => ({
+          key,
+          values: this.checkedAttrs[key],
+        }))
+        .filter((attr) => attr.key && attr.values?.length),
       minPrice: this.priceRange[0],
       maxPrice: this.priceRange[1],
-      nameSearch: this.search ? this.search : undefined,
+      nameSearch: this.search,
     };
+
+    if (!filter.attributes?.length) {
+      delete filter.attributes;
+    }
+
+    if (typeof filter.minPrice !== 'number') {
+      delete filter.minPrice;
+    }
+    if (typeof filter.maxPrice !== 'number') {
+      delete filter.maxPrice;
+    }
+    if (!filter.nameSearch) {
+      delete filter.nameSearch;
+    }
+
+    return filter;
   };
 
   private applyFilter = () => {
     const filterParams = this.getFilterParams();
     const { instanceSettings } = this.props;
-    const { pluginSettings } = this.props.data ?? {};
-    const { productCategory } = this.initialData ?? {};
-    const productListId = instanceSettings?.listId ?? pluginSettings?.listId;
 
-    instanceSettings?.onChange?.(filterParams);
-
-    if (!productListId) {
-      // console.error('ProductFilter:applyFilter: !productListId', props?.settings)
-      return;
-    }
-    if (!productCategory?.id) {
-      // console.error('ProductFilter:applyFilter: !productCategoryId', productCategory)
-      return;
+    if (Object.keys(filterParams).length === 0) {
+      this.isFilterApplied = false;
+    } else {
+      this.isFilterApplied = true;
     }
 
-    filterCList(filterParams, productListId, productCategory, this.client, this.updateFilterMeta);
+    const filterParamsStr = JSON.stringify(filterParams);
+
+    if (this.lastAppliedFilterStr !== filterParamsStr) {
+      this.lastAppliedFilterStr = filterParamsStr;
+      instanceSettings?.onChange?.(filterParams);
+
+      this.applyFilterCList();
+
+      if (!this.isFilterApplied) {
+        // Set default meta
+        const filterMeta = this.initialData?.filterMeta;
+        this.setState({
+          minPrice: filterMeta?.minPrice ?? 0,
+          maxPrice: filterMeta?.maxPrice ?? 0,
+        });
+      }
+    }
+  };
+
+  private getCList() {
+    const listId = this.getProductListId();
+    if (!listId) return {};
+
+    const list: TCList<TProduct> | undefined = getBlockInstance<TCList>(listId)?.getContentInstance();
+    return { list, listId };
+  }
+
+  private applyFilterCList() {
+    const { list } = this.getCList();
+    if (!list) return;
+
+    this.registerFilterLoader();
+    list.updateData();
+  }
+
+  private registerFilterLoader = () => {
+    const { list } = this.getCList();
+    if (!list) return;
+
+    list.registerLoaderGetter(this.fullInstanceId, () => {
+      if (!this.isFilterApplied) return;
+      return {
+        priority: 2,
+        loader: async ({ pagedParams }): Promise<TFilteredProductList | undefined> => {
+          // const timestamp = Date.now();
+          const productCategory = await this.getCurrentCategory();
+          const filterParams = this.getFilterParams();
+
+          const filtered = await getFilteredProducts({
+            pagedParams,
+            filterParams,
+            categoryId: productCategory?.id,
+          });
+
+          this.setFilterMeta(filtered?.filterMeta);
+          // const timestamp2 = Date.now();
+          // console.log('ProductFilterResolver::getFilteredProducts time elapsed: ' + (timestamp2 - timestamp) + 'ms');
+          return filtered;
+        },
+      };
+    });
   };
 
   private onPriceRangeChange = debounce(500, (newValue: number[]) => {
-    this.priceRange = newValue;
+    this.priceRange = [...newValue];
+
+    if (this.priceRange[0] === this.state.minPrice) {
+      this.priceRange[0] = undefined;
+    }
+    if (this.priceRange[1] === this.state.maxPrice) {
+      this.priceRange[1] = undefined;
+    }
     this.applyFilter();
   });
 
@@ -186,9 +357,15 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
   };
 
   public setFilter = (filterParams: TProductFilter) => {
-    if (filterParams.minPrice !== undefined) this.priceRange[0] = filterParams.minPrice;
-    if (filterParams.maxPrice !== undefined) this.priceRange[1] = filterParams.maxPrice;
-    if (filterParams.nameSearch) this.search = filterParams.nameSearch;
+    this.priceRange[0] = filterParams.minPrice;
+    this.priceRange[1] = filterParams.maxPrice;
+    this.search = filterParams.nameSearch || '';
+
+    const searchInput = document.getElementById(this.searchInputId) as HTMLInputElement | null;
+    if (searchInput) {
+      searchInput.value = filterParams.nameSearch ?? '';
+    }
+
     this.checkedAttrs = Object.assign(
       {},
       ...(filterParams.attributes?.map((attr) => {
@@ -197,6 +374,7 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
         };
       }) ?? []),
     );
+
     this.forceUpdate();
   };
 
@@ -253,29 +431,35 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
     const { isMobileOpen, minPrice, maxPrice, collapsedItems, isLoading } = this.state;
     instanceSettings?.getInstance?.(this);
 
-    if (isLoading)
-      return (
-        <div style={{ width: '100%', height: '100px' }}>
-          <LoadBox size={60} />
-        </div>
-      );
-
     const isMobile = !instanceSettings?.disableMobile && this.props.isMobile;
     const pcCollapsedByDefault = pluginSettings?.collapsedByDefault ?? defaultSettings.collapsedByDefault;
     const mobileCollapsedByDefault =
       pluginSettings?.mobileCollapsedByDefault ?? defaultSettings.mobileCollapsedByDefault;
     const _collapsedByDefault = isMobile ? mobileCollapsedByDefault : pcCollapsedByDefault;
-    const productListId = instanceSettings?.listId ?? pluginSettings?.listId;
 
     if (this.collapsedByDefault !== _collapsedByDefault) {
       this.collapsedByDefault = _collapsedByDefault;
       this.setState({ collapsedItems: {} });
     }
 
-    setListProps(productListId, productCategory, this.client, this.getFilterParams(), this.updateFilterMeta);
-
-    const filterContent = (
-      <div>
+    let filterContent = (
+      <div style={{ position: 'relative' }}>
+        {isLoading && (
+          <div
+            style={{
+              position: 'absolute',
+              width: '100%',
+              height: '100%',
+              zIndex: 11,
+              backgroundColor: 'rgba(255,255,255,0.4)',
+              borderRadius: '8px',
+              backdropFilter: 'blur(3px)',
+              WebkitBackdropFilter: 'blur(3px)',
+            }}
+          >
+            <LoadBox size={60} />
+          </div>
+        )}
         {isMobile && (
           <div className="productFilter_mobileHeader">
             <p>Filter</p>
@@ -297,6 +481,7 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
                 padding: '0 15px 15px 15px',
                 width: '100%',
               }}
+              id={this.searchInputId}
               placeholder="type to search..."
               variant="standard"
               onChange={(e) => this.onSearchChange(e.target.value)}
@@ -343,11 +528,20 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
               </div>
             ),
           })}
-        {this.getFilterItem({
-          title: 'Price',
-          key: 'price',
-          content: <Slider onChange={this.onPriceRangeChange} minPrice={minPrice} maxPrice={maxPrice} />,
-        })}
+        {!!maxPrice &&
+          minPrice !== maxPrice &&
+          this.getFilterItem({
+            title: 'Price',
+            key: 'price',
+            content: (
+              <Slider
+                onChange={this.onPriceRangeChange}
+                minPrice={minPrice}
+                maxPrice={maxPrice}
+                priceRange={[this.priceRange[0] ?? minPrice, this.priceRange[1] ?? maxPrice]}
+              />
+            ),
+          })}
         {attributes &&
           attributes.map((attr) => {
             if (!attr.key || !attr.values) return null;
@@ -464,7 +658,7 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
       const onOpen = () => {};
       const mobileIconPosition = pluginSettings?.mobileIconPosition ?? defaultSettings.mobileIconPosition;
 
-      return (
+      filterContent = (
         <div>
           <IconButton
             aria-label="Open product filter"
@@ -493,7 +687,7 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
   }
 }
 
-let HocComp: any = (props: TFrontendPluginProps<TProductFilterData, TInstanceSettings>) => {
+let HocComp: any = (props: TFrontendPluginProps<TPluginProductFilterData, TInstanceSettings>) => {
   const isMobile = useMediaQuery(`(max-width:${props.data?.pluginSettings?.mobileBreakpoint || 600}px)`);
   return <ProductFilter {...props} isMobile={isMobile} />;
 };

@@ -1,14 +1,14 @@
 import { isServer, TCromwellBlockProps, TPagedList, TPagedParams } from '@cromwell/core';
-import { debounce } from 'throttle-debounce';
 import React from 'react';
+import { debounce } from 'throttle-debounce';
 
 import { CBlock } from '../CBlock/CBlock';
 import { LoadBox } from '../loadBox/Loadbox';
 import { throbber } from '../throbber';
 import styles from './CList.module.scss';
 import { Pagination } from './CListPagination';
-import { getPagedUrl, getPageId, getPageNumsAround, getPageNumberFromUrl } from './helpers';
-import { TCList, TCListProps, TListenerType } from './types';
+import { getPagedUrl, getPageId, getPageNumberFromUrl, getPageNumsAround } from './helpers';
+import { TCList, TCListProps, TListenerType, TListLoaderResult, TListStats, TLoaderGetter } from './types';
 
 export class CList<DataType, ListItemProps = any>
   extends React.PureComponent<TCListProps<DataType, ListItemProps> & TCromwellBlockProps<TCList>>
@@ -52,6 +52,7 @@ export class CList<DataType, ListItemProps = any>
   private forcedProps: TCListProps<DataType, ListItemProps> | null;
   private listeners: Record<TListenerType, { cb: () => void; id?: string }[]> = { componentDidUpdate: [] };
   private paginationInst?: Pagination;
+  public listStats: TListStats = {};
 
   constructor(props: TCListProps<DataType, ListItemProps>) {
     super(props);
@@ -120,15 +121,27 @@ export class CList<DataType, ListItemProps = any>
         this.maxPageBound = pageNumber;
       }
 
-      if (props.firstBatch) {
+      let firstBatch: TPagedList<DataType> | null | undefined;
+      if (typeof props.firstBatch === 'function') {
+        firstBatch = props.firstBatch();
+      } else {
+        firstBatch = props.firstBatch;
+      }
+
+      if (firstBatch) {
         // Parse firstBatch
-        this.parseFirstBatchPaged(props.firstBatch);
+        this.parseFirstBatchPaged(firstBatch);
       } else if (!isServer()) {
         // Load firstBatch
         this.fetchFirstBatch();
       }
     }
   }
+
+  public rerenderData = () => {
+    this.init();
+    this.forceUpdate();
+  };
 
   public updateData = async () => {
     this.dataList = [];
@@ -137,13 +150,61 @@ export class CList<DataType, ListItemProps = any>
     await this.fetchFirstBatch();
   };
 
-  private fetchFirstBatch = async () => {
+  public getListStats = (): TListStats => {
+    return this.listStats;
+  };
+
+  private loaderGetters: Record<string, TLoaderGetter<DataType, ListItemProps>> = {};
+
+  public registerLoaderGetter(key: string, getter: TLoaderGetter<DataType, ListItemProps>) {
+    this.loaderGetters[key] = getter;
+  }
+
+  public unregisterLoaderGetter(key: string) {
+    delete this.loaderGetters[key];
+  }
+
+  private getLoader({
+    pagedParams,
+  }: {
+    pagedParams: TPagedParams<DataType>;
+  }): (() => TListLoaderResult<DataType>) | undefined {
     const props = this.getProps();
-    if (props.loader) {
+    const loaderArgs = {
+      pagedParams,
+      listProps: props,
+      listStats: this.listStats,
+      currentPageNum: this.currentPageNum,
+    };
+
+    const customLoaders = Object.values(this.loaderGetters)
+      .map((getter) => {
+        const loader = getter(loaderArgs);
+        if (!loader) return null;
+
+        if (loader?.loader && !loader.priority) {
+          loader.priority = 1;
+        }
+        return loader;
+      })
+      .filter((loader) => loader?.loader)
+      .sort((a, b) => b!.priority! - a!.priority!);
+
+    const loader = customLoaders[0]?.loader || props.loader;
+
+    if (loader) {
+      return () => loader(loaderArgs);
+    }
+  }
+
+  private fetchFirstBatch = async () => {
+    const loader = this.getLoader({ pagedParams: this.pagedParams });
+
+    if (loader) {
       this.isLoading = true;
       this.setOverlay(true, true);
       try {
-        const data = await props.loader(this.pagedParams);
+        const data = await loader();
         if (data && !Array.isArray(data) && data.elements) {
           this.parseFirstBatchPaged(data);
         }
@@ -163,6 +224,7 @@ export class CList<DataType, ListItemProps = any>
     if (data.pagedMeta) {
       this.remoteRowCount = data.pagedMeta.totalElements ? data.pagedMeta.totalElements : 0;
       this.pageSize = data.pagedMeta.pageSize;
+      this.listStats.lastPageSize = this.pageSize;
     }
 
     if (this.pageSize) {
@@ -358,18 +420,26 @@ export class CList<DataType, ListItemProps = any>
   };
 
   private async loadData(pageNum: number) {
-    const props = this.getProps();
-    if (props.loader) {
+    const loader = this.getLoader({ pagedParams: Object.assign({}, this.pagedParams, { pageNumber: pageNum }) });
+
+    if (loader) {
       // console.log('loadData pageNum:', pageNum);
       this.pageStatuses[pageNum] = 'loading';
       this.isPageLoading = true;
       this.setOverlay(true);
+
+      if (this.pagedParams.pageSize) {
+        this.listStats.lastPageSize = this.pagedParams.pageSize;
+      }
+
       try {
-        const pagedData = await props.loader(Object.assign({}, this.pagedParams, { pageNumber: pageNum }));
+        const pagedData = await loader();
         if (pagedData && !Array.isArray(pagedData) && pagedData.elements) {
           this.addElementsToList(pagedData.elements, pageNum);
           this.pageStatuses[pageNum] = 'fetched';
           this.isPageLoading = false;
+
+          if (pagedData.pagedMeta?.pageSize) this.listStats.lastPageSize = pagedData.pagedMeta?.pageSize;
         }
       } catch (e) {
         console.error(e);
@@ -482,7 +552,7 @@ export class CList<DataType, ListItemProps = any>
               <div className={this.isLoading || props.isLoading ? undefined : styles.none} ref={this.throbberRef}>
                 {props.elements?.preloader ?? (
                   <div className={styles.listOverlay}>
-                    <LoadBox />
+                    <LoadBox size={100} />
                   </div>
                 )}
               </div>

@@ -36,7 +36,9 @@ export const PostCard = (props?: {
             alt={data?.title || ''}
             unoptimized
             loader={imageLoader}
-            objectFit="cover"
+            style={{
+              objectFit: 'cover',
+            }}
             layout="fill"
             src={mainImage}
           />

@@ -67,12 +67,15 @@ export function PageContent(
     const cart = cstore.getCart();
     const client = getGraphQLClient();
 
-    const products = await Promise.all(
-      cart.map(async (item) => {
-        if (!item.product?.id) return;
-        return client.getProductById(item.product.id);
-      }),
-    );
+    const products = (
+      await Promise.all(
+        cart.map(async (item) => {
+          if (!item.product?.id) return;
+          return client.getProductById(item.product.id).catch(console.error);
+        }),
+      )
+    ).filter(Boolean) as TProduct[];
+
     setCartProducts(products);
     setCartLoading(false);
     return cart;

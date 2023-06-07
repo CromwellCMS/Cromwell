@@ -11,6 +11,7 @@ import { IEntityListPage } from '../../components/entity/types';
 import { productListInfo, productPageInfo } from '../../constants/PageInfos';
 import { baseEntityColumns } from '../../helpers/customEntities';
 import styles from './ProductList.module.scss';
+import { useForceUpdate } from '@helpers/forceUpdate';
 
 export default function ProductListPage() {
   const client = getGraphQLClient();
@@ -18,9 +19,10 @@ export default function ProductListPage() {
   const filterInstRef = useRef<IFrontendFilter | null>(null);
   const [attributes, setAttributes] = useState<TAttribute[] | null>(null);
   const productsRef = useRef<TFilteredProductList | null>(null);
-  const attributesFilterInput = useRef<TProductFilter>({});
+  const filterInputRef = useRef<TProductFilter>({});
   const initialFilterRef = useRef<TProductFilter>({});
   const entityListPageRef = useRef<IEntityListPage<TProduct, TProductFilter> | null>(null);
+  const forceUpdate = useForceUpdate();
 
   useEffect(() => {
     init();
@@ -29,7 +31,7 @@ export default function ProductListPage() {
       const filter = initialFilterRef.current;
       if (filter.attributes || filter.minPrice || filter.maxPrice || filter.nameSearch) {
         filterInstRef.current.setFilter(filter);
-        attributesFilterInput.current = filter;
+        filterInputRef.current = filter;
         entityListPageRef.current?.resetList?.();
       }
     }
@@ -45,14 +47,19 @@ export default function ProductListPage() {
   };
 
   const onFilterMount = () => {
-    filterInstRef.current?.updateFilterMeta(productsRef.current);
+    filterInstRef.current?.setFilterMeta(productsRef.current?.filterMeta);
   };
 
   const onFilterChange = (params: TProductFilter) => {
-    Object.keys(params).forEach((key) => {
-      attributesFilterInput.current[key] = params[key];
-    });
+    const filter = filterInputRef.current ?? {};
+    filter.attributes = params.attributes;
+    filter.minPrice = params.minPrice;
+    filter.maxPrice = params.maxPrice;
+    filter.nameSearch = params.nameSearch;
+    filter.categoryId = params.categoryId;
+
     entityListPageRef.current?.resetList?.();
+    forceUpdate();
   };
 
   return (
@@ -66,13 +73,13 @@ export default function ProductListPage() {
         nameProperty="name"
         getMany={async (options) => {
           if (!options.filterParams) options.filterParams = {};
-          options.filterParams.minPrice = attributesFilterInput.current?.minPrice;
-          options.filterParams.maxPrice = attributesFilterInput.current?.maxPrice;
-          options.filterParams.attributes = attributesFilterInput.current?.attributes;
-          options.filterParams.nameSearch = attributesFilterInput.current?.nameSearch;
+          options.filterParams.minPrice = filterInputRef.current?.minPrice;
+          options.filterParams.maxPrice = filterInputRef.current?.maxPrice;
+          options.filterParams.attributes = filterInputRef.current?.attributes;
+          options.filterParams.nameSearch = filterInputRef.current?.nameSearch;
 
           const data = await client.getProducts(options);
-          filterInstRef.current?.updateFilterMeta(data);
+          filterInstRef.current?.setFilterMeta(data?.filterMeta);
           productsRef.current = data;
           return data;
         }}
@@ -84,10 +91,10 @@ export default function ProductListPage() {
         }}
         onClearAllFilters={() => {
           filterInstRef.current?.setFilter({});
-          attributesFilterInput.current = {};
+          filterInputRef.current = {};
         }}
         isFilterActive={() => {
-          const filter = attributesFilterInput.current;
+          const filter = filterInputRef.current;
           return !!(filter.nameSearch || filter.attributes || filter.maxPrice || filter.minPrice);
         }}
         columns={[

@@ -15,10 +15,16 @@ function useForceUpdate() {
 
 const StyledSlider = IOSSliderStyles(MUISlider);
 
-export const Slider = (props: { onChange: (value: number[]) => void; minPrice: number; maxPrice: number }) => {
+export const Slider = (props: {
+  onChange: (value: number[]) => void;
+  minPrice: number;
+  maxPrice: number;
+  priceRange: number[];
+}) => {
   const forceUpdate = useForceUpdate();
   const _minPrice = React.useRef<number>(props.minPrice);
   const _maxPrice = React.useRef<number>(props.maxPrice);
+  const lastParentPriceRange = React.useRef<number[]>(props.priceRange);
   const priceRange = React.useRef<number[]>([props.minPrice, props.maxPrice]);
 
   if (props.minPrice !== _minPrice.current) {
@@ -28,6 +34,13 @@ export const Slider = (props: { onChange: (value: number[]) => void; minPrice: n
   if (props.maxPrice !== _maxPrice.current) {
     priceRange.current[1] = props.maxPrice;
     _maxPrice.current = props.maxPrice;
+  }
+  if (
+    props.priceRange[0] !== lastParentPriceRange.current[0] ||
+    props.priceRange[1] !== lastParentPriceRange.current[1]
+  ) {
+    priceRange.current = [...props.priceRange];
+    lastParentPriceRange.current = [...props.priceRange];
   }
 
   const handlePriceRangeChange = (event: any, newValue: number | number[]) => {

@@ -151,9 +151,9 @@ export function ProductReviews(props: ProductReviewsProps) {
           noDataLabel={'No reviews at the moment. Be the first to leave one!'}
           pageSize={10}
           blockRef={(block) => (reviewsInst.current = block)}
-          loader={async (params) => {
+          loader={async ({ pagedParams }) => {
             return client.getProductReviews({
-              pagedParams: params,
+              pagedParams,
               filterParams: {
                 productId,
                 approved: true,

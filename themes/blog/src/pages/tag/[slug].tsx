@@ -63,12 +63,16 @@ const TagPage: TPageWithLayout<TagPageProps> = (props) => {
     prevPath.current = router?.asPath;
   }, [router?.asPath]);
 
-  const handleGetPosts = async (params: TPagedParams<TPost>): Promise<TPagedList<TPost> | undefined> => {
-    params.orderBy = 'publishDate';
-    params.order = publishSort.current;
+  const handleGetPosts = async ({
+    pagedParams,
+  }: {
+    pagedParams: TPagedParams<TPost>;
+  }): Promise<TPagedList<TPost> | undefined> => {
+    pagedParams.orderBy = 'publishDate';
+    pagedParams.order = publishSort.current;
     if (tag?.id) {
       filterInput.current.tagIds = [tag.id];
-      return handleGetFilteredPosts(params, filterInput.current);
+      return handleGetFilteredPosts(pagedParams, filterInput.current);
     }
     return { elements: [] };
   };

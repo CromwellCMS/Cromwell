@@ -10,14 +10,13 @@ import {
 import {
   CList,
   getGraphQLClient,
-  TGraphQLErrorInfo,
   TCList,
   TCListProps,
+  TGraphQLErrorInfo,
   TPaginationProps,
   useAppPropsContext,
 } from '@cromwell/core-frontend';
 import clsx from 'clsx';
-import { useRouter } from 'next/router';
 import React, { useEffect, useRef } from 'react';
 
 import { useModuleState } from '../../helpers/state';
@@ -70,33 +69,53 @@ export type CategoryListProps = {
 export function CategoryList(props: CategoryListProps) {
   const { listProps, cardProps } = props;
   const appProps = useAppPropsContext<GetStaticPropsData>();
-  const data: CategoryListData = Object.assign({}, appProps.pageProps?.ccom_category_list, props.data);
-  const { category } = data;
+  const dataRef = useRef<CategoryListData>(Object.assign({}, appProps.pageProps?.ccom_category_list, props.data));
+  const listInst = useRef<TCromwellBlock<TCList> | undefined>();
+  const listId = useRef<string>(props.listId ?? 'ccom_category_product_list');
+
   const { ProductCard = BaseProductCard, Pagination } = props?.elements ?? {};
   const attributes = useStoreAttributes();
   const moduleState = useModuleState();
 
-  const listInst = useRef<TCromwellBlock<TCList> | undefined>();
-  const prevPath = useRef<string | undefined>();
-  const listId = useRef<string>(props.listId ?? 'ccom_category_product_list');
-  const router = useRouter();
   const client = getGraphQLClient();
 
   useEffect(() => {
-    if (prevPath.current) {
-      const list: TCList | undefined = listInst.current?.getContentInstance();
-      if (list) {
-        list.updateData();
-      }
-    }
-    prevPath.current = router?.asPath;
+    const { category, firstPage } = Object.assign({}, appProps.pageProps?.ccom_category_list, props.data);
 
-    moduleState.setCategoryListId(listId.current);
-  }, [router?.asPath]);
+    let isFirstBatchChanged = false;
+    let isCategoryChanged = false;
+
+    if (firstPage?.elements?.[0]?.id !== dataRef.current.firstPage?.elements?.[0]?.id) {
+      dataRef.current.firstPage = firstPage;
+      isFirstBatchChanged = true;
+    }
+
+    if (category?.id !== dataRef.current.category?.id) {
+      dataRef.current.category = category;
+      isCategoryChanged = true;
+    }
+
+    const list: TCList | undefined = listInst.current?.getContentInstance();
+
+    if (isFirstBatchChanged) {
+      list?.rerenderData();
+    } else if (isCategoryChanged) {
+      list?.updateData();
+    }
+
+    if (moduleState.categoryListId !== listId.current) {
+      moduleState.setCategoryListId(listId.current);
+    }
+  }, [
+    props.data?.category,
+    appProps.pageProps?.ccom_category_list?.category,
+    props.data?.firstPage,
+    appProps.pageProps?.ccom_category_list?.firstPage,
+  ]);
 
   return (
     <div className={clsx(styles.CategoryList, props.classes?.root)}>
-      {category && (
+      {dataRef.current?.category?.id && (
         <CList<TProduct>
           editorHidden
           className={clsx(props.classes?.list)}
@@ -114,9 +133,12 @@ export function CategoryList(props: CategoryListProps) {
           useQueryPagination
           disableCaching
           pageSize={20}
-          firstBatch={data?.firstPage}
-          loader={async (params) => {
-            return client.getProducts({ pagedParams: params, filterParams: { categoryId: category.id } });
+          firstBatch={() => dataRef.current.firstPage}
+          loader={async ({ pagedParams }) => {
+            return client.getProducts({
+              pagedParams,
+              filterParams: { categoryId: dataRef.current?.category?.id },
+            });
           }}
           cssClasses={{
             page: styles.productList,

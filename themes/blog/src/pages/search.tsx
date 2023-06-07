@@ -48,10 +48,10 @@ const SearchPage: TPageWithLayout<SearchPageProps> = (props) => {
     updateList();
   };
 
-  const handleGetPosts = (params: TPagedParams<TPost>) => {
-    params.orderBy = 'publishDate';
-    params.order = publishSort.current;
-    return handleGetFilteredPosts(params, filterInput.current);
+  const handleGetPosts = ({ pagedParams }: { pagedParams: TPagedParams<TPost> }) => {
+    pagedParams.orderBy = 'publishDate';
+    pagedParams.order = publishSort.current;
+    return handleGetFilteredPosts(pagedParams, filterInput.current);
   };
 
   const handleChangeSort = (event: SelectChangeEvent<unknown>) => {
