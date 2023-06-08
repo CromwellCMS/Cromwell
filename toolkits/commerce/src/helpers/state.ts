@@ -8,6 +8,8 @@ class ModuleState {
    */
   public categoryListId?: string;
 
+  public defaultPageSize: number = 36;
+
   public setCategoryListId(id: string) {
     this.categoryListId = id;
     this.triggerUpdateHooks();

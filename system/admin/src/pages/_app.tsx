@@ -9,6 +9,7 @@ import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import 'react-toastify/dist/ReactToastify.css';
 import 'rsuite/dist/rsuite.min.css';
+import 'react-image-lightbox/style.css';
 
 import dynamic from 'next/dynamic';
 import React from 'react';

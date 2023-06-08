@@ -3,22 +3,21 @@ const withTM = require('next-transpile-modules')([
   '@uiw/react-textarea-code-editor',
 ]);
 
-const config = {
-  basePath: '/admin',
-};
+const config = {};
 
 if (process.env.NODE_ENV === 'development') {
   config.rewrites = () => {
     return [
       // Rewrite everything to `pages/index`
       {
-        source: '/:any*',
+        source: '/admin/:any*',
         destination: '/',
       },
     ];
   };
 } else {
   config.output = 'export';
+  config.basePath = '/admin';
 }
 
 module.exports = withTM(config);

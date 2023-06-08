@@ -46,6 +46,7 @@
 }
 
 .imageItemContainer {
+  position: relative;
   max-width: 42px;
   width: 100%;
   height: 50px;
@@ -84,6 +85,20 @@
   * {
     background-color: transparent !important;
   }
+}
+
+button.zoomItemBtn {
+  position: absolute;
+  top: calc(50% - 15px);
+  left: calc(50% - 15px);
+  opacity: 0;
+  transition: 0.2s;
+  background: #fff;
+}
+
+.imageItemContainer:hover button.zoomItemBtn {
+  opacity: 1;
+  background: #fff;
 }
 
 div.tooltip {

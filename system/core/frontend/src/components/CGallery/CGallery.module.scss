@@ -132,6 +132,7 @@ button[disabled] .navBtnContent {
 .modal {
   > div {
     z-index: 5000 !important;
+    position: fixed !important;
   }
 }
 

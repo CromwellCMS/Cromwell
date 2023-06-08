@@ -196,6 +196,7 @@ export type TListItemProps<TEntityType extends TBasePageEntity, TFilterType exte
   loadConfiguredColumns: () => Record<string, TSearchStore['sortedColumns']>;
   handleDeleteSelected: () => void;
   clearAllFilters: () => void;
+  maximizeImages: (urls: string[], index: number) => void;
 };
 
 export type TSavedConfiguredColumn = {

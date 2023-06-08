@@ -1,6 +1,6 @@
 import { TBasePageEntity } from '@cromwell/core';
 import { getCStore } from '@cromwell/core-frontend';
-import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { ArrowTopRightOnSquareIcon, MagnifyingGlassPlusIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { Rating, Tooltip } from '@mui/material';
 import clsx from 'clsx';
 import React, { useRef, useState } from 'react';
@@ -87,6 +87,15 @@ function EntityTableItem<TEntityType extends TBasePageEntity, TFilterType extend
             if (col.type === 'Image') {
               content = (
                 <div className={styles.imageItemContainer}>
+                  <IconButton
+                    className={styles.zoomItemBtn}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      listItemProps.maximizeImages([value], 0);
+                    }}
+                  >
+                    <MagnifyingGlassPlusIcon className="w-4 h-4" />
+                  </IconButton>
                   <div className={styles.imageItem} style={{ backgroundImage: value && `url(${value})` }}></div>
                 </div>
               );
@@ -158,9 +167,17 @@ function EntityTableItem<TEntityType extends TBasePageEntity, TFilterType extend
                     target="_blank"
                     rel="noreferrer"
                     draggable={false}
-                    style={{ userSelect: 'text', wordBreak: 'break-all', width: '100%', display: 'inline' }}
+                    style={{
+                      userSelect: 'text',
+                      wordBreak: 'break-all',
+                      width: '100%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      color: '#333',
+                    }}
                   >
                     {props.title}
+                    <ArrowTopRightOnSquareIcon className="h-4 w-4 ml-1" />
                   </a>
                 );
               }

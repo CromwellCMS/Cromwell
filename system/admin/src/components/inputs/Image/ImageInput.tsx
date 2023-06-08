@@ -30,6 +30,7 @@ export type ImageInputProps = {
   style?: React.CSSProperties;
   variant?: 'standard';
   centerImage?: boolean;
+  onMaximizeImage?: () => void;
 };
 
 export const ImageInput = (props: ImageInputProps) => {
@@ -57,6 +58,17 @@ export const ImageInput = (props: ImageInputProps) => {
       setImage(photoPath);
     }
   }, []);
+
+  const onMaximizeImage = (e: React.MouseEvent) => {
+    e.stopPropagation();
+
+    if (props.onMaximizeImage) {
+      props.onMaximizeImage();
+      return;
+    }
+
+    window.open(value, '_blank');
+  };
 
   // const getDimension = (dimension: string | number) =>
   //   dimension && (typeof dimension === 'number' ? dimension + 'px' : dimension);
@@ -114,10 +126,7 @@ export const ImageInput = (props: ImageInputProps) => {
             )}
             {value && (
               <span
-                onClick={(e) => {
-                  e.stopPropagation();
-                  window.open(value, '_balnk');
-                }}
+                onClick={onMaximizeImage}
                 className="rounded-full mx-auto text-center text-white opacity-0 py-1 transform px-1 transition-all top-1 left-6 absolute self-center hover:bg-opacity-100 group-hover:opacity-100 "
               >
                 <ArrowTopRightOnSquareIcon className="h-4 w-4" />

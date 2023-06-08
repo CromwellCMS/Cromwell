@@ -6,15 +6,15 @@ import styles from './CGallery.module.scss';
 /** @internal */
 type Props = {
   getState: (setOpen: (open: boolean, index: number) => void) => void;
-  images: string[];
+  images?: string[];
 };
 
-/** @internal */
-export default class Lightbox extends Component<
+export class Lightbox extends Component<
   Props,
   {
     isOpen: boolean;
     photoIndex: number;
+    images?: string[];
   }
 > {
   constructor(props) {
@@ -27,13 +27,13 @@ export default class Lightbox extends Component<
     this.props.getState(this.setOpen);
   }
 
-  setOpen = (open: boolean, index: number) => {
-    this.setState({ isOpen: open, photoIndex: index });
+  setOpen = (open: boolean, index: number, images?: string[]) => {
+    this.setState({ isOpen: open, photoIndex: index, images });
   };
 
   render() {
     const { photoIndex, isOpen } = this.state;
-    const { images } = this.props;
+    const images = this.state.images ?? this.props.images ?? [];
     this.props.getState(this.setOpen);
 
     return (
@@ -45,8 +45,8 @@ export default class Lightbox extends Component<
             }}
             reactModalStyle={{ zIndex: 5000 }}
             mainSrc={images[photoIndex]}
-            nextSrc={images[(photoIndex + 1) % images.length]}
-            prevSrc={images[(photoIndex + images.length - 1) % images.length]}
+            nextSrc={images.length > 1 ? images[(photoIndex + 1) % images.length] : undefined}
+            prevSrc={images.length > 1 ? images[(photoIndex + images.length - 1) % images.length] : undefined}
             onCloseRequest={() => this.setState({ isOpen: false })}
             onMovePrevRequest={() =>
               this.setState({

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { HTMLAttributeAnchorTarget } from 'react';
 
 import { TCmsConfig, TCmsSettings, TDefaultPageName, TPageConfig, TPageInfo, TPalette, TThemeConfig } from './data';
 
@@ -239,6 +239,7 @@ export type TCromwellBlockData = {
     content?: string;
     textElementType?: keyof React.ReactHTML;
     href?: string;
+    linkTarget?: HTMLAttributeAnchorTarget;
   };
 
   /** If true, user can't delete or modify this block in Theme editor */

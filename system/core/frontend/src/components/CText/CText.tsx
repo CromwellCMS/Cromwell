@@ -1,5 +1,5 @@
 import { TCromwellBlockProps } from '@cromwell/core';
-import React from 'react';
+import React, { HTMLAttributeAnchorTarget } from 'react';
 
 import { CBlock } from '../CBlock/CBlock';
 import { Link } from '../Link/Link';
@@ -8,6 +8,7 @@ type CTextProps = {
   children?: string;
   element?: keyof React.ReactHTML;
   href?: string;
+  linkTarget?: HTMLAttributeAnchorTarget;
 } & TCromwellBlockProps;
 
 export class CText extends React.Component<CTextProps> {
@@ -33,7 +34,11 @@ export class CText extends React.Component<CTextProps> {
           const _text = data?.text?.content ?? children;
           const href = data?.text?.href ?? props?.href;
           if (href) {
-            return <Link href={href}>{_text}</Link>;
+            return (
+              <Link target={data?.text?.linkTarget ?? props?.linkTarget} href={href}>
+                {_text}
+              </Link>
+            );
           }
           return React.createElement(_type, {}, _text);
         }}

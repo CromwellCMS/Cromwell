@@ -1,7 +1,7 @@
 import { IconButton } from '@components/buttons/IconButton';
 import { TextButton } from '@components/buttons/TextButton';
-import { getBlockInstance, isServer } from '@cromwell/core';
-import { CList, getRestApiClient, TCList } from '@cromwell/core-frontend';
+import { getBlockInstance, getRandStr, isServer, sleep } from '@cromwell/core';
+import { CList, getRestApiClient, TCList, Lightbox } from '@cromwell/core-frontend';
 import {
   ArrowLeftCircleIcon,
   ArrowRightCircleIcon,
@@ -53,7 +53,7 @@ class FileManager
   private selectedItem: HTMLLIElement | null = null;
   private selectedFileName: string | null = null;
   private pageSize = 21;
-  private listId = 'FileManager_List';
+  private listId = 'FileManager_List_' + getRandStr(12);
 
   constructor(props) {
     super(props);
@@ -86,6 +86,8 @@ class FileManager
       this.listEl.addEventListener('dragleave', this.onDragleave);
     }
   }
+
+  private setLightbox?: (open: boolean, index: number, images: string[]) => void;
 
   private onDrop = async (ev: DragEvent) => {
     ev.preventDefault();
@@ -249,6 +251,8 @@ class FileManager
     let index = 0;
     this.currentItems?.forEach((item, idx) => item === itemToOpen && (index = idx));
 
+    await sleep(0.2);
+
     const list = getBlockInstance<TCList>(this.listId)?.getContentInstance();
     const page = Math.ceil((index + 1) / this.pageSize);
     list?.openPage(page);
@@ -331,15 +335,13 @@ class FileManager
   };
 
   private openPreview = (fileName: string) => {
-    if (this.photoPreview.current && this.photoPreviewContainer.current) {
-      this.photoPreviewContainer.current.style.display = 'flex';
-      this.photoPreview.current.src = this.normalize(`/${this.currentPath}/${fileName}`);
-    }
-  };
+    const index = this.currentItems.indexOf(fileName);
 
-  private closePreview = () => {
-    if (this.photoPreviewContainer.current) this.photoPreviewContainer.current.style.display = 'none';
-    if (this.photoPreview.current) this.photoPreview.current.src = '';
+    this.setLightbox?.(
+      true,
+      index,
+      this.currentItems.map((fileName) => this.normalize(`/${this.currentPath}/${fileName}`)),
+    );
   };
 
   private handleApplySelect = () => {
@@ -573,17 +575,11 @@ class FileManager
             </div>
           )}
         </div>
-        <div
-          style={{ display: 'none' }}
-          ref={this.photoPreviewContainer}
-          className={styles.photoPreviewContainer}
-          onClick={this.closePreview}
-        >
-          <IconButton className={styles.photoPreviewCloseBtn} onClick={this.closePreview}>
-            <XCircleIcon className={styles.photoPreviewCloseIcon} />
-          </IconButton>
-          <img className={styles.photoPreview} ref={this.photoPreview} onClick={(event) => event.stopPropagation()} />
-        </div>
+        <Lightbox
+          getState={(setOpen) => {
+            this.setLightbox = setOpen;
+          }}
+        />
         <div style={{ display: 'none' }}>
           <input type="file" id="hidden-file-upload-input" multiple onChange={(e) => this.onFileInputChange(e)} />
         </div>

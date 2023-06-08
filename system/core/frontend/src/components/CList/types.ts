@@ -54,7 +54,7 @@ export type TCListProps<DataType, ListItemProps> = {
   loader?: TListLoader<DataType, ListItemProps>;
 
   /** Page size to first use in TPagedParams of "loader". After first batch recieved will use pageSize from pagedMeta if pagedMeta has it */
-  pageSize?: number;
+  pageSize?: number | (() => number | null | undefined) | null;
 
   /** First batch / page. Can be used with "loader". Supposed to be used in SSR to prerender page  */
   firstBatch?: TPagedList<DataType> | (() => TPagedList<DataType> | null | undefined) | null;
@@ -127,6 +127,8 @@ export type TCList<DataType = any, ListItemProps = any> = {
   rerenderData: () => void;
   /** Get usage some stats that the list recorded */
   getListStats: () => TListStats;
+  /** Re-inits state and fetches new data */
+  reset: () => Promise<void>;
 
   /**
    * Register custom data loader. When new data has to be loaded (for example new page is requested),

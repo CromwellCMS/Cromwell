@@ -20,7 +20,7 @@ import ReactResizeDetector from 'react-resize-detector';
 import { CBlock } from '../CBlock/CBlock';
 import { Link } from '../Link/Link';
 import styles from './CGallery.module.scss';
-import Lightbox from './Lightbox';
+import { Lightbox } from './Lightbox';
 import Thumbs from './Thumbs';
 
 export type TCGalleryProps = {

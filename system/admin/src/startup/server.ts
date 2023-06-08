@@ -40,7 +40,11 @@ const start = async () => {
 
   await outputEnv({ isProduction, configsDir });
 
-  await startProdServer(args.port);
+  if (isProduction) {
+    await startProdServer(args.port);
+  } else {
+    // await startDevServer(args.port);
+  }
 
   logger.info('Admin startup successfully ran');
 };
@@ -76,9 +80,9 @@ const linkFiles = async ({ isProduction, configsDir }: HelperOptions) => {
       fs.ensureDirSync(tempPublicDir);
     }
 
-    // Copy admin static
-    if (adminPanelStaticDir) {
-      await fs.copy(adminPanelStaticDir, adminPublicStaticDir);
+    // Link admin static
+    if (fs.pathExistsSync(adminPanelStaticDir) && !fs.pathExistsSync(adminPublicStaticDir)) {
+      await symlinkDir(adminPanelStaticDir, adminPublicStaticDir);
     }
 
     // Link prod next.js build
@@ -101,7 +105,10 @@ const linkFiles = async ({ isProduction, configsDir }: HelperOptions) => {
       fs.ensureDirSync(publicDir);
     }
 
-    await fs.copy(adminPanelStaticDir, adminPublicStaticDir);
+    // Link admin static
+    if (fs.pathExistsSync(adminPanelStaticDir) && !fs.pathExistsSync(adminPublicStaticDir)) {
+      await symlinkDir(adminPanelStaticDir, adminPublicStaticDir);
+    }
   }
 };
 

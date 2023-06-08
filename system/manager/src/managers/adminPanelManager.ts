@@ -77,6 +77,10 @@ export const startAdminPanel = async (
       return false;
     }
 
+    if (command === 'dev' && success) {
+      return true;
+    }
+
     try {
       await tcpPortUsed.waitUntilUsed(port, 500, 15 * 1000);
     } catch (e) {

@@ -26,7 +26,7 @@ const DeleteSelectedButton = (
     ReturnType<typeof mapStateToProps>
   >,
 ) => {
-  const enabled = countSelectedItems(props.totalElements) > 0;
+  const enabled = countSelectedItems(props.totalElements) > 0 || props.allSelected;
   return (
     <div style={props.style}>
       <Tooltip title="Delete selected">

@@ -19,7 +19,7 @@ import {
 import clsx from 'clsx';
 import React, { useEffect, useRef } from 'react';
 
-import { useModuleState } from '../../helpers/state';
+import { moduleState, useModuleState } from '../../helpers/state';
 import { useStoreAttributes } from '../../helpers/useStoreAttributes';
 import { ProductCard as BaseProductCard, ProductCardProps } from '../ProductCard/ProductCard';
 import styles from './CategoryList.module.scss';
@@ -27,6 +27,8 @@ import styles from './CategoryList.module.scss';
 export type CategoryListData = {
   firstPage?: TPagedList<TProduct> | null;
   category: TProductCategory | null;
+  slug?: string | null;
+  pageSize?: number | (() => number | null | undefined) | null;
 };
 
 /** @internal */
@@ -85,7 +87,10 @@ export function CategoryList(props: CategoryListProps) {
     let isFirstBatchChanged = false;
     let isCategoryChanged = false;
 
-    if (firstPage?.elements?.[0]?.id !== dataRef.current.firstPage?.elements?.[0]?.id) {
+    if (
+      JSON.stringify(firstPage?.elements?.map?.((p) => p?.id) || []) !==
+      JSON.stringify(dataRef.current.firstPage?.elements?.map?.((p) => p?.id) || [])
+    ) {
       dataRef.current.firstPage = firstPage;
       isFirstBatchChanged = true;
     }
@@ -113,6 +118,15 @@ export function CategoryList(props: CategoryListProps) {
     appProps.pageProps?.ccom_category_list?.firstPage,
   ]);
 
+  useEffect(() => {
+    if (props.listProps?.pageSize && props.listProps?.pageSize !== dataRef.current.pageSize) {
+      dataRef.current.pageSize = props.listProps.pageSize;
+
+      const list: TCList | undefined = listInst.current?.getContentInstance();
+      list?.reset();
+    }
+  }, [props.listProps?.pageSize]);
+
   return (
     <div className={clsx(styles.CategoryList, props.classes?.root)}>
       {dataRef.current?.category?.id && (
@@ -132,7 +146,11 @@ export function CategoryList(props: CategoryListProps) {
           usePagination
           useQueryPagination
           disableCaching
-          pageSize={20}
+          pageSize={
+            typeof dataRef.current?.pageSize === 'function'
+              ? () => (dataRef.current?.pageSize as () => number)()
+              : () => dataRef.current?.pageSize as number
+          }
           firstBatch={() => dataRef.current.firstPage}
           loader={async ({ pagedParams }) => {
             return client.getProducts({
@@ -179,11 +197,13 @@ CategoryList.withGetProps = (
       };
     }
 
+    const pageSize = moduleState.defaultPageSize;
+
     const firstPage =
       (category?.id &&
         (await client
           .getProducts({
-            pagedParams: { pageSize: 20 },
+            pagedParams: { pageSize },
             filterParams: { categoryId: category.id },
             customFragment:
               options?.customFragment ??
@@ -215,6 +235,7 @@ CategoryList.withGetProps = (
       props: {
         ...(originProps.props ?? {}),
         ccom_category_list: removeUndefined({
+          pageSize,
           category,
           firstPage,
           slug,

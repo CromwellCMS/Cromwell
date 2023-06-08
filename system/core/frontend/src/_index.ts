@@ -5,6 +5,7 @@ export { CContainer } from './components/CContainer/CContainer';
 export { CImage } from './components/CImage/CImage';
 export { CPlugin } from './components/CPlugin/CPlugin';
 export { CGallery } from './components/CGallery/CGallery';
+export { Lightbox } from './components/CGallery/Lightbox';
 export { CList } from './components/CList/CList';
 export { CEditor } from './components/CEditor/CEditor';
 export { TCList, TCListProps, TListItemProps, TPaginationProps } from './components/CList/types';

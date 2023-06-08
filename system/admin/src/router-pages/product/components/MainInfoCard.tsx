@@ -23,6 +23,7 @@ const MainInfoCard = (props: {
   const cardIdRef = useRef<string>(getRandStr(10));
   const productRef = useRef<TProductVariant | TProduct | null>(props.product);
   const canUpdateMeta = useRef<boolean>(false);
+
   if (props.product !== productPrevRef.current) {
     productPrevRef.current = props.product;
     productRef.current = props.product;

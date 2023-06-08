@@ -6,7 +6,7 @@ import {
   TCustomGraphQlProperty,
   TPagedParams,
 } from '@cromwell/core';
-import { CList, TCList } from '@cromwell/core-frontend';
+import { CList, Lightbox, TCList } from '@cromwell/core-frontend';
 import queryString from 'query-string';
 import React from 'react';
 
@@ -40,6 +40,7 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
   private totalElements: number | null;
   private listId: string;
   private actionsWidth = 64;
+  private setLightbox?: (open: boolean, index: number, images: string[]) => void;
 
   private searchStore: TSearchStore = {};
 
@@ -317,6 +318,10 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
     this.resetList();
   };
 
+  private maximizeImages = (urls: string[], index: number) => {
+    this.setLightbox(true, index, urls);
+  };
+
   render() {
     const itemProps: TListItemProps<TEntityType, TFilterType> = {
       tableProps: this.props,
@@ -331,6 +336,7 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
       toggleSelection: this.handleToggleItemSelection,
       handleDeleteSelected: this.handleDeleteSelected,
       clearAllFilters: this.clearAllFilters,
+      maximizeImages: this.maximizeImages,
     };
 
     return (
@@ -359,6 +365,11 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
             />
           </div>
         )}
+        <Lightbox
+          getState={(setOpen) => {
+            this.setLightbox = setOpen;
+          }}
+        />
       </div>
     );
   }

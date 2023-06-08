@@ -12,6 +12,7 @@ export const ImageItem = (props: {
   data: TImageSettings;
   draggableHandleClass: string;
   hideSrc?: boolean;
+  onMaximizeImage?: (src: string) => void;
 }) => {
   const onSrcChange = (src: string | undefined) => {
     props.itemProps.onImageChange(
@@ -27,6 +28,7 @@ export const ImageItem = (props: {
       placeholder="Pick an image"
       onChange={onSrcChange}
       hideSrc={props.hideSrc}
+      onMaximizeImage={() => props.onMaximizeImage?.(props.data.src)}
     />
   );
 };

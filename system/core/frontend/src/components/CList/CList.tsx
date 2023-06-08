@@ -108,10 +108,21 @@ export class CList<DataType, ListItemProps = any>
   }
 
   public init(): void {
+    this.initProps();
+    this.loadState();
+  }
+
+  private initProps() {
     const props = this.getProps();
 
-    if (props.pageSize) this.pageSize = props.pageSize;
+    if (props.pageSize)
+      this.pageSize = (typeof props.pageSize === 'function' ? props.pageSize() : props.pageSize) ?? undefined;
+
     if (props.maxDomPages) this.maxDomPages = props.maxDomPages;
+  }
+
+  private loadState() {
+    const props = this.getProps();
 
     if (!props.dataList && props.loader) {
       if (props.useQueryPagination && !isServer()) {
@@ -122,10 +133,13 @@ export class CList<DataType, ListItemProps = any>
       }
 
       let firstBatch: TPagedList<DataType> | null | undefined;
-      if (typeof props.firstBatch === 'function') {
-        firstBatch = props.firstBatch();
-      } else {
-        firstBatch = props.firstBatch;
+      // Load firstBatch only if not using query pagination or if using query pagination and on first page
+      if (!props.useQueryPagination || !(props.useQueryPagination && this.currentPageNum !== 1)) {
+        if (typeof props.firstBatch === 'function') {
+          firstBatch = props.firstBatch();
+        } else {
+          firstBatch = props.firstBatch;
+        }
       }
 
       if (firstBatch) {
@@ -147,6 +161,12 @@ export class CList<DataType, ListItemProps = any>
     this.dataList = [];
     this.list = [];
     this.pageStatuses = [];
+    await this.fetchFirstBatch();
+  };
+
+  public reset = async () => {
+    this.clearState();
+    this.initProps();
     await this.fetchFirstBatch();
   };
 
@@ -203,6 +223,7 @@ export class CList<DataType, ListItemProps = any>
     if (loader) {
       this.isLoading = true;
       this.setOverlay(true, true);
+
       try {
         const data = await loader();
         if (data && !Array.isArray(data) && data.elements) {
@@ -601,12 +622,6 @@ export class CList<DataType, ListItemProps = any>
           style={props.useAutoLoading ? { height: '100%', overflow: 'auto' } : {}}
         >
           <div className={`${styles.wrapper} ${props.cssClasses?.contentWrapper ?? ''}`} ref={this.wrapperRef}>
-            {/* {props.useAutoLoading && (
-                            <div ref={this.throbberAutoloadingBefore} style={{ display: 'none' }}>
-                                <div className={styles.throbberAutoloading}
-                                    dangerouslySetInnerHTML={{ __html: throbber }}></div>
-                            </div>
-                        )} */}
             {this.list.map((l) => (
               <div
                 className={`${styles.page} ${props.cssClasses?.page || ''}`}

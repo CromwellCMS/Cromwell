@@ -1,4 +1,5 @@
 import { TImageSettings } from '@cromwell/core';
+import { Lightbox } from '@cromwell/core-frontend';
 import { LinkIcon, TrashIcon, TrashIcon as FillTrashIcon } from '@heroicons/react/24/outline';
 import { Add as AddIcon } from '@mui/icons-material';
 import { IconButton, Popover, TextField, Tooltip } from '@mui/material';
@@ -35,6 +36,7 @@ export class GalleryPicker extends Component<
 > {
   private uncontrolledInput: TImageSettings[] = [];
   private editableLinkRef: HTMLButtonElement;
+  private setLightbox?: (open: boolean, index: number, images: string[]) => void;
 
   private onImageChange = (index: number, value: TImageSettings | null) => {
     let images = [...(this.props.images ?? this.uncontrolledInput)];
@@ -114,6 +116,14 @@ export class GalleryPicker extends Component<
     };
   };
 
+  private onMaximizeImage = (src: string) => {
+    const images = (this.props.images ?? this.uncontrolledInput ?? []).map((image) => image.src);
+    const index = images.indexOf(src);
+    if (index > -1) {
+      this.setLightbox?.(true, index, images);
+    }
+  };
+
   render() {
     const images = (this.props.images ?? this.uncontrolledInput ?? []).map((image, index) => {
       if (!image.id) image.id = image.src + index;
@@ -156,6 +166,7 @@ export class GalleryPicker extends Component<
                       classes: this.props.classes?.imageInput,
                       allImages: images,
                     }}
+                    onMaximizeImage={this.onMaximizeImage}
                   />
                   {this.props.editLink && (
                     <LinkIcon
@@ -213,6 +224,11 @@ export class GalleryPicker extends Component<
             </Tooltip>
           </div>
         </div>
+        <Lightbox
+          getState={(setOpen) => {
+            this.setLightbox = setOpen;
+          }}
+        />
       </div>
     );
   }
