@@ -87,15 +87,17 @@ function EntityTableItem<TEntityType extends TBasePageEntity, TFilterType extend
             if (col.type === 'Image') {
               content = (
                 <div className={styles.imageItemContainer}>
-                  <IconButton
-                    className={styles.zoomItemBtn}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      listItemProps.maximizeImages([value], 0);
-                    }}
-                  >
-                    <MagnifyingGlassPlusIcon className="w-4 h-4" />
-                  </IconButton>
+                  {value && (
+                    <IconButton
+                      className={styles.zoomItemBtn}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        listItemProps.maximizeImages([value], 0);
+                      }}
+                    >
+                      <MagnifyingGlassPlusIcon className="w-4 h-4" />
+                    </IconButton>
+                  )}
                   <div className={styles.imageItem} style={{ backgroundImage: value && `url(${value})` }}></div>
                 </div>
               );
@@ -160,7 +162,7 @@ function EntityTableItem<TEntityType extends TBasePageEntity, TFilterType extend
                 if (element && element.offsetWidth < element.scrollWidth) title = props.title;
               }
 
-              if (col.type === 'Image') {
+              if (col.type === 'Image' && props.title) {
                 title = (
                   <a
                     href={props.title}

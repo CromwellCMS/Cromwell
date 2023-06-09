@@ -171,10 +171,10 @@ const args = yargs(process.argv.slice(2))
     },
     handler: async (argv) => {
       const serviceToClose = argv.service as TServiceNames;
-      const { closeServiceManagerByName, shutDownSystem } = getManager();
+      const { closeServiceAndManagerByName, shutDownSystem } = getManager();
 
       if (serviceToClose) {
-        await closeServiceManagerByName(serviceToClose);
+        await closeServiceAndManagerByName(serviceToClose);
       } else {
         await shutDownSystem();
       }

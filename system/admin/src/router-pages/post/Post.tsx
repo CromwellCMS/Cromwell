@@ -28,7 +28,7 @@ function PostEdit() {
       entityListRoute={postListInfo.route}
       entityBaseRoute={postPageInfo.baseRoute}
       listLabel="Posts"
-      entityLabel="Post"
+      entityLabel=""
       onSave={() => {
         context.hasChangesRef.current = false;
         return context.getInput();

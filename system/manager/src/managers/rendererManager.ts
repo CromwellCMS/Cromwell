@@ -15,7 +15,7 @@ import tcpPortUsed from 'tcp-port-used';
 
 import managerConfig from '../config';
 import { TRendererCommands } from '../constants';
-import { closeService, closeServiceManager, isPortUsed, isServiceRunning, startService } from './baseManager';
+import { closeService, closeServiceAndManager, isPortUsed, isServiceRunning, startService } from './baseManager';
 
 const { cacheKeys, servicesEnv } = managerConfig;
 const logger = getLogger();
@@ -293,7 +293,7 @@ export const closeRenderer = async (): Promise<boolean> => {
 
 export const closeRendererManager = async (): Promise<boolean> => {
   if (await isRendererRunning()) {
-    const success = await closeServiceManager(cacheKeys.renderer);
+    const success = await closeServiceAndManager(cacheKeys.renderer);
     if (!success) {
       logger.error('RendererManager::closeRenderer: failed to close Renderer by pid. Renderer is still active');
     } else {

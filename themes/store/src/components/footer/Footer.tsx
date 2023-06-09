@@ -22,7 +22,7 @@ export const Footer = () => {
         <CContainer className={styles.linksSection} id="footer_08">
           <CContainer className={styles.linksBlock} id="footer_09">
             <CText className={styles.blockHeader} id="footer_10">
-              Contact infromation
+              Contact information
             </CText>
             <CText className={styles.blockSubHeader} id="footer_11">
               Address

@@ -6,7 +6,7 @@ import tcpPortUsed from 'tcp-port-used';
 
 import config from '../config';
 import { TServerCommands } from '../constants';
-import { closeService, closeServiceManager, isPortUsed, startService } from './baseManager';
+import { closeService, closeServiceAndManager, isPortUsed, startService } from './baseManager';
 
 const { cacheKeys, servicesEnv } = config;
 const logger = getLogger();
@@ -99,7 +99,7 @@ export const closeServer = async (): Promise<boolean> => {
 
 export const closeServerManager = async (): Promise<boolean> => {
   try {
-    return closeServiceManager(cacheKeys.serverMain);
+    return closeServiceAndManager(cacheKeys.serverMain);
   } catch (e) {
     console.error(e);
   }

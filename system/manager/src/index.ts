@@ -8,7 +8,7 @@ export {
   startSystem,
   startServiceByName,
   closeServiceByName,
-  closeServiceManagerByName,
+  closeServiceAndManagerByName,
   shutDownSystem,
   getServicesStatus,
 } from './managers/baseManager';

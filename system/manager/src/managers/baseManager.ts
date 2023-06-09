@@ -1,4 +1,4 @@
-import { getStoreItem, setStoreItem, TServiceVersions } from '@cromwell/core';
+import { getStoreItem, setStoreItem, sleep, TServiceVersions } from '@cromwell/core';
 import { readCMSConfig } from '@cromwell/core-backend/dist/helpers/cms-settings';
 import { cmsPackageName } from '@cromwell/core-backend/dist/helpers/constants';
 import { getLogger } from '@cromwell/core-backend/dist/helpers/logger';
@@ -22,7 +22,7 @@ import treeKill from 'tree-kill';
 import managerConfig from '../config';
 import { serviceNames, TScriptName, TServiceNames } from '../constants';
 import { checkConfigs, checkModules } from '../tasks/checkModules';
-import { getProcessPid, loadCache, saveProcessPid } from '../utils/cacheManager';
+import { getProcessPid as __getProcessPid, loadCache, saveProcessPid } from '../utils/cacheManager';
 import { closeAdminPanel, closeAdminPanelManager, startAdminPanel } from './adminPanelManager';
 import { closeNginx, startNginx } from './dockerManager';
 import { closeRenderer, closeRendererManager, startRenderer } from './rendererManager';
@@ -33,39 +33,65 @@ const serviceProcesses: Record<string, ChildProcess> = {};
 const { cacheKeys } = managerConfig;
 const colors: any = colorsdef;
 
+async function getProcessPid(name: string) {
+  return new Promise<number | undefined>((done) => {
+    __getProcessPid(name, (pid: number) => {
+      done(pid);
+    });
+  });
+}
+
 export const closeService = async (name: string): Promise<boolean> => {
   await new Promise((resolve) => loadCache(resolve));
-  return new Promise((done) => {
-    const kill = (pid: number) => {
-      treeKill(pid, 'SIGTERM', async (err) => {
-        if (err) logger.log(err);
-        const isActive = await isServiceRunning(name);
-        if (isActive) {
-          logger.log(`BaseManager::closeService: failed to close service ${name} by pid. Service is still active!`);
-          done(false);
-        } else {
-          logger.log(
-            `BaseManager::closeService: failed to close service ${name} by pid. Service already closed. Return success=true`,
-          );
-          done(true);
-        }
-      });
-    };
 
-    const proc = serviceProcesses[name];
-    if (proc) {
-      proc.disconnect();
-      kill(proc.pid as number);
-    } else {
-      getProcessPid(name, (pid: number) => {
-        kill(pid);
+  const proc = serviceProcesses[name];
+  let pid: number | undefined;
+
+  if (proc) {
+    pid = proc.pid;
+    proc.disconnect();
+  }
+  if (!pid) {
+    pid = await getProcessPid(name);
+  }
+
+  const kill = async (pid: number, signal: 'SIGTERM' | 'SIGKILL') => {
+    return new Promise<void>((done) => {
+      treeKill(pid, signal, async (err) => {
+        if (err) logger.log(err);
+        done();
       });
-    }
-  });
+    });
+  };
+
+  if (!pid || !isRunning(pid)) {
+    return true;
+  }
+
+  await kill(pid, 'SIGTERM');
+  if (isRunning(pid)) await sleep(1);
+  if (isRunning(pid)) await sleep(1);
+
+  if (isRunning(pid)) {
+    await kill(pid, 'SIGKILL');
+    if (isRunning(pid)) await sleep(1);
+  }
+
+  if (isRunning(pid)) {
+    logger.log(
+      `BaseManager::closeService: failed to close service ${name} by pid. Service is still active! pid ${pid}`,
+    );
+    return false;
+  }
+
+  return true;
 };
 
-export const closeServiceManager = async (name: string): Promise<boolean> => {
-  return closeService(`${name}_manager`);
+export const closeServiceAndManager = async (name: string): Promise<boolean> => {
+  const successService = await closeService(name);
+  const successManager = await closeService(`${name}_manager`);
+
+  return successService && successManager;
 };
 
 export const startService = async ({
@@ -110,12 +136,9 @@ export const startService = async ({
   return child;
 };
 
-export const isServiceRunning = (name: string): Promise<boolean> => {
-  return new Promise((done) => {
-    getProcessPid(name, (pid: number) => {
-      done(isRunning(pid));
-    });
-  });
+export const isServiceRunning = async (name: string): Promise<boolean> => {
+  const pid = await getProcessPid(name);
+  return isRunning(pid);
 };
 
 export const isPortUsed = (port: number): Promise<boolean> => {
@@ -282,7 +305,7 @@ export const closeServiceByName = async (serviceName: TServiceNames) => {
   }
 };
 
-export const closeServiceManagerByName = async (serviceName: TServiceNames) => {
+export const closeServiceAndManagerByName = async (serviceName: TServiceNames) => {
   if (!serviceNames.includes(serviceName)) {
     logger.warn('Invalid service name. Available names are: ' + serviceNames);
   }
@@ -305,21 +328,11 @@ export const closeServiceManagerByName = async (serviceName: TServiceNames) => {
 };
 
 export const shutDownSystem = async () => {
-  try {
-    await closeAdminPanelManager();
-  } catch (error) {
-    console.error(error);
-  }
-  try {
-    await closeRendererManager();
-  } catch (error) {
-    console.error(error);
-  }
-  try {
-    await closeServerManager();
-  } catch (error) {
-    console.error(error);
-  }
+  await Promise.all([
+    closeAdminPanelManager().catch((e) => logger.error(e)),
+    closeRendererManager().catch((e) => logger.error(e)),
+    closeServerManager().catch((e) => logger.error(e)),
+  ]).catch((e) => logger.error(e));
 };
 
 /**
@@ -381,16 +394,6 @@ export const startWatchService = async (serviceName: keyof TServiceVersions, onV
   }, currentSettings?.watchPoll ?? 2000);
 };
 
-export const killByPid = async (pid: number) => {
-  const success = await new Promise<boolean>((done) => {
-    treeKill(pid, 'SIGTERM', async (err) => {
-      const running = isRunning(pid);
-      done(!!err && !running);
-    });
-  });
-  return success;
-};
-
 nodeCleanup(() => {
   Object.values(serviceProcesses).forEach((child) => {
     try {
@@ -402,8 +405,6 @@ nodeCleanup(() => {
 });
 
 export const getServicesStatus = async () => {
-  isServiceRunning(cacheKeys.adminPanel);
-  isServiceRunning(cacheKeys.renderer);
   logger.info(
     `CMS services status:
   - API Server:..........${

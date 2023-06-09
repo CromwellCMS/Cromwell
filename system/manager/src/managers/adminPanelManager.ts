@@ -6,7 +6,7 @@ import tcpPortUsed from 'tcp-port-used';
 
 import config from '../config';
 import { TAdminPanelCommands } from '../constants';
-import { closeService, closeServiceManager, isPortUsed, startService } from './baseManager';
+import { closeService, closeServiceAndManager, isPortUsed, startService } from './baseManager';
 
 const logger = getLogger();
 const adminPanelStartupPath = getAdminPanelStartupPath();
@@ -118,7 +118,7 @@ export const closeAdminPanel = async (): Promise<boolean> => {
 
 export const closeAdminPanelManager = async (): Promise<boolean> => {
   const { cacheKeys } = config;
-  const success = await closeServiceManager(cacheKeys.adminPanel);
+  const success = await closeServiceAndManager(cacheKeys.adminPanel);
   if (success) {
     logger.log(`AdminManager::closeAdmin: Admin has been closed`);
   }

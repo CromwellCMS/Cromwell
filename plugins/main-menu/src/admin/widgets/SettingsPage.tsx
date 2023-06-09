@@ -15,7 +15,7 @@ export function SettingsPage(props: TPluginSettingsProps<TMainMenuSettings>) {
   const [canReorder, setCanReorder] = useState(false);
 
   const onSave = () => {
-    getRestApiClient().purgeRendererEntireCache();
+    getRestApiClient().purgeRendererEntireCache({ disableLog: true }).catch(console.error);
   };
 
   return (

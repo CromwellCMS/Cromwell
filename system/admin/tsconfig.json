@@ -23,10 +23,10 @@
     },
     "strict": false,
     "forceConsistentCasingInFileNames": true,
-    "noEmit": true,
-    "incremental": true,
     "resolveJsonModule": true,
-    "isolatedModules": true
+    "isolatedModules": true,
+    "noEmit": true,
+    "incremental": true
   },
   "exclude": [
     "node_modules",

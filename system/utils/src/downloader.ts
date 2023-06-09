@@ -67,10 +67,12 @@ export const downloader = async (options?: {
     const depDir = resolve(bundledModulesDir, depName);
 
     if (!(await fs.pathExists(depDir))) {
-      readline.clearLine(process.stdout, -1);
-      readline.clearLine(process.stdout, 0);
-      process.stdout.write(colors.cyan(`Downloading frontend module: ${colors.brightCyan(depName)}`));
-      readline.cursorTo(process.stdout, 0);
+      if (getStoreItem('environment')?.mode === 'dev') {
+        readline.clearLine(process.stdout, -1);
+        readline.clearLine(process.stdout, 0);
+        process.stdout.write(colors.cyan(`Downloading frontend module: ${colors.brightCyan(depName)}`));
+        readline.cursorTo(process.stdout, 0);
+      }
 
       downloads++;
       const success = await downloadBundleZipped(depName, bundledModulesDir);

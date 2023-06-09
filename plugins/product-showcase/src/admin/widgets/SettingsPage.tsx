@@ -11,7 +11,7 @@ export function SettingsPage(props: TPluginSettingsProps<TSettings>) {
   const classes = useStyles();
 
   const onSave = () => {
-    getRestApiClient().purgeRendererEntireCache();
+    getRestApiClient().purgeRendererEntireCache({ disableLog: true }).catch(console.error);
   };
 
   return (

@@ -4,7 +4,6 @@ import { Tooltip } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 
 import EntityTable from '../../components/entity/entityTable/EntityTable';
-import LoadBox from '../../components/loadBox/LoadBox';
 import { postListInfo, postPageInfo } from '../../constants/PageInfos';
 import { baseEntityColumns } from '../../helpers/customEntities';
 import { formatTimeAgo } from '../../helpers/time';
@@ -51,8 +50,6 @@ export default function PostTable() {
     getUsers();
     getPostTags();
   }, []);
-
-  if (!users || !tags) return <LoadBox />;
 
   return (
     <EntityTable
@@ -131,6 +128,7 @@ export default function PostTable() {
           customGraphQlFragment: 'tags {\n id\n name\n }\n',
           getValueView: (tags: TTag[]) => {
             const text = tags?.map((tag) => tag.name)?.join(', ') ?? '';
+            if (!text) return '';
             return (
               <Tooltip title={text}>
                 <p style={ellipsisStyle}>{text}</p>

@@ -1,4 +1,4 @@
-import { PluginSettingsLayout, Select, TextFieldWithTooltip } from '@cromwell/admin-panel';
+import { PluginSettingsLayout, SelectInput, TextFieldWithTooltip } from '@cromwell/admin-panel';
 import { TPluginSettingsProps } from '@cromwell/core';
 import React from 'react';
 
@@ -27,13 +27,13 @@ export function SettingsPage(props: TPluginSettingsProps<SettingsType>) {
             fullWidth
             onChange={(event) => changeSetting('client_secret', event.target.value)}
           />
-          <Select
-            label="Mode"
+          <SelectInput
+            label="Paypal Mode"
             value={pluginSettings?.mode ?? 'sandbox'}
-            onChange={(event) => changeSetting('mode', event.target.value as any)}
-            sx={{ mb: 4, minWidth: 200 }}
-            tooltipText="Paypal mode"
-            tooltipLink="https://developer.paypal.com/docs/api-basics/sandbox/"
+            onChange={(value) => changeSetting('mode', value as any)}
+            style={{ marginBottom: 4, minWidth: 200 }}
+            // tooltipText="Paypal mode"
+            // tooltipLink="https://developer.paypal.com/docs/api-basics/sandbox/"
             options={[
               {
                 label: 'Sandbox',

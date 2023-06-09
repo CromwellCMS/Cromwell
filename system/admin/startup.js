@@ -62,6 +62,20 @@ const main = async () => {
     }, 200);
   };
 
+  const outputDeclarations = () => {
+    spawn(
+      `npx --no-install tsc --declaration --emitDeclarationOnly --noEmit -p ${normalizePath(
+        join(getAdminPanelDir(), 'tsconfig.json'),
+      )} --outDir ${normalizePath(join(buildDir, 'types'))}`,
+      [],
+      {
+        cwd: getAdminPanelDir(),
+        shell: true,
+        stdio: 'inherit',
+      },
+    );
+  };
+
   const runDev = () => {
     fs.ensureDirSync(buildDir);
 
@@ -119,7 +133,8 @@ const main = async () => {
   };
 
   if (scriptName === 'build') {
-    await buildServerScript();
+    outputDeclarations();
+    buildServerScript();
     await buildWebApp();
   }
 

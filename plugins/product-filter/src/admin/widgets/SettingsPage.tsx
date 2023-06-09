@@ -9,7 +9,7 @@ import { TProductFilterSettings } from '../../types';
 
 export function SettingsPage(props: TPluginSettingsProps<TProductFilterSettings>) {
   const onSave = () => {
-    getRestApiClient().purgeRendererEntireCache();
+    getRestApiClient().purgeRendererEntireCache({ disableLog: true }).catch(console.error);
   };
 
   return (
