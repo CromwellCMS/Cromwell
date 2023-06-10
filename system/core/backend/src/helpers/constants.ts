@@ -1,4 +1,4 @@
-import { serviceLocator, TCmsConfig } from '@cromwell/core';
+import { serviceLocator, TCmsConfig, awaitValue as coreAwaitValue } from '@cromwell/core';
 import { ConnectionOptions } from 'typeorm';
 
 import { AttributeToProduct } from '../models/entities/attribute-product.entity';
@@ -32,6 +32,7 @@ import { Tag } from '../models/entities/tag.entity';
 import { ThemeEntity } from '../models/entities/theme.entity';
 import { User } from '../models/entities/user.entity';
 import { DashboardEntity } from '../models/entities/dashboard-entity.entity';
+import { getLogger } from './logger';
 
 export const ORMEntities = [
   ThemeEntity,
@@ -585,4 +586,11 @@ export const getBcrypt = (): {
     compareSync: bcryptLib.compareSync,
     compare: bcryptLib.compare,
   };
+};
+
+export const awaitValue: typeof coreAwaitValue = (valueGetter, timeout, options) => {
+  return coreAwaitValue(valueGetter, timeout, {
+    logger: getLogger(),
+    ...options,
+  });
 };

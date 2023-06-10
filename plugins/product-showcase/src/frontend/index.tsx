@@ -8,8 +8,10 @@ import {
   TPagedList,
   TProduct,
 } from '@cromwell/core';
-import { CGallery, getGraphQLClient, Link } from '@cromwell/core-frontend';
+import { CGallery, getGraphQLClient } from '@cromwell/core-frontend';
 import React, { useEffect, useRef, useState } from 'react';
+
+import { DefaultProductCard } from './ProductCard';
 
 type ProductShowcaseProps = {
   slug?: string | null;
@@ -64,20 +66,7 @@ const ProductShowcase = (props: TFrontendPluginProps<ProductShowcaseProps>): JSX
   let ProductComp = getSharedComponent(ESharedComponentNames.ProductCard);
   if (!ProductComp) {
     // Default view otherwise
-    ProductComp = (props: { product?: TProduct | undefined }): JSX.Element => {
-      const p = props.product;
-      if (p)
-        return (
-          <div key={p.id}>
-            <img src={p?.mainImage ?? undefined} width="300px" />
-            <Link href={`/product/${p.slug}`}>
-              <a>{p.name}</a>
-            </Link>
-            <p>{p.price}</p>
-          </div>
-        );
-      else return <></>;
-    };
+    ProductComp = DefaultProductCard;
   }
 
   return (

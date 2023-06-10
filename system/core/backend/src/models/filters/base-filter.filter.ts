@@ -25,6 +25,9 @@ export class PropertySearch {
   @Field(() => StringifiedValueScalar, { nullable: true })
   to?: string | number | boolean | Date | null;
 
+  @Field(() => [StringifiedValueScalar], { nullable: true })
+  in?: (string | number | boolean | Date)[] | null;
+
   @Field(() => Boolean, { nullable: true })
   exact?: boolean;
 

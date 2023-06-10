@@ -58,6 +58,7 @@ export type TBaseFilter = {
     value?: string | number | boolean | Date | null;
     from?: string | number | boolean | Date | null;
     to?: string | number | boolean | Date | null;
+    in?: (string | number | boolean | Date)[] | null;
     exact?: boolean;
     inMeta?: boolean;
   }[];

@@ -20,6 +20,7 @@
     "format": "prettier --write --ignore-unknown \"**/*.+(js|jsx|json|css|scss|md|ts|tsx)\"",
     "add": "yarn workspace @cromwell/admin-panel add",
     "dev": "node startup.js dev",
+    "build:types": "node startup.js types",
     "prod": "node startup.js prod",
     "test": "npx --no-install jest",
     "test:watch": "npx --no-install jest --watch",

@@ -61,3 +61,28 @@ export const removeUndefined = <T>(obj: T): T => {
   }
   return obj;
 };
+
+export const awaitValue = async <T>(
+  valueGetter: () => T | Promise<T | undefined | null> | undefined | null,
+  timeout: number,
+  { interval = 0.1, logger = console }: { interval?: number; logger?: Partial<typeof console> } = {},
+): Promise<T | undefined | null> => {
+  return new Promise<T | undefined | null>((resolve) => {
+    setTimeout(() => {
+      resolve(null);
+    }, timeout * 1000);
+
+    (async () => {
+      const value = await valueGetter();
+      if (value) resolve(value);
+
+      for (let i = 0; i < timeout / interval; i++) {
+        await sleep(interval);
+        const value = await valueGetter();
+        if (value) resolve(value);
+      }
+
+      resolve(null);
+    })().catch((error) => logger?.error?.(error));
+  });
+};

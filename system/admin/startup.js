@@ -7,7 +7,7 @@ const normalizePath = require('normalize-path');
 const { adminPanelMessages } = require('@cromwell/core-backend/dist/helpers/constants');
 const { getLogger } = require('@cromwell/core-backend/dist/helpers/logger');
 
-// 'build' | 'dev' | 'prod'
+// 'build' | 'dev' | 'prod' | 'types'
 const scriptName = process.argv[2];
 
 const logger = getLogger();
@@ -64,7 +64,7 @@ const main = async () => {
 
   const outputDeclarations = () => {
     spawn(
-      `npx --no-install tsc --declaration --emitDeclarationOnly --noEmit -p ${normalizePath(
+      `npx --no-install tsc --declaration --emitDeclarationOnly --noEmit null -p ${normalizePath(
         join(getAdminPanelDir(), 'tsconfig.json'),
       )} --outDir ${normalizePath(join(buildDir, 'types'))}`,
       [],
@@ -144,6 +144,10 @@ const main = async () => {
 
   if (scriptName === 'prod') {
     await runProd();
+  }
+
+  if (scriptName === 'types') {
+    outputDeclarations();
   }
 };
 

@@ -52,7 +52,7 @@ export const SettingsPage = () => {
         <Route path={`acl`} element={<ACLSettingsPage />} />
         <Route path={`acl/:roleId`} element={<CustomRoleSettingsPage />} />
         <Route path={`custom-data`} element={<CustomDataPage />} />
-        <Route path={`crustom-data/poduct`} element={<DefaultEntitySettingsPage entityType={EDBEntity.Product} />} />
+        <Route path={`custom-data/product`} element={<DefaultEntitySettingsPage entityType={EDBEntity.Product} />} />
         <Route
           path={`custom-data/category`}
           element={<DefaultEntitySettingsPage entityType={EDBEntity.ProductCategory} />}

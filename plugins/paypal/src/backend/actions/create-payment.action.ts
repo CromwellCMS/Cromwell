@@ -9,7 +9,7 @@ import { SettingsType } from '../../types';
 const logger = getLogger();
 
 export const createPayment = async (input: TOrderPaymentSession) => {
-  const settings: SettingsType = await getPluginSettings(pluginName);
+  const settings = await getPluginSettings<SettingsType>(pluginName);
   const { client_id, client_secret, mode } = settings ?? {};
   const cart = (input.cart as TStoreListItem[]) ?? [];
 

@@ -80,7 +80,7 @@ class ErrorBoundary extends React.Component<any, { hasError: boolean; errorMessa
   }
 
   static getDerivedStateFromError(error) {
-    return { hasError: true, errorMessage: JSON.stringify(error) };
+    return { hasError: true, errorMessage: error.message || JSON.stringify(error) };
   }
 
   componentDidCatch(error, errorInfo) {

@@ -657,7 +657,7 @@ Open `cromwell.config.js`. You can see there's `rollupConfig` function that retu
 Usually, `RollupOptions` is an object exported from [Rollup Config File](https://rollupjs.org/guide/en/#configuration-files). CMS builder needs different configs for different targets, so your `rollupConfig` function should return an object with configs labeled by properties:
 
 - `main` - Options used by default for all types of bundles.
-- `adminPanel` - Options that replace main only for Admin panel bundles.
+- `admin` - Options that replace main only for Admin panel bundles.
 - `frontend` - Options for frontend bundle ().
 - `backend` - Options for backend bundle.
 

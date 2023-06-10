@@ -239,8 +239,8 @@ export type TRollupConfig = {
   frontend?: Record<string, any>;
   frontendCjs?: Record<string, any>;
   backend?: Record<string, any>;
+  admin?: Record<string, any>;
   themePages?: Record<string, any>;
-  adminPanel?: Record<string, any>;
 };
 
 /**
@@ -641,10 +641,10 @@ export type TSystemUsage = {
 
 export type TSharedComponents = Partial<{
   [ESharedComponentNames.ProductCard]: React.ComponentType<{
-    product: TPost;
+    product: TProduct;
   }>;
   [ESharedComponentNames.PostCard]: React.ComponentType<{
-    post: TProduct;
+    post: TPost;
   }>;
 }>;
 

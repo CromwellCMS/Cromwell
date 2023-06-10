@@ -1,10 +1,12 @@
-import { IconButton, InputAdornment, TextField, TextFieldProps, Tooltip } from '@mui/material';
-import { HelpOutlineOutlined } from '@mui/icons-material';
+import { IconButton } from '@components/buttons/IconButton';
+import { TextInput, TextInputProps } from '@components/inputs/TextInput';
+import { ArrowTopRightOnSquareIcon, InformationCircleIcon } from '@heroicons/react/24/outline';
+import { Box, Tooltip } from '@mui/material';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export default function TextFieldWithTooltip(
-  props: TextFieldProps & {
+  props: TextInputProps & {
     tooltipText?: string;
     tooltipLink?: string;
   },
@@ -22,19 +24,26 @@ export default function TextFieldWithTooltip(
   };
 
   return (
-    <TextField
-      InputProps={{
-        endAdornment: (
-          <InputAdornment position="end">
+    <TextInput
+      endAdornment={
+        (props.tooltipText || props.tooltipLink) && (
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Tooltip title={props.tooltipText}>
-              <IconButton onClick={openLink}>
-                <HelpOutlineOutlined />
+              <IconButton
+                disableRipple={!props.tooltipLink}
+                sx={{ cursor: props.tooltipLink ? 'pointer' : 'initial' }}
+                onClick={openLink}
+              >
+                {props.tooltipLink ? (
+                  <ArrowTopRightOnSquareIcon className="w-4 h-4" />
+                ) : (
+                  <InformationCircleIcon className="w-4 h-4" />
+                )}
               </IconButton>
             </Tooltip>
-          </InputAdornment>
-        ),
-      }}
-      variant="standard"
+          </Box>
+        )
+      }
       {...props}
     />
   );

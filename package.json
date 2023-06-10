@@ -49,6 +49,7 @@
     "plugins/product-showcase",
     "plugins/stripe",
     "plugins/paypal",
+    "plugins/marqo",
     "themes/blog",
     "themes/store",
     "toolkits/commerce",

@@ -1,4 +1,4 @@
-import { Box } from '@mui/material';
+import { Box, SxProps } from '@mui/material';
 import React from 'react';
 
 export const TextButton = React.forwardRef(
@@ -8,10 +8,10 @@ export const TextButton = React.forwardRef(
         inputClassName?: string;
         variant?: 'filled' | 'outlined';
       }
-    >,
+    > & { sx?: SxProps },
     ref,
   ) => {
-    const { children, variant = 'filled', ...buttonProps } = props;
+    const { children, variant = 'filled', sx, ...buttonProps } = props;
     return (
       <Box
         component="button"
@@ -51,6 +51,7 @@ export const TextButton = React.forwardRef(
             color: 'white',
             borderColor: 'primary.main',
           },
+          ...sx,
         }}
       >
         {children}

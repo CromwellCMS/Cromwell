@@ -706,23 +706,23 @@ export class CGraphQLClient {
     return this.query(
       {
         query: gql`
-                query getProducts($pagedParams: PagedParamsInput, $filterParams: ProductFilterInput) {
-                    ${path}(pagedParams: $pagedParams, filterParams: $filterParams) {
-                        pagedMeta {
-                            ...PagedMetaFragment
-                        }
-                        filterMeta {
-                            minPrice
-                            maxPrice
-                        }
-                        elements {
-                            ...${fragmentName}
-                        }
-                    }
-                }
-                ${fragment}
-                ${this.PagedMetaFragment}
-            `,
+          query getProducts($pagedParams: PagedParamsInput, $filterParams: ProductFilterInput) {
+            ${path}(pagedParams: $pagedParams, filterParams: $filterParams) {
+              pagedMeta {
+                ...PagedMetaFragment
+              }
+              filterMeta {
+                minPrice
+                maxPrice
+              }
+              elements {
+                ...${fragmentName}
+              }
+            }
+          }
+          ${fragment}
+          ${this.PagedMetaFragment}
+        `,
         variables: {
           pagedParams: pagedParams ?? {},
           filterParams,

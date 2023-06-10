@@ -23,7 +23,7 @@ export const savePlugin = (plugin: TPluginEntity): Promise<TPluginEntity> => {
   return pluginRepo.save(plugin);
 };
 
-export const getPluginSettings = async (pluginName: string) => {
+export const getPluginSettings = async <T>(pluginName: string): Promise<T | undefined> => {
   const plugin = await findPlugin(pluginName);
 
   if (!plugin) {

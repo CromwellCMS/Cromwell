@@ -121,6 +121,7 @@ export const createWithFilters = async <TEntityKey extends keyof TFilterableEnti
   return (
     await applyDataFilters(entity, 'createOutput', {
       data: await create(input),
+      input,
       user: ctx?.user,
       permissions,
     }).then((res) => {
@@ -153,6 +154,7 @@ export const updateWithFilters = async <TEntityKey extends keyof TFilterableEnti
     await applyDataFilters(entity, 'updateOutput', {
       id,
       data: await update(id, input),
+      input,
       user: ctx?.user,
       permissions,
     }).then((res) => {

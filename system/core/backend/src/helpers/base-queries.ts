@@ -227,6 +227,12 @@ export const applyBaseFilter = <TEntity>({
             [fromName]: getRangeValue(prop.from),
             [toName]: getRangeValue(prop.to),
           });
+        } else if (Array.isArray(prop.in)) {
+          if (prop.in.length) {
+            qb.andWhere(`${entityTablePath}.${wrapInQuotes(dbType, prop.key)} IN (:...${valueName})`, {
+              [valueName]: prop.in,
+            });
+          }
         } else {
           qb.andWhere(
             `${entityTablePath}.${wrapInQuotes(dbType, prop.key)} ${
@@ -248,6 +254,12 @@ export const applyBaseFilter = <TEntity>({
             [fromName]: getRangeValue(prop.from),
             [toName]: getRangeValue(prop.to),
           });
+        } else if (Array.isArray(prop.in)) {
+          if (prop.in.length) {
+            qb.andWhere(`${searchMetaJoinName}.${wrapInQuotes(dbType, 'value')} IN (:...${valueName})`, {
+              [valueName]: prop.in,
+            });
+          }
         } else {
           qb.andWhere(
             `${searchMetaJoinName}.${wrapInQuotes(dbType, 'value')} ${

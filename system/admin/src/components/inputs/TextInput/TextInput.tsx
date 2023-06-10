@@ -1,4 +1,5 @@
 import { NumberFormatCustom } from '@helpers/NumberFormatCustom';
+import { Box, SxProps } from '@mui/material';
 import clsx from 'clsx';
 import React, { ForwardedRef, useState } from 'react';
 
@@ -23,6 +24,7 @@ export type TextInputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, '
   inputFieldClassName?: string;
   inputElementClassName?: string;
   defaultValue?: string | number | readonly string[];
+  sx?: SxProps;
 };
 
 export const TextInput = React.forwardRef(
@@ -46,6 +48,7 @@ export const TextInput = React.forwardRef(
       style,
       onChange,
       baseSize,
+      sx,
       ...rest
     } = props;
     const [_value, setValue] = useState(defaultValue ?? '');
@@ -93,7 +96,7 @@ export const TextInput = React.forwardRef(
     );
 
     return (
-      <div style={style} className={clsx(rootClassName, className)}>
+      <Box sx={sx} style={style} className={clsx(rootClassName, className)}>
         {label && (
           <label className="w-full group active:text-indigo-500">
             <p className="font-bold pb-1 pl-[2px] text-gray-700">{label}</p>
@@ -105,7 +108,7 @@ export const TextInput = React.forwardRef(
           </label>
         )}
         {!label && inputField}
-      </div>
+      </Box>
     );
   },
 );

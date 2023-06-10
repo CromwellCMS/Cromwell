@@ -65,9 +65,9 @@ type TDataFilterParameters<
     filter?: TEntityFilter;
   } & TFilterFunctionBaseOptions;
   createInput: { data: TCreateEntity } & TFilterFunctionBaseOptions;
-  createOutput: { data: TEntity } & TFilterFunctionBaseOptions;
+  createOutput: { data: TEntity; input: TCreateEntity } & TFilterFunctionBaseOptions;
   updateInput: { data: TUpdateEntity; id: number } & TFilterFunctionBaseOptions;
-  updateOutput: { data: TEntity; id: number } & TFilterFunctionBaseOptions;
+  updateOutput: { data: TEntity; id: number; input: TUpdateEntity } & TFilterFunctionBaseOptions;
   deleteInput: { id: number } & TFilterFunctionBaseOptions;
   deleteOutput: { id: number; success: boolean } & TFilterFunctionBaseOptions;
   deleteManyInput: { input: TDeleteManyInput; filter?: TEntityFilter } & TFilterFunctionBaseOptions;
@@ -126,7 +126,7 @@ type TDataFilterFunction<TEntityKey extends keyof TFilterableEntities, TAction e
     entity: TDBEntity;
     action: keyof TDataFilterParameters;
   },
-) => Promise<Partial<TGetDataFilterParameter<TEntityKey, TAction>>>;
+) => Promise<Partial<TGetDataFilterParameter<TEntityKey, TAction>> | null | undefined | void> | null | undefined | void;
 
 type TRegisterDataFilterOptions<
   TEntityKey extends keyof TFilterableEntities,
@@ -188,9 +188,11 @@ export const applyDataFilters = async <
       action,
       ...data,
     });
-    Object.entries(result).forEach(([key, val]) => {
-      data[key] = val;
-    });
+    if (result) {
+      Object.entries(result).forEach(([key, val]) => {
+        data[key] = val;
+      });
+    }
   }
   return data;
 };

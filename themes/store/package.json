@@ -28,6 +28,7 @@
     "author": "Cromwell CMS",
     "plugins": [
       "@cromwell/plugin-product-filter",
+      "@cromwell/plugin-marqo",
       "@cromwell/plugin-main-menu",
       "@cromwell/plugin-product-showcase",
       "@cromwell/plugin-newsletter",
@@ -139,6 +140,7 @@
     "@cromwell/plugin-paypal": "^1.0.3",
     "@cromwell/plugin-product-filter": "^1.0.35",
     "@cromwell/plugin-product-showcase": "^1.0.26",
+    "@cromwell/plugin-marqo": "^1.0.0",
     "@cromwell/plugin-stripe": "^1.0.13",
     "@cromwell/renderer": "^2.1.5",
     "@cromwell/toolkit-commerce": "^1.0.4",

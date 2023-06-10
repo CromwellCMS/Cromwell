@@ -192,7 +192,7 @@ export const rollupConfigWrapper = async (
     }
 
     if (adminInputFile) {
-      const options = Object.assign({}, specifiedOptions?.frontend ?? inputOptions);
+      const options = Object.assign({}, specifiedOptions?.admin ?? inputOptions);
       const inputPath = isAbsolute(adminInputFile)
         ? normalizePath(adminInputFile)
         : normalizePath(resolve(process.cwd(), adminInputFile));

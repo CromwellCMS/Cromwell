@@ -1,5 +1,5 @@
 import { TPagedList, TProduct } from '@cromwell/core';
-import { getLogger, PagedProduct, PluginRepository, ProductCategory, ProductRepository } from '@cromwell/core-backend';
+import { getLogger, getPluginSettings, PagedProduct, ProductCategory, ProductRepository } from '@cromwell/core-backend';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { Arg, Query, Resolver } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
@@ -24,9 +24,8 @@ export default class PluginProductShowcaseResolver {
     let products: TPagedList<TProduct> = {
       elements: [],
     };
-    const settings = await getCustomRepository(PluginRepository).getPluginSettings<TSettings>(
-      '@cromwell/plugin-product-showcase',
-    );
+
+    const settings = await getPluginSettings<TSettings>('@cromwell/plugin-product-showcase');
     const maxSize = settings?.size ?? 20;
 
     if (slug) {

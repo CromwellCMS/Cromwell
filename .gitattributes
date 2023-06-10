@@ -2,6 +2,4 @@
 * text=auto
 
 # Declare files that will always have LF line endings on checkout.
-
-# CLI bin file
-cromwell text eol=lf
+* text=auto eol=lf

@@ -321,7 +321,13 @@ export class StoreService {
       })
     ).data;
     const createdOrder = await getCustomRepository(OrderRepository).createOrder(createOrderFiltered);
-    return (await applyDataFilters('Order', 'createOutput', { data: createdOrder, permissions: [] })).data;
+    return (
+      await applyDataFilters('Order', 'createOutput', {
+        data: createdOrder,
+        permissions: [],
+        input: createOrderFiltered,
+      })
+    ).data;
   }
 
   async placeProductReview(input: ProductReviewInput): Promise<TProductReview> {
@@ -336,6 +342,8 @@ export class StoreService {
     ).data;
 
     const review = await getCustomRepository(ProductReviewRepository).createProductReview(inputFiltered);
-    return (await applyDataFilters('ProductReview', 'createOutput', { data: review, permissions: [] })).data;
+    return (
+      await applyDataFilters('ProductReview', 'createOutput', { data: review, permissions: [], input: inputFiltered })
+    ).data;
   }
 }

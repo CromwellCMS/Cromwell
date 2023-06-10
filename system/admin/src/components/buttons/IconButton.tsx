@@ -5,10 +5,11 @@ export const IconButton = React.forwardRef(
   (
     props: React.PropsWithChildren<React.ButtonHTMLAttributes<HTMLButtonElement>> & {
       sx?: SxProps;
+      disableRipple?: boolean;
     },
     ref,
   ) => {
-    const { children, sx, ...buttonProps } = props;
+    const { children, sx, disableRipple, ...buttonProps } = props;
     const theme = useTheme();
     return (
       <Box
@@ -22,13 +23,15 @@ export const IconButton = React.forwardRef(
           transition: '0.3s',
           opacity: props.disabled ? 0.3 : 1,
           '&:hover': {
-            backgroundColor: 'rgba(0,0,0, 0.15)',
+            backgroundColor: !disableRipple ? 'rgba(0,0,0, 0.15)' : undefined,
           },
-          ':active': {
-            border: '2px solid #222',
-            borderColor: theme.palette.primary.main,
-            backgroundColor: alpha(theme.palette.primary.main, 0.2),
-          },
+          ':active': !disableRipple
+            ? {
+                border: '2px solid #222',
+                borderColor: theme.palette.primary.main,
+                backgroundColor: alpha(theme.palette.primary.main, 0.2),
+              }
+            : undefined,
           ...sx,
         }}
       >

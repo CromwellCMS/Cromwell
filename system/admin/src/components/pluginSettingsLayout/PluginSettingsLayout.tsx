@@ -1,6 +1,6 @@
 import { TPluginSettingsProps } from '@cromwell/core';
 import { getRestApiClient } from '@cromwell/core-frontend';
-import { Button, IconButton, Tooltip } from '@mui/material';
+import { Box, Tooltip } from '@mui/material';
 import { ArrowBack, InfoOutlined as InfoIcon } from '@mui/icons-material';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -12,6 +12,8 @@ import LoadBox from '../loadBox/LoadBox';
 import MarketModal from '../market/MarketModal';
 import Modal from '../modal/Modal';
 import styles from './PluginSettingsLayout.module.scss';
+import { TextButton } from '@components/buttons/TextButton';
+import { IconButton } from '@components/buttons/IconButton';
 
 export default function PluginSettingsLayout<TSettings>(
   props: TPluginSettingsProps<TSettings> & {
@@ -82,7 +84,7 @@ export default function PluginSettingsLayout<TSettings>(
                 <p className={styles.version}>v.{props.pluginInfo?.version ?? ''}</p>
               </div>
             </div>
-            <div>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
               {props.pluginInfo && (
                 <Tooltip title="Info">
                   <IconButton style={{ marginRight: '10px' }} onClick={toggleOpenInfo}>
@@ -90,16 +92,16 @@ export default function PluginSettingsLayout<TSettings>(
                   </IconButton>
                 </Tooltip>
               )}
-              <Button
-                variant="contained"
+              <TextButton
+                variant="filled"
                 color="primary"
                 className={styles.saveBtn}
                 onClick={handleSave}
                 disabled={isSaving || props.disableSave}
               >
                 Save
-              </Button>
-            </div>
+              </TextButton>
+            </Box>
           </div>
           <div className={styles.main}>
             {typeof props.children === 'function'

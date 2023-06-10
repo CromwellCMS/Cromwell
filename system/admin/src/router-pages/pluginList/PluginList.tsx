@@ -38,15 +38,20 @@ export default function PluginList() {
         graphQLClient.getAllEntities('Plugin', graphQLClient.PluginFragment, 'PluginFragment'),
       ]);
 
-      return pluginPackages?.map((pckg) => {
-        const pluginEntity = (pluginEntities as TPluginEntity[])?.find((ent) => ent.name === pckg.name);
+      return pluginPackages
+        ?.map((pckg) => {
+          const pluginEntity = (pluginEntities as TPluginEntity[])?.find((ent) => ent.name === pckg.name);
 
-        return {
-          id: `?pluginName=${pckg.name}` as any, // for router
-          package: pckg,
-          entity: pluginEntity,
-        };
-      });
+          return {
+            id: `?pluginName=${pckg.name}` as any, // for router
+            package: pckg,
+            entity: pluginEntity,
+          };
+        })
+        .sort((a, b) => {
+          if (!a.entity || !b.entity) return 0;
+          return new Date(b.entity.createDate).getTime() - new Date(a.entity.createDate).getTime();
+        });
     } catch (e) {
       console.error(e);
     }

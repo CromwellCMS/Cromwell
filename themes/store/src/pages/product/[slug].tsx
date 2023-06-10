@@ -1,5 +1,13 @@
 import { removeUndefined, TAttribute, TGetStaticProps, TProduct } from '@cromwell/core';
-import { CContainer, CPlugin, CText, EntityHead, getGraphQLClient, TGraphQLErrorInfo } from '@cromwell/core-frontend';
+import {
+  CContainer,
+  CPlugin,
+  CText,
+  EntityHead,
+  getGraphQLClient,
+  registerPluginSSR,
+  TGraphQLErrorInfo,
+} from '@cromwell/core-frontend';
 import { MuiBreadcrumbs, MuiProductReviews } from '@cromwell/toolkit-commerce';
 import clsx from 'clsx';
 import React, { ReactElement } from 'react';
@@ -8,6 +16,8 @@ import Layout from '../../components/layout/Layout';
 import ProductDetails from '../../components/productDetails/ProductDetails';
 import commonStyles from '../../styles/common.module.scss';
 import styles from '../../styles/pages/Product.module.scss';
+
+registerPluginSSR('@cromwell/plugin-marqo', '*');
 
 import type { TPageWithLayout } from '../_app';
 
@@ -46,6 +56,16 @@ const Product: TPageWithLayout<ProductProps> = (props) => {
       <CContainer id="product_reviewsBlock" className={styles.reviewsBlock}>
         {product?.id && <MuiProductReviews productId={product?.id} />}
       </CContainer>
+      <CPlugin
+        id="marqo"
+        pluginName="@cromwell/plugin-marqo"
+        blockName="Similar products"
+        plugin={{
+          instanceSettings: {
+            autoLoadFirstPageAfter: 3000,
+          },
+        }}
+      />
     </CContainer>
   );
 };
