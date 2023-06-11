@@ -148,8 +148,45 @@ export class ProductFilter extends React.Component<FilterProps, FilterState> imp
     });
   }
 
+  private cacheKey = `@cromwell/plugin-product-filter__initialDataStore`;
+
+  private getInitialDataCachedStore(): Record<string, TInitialFilterData> {
+    const str = window.sessionStorage.getItem(this.cacheKey);
+    if (str) {
+      try {
+        const data = JSON.parse(str) as Record<string, TInitialFilterData>;
+        return data;
+      } catch (error) {
+        //
+      }
+    }
+    return {};
+  }
+
+  private saveInitialDataIntoCache(data: TInitialFilterData, slug: string) {
+    if (!slug) return;
+    const store = this.getInitialDataCachedStore();
+    store[slug] = data;
+    window.sessionStorage.setItem(this.cacheKey, JSON.stringify(store));
+  }
+
+  private getInitialDataCached(slug: string): TInitialFilterData | undefined {
+    const data = this.getInitialDataCachedStore();
+    if (data?.[slug]) {
+      return data?.[slug];
+    }
+  }
+
   private async getInitialData(slug?: string): Promise<TInitialFilterData> {
     // const timestamp = Date.now();
+
+    if (this.props.instanceSettings?.cacheSessionData && slug) {
+      const cached = this.getInitialDataCached(slug);
+      if (cached) {
+        return cached;
+      }
+    }
+
     const [{ productCategory, filterMeta }, attributes] = await Promise.all([
       getCategoryBySlug(slug).then(async (productCategory) => {
         let filterMeta: TProductFilterMeta | undefined;
@@ -170,12 +207,17 @@ export class ProductFilter extends React.Component<FilterProps, FilterState> imp
 
     // const timestamp2 = Date.now();
     // console.log('ProductFilter::getStaticProps time elapsed: ' + (timestamp2 - timestamp) + 'ms');
-
-    return {
+    const data: TInitialFilterData = {
       productCategory,
       attributes,
       filterMeta,
     };
+
+    if (this.props.instanceSettings?.cacheSessionData && slug) {
+      this.saveInitialDataIntoCache(data, slug);
+    }
+
+    return data;
   }
 
   public getProductListId() {

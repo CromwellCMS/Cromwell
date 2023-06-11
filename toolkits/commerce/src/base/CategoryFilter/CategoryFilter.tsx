@@ -10,6 +10,7 @@ const filterPluginName = '@cromwell/plugin-product-filter';
 
 export type CategoryFilterProps = {
   classes?: Partial<Record<'root' | 'plugin', string>>;
+  cacheSessionData?: boolean;
 };
 
 /**
@@ -29,6 +30,7 @@ export function CategoryFilter(props: CategoryFilterProps) {
           pluginName: filterPluginName,
           instanceSettings: {
             listId: moduleState.categoryListId,
+            cacheSessionData: props.cacheSessionData,
           },
         }}
         blockName="Product filter"

@@ -1,5 +1,6 @@
 import { TProduct } from '@cromwell/core';
-import { useEffect, useRef, useState } from 'react';
+import { useForceUpdate } from '@cromwell/core-frontend';
+import { useEffect, useRef } from 'react';
 
 import { useModuleState } from './state';
 
@@ -12,27 +13,32 @@ import { useModuleState } from './state';
 export const useProductVariants = (original?: TProduct | null): TProduct => {
   const moduleState = useModuleState();
   const productRef = useRef(original);
-  const [product, setProduct] = useState(original);
+  const modifiedProductRef = useRef(original);
+  const forceUpdate = useForceUpdate();
+
   if (original && original.id !== productRef.current?.id) {
     productRef.current = original;
-    setProduct(original);
+    modifiedProductRef.current = original;
   }
 
   useEffect(() => {
     const onUpdateId =
-      product?.id &&
-      moduleState.addOnProductUpdateListener(product.id, () => {
-        const modified = moduleState.products[product.id]?.modifiedProduct ?? product;
-        if (modified) setProduct(modified);
+      productRef.current?.id &&
+      moduleState.addOnProductUpdateListener(productRef.current.id, () => {
+        const modified = moduleState.products[productRef.current!.id]?.modifiedProduct ?? productRef.current;
+        if (modified) {
+          modifiedProductRef.current = modified;
+          forceUpdate();
+        }
       });
 
     return () => {
-      if (product?.id) {
-        delete moduleState.products[product.id];
-        if (onUpdateId) moduleState.removeOnProductUpdateListener(product?.id, onUpdateId);
+      if (productRef.current?.id) {
+        delete moduleState.products[productRef.current?.id];
+        if (onUpdateId) moduleState.removeOnProductUpdateListener(productRef.current?.id, onUpdateId);
       }
     };
   }, [productRef.current]);
 
-  return product!;
+  return modifiedProductRef.current!;
 };

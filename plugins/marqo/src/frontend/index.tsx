@@ -11,6 +11,7 @@ type MarqoPluginProps = {
 
 export type InstanceSettings = {
   autoLoadFirstPageAfter?: number;
+  excludeIds?: number[];
   limit?: number;
 };
 
@@ -20,6 +21,7 @@ export default function MarqoPlugin(props: TFrontendPluginProps<MarqoPluginProps
     <SimilarProducts
       autoLoadFirstPageAfter={props.instanceSettings?.autoLoadFirstPageAfter}
       limit={props.instanceSettings?.limit}
+      excludeIds={props.instanceSettings?.excludeIds}
     />
   );
 }

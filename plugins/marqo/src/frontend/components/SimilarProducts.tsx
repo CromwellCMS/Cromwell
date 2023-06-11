@@ -14,7 +14,7 @@ const rootId = '@cromwell/plugin-marqo__root';
  * keep scrolling down, more products will be loaded. If limit is not specified, will
  * load all available products from DB.
  */
-export function SimilarProducts(props: { autoLoadFirstPageAfter?: number; limit?: number }) {
+export function SimilarProducts(props: { autoLoadFirstPageAfter?: number; limit?: number; excludeIds?: number[] }) {
   const pageRef = useRef<number>(1);
   const productsRef = useRef<TProduct[]>([]);
   const productIds = useRef<Record<string, boolean>>({});
@@ -51,6 +51,7 @@ export function SimilarProducts(props: { autoLoadFirstPageAfter?: number; limit?
     for (const product of list?.elements ?? []) {
       if (productIds.current[product.id]) continue;
       if (product.name === h1.innerText) continue;
+      if (props.excludeIds?.length && props.excludeIds?.includes(product.id)) continue;
       productIds.current[product.id] = true;
       productsRef.current.push(product);
 

@@ -29,6 +29,7 @@ export type TInstanceSettings = {
    * skip default handler (navigate to category)
    * */
   onCategoryClick?: (category: TProductCategory) => boolean;
+  cacheSessionData?: boolean;
 };
 
 export type TInitialFilterData = {
