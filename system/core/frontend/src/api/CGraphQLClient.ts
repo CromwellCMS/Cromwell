@@ -1228,12 +1228,19 @@ export class CGraphQLClient {
   public deleteOrder = this.createDeleteEntity('Order');
   public deleteManyOrders = this.createDeleteMany<TOrderFilter>('Order', 'OrderFilterInput');
 
-  public getOrdersOfUser = async (
-    userId: number,
-    pagedParams: TPagedParams<TOrder>,
-    customFragment?: DocumentNode,
-    customFragmentName?: string,
-  ): Promise<TPagedList<TOrder> | undefined> => {
+  public getOrdersOfUser = async ({
+    userId,
+    email,
+    pagedParams,
+    customFragment,
+    customFragmentName,
+  }: {
+    userId?: number;
+    email?: string;
+    pagedParams: TPagedParams<TOrder>;
+    customFragment?: DocumentNode;
+    customFragmentName?: string;
+  }): Promise<TPagedList<TOrder> | undefined> => {
     const path = GraphQLPaths.Order.getOrdersOfUser;
     const fragment = customFragment ?? this.OrderFragment;
     const fragmentName = customFragmentName ?? 'OrderFragment';
@@ -1241,21 +1248,22 @@ export class CGraphQLClient {
     return this.query(
       {
         query: gql`
-                query coreGetOrdersOfUser($userId: Int!, $pagedParams: PagedParamsInput) {
-                    ${path}(userId: $userId, pagedParams: $pagedParams) {
-                        pagedMeta {
-                            ...PagedMetaFragment
-                        }
-                        elements {
-                            ...${fragmentName}
-                        }
-                    }
-                }
-                ${fragment}
-                ${this.PagedMetaFragment}
-            `,
+          query coreGetOrdersOfUser($userId: Int, $email: String, $pagedParams: PagedParamsInput) {
+            ${path}(userId: $userId, email: $email, pagedParams: $pagedParams) {
+              pagedMeta {
+                ...PagedMetaFragment
+              }
+              elements {
+                ...${fragmentName}
+              }
+            }
+          }
+          ${fragment}
+          ${this.PagedMetaFragment}
+        `,
         variables: {
           userId,
+          email,
           pagedParams,
         },
       },

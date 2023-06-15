@@ -128,6 +128,10 @@ async function main(): Promise<void> {
   logger.info(`Proxy Server is running on: http://localhost:${port}`);
 }
 
+process.on('uncaughtException', (err) => {
+  logger.error('An unhandled error occurred: ', err);
+});
+
 nodeCleanup(() => {
   closeAllServers();
 });

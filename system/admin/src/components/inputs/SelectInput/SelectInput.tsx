@@ -1,6 +1,8 @@
 import React, { Fragment } from 'react';
 import { Listbox, Transition } from '@headlessui/react';
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/24/solid';
+import { SxProps } from '@mui/system';
+import { Box } from '@mui/material';
 
 type ValueType = string | number | undefined | null;
 
@@ -22,6 +24,7 @@ export type SelectInputProps<T = ValueType> = {
   disabled?: boolean;
   error?: boolean;
   style?: React.CSSProperties;
+  sx?: SxProps;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-constraint
@@ -36,6 +39,7 @@ export const SelectInput = <T extends unknown>({
   label,
   error,
   style,
+  sx,
 }: SelectInputProps<T>) => {
   const displayValue = getDisplayValue
     ? getDisplayValue(value)
@@ -44,7 +48,7 @@ export const SelectInput = <T extends unknown>({
     : value;
 
   return (
-    <div style={style}>
+    <Box sx={sx} style={style}>
       <Listbox disabled={disabled} value={getValue ? getValue(value) : value} onChange={onChange}>
         {label && (
           <Listbox.Label>
@@ -107,6 +111,6 @@ export const SelectInput = <T extends unknown>({
           </Transition>
         </div>
       </Listbox>
-    </div>
+    </Box>
   );
 };

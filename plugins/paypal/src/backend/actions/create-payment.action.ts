@@ -10,8 +10,12 @@ const logger = getLogger();
 
 export const createPayment = async (input: TOrderPaymentSession) => {
   const settings = await getPluginSettings<SettingsType>(pluginName);
-  const { client_id, client_secret, mode } = settings ?? {};
+  const { client_id, client_secret, mode, enabled } = settings ?? {};
   const cart = (input.cart as TStoreListItem[]) ?? [];
+
+  if (!enabled) {
+    return;
+  }
 
   if (!client_id) {
     logger.warn(`${pluginName}: You must setup client_id in plugin settings`);

@@ -10,8 +10,12 @@ const logger = getLogger();
 
 export const createPayment = async (input: TOrderPaymentSession) => {
   const settings = await getPluginSettings<SettingsType>(pluginName);
-  const { stripeApiKey } = settings ?? {};
+  const { stripeApiKey, enabled } = settings ?? {};
   const cart = (input.cart as TStoreListItem[]) ?? [];
+
+  if (!enabled) {
+    return;
+  }
 
   if (!stripeApiKey) {
     logger.warn(`${pluginName}: Please setup Stripe Api Key in plugin settings`);

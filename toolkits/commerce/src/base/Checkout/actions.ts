@@ -349,7 +349,7 @@ export const usuCheckoutActions = (config: {
         (window as any).payCancel = () => done(false);
 
         const timer = setInterval(function () {
-          if (popup?.closed) {
+          if (!popup || popup?.closed) {
             clearInterval(timer);
             done(false);
           }

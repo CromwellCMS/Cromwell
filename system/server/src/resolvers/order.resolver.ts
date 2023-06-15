@@ -98,17 +98,20 @@ export class OrderResolver {
   @Query(() => PagedOrder)
   async [getOrdersOfUser](
     @Ctx() ctx: TGraphQLContext,
-    @Arg('userId', () => Int) userId: number,
+    @Arg('userId', () => Int, { nullable: true }) userId?: number,
+    @Arg('email', () => String, { nullable: true }) email?: string,
     @Arg('pagedParams', () => PagedParamsInput, { nullable: true }) pagedParams?: PagedParamsInput<TOrder>,
   ): Promise<TPagedList<TOrder> | undefined> {
     this.checkUserAccess(ctx, userId);
+    if (!userId && !email) throw new HttpException('User ID or email must be provided', HttpStatus.BAD_REQUEST);
+
     return getManyWithFilters(
       'Order',
       ctx,
       ['read_orders', 'read_my_orders'],
       ['read_orders'],
       pagedParams,
-      { userId },
+      { userId, customerEmail: email },
       (...args) => this.repository.getFilteredOrders(...args),
     );
   }

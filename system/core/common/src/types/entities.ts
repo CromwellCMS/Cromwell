@@ -752,6 +752,10 @@ export type TCmsAdminSettings = {
    */
   sendFromEmail?: string;
   /**
+   * Name to send mails from
+   */
+  sendMailFromName?: string;
+  /**
    * Custom fields data
    */
   customFields?: TAdminCustomField[];

@@ -138,6 +138,10 @@ async function bootstrap(): Promise<void> {
   childRegister(port);
 }
 
+process.on('uncaughtException', (err) => {
+  logger.error('An unhandled error occurred: ', err);
+});
+
 (async () => {
   try {
     await bootstrap();

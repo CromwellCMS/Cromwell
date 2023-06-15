@@ -55,6 +55,9 @@ export class CmsSettingsDto implements TCmsSettings {
   defaultShippingPrice?: number;
 
   @ApiProperty()
+  disablePayLater?: boolean;
+
+  @ApiProperty()
   versions?: TServiceVersions;
 
   @ApiProperty()
@@ -87,6 +90,7 @@ export class CmsSettingsDto implements TCmsSettings {
     this.footerHtml = config.footerHtml;
     this.installed = config.installed;
     this.defaultShippingPrice = config.defaultShippingPrice;
+    this.disablePayLater = !!config.disablePayLater;
     this.versions = config.versions;
     this.rewrites = config.rewrites;
     this.redirects = config.redirects;

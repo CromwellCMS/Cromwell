@@ -54,6 +54,7 @@ const CarouselStoreSetter = WithStore(CarouselStoreSetterRaw) as any as React.Co
 
 export class CGallery extends React.Component<TCGalleryProps> {
   private gallerySettings?: TGallerySettings;
+  private prevGallerySettings?: TGallerySettings;
   private galleryId?: string;
   private thumbsId?: string;
   private randId = getRandStr(5);
@@ -104,6 +105,18 @@ export class CGallery extends React.Component<TCGalleryProps> {
       // Make responsive config override higher-level one
       this.gallerySettings = Object.assign({}, totalGallerySettings, this.gallerySettings);
     }
+
+    if (
+      this.prevGallerySettings?.images?.length &&
+      JSON.stringify(this.prevGallerySettings?.images?.map((i) => i.src)) !==
+        JSON.stringify(this.gallerySettings?.images?.map((i) => i.src))
+    ) {
+      // reset active slide if images changed
+      setTimeout(() => {
+        this.setActiveSlide(0);
+      });
+    }
+    this.prevGallerySettings = this.gallerySettings;
 
     const gallerySettings = this.gallerySettings;
     this.galleryId = `CGallery_${data?.id}_${this.randId}`;

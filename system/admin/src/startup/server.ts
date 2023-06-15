@@ -10,11 +10,13 @@ import {
   getPublicDir,
 } from '@cromwell/core-backend/dist/helpers/paths';
 import { getRestApiClient } from '@cromwell/core-frontend/dist/api/CRestApiClient';
+import { resolvePublicFilePathToServe, fastifySendFile } from '@cromwell/utils/build/static';
 import fs from 'fs-extra';
 import normalizePath from 'normalize-path';
 import { join, resolve } from 'path';
 import symlinkDir from 'symlink-dir';
 import yargs from 'yargs-parser';
+
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
 const logger = getLogger();
@@ -154,27 +156,25 @@ const outputEnv = async ({ isProduction, configsDir }: HelperOptions) => {
 };
 
 const startProdServer = (port: number) => {
-  const tempPublicDir = normalizePath(getAdminPanelWebPublicDir());
   // start fastify server:
   const fastify = require('fastify')({ logger: false });
-  const mime = require('mime-types');
 
   fastify.get('/*', async function (req: FastifyRequest, reply: FastifyReply) {
-    const publicPath = normalizePath(req.raw.url).replace(/^(\.\.(\/|\\|$))+/, '');
+    const url = new URL('http://localhost' + req.raw.url);
+    const publicPath = normalizePath(url.pathname).replace(/^(\.\.(\/|\\|$))+/, '');
+
     if (publicPath.indexOf('\0') !== -1) {
       throw new Error('Poison Null Bytes');
     }
 
     if (publicPath.startsWith('/admin/_next/static')) {
       const filePath = join(getAdminPanelTempDir(), '.next/static', publicPath.replace('/admin/_next/static', ''));
-      reply.type(mime.lookup(filePath));
-      return reply.send(fs.createReadStream(filePath));
+      return fastifySendFile(reply, filePath);
     }
 
     if (publicPath.startsWith('/admin/static')) {
       const filePath = join(getAdminPanelTempDir(), 'public/admin/static', publicPath.replace('/admin/static', ''));
-      reply.type(mime.lookup(filePath));
-      return reply.send(fs.createReadStream(filePath));
+      return fastifySendFile(reply, filePath);
     }
 
     if (publicPath.startsWith('/admin')) {
@@ -183,10 +183,10 @@ const startProdServer = (port: number) => {
         .send(fs.createReadStream(join(getAdminPanelTempDir(), '.next/server/pages/index.html')));
     }
 
-    const pathInPublicDir = join(tempPublicDir, publicPath);
-    if ((await fs.lstat(pathInPublicDir)).isFile()) {
-      reply.type(mime.lookup(pathInPublicDir));
-      return reply.send(fs.createReadStream(pathInPublicDir));
+    const { pathInPublicDir } = await resolvePublicFilePathToServe(req.raw.url);
+
+    if (pathInPublicDir) {
+      return fastifySendFile(reply, pathInPublicDir);
     }
 
     return reply.status(404).send('Not found');

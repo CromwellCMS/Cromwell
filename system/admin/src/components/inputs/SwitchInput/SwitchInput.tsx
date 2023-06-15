@@ -1,5 +1,16 @@
 import { Switch } from '@headlessui/react';
+import { Box } from '@mui/material';
+import { SxProps } from '@mui/system';
 import React from 'react';
+
+export type SwitchInputProps = {
+  value?: boolean;
+  onChange?: (v: boolean) => any;
+  label?: string | { active: string; inactive: string };
+  xs?: boolean;
+  className?: string;
+  sx?: SxProps;
+};
 
 export const SwitchInput = ({
   value = false,
@@ -7,17 +18,12 @@ export const SwitchInput = ({
   label = '',
   xs = false,
   className,
-}: {
-  value?: boolean;
-  onChange?: (v: boolean) => any;
-  label?: string | { active: string; inactive: string };
-  xs?: boolean;
-  className?: string;
-}) => {
+  sx,
+}: SwitchInputProps) => {
   const displayLabel = typeof label === 'string' ? label : value ? label.active : label.inactive;
   return (
     <Switch.Group>
-      <div className={`flex items-center ${className ?? ''}`}>
+      <Box sx={sx} className={`flex items-center ${className ?? ''}`}>
         <Switch
           checked={value}
           onChange={onChange}
@@ -32,7 +38,7 @@ export const SwitchInput = ({
           />
         </Switch>
         {displayLabel && <Switch.Label className={`${xs ? 'ml-1' : 'ml-4'}`}>{displayLabel}</Switch.Label>}
-      </div>
+      </Box>
     </Switch.Group>
   );
 };

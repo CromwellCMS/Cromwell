@@ -1,19 +1,19 @@
 import { isServer, TAttribute, TCromwellNotify, TProduct, TStoreListItem } from '@cromwell/core';
 import {
   getCStore,
+  getThumbnailSrc,
   Link,
   TCStoreOperationResult,
+  useAppPropsContext,
   useCart,
   useCurrency,
   useForceUpdate,
   useWishlist,
 } from '@cromwell/core-frontend';
 import clsx from 'clsx';
-import Image, { ImageProps } from 'next/image';
 import React from 'react';
 
 import { getNotifier, NotifierActionOptions } from '../../helpers/notifier';
-import { useImageLoader } from '../../helpers/useImageLoader';
 import { useProductLink } from '../../helpers/useLinks';
 import { useStoreAttributes } from '../../helpers/useStoreAttributes';
 import { AddShoppingCartIcon, FavoriteActiveIcon, FavoriteHollowIcon, ShoppingCartIcon } from '../icons';
@@ -94,11 +94,6 @@ export type ProductCardProps = {
   notifierOptions?: NotifierActionOptions;
 
   /**
-   * Override props to underlying CImage
-   */
-  imageProps?: Partial<ImageProps>;
-
-  /**
    * URL to a placeholder image to use if a product has no primary image set.
    */
   noImagePlaceholderUrl?: string;
@@ -125,7 +120,6 @@ export function ProductCard(props: ProductCardProps) {
     notifier = getNotifier(),
     notifierOptions = {},
     elements = {},
-    imageProps,
     classes,
     text,
   } = props ?? {};
@@ -138,9 +132,9 @@ export function ProductCard(props: ProductCardProps) {
   } = elements;
   const cstore = getCStore();
 
+  const pageContext = useAppPropsContext();
   const attributes = useStoreAttributes(props.attributes);
   const forceUpdate = useForceUpdate();
-  const imageLoader = useImageLoader();
   const productLink = useProductLink(product, props.getProductLink);
   useCart();
   useWishlist();
@@ -217,10 +211,12 @@ export function ProductCard(props: ProductCardProps) {
     forceUpdate();
   };
 
-  const mainImage =
-    imageProps?.src !== undefined
-      ? imageProps?.src
-      : product?.mainImage ?? product?.images?.[0] ?? props?.noImagePlaceholderUrl;
+  let mainImage = product?.mainImage ?? product?.images?.[0] ?? props?.noImagePlaceholderUrl;
+
+  const origin = pageContext.routeInfo?.origin;
+  if (mainImage && mainImage.startsWith('/') && origin) {
+    mainImage = origin + mainImage;
+  }
 
   const WishlistIcon = inWishlist ? FavoriteActiveIcon : FavoriteHollowIcon;
 
@@ -240,19 +236,17 @@ export function ProductCard(props: ProductCardProps) {
             style={{ position: 'relative' }}
             onClick={(e) => productLink && props.onProductLinkClick?.(e, productLink)}
           >
-            <Image
+            <img
+              src={getThumbnailSrc({
+                src: mainImage,
+                width: 300,
+                height: 300,
+              })}
               alt={product?.name || ''}
-              loader={imageLoader}
-              unoptimized={!imageProps ? true : undefined}
-              sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw"
-              fill
-              {...(imageProps ?? {})}
               style={{
                 objectFit: 'cover',
-                ...(imageProps ?? {}).style,
               }}
-              className={clsx(classes?.image, imageProps?.className)}
-              src={mainImage}
+              className={clsx(styles.image, classes?.image)}
             />
           </Link>
         </div>

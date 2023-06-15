@@ -662,6 +662,12 @@ const cmsPermissions: Record<TPermissionName, TPermission> = {
     description: '',
     categoryName: 'system_category',
   },
+  generate_thumbnail: {
+    name: 'generate_thumbnail',
+    title: 'Generate thumbnail for any image',
+    description: '',
+    categoryName: 'system_category',
+  },
 };
 
 Object.values(cmsPermissions).forEach(registerDefaultPermission);

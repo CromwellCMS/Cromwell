@@ -2,12 +2,10 @@ import { findRedirect, setStoreItem, TCmsSettings } from '@cromwell/core';
 import { getAuthSettings } from '@cromwell/core-backend/dist/helpers/auth-settings';
 import { readCMSConfig } from '@cromwell/core-backend/dist/helpers/cms-settings';
 import { getLogger } from '@cromwell/core-backend/dist/helpers/logger';
+import { resolvePublicFilePathToServe, vanillaSendFile } from '@cromwell/utils/build/static';
 import cookie from 'cookie';
-import fs from 'fs-extra';
 import { createServer } from 'http';
 import next from 'next';
-import { join, normalize } from 'path';
-import send from 'send';
 import { parse } from 'url';
 
 import { processCacheRequest } from './helpers/cacheManager';
@@ -60,20 +58,14 @@ export const startNextServer = async (options?: {
     // Static file serving
     try {
       if (req.url) {
-        let publicPath = decodeURIComponent(req.url);
-
-        if (publicPath.indexOf('\0') !== -1) {
-          throw new Error('Poison Null Bytes');
-        }
-        publicPath = normalize(publicPath).replace(/^(\.\.(\/|\\|$))+/, '');
-        const filePath = join(process.cwd(), 'public', publicPath);
-
-        if ((await fs.lstat(filePath)).isFile()) {
-          send(req, filePath).pipe(res);
-          return;
+        const { pathInPublicDir } = await resolvePublicFilePathToServe(decodeURIComponent(req.url));
+        if (pathInPublicDir) {
+          return vanillaSendFile(res, pathInPublicDir);
         }
       }
-    } catch (err) {}
+    } catch (err) {
+      console.error(err);
+    }
 
     // Pass settings to frontend via cookies
     res.setHeader(

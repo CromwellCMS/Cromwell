@@ -79,124 +79,154 @@ export const GeneralSettingsPage = () => {
             </p>
           </div>
 
-          <div
-            className={`bg-white rounded-lg shadow-lg w-full p-4 max-w-4xl ${
-              form.formState.isDirty ? 'border border-indigo-600 shadow-indigo-400' : 'border border-white'
-            }`}
-          >
-            <div className="grid gap-2 grid-cols-1 lg:grid-cols-2">
-              <RegisteredTextInput<TAdminCmsSettingsType>
-                name="url"
-                label="Website URL"
-                placeholder="https://your-website.com"
-              />
-              <RegisteredSelectInput
-                options={languages}
-                getDisplayValue={getLangLabel}
-                getValue={getLangValue}
-                name={`language`}
-                label={'Language'}
-                disabled
-              />
-              <div className="col-span-2">
+          <div>
+            <div
+              className={`bg-white rounded-lg shadow-lg w-full p-4 max-w-4xl mb-8 ${
+                form.formState.isDirty ? 'border border-indigo-600 shadow-indigo-400' : 'border border-white'
+              }`}
+            >
+              <div className="grid gap-2 grid-cols-1 lg:grid-cols-2">
+                <RegisteredTextInput<TAdminCmsSettingsType>
+                  name="url"
+                  label="Website URL"
+                  placeholder="https://your-website.com"
+                />
                 <RegisteredSelectInput
-                  options={timezones}
-                  getDisplayValue={getTZLabel}
-                  getValue={getTZValue}
-                  name={`timezone`}
-                  label={'Timezone'}
+                  options={languages}
+                  getDisplayValue={getLangLabel}
+                  getValue={getLangValue}
+                  name={`language`}
+                  label={'Language'}
+                  disabled
                 />
-              </div>
-              <div className="flex flex-col gap-2 lg:flex-row">
-                <Controller
-                  name="logo"
-                  control={form.control}
-                  render={({ field }) => (
-                    <ImageInput
-                      key={String(field.name)}
-                      onChange={(value) => field.onChange(value ?? '')}
-                      value={field.value}
-                      id="logo"
-                      label={'Logo'}
-                      showRemove
-                      backgroundSize="contain"
-                      className="h-32 lg:max-w-[13rem]"
-                    />
-                  )}
-                />
-                <Controller
-                  name="favicon"
-                  control={form.control}
-                  render={({ field }) => (
-                    <ImageInput
-                      key={field.name}
-                      onChange={(value) => field.onChange(value ?? '')}
-                      value={field.value}
-                      id="favicon"
-                      label={'Favicon'}
-                      showRemove
-                      backgroundSize="contain"
-                      className="h-32 lg:max-w-[13rem]"
-                    />
-                  )}
-                />
-              </div>
-              <div className="col-span-2"></div>
-              <RegisteredTextInput<TAdminCmsSettingsType>
-                name="sendFromEmail"
-                label={
-                  <span>
-                    Send e-mails from
-                    <a
-                      href="https://cromwellcms.com/docs/features/mail"
-                      className="inline ml-1"
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <InformationCircleIcon className="h-5 w-5 inline" />
-                    </a>
-                  </span>
-                }
-                placeholder="contact@your-website.com"
-              />
-              <RegisteredTextInput<TAdminCmsSettingsType>
-                name="smtpConnectionString"
-                label={
-                  <span>
-                    SMTP Connection String
-                    <a
-                      href="https://cromwellcms.com/docs/features/mail"
-                      className="inline ml-1"
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <InformationCircleIcon className="h-5 w-5 inline" />
-                    </a>
-                  </span>
-                }
-                placeholder="smtps://username:password@smtp.example.com"
-              />
-              <div className="col-span-2"></div>
-              <Controller
-                name="customMeta"
-                control={form.control}
-                render={({ field: formField }) => (
-                  <RenderCustomFields
-                    entityType={EDBEntity.CMS}
-                    entityData={{
-                      id: 1,
-                      customMeta: formField.value,
-                    }}
-                    refetchMeta={() => getAdminCmsSettings().then((data) => data?.customMeta)}
-                    onChange={(customField, value) =>
-                      formField.onChange({
-                        ...formField.value,
-                        [customField.key]: value,
-                      })
-                    }
+                <div className="col-span-2">
+                  <RegisteredSelectInput
+                    options={timezones}
+                    getDisplayValue={getTZLabel}
+                    getValue={getTZValue}
+                    name={`timezone`}
+                    label={'Timezone'}
                   />
-                )}
-              />
+                </div>
+                <div className="flex flex-col gap-2 lg:flex-row">
+                  <Controller
+                    name="logo"
+                    control={form.control}
+                    render={({ field }) => (
+                      <ImageInput
+                        key={String(field.name)}
+                        onChange={(value) => field.onChange(value ?? '')}
+                        value={field.value}
+                        id="logo"
+                        label={'Logo'}
+                        showRemove
+                        backgroundSize="contain"
+                        className="h-32 lg:max-w-[13rem]"
+                      />
+                    )}
+                  />
+                  <Controller
+                    name="favicon"
+                    control={form.control}
+                    render={({ field }) => (
+                      <ImageInput
+                        key={field.name}
+                        onChange={(value) => field.onChange(value ?? '')}
+                        value={field.value}
+                        id="favicon"
+                        label={'Favicon'}
+                        showRemove
+                        backgroundSize="contain"
+                        className="h-32 lg:max-w-[13rem]"
+                      />
+                    )}
+                  />
+                </div>
+                <div className="col-span-2"></div>
+                <Controller
+                  name="customMeta"
+                  control={form.control}
+                  render={({ field: formField }) => (
+                    <RenderCustomFields
+                      entityType={EDBEntity.CMS}
+                      entityData={{
+                        id: 1,
+                        customMeta: formField.value,
+                      }}
+                      refetchMeta={() => getAdminCmsSettings().then((data) => data?.customMeta)}
+                      onChange={(customField, value) =>
+                        formField.onChange({
+                          ...formField.value,
+                          [customField.key]: value,
+                        })
+                      }
+                    />
+                  )}
+                />
+              </div>
+            </div>
+
+            <div
+              className={`bg-white rounded-lg shadow-lg w-full p-4 max-w-4xl ${
+                form.formState.isDirty ? 'border border-indigo-600 shadow-indigo-400' : 'border border-white'
+              }`}
+            >
+              <h3 className="font-bold text-gray-700 col-span-1 text-xl mb-3">Mailing settings</h3>
+              <div className="grid gap-3 grid-cols-1 lg:grid-cols-2 mb-4">
+                <RegisteredTextInput<TAdminCmsSettingsType>
+                  name="sendFromEmail"
+                  label={
+                    <span>
+                      Send e-mails from address:
+                      <a
+                        href="https://cromwellcms.com/docs/features/mail"
+                        className="inline ml-1"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        <InformationCircleIcon className="h-5 w-5 inline" />
+                      </a>
+                    </span>
+                  }
+                  placeholder="contact@your-website.com"
+                />
+                <RegisteredTextInput<TAdminCmsSettingsType>
+                  name="sendMailFromName"
+                  label={
+                    <span>
+                      Send e-mails from name
+                      <a
+                        href="https://cromwellcms.com/docs/features/mail"
+                        className="inline ml-1"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        <InformationCircleIcon className="h-5 w-5 inline" />
+                      </a>
+                    </span>
+                  }
+                  placeholder="Your-brand-name"
+                />
+              </div>
+              <div className="col-span-2">
+                <RegisteredTextInput<TAdminCmsSettingsType>
+                  name="smtpConnectionString"
+                  label={
+                    <span>
+                      SMTP Connection String
+                      <a
+                        href="https://cromwellcms.com/docs/features/mail"
+                        className="inline ml-1"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        <InformationCircleIcon className="h-5 w-5 inline" />
+                      </a>
+                    </span>
+                  }
+                  placeholder="smtps://username:password@smtp.example.com"
+                />
+              </div>
             </div>
           </div>
         </div>

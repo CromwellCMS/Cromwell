@@ -3,10 +3,11 @@ import { Worker } from 'worker_threads';
 
 const monitorPath = getServerBuildMonitorPath();
 if (!monitorPath) throw new Error('Could not define monitor build path');
-
-const worker = new Worker(monitorPath);
+let worker: Worker;
 
 export const getSysInfo = async () => {
+  if (!worker) worker = new Worker(monitorPath);
+
   return new Promise((done) => {
     worker.on('message', (message) => {
       if (message.type === 'sysInfo') {
@@ -21,6 +22,8 @@ export const getSysInfo = async () => {
 };
 
 export const getSysUsageInfo = async () => {
+  if (!worker) worker = new Worker(monitorPath);
+
   return new Promise((done) => {
     worker.on('message', (message) => {
       if (message.type === 'usageInfo') {

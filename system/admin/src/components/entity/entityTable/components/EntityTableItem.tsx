@@ -1,5 +1,5 @@
 import { TBasePageEntity } from '@cromwell/core';
-import { getCStore } from '@cromwell/core-frontend';
+import { getCStore, getThumbnailSrc } from '@cromwell/core-frontend';
 import { ArrowTopRightOnSquareIcon, MagnifyingGlassPlusIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { Rating, Tooltip } from '@mui/material';
 import clsx from 'clsx';
@@ -98,7 +98,12 @@ function EntityTableItem<TEntityType extends TBasePageEntity, TFilterType extend
                       <MagnifyingGlassPlusIcon className="w-4 h-4" />
                     </IconButton>
                   )}
-                  <div className={styles.imageItem} style={{ backgroundImage: value && `url(${value})` }}></div>
+                  <div
+                    className={styles.imageItem}
+                    style={{
+                      backgroundImage: value && `url(${getThumbnailSrc({ src: value, width: 52, height: 34 })})`,
+                    }}
+                  ></div>
                 </div>
               );
             }

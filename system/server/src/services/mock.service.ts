@@ -430,6 +430,7 @@ export class MockService {
       'upload_file',
       'download_file',
       'delete_file',
+      'generate_thumbnail',
     ];
 
     const guestPermissions: TPermissionName[] = [
@@ -456,6 +457,7 @@ export class MockService {
       'read_system_info',
       'read_cms_statistics',
       'read_cms_status',
+      'generate_thumbnail',
     ];
     guestPermissions.push('newsletter_stats' as any);
     guestPermissions.push('newsletter_export' as any);

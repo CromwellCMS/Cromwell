@@ -1,4 +1,5 @@
 import { IconButton } from '@components/buttons/IconButton';
+import { getThumbnailSrc } from '@cromwell/core-frontend';
 import { DocumentTextIcon, FolderIcon, MagnifyingGlassPlusIcon } from '@heroicons/react/24/outline';
 import { MenuItem, Tooltip } from '@mui/material';
 import React from 'react';
@@ -35,7 +36,14 @@ export const FileItem = (props: TFileItemProps) => {
     ItemIcon = (
       <div className={styles.itemImageContainer}>
         <LazyLoad height={60} offset={60} className={styles.itemImageContainer}>
-          <img className={styles.itemImage} src={normalize(`/${currentPath}/${item}`)} />
+          <img
+            className={styles.itemImage}
+            src={getThumbnailSrc({
+              src: normalize(`/${currentPath}/${item}`),
+              width: 60,
+              height: 60,
+            })}
+          />
         </LazyLoad>
       </div>
     );

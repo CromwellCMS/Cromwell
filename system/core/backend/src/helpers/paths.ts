@@ -136,6 +136,10 @@ export const getServerBuildMonitorPath = () => {
   const serverDir = getServerDir();
   if (serverDir) return resolve(serverDir, 'build/monitor.js');
 };
+export const getServerBuildResizeImagePath = () => {
+  const serverDir = getServerDir();
+  if (serverDir) return resolve(serverDir, 'build/resize-image.js');
+};
 export const getServerTempDir = (dir?: string) => resolve(getTempDir(dir), 'server');
 export const getServerTempEmailsDir = () => resolve(getServerTempDir(), 'emails');
 export const getServerDefaultEmailsDir = () => {
@@ -274,3 +278,70 @@ export const getModulePackage = async (moduleName?: string): Promise<TPackageJso
     logger.error('Failed to read package.json at: ' + pPath);
   }
 };
+
+export async function getResizedImagePaths({
+  outPublicDir,
+  src,
+  width,
+  height,
+  quality,
+}: {
+  width: number;
+  height: number;
+  src: string;
+  quality?: number;
+  outPublicDir?: string;
+}): Promise<{
+  originalPath: string;
+  outFilePath: string;
+  outFilePublicPath: string;
+}> {
+  let outFilePath;
+  let outFilePublicPath;
+  let originalPath;
+
+  const outBasePath = `/${outPublicDir || 'resized'}/w${width}_h${height}_q${quality || 100}`;
+
+  if (src.startsWith('http')) {
+    const outFileName = new URL(src).pathname + '.webp';
+    outFilePublicPath = join(outBasePath, outFileName);
+    outFilePath = join(process.cwd(), 'public', outFilePublicPath);
+    originalPath = src;
+  } else {
+    const publicPath = normalizePath(src).replace(/^(\.\.(\/|\\|$))+/, '');
+    if (publicPath.indexOf('\0') !== -1) {
+      throw new Error('Poison Null Bytes');
+    }
+    const filePath = join(process.cwd(), 'public', publicPath);
+    if ((await fs.lstat(filePath)).isFile()) {
+      const outFileName = publicPath + '.webp';
+      outFilePublicPath = join(outBasePath, outFileName);
+      outFilePath = join(process.cwd(), 'public', outFilePublicPath);
+      originalPath = filePath;
+    } else {
+      throw new Error('File not found');
+    }
+  }
+
+  return {
+    originalPath: normalizePath(originalPath),
+    outFilePath: normalizePath(outFilePath),
+    outFilePublicPath: normalizePath(outFilePublicPath),
+  };
+}
+
+export async function getThumbnailPaths(args: {
+  width: number;
+  height: number;
+  src: string;
+  quality?: number;
+}): Promise<{
+  originalPath: string;
+  outFilePath: string;
+  outFilePublicPath: string;
+}> {
+  return getResizedImagePaths({
+    ...args,
+    outPublicDir: 'thumbnails',
+  });
+}

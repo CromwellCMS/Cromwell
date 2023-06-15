@@ -44,10 +44,13 @@ export function AccountOrders(props: AccountOrdersProps) {
   const [orders, setOrders] = useState<TOrder[] | undefined | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const getOrders = async (userId: number) => {
+  const getOrders = async (email: string) => {
     setLoading(true);
     try {
-      const orders = await getGraphQLClient().getOrdersOfUser(userId, { pageSize: 1000 });
+      const orders = await getGraphQLClient().getOrdersOfUser({
+        email,
+        pagedParams: { pageSize: 1000 },
+      });
       if (orders?.elements) {
         orders.elements = orders.elements.map((order) => {
           if (typeof order.createDate === 'string') {
@@ -72,10 +75,10 @@ export function AccountOrders(props: AccountOrdersProps) {
   };
 
   useEffect(() => {
-    if (userInfo?.id) getOrders(userInfo.id);
+    if (userInfo?.email) getOrders(userInfo.email);
 
     const onChange = (changed?: TUser) => {
-      if (changed?.id) getOrders(changed.id);
+      if (changed?.email) getOrders(changed.email);
       else setOrders(null);
     };
     const cbId = onStoreChange('userInfo', onChange);

@@ -676,6 +676,20 @@ export class CRestApiClient {
     return this.get(`v1/cms/permissions`, options);
   };
 
+  public generateThumbnail = async (
+    args: { width: number; height: number; src: string; quality?: number },
+    options?: TRequestOptions,
+  ): Promise<{ path?: string; error?: string }> => {
+    return this.post(`v1/cms/generate-thumbnail`, args, options);
+  };
+
+  public ensureThumbnail = async (
+    args: { width: number; height: number; src: string; quality?: number },
+    options?: TRequestOptions,
+  ): Promise<{ path?: string; error?: string }> => {
+    return this.post(`v1/cms/ensure-thumbnail`, args, options);
+  };
+
   // < / CMS >
 
   // < Theme >

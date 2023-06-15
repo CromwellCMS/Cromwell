@@ -604,7 +604,7 @@ export type TDBInfo = {
 };
 
 export type TCmsInfo = {
-  packages: Partial<Record<(typeof systemPackages)[number], string>>;
+  packages: Partial<Record<typeof systemPackages[number], string>>;
 };
 
 export type TSystemUsage = {
@@ -746,4 +746,5 @@ export type TPermissionName =
   | 'delete_file'
   | 'read_cms_statistics'
   | 'read_cms_status'
-  | 'read_system_info';
+  | 'read_system_info'
+  | 'generate_thumbnail';

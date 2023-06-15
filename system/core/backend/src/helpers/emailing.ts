@@ -34,10 +34,15 @@ export const sendEmail = async (addresses: string[], subject: string, htmlConten
   const cmsSettings = await getCmsSettings();
   const logger = getLogger();
 
-  const { sendFromEmail, smtpConnectionString } = cmsSettings ?? {};
+  const { sendFromEmail, sendMailFromName, smtpConnectionString } = cmsSettings ?? {};
+
+  let from = sendFromEmail || 'service@cromwellcms.com';
+  if (sendMailFromName) {
+    from = `"${sendMailFromName}" <${from}>`;
+  }
 
   const messageContent = {
-    from: sendFromEmail || 'Service@CromwellCMS.com',
+    from,
     to: addresses.join(', '),
     subject: subject,
     html: htmlContent,

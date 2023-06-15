@@ -63,10 +63,14 @@ const main = async () => {
   };
 
   const outputDeclarations = () => {
+    const declarationsBuildDir = join(buildDir, 'types');
+
+    if (fs.pathExistsSync(declarationsBuildDir)) fs.removeSync(declarationsBuildDir);
+
     spawn(
       `npx --no-install tsc --declaration --emitDeclarationOnly --noEmit null -p ${normalizePath(
         join(getAdminPanelDir(), 'tsconfig.json'),
-      )} --outDir ${normalizePath(join(buildDir, 'types'))}`,
+      )} --outDir ${normalizePath(declarationsBuildDir)}`,
       [],
       {
         cwd: getAdminPanelDir(),

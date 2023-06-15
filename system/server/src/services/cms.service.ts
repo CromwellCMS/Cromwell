@@ -66,6 +66,7 @@ import { AuthService } from './auth.service';
 import { MockService } from './mock.service';
 import { PluginService } from './plugin.service';
 import { ThemeService } from './theme.service';
+import { resizeImage } from '../helpers/resize-image-client';
 
 const logger = getLogger();
 
@@ -524,6 +525,7 @@ ${content}
       headHtml: input.headHtml,
       footerHtml: input.footerHtml,
       defaultShippingPrice: input.defaultShippingPrice,
+      disablePayLater: input.disablePayLater,
       customMeta: input.customMeta,
       modules: {
         ecommerce: !!input.modules?.ecommerce,
@@ -533,6 +535,7 @@ ${content}
 
     entity.adminSettings = {
       sendFromEmail: input.sendFromEmail,
+      sendMailFromName: input.sendMailFromName,
       smtpConnectionString: input.smtpConnectionString,
       customFields: input.customFields,
       customEntities: input.customEntities,
@@ -713,5 +716,31 @@ ${content}
 
   async getUerRoles() {
     return getCustomRepository(RoleRepository).getAll();
+  }
+
+  async generateThumbnail(args: {
+    skipIfGenerated?: boolean;
+    width: number;
+    height: number;
+    src: string;
+    quality?: number;
+  }) {
+    if (!args.width || !args.height) {
+      throw new HttpException('Width and height are required', HttpStatus.BAD_REQUEST);
+    }
+    if (!args.src) {
+      throw new HttpException('Source image is required', HttpStatus.BAD_REQUEST);
+    }
+
+    const result = await resizeImage({
+      ...args,
+      outPublicDir: 'thumbnails',
+      quality: args.quality ?? 90,
+    });
+
+    return {
+      error: result.error,
+      path: result.outFilePublicPath,
+    };
   }
 }

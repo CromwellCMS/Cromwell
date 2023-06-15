@@ -11,6 +11,9 @@ export class AdminCmsSettingsDto extends CmsSettingsDto {
   sendFromEmail?: string;
 
   @ApiProperty()
+  sendMailFromName?: string;
+
+  @ApiProperty()
   cmsInfo?: TCmsInfo;
 
   @ApiProperty()
@@ -39,6 +42,7 @@ export class AdminCmsSettingsDto extends CmsSettingsDto {
 
     this.smtpConnectionString = config.smtpConnectionString;
     this.sendFromEmail = config.sendFromEmail;
+    this.sendMailFromName = config.sendMailFromName;
     this.customFields = config.customFields;
     this.customEntities = config.customEntities;
     this.signupEnabled = config.signupEnabled;

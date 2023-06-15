@@ -1,6 +1,7 @@
 module.exports = {
   defaultSettings: {
     stripeApiKey: 'sk_test_4eC39HqLyjWDarjtT1zdp7dc',
+    enabled: true,
   },
   rollupConfig: () => {
     const commonjs = require('@rollup/plugin-commonjs');

@@ -3,6 +3,7 @@ module.exports = {
     client_id: 'EBWKjlELKMYqRNQ6sYvFo64FtaRLRR5BdHEESmha49TM',
     client_secret: 'EO422dn3gQLgDbuwqTjzrFgFtaRLRR5BdHEESmha49TM',
     mode: 'sandbox',
+    enabled: true,
   },
   rollupConfig: () => {
     const commonjs = require('@rollup/plugin-commonjs');

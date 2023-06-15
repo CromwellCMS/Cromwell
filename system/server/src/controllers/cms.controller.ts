@@ -19,8 +19,8 @@ import {
   Post,
   Query,
   Req,
-  Res,
   Request,
+  Res,
   Response,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -37,6 +37,7 @@ import { CmsStatusDto } from '../dto/cms-status.dto';
 import { CreateOrderDto } from '../dto/create-order.dto';
 import { DashboardSettingsDto } from '../dto/dashboard-settings.dto';
 import { ExportOptionsDto } from '../dto/export-options.dto';
+import { GenerateThumbnailDto } from '../dto/generate-thumbnail.dto';
 import { ModuleInfoDto } from '../dto/module-info.dto';
 import { OrderTotalDto } from '../dto/order-total.dto';
 import { PageStatsDto } from '../dto/page-stats.dto';
@@ -566,5 +567,35 @@ export class CmsController {
   async getPermissions() {
     logger.log('CmsController::getPermissions');
     return getPermissions();
+  }
+
+  @Post('generate-thumbnail')
+  @AuthGuard({ permissions: ['generate_thumbnail'] })
+  @ApiOperation({ description: `Generate thumbnail for a specified image` })
+  @ApiBody({
+    type: GenerateThumbnailDto,
+  })
+  @ApiResponse({
+    status: 201,
+  })
+  @ApiForbiddenResponse({ description: 'Forbidden.' })
+  async generateThumbnail(@Body() input: GenerateThumbnailDto) {
+    logger.log('CmsController::generateThumbnail');
+    return this.cmsService.generateThumbnail(input);
+  }
+
+  @Post('ensure-thumbnail')
+  @AuthGuard({ permissions: ['generate_thumbnail'] })
+  @ApiOperation({ description: `Generate thumbnail for a specified image` })
+  @ApiBody({
+    type: GenerateThumbnailDto,
+  })
+  @ApiResponse({
+    status: 201,
+  })
+  @ApiForbiddenResponse({ description: 'Forbidden.' })
+  async ensureThumbnail(@Body() input: GenerateThumbnailDto) {
+    logger.log('CmsController::ensureThumbnail');
+    return this.cmsService.generateThumbnail({ ...input, skipIfGenerated: true });
   }
 }

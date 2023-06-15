@@ -60,7 +60,6 @@ export const ProductCard = (
         },
       }}
       onProductLinkClick={(event, link) => router?.push(link)}
-      imageProps={{ unoptimized: true }}
     />
   );
 };

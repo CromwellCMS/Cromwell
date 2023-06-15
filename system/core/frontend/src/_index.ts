@@ -52,5 +52,6 @@ export { fetch } from './helpers/isomorphicFetch';
 export * from './helpers/parserTransform';
 export * from './helpers/registerWidget';
 export * from './helpers/contentGetters';
+export * from './helpers/thumbs';
 export * from './widget-types';
 export { throbber } from './components/throbber';

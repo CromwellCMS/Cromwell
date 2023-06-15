@@ -13,4 +13,9 @@ export type SettingsType = {
    * Paypal mode https://developer.paypal.com/docs/api-basics/sandbox/
    */
   mode?: string;
+
+  /**
+   * Enable Paypal payment method
+   */
+  enabled?: boolean;
 };

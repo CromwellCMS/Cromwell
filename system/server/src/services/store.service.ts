@@ -291,9 +291,10 @@ export class StoreService {
           products: (orderTotal.cart ?? []).map((item) => {
             return {
               link:
-                themeConfig?.defaultPages?.product && item?.product?.slug
-                  ? resolvePageRoute('product', { slug: item.product.slug })
-                  : '/',
+                themeConfig?.defaultPages?.product && fromUrl && (item?.product?.slug || item?.product?.id)
+                  ? new URL(fromUrl).origin +
+                    resolvePageRoute('product', { slug: item.product.slug || item?.product?.id })
+                  : '',
               title: `${item?.amount ? item.amount + ' x ' : ''}${item?.product?.name ?? ''}`,
               price: cstore.getPriceWithCurrency(((item.product?.price ?? 0) * (item.amount ?? 1)).toFixed(2)),
             };
