@@ -32,6 +32,7 @@ const useAdminSettingsStore = () => {
   const [breadcrumbs, setBreadcrumbs] = useState<BreadcrumbItem[]>(defaultBreadcrumbs);
   const [saveDisabled, setSaveDisabled] = useState<boolean>(true);
   const [saveVisible, setSaveVisible] = useState<boolean>(false);
+  const [saving, setSaving] = useState<boolean>(false);
   const [onSave, setOnSave] = useState<() => void>(undefined);
   const client = getRestApiClient();
 
@@ -118,6 +119,7 @@ const useAdminSettingsStore = () => {
         },
         redirects: [...(old.redirects || []), ...(newData.redirects || [])],
         rewrites: [...(old?.rewrites || []), ...(newData.rewrites || [])],
+        revalidateCacheAfter: Number(newData.revalidateCacheAfter) ?? 10,
       };
 
       return await __saveSettings(newSettings);
@@ -153,15 +155,19 @@ const useAdminSettingsStore = () => {
   );
 
   const __saveSettings = useCallback(async (newSettings: TAdminCmsSettingsType) => {
+    setSaving(true);
+    let success = false;
     try {
       const settings = await client.saveCmsSettings(newSettings);
       toast.success('Settings saved');
       setAdminSettings((o) => ({ ...o, ...settings }));
-      return true;
+      success = true;
     } catch (e) {
       toast.error('Failed to save settings');
       console.error(e);
     }
+    setSaving(false);
+    return success;
   }, []);
 
   const addCustomEntityToDB = useCallback(
@@ -233,11 +239,12 @@ const useAdminSettingsStore = () => {
     saveRole,
     breadcrumbs,
     setBreadcrumbs,
-    saveDisabled,
+    saveDisabled: saveDisabled || saving,
     setSaveDisabled,
     saveVisible,
     setSaveVisible,
     onSave,
+    saving,
     setOnSave: (value) =>
       setOnSave(() => {
         return value;

@@ -2,7 +2,7 @@ import {
   removeUndefined,
   resolvePageRoute,
   setStoreItem,
-  TCmsConfig,
+  TCmsSettings,
   TCromwellPageCoreProps,
   TDefaultPageName,
   TGetStaticProps,
@@ -32,7 +32,7 @@ const wrapGetProps = (
       pluginsSettings?: TPluginsSettings;
       themeConfig?: TThemeConfig;
       userConfig?: TThemeConfig;
-      cmsSettings?: TCmsConfig;
+      cmsSettings?: TCmsSettings;
       themeCustomConfig?: any;
       pagesInfo?: TPageInfo[];
     } = {};
@@ -104,8 +104,28 @@ const wrapGetProps = (
       },
     };
 
+    let settingsRevalidateCacheAfter: number | undefined;
+
+    if (typeof cmsSettings?.revalidateCacheAfter === 'number') {
+      settingsRevalidateCacheAfter = cmsSettings?.revalidateCacheAfter;
+    }
+    if (typeof cmsSettings?.revalidateCacheAfter === 'string' && cmsSettings?.revalidateCacheAfter) {
+      settingsRevalidateCacheAfter = Number(cmsSettings?.revalidateCacheAfter);
+      if (isNaN(settingsRevalidateCacheAfter)) {
+        settingsRevalidateCacheAfter = undefined;
+      }
+    }
+
     if (getType === 'getStaticProps') {
-      pageProps.revalidate = childStaticProps?.revalidate ?? 60;
+      pageProps.revalidate = childStaticProps?.revalidate ?? settingsRevalidateCacheAfter ?? 10;
+
+      if (typeof pageProps.revalidate !== 'number') {
+        pageProps.revalidate = 10;
+      }
+
+      if (pageProps.revalidate < 1) {
+        pageProps.revalidate = 1;
+      }
     }
 
     return removeUndefined(pageProps);

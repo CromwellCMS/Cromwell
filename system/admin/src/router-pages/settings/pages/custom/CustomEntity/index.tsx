@@ -3,6 +3,7 @@ import { RegisteredTextInput } from '@components/inputs/TextInput';
 import { settingsPageInfo } from '@constants/PageInfos';
 import { TAdminCustomEntity } from '@cromwell/core';
 import { slugify } from '@helpers/slugify';
+import { SettingCategory } from '@pages/settings/components/SettingCategory';
 import { CustomEntityFormType } from '@pages/settings/types';
 import React, { useState } from 'react';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
@@ -100,19 +101,12 @@ const CustomEntityForm = ({ entity }: { entity: TAdminCustomEntity }) => {
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="flex flex-col gap-2 relative lg:flex-row lg:gap-6">
-          <div className="max-h-min my-1 top-16 self-start lg:order-2 lg:my-4 lg:sticky">
-            <h2 className="font-bold text-gray-700 col-span-1 text-2xl mb-3">{entityLabel} definition</h2>
-            <p>Edit entity definition</p>
-            <p className={`${dirtyDefinition ? 'text-indigo-500' : 'text-transparent'}`}>You have unsaved changes</p>
-          </div>
-
-          <div
-            className={`bg-white rounded-lg shadow-lg w-full p-4 max-w-4xl ${
-              dirtyDefinition ? 'border border-indigo-600 shadow-indigo-400' : 'border border-white'
-            }`}
-          >
-            <div className="grid gap-2 grid-cols-1 lg:grid-cols-2">
+        <SettingCategory
+          title={`${entityLabel} definition`}
+          description="Edit entity definition"
+          dirty={dirtyDefinition}
+          fields={
+            <>
               <RegisteredTextInput
                 name="entityLabel"
                 label="Entity Label"
@@ -163,27 +157,20 @@ const CustomEntityForm = ({ entity }: { entity: TAdminCustomEntity }) => {
                   )}
                 />
               </div>
-            </div>
-          </div>
-        </div>
+            </>
+          }
+        />
 
-        <div className="flex flex-col mt-10 gap-2 relative lg:flex-row lg:gap-6">
-          <div className="max-h-min my-1 top-16 self-start lg:order-2 lg:my-4 lg:sticky">
-            <h2 className="font-bold text-gray-700 col-span-1 text-2xl mb-3">{entityLabel} custom fields</h2>
-            <p>Customize fields for {entityLabel}</p>
-            <p className={`${dirtyCustomFields ? 'text-indigo-500' : 'text-transparent'}`}>You have unsaved changes</p>
-          </div>
-
-          <div
-            className={`bg-white rounded-lg shadow-lg w-full p-4 max-w-4xl ${
-              dirtyCustomFields ? 'border border-indigo-600 shadow-indigo-400' : 'border border-white'
-            }`}
-          >
-            <div className="">
+        <SettingCategory
+          title={`${entityLabel} custom fields`}
+          description="Customize fields for this entity"
+          dirty={dirtyCustomFields}
+          fields={
+            <div className="col-span-2">
               <DraggableEntityFields entityType={entityType} />
             </div>
-          </div>
-        </div>
+          }
+        />
       </form>
     </FormProvider>
   );

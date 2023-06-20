@@ -1,5 +1,6 @@
 import { setStoreItem, systemPackages, TCmsConfig, TCmsInfo, TCmsSettings } from '@cromwell/core';
 import fs from 'fs-extra';
+import { throttle } from 'throttle-debounce';
 
 import { CmsEntity } from '../models/entities/cms.entity';
 import { defaultCmsConfig } from './constants';
@@ -74,12 +75,25 @@ export const getCmsConfig = async (): Promise<TCmsConfig> => {
   return cmsConfig;
 };
 
-export const getCmsSettings = async (): Promise<TCmsSettings> => {
+let cmsEntity: CmsEntity | undefined = undefined;
+
+const updateCmsEntityThrottled = throttle(1000, async () => {
+  cmsEntity = await getCmsEntity();
+});
+
+export const getCmsSettings = async ({ throttled = true }: { throttled?: boolean } = {}): Promise<TCmsSettings> => {
   // Read cmsconfig.json only once
   if (!cmsConfig) cmsConfig = await readCMSConfig();
+  if (!cmsEntity) cmsEntity = await getCmsEntity();
+  else {
+    if (throttled) {
+      updateCmsEntityThrottled();
+    } else {
+      cmsEntity = await getCmsEntity();
+    }
+  }
 
   // Update info from DB on each call
-  const entity = await getCmsEntity();
   const settings: TCmsSettings = Object.assign(
     {},
     {
@@ -88,14 +102,14 @@ export const getCmsSettings = async (): Promise<TCmsSettings> => {
       ...(cmsConfig.defaultSettings?.internalSettings ?? {}),
     },
     {
-      ...(entity.publicSettings ?? {}),
-      ...(entity.adminSettings ?? {}),
-      ...(entity.internalSettings ?? {}),
+      ...(cmsEntity.publicSettings ?? {}),
+      ...(cmsEntity.adminSettings ?? {}),
+      ...(cmsEntity.internalSettings ?? {}),
     },
     cmsConfig,
     {
-      redirects: [...(entity.publicSettings?.redirects ?? []), ...(cmsConfig?.redirects ?? [])],
-      rewrites: [...(entity.publicSettings?.rewrites ?? []), ...(cmsConfig?.rewrites ?? [])],
+      redirects: [...(cmsEntity.publicSettings?.redirects ?? []), ...(cmsConfig?.redirects ?? [])],
+      rewrites: [...(cmsEntity.publicSettings?.rewrites ?? []), ...(cmsConfig?.rewrites ?? [])],
     },
   );
   delete settings.defaultSettings;

@@ -8,7 +8,7 @@ export function RegisteredTextInput<TData = Record<string, any>>({
   name,
   registerOptions,
   ...props
-}: Omit<TextInputProps, 'name'> & { name: keyof TData; registerOptions?: RegisterOptions<TData> }) {
+}: Omit<TextInputProps, 'name'> & { name: keyof TData; registerOptions?: RegisterOptions }) {
   const { control } = useFormContext();
   return (
     <Controller

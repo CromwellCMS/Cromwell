@@ -3,6 +3,7 @@ import {
   applyDataFilters,
   CustomEntityRepository,
   DeleteManyInput,
+  getCmsSettings,
   TFilterableEntities,
   TGraphQLContext,
 } from '@cromwell/core-backend';
@@ -125,7 +126,11 @@ export const createWithFilters = async <TEntityKey extends keyof TFilterableEnti
       user: ctx?.user,
       permissions,
     }).then((res) => {
-      resetAllPagesCache();
+      getCmsSettings().then((settings) => {
+        if (settings.clearCacheOnDataUpdate !== false) {
+          resetAllPagesCache();
+        }
+      });
       return res;
     })
   ).data;
@@ -158,7 +163,11 @@ export const updateWithFilters = async <TEntityKey extends keyof TFilterableEnti
       user: ctx?.user,
       permissions,
     }).then((res) => {
-      resetAllPagesCache();
+      getCmsSettings().then((settings) => {
+        if (settings.clearCacheOnDataUpdate !== false) {
+          resetAllPagesCache();
+        }
+      });
       return res;
     })
   ).data;
@@ -185,7 +194,11 @@ export const deleteWithFilters = async <TEntityKey extends keyof TFilterableEnti
       user: ctx?.user,
       permissions,
     }).then((res) => {
-      resetAllPagesCache();
+      getCmsSettings().then((settings) => {
+        if (settings.clearCacheOnDataUpdate !== false) {
+          resetAllPagesCache();
+        }
+      });
       return res;
     })
   ).success;
@@ -215,7 +228,11 @@ export const deleteManyWithFilters = async <TEntityKey extends keyof TFilterable
       user: ctx?.user,
       permissions,
     }).then((res) => {
-      resetAllPagesCache();
+      getCmsSettings().then((settings) => {
+        if (settings.clearCacheOnDataUpdate !== false) {
+          resetAllPagesCache();
+        }
+      });
       return res;
     })
   ).success;

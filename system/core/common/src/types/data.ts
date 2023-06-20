@@ -604,7 +604,7 @@ export type TDBInfo = {
 };
 
 export type TCmsInfo = {
-  packages: Partial<Record<typeof systemPackages[number], string>>;
+  packages: Partial<Record<(typeof systemPackages)[number], string>>;
 };
 
 export type TSystemUsage = {

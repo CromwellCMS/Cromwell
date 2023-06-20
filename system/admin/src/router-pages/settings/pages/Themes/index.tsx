@@ -36,7 +36,7 @@ export const ThemeListing: React.FunctionComponent = () => {
   }>({});
   const pageRef = useRef();
 
-  useAdminSettings({
+  const { getAdminCmsSettings } = useAdminSettings({
     ...info,
   });
 
@@ -126,7 +126,7 @@ export const ThemeListing: React.FunctionComponent = () => {
 
     try {
       success = await client.deleteTheme(themeName);
-      await fetchConfigAndPackages();
+      await Promise.all([fetchConfigAndPackages(), getAdminCmsSettings()]);
     } catch (error) {
       console.error(error);
     }
@@ -150,7 +150,7 @@ export const ThemeListing: React.FunctionComponent = () => {
     let success = false;
     try {
       success = await client.changeTheme(themeName);
-      await fetchConfigAndPackages();
+      await Promise.all([fetchConfigAndPackages(), getAdminCmsSettings()]);
     } catch (e) {
       console.error(e);
     }

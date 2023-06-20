@@ -313,7 +313,7 @@ export async function getResizedImagePaths({
       throw new Error('Poison Null Bytes');
     }
     const filePath = join(process.cwd(), 'public', publicPath);
-    if ((await fs.lstat(filePath)).isFile()) {
+    if ((await fs.stat(filePath)).isFile()) {
       const outFileName = publicPath + '.webp';
       outFilePublicPath = join(outBasePath, outFileName);
       outFilePath = join(process.cwd(), 'public', outFilePublicPath);

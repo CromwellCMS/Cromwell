@@ -3,7 +3,7 @@ import { getAuthSettings, getCmsSettings, getLogger, getThemeConfigs, TAuthSetti
 import fetch from 'node-fetch';
 import { Service } from 'typedi';
 
-import { CmsSettingsDto } from '../dto/cms-settings.dto';
+import { AdminCmsSettingsDto } from '../dto/admin-cms-settings.dto';
 import { ThemeConfigDto } from '../dto/theme-config.dto';
 import { getDIService } from '../helpers/utils';
 import { ThemeService } from './theme.service';
@@ -48,7 +48,7 @@ export class RendererService {
       pluginsSettings,
       themeConfig: new ThemeConfigDto().parse(allConfigs.themeConfig),
       userConfig: new ThemeConfigDto().parse(allConfigs.userConfig),
-      cmsSettings: cmsSettings && new CmsSettingsDto().parseSettings(cmsSettings),
+      cmsSettings: cmsSettings && new AdminCmsSettingsDto().parseSettings(cmsSettings),
       themeCustomConfig: Object.assign(
         {},
         allConfigs.themeConfig?.themeCustomConfig,

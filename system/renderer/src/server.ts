@@ -85,7 +85,7 @@ export const startNextServer = async (options?: {
       ),
     );
 
-    await processCacheRequest({ app: app as any, req, res, authSettings, port, themeName });
+    await processCacheRequest({ req, res, authSettings, port, themeName });
 
     if (!pathname) {
       handle(req, res, parsedUrl);

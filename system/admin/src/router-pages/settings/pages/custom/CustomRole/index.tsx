@@ -3,6 +3,7 @@ import { RegisteredTextInput } from '@components/inputs/TextInput';
 import { toast } from '@components/toast';
 import { TPermissionName, TRole } from '@cromwell/core';
 import { slugify } from '@helpers/slugify';
+import { SettingCategory } from '@pages/settings/components/SettingCategory';
 import React, { useMemo } from 'react';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
@@ -135,19 +136,12 @@ export const CustomRoleSettingsPage = () => {
   return (
     <FormProvider {...methods}>
       <form className="relative" onSubmit={methods.handleSubmit(onSubmit)}>
-        <div className="flex flex-col gap-2 relative lg:flex-row lg:gap-6">
-          <div className="max-h-min my-1 top-16 self-start lg:order-2 lg:my-4 lg:sticky">
-            <h2 className="font-bold text-gray-700 col-span-1 text-2xl mb-3">{role?.title} definition</h2>
-            <p>Edit Role definition</p>
-            <p className={`${dirtyDefinition ? 'text-indigo-500' : 'text-transparent'}`}>You have unsaved changes</p>
-          </div>
-
-          <div
-            className={`bg-white rounded-lg shadow-lg w-full p-4 max-w-4xl ${
-              dirtyDefinition ? 'border border-indigo-600 shadow-indigo-400' : 'border border-white'
-            }`}
-          >
-            <div className="grid gap-2 grid-cols-1 lg:grid-cols-2">
+        <SettingCategory
+          title={`${role?.title} definition`}
+          description={`Edit Role definition`}
+          dirty={dirtyDefinition}
+          fields={
+            <>
               <RegisteredTextInput<TRole>
                 name="title"
                 label="Title"
@@ -186,24 +180,17 @@ export const CustomRoleSettingsPage = () => {
                   )}
                 />
               </div>
-            </div>
-          </div>
-        </div>
+            </>
+          }
+        />
 
-        <div className="flex flex-col mt-8 z-4 gap-6 relative lg:flex-row">
-          <div className="max-h-min my-4 top-16 self-start lg:order-2 lg:max-w-[13rem] lg:sticky">
-            <h2 className="font-bold text-gray-700 col-span-1 text-2xl mb-3">Permissions</h2>
-            <p>Set permissions for {role?.title}.</p>
-            <p className="text-red-600">Warning: Wrong configuration may expose features to roles!</p>
-            <p className={`${dirtyPermissions ? 'text-indigo-500' : 'text-transparent'}`}>You have unsaved changes</p>
-          </div>
-
-          <div
-            className={`bg-white rounded-lg shadow-lg w-full p-4 max-w-4xl ${
-              dirtyPermissions ? 'border border-indigo-600 shadow-indigo-400' : 'border border-white'
-            }`}
-          >
-            <div className="flex flex-wrap">
+        <SettingCategory
+          title={`${role?.title} permissions`}
+          description={`Set permissions for ${role?.title}.`}
+          dirty={dirtyPermissions}
+          warning={`Warning: Wrong configuration may expose administrative features to this role!`}
+          fields={
+            <div className="flex flex-wrap col-span-2">
               <ControlledPermissionCategory
                 title="System"
                 description="General system permissions"
@@ -381,7 +368,7 @@ export const CustomRoleSettingsPage = () => {
               ))}
               <hr className="my-4" />
               <div className="-mb-2 ml-4 block basis-full">
-                <h2 className="font-bold mt-8 basis-full">Third Party Permissions</h2>
+                <h2 className="font-bold mt-8 basis-full text-2xl my-2">Third Party Permissions</h2>
                 <p className="text-xs text-gray-700">All permissions that are from third party providers (plugins)</p>
               </div>
               {orderedPermissions.thirdParty.map((opt) => (
@@ -390,8 +377,8 @@ export const CustomRoleSettingsPage = () => {
                 </div>
               ))}
             </div>
-          </div>
-        </div>
+          }
+        />
       </form>
     </FormProvider>
   );

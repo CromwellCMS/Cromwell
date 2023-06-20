@@ -3,11 +3,14 @@ import { Controller, useFormContext } from 'react-hook-form';
 
 import { ImageInput, ImageInputProps } from './ImageInput';
 
-export function RegisteredImageInput({ name, ...props }: ImageInputProps & { name: string }) {
+export function RegisteredImageInput<T extends Record<string, any>>({
+  name,
+  ...props
+}: ImageInputProps & { name: keyof T }) {
   const { control } = useFormContext();
   return (
     <Controller
-      name={name}
+      name={name as any}
       control={control}
       render={({ field }) => {
         return <ImageInput {...props} value={field.value} onChange={field.onChange} />;

@@ -779,6 +779,17 @@ export type TCmsAdminSettings = {
    * Show unapproved product reviews. Hide by default
    */
   showUnapprovedReviews?: boolean;
+
+  /**
+   * Invalidate next.js frontend cache after this time (in seconds).
+   * Basically it's `revalidate` prop for next.js: https://nextjs.org/docs/pages/building-your-application/data-fetching/incremental-static-regeneration
+   */
+  revalidateCacheAfter?: number;
+
+  /**
+   * Clear next.js frontend cache on any CMS data update.
+   */
+  clearCacheOnDataUpdate?: boolean;
 };
 
 /**

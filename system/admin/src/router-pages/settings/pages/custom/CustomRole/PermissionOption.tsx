@@ -54,7 +54,7 @@ const PermissionOption = ({
               pointer-events-none inline-block h-[12px] w-[12px] rounded-full bg-white shadow-lg transform ring-0 transition ease-in-out duration-200`}
             />
           </div>
-          <p className="text-base text-left">{label}</p>
+          <p className="text-base text-left mt-3">{label}</p>
           <p className="text-xs text-left text-gray-500">{description}</p>
         </div>
       </Switch>

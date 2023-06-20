@@ -24,7 +24,7 @@ export const ControlledPermissionCategory = ({
   return (
     <div className="-mb-2 ml-4 block basis-full">
       <div className="flex flex-row mt-8 justify-between">
-        <h2 className="font-bold basis-full">{title}</h2>
+        <h2 className="font-bold basis-full text-2xl my-2">{title}</h2>
         <Switch checked={value} onChange={onChange} className="h-full w-full">
           <div className={`mx-2 mr-4 w-full h-full p-3 relative`}>
             <div

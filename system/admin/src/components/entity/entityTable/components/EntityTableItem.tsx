@@ -101,7 +101,7 @@ function EntityTableItem<TEntityType extends TBasePageEntity, TFilterType extend
                   <div
                     className={styles.imageItem}
                     style={{
-                      backgroundImage: value && `url(${getThumbnailSrc({ src: value, width: 52, height: 34 })})`,
+                      backgroundImage: value && `url(${getThumbnailSrc({ src: value, width: 100, height: 100 })})`,
                     }}
                   ></div>
                 </div>

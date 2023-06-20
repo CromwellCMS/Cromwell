@@ -33,20 +33,46 @@ const resize = async (args: ResizeImageArgs): Promise<ResizeImageResult> => {
   await fs.ensureDir(dirname(outFilePath));
 
   const sharpStream = sharp({ failOn: 'none' });
+  const outStream = fs.createWriteStream(outFilePath);
 
-  const promise = sharpStream.resize({ width, height }).webp({ quality: args.quality || 100 });
+  sharpStream
+    .resize({ width, height })
+    .webp({ quality: args.quality || 100 })
+    .pipe(outStream);
 
   if (src.startsWith('http')) {
-    sharpStream.toFile(outFilePath);
-
     got.stream(src).pipe(sharpStream);
   } else {
-    sharpStream.toFile(outFilePath);
     fs.createReadStream(src).pipe(sharpStream);
   }
 
-  await promise;
-  await awaitValue(() => fs.pathExists(outFilePath), 8);
+  await new Promise<void>((done) => {
+    outStream.on('finish', () => {
+      done();
+    });
+
+    outStream.on('error', (e) => {
+      logger.error(e);
+      done();
+    });
+
+    sharpStream.on('error', (e) => {
+      logger.error(e);
+      done();
+    });
+
+    setTimeout(() => {
+      done();
+    }, 5000);
+  });
+
+  await awaitValue(async () => {
+    try {
+      await fs.access(outFilePath, fs.constants.R_OK);
+      const stat = await fs.statSync(outFilePath);
+      return stat.isFile();
+    } catch (error) {}
+  }, 8);
 
   return { outFilePath };
 };

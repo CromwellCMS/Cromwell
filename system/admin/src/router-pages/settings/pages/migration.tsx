@@ -8,6 +8,7 @@ import { Controller, FormProvider, useForm, useFormContext } from 'react-hook-fo
 
 import { LoadingStatus } from '../../../components/loadBox/LoadingStatus';
 import { toast } from '../../../components/toast/toast';
+import { SettingCategory } from '../components/SettingCategory';
 
 const exportOptions = [
   {
@@ -235,77 +236,79 @@ export const MigrationSettingsPage = () => {
   return (
     <FormProvider {...methods}>
       <form className="relative" onSubmit={methods.handleSubmit(onSubmit)}>
-        <div className="flex flex-col z-4 gap-6 relative lg:flex-row">
-          <div className="max-h-min my-4 lg:max-w-[13rem] top-16 self-start lg:order-2 lg:sticky">
-            <h2 className="font-bold text-gray-700 col-span-1 text-2xl mb-3">Backups</h2>
-            <p>Backup your system with all data.</p>
-            <p>Files are in Excel format (.xlsx)</p>
-            <p>
-              <a href="https://cromwellcms.com/docs/features/migration" target="_blank" rel="noreferrer">
-                Read more in docs
-              </a>
-            </p>
-            {/* <p className="text-red-600">Warning: This is a feature for tech-experts.</p> */}
-          </div>
-
-          <div className={`bg-white rounded-lg shadow-lg w-full p-4 max-w-4xl`}>
-            <div className="flex flex-wrap">
-              {exportOptions.map((opt, idx) => (
-                <div key={opt.key} className="max-h-[200px] p-1 basis-full lg:basis-1/2">
-                  <ControlledBackupOption key={opt.key} name={`exportData.${idx}.checked`} data={opt} />
-                </div>
-              ))}
-            </div>
-            <button
-              type="button"
-              onClick={methods.handleSubmit(exportDB)}
-              className="rounded-xl font-bold bg-indigo-600 bg-opacity-0 h-20 mt-4 w-full transform transition-all group hover:bg-opacity-100 hover:shadow-md hover:text-white"
-            >
-              <ArrowDownTrayIcon className="font-bold h-5 mr-3 w-5 inline-block group-hover:animate-bounce" />
-              download backup
-            </button>
-          </div>
-        </div>
-
-        <div className="flex flex-col mt-10 z-4 gap-6 relative lg:flex-row">
-          <div className="max-h-min my-4 lg:max-w-[13rem] top-16 self-start lg:order-2 lg:sticky">
-            <h2 className="font-bold text-gray-700 col-span-1 text-2xl mb-3">Import</h2>
-            <p>Import your backup</p>
-            <p className="text-red-600">Warning: This may override all your data. Use with caution.</p>
-          </div>
-
-          <div className={`bg-white rounded-lg shadow-lg w-full p-4 max-w-4xl`}>
-            <div className="flex flex-wrap">
-              <div className="max-h-[200px] p-1 basis-full lg:basis-1/2">
-                <ControlledBackupOption
-                  name={`importOverride`}
-                  data={{
-                    key: 'importOverride',
-                    checked: false,
-                    description: 'Delete all data that is not in the backup file.',
-                    title: 'Override database',
-                  }}
-                />
+        <SettingCategory
+          title="Backup"
+          description={
+            <>
+              <p>Backup your system with all data.</p>
+              <p>Files are in Excel format (.xlsx)</p>
+            </>
+          }
+          link={{
+            content: 'Read more in docs',
+            href: 'https://cromwellcms.com/docs/features/migration',
+          }}
+          fields={
+            <>
+              <div className="flex flex-wrap col-span-2">
+                {exportOptions.map((opt, idx) => (
+                  <div key={opt.key} className="max-h-[200px] p-1 basis-full lg:basis-1/2">
+                    <ControlledBackupOption key={opt.key} name={`exportData.${idx}.checked`} data={opt} />
+                  </div>
+                ))}
               </div>
-              {override && (
-                <p className="font-bold my-3 px-2 text-red-600">
-                  Warning: This will override all data and remove items that are not in the backup file. Do you want to
-                  continue?
-                </p>
-              )}
-            </div>
-            <button
-              type="button"
-              onClick={methods.handleSubmit(importDB)}
-              className={`rounded-xl font-bold ${
-                override ? 'bg-red-600' : 'bg-indigo-600'
-              } bg-opacity-0 h-20 mt-4 w-full transform transition-all group hover:bg-opacity-100 hover:shadow-md hover:text-white`}
-            >
-              <ArrowSmallUpIcon className="font-bold h-5 mr-3 w-5 inline-block group-hover:animate-bounce" />
-              Import backup
-            </button>
-          </div>
-        </div>
+              <button
+                type="button"
+                onClick={methods.handleSubmit(exportDB)}
+                className="rounded-xl col-span-2 font-bold bg-indigo-600 bg-opacity-0 h-20 mt-4 w-full transform transition-all group hover:bg-opacity-100 hover:shadow-md hover:text-white"
+              >
+                <ArrowDownTrayIcon className="font-bold h-5 mr-3 w-5 inline-block group-hover:animate-bounce" />
+                download backup
+              </button>
+            </>
+          }
+        />
+
+        <SettingCategory
+          title="Import"
+          description={'Import your backup'}
+          warning={'Warning: This may override all your data. Use with caution.'}
+          fields={
+            <>
+              <div className="flex flex-wrap col-span-2">
+                <div className="max-h-[200px] p-1 basis-full lg:basis-1/2">
+                  <ControlledBackupOption
+                    name={`importOverride`}
+                    data={{
+                      key: 'importOverride',
+                      checked: false,
+                      description: 'Delete all data that is not in the backup file.',
+                      title: 'Override database',
+                    }}
+                  />
+                </div>
+                {override && (
+                  <p className="font-bold my-3 px-2 text-red-600">
+                    Warning: This will override all data and remove items that are not in the backup file. Do you want
+                    to continue?
+                  </p>
+                )}
+              </div>
+              <div className={`bg-white rounded-lg shadow-lg w-full p-4 max-w-4xl col-span-2`}>
+                <button
+                  type="button"
+                  onClick={methods.handleSubmit(importDB)}
+                  className={`rounded-xl font-bold ${
+                    override ? 'bg-red-600' : 'bg-indigo-600'
+                  } bg-opacity-0 h-20 mt-4 w-full transform transition-all group hover:bg-opacity-100 hover:shadow-md hover:text-white`}
+                >
+                  <ArrowSmallUpIcon className="font-bold h-5 mr-3 w-5 inline-block group-hover:animate-bounce" />
+                  Import backup
+                </button>
+              </div>
+            </>
+          }
+        />
       </form>
       <LoadingStatus isActive={processing} />
     </FormProvider>

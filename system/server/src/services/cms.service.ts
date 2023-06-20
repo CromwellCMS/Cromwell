@@ -157,7 +157,7 @@ export class CmsService {
       return;
     }
 
-    if ((await fs.lstat(fullPath)).isFile()) {
+    if ((await fs.stat(fullPath)).isFile()) {
       response.header('Content-Disposition', `attachment; filename=${fileName}`);
       const mimeType = mime.lookup(fullPath);
       if (mimeType) response.type(mimeType);
@@ -527,6 +527,7 @@ ${content}
       defaultShippingPrice: input.defaultShippingPrice,
       disablePayLater: input.disablePayLater,
       customMeta: input.customMeta,
+      themeName: input.themeName,
       modules: {
         ecommerce: !!input.modules?.ecommerce,
         blog: !!input.modules?.blog,
@@ -541,6 +542,8 @@ ${content}
       customEntities: input.customEntities,
       signupEnabled: input.signupEnabled,
       signupRoles: input.signupRoles,
+      revalidateCacheAfter: input.revalidateCacheAfter,
+      clearCacheOnDataUpdate: input.clearCacheOnDataUpdate,
     };
 
     await entity.save();
@@ -553,7 +556,7 @@ ${content}
 
     await serverFireAction('update_cms_settings');
 
-    const settings = await getCmsSettings();
+    const settings = await getCmsSettings({ throttled: false });
     return new AdminCmsSettingsDto().parseSettings(settings);
   }
 

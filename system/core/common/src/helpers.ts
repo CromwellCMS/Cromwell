@@ -74,12 +74,18 @@ export const awaitValue = async <T>(
 
     (async () => {
       const value = await valueGetter();
-      if (value) resolve(value);
+      if (value) {
+        resolve(value);
+        return;
+      }
 
       for (let i = 0; i < timeout / interval; i++) {
         await sleep(interval);
         const value = await valueGetter();
-        if (value) resolve(value);
+        if (value) {
+          resolve(value);
+          return;
+        }
       }
 
       resolve(null);

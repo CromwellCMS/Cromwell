@@ -106,7 +106,11 @@ export class CmsController {
   })
   async updateCmsSettings(@Body() input: AdminCmsSettingsDto): Promise<AdminCmsSettingsDto | undefined> {
     const settings = await this.cmsService.updateCmsSettings(input);
-    resetAllPagesCache();
+
+    if (settings.clearCacheOnDataUpdate !== false) {
+      resetAllPagesCache();
+    }
+
     return settings;
   }
 
@@ -596,6 +600,6 @@ export class CmsController {
   @ApiForbiddenResponse({ description: 'Forbidden.' })
   async ensureThumbnail(@Body() input: GenerateThumbnailDto) {
     logger.log('CmsController::ensureThumbnail');
-    return this.cmsService.generateThumbnail({ ...input, skipIfGenerated: true });
+    return await this.cmsService.generateThumbnail({ ...input, skipIfGenerated: true });
   }
 }

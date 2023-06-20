@@ -42,8 +42,6 @@ class FileManager
   private previousPaths: string[] = [];
   private nextPaths: string[] = [];
   private currentItems: string[] | null | undefined = null;
-  private photoPreview: React.RefObject<HTMLImageElement> = React.createRef();
-  private photoPreviewContainer: React.RefObject<HTMLDivElement> = React.createRef();
   private selectButton: React.RefObject<HTMLButtonElement> = React.createRef();
   private createFolderBtn: React.RefObject<HTMLButtonElement> = React.createRef();
   private deleteItemBtn: React.RefObject<HTMLButtonElement> = React.createRef();

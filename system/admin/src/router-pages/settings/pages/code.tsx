@@ -1,6 +1,7 @@
 import { CodeEditor } from '@components/inputs/CodeEditor';
 import React from 'react';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
+import { SettingCategory } from '../components/SettingCategory';
 
 import { SettingsPageInfo, useAdminSettings, useAdminSettingsContext } from '../hooks/useAdminSettings';
 import { TAdminCmsSettingsType } from '../types';
@@ -42,26 +43,14 @@ export const CodeSettingsPage = () => {
   return (
     <FormProvider {...methods}>
       <form className="relative" onSubmit={methods.handleSubmit(onSubmit)}>
-        <div className="flex flex-col z-4 gap-6 relative lg:flex-row">
-          <div className="max-h-min my-4 lg:max-w-[13rem] top-16 self-start lg:order-2 lg:sticky">
-            <h2 className="font-bold text-gray-700 col-span-1 text-2xl mb-3">Code Injection</h2>
-            <p>
-              Code under Head will be placed on the {'<head></head>'} section of the website. Footer HTML will be placed
-              at the bottom of {'<body />'}.
-            </p>
-            <p className="text-red-600">
-              Warning: This is a feature for tech-experts. Please use with caution and do not inject any malicious code.
-            </p>
-            <p className={`${isDirty ? 'text-indigo-500' : 'text-transparent'}`}>You have unsaved changes</p>
-          </div>
-
-          <div
-            className={`bg-white rounded-lg shadow-lg w-full p-4 max-w-4xl ${
-              isDirty ? 'border border-indigo-600 shadow-indigo-400' : 'border border-white'
-            }`}
-          >
-            <div className="grid gap-2 grid-cols-1">
-              <label className="group active:text-indigo-500">
+        <SettingCategory
+          title="Code Injection"
+          description="Code under Head will be placed on the <head></head> section of the website. Footer HTML will be placed at the bottom of <body />."
+          warning="Warning: This is a feature for tech-experts. Please use with caution and do not inject any malicious code."
+          dirty={isDirty}
+          fields={
+            <>
+              <label className="group active:text-indigo-500 col-span-2">
                 <p className="font-bold pb-1 pl-[2px] text-gray-700">HEAD HTML</p>
                 <Controller
                   control={methods.control}
@@ -71,7 +60,7 @@ export const CodeSettingsPage = () => {
                   )}
                 />
               </label>
-              <label className="group active:text-indigo-500">
+              <label className="group active:text-indigo-500 col-span-2">
                 <p className="font-bold pb-1 pl-[2px] text-gray-700">FOOTER HTML</p>
                 <Controller
                   control={methods.control}
@@ -81,9 +70,9 @@ export const CodeSettingsPage = () => {
                   )}
                 />
               </label>
-            </div>
-          </div>
-        </div>
+            </>
+          }
+        />
       </form>
     </FormProvider>
   );

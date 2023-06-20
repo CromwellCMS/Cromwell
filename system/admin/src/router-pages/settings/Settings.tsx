@@ -1,5 +1,6 @@
 import { TBreadcrumbs } from '@components/breadcrumbs';
 import { PageStickyHeader } from '@components/entity/entityEdit/components/EntityHeader';
+import { LoadingStatus } from '@components/loadBox/LoadingStatus';
 import { SideNavMobileButton } from '@components/sideNav/ResponsiveSideNav';
 import { EDBEntity } from '@cromwell/core';
 import { Box } from '@mui/material';
@@ -26,46 +27,50 @@ export const SettingsPage = () => {
   const settings = useAdminSettingsContext();
 
   return (
-    <div className="p-3 md:p-4 max-w-[1200px] w-[100%] mx-auto">
+    <div className="w-[100%] mx-auto max-w-[940px] p-3">
       <PageStickyHeader
         hideSaveButton={!settings.saveVisible}
         disableSaveButton={settings.saveDisabled}
         onSave={settings.onSave}
         sx={{
-          maxWidth: '900px',
+          maxWidth: '940px',
+          width: '100%',
           padding: '10px 20px',
         }}
         leftContent={
           <Box className="flex">
             <SideNavMobileButton />
             <h1 className="flex items-center font-500 text-gray-700 h-8 text-base whitespace-nowrap md:h-9 md:text-xl lg:max-w-fit lg:h-10 lg:text-2xl">
-              <TBreadcrumbs path={settings.breadcrumbs} maxVisible={4} />
+              {!!settings.breadcrumbs?.length && <TBreadcrumbs path={settings.breadcrumbs} maxVisible={4} />}
             </h1>
           </Box>
         }
       />
-      <Routes>
-        <Route path={`general`} element={<GeneralSettingsPage />} />
-        <Route path={`store`} element={<StoreSettingsPage />} />
-        <Route path={`code`} element={<CodeSettingsPage />} />
-        <Route path={`seo`} element={<SEOSettingsPage />} />
-        <Route path={`acl`} element={<ACLSettingsPage />} />
-        <Route path={`acl/:roleId`} element={<CustomRoleSettingsPage />} />
-        <Route path={`custom-data`} element={<CustomDataPage />} />
-        <Route path={`custom-data/product`} element={<DefaultEntitySettingsPage entityType={EDBEntity.Product} />} />
-        <Route
-          path={`custom-data/category`}
-          element={<DefaultEntitySettingsPage entityType={EDBEntity.ProductCategory} />}
-        />
-        <Route path={`custom-data/post`} element={<DefaultEntitySettingsPage entityType={EDBEntity.Post} />} />
-        <Route path={`custom-data/tag`} element={<DefaultEntitySettingsPage entityType={EDBEntity.Tag} />} />
-        <Route path={`custom-data/user`} element={<DefaultEntitySettingsPage entityType={EDBEntity.User} />} />
-        <Route path={`custom-data/general`} element={<DefaultEntitySettingsPage entityType={EDBEntity.CMS} />} />
-        <Route path={`custom-data/:entityType`} element={<CustomEntitySettingsPage />} />
-        <Route path={`migration`} element={<MigrationSettingsPage />} />
-        <Route path={`themes`} element={<ThemeListing />} />
-        <Route index element={<SettingsIndexPage />} />
-      </Routes>
+      <div className="p-4 md:p-5 ">
+        <Routes>
+          <Route path={`general`} element={<GeneralSettingsPage />} />
+          <Route path={`store`} element={<StoreSettingsPage />} />
+          <Route path={`code`} element={<CodeSettingsPage />} />
+          <Route path={`seo`} element={<SEOSettingsPage />} />
+          <Route path={`acl`} element={<ACLSettingsPage />} />
+          <Route path={`acl/:roleId`} element={<CustomRoleSettingsPage />} />
+          <Route path={`custom-data`} element={<CustomDataPage />} />
+          <Route path={`custom-data/product`} element={<DefaultEntitySettingsPage entityType={EDBEntity.Product} />} />
+          <Route
+            path={`custom-data/category`}
+            element={<DefaultEntitySettingsPage entityType={EDBEntity.ProductCategory} />}
+          />
+          <Route path={`custom-data/post`} element={<DefaultEntitySettingsPage entityType={EDBEntity.Post} />} />
+          <Route path={`custom-data/tag`} element={<DefaultEntitySettingsPage entityType={EDBEntity.Tag} />} />
+          <Route path={`custom-data/user`} element={<DefaultEntitySettingsPage entityType={EDBEntity.User} />} />
+          <Route path={`custom-data/general`} element={<DefaultEntitySettingsPage entityType={EDBEntity.CMS} />} />
+          <Route path={`custom-data/:entityType`} element={<CustomEntitySettingsPage />} />
+          <Route path={`migration`} element={<MigrationSettingsPage />} />
+          <Route path={`themes`} element={<ThemeListing />} />
+          <Route index element={<SettingsIndexPage />} />
+        </Routes>
+      </div>
+      <LoadingStatus isActive={settings.saving} />
     </div>
   );
 };

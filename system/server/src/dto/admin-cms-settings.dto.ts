@@ -37,6 +37,12 @@ export class AdminCmsSettingsDto extends CmsSettingsDto {
   @ApiProperty()
   showUnapprovedReviews?: boolean;
 
+  @ApiProperty()
+  revalidateCacheAfter?: number;
+
+  @ApiProperty()
+  clearCacheOnDataUpdate?: boolean;
+
   parseSettings(config: TCmsSettings) {
     super.parseSettings(config);
 
@@ -48,6 +54,8 @@ export class AdminCmsSettingsDto extends CmsSettingsDto {
     this.signupEnabled = config.signupEnabled;
     this.signupRoles = config.signupRoles;
     this.showUnapprovedReviews = config.showUnapprovedReviews;
+    this.revalidateCacheAfter = config.revalidateCacheAfter;
+    this.clearCacheOnDataUpdate = config.clearCacheOnDataUpdate;
     return this;
   }
 }

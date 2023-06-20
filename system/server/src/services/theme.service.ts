@@ -343,7 +343,13 @@ export class ThemeService {
     const success = await this.saveThemeUserConfig(userConfig, themeName);
 
     // Reset Next.js cached pages
-    if (success) resetAllPagesCache();
+    if (success) {
+      getCmsSettings().then((settings) => {
+        if (settings.clearCacheOnDataUpdate !== false) {
+          resetAllPagesCache();
+        }
+      });
+    }
     return success;
   }
 
@@ -466,7 +472,11 @@ export class ThemeService {
     }
 
     // Reset Next.js cached pages
-    await resetAllPagesCache();
+    getCmsSettings().then((settings) => {
+      if (settings.clearCacheOnDataUpdate !== false) {
+        resetAllPagesCache();
+      }
+    });
 
     return true;
   }

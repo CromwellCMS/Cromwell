@@ -13,7 +13,7 @@ export async function resolvePublicFilePathToServe(requestPath: string): Promise
 
   const url = new URL('http://localhost' + requestPath);
 
-  const publicPath = normalizePath(url.pathname).replace(/^(\.\.(\/|\\|$))+/, '');
+  const publicPath = normalizePath(decodeURIComponent(url.pathname)).replace(/^(\.\.(\/|\\|$))+/, '');
   const query = url.searchParams;
 
   if (publicPath.indexOf('\0') !== -1) {
@@ -61,9 +61,7 @@ export async function resolvePublicFilePathToServe(requestPath: string): Promise
 
   return {
     pathInPublicDir:
-      (await fs.pathExists(pathInPublicDir)) && (await fs.lstat(pathInPublicDir)).isFile()
-        ? pathInPublicDir
-        : undefined,
+      (await fs.pathExists(pathInPublicDir)) && (await fs.stat(pathInPublicDir)).isFile() ? pathInPublicDir : undefined,
   };
 }
 

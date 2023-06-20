@@ -6,7 +6,7 @@ import React from 'react';
 export type SwitchInputProps = {
   value?: boolean;
   onChange?: (v: boolean) => any;
-  label?: string | { active: string; inactive: string };
+  label?: string | { active: string; inactive: string } | React.ReactNode;
   xs?: boolean;
   className?: string;
   sx?: SxProps;
@@ -15,12 +15,21 @@ export type SwitchInputProps = {
 export const SwitchInput = ({
   value = false,
   onChange = () => {},
-  label = '',
   xs = false,
   className,
   sx,
+  ...rest
 }: SwitchInputProps) => {
-  const displayLabel = typeof label === 'string' ? label : value ? label.active : label.inactive;
+  let displayLabel: any = rest.label;
+
+  if (typeof displayLabel === 'object' && (displayLabel.active || displayLabel.inactive)) {
+    if (value) {
+      displayLabel = displayLabel.active;
+    } else {
+      displayLabel = displayLabel.inactive;
+    }
+  }
+
   return (
     <Switch.Group>
       <Box sx={sx} className={`flex items-center ${className ?? ''}`}>
@@ -28,7 +37,7 @@ export const SwitchInput = ({
           checked={value}
           onChange={onChange}
           className={`${value ? 'bg-indigo-600' : 'bg-gray-200'} relative inline-flex items-center ${
-            xs ? 'h-3 w-6' : 'h-6 w-11'
+            xs ? 'h-3 w-6' : 'h-6 w-[2.75rem] min-w-[2.75rem]'
           } rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
         >
           <span

@@ -118,6 +118,13 @@ export const withCromwellApp = (App: (props: TAppProps) => JSX.Element | null) =
         }
       }
     }
+    let faviconType;
+    if (favicon) {
+      if (favicon.endsWith('.png')) faviconType = 'image/png';
+      if (favicon.endsWith('.ico')) faviconType = 'image/x-icon';
+      if (favicon.endsWith('.jpg')) faviconType = 'image/jpeg';
+      if (favicon.endsWith('.svg')) faviconType = 'image/svg+xml';
+    }
 
     const getChildAppProps = (documentContext: TNextDocumentContext): TAppProps => {
       return {
@@ -179,13 +186,7 @@ export const withCromwellApp = (App: (props: TAppProps) => JSX.Element | null) =
               >
                 <RootComp>
                   <Head>
-                    {favicon && (
-                      <link
-                        rel="shortcut icon"
-                        type={favicon.endsWith('.png') ? 'image/png' : 'image/jpg'}
-                        href={favicon}
-                      />
-                    )}
+                    {favicon && faviconType && <link rel="shortcut icon" type={faviconType} href={favicon} />}
                   </Head>
                   <CContainer id={pageRootContainerId} isConstant={true}>
                     <App {...appProps} Component={Page} />

@@ -80,7 +80,9 @@ export const TextInput = React.forwardRef(
           className={inputClassName}
           type={type}
           onChange={(e) => {
-            setValue(e.target.value);
+            let value = e.target.value;
+            if (type === 'number') value = Number(value);
+            setValue(value);
             onChange(e);
           }}
           value={value ?? _value}
