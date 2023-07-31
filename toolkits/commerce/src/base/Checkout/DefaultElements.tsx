@@ -9,27 +9,25 @@ export const DefaultCheckoutFields = {
   customerPhone: 'customerPhone',
   customerEmail: 'customerEmail',
   customerComment: 'customerComment',
-}
+};
 
 /** @internal */
-export const DefaultPlacedOrder = (props) => <p>{props.children}</p>;
+export const DefaultPlacedOrder = (props: { children?: React.ReactNode }) => <p>{props.children}</p>;
 /** @internal */
-export const DefaultEmptyCartAlert = (props) => <p>{props.children}</p>;
+export const DefaultEmptyCartAlert = (props: { children?: React.ReactNode }) => <p>{props.children}</p>;
 
 export type CheckoutFieldProps = Omit<TBaseTextFieldProps, 'onChange'> & {
   onChange: (value: any) => any;
   checkoutProps: CheckoutProps;
   checkout: ReturnType<typeof usuCheckoutActions>;
-}
+};
 
 /** @internal */
 export const DefaultField = (props: CheckoutFieldProps) => {
   const { checkoutProps, ...rest } = props;
   const { TextField = BaseTextField } = checkoutProps.elements ?? {};
-  return (
-    <TextField {...rest} onChange={e => props.onChange(e.target.value)} />
-  );
-}
+  return <TextField {...rest} onChange={(e) => props.onChange(e.target.value)} />;
+};
 
 /** @internal */
 export const DefaultCouponProblemIcon = () => <span style={{ color: '#b2102f', marginRight: '10px' }}>✖</span>;
@@ -37,7 +35,6 @@ export const DefaultCouponProblemIcon = () => <span style={{ color: '#b2102f', m
 export const DefaultCouponAppliedIcon = () => <span style={{ color: '#357a38', marginRight: '10px' }}>✔</span>;
 /** @internal */
 export const DefaultRemoveCouponIcon = () => <span style={{ color: '#555' }}>✕</span>;
-
 
 /** @internal */
 export const getDefaultCheckoutFields = (props: CheckoutProps): CheckoutFieldConfig[] => [
@@ -85,4 +82,4 @@ export const getDefaultCheckoutFields = (props: CheckoutProps): CheckoutFieldCon
     key: 'ZIP/Postal code',
     label: 'ZIP/Postal code',
   },
-]
+];

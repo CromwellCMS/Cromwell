@@ -12,9 +12,9 @@ const testData: TPagedList<TProductReview> = {
     {
       id: 2,
       title: '_test2_',
-    }
-  ]
-}
+    },
+  ],
+};
 
 jest.mock('@cromwell/core-frontend', () => {
   const originalModule = jest.requireActual('@cromwell/core-frontend');
@@ -22,8 +22,8 @@ jest.mock('@cromwell/core-frontend', () => {
     ...originalModule,
     getGraphQLClient: () => {
       return {
-        getFilteredProductReviews: jest.fn().mockImplementation(async () => testData)
-      }
+        getProductReviews: jest.fn().mockImplementation(async () => testData),
+      };
     },
     CList: (props: any) => {
       const Comp = loadable(async () => {
@@ -31,11 +31,11 @@ jest.mock('@cromwell/core-frontend', () => {
         const ListItem = props.ListItem;
         return () => (
           <div>
-            {items.elements?.map(it => {
-              return <ListItem key={it.id} data={it} listItemProps={props.listItemProps} />
+            {items.elements?.map((it) => {
+              return <ListItem key={it.id} data={it} listItemProps={props.listItemProps} />;
             })}
           </div>
-        )
+        );
       });
       return <Comp />;
     },
@@ -44,23 +44,18 @@ jest.mock('@cromwell/core-frontend', () => {
     getRestApiClient: () => {
       return {
         getCmsStatus: () => null,
-      }
+      };
     },
-  }
+  };
 });
-
 
 import { ProductReviews } from './ProductReviews';
 
 describe('ProductReviews', () => {
-
-  it("renders list", async () => {
-    render(<ProductReviews
-      productId={1}
-    />);
+  it('renders list', async () => {
+    render(<ProductReviews productId={1} />);
 
     await screen.findByText(testData.elements?.[0]?.title + '');
     await screen.findByText(testData.elements?.[1]?.title + '');
   });
-
-})
+});

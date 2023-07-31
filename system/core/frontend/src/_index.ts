@@ -5,6 +5,7 @@ export { CContainer } from './components/CContainer/CContainer';
 export { CImage } from './components/CImage/CImage';
 export { CPlugin } from './components/CPlugin/CPlugin';
 export { CGallery } from './components/CGallery/CGallery';
+export { Lightbox } from './components/CGallery/Lightbox';
 export { CList } from './components/CList/CList';
 export { CEditor } from './components/CEditor/CEditor';
 export { TCList, TCListProps, TListItemProps, TPaginationProps } from './components/CList/types';
@@ -15,27 +16,28 @@ export { SignIn, SignInProps } from './components/SignIn/SignIn';
 export { SignUp, SignUpProps } from './components/SignUp/SignUp';
 export * from './components/AdminPanelWidget/AdminPanelWidgetPlace';
 export {
-    getBlockHtmlId,
-    getBlockIdFromHtml,
-    getBlockHtmlType,
-    getBlockTypeFromHtml,
-    getHtmlPluginBlockName,
-    getBlockDataById,
-    isAdminPanel,
-    BlockContentProvider,
-    BlockStoreProvider,
-    getBlockData,
-    getBlockById,
-    getBlockElementById,
-    pageRootContainerId,
-    awaitImporter,
-    blockCssClass,
-    TAppPropsContext,
-    AppPropsContext,
-    useAppPropsContext,
+  getBlockHtmlId,
+  getBlockIdFromHtml,
+  getBlockHtmlType,
+  getBlockTypeFromHtml,
+  getHtmlPluginBlockName,
+  getBlockDataById,
+  isAdminPanel,
+  BlockContentProvider,
+  BlockStoreProvider,
+  getBlockData,
+  getBlockById,
+  getBlockElementById,
+  pageRootContainerId,
+  awaitImporter,
+  blockCssClass,
+  TAppPropsContext,
+  AppPropsContext,
+  useAppPropsContext,
+  usePageCmsProps,
 } from './constants';
 export { getGraphQLClient, TCGraphQLClient, TGraphQLErrorInfo } from './api/CGraphQLClient';
-export { getRestApiClient, TCRestApiClient, TErrorInfo, TRequestOptions } from './api/CRestApiClient';
+export { getRestApiClient, TCRestApiClient, TRestApiErrorInfo, TRequestOptions } from './api/CRestApiClient';
 export * from './api/CentralServerClient';
 export * from './helpers/hooks';
 export * from './helpers/forceUpdate';
@@ -50,5 +52,6 @@ export { fetch } from './helpers/isomorphicFetch';
 export * from './helpers/parserTransform';
 export * from './helpers/registerWidget';
 export * from './helpers/contentGetters';
+export * from './helpers/thumbs';
 export * from './widget-types';
 export { throbber } from './components/throbber';

@@ -7,25 +7,25 @@
  * `pageRoute` also can have `*` value to register on all pages.
  */
 export const registerPluginSSR = (pluginName: string, pageRoute: string) => {
-    plugins.push({
-        pluginName,
-        pageName: pageRoute,
-    })
-}
+  plugins.push({
+    pluginName,
+    pageName: pageRoute,
+  });
+};
 
 /** @internal */
 const plugins: {
-    pluginName: string;
-    pageName: string;
+  pluginName: string;
+  pageName: string;
 }[] = [];
 
 /** @internal */
 export const getRegisteredPluginsAtPage = (pageName?: string) => {
-    const registered: string[] = [];
-    for (const plugin of plugins) {
-        if (plugin.pageName === '*' || (pageName && plugin.pageName === pageName)) {
-            registered.push(plugin.pluginName);
-        }
+  const registered: string[] = [];
+  for (const plugin of plugins) {
+    if (plugin.pageName === '*' || (pageName && plugin.pageName === pageName)) {
+      registered.push(plugin.pluginName);
     }
-    return registered;
-}
+  }
+  return registered;
+};

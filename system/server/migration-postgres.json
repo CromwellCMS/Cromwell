@@ -1,21 +1,17 @@
 {
-    "type": "postgres",
-    "host": "localhost",
-    "port": 5432,
-    "username": "cromwell",
-    "password": "my_password",
-    "database": "cromwell",
-    "synchronize": false,
-    "entityPrefix": "crw_",
-    "migrationsRun": true,
-    "entities": [
-        "../core/backend/dist/models/**/*.js"
-    ],
-    "migrationsTableName": "crw_migrations",
-    "migrations": [
-        "migrations/postgres/*.js"
-    ],
-    "cli": {
-        "migrationsDir": "migrations/postgres"
-    }
+  "type": "postgres",
+  "host": "localhost",
+  "port": 5432,
+  "username": "cromwell",
+  "password": "my_password",
+  "database": "cromwell",
+  "synchronize": false,
+  "entityPrefix": "crw_",
+  "migrationsRun": true,
+  "entities": ["../core/backend/dist/models/**/*.js"],
+  "migrationsTableName": "crw_migrations",
+  "migrations": ["migrations/postgres/*.js"],
+  "cli": {
+    "migrationsDir": "migrations/postgres"
+  }
 }

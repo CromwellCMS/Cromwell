@@ -17,10 +17,12 @@
   "scripts": {
     "build": "npx rollup -c",
     "test": "npx --no-install jest",
-    "watch": "npx rollup -cw"
+    "watch": "npx rollup -cw",
+    "format": "prettier --write --ignore-unknown \"**/*.+(js|jsx|json|css|md|ts|tsx)\""
   },
   "dependencies": {
     "@babel/preset-react": "7.14.5",
+    "@babel/preset-env": "7.17.10",
     "@cromwell/core": "2.0.13",
     "@cromwell/core-backend": "2.0.15",
     "@cromwell/core-frontend": "2.1.5",
@@ -39,7 +41,7 @@
     "estree-walker": "2.0.1",
     "extract-zip": "2.0.1",
     "flatted": "3.1.1",
-    "fs-extra": "10.0.0",
+    "fs-extra": "9.1.0",
     "github-directory-downloader": "1.3.6",
     "glob": "7.1.7",
     "import-from": "3.0.0",
@@ -53,7 +55,7 @@
     "rollup-plugin-external-globals": "0.6.1",
     "style-loader": "3.2.1",
     "symlink-dir": "5.0.1",
-    "tslib": "2.3.1",
+    "tslib": "2.4.1",
     "webpack": "5.65.0",
     "yargs-parser": "20.2.9"
   },
@@ -63,19 +65,20 @@
     "@types/archiver": "^5.1.0",
     "@types/async": "^3.2.3",
     "@types/glob": "7.1.4",
-    "@types/jest": "27.0.1",
-    "@types/node": "14.14.31",
-    "@typescript-eslint/eslint-plugin": "4.29.2",
-    "@typescript-eslint/parser": "4.29.2",
-    "eslint": "7.32.0",
-    "jest": "27.0.6",
+    "@types/jest": "29.2.2",
+    "@types/node": "18.11.12",
+    "@types/node-cleanup": "2.1.2",
+    "@typescript-eslint/eslint-plugin": "5.42.0",
+    "@typescript-eslint/parser": "5.42.0",
+    "eslint": "8.27.0",
+    "jest": "29.2.2",
     "magic-string": "0.25.7",
     "rollup": "2.56.2",
     "rollup-plugin-terser": "7.0.2",
     "rollup-plugin-ts-compiler": "1.0.18",
-    "ts-jest": "27.0.5",
-    "ts-node": "10.2.0",
-    "typescript": "4.3.5",
+    "ts-jest": "29.0.3",
+    "ts-node": "10.9.1",
+    "typescript": "4.8.4",
     "webpack-cli": "4.9.1"
   }
 }

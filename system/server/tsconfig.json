@@ -7,24 +7,16 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "strictPropertyInitialization": false,
+    "strictNullChecks": true,
     "noImplicitAny": false,
     "allowJs": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "moduleResolution": "node",
     "skipLibCheck": true,
-    "types": [
-      "node",
-      "jest",
-    ],
+    "types": ["node", "jest"],
+    "incremental": true
   },
-  "exclude": [
-    "node_modules",
-    ".cromwell",
-    "build",
-    "migration"
-  ],
-  "include": [
-    "src/**/*.ts",
-  ],
+  "exclude": ["node_modules", ".cromwell", "build", "migration"],
+  "include": ["src/**/*.ts"]
 }

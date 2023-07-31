@@ -5,59 +5,62 @@ import styles from './CGallery.module.scss';
 
 /** @internal */
 type Props = {
-    getState: (setOpen: (open: boolean, index: number) => void) => void;
-    images: string[];
-}
+  getState: (setOpen: (open: boolean, index: number) => void) => void;
+  images?: string[];
+};
 
-/** @internal */
-export default class Lightbox extends Component<Props, {
+export class Lightbox extends Component<
+  Props,
+  {
     isOpen: boolean;
     photoIndex: number;
-}> {
-    constructor(props) {
-        super(props);
+    images?: string[];
+  }
+> {
+  constructor(props) {
+    super(props);
 
-        this.state = {
-            photoIndex: 0,
-            isOpen: false,
-        };
-        this.props.getState(this.setOpen);
-    }
+    this.state = {
+      photoIndex: 0,
+      isOpen: false,
+    };
+    this.props.getState(this.setOpen);
+  }
 
-    setOpen = (open: boolean, index: number) => {
-        this.setState({ isOpen: open, photoIndex: index })
-    }
+  setOpen = (open: boolean, index: number, images?: string[]) => {
+    this.setState({ isOpen: open, photoIndex: index, images });
+  };
 
-    render() {
-        const { photoIndex, isOpen } = this.state;
-        const { images } = this.props;
-        this.props.getState(this.setOpen);
+  render() {
+    const { photoIndex, isOpen } = this.state;
+    const images = this.state.images ?? this.props.images ?? [];
+    this.props.getState(this.setOpen);
 
-        return (
-            <>
-                {isOpen && (
-                    <ImageLightbox
-                        reactModalProps={{
-                            overlayClassName: styles.modal
-                        }}
-                        reactModalStyle={{ zIndex: 5000 }}
-                        mainSrc={images[photoIndex]}
-                        nextSrc={images[(photoIndex + 1) % images.length]}
-                        prevSrc={images[(photoIndex + images.length - 1) % images.length]}
-                        onCloseRequest={() => this.setState({ isOpen: false })}
-                        onMovePrevRequest={() =>
-                            this.setState({
-                                photoIndex: (photoIndex + images.length - 1) % images.length,
-                            })
-                        }
-                        onMoveNextRequest={() =>
-                            this.setState({
-                                photoIndex: (photoIndex + 1) % images.length,
-                            })
-                        }
-                    />
-                )}
-            </>
-        );
-    }
+    return (
+      <>
+        {isOpen && (
+          <ImageLightbox
+            reactModalProps={{
+              overlayClassName: styles.modal,
+            }}
+            reactModalStyle={{ zIndex: 5000 }}
+            mainSrc={images[photoIndex]}
+            nextSrc={images.length > 1 ? images[(photoIndex + 1) % images.length] : undefined}
+            prevSrc={images.length > 1 ? images[(photoIndex + images.length - 1) % images.length] : undefined}
+            onCloseRequest={() => this.setState({ isOpen: false })}
+            onMovePrevRequest={() =>
+              this.setState({
+                photoIndex: (photoIndex + images.length - 1) % images.length,
+              })
+            }
+            onMoveNextRequest={() =>
+              this.setState({
+                photoIndex: (photoIndex + 1) % images.length,
+              })
+            }
+          />
+        )}
+      </>
+    );
+  }
 }

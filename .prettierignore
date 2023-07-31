@@ -1,0 +1,8 @@
+node_modules
+dist
+build
+.next
+.cromwell
+static
+.tsbuildinfo
+bundled-modules

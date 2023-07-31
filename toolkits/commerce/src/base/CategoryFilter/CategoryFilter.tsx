@@ -10,12 +10,13 @@ const filterPluginName = '@cromwell/plugin-product-filter';
 
 export type CategoryFilterProps = {
   classes?: Partial<Record<'root' | 'plugin', string>>;
-}
+  cacheSessionData?: boolean;
+};
 
 /**
- * Renders product filter on a category page. A wrapper for plugin from   
- * `@cromwell/plugin-product-filter`  
- * 
+ * Renders product filter on a category page. A wrapper for plugin from
+ * `@cromwell/plugin-product-filter`
+ *
  * - `withGetProps` - required
  */
 export function CategoryFilter(props: CategoryFilterProps) {
@@ -29,12 +30,13 @@ export function CategoryFilter(props: CategoryFilterProps) {
           pluginName: filterPluginName,
           instanceSettings: {
             listId: moduleState.categoryListId,
-          }
+            cacheSessionData: props.cacheSessionData,
+          },
         }}
         blockName="Product filter"
       />
     </div>
-  )
+  );
 }
 
 CategoryFilter.withGetProps = (originalGetProps?: TGetStaticProps) => {
@@ -44,8 +46,8 @@ CategoryFilter.withGetProps = (originalGetProps?: TGetStaticProps) => {
     return {
       ...originProps,
       extraPlugins: [filterPluginName],
-    }
-  }
+    };
+  };
 
   return getProps;
-}
+};

@@ -3,11 +3,11 @@ import fs from 'fs-extra';
 import { resolve } from 'path';
 import downloader from 'github-directory-downloader';
 
-export const sleep = (time: number) => new Promise(done => setTimeout(done, time * 1000));
+export const sleep = (time: number) => new Promise((done) => setTimeout(done, time * 1000));
 
 export const createTask = async (name?: string, noInstall?: boolean, type?: string) => {
   if (!name) {
-    console.error('You must provide App name, eg.: npx crw create my-app')
+    console.error('You must provide App name, eg.: npx crw create my-app');
     return;
   }
 
@@ -36,15 +36,19 @@ export const createTask = async (name?: string, noInstall?: boolean, type?: stri
 
     if (type === 'theme' || type === 'plugin') {
       spawnSync(`yarn`, [], { shell: true, stdio: 'inherit', cwd: dir });
-
     } else {
-      spawnSync(`yarn add @cromwell/cms @cromwell/theme-store @cromwell/theme-blog @cromwell/plugin-main-menu @cromwell/plugin-newsletter @cromwell/plugin-product-filter @cromwell/plugin-product-showcase @cromwell/plugin-stripe @cromwell/plugin-paypal --exact --non-interactive`
-        , [], { shell: true, stdio: 'inherit', cwd: dir });
+      spawnSync(
+        `yarn add @cromwell/cms @cromwell/theme-store @cromwell/theme-blog @cromwell/plugin-main-menu @cromwell/plugin-newsletter @cromwell/plugin-product-filter @cromwell/plugin-product-showcase @cromwell/plugin-stripe @cromwell/plugin-paypal --exact --non-interactive`,
+        [],
+        { shell: true, stdio: 'inherit', cwd: dir },
+      );
     }
   }
 
   if (type === 'theme') {
-    console.log(`\n Created Theme boilerplate. Run\x1b[36m cd ${name} && npx cromwell b -w\x1b[0m to start development server`)
+    console.log(
+      `\n Created Theme boilerplate. Run\x1b[36m cd ${name} && npx cromwell b -w\x1b[0m to start development server`,
+    );
   }
 
   if (type === 'basic') {
@@ -52,6 +56,8 @@ export const createTask = async (name?: string, noInstall?: boolean, type?: stri
     pckg.name = name;
     await fs.outputJSON(resolve(dir, 'package.json'), pckg, { spaces: 2 });
 
-    console.log(`\n Created basic boilerplate. Run\x1b[36m cd ${name} && npx cromwell start\x1b[0m to launch Cromwell CMS`)
+    console.log(
+      `\n Created basic boilerplate. Run\x1b[36m cd ${name} && npx cromwell start\x1b[0m to launch Cromwell CMS`,
+    );
   }
-}
+};

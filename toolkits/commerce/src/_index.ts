@@ -19,25 +19,25 @@ export { DefaultAccountFields } from './base/AccountInfo/DefaultElements';
 export { AccountOrders } from './base/AccountOrders/AccountOrders';
 
 export {
-    MuiPagination,
-    MuiProductReviews,
-    MuiProductAttributes,
-    MuiBreadcrumbs,
-    MuiProductActions,
-    MuiProductCard,
-    MuiCategoryList,
-    MuiCategorySort,
-    MuiProductSearch,
-    MuiViewedItems,
-    MuiWishlist,
-    MuiCurrencySwitch,
-    MuiCartList,
-    MuiCheckout,
-    MuiAccountInfo,
-    MuiAccountOrders,
+  MuiPagination,
+  MuiProductReviews,
+  MuiProductAttributes,
+  MuiBreadcrumbs,
+  MuiProductActions,
+  MuiProductCard,
+  MuiCategoryList,
+  MuiCategorySort,
+  MuiProductSearch,
+  MuiViewedItems,
+  MuiWishlist,
+  MuiCurrencySwitch,
+  MuiCartList,
+  MuiCheckout,
+  MuiAccountInfo,
+  MuiAccountOrders,
 } from './mui/index';
 
 export { moduleState, useModuleState } from './helpers/state';
 export { useProductVariants } from './helpers/useProductVariants';
-export { notifier } from './helpers/notifier';
+export { defaultNotifier, setNotifier } from './helpers/notifier';
 export { muiNotifier } from './mui/Notifier/Notifier';

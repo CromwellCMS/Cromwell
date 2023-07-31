@@ -16,29 +16,33 @@ import { StoreService } from '../services/store.service';
 import { StatsService } from '../services/stats.service';
 
 export const getControllers = async (dev?: boolean) => {
-    const def: any[] = [
-        CmsController,
-        PluginController,
-        ThemeController,
-        AuthController,
-        RendererController,
-        ...((await collectPlugins()).controllers ?? []),
-    ];
-    if (dev) def.push(MockController);
-    return def;
-}
+  const def: any[] = [
+    CmsController,
+    PluginController,
+    ThemeController,
+    AuthController,
+    RendererController,
+    ...((await collectPlugins()).controllers ?? []),
+  ];
+  if (dev) def.push(MockController);
+  return def;
+};
 
 export const getServices = async (dev?: boolean) => {
-    const def: any[] = [
-        CmsService, PluginService, ThemeService,
-        MigrationService, RendererService,
-        StoreService, StatsService,
-        ...((await collectPlugins()).providers ?? [])
-    ];
-    if (dev) def.push(MockService);
-    return def;
-}
+  const def: any[] = [
+    CmsService,
+    PluginService,
+    ThemeService,
+    MigrationService,
+    RendererService,
+    StoreService,
+    StatsService,
+    ...((await collectPlugins()).providers ?? []),
+  ];
+  if (dev) def.push(MockService);
+  return def;
+};
 
 export const getExports = () => {
-    return [CmsService];
-}
+  return [CmsService];
+};

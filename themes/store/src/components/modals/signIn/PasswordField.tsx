@@ -9,10 +9,11 @@ export const PasswordField = (props: TextFieldProps) => {
 
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
-  }
+  };
 
   return (
-    <TextField {...props}
+    <TextField
+      {...props}
       type={showPassword ? 'text' : 'password'}
       variant="standard"
       size="small"
@@ -20,16 +21,12 @@ export const PasswordField = (props: TextFieldProps) => {
       InputProps={{
         endAdornment: (
           <InputAdornment position="end">
-            <IconButton
-              aria-label="toggle password visibility"
-              onClick={handleClickShowPassword}
-              edge="end"
-            >
+            <IconButton aria-label="toggle password visibility" onClick={handleClickShowPassword} edge="end">
               {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
             </IconButton>
           </InputAdornment>
         ),
       }}
     />
-  )
-}
+  );
+};

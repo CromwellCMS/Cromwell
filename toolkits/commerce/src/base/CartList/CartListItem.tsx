@@ -12,8 +12,8 @@ import styles from './CartListItem.module.scss';
 /** @internal */
 export type CartListItemProps = {
   item: TStoreListItem;
-  cartProps: CartListProps
-}
+  cartProps: CartListProps;
+};
 
 /** @internal */
 export function CartListItem(props: CartListItemProps) {
@@ -31,53 +31,61 @@ export function CartListItem(props: CartListItemProps) {
 
   const handleDeleteItem = (item: TStoreListItem) => {
     cstore.removeFromCart(item);
-  }
+  };
 
   return (
-    <div key={item.product?.id}
-      className={clsx(styles.CartListItem, classes?.listItem)}
-    >
+    <div key={item.product?.id} className={clsx(styles.CartListItem, classes?.listItem)}>
       <div className={clsx(styles.imageBlock, classes?.imageBlock)}>
-        <Link href={productLink}
+        <Link
+          href={productLink}
           className={clsx(styles.imageLink, classes?.imageLink)}
           onClick={(event) => onProductClick?.(event, product)}
         >
-          <img src={product.mainImage ?? undefined}
-            className={clsx(styles.image, classes?.image)}
-          />
+          <img src={product.mainImage ?? undefined} className={clsx(styles.image, classes?.image)} />
         </Link>
       </div>
       <div className={clsx(styles.captionBlock, classes?.captionBlock)}>
-        <Link href={productLink}
+        <Link
+          href={productLink}
           onClick={(event) => onProductClick?.(event, product)}
           className={clsx(styles.productName, classes?.productName)}
-        >{product.name}</Link>
+        >
+          {product.name}
+        </Link>
         <div className={clsx(styles.priceBlock, classes?.priceBlock)}>
-          {(product?.oldPrice !== undefined && product?.oldPrice !== null) && (
+          {product?.oldPrice !== undefined && product?.oldPrice !== null && (
             <p className={clsx(styles.oldPrice, classes?.oldPrice)}>{cstore.getPriceWithCurrency(product.oldPrice)}</p>
           )}
           <p className={clsx(styles.price, classes?.price)}>{cstore.getPriceWithCurrency(product?.price)}</p>
         </div>
       </div>
       <div className={clsx(styles.attributesBlock, classes?.attributesBlock)}>
-        <p key="__amount" className={clsx(styles.attributeValue, classes?.attributeValue)}>Amount: {item.amount ?? 1}</p>
-        {checkedAttrKeys.map(key => {
+        <p key="__amount" className={clsx(styles.attributeValue, classes?.attributeValue)}>
+          Amount: {item.amount ?? 1}
+        </p>
+        {checkedAttrKeys.map((key) => {
           const values = item.pickedAttributes?.[key];
           if (!values?.length || !key) return null;
           const valuesStr = values.join(', ');
-          return <p key={key} className={clsx(styles.attributeValue, classes?.attributeValue)}>{key}: {valuesStr}</p>
+          return (
+            <p key={key} className={clsx(styles.attributeValue, classes?.attributeValue)}>
+              {key}: {valuesStr}
+            </p>
+          );
         })}
       </div>
       <div className={clsx(styles.actionsBlock, classes?.actionsBlock)}>
         {!cartProps.hideDelete && (
           <Button
             aria-label="Delete from cart"
-            onClick={() => { handleDeleteItem(item); }}
+            onClick={() => {
+              handleDeleteItem(item);
+            }}
           >
             <DeleteIcon />
           </Button>
         )}
       </div>
-    </div >
-  )
+    </div>
+  );
 }

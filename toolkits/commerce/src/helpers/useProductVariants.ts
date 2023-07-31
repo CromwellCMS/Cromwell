@@ -1,5 +1,6 @@
 import { TProduct } from '@cromwell/core';
-import { useEffect, useRef, useState } from 'react';
+import { useForceUpdate } from '@cromwell/core-frontend';
+import { useEffect, useRef } from 'react';
 
 import { useModuleState } from './state';
 
@@ -10,27 +11,34 @@ import { useModuleState } from './state';
  * @param original Original, unmodified product
  */
 export const useProductVariants = (original?: TProduct | null): TProduct => {
-    const moduleState = useModuleState();
-    const productRef = useRef(original);
-    const [product, setProduct] = useState(original);
-    if (original && original.id !== productRef.current?.id) {
-        productRef.current = original;
-        setProduct(original);
-    }
+  const moduleState = useModuleState();
+  const productRef = useRef(original);
+  const modifiedProductRef = useRef(original);
+  const forceUpdate = useForceUpdate();
 
-    useEffect(() => {
-        const onUpdateId = product?.id && moduleState.addOnProductUpdateListener(product.id, () => {
-            const modified = moduleState.products[product.id]?.modifiedProduct ?? product;
-            if (modified) setProduct(modified);
-        });
+  if (original && original.id !== productRef.current?.id) {
+    productRef.current = original;
+    modifiedProductRef.current = original;
+  }
 
-        return () => {
-            if (product?.id) {
-                delete moduleState.products[product.id];
-                if (onUpdateId) moduleState.removeOnProductUpdateListener(product?.id, onUpdateId);
-            }
+  useEffect(() => {
+    const onUpdateId =
+      productRef.current?.id &&
+      moduleState.addOnProductUpdateListener(productRef.current.id, () => {
+        const modified = moduleState.products[productRef.current!.id]?.modifiedProduct ?? productRef.current;
+        if (modified) {
+          modifiedProductRef.current = modified;
+          forceUpdate();
         }
-    }, [productRef.current]);
+      });
 
-    return product!;
-}
+    return () => {
+      if (productRef.current?.id) {
+        delete moduleState.products[productRef.current?.id];
+        if (onUpdateId) moduleState.removeOnProductUpdateListener(productRef.current?.id, onUpdateId);
+      }
+    };
+  }, [productRef.current]);
+
+  return modifiedProductRef.current!;
+};

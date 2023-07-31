@@ -7,16 +7,16 @@ import { BaseSelect, TBaseSelect } from '../shared/Select';
 import styles from './CurrencySwitch.module.scss';
 
 /**
- * Displays select component of all available currencies in the store.  
- * Configure currencies in admin panel settings.  
+ * Displays select component of all available currencies in the store.
+ * Configure currencies in admin panel settings.
  */
 export type CurrencySwitchProps = {
   classes?: Partial<Record<'root' | 'select', string>>;
 
   elements?: {
     Select?: TBaseSelect;
-  }
-}
+  };
+};
 
 export function CurrencySwitch(props: CurrencySwitchProps) {
   const cmsConfig = getCmsSettings();
@@ -39,12 +39,12 @@ export function CurrencySwitch(props: CurrencySwitchProps) {
           value={currency ?? currencies[0]?.tag}
           onChange={(event) => handleCurrencyChange(event)}
           className={clsx(classes?.select)}
-          options={currencies.map(currency => ({
+          options={currencies.map((currency) => ({
             label: currency.tag,
             value: currency.tag,
           }))}
         />
       )}
     </div>
-  )
+  );
 }

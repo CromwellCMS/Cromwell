@@ -1,304 +1,304 @@
-@import "../../styles/variables.scss";
-@import "../../styles/common.module.scss";
+@import '../../styles/variables.scss';
+@import '../../styles/common.module.scss';
 
 .Header {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background-color: #fff;
 
-    a {
-        color: $text;
-        text-decoration: none;
-        margin-bottom: -2px;
-        border-bottom: 3px solid transparent;
-    }
+  a {
+    color: $text;
+    text-decoration: none;
+    margin-bottom: -2px;
+    border-bottom: 3px solid transparent;
+  }
 }
 
 .topPanel {
-    width: 100%;
-    // border-bottom: 2px solid #333;
-    // box-shadow: 0 3px 5px 0 rgba(0,0,0,.05), 0 0 9px 0 rgba(0,0,0,.05);
-    border-bottom: 1px solid #eee;
+  width: 100%;
+  // border-bottom: 2px solid #333;
+  // box-shadow: 0 3px 5px 0 rgba(0,0,0,.05), 0 0 9px 0 rgba(0,0,0,.05);
+  border-bottom: 1px solid #eee;
 }
 
 .topPanelContent {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    padding: 5px 10px;
-    font-size: 0.7em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 5px 10px;
+  font-size: 0.7em;
 }
 
 .leftBlock {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .currencyOption {
-    display: flex;
-    width: 100px;
-    margin-right: 20px;
+  display: flex;
+  width: 100px;
+  margin-right: 20px;
 }
 
 .languageOption {
-    display: flex;
+  display: flex;
 }
 
 .rightBlock {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .topPanelLinks {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .topPanelLink {
-    margin: 0 10px;
-    cursor: pointer;
+  margin: 0 10px;
+  cursor: pointer;
 }
 
 .formControl {
-    margin: 0;
+  margin: 0;
 }
 
 .select {
-    padding: 0px;
+  padding: 0px;
 }
 
 .welcomeMessage {
-    margin: 0 40px 0 20px;
+  margin: 0 40px 0 20px;
 }
 
 .mainPanel {
-    display: flex;
+  display: flex;
 }
 
 .mainPanelContent {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
 }
 
 .logo {
-    height: 70px;
-    cursor: pointer;
+  height: 70px;
+  cursor: pointer;
 }
 
 .search {
-    display: flex;
-    width: 35%;
-    min-width: 200px;
+  display: flex;
+  width: 35%;
+  min-width: 200px;
 }
 
 .phone {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    font-weight: 500;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-weight: 500;
 }
 
 .phoneActionTip {
-    font-size: 0.7em;
+  font-size: 0.7em;
 }
 
 div.cart {
-    display: flex;
-    border-radius: 15px;
-    justify-content: space-between;
+  display: flex;
+  border-radius: 15px;
+  justify-content: space-between;
 }
 
 .cartIcon {
-    width: 40px;
-    height: 40px;
-    cursor: pointer;
-    background: url("/themes/@cromwell/theme-store/shopping-bag.png") no-repeat center / contain;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  background: url('/themes/@cromwell/theme-store/shopping-bag.png') no-repeat center / contain;
 }
 
 .cartExpandBlock {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .cartExpandIcon {
-    display: flex;
-    width: 18px;
-    height: 18px;
+  display: flex;
+  width: 18px;
+  height: 18px;
 }
 
 .itemsInCart {
-    font-weight: 500;
-    font-size: 0.7em;
-    color: $primaryTextOver;
-    background: $primary;
-    text-align: center;
-    border-radius: 20px;
-    height: 18px;
-    width: 18px;
-    align-items: center;
-    display: flex;
-    justify-content: center;
+  font-weight: 500;
+  font-size: 0.7em;
+  color: $primaryTextOver;
+  background: $primary;
+  text-align: center;
+  border-radius: 20px;
+  height: 18px;
+  width: 18px;
+  align-items: center;
+  display: flex;
+  justify-content: center;
 }
 
 .mainMenu {
-    display: flex;
-    width: 100%;
-    // box-shadow: 0 3px 7px 0 rgba(0, 0, 0, 0.1), 0 0px 24px 0 rgba(0, 0, 0, 0.1);
-    border-top: 1px solid #eee;
-    border-bottom: 1px solid #eee;
+  display: flex;
+  width: 100%;
+  // box-shadow: 0 3px 7px 0 rgba(0, 0, 0, 0.1), 0 0px 24px 0 rgba(0, 0, 0, 0.1);
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
 }
 
 .mainMenuContent {
-    padding: 0;
-    // border-bottom: 2px solid #333;
+  padding: 0;
+  // border-bottom: 2px solid #333;
 }
 
 .searchContent {
-    @include paperElevated;
-    @include styledScrollBar;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    max-width: 100vw;
-    max-height: calc(100vh - 15px);
-    width: 470px;
-    height: 300px;
-    min-height: 140px;
-    overflow: auto;
-    z-index: 10;
+  @include paperElevated;
+  @include styledScrollBar;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 100vw;
+  max-height: calc(100vh - 15px);
+  width: 470px;
+  height: 300px;
+  min-height: 140px;
+  overflow: auto;
+  z-index: 10;
 }
 
 .listItem {
-    display: flex;
-    align-items: center;
-    transition: 0.3s;
-    border: 1px solid transparent;
-    border-bottom: 1px solid #ddd;
-    cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: 0.3s;
+  border: 1px solid transparent;
+  border-bottom: 1px solid #ddd;
+  cursor: pointer;
 }
 
 .listItem:hover {
-    background-color: #f4f4f4;
-    // border: 1px solid #ccc;
+  background-color: #f4f4f4;
+  // border: 1px solid #ccc;
 }
 
 .itemMain {
-    display: flex;
+  display: flex;
 }
 
 .itemImage {
-    @include bckgrCover;
-    height: 60px;
-    width: 90px;
-    min-width: 90px;
+  @include bckgrCover;
+  height: 60px;
+  width: 90px;
+  min-width: 90px;
 }
 
 .itemMainInfo {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    margin-left: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-left: 10px;
 }
 
 .itemTitle {
-    margin-bottom: 4px;
+  margin-bottom: 4px;
 }
 
 .priceBlock {
-    display: flex;
-    justify-content: flex-end;
-    flex-wrap: wrap;
-    padding-right: 20px;
-    font-size: 18px;
-    margin: 6px 0;
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  padding-right: 20px;
+  font-size: 18px;
+  margin: 6px 0;
 }
 
 .price {
-    font-weight: 500;
+  font-weight: 500;
 }
 
 .oldPrice {
-    text-decoration: line-through;
-    opacity: 0.7;
-    margin-right: 10px;
+  text-decoration: line-through;
+  opacity: 0.7;
+  margin-right: 10px;
 }
 
 .notFoundText {
-    font-weight: 500;
-    font-size: 18px;
-    top: calc(50% - 14px);
-    position: absolute;
+  font-weight: 500;
+  font-size: 18px;
+  top: calc(50% - 14px);
+  position: absolute;
 }
 
 .mobileHeader {
-    width: 100%;
+  width: 100%;
 }
 
 .userBox {
-    display: flex;
-    align-items: center;
-    margin-left: 10px;
-    cursor: pointer;
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+  cursor: pointer;
 }
 
 .userName {
-    cursor: pointer;
-    font-weight: 500;
+  cursor: pointer;
+  font-weight: 500;
 }
 
 .avatar {
-    width: 30px;
-    height: 30px;
-    color: #111;
-    margin-right: 5px;
-    border-radius: 100%;
-    background-size: cover;
-    background-position: center;
+  width: 30px;
+  height: 30px;
+  color: #111;
+  margin-right: 5px;
+  border-radius: 100%;
+  background-size: cover;
+  background-position: center;
 }
 
 li.optionsItem {
-    padding: 10px 15px;
+  padding: 10px 15px;
 
-    svg {
-        margin-right: 10px;
-    }
+  svg {
+    margin-right: 10px;
+  }
 }
 
 .searchInput {
-    width: 100%;
-    padding: 8px 12px;
-    border: 1px solid #ccc;
-    margin: 1px;
-    font-size: 16px;
-    border-radius: 6px;
-    transition: 0.2s;
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  margin: 1px;
+  font-size: 16px;
+  border-radius: 6px;
+  transition: 0.2s;
 }
 
 .searchInput:hover {
-    border: 1px solid #999;
+  border: 1px solid #999;
 }
 
 .searchInput:focus {
-    margin: 0px;
-    outline: none;
-    border: 2px solid $primary;
+  margin: 0px;
+  outline: none;
+  border: 2px solid $primary;
 }
 
 @media screen and (max-width: $mobileBreakpoint) {
-    .topPanel,
-    .mainPanel,
-    .mainMenu {
-        display: none;
-    }
+  .topPanel,
+  .mainPanel,
+  .mainMenu {
+    display: none;
+  }
 }
 
 @media screen and (min-width: $mobileBreakpoint) {
-    .mobileHeader {
-        display: none;
-    }
+  .mobileHeader {
+    display: none;
+  }
 }

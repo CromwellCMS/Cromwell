@@ -6,14 +6,13 @@ import { BaseEntityMeta } from './base-meta.entity';
 
 @Entity()
 export class ProductMeta extends BaseEntityMeta {
+  @Field(() => Int)
+  @Column({ type: 'int' })
+  entityId: number;
 
-    @Field(() => Int)
-    @Column({ type: "int" })
-    entityId: number;
-
-    @ManyToOne(() => Product, entity => entity.metaRecords, {
-        onDelete: "CASCADE"
-    })
-    @JoinColumn({ name: "entityId" })
-    entity?: Product;
+  @ManyToOne(() => Product, (entity) => entity.metaRecords, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'entityId' })
+  entity?: Product;
 }

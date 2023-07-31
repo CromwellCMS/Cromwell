@@ -106,6 +106,7 @@ plugins/*/dist
 plugins/*/es
 
 /public
+public/
 # db.sqlite3
 
 tsconfig.tsbuildinfo

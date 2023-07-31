@@ -30,43 +30,42 @@ interface BlogProps {
 const BlogPage: TPageWithLayout<BlogProps> = (props) => {
   const filterInput = useRef<TPostFilter>({});
   const listId = 'Blog_list_01';
-  const publishSort = useRef<"ASC" | "DESC">('DESC');
+  const publishSort = useRef<'ASC' | 'DESC'>('DESC');
   const forceUpdate = useForceUpdate();
 
   const resetList = () => {
     const list = getBlockInstance<TCList>(listId)?.getContentInstance();
     list?.updateData();
-  }
+  };
 
   useEffect(() => {
     // updateList();
   }, []);
 
   const handleChangeTags = (event: any, newValue?: (TTag | undefined | string)[]) => {
-    filterInput.current.tagIds = newValue?.map(tag => (tag as TTag)?.id);
+    filterInput.current.tagIds = newValue?.map((tag) => (tag as TTag)?.id);
     forceUpdate();
     resetList();
-  }
+  };
 
-  const handleGetPosts = (params: TPagedParams<TPost>) => {
-    params.orderBy = 'publishDate';
-    params.order = publishSort.current;
-    return handleGetFilteredPosts(params, filterInput.current);
-  }
+  const handleGetPosts = ({ pagedParams }: { pagedParams: TPagedParams<TPost> }) => {
+    pagedParams.orderBy = 'publishDate';
+    pagedParams.order = publishSort.current;
+    return handleGetFilteredPosts(pagedParams, filterInput.current);
+  };
 
   const handleChangeSort = (event: SelectChangeEvent<unknown>) => {
     if (event.target.value === 'Newest') publishSort.current = 'DESC';
     if (event.target.value === 'Oldest') publishSort.current = 'ASC';
     resetList();
-  }
+  };
 
   const handleTagClick = (tag?: TTag) => {
     if (!tag) return;
-    if (filterInput.current.tagIds?.length === 1 &&
-      filterInput.current.tagIds[0] === tag.id) return;
+    if (filterInput.current.tagIds?.length === 1 && filterInput.current.tagIds[0] === tag.id) return;
     handleChangeTags(null, [tag]);
     forceUpdate();
-  }
+  };
 
   return (
     <CContainer className={commonStyles.content} id="blog-1">
@@ -74,29 +73,21 @@ const BlogPage: TPageWithLayout<BlogProps> = (props) => {
         <Autocomplete
           multiple
           freeSolo
-          value={filterInput.current.tagIds?.map(id => props.tags?.find(tag => tag.id === id)) ?? []}
+          value={filterInput.current.tagIds?.map((id) => props.tags?.find((tag) => tag.id === id)) ?? []}
           className={styles.filterItem}
           options={props.tags ?? []}
           getOptionLabel={(option: any) => option?.name ?? ''}
           style={{ width: 300 }}
           onChange={handleChangeTags}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              variant="standard"
-              placeholder="Tags"
-            />
-          )}
+          renderInput={(params) => <TextField {...params} variant="standard" placeholder="Tags" />}
         />
         <FormControl className={styles.filterItem}>
           <InputLabel className={styles.sortLabel}>Sort</InputLabel>
-          <Select
-            onChange={handleChangeSort}
-            variant="standard"
-            defaultValue='Newest'
-          >
-            {['Newest', 'Oldest'].map(sort => (
-              <MenuItem value={sort} key={sort}>{sort}</MenuItem>
+          <Select onChange={handleChangeSort} variant="standard" defaultValue="Newest">
+            {['Newest', 'Oldest'].map((sort) => (
+              <MenuItem value={sort} key={sort}>
+                {sort}
+              </MenuItem>
             ))}
           </Select>
         </FormControl>
@@ -119,24 +110,20 @@ const BlogPage: TPageWithLayout<BlogProps> = (props) => {
           firstBatch={props.posts}
           loader={handleGetPosts}
           cssClasses={{
-            page: styles.postList
+            page: styles.postList,
           }}
           elements={{
-            pagination: MuiPagination
+            pagination: MuiPagination,
           }}
         />
       </CContainer>
     </CContainer>
   );
-}
+};
 
 BlogPage.getLayout = (page) => {
-  return (
-    <Layout>
-      {page}
-    </Layout >
-  )
-}
+  return <Layout>{page}</Layout>;
+};
 
 export default BlogPage;
 
@@ -147,24 +134,24 @@ export const getStaticProps: TGetStaticProps<BlogProps> = async () => {
   try {
     posts = await handleGetFilteredPosts({ pageSize: 20, order: 'DESC', orderBy: 'publishDate' });
   } catch (e) {
-    console.error('BlogPage::getStaticProps', e)
+    console.error('BlogPage::getStaticProps', e);
   }
 
   let tags: TTag[] | undefined;
   try {
-    tags = (await client?.getTags({ pageSize: 10000 }))?.elements;
+    tags = (await client.getTags({ pagedParams: { pageSize: 1000 } }))?.elements;
   } catch (e) {
-    console.error('BlogPage::getStaticProps', e)
+    console.error('BlogPage::getStaticProps', e);
   }
   return {
     props: removeUndefined({
       posts,
       tags,
-    })
-  }
-}
+    }),
+  };
+};
 
 function useForceUpdate() {
   const state = useState(0);
-  return () => state[1](value => ++value);
+  return () => state[1]((value) => ++value);
 }

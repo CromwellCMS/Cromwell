@@ -1,0 +1,83 @@
+@import '../../styles/common.module.scss';
+@import '../../styles/variables.scss';
+
+// * {
+//     font-family: "Roboto", sans-serif;
+//     margin: 0;
+//     border: 0;
+
+//     box-sizing: border-box;
+//     &::before,
+//     &::after {
+//         box-sizing: border-box;
+//     }
+// }
+// a {
+//     color: inherit;
+//     text-decoration: none;
+// }
+
+.Layout {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  // max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header {
+  width: 100%;
+  background-color: #fff;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(243, 243, 243);
+  height: 100vh;
+}
+
+.sidebar {
+  min-width: 275px;
+  // width: 20%;
+  overflow: auto;
+  height: 100%;
+}
+
+.dummyToolbar {
+  height: 56px;
+}
+
+.toastContainer {
+  z-index: 10110;
+  position: relative;
+
+  .Toastify {
+    font-size: 16px;
+  }
+}
+
+:global(.modeDark) {
+  .main,
+  .sidebar {
+    background-color: #444;
+  }
+}
+
+@media screen and (max-width: $mobileBreakpoint) {
+  // mobile
+  .sidebar {
+    min-width: 0;
+    width: 0;
+  }
+}
+
+@media screen and (min-width: $mobileBreakpoint) {
+  // desktop
+  div.dummyToolbar {
+    display: none;
+  }
+}

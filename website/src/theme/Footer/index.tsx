@@ -24,12 +24,13 @@ function FooterLink({ to, href, label, prependBaseUrlToHref, ...props }: FooterL
       className="footer__link-item"
       {...(href
         ? {
-          href: prependBaseUrlToHref ? normalizedHref : href,
-        }
+            href: prependBaseUrlToHref ? normalizedHref : href,
+          }
         : {
-          to: toUrl,
-        })}
-      {...props}>
+            to: toUrl,
+          })}
+      {...props}
+    >
       {href && !isInternalUrl(href) ? (
         <span>
           {label}
@@ -42,9 +43,7 @@ function FooterLink({ to, href, label, prependBaseUrlToHref, ...props }: FooterL
   );
 }
 
-const FooterLogo = ({ sources, alt }) => (
-  <ThemedImage className="footer__logo" alt={alt} sources={sources} />
-);
+const FooterLogo = ({ sources, alt }) => <ThemedImage className="footer__logo" alt={alt} sources={sources} />;
 
 function Footer() {
   const { footer } = useThemeConfig();
@@ -71,18 +70,15 @@ function Footer() {
     <footer
       className={clsx('footer', {
         'footer--dark': footer.style === 'dark',
-      })}>
+      })}
+    >
       <div className="container">
         {links && links.length > 0 && (
           <div className="row footer__links">
             {links.map((linkItem, i) => (
               <div key={i} className="col footer__col">
-                {linkItem.title != null ? (
-                  <div className="footer__title">{linkItem.title}</div>
-                ) : null}
-                {linkItem.items != null &&
-                  Array.isArray(linkItem.items) &&
-                  linkItem.items.length > 0 ? (
+                {linkItem.title != null ? <div className="footer__title">{linkItem.title}</div> : null}
+                {linkItem.items != null && Array.isArray(linkItem.items) && linkItem.items.length > 0 ? (
                   <ul className="footer__items">
                     {linkItem.items.map((item, key) =>
                       item.html ? (
@@ -134,8 +130,9 @@ function Footer() {
           </div>
         )}
       </div>
-      <div dangerouslySetInnerHTML={{
-        __html: `
+      <div
+        dangerouslySetInnerHTML={{
+          __html: `
           <script async src="https://www.googletagmanager.com/gtag/js?id=G-W8QY5D61KR"></script>
           <script>
             window.dataLayer = window.dataLayer || [];
@@ -143,8 +140,9 @@ function Footer() {
             gtag('js', new Date());
             gtag('config', 'G-W8QY5D61KR');
           </script>
-        `}}>
-      </div>
+        `,
+        }}
+      ></div>
     </footer>
   );
 }

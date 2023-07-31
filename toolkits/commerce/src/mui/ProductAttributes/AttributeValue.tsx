@@ -1,4 +1,4 @@
-import { Button } from '@mui/material';
+import { Button, TextField } from '@mui/material';
 import clsx from 'clsx';
 import React from 'react';
 
@@ -10,22 +10,30 @@ type CompType = Required<Required<ProductAttributesProps>['elements']>['Attribut
 
 /** @internal */
 export const AttributeValue: CompType = (props) => {
-  const { checked, valid, canValidate } = props;
+  const { checked, valid, canValidate, classes, attribute } = props;
+  if (!attribute) return null;
+  if (attribute.type === 'text_input') {
+    return <TextField size="small" multiline fullWidth onChange={(e) => props.onInputChange?.(e.target.value)} />;
+  }
   return (
     <Button
       color="inherit"
       onClick={props.onClick}
       aria-label={`Attribute ${props?.attribute?.key} - value: ${props?.value}`}
       variant={checked ? 'contained' : 'outlined'}
-      className={clsx(styles.attributeValue, canValidate && !valid && styles.invalidAttributeValue,
-        checked && styles.attributeValueChecked)}
-    >
-      {props.icon && (
-        <div
-          style={{ backgroundImage: `url(${props.icon}` }}
-          className={styles.attributeValueIcon}></div>
+      className={clsx(
+        styles.attributeValue,
+        classes?.attributeValue,
+        canValidate && !valid && styles.invalidAttributeValue,
+        canValidate && !valid && classes?.invalidAttributeValue,
+        checked && styles.attributeValueChecked,
+        checked && classes?.attributeValueChecked,
       )}
-      <p className={styles.attributeValueText} style={{ textTransform: 'none' }}>{props.value}</p>
+    >
+      {props.icon && <div style={{ backgroundImage: `url(${props.icon}` }} className={styles.attributeValueIcon}></div>}
+      <p className={styles.attributeValueText} style={{ textTransform: 'none' }}>
+        {props.value}
+      </p>
     </Button>
-  )
-}
+  );
+};

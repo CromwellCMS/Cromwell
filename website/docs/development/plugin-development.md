@@ -4,37 +4,37 @@ sidebar_position: 2
 
 # Plugin development
 
-Cromwell CMS Plugins are JavaScript modules that can extend functionality of a Theme, Admin panel or API server. They follow specific structure and are built with CMS CLI tools. Unlike with Themes there's no Next.js involved in the build process. Although Plugin's frontend follows principles of Next.js pages, so if you are not familiar with Next.js, [you should definitely start with it first](https://nextjs.org/docs/getting-started).    
-
+Cromwell CMS Plugins are JavaScript modules that can extend functionality of a Theme, Admin panel or API server. They follow specific structure and are built with CMS CLI tools. Unlike with Themes there's no Next.js involved in the build process. Although Plugin's frontend follows principles of Next.js pages, so if you are not familiar with Next.js, [you should definitely start with it first](https://nextjs.org/docs/getting-started).
 
 ### Create a project
 
-As in the [Installation guide](/docs/overview/installation#4-cromwell-cli), Cromwell CLI can create a new project template. Use `--type theme` argument if you want to create Theme or `--type plugin` for Plugin.  
+As in the [Installation guide](/docs/overview/installation#4-cromwell-cli), Cromwell CLI can create a new project template. Use `--type theme` argument if you want to create Theme or `--type plugin` for Plugin.
+
 ```bash
 npx @cromwell/cli create --type plugin my-plugin-name
 ```
 
 ### Project structure
 
-- **`cromwell.config.js`** - [Config file for your Theme/Plugin.](/docs/development/module-config)  
+- **`cromwell.config.js`** - [Config file for your Theme/Plugin.](/docs/development/module-config)
 - **`src`** - Directory for source files.
 - **`static`** - Directory for static files (images). Files from this directory will be copied into `public` directory of the CMS, from where they will be served by our server to the frontend. You can access your Plugin files through the following pattern: `/plugins/${packageName}/${pathInStaticDir}`.  
-Image example:  `<img src="/plugins/@cromwell/plugin-newsletter/icon_email.png" />`
+  Image example: `<img src="/plugins/@cromwell/plugin-newsletter/icon_email.png" />`
 
 From your source directory will be built 3 different bundles designed for a specific place of the CMS to work. So `src` directory is divided into 3 main subdirectories:
+
 - **`src/admin`** - Directory for Admin panel bundle.
 - **`src/backend`** - Directory for API server bundle.
 - **`src/frontend`** - Directory for frontend (Theme) bundle.
 
-All subdirectories are not required. For example, your Plugin can be utilized only in Admin panel, but not by Theme frontend.  
+All subdirectories are not required. For example, your Plugin can be utilized only in Admin panel, but not by Theme frontend.
 
 Bundles are going to be produced by requiring your directory (if it exists) such as: `require('src/admin')`. Which means any directory should have `index.(js|jsx|ts|tsx)` file.  
-Any further project structure is up to you. CMS bundler will look for `src/admin/index.ts`, but you can have as many files/directories as you want in `src/admin`.  
-
+Any further project structure is up to you. CMS bundler will look for `src/admin/index.ts`, but you can have as many files/directories as you want in `src/admin`.
 
 ## Admin
 
-The purpose of the Admin bundle is to register widgets that will be used in specific places of Admin panel. Widget is any valid React component.   
+The purpose of the Admin bundle is to register widgets that will be used in specific places of Admin panel. Widget is any valid React component.  
 You can look into [newsletter plugin](https://github.com/CromwellCMS/Cromwell/blob/master/plugins/newsletter/src/admin/index.tsx) as an example.
 
 If you want your Plugin to have its own page in Admin panel > Plugins, you need to register the settings page:
@@ -50,26 +50,29 @@ function SettingsPage(props: TPluginSettingsProps) {
       <h1>`Hello Admin Panel!`</h1>
       <p>{props.pluginName}</p>
     </div>
-  )
+  );
 }
 
 registerWidget({
   pluginName: 'your-plugin-name',
   widgetName: 'PluginSettings',
-  component: SettingsPage
+  component: SettingsPage,
 });
 ```
+
 :::note
-Plugin component will receive [its settings](#plugin-settings) in `pluginSettings` prop. 
+Plugin component will receive [its settings](#plugin-settings) in `pluginSettings` prop.
 :::
 
 `registerWidget` accepts:
+
 - `pluginName` - Package.json name of your Plugin
 - `widgetName` - A place of Admin panel where you want to display it.
 - `component` - React component
- 
-All available places you can use in `widgetName`: 
-- `PluginSettings` - Settings page of you plugin. 
+
+All available places you can use in `widgetName`:
+
+- `PluginSettings` - Settings page of you plugin.
 - `Dashboard` - Draggable dashboard widget. You can set its size as a [grid item](https://github.com/react-grid-layout/react-grid-layout#grid-item-props) in React-Grid-Layout. [See the example](https://github.com/CromwellCMS/Cromwell/blob/master/plugins/newsletter/src/admin/Dashboard.tsx)
 - `PostActions` - Widget to display near 'Save' button at Post page.
 - `TagActions` - Widget to display near 'Save' button at Tag page.
@@ -78,7 +81,6 @@ All available places you can use in `widgetName`:
 - `OrderActions` - Widget to display near 'Save' button at Order page.
 
 For now, amount of available widgets is quite small, but we will add much more in future releases!
-
 
 ### Some other admin features and helpers
 
@@ -93,9 +95,9 @@ registerSidebarLinkModifier('my-modifier-id-or-plugin-name', (links) => {
     id: 'link-id',
     title: 'My new page',
     route: 'my-new-page',
-    icon: '/icon.svg'
+    icon: '/icon.svg',
   });
-})
+});
 ```
 
 - Modify admin panel pages
@@ -107,11 +109,10 @@ registerPageInfoModifier('my-modifier-id-or-plugin-name', (pages) => {
   pages.push({
     name: 'page-name',
     route: 'my-new-page',
-    component: (props) => <div>Hello</div>
-  })
-})
+    component: (props) => <div>Hello</div>,
+  });
+});
 ```
-
 
 ## Plugin settings
 
@@ -119,7 +120,7 @@ Plugin settings are any valid JSON. There are two types of settings: `Plugin set
 
 ### Plugin global settings
 
-Plugin's global settings passed in `pluginSettings` prop of a SettingsPage and context of `getStaticProps` in [frontend component](#frontend). It is Plugin's main configuration object. It is stored in the database as text (serialized JSON) for each Plugin.     
+Plugin's global settings passed in `pluginSettings` prop of a SettingsPage and context of `getStaticProps` in [frontend component](#frontend). It is Plugin's main configuration object. It is stored in the database as text (serialized JSON) for each Plugin.  
 To save/load data you can use frontend API client:
 
 ```tsx title="src/admin/index.tsx"
@@ -129,36 +130,35 @@ import React from 'react';
 
 type MySettingsType = {
   someSettingsProp: string | undefined;
-}
+};
 
 function SettingsPage(props: TPluginSettingsProps<MySettingsType>) {
   (async () => {
     await getRestApiClient().savePluginSettings('your-plugin-name', {
-      someSettingsProp: 'test1'
+      someSettingsProp: 'test1',
     });
 
     const settings: MySettingsType = await getRestApiClient().getPluginSettings('your-plugin-name');
-    console.log(settings.someSettingsProp); // "test1" 
+    console.log(settings.someSettingsProp); // "test1"
   })();
 
-  return (
-    <p>{props.pluginSettings.someSettingsProp ?? 'unset'}</p>
-  )
+  return <p>{props.pluginSettings.someSettingsProp ?? 'unset'}</p>;
 }
 
 registerWidget({
   pluginName: 'your-plugin-name',
   widgetName: 'PluginSettings',
-  component: SettingsPage
+  component: SettingsPage,
 });
 ```
 
 :::note
 Plugin settings are private and visible only for administrators.  
-Server will reject `getPluginSettings` or `savePluginSettings` request if it called from unauthenticated client or logged user does not have `Administrator` role (unauthorized). 
+Server will reject `getPluginSettings` or `savePluginSettings` request if it called from unauthenticated client or logged user does not have read/update permissions (unauthorized).
 :::
 
 ### Instance settings
+
 Instance settings passed in `instanceSettings` prop of a [frontend component](#frontend) are local settings that can be passed from Admin Panel Theme Editor per placed Plugin (and user can place your Plugin many times on different pages), or they are passed directly to the Plugin Block in Theme's JSX code:
 
 ```tsx title="my-theme/src/pages/index.tsx"
@@ -167,7 +167,7 @@ import React from 'react';
 
 export default function HomePageOfSomeTheme() {
   const onFilterChange = () => console.log('filter changed');
-  
+
   return (
     <CPlugin
       id="product-filter-plugin"
@@ -176,19 +176,18 @@ export default function HomePageOfSomeTheme() {
         instanceSettings: {
           disableMobile: true,
           onChange: onFilterChange,
-        }
+        },
       }}
     />
-  )
+  );
 }
 ```
 
 [We'll show you below](#frontend) how to access instance settings.
 
-
 ### Settings page default GUI
 
-Admin panel has a set of components that can help you to build admin panel interface. Moreover standard interface can make an interface of all Plugins to be intuitively comprehensive for a user which results in better UX.  
+Admin panel has a set of components that can help you to build admin panel interface. Moreover standard interface can make an interface of all Plugins to be intuitively comprehensive for a user which results in better UX.
 
 One main component amidst them all is `PluginSettingsLayout` which creates a default settings interface. It allows you to easily make an interface for modifications and saving of Plugin's settings.
 To use a default interface for your Plugin import `PluginSettingsLayout` React component and use it this way:
@@ -200,38 +199,37 @@ import React from 'react';
 
 type TSettings = {
   mySettingProp: string;
-}
+};
 
 export function SettingsPage(props: TPluginSettingsProps<TSettings>) {
   const onSave = () => {
-      // Do something else on Save button click 
-      // (saving of settings will be handled for you in the background)
-  }
+    // Do something else on Save button click
+    // (saving of settings will be handled for you in the background)
+  };
   return (
     <PluginSettingsLayout<TSettings> {...props} onSave={onSave}>
       {({ pluginSettings, changeSetting }) => {
         return (
-          <TextFieldWithTooltip 
+          <TextFieldWithTooltip
             label="My setting"
             tooltipText="My setting tooltip..."
             value={pluginSettings?.mySettingProp ?? ''}
             style={{ marginBottom: '15px', marginRight: '15px', maxWidth: '450px' }}
-            onChange={e => changeSetting('mySettingProp', e.target.value)}
+            onChange={(e) => changeSetting('mySettingProp', e.target.value)}
           />
-        )
+        );
       }}
     </PluginSettingsLayout>
-  )
+  );
 }
 ```
 
-Note that your settings won't be saved into the database on calling `changeSetting`. They only will be saved when user presses `Save` button provided by `PluginSettingsLayout` component. 
-
+Note that your settings won't be saved into the database on calling `changeSetting`. They only will be saved when user presses `Save` button provided by `PluginSettingsLayout` component.
 
 ### Clearing frontend cache
 
-Frontend Themes usually built using Next.js SSG pages. This feature in Next.js uses caching to make serving faster. Different Themes can set different [lifetime of a cache in `revalidate` property](https://nextjs.org/docs/basic-features/data-fetching#incremental-static-regeneration), but generally it means that after updating data in the database at least for some time Next.js can possibly serve outdated pages. To avoid this internally in the Cromwell CMS we always purge the cache when data updated/deleted. If you use default API client and update, for example, a product, then cache will be purged automatically and all pages updated.   
-But if you are making a Plugin that has a frontend part dependent on some settings from database or any other place, then you need to purge cache manually. Such request can be performed from default API client by calling `purgeRendererEntireCache` property. Note that this request requires administrator privileges.  
+Frontend Themes usually built using Next.js SSG pages. This feature in Next.js uses caching to make serving faster. Different Themes can set different [lifetime of a cache in `revalidate` property](https://nextjs.org/docs/basic-features/data-fetching#incremental-static-regeneration), but generally it means that after updating data in the database at least for some time Next.js can possibly serve outdated pages. To avoid this internally in the Cromwell CMS we always purge the cache when data updated/deleted. If you use default API client and update, for example, a product, then cache will be purged automatically and all pages updated.  
+But if you are making a Plugin that has a frontend part dependent on some settings from database or any other place, then you need to purge cache manually. Such request can be performed from default API client by calling `purgeRendererEntireCache` property. Note that this request requires administrator privileges.
 
 For example if you want to purge the cache when a user (admin logged in the admin panel) modified settings of your Plugin:
 
@@ -244,21 +242,21 @@ import React from 'react';
 export function SettingsPage(props: TPluginSettingsProps) {
   const onSave = () => {
     getRestApiClient().purgeRendererEntireCache();
-  }
+  };
   return (
     <PluginSettingsLayout<TSettings> {...props} onSave={onSave}>
       {({ pluginSettings, changeSetting }) => {
         return (
           <>
-          {/* 
+            {/* 
             <TextFieldWithTooltip
               ...
             /> */}
           </>
-        )
+        );
       }}
     </PluginSettingsLayout>
-  )
+  );
 }
 ```
 
@@ -270,21 +268,21 @@ Admin panel Theme Editor allow users to create on a Theme page frontend instance
 import { registerThemeEditorPluginBlock } from '@cromwell/admin-panel';
 
 registerThemeEditorPluginBlock({
-    pluginName: '@cromwell/plugin-main-menu',
-    blockName: 'Main menu - desktop',
+  pluginName: '@cromwell/plugin-main-menu',
+  blockName: 'Main menu - desktop',
 });
 
 registerThemeEditorPluginBlock({
-    pluginName: '@cromwell/plugin-main-menu',
-    blockName: 'Main menu - mobile',
+  pluginName: '@cromwell/plugin-main-menu',
+  blockName: 'Main menu - mobile',
 });
 ```
+
 You can register multiple blocks per your package. You will receive `blockName` as a prop to your plugin, so you will be able to render different UI depending on `blockName`.
 
-### Instance settings editor 
+### Instance settings editor
 
 When user creates Plugin block on a page in Admin Theme Editor, it's possible for user to modify specific configuration for this block. Configuration object and its UI are defined by Plugin. As with global Plugin settings, you need to register a widget that will handle instance settings via `registerThemeEditorPluginBlock`:
-
 
 ```tsx title="src/admin/index.tsx"
 import { WidgetTypes } from '@cromwell/core-frontend';
@@ -296,21 +294,22 @@ function ThemeEditor(props: WidgetTypes['ThemeEditor']) {
     <div>
       <h1>`Hello Theme Editor!`</h1>
     </div>
-  )
+  );
 }
 
 registerThemeEditorPluginBlock({
-    pluginName: 'your-plugin-name',
-    blockName: 'Your plugin name',
-    component: ThemeEditor
+  pluginName: 'your-plugin-name',
+  blockName: 'Your plugin name',
+  component: ThemeEditor,
 });
 ```
 
 Instance settings are loaded and saved via passed props. Your ThemeEditor widget will receive following props:
+
 - instanceSettings`: any` - Instance settings
 - changeInstanceSettings`: (data: any) => void` - Call this function to modify instance settings. Note that settings will actually be saved in DB when user will press "save" button at the top of Theme Editor.
 - block`: TCromwellBlock` - Block instance component on the page
-- modifyData`: (data: TCromwellBlockData) => void` - Method to modify block's data (TCromwellBlockData). Block's data can be retrieved from block instance via:  `block.getData()`. Note, that block is a generic definition, it can be text block, image block, etc. Configuration for plugin stored in: `block.getData().plugin`
+- modifyData`: (data: TCromwellBlockData) => void` - Method to modify block's data (TCromwellBlockData). Block's data can be retrieved from block instance via: `block.getData()`. Note, that block is a generic definition, it can be text block, image block, etc. Configuration for plugin stored in: `block.getData().plugin`
 - deleteBlock`: () => void` - Call this method if you want to delete block from the page.
 - addNewBlockAfter`: (bType: TCromwellBlockType) => void` - You can add new block on the page right after current plugin block. Specify block type.
 
@@ -323,31 +322,33 @@ import React from 'react';
 
 export function ThemeEditor(props: WidgetTypes['ThemeEditor']) {
   const handleChangeSetting = (event: React.ChangeEvent<HTMLInputElement>) => {
-    props.changeInstanceSettings?.(Object.assign({}, props.instanceSettings, {
-      mySetting: event.target.value,
-    }));
-  }
+    props.changeInstanceSettings?.(
+      Object.assign({}, props.instanceSettings, {
+        mySetting: event.target.value,
+      }),
+    );
+  };
 
   return (
-    <TextFieldWithTooltip 
+    <TextFieldWithTooltip
       label="My custom text setting"
       tooltipText="Change me"
       value={props.instanceSettings.mySetting ?? ''}
       onChange={handleChangeSetting}
     />
-  )
+  );
 }
 
 registerWidget({
   pluginName: 'your-plugin-name',
   widgetName: 'ThemeEditor',
-  component: ThemeEditor
+  component: ThemeEditor,
 });
 ```
 
 ## Frontend
 
-Frontend bundle follows the principles of Next.js pages. You have to export a React component and optionally you can use `getStaticProps`.  
+Frontend bundle follows the principles of Next.js pages. You have to export a React component and optionally you can use `getStaticProps`.
 
 ```tsx title="src/frontend/index.tsx"
 import { TGetPluginStaticProps, TFrontendPluginProps } from '@cromwell/core';
@@ -356,17 +357,17 @@ type PluginData = {
   message: string;
   globalSettings: {
     someGlobalSettingsProp: string;
-  }
-}
+  };
+};
 
 type PluginInstanceSettings = {
   someLocalSettingsProp: string;
-}
+};
 
 type PluginGlobalSettings = {
   someGlobalSettingsProp: string;
   secretKey: string;
-}
+};
 
 export default function YouPluginName(props: TFrontendPluginProps<PluginData, PluginInstanceSettings>) {
   return (
@@ -376,7 +377,7 @@ export default function YouPluginName(props: TFrontendPluginProps<PluginData, Pl
       <div>{props.data?.globalSettings?.someGlobalSettingsProp}</div>
       <div>{props.instanceSettings?.someLocalSettingsProp}</div>
     </>
-  )
+  );
 }
 
 export const getStaticProps: TGetPluginStaticProps<PluginData, PluginGlobalSettings> = async (context) => {
@@ -387,13 +388,13 @@ export const getStaticProps: TGetPluginStaticProps<PluginData, PluginGlobalSetti
     props: {
       message: 'Hello world',
       globalSettings: restSettings,
-    }
-  }
-}
+    },
+  };
+};
 ```
 
-`getStaticProps` here works the same way as in Next.js pages with the difference that props from `getStaticProps` will be available in `props.data` of React component.   
-Cromwell CMS will collect props for all Plugins on the requested page and pass them to components. This means your plugin can be statically pre-rendered with all the data at the Next.js server.  
+`getStaticProps` here works the same way as in Next.js pages with the difference that props from `getStaticProps` will be available in `props.data` of React component.  
+Cromwell CMS will collect props for all Plugins on the requested page and pass them to components. This means your plugin can be statically pre-rendered with all the data at the Next.js server.
 
 Plugin's global settings will be passed to `getStaticProps` in the context. Since this function is executed only at the backend, you can safely extract your private settings and pass others to the frontend as data.
 
@@ -408,48 +409,50 @@ type DataType = {
     blockId: string;
     instanceData: string;
   }[];
-}
+};
 
 export default function YouPluginName(props: TFrontendPluginProps<DataType>) {
   return (
     <>
       <p>Data of this plugin instance:</p>
-      <div>{props.data.myData?.find(data => data.blockId === props.blockId)?.instanceData}</div>
+      <div>{props.data.myData?.find((data) => data.blockId === props.blockId)?.instanceData}</div>
     </>
-  )
+  );
 }
 
 export const getStaticProps: TGetPluginStaticProps<DataType> = async (context) => {
   if (context.pluginInstances) {
     return {
       props: {
-        myData: await Promise.all(Object.keys(context.pluginInstances).map(async blockId => {
-          const data = await fetchMyCustomDataByInstanceSettings(context.pluginInstances[blockId])
-          return {
-            blockId,
-            instanceData: data,
-          }
-        }))
-      }
-    }
+        myData: await Promise.all(
+          Object.keys(context.pluginInstances).map(async (blockId) => {
+            const data = await fetchMyCustomDataByInstanceSettings(context.pluginInstances[blockId]);
+            return {
+              blockId,
+              instanceData: data,
+            };
+          }),
+        ),
+      },
+    };
   }
-}
+};
 ```
 
 ### Usage with Theme
 
-Your plugin can by used in Theme via CPlugin component. You can pass any additional props 
+Your plugin can by used in Theme via CPlugin component. You can pass any additional props
 to CPlugin including children, just make sure to specify two required props: `id` and `pluginName`.
 
 ```tsx title="theme/src/pages/index.tsx"
 import { CPlugin } from '@cromwell/core-frontend';
 
 export default function Index() {
-  return <CPlugin id="my-plugin"
-      pluginName="my-plugin-name"
-      blockName="My plugin block"
-      myCustomProp="test2"
-    >Test</CPlugin>
+  return (
+    <CPlugin id="my-plugin" pluginName="my-plugin-name" blockName="My plugin block" myCustomProp="test2">
+      Test
+    </CPlugin>
+  );
 }
 ```
 
@@ -460,10 +463,9 @@ export default function YouPluginName(props) {
       <p>{props.children}</p> /* 'Test' */
       <p>{props.myCustomProp}</p> /* 'test2' */
     </>
-  )
+  );
 }
 ```
-
 
 ## Backend
 
@@ -477,21 +479,22 @@ const backendModule: TBackendModule = {
   controllers: [],
   entities: [],
   migrations: [],
-}
+};
 
 export default backendModule;
 ```
 
-[Or see the example](https://github.com/CromwellCMS/Cromwell/blob/master/plugins/newsletter/src/backend/index.ts)  
+[Or see the example](https://github.com/CromwellCMS/Cromwell/blob/master/plugins/newsletter/src/backend/index.ts)
 
-All available properties (extensions): 
+All available properties (extensions):
+
 - `resolvers` - [TypeGraphQL resolvers](https://typegraphql.com/docs/resolvers.html). You can write your custom resolvers to extend GraphQL API.
 - `controllers` - [Nest.js controllers](https://docs.nestjs.com/controllers). You can write your custom controllers to extend REST API.
 - `entities` - [TypeORM entities](https://typeorm.io/#/entities). Your Plugin can add and use new tables in the database. Note that you need to write migrations to create or modify tables, there's no 'synchronize schema' mode in the production environment.
 - `migrations` - [TypeORM migrations](https://typeorm.io/#/migrations). They will be checked upon system startup and Plugin installation/update.
 
-
 :::note
+
 #### How exported extensions will be applied in the production server?
 
 Basically, all systems listed above: TypeORM, TypeGraphQL, Nest.js are designed to initialize all entities/resolvers/controllers at server startup. Updating classes at runtime may lead to problems such as wrong type reflection (for example, if some plugin has updated a class in a new release). Another problem is that we cannot have an outage of production server during such update.  
@@ -510,11 +513,11 @@ import { getCustomRepository } from 'typeorm';
 registerAction({
   pluginName: 'your-plugin-name',
   actionName: 'install_plugin',
-  action: (payload) => {
+  action: async (payload) => {
     if (payload.pluginName === 'your-plugin-name') {
-      getLogger().info('Thanks for installing our plugin!');
+      getLogger().error('Thanks for installing our plugin!');
     }
-  }
+  },
 });
 
 registerAction({
@@ -527,11 +530,12 @@ registerAction({
     const post = await getCustomRepository(PostRepository).getPostById(payload.id);
     post.title += ' custom title modification';
     await post.save();
-  }
+  },
 });
 ```
 
 `registerAction` accepts:
+
 - `pluginName` - Package.json name of your Plugin
 - `actionName` - Name of a hook to subscribe. [See all available](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/types.ts#L22)
 - `action` - Function to run. It will receive different payloads depending on action type.
@@ -539,47 +543,55 @@ registerAction({
 ### Custom actions
 
 It's also possible to register and fire custom actions, if you want, for example, to use them in different plugins:
+
 ```ts title="src/backend/index.ts"
 registerAction<any, { data: string }>({
   pluginName: 'your-plugin-name',
   actionName: 'your-plugin-name-custom_action',
   action: (payload) => {
-    console.log(payload.data)
-  }
+    console.log(payload.data);
+  },
 });
 
 fireAction<any, { data: string }>({
   actionName: 'your-plugin-name-custom_action',
-  payload: { data: 'test1' }
-})
+  payload: { data: 'test1' },
+});
 ```
 
 ### Entities and Migrations
 
 If your Plugin adds new TypeORM Entities, it should change database schema. To easily work in development we can use TypeORM's `"synchronize": true` [connection option](https://typeorm.io/#/connection-options) with SQLite database. SQLite used by default, to enable "synchronize" for it, create `cmsconfig.json` file in the project root:
+
 ```json title="cmsconfig.json"
 {
   "env": "dev"
 }
 ```
+
 Now when you start the CMS via `npx cromwell start`, server will update database's schema according to your entities.
 
 :::note
 Using `npx cromwell start` in development may appear slow if you want, for example, only to restart API server. In this case, you can manage services separately in different terminals:
+
 - `npx crw s --sv s` - To start API server.
 - `npx crw s --sv a` - To start Admin panel.
 - `npx crw s --sv r` - To start Frontend (Next.js) server.
-:::
+  :::
 
-After your Plugin will be installed, we need to update user's database since user's CMS will be in a production environment with disabled "synchronize". [Migrations](https://typeorm.io/#/migrations) are designed for such updates. You can write your custom migrations and export them as `migrations` extension in `src/backend/index.ts` file.   
+After your Plugin will be installed, we need to update user's database since user's CMS will be in a production environment with disabled "synchronize". [Migrations](https://typeorm.io/#/migrations) are designed for such updates. You can write your custom migrations and export them as `migrations` extension in `src/backend/index.ts` file.  
 Important to know that these migrations can potentially run in all supported types of databases: SQLite/MySQL/Postgres. So SQL syntax must be universal. Or you can check database type in connection options and write conditional queries.
 
 To simplify creation of such migrations, there's the suggested workflow:
+
 1. In your project root create files with TypeORM connection options per each target database:
-  - [`migration-mysql.json`](https://github.com/CromwellCMS/Cromwell/blob/master/plugins/newsletter/migration-mysql.json)
-  - [`migration-postgres.json`](https://github.com/CromwellCMS/Cromwell/blob/master/plugins/newsletter/migration-postgres.json)
-  - [`migration-sqlite.json`](https://github.com/CromwellCMS/Cromwell/blob/master/plugins/newsletter/migration-sqlite.json)
+
+- [`migration-mysql.json`](https://github.com/CromwellCMS/Cromwell/blob/master/plugins/newsletter/migration-mysql.json)
+- [`migration-postgres.json`](https://github.com/CromwellCMS/Cromwell/blob/master/plugins/newsletter/migration-postgres.json)
+- [`migration-sqlite.json`](https://github.com/CromwellCMS/Cromwell/blob/master/plugins/newsletter/migration-sqlite.json)
+
 2. Add following scripts to your package.json (we use %npm_config_name%" on Windows, on Linux you need to change it to $npm_config_name"):
+
 ```json title="package.json"
 "scripts": {
   "build": "npx cromwell b",
@@ -593,31 +605,35 @@ To simplify creation of such migrations, there's the suggested workflow:
   "migration:generate:all-example": "npm run migration:generate:all --name=init"
 }
 ```
+
 3. Build your plugin: `npm run build`
 4. Launch development databases: `npm run docker:start-dev-mariadb` and `npm run docker:start-dev-postgres`
 5. Generate migrations: `npm run migration:generate:all --name=init`
 
-TypeORM will generate different migrations per database type. Migrations will be in their named directories. Cromwell CMS is already configured to look into them and execute accordingly to database type.   Directory namings should be exactly the same as configured in provided example files: `./migrations/${dbType}`. 
-MySQL and MariaDB use the same directory: `./migrations/mysql`  
+TypeORM will generate different migrations per database type. Migrations will be in their named directories. Cromwell CMS is already configured to look into them and execute accordingly to database type. Directory namings should be exactly the same as configured in provided example files: `./migrations/${dbType}`.
+MySQL and MariaDB use the same directory: `./migrations/mysql`
 
 Don't forget to include the directory in your `files`, so migrations will be distributed along with your npm package:
+
 ```json title="package.json"
 "files": [
   "build",
   "static",
   "migrations",
   "cromwell.config.js"
-], 
-``` 
+],
+```
 
 ## Compile
 
 To transpile code and turn it into the format that can be imported by the CMS, you have to build it. Same as in [Theme development](/docs/development/theme-development#compile) use Cromwell CMS CLI:
+
 ```bash
 npx cromwell build
 ```
 
 Or start watcher:
+
 ```bash
 npx cromwell build -w
 ```
@@ -625,21 +641,23 @@ npx cromwell build -w
 Go to Admin panel and make sure your Plugin appeared at `/admin/plugins` page.  
 The settings icon should open `PluginSettings` widget.
 
-
 ## Customize bundler
 
-We use [Rollup](https://rollupjs.org) under the hood to build Plugins. This means you need to change Rollup config if you want to customize your build. This config is a part of `cromwell.config.js` 
+We use [Rollup](https://rollupjs.org) under the hood to build Plugins. This means you need to change Rollup config if you want to customize your build. This config is a part of `cromwell.config.js`
 
-Open `cromwell.config.js`. You can see there's `rollupConfig` function that returns configuring object in the format: 
+Open `cromwell.config.js`. You can see there's `rollupConfig` function that returns configuring object in the format:
+
 ```javascript
 {
   main: RollupOptions,
   backend: RollupOptions
 }
 ```
+
 Usually, `RollupOptions` is an object exported from [Rollup Config File](https://rollupjs.org/guide/en/#configuration-files). CMS builder needs different configs for different targets, so your `rollupConfig` function should return an object with configs labeled by properties:
+
 - `main` - Options used by default for all types of bundles.
-- `adminPanel` - Options that replace main only for Admin panel bundles.
+- `admin` - Options that replace main only for Admin panel bundles.
 - `frontend` - Options for frontend bundle ().
 - `backend` - Options for backend bundle.
 

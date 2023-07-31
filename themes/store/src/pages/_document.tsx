@@ -7,9 +7,7 @@ import { createEmotionCache } from '../helpers/createEmotionCache';
 import { getTheme } from '../helpers/theme';
 
 export default class MyDocument extends Document {
-
   static async getInitialProps(ctx: DocumentContext) {
-
     const originalRenderPage = ctx.renderPage;
     const cache = createEmotionCache();
     const { extractCriticalToChunks } = createEmotionServer(cache);
@@ -17,7 +15,7 @@ export default class MyDocument extends Document {
     ctx.renderPage = () =>
       originalRenderPage({
         enhanceApp: (App: any) => (props) => <App emotionCache={cache} {...props} />,
-      })
+      });
 
     const initialProps = await Document.getInitialProps(ctx);
     // This is important. It prevents emotion to render invalid HTML.
@@ -35,7 +33,7 @@ export default class MyDocument extends Document {
       ...initialProps,
       // Styles fragment is rendered after the app and page rendering finish.
       styles: [...React.Children.toArray(initialProps.styles), ...emotionStyleTags],
-    }
+    };
   }
 
   render() {
@@ -52,6 +50,6 @@ export default class MyDocument extends Document {
           <NextScript />
         </body>
       </Html>
-    )
+    );
   }
 }

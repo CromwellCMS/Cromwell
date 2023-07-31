@@ -5,18 +5,18 @@ import { Dashboard } from './widgets/Dashboard';
 import { SettingsPage } from './widgets/SettingsPage';
 
 registerWidget({
-    pluginName: '@cromwell/plugin-newsletter',
-    widgetName: 'PluginSettings',
-    component: SettingsPage
+  pluginName: '@cromwell/plugin-newsletter',
+  widgetName: 'PluginSettings',
+  component: SettingsPage,
 });
 
 registerWidget({
-    pluginName: '@cromwell/plugin-newsletter',
-    widgetName: 'Dashboard',
-    component: Dashboard
+  pluginName: '@cromwell/plugin-newsletter',
+  widgetName: 'Dashboard',
+  component: Dashboard,
 });
 
 registerThemeEditorPluginBlock({
-    pluginName: '@cromwell/plugin-newsletter',
-    blockName: 'Newsletter',
+  pluginName: '@cromwell/plugin-newsletter',
+  blockName: 'Newsletter',
 });

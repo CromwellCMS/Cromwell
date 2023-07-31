@@ -27,12 +27,12 @@ registerSharedComponent(ESharedComponentNames.PostCard, PostCard);
 
 export type TPageWithLayout<TProps = any> = TCromwellPage<TProps> & {
   getLayout?: (page: ReactElement) => JSX.Element;
-}
+};
 
 type AppPropsWithLayout = AppProps & {
   Component: TPageWithLayout;
   emotionCache?: EmotionCache;
-}
+};
 
 function App(props: AppPropsWithLayout) {
   const pageContext = useAppPropsContext();
@@ -53,11 +53,19 @@ function App(props: AppPropsWithLayout) {
   return (
     <CacheProvider value={emotionCache}>
       <ThemeProvider theme={theme}>
-        {getLayout(<>
-          {Component && <Component {...(props.pageProps ?? {})} />}
-          {!isServer() && document?.body && ReactDOM.createPortal(
-            <div className={"global-toast"} ><ToastContainer /></div>, document.body)}
-        </>)}
+        {getLayout(
+          <>
+            {Component && <Component {...(props.pageProps ?? {})} />}
+            {!isServer() &&
+              document?.body &&
+              ReactDOM.createPortal(
+                <div className={'global-toast'}>
+                  <ToastContainer />
+                </div>,
+                document.body,
+              )}
+          </>,
+        )}
       </ThemeProvider>
     </CacheProvider>
   );

@@ -1,19 +1,19 @@
 .Coupons {
-    position: relative;
+  position: relative;
 }
 
 .couponList {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .coupon {
-    margin: 15px 0;
-    display: flex;
-    align-items: center;
+  margin: 15px 0;
+  display: flex;
+  align-items: center;
 }
 
 .couponActions {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }

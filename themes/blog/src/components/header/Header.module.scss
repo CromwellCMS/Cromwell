@@ -1,226 +1,225 @@
-@import "../../styles/variables.scss";
-@import "../../styles/common.module.scss";
+@import '../../styles/variables.scss';
+@import '../../styles/common.module.scss';
 
 .Header {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    position: absolute;
-    z-index: 11;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  position: absolute;
+  z-index: 11;
 
-    a {
-        color: $text;
-        text-decoration: none;
-        margin-bottom: -2px;
-        border-bottom: 3px solid transparent;
-    }
+  a {
+    color: $text;
+    text-decoration: none;
+    margin-bottom: -2px;
+    border-bottom: 3px solid transparent;
+  }
 
-    a:hover {
-        border-bottom: 2px solid $primary;
-    }
+  a:hover {
+    border-bottom: 2px solid $primary;
+  }
 }
 
 header.appBar {
-    padding: 0;
-    box-shadow: none;
-    @include paper;
+  padding: 0;
+  box-shadow: none;
+  @include paper;
 
-    >div {
-        padding: 0;
-    }
+  > div {
+    padding: 0;
+  }
 }
 
 .dummyToolbar {
-    height: 64px;
+  height: 64px;
 }
 
 .topPanel {
-    width: 100%;
-    // border-bottom: 2px solid #333;
-    // box-shadow: 0 3px 5px 0 rgba(0,0,0,.05), 0 0 9px 0 rgba(0,0,0,.05);
-    border-bottom: 1px solid #eee;
+  width: 100%;
+  // border-bottom: 2px solid #333;
+  // box-shadow: 0 3px 5px 0 rgba(0,0,0,.05), 0 0 9px 0 rgba(0,0,0,.05);
+  border-bottom: 1px solid #eee;
 }
 
 .topPanelContent {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    padding: 5px 0;
-    font-size: 0.7em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 5px 0;
+  font-size: 0.7em;
 }
 
 .leftBlock {
-    display: flex;
+  display: flex;
 }
 
 .currencyOption {
-    display: flex;
-    width: 100px;
+  display: flex;
+  width: 100px;
 }
 
 .languageOption {
-    display: flex;
+  display: flex;
 }
 
 .rightBlock {
-    display: flex;
+  display: flex;
 }
 
 .topPanelLinks {
-    display: flex;
-    justify-content: space-between;
+  display: flex;
+  justify-content: space-between;
 }
 
 .topPanelLink {
-    margin: 0 10px;
+  margin: 0 10px;
 }
 
 .formControl {
-    margin: 0;
+  margin: 0;
 }
 
 .select {
-    padding: 0px;
+  padding: 0px;
 }
 
 .welcomeMessage {
-    margin: 0 40px 0 20px;
+  margin: 0 40px 0 20px;
 }
 
 .mainPanel {
-    display: flex;
+  display: flex;
 }
 
 .headerContent {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
 }
 
 .logoWrapper {
-    display: flex;
-    align-items: center;
-    margin-right: 15px;
+  display: flex;
+  align-items: center;
+  margin-right: 15px;
 }
 
 .logo {
-    height: 50px;
-    cursor: pointer;
+  height: 50px;
+  cursor: pointer;
 }
 
 .search {
-    display: flex;
-    width: 35%;
-    min-width: 100px;
-    max-width: 300px;
+  display: flex;
+  width: 35%;
+  min-width: 100px;
+  max-width: 300px;
 }
 
 .phone {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    font-weight: 500;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-weight: 500;
 }
 
 .phoneActionTip {
-    font-size: 0.7em;
+  font-size: 0.7em;
 }
 
 .mainMenu {
-    position: relative;
-    margin-right: 15px;
+  position: relative;
+  margin-right: 15px;
 }
 
 .searchContent {
-    @include paperElevated;
-    @include styledScrollBar;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    max-width: 100vw;
-    max-height: calc(100vh - 15px);
-    width: 470px;
-    height: 300px;
-    min-height: 140px;
-    overflow: auto;
-    z-index: 10;
+  @include paperElevated;
+  @include styledScrollBar;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 100vw;
+  max-height: calc(100vh - 15px);
+  width: 470px;
+  height: 300px;
+  min-height: 140px;
+  overflow: auto;
+  z-index: 10;
 }
 
 .listItem {
-    display: flex;
-    align-items: center;
-    transition: 0.3s;
-    border-bottom: 1px solid #ddd;
-    cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: 0.3s;
+  border-bottom: 1px solid #ddd;
+  cursor: pointer;
 }
 
 .listItem:hover {
-    background-color: #f4f4f4;
-    // border: 1px solid #ccc;
+  background-color: #f4f4f4;
+  // border: 1px solid #ccc;
 }
 
 .itemMain {
-    display: flex;
+  display: flex;
 }
 
 .itemImage {
-    @include bckgrCover;
-    height: 60px;
-    width: 90px;
-    min-width: 90px;
+  @include bckgrCover;
+  height: 60px;
+  width: 90px;
+  min-width: 90px;
 }
 
 .itemMainInfo {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    margin-left: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-left: 10px;
 }
 
 .itemTitle {
-    margin-bottom: 4px;
-    font-weight: 500;
+  margin-bottom: 4px;
+  font-weight: 500;
 }
 
 .notFoundText {
-    font-weight: 500;
-    font-size: 18px;
-    top: calc(50% - 14px);
-    position: absolute;
+  font-weight: 500;
+  font-size: 18px;
+  top: calc(50% - 14px);
+  position: absolute;
 }
 
 .mobileHeader {
-    width: 100%;
+  width: 100%;
 }
 
 .drawer {
-    min-width: 300px;
-    background-color: #fff;
-    height: 100vh;
-    padding: 10px;
+  min-width: 300px;
+  background-color: #fff;
+  height: 100vh;
+  padding: 10px;
 }
 
 .mobileSearch {
-    margin: 15px 0;
+  margin: 15px 0;
 }
 
 .menuActions {
-    display: flex;
-    justify-content: space-between;
+  display: flex;
+  justify-content: space-between;
 }
 
 @media screen and (max-width: $mobileBreakpoint) {
-
-    .mainMenu,
-    .search {
-        display: none;
-    }
+  .mainMenu,
+  .search {
+    display: none;
+  }
 }
 
 @media screen and (min-width: $mobileBreakpoint) {
-    .mobileActions {
-        display: none;
-    }
+  .mobileActions {
+    display: none;
+  }
 }

@@ -1,16 +1,16 @@
 import { TProductFilterSettings } from './types';
 
 type Required<T> = {
-    [P in keyof T]-?: T[P];
+  [P in keyof T]-?: T[P];
 };
 
 export const defaultSettings: Required<TProductFilterSettings> = {
-    listId: "Category_ProductList",
-    mobileIconPosition: {
-        top: 100,
-        left: 10
-    },
-    collapsedByDefault: false,
-    mobileCollapsedByDefault: false,
-    mobileBreakpoint: 600,
-}
+  listId: 'Category_ProductList',
+  mobileIconPosition: {
+    top: 100,
+    left: 10,
+  },
+  collapsedByDefault: false,
+  mobileCollapsedByDefault: false,
+  mobileBreakpoint: 600,
+};

@@ -7,27 +7,26 @@ jest.mock('@cromwell/core-frontend', () => {
     ...originalModule,
     getGraphQLClient: () => {
       return {
-        getAttributes: jest.fn().mockImplementation(async () => [])
-      }
+        getAttributes: jest.fn().mockImplementation(async () => ({ elements: [] })),
+      };
     },
     getCStore: () => {
       return originalModule.getCStore({ apiClient: {} });
     },
     useCart: () => {
-      return originalModule.useCart({ cstoreOptions: { apiClient: {} } })
+      return originalModule.useCart({ cstoreOptions: { apiClient: {} } });
     },
     useWishlist: () => {
-      return originalModule.useWishlist({ cstoreOptions: { apiClient: {} } })
+      return originalModule.useWishlist({ cstoreOptions: { apiClient: {} } });
     },
-  }
+  };
 });
 
 import { AppPropsContext } from '@cromwell/core-frontend';
 import { ProductCard } from './ProductCard';
 
 describe('ProductCard', () => {
-
-  it("renders", async () => {
+  it('renders', async () => {
     render(
       <AppPropsContext.Provider
         value={{
@@ -35,10 +34,11 @@ describe('ProductCard', () => {
             cmsProps: {
               defaultPages: {
                 product: 'product/[slug]',
-              }
-            }
+              },
+            },
           },
-        }}>
+        }}
+      >
         <ProductCard
           product={{
             id: 1,
@@ -46,7 +46,8 @@ describe('ProductCard', () => {
           }}
           getProductLink={(p) => p?.slug || ''}
         />
-      </AppPropsContext.Provider>);
+      </AppPropsContext.Provider>,
+    );
     await screen.findByText('_test1_');
   });
-})
+});

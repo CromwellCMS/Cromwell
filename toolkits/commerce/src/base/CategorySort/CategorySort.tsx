@@ -9,14 +9,14 @@ import styles from './CategorySort.module.scss';
 export type TSortOption = {
   key: keyof TProduct;
   label: string;
-  direction?: 'ASC' | 'DESC'
+  direction?: 'ASC' | 'DESC';
 };
 
 export type CategorySortProps = {
   classes?: Partial<Record<'root' | 'list', string>>;
   elements?: {
     Select?: TBaseSelect;
-  }
+  };
   text?: {
     default?: string;
     highestRated?: string;
@@ -24,22 +24,22 @@ export type CategorySortProps = {
     priceLowest?: string;
     priceHighest?: string;
     sort?: string;
-  }
+  };
 
   /**
-   * Provide another target CList id. Usually it is not needed, since this  
-   * component can "detect" id of `CategoryList` on the same page. 
+   * Provide another target CList id. Usually it is not needed, since this
+   * component can "detect" id of `CategoryList` on the same page.
    */
   listId?: string;
 
   /**
    * Override sort options
    */
-  overrideOptions?: TSortOption[]
-}
+  overrideOptions?: TSortOption[];
+};
 
 /**
- * A component for picking method of sorting for products in `CategoryList`. 
+ * A component for picking method of sorting for products in `CategoryList`.
  */
 export function CategorySort(props: CategorySortProps) {
   const { text, overrideOptions } = props;
@@ -80,7 +80,7 @@ export function CategorySort(props: CategorySortProps) {
     const value = event.target.value;
     setSortValue(value);
     setTimeout(() => {
-      const option: TSortOption | undefined = sortOptions.find(opt => (opt.label || opt.key) === value);
+      const option: TSortOption | undefined = sortOptions.find((opt) => (opt.label || opt.key) === value);
       if (option && listId) {
         const list = getBlockInstance<TCList>(listId)?.getContentInstance();
         if (list) {
@@ -92,18 +92,18 @@ export function CategorySort(props: CategorySortProps) {
         }
       }
     }, 100);
-  }
+  };
 
   return (
     <Select
       className={styles.CategorySort}
       label={text?.sort ?? 'Sort'}
-      options={sortOptions.map(opt => ({
+      options={sortOptions.map((opt) => ({
         value: opt.label || opt.key,
         label: opt.label,
       }))}
-      onChange={e => handleValueChange(e)}
+      onChange={(e) => handleValueChange(e)}
       value={sortValue}
     />
-  )
+  );
 }

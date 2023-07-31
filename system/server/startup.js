@@ -1,58 +1,85 @@
 const fs = require('fs-extra');
-const { spawn, spawnSync } = require('child_process');
-const { getServerDir, getServerBuildProxyPath, getServerBuildDir } = require('@cromwell/core-backend/dist/helpers/paths');
+const { spawnSync, spawn } = require('child_process');
+const { getServerDir, getServerBuildProxyPath } = require('@cromwell/core-backend/dist/helpers/paths');
 const { serverMessages } = require('@cromwell/core-backend/dist/helpers/constants');
-const normalizePath = require('normalize-path');
-const npmRunPath = require('npm-run-path');
 
 // 'build' | 'prod' | 'dev'
 const scriptName = process.argv[2];
 const serverRootDir = getServerDir();
-const buildDir = normalizePath(getServerBuildDir());
 const buildProxyPath = getServerBuildProxyPath();
 
+const buildServer = () => {
+  const npmRunPath = require('npm-run-path');
+  spawnSync(`npx --no-install rollup -c ./rollup-prod.config.js`, [], {
+    shell: true,
+    stdio: 'inherit',
+    cwd: serverRootDir,
+    env: npmRunPath.env(),
+  });
+};
+
+const isServiceBuild = () => {
+  return fs.existsSync(buildProxyPath);
+};
+
+const runDevScript = () => {
+  if (!isServiceBuild()) {
+    buildServer();
+  }
+
+  const spawnOptions = { shell: true, stdio: 'pipe' };
+
+  const processes = [
+    spawn(`npx --no-install rollup -c ./rollup-dev.config.js -w`, [], { ...spawnOptions, cwd: serverRootDir }),
+    spawn(
+      `npx tsx watch --tsconfig ./system/server/tsconfig.json ./system/server/src/main.ts`,
+      process.argv.slice(2),
+      spawnOptions,
+    ),
+    spawn(
+      `npx tsx watch --tsconfig ./system/server/tsconfig.json ./system/server/src/proxy.ts `,
+      process.argv.slice(2),
+      spawnOptions,
+    ),
+  ];
+
+  const buffToText = (buff) => {
+    let str = buff && buff.toString ? buff.toString() : buff;
+    // Remove some terminal control characters
+    str = str.replace(/\033\[[ABCD]/g, '');
+    // eslint-disable-next-line no-control-regex
+    str = str.replace(/\x1b[abcd]/g, '');
+    return str;
+  };
+
+  for (const proc of processes) {
+    // eslint-disable-next-line no-console
+    proc.stdout.on('data', (buff) => console.log(buffToText(buff)));
+    proc.stderr.on('data', (buff) => console.error(buffToText(buff)));
+    proc.on('message', process.send);
+  }
+
+  setTimeout(() => {
+    process.send(serverMessages.onStartMessage);
+  }, 3000);
+};
+
 const main = () => {
-    const buildServer = () => {
-        spawnSync(`npx --no-install rollup -c`, [],
-            { shell: true, stdio: 'inherit', cwd: serverRootDir, env: npmRunPath.env() });
+  if (scriptName === 'dev') {
+    runDevScript();
+  }
+
+  if (scriptName === 'build') {
+    buildServer();
+  }
+
+  if (scriptName === 'prod') {
+    if (!isServiceBuild()) {
+      buildServer();
     }
 
-    const isServiceBuild = () => {
-        return (fs.existsSync(buildProxyPath))
-    }
-
-
-    if (scriptName === 'dev') {
-        if (!isServiceBuild()) {
-            buildServer();
-        }
-
-        spawn(`npx --no-install nodemon --watch ${buildDir} ${buildProxyPath} ${process.argv.slice(2).join(' ')}`, [],
-            { shell: true, stdio: 'inherit', cwd: process.cwd() });
-
-        const rollupProc = spawn(`npx --no-install rollup -cw`, [],
-            { shell: true, stdio: 'pipe', cwd: serverRootDir });
-
-        rollupProc.stdout.on('data', buff => console.log((buff && buff.toString) ? buff.toString() : buff));
-        rollupProc.stderr.on('data', buff => console.error((buff && buff.toString) ? buff.toString() : buff));
-
-        setTimeout(() => {
-            process.send(serverMessages.onStartMessage);
-        }, 3000)
-    }
-
-    if (scriptName === 'build') {
-        buildServer();
-    }
-
-    if (scriptName === 'prod') {
-        if (!isServiceBuild()) {
-            buildServer();
-        }
-
-        require(buildProxyPath);
-    }
-
-}
+    require(buildProxyPath);
+  }
+};
 
 main();

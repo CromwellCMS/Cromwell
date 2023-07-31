@@ -11,16 +11,17 @@ import { CheckoutProps } from './Checkout';
 import styles from './Coupons.module.scss';
 
 /** @internal */
-export function Coupons(props: {
-  checkoutProps: CheckoutProps;
-  checkout: ReturnType<typeof usuCheckoutActions>;
-}) {
+export function Coupons(props: { checkoutProps: CheckoutProps; checkout: ReturnType<typeof usuCheckoutActions> }) {
   const { checkout, checkoutProps } = props;
   const { isLoading, coupons } = checkout;
   const { classes, elements, text } = checkoutProps;
-  const { Button = BaseButton, CouponProblemIcon = DefaultCouponProblemIcon,
-    CouponAppliedIcon = DefaultCouponAppliedIcon, TextField = BaseTextField,
-    RemoveCouponIcon = DefaultRemoveCouponIcon } = elements ?? {};
+  const {
+    Button = BaseButton,
+    CouponProblemIcon = DefaultCouponProblemIcon,
+    CouponAppliedIcon = DefaultCouponAppliedIcon,
+    TextField = BaseTextField,
+    RemoveCouponIcon = DefaultRemoveCouponIcon,
+  } = elements ?? {};
   const { ApplyCouponButton = Button, RemoveCouponButton = Button, AddCouponButton = Button } = elements ?? {};
   const forceUpdate = useForceUpdate();
 
@@ -29,13 +30,9 @@ export function Coupons(props: {
       <div className={clsx(styles.couponList, classes?.couponList)}>
         {Object.entries(coupons).map(([couponId, coupon]) => {
           return (
-            <div className={clsx(styles.coupon, classes?.coupon)} key={couponId} >
-              {!isLoading && coupon.applied === true && (
-                <CouponAppliedIcon />
-              )}
-              {!isLoading && coupon.applied === false && (
-                <CouponProblemIcon />
-              )}
+            <div className={clsx(styles.coupon, classes?.coupon)} key={couponId}>
+              {!isLoading && coupon.applied === true && <CouponAppliedIcon />}
+              {!isLoading && coupon.applied === false && <CouponProblemIcon />}
               <TextField
                 value={coupon.value}
                 onChange={(e) => {
@@ -57,7 +54,7 @@ export function Coupons(props: {
                 <RemoveCouponIcon />
               </RemoveCouponButton>
             </div>
-          )
+          );
         })}
       </div>
 
@@ -68,15 +65,18 @@ export function Coupons(props: {
             coupons[getRandStr(8)] = { value: '', applied: null };
             forceUpdate();
           }}
-        >{text?.addCoupon ?? 'Add coupon'}</AddCouponButton>
+        >
+          {text?.addCoupon ?? 'Add coupon'}
+        </AddCouponButton>
         <ApplyCouponButton
           variant="contained"
           onClick={() => {
             checkout.getOrderTotal();
           }}
-        >{text?.apply ?? 'Apply'}</ApplyCouponButton>
+        >
+          {text?.apply ?? 'Apply'}
+        </ApplyCouponButton>
       </div>
     </div>
-  )
+  );
 }
-

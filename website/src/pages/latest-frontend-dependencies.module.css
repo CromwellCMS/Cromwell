@@ -1,33 +1,33 @@
 .content {
-    max-width: 700px;
-    width: 700px;
-    margin: 0 auto;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+  max-width: 700px;
+  width: 700px;
+  margin: 0 auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .title {
-    margin: 4rem 0 1em;
+  margin: 4rem 0 1em;
 }
 
 .expandTitle {
-    margin: 0 2em 0 0;
+  margin: 0 2em 0 0;
 }
 
 .listHeader {
-    display: flex;
-    margin: 2em 0 1em 0;
-    align-items: center;
-    cursor: pointer;
+  display: flex;
+  margin: 2em 0 1em 0;
+  align-items: center;
+  cursor: pointer;
 }
 
 .searchBox {
-    background-color: #fff;
-    padding: 10px;
-    display: inline-block;
-    border-radius: 10px;
-    width: auto;
-    margin-bottom: 15px;
+  background-color: #fff;
+  padding: 10px;
+  display: inline-block;
+  border-radius: 10px;
+  width: auto;
+  margin-bottom: 15px;
 }

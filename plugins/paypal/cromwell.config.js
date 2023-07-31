@@ -3,6 +3,7 @@ module.exports = {
     client_id: 'EBWKjlELKMYqRNQ6sYvFo64FtaRLRR5BdHEESmha49TM',
     client_secret: 'EO422dn3gQLgDbuwqTjzrFgFtaRLRR5BdHEESmha49TM',
     mode: 'sandbox',
+    enabled: true,
   },
   rollupConfig: () => {
     const commonjs = require('@rollup/plugin-commonjs');
@@ -19,21 +20,21 @@ module.exports = {
             compress: {
               side_effects: false,
               negate_iife: false,
-            }
+            },
           }),
-        ]
+        ],
       },
       backend: {
         plugins: [
           typescript({
             monorepo: true,
             compilerOptions: {
-              target: 'ES2019'
+              target: 'ES2019',
             },
           }),
           commonjs(),
-        ]
+        ],
       },
-    }
-  }
-}
+    };
+  },
+};

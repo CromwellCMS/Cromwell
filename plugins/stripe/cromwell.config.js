@@ -1,6 +1,7 @@
 module.exports = {
   defaultSettings: {
     stripeApiKey: 'sk_test_4eC39HqLyjWDarjtT1zdp7dc',
+    enabled: true,
   },
   rollupConfig: () => {
     const commonjs = require('@rollup/plugin-commonjs');
@@ -17,21 +18,21 @@ module.exports = {
             compress: {
               side_effects: false,
               negate_iife: false,
-            }
+            },
           }),
-        ]
+        ],
       },
       backend: {
         plugins: [
           typescript({
             monorepo: true,
             compilerOptions: {
-              target: 'ES2019'
+              target: 'ES2019',
             },
           }),
           commonjs(),
-        ]
+        ],
       },
-    }
-  }
-}
+    };
+  },
+};

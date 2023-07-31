@@ -1,94 +1,49 @@
-import { getStoreItem, TAuthRole, TUserRole } from '@cromwell/core';
-import { CanActivate, ExecutionContext, HttpException, HttpStatus, Injectable, SetMetadata } from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
-import { FastifyRequest } from 'fastify';
+import { getStoreItem, matchPermissions, TPermissionName } from '@cromwell/core';
+import { HttpException, HttpStatus, SetMetadata } from '@nestjs/common';
 
+import { checkRoles, getPermissions } from './auth-roles-permissions';
+import { TAuthUserInfo, TGraphQLContext } from './types';
 
-export type TAuthUserInfo = {
-    id: number;
-    email?: string | null;
-    role: TUserRole;
-}
-
-export type TTokenPayload = {
-    sub: number;
-    username?: string | null;
-    role: TUserRole;
-}
-
-export type TRequestWithUser = FastifyRequest & {
-    user: TAuthUserInfo;
-    cookies: any;
-}
-
-export type TTokenInfo = {
-    token: string;
-    maxAge: string;
-    cookie: string;
-}
-
-export type TGraphQLContext = {
-    user?: TAuthUserInfo;
-}
-
-export const Roles = (...roles: TAuthRole[]) => SetMetadata('roles', roles);
-
-@Injectable()
-export class JwtAuthGuard implements CanActivate {
-    constructor(private reflector: Reflector) { }
-
-    async canActivate(context: ExecutionContext): Promise<boolean> {
-        if (getStoreItem('cmsSettings')?.installed === false) return true;
-
-        const request: TRequestWithUser = context.switchToHttp().getRequest();
-        if (!request.user?.id) return false;
-
-        const roles = this.reflector.get<TAuthRole[]>('roles', context.getHandler());
-        return matchRoles(request.user, roles);
-    }
-}
-
-export const graphQlAuthChecker = (
-    options?: {
-        root?: any;
-        args?: Record<string, any>;
-        context?: TGraphQLContext;
-        info?: any;
-    } | null,
-    roles?: TAuthRole[] | null,
-) => {
-    const { root, args, context, info } = options ?? {};
-    if (!roles || roles.length === 0) return true;
-    if (getStoreItem('cmsSettings')?.installed === false) return true;
-
-    const userInfo: TAuthUserInfo | undefined = (context as TGraphQLContext)?.user;
-
-    if (!userInfo?.id || !userInfo?.role)
-        throw new HttpException('Access denied', HttpStatus.UNAUTHORIZED);
-
-    if (!matchRoles(userInfo, roles, args?.id)) throw new HttpException('Access denied', HttpStatus.FORBIDDEN);
-
-    return true;
+export const checkRegisteredPermissions = (permissions: TPermissionName[]) => {
+  if (!permissions?.length) return;
+  const allPermissions = getPermissions();
+  permissions.forEach((permission) => {
+    if (!allPermissions.find((p) => p.name === permission))
+      throw new HttpException(
+        `Permission ${permission} is not registered. Use registerPermission helper from '@cromwell/core-backend'`,
+        HttpStatus.FORBIDDEN,
+      );
+  });
 };
 
-const matchRoles = (user?: TAuthUserInfo, roles?: TAuthRole[] | null, entityId?: string): boolean => {
-    if (!roles || roles.length === 0) return true;
-    if (!user?.id) return false;
-    if (user.role === 'administrator') return true;
+export const AuthGuard = ({
+  permissions = [],
+  customPermissions = [],
+}: { permissions?: TPermissionName[]; customPermissions?: string[] } = {}): MethodDecorator =>
+  SetMetadata('permissions', { permissions, customPermissions });
 
-    if (roles.includes('all')) return true;
+export const graphQlAuthChecker = async (
+  options?: {
+    root?: any;
+    args?: Record<string, any>;
+    context?: TGraphQLContext;
+    info?: any;
+  } | null,
+  permissions?: TPermissionName[] | null,
+) => {
+  const { context } = options ?? {};
+  if (!permissions || permissions.length === 0) return true;
 
-    if (roles.includes('guest')) {
-        if (user.role === 'guest') return true;
-    }
-    if (roles.includes('author')) {
-        if (user.role === 'author') return true;
-    }
-    if (roles.includes('customer')) {
-        if (user.role === 'customer') return true;
-    }
-    if (roles.includes('self') && entityId) {
-        if (user.id + '' === entityId + '') return true;
-    }
-    return false;
-}
+  if (getStoreItem('cmsSettings')?.installed === false) return true;
+  checkRegisteredPermissions(permissions);
+
+  const userInfo: TAuthUserInfo | undefined = (context as TGraphQLContext)?.user;
+
+  if (!userInfo?.id || !userInfo?.roles?.length) throw new HttpException('Access denied', HttpStatus.UNAUTHORIZED);
+
+  await checkRoles();
+
+  if (!matchPermissions(userInfo, permissions)) throw new HttpException('Access denied', HttpStatus.FORBIDDEN);
+
+  return true;
+};

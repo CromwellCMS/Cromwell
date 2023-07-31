@@ -25,24 +25,28 @@ export type ProductGalleryProps = {
    * Settings to pass to underlying CGallery block
    */
   blockProps?: TCromwellBlockProps;
-}
+};
 
 /**
- * Displays a gallery of product images. 
+ * Displays a gallery of product images.
  */
 export function ProductGallery(props: ProductGalleryProps) {
   const { product, noImagePlaceholder, gallerySettings, blockProps, classes } = props;
   const hasImages = !!product?.images?.length;
 
-  const images: TImageSettings[] = (hasImages && product?.images?.map(i => {
-    return {
-      src: i
-    }
-  })) || (noImagePlaceholder ? [{ src: '/themes/@cromwell/theme-store/no-photos.png' }] : []);
+  const images: TImageSettings[] =
+    (hasImages &&
+      product?.images?.map((i) => {
+        return {
+          src: i,
+        };
+      })) ||
+    (noImagePlaceholder ? [{ src: '/themes/@cromwell/theme-store/no-photos.png' }] : []);
 
   return (
     <div className={clsx(styles.ProductGallery, classes?.root)}>
-      <CGallery id="ccom_product_images_gallery"
+      <CGallery
+        id="ccom_product_images_gallery"
         isConstant
         editorHidden
         gallery={{
@@ -50,10 +54,13 @@ export function ProductGallery(props: ProductGalleryProps) {
           loop: false,
           navigation: hasImages && images.length > 1,
           zoom: hasImages,
-          thumbs: (hasImages && images.length > 1) ? {
-            width: 80,
-            height: 80,
-          } : false,
+          thumbs:
+            hasImages && images.length > 1
+              ? {
+                  width: 80,
+                  height: 80,
+                }
+              : false,
           fullscreen: hasImages,
           backgroundSize: 'contain',
           responsive: {
@@ -64,13 +71,13 @@ export function ProductGallery(props: ProductGalleryProps) {
             700: {
               ratio: 1,
               visibleSlides: 1,
-              height: 600
-            }
+              height: 600,
+            },
           },
-          ...(gallerySettings ?? {})
+          ...(gallerySettings ?? {}),
         }}
-        {...(blockProps ?? {})}
+        {...((blockProps as Partial<TCromwellBlockProps>) ?? {})}
       />
     </div>
-  )
+  );
 }

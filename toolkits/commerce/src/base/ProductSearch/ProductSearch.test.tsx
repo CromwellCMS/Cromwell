@@ -3,7 +3,7 @@ import React from 'react';
 
 const testData = {
   data: {
-    getFilteredProducts: {
+    getProducts: {
       elements: [
         {
           id: 1,
@@ -12,11 +12,11 @@ const testData = {
         {
           id: 2,
           name: '_test2_',
-        }
-      ]
-    }
-  }
-}
+        },
+      ],
+    },
+  },
+};
 
 jest.mock('@cromwell/core-frontend', () => {
   const originalModule = jest.requireActual('@cromwell/core-frontend');
@@ -26,20 +26,19 @@ jest.mock('@cromwell/core-frontend', () => {
       return {
         query: jest.fn().mockImplementation(async () => testData),
         PagedMetaFragment: '',
-      }
+      };
     },
     getCStore: () => {
       return originalModule.getCStore({ local: true, apiClient: {} });
     },
     LoadBox: () => null,
-  }
+  };
 });
 
 import { ProductSearch } from './ProductSearch';
 
 describe('ProductSearch', () => {
-
-  it("opens and fetches list on input", async () => {
+  it('opens and fetches list on input', async () => {
     const inputPlaceholder = 'inputPlaceholder';
     render(<ProductSearch text={{ searchLabel: inputPlaceholder }} />);
 
@@ -49,5 +48,4 @@ describe('ProductSearch', () => {
     await screen.findByText('_test1_');
     await screen.findByText('_test2_');
   });
-
-})
+});

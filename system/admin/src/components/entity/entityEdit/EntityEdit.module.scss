@@ -1,0 +1,95 @@
+@import '../../../styles/common.module.scss';
+
+.EntityEdit {
+  padding: 5px 20px 20px 20px;
+  max-width: 900px;
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  padding: 10px;
+  width: 100%;
+  margin-bottom: 15px;
+  min-height: 46px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  top: -1px;
+  border-radius: 15px;
+  transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  box-shadow: none;
+  position: sticky;
+  z-index: 1101;
+  color: inherit;
+}
+
+.header.headerElevated {
+  box-shadow: 0 8px 15px 0 rgb(0 0 0 / 9%);
+  background-color: rgba(243, 244, 246, var(--tw-bg-opacity));
+}
+
+.pageTitle {
+  font-size: 1.5rem;
+}
+
+.notFoundPage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.notFoundText {
+  font-size: 25px;
+  font-weight: 500;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+}
+
+button.openPageBtn {
+  margin-right: 10px;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+}
+
+.fields {
+  @include paper;
+  padding: 20px;
+  margin-bottom: 15px;
+  border: 1px solid #eee;
+  border-radius: 10px;
+}
+
+.descriptionEditor {
+  @include styledScrollBar;
+  border: 2px solid #e5e7eb;
+  border-radius: 5px;
+  min-height: 400px;
+  padding: 15px 30px;
+}
+
+// .defaultField {
+//   width: 100%;
+//   margin: 15px 0;
+// }
+
+:global(.modeDark) {
+  .header,
+  .content {
+    background-color: #333;
+
+    * {
+      color: #eee;
+    }
+  }
+}

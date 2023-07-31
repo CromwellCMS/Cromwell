@@ -2,19 +2,19 @@ import { TFrontendBundle } from '@cromwell/core';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class FrontendBundleDto implements TFrontendBundle {
-    @ApiProperty()
-    source?: string;
+  @ApiProperty()
+  source?: string;
 
-    @ApiProperty()
-    meta?: TScriptMetaInfo;
+  @ApiProperty()
+  meta?: TScriptMetaInfo;
 
-    @ApiProperty()
-    cjsPath?: string;
+  @ApiProperty()
+  cjsPath?: string;
 }
 
 export type TScriptMetaInfo = {
-    name: string;
-    // { [moduleName]: namedImports }
-    externalDependencies: Record<string, string[]>;
-    import?: 'chunks' | 'lib';
-}
+  name: string;
+  // { [moduleName]: namedImports }
+  externalDependencies: Record<string, string[]>;
+  import?: 'chunks' | 'lib';
+};

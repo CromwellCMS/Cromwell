@@ -41,29 +41,34 @@ const TagPage: TPageWithLayout<TagPageProps> = (props) => {
   const { tag } = props;
   const filterInput = useRef<TPostFilter>({});
   const listId = 'Blog_list_01';
-  const publishSort = useRef<"ASC" | "DESC">('DESC');
+  const publishSort = useRef<'ASC' | 'DESC'>('DESC');
   const router = useRouter?.();
 
   const resetList = () => {
     const list = getBlockInstance<TCList>(listId)?.getContentInstance();
     list?.clearState();
     list?.updateData();
-  }
+  };
 
-  const handleGetPosts = async (params: TPagedParams<TPost>): Promise<TPagedList<TPost> | undefined> => {
-    params.orderBy = 'publishDate';
-    params.order = publishSort.current;
+  const handleGetPosts = async ({
+    pagedParams,
+  }: {
+    pagedParams: TPagedParams<TPost>;
+  }): Promise<TPagedList<TPost> | undefined> => {
+    pagedParams.orderBy = 'publishDate';
+    pagedParams.order = publishSort.current;
     if (props?.tag?.id) {
       filterInput.current.tagIds = [props.tag.id];
-      return handleGetFilteredPosts(params, filterInput.current);
-    } return { elements: [] }
-  }
+      return handleGetFilteredPosts(pagedParams, filterInput.current);
+    }
+    return { elements: [] };
+  };
 
   const handleChangeSort = (event: SelectChangeEvent<unknown>) => {
     if (event.target.value === 'Newest') publishSort.current = 'DESC';
     if (event.target.value === 'Oldest') publishSort.current = 'ASC';
     resetList();
-  }
+  };
 
   if (tag && !tag.pageTitle) {
     // Default meta page title
@@ -72,29 +77,24 @@ const TagPage: TPageWithLayout<TagPageProps> = (props) => {
 
   return (
     <CContainer className={commonStyles.content} id="tag-1">
-      <EntityHead
-        entity={tag}
-        useFallback
-      />
+      <EntityHead entity={tag} useFallback />
       <CContainer className={styles.filter} id="tag-2">
         <div>
           <h1 className={styles.title}>{props.tag?.name ?? ''}</h1>
         </div>
         <FormControl className={styles.filterItem}>
           <InputLabel className={styles.sortLabel}>Sort</InputLabel>
-          <Select
-            onChange={handleChangeSort}
-            variant="standard"
-            defaultValue='Newest'
-          >
-            {['Newest', 'Oldest'].map(sort => (
-              <MenuItem value={sort} key={sort}>{sort}</MenuItem>
+          <Select onChange={handleChangeSort} variant="standard" defaultValue="Newest">
+            {['Newest', 'Oldest'].map((sort) => (
+              <MenuItem value={sort} key={sort}>
+                {sort}
+              </MenuItem>
             ))}
           </Select>
         </FormControl>
       </CContainer>
       <CContainer style={{ marginBottom: '20px' }} id="tag-3">
-        {(router?.isFallback) ? (
+        {router?.isFallback ? (
           <LoadBox />
         ) : (
           <>
@@ -116,19 +116,16 @@ const TagPage: TPageWithLayout<TagPageProps> = (props) => {
                 firstBatch={props.posts}
                 loader={handleGetPosts}
                 cssClasses={{
-                  page: styles.postList
+                  page: styles.postList,
                 }}
                 elements={{
-                  pagination: MuiPagination
+                  pagination: MuiPagination,
                 }}
               />
             </CContainer>
             <CContainer id="tag_05">
               {props.tag?.description && (
-                <div
-                  className={styles.description}
-                  dangerouslySetInnerHTML={{ __html: props.tag.description }}
-                ></div>
+                <div className={styles.description} dangerouslySetInnerHTML={{ __html: props.tag.description }}></div>
               )}
             </CContainer>
           </>
@@ -136,15 +133,11 @@ const TagPage: TPageWithLayout<TagPageProps> = (props) => {
       </CContainer>
     </CContainer>
   );
-}
+};
 
 TagPage.getLayout = (page) => {
-  return (
-    <Layout>
-      {page}
-    </Layout >
-  )
-}
+  return <Layout>{page}</Layout>;
+};
 
 export default TagPage;
 
@@ -152,23 +145,29 @@ export const getStaticProps: TGetStaticProps<TagPageProps> = async (context) => 
   const slug = context?.params?.slug ?? null;
   const client = getGraphQLClient();
 
-  const tag = (typeof slug === 'string' &&
-    await client.getTagBySlug(slug).catch((error: TGraphQLErrorInfo) => {
-      if (error.statusCode !== 404)
-        console.error('TagPage::getStaticProps', error);
-    })) || null;
+  const tag =
+    (typeof slug === 'string' &&
+      (await client.getTagBySlug(slug).catch((error: TGraphQLErrorInfo) => {
+        if (error.statusCode !== 404) console.error('TagPage::getStaticProps', error);
+      }))) ||
+    null;
 
   if (!tag) {
     return {
       notFound: true,
-    }
+    };
   }
 
   let posts: TPagedList<TPost> | undefined;
   try {
-    posts = tag?.id ? await handleGetFilteredPosts({ pageSize: 20, order: 'DESC', orderBy: 'publishDate' }, {
-      tagIds: [tag.id]
-    }) : {};
+    posts = tag?.id
+      ? await handleGetFilteredPosts(
+          { pageSize: 20, order: 'DESC', orderBy: 'publishDate' },
+          {
+            tagIds: [tag.id],
+          },
+        )
+      : {};
   } catch (e) {
     console.error('TagPage::getStaticProps', e);
   }
@@ -177,13 +176,13 @@ export const getStaticProps: TGetStaticProps<TagPageProps> = async (context) => 
     props: removeUndefined({
       posts,
       tag,
-    })
-  }
-}
+    }),
+  };
+};
 
 export const getStaticPaths = () => {
   return {
     paths: [],
     fallback: 'blocking',
   };
-}
+};

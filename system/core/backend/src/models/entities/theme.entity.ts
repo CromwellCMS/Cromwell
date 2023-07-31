@@ -6,40 +6,39 @@ import { BasePageEntity } from './base-page.entity';
 @Entity('theme')
 @ObjectType('Theme')
 export class ThemeEntity extends BasePageEntity implements TThemeEntity {
+  @Field((type) => String)
+  @Column({ type: 'varchar', length: 255 })
+  name?: string | null;
 
-    @Field(type => String)
-    @Column({ type: "varchar", length: 255 })
-    name?: string | null;
+  @Field((type) => String, { nullable: true })
+  @Column({ type: 'varchar', nullable: true })
+  version?: string | null;
 
-    @Field(type => String, { nullable: true })
-    @Column({ type: "varchar", nullable: true })
-    version?: string | null;
+  @Field((type) => String, { nullable: true })
+  @Column({ type: 'varchar', nullable: true })
+  title?: string | null;
 
-    @Field(type => String, { nullable: true })
-    @Column({ type: "varchar", nullable: true })
-    title?: string | null;
+  @Field((type) => Boolean, { nullable: true })
+  @Column({ type: 'boolean' })
+  isInstalled?: boolean | null;
 
-    @Field(type => Boolean, { nullable: true })
-    @Column({ type: "boolean" })
-    isInstalled?: boolean | null;
+  @Field((type) => Boolean, { nullable: true })
+  @Column({ type: 'boolean', nullable: true })
+  hasAdminBundle?: boolean | null;
 
-    @Field(type => Boolean, { nullable: true })
-    @Column({ type: "boolean", nullable: true })
-    hasAdminBundle?: boolean | null;
+  @Field((type) => String, { nullable: true })
+  @Column({ type: 'text', nullable: true })
+  settings?: string | null;
 
-    @Field(type => String, { nullable: true })
-    @Column({ type: "text", nullable: true })
-    settings?: string | null;
+  @Field((type) => String, { nullable: true })
+  @Column({ type: 'text', nullable: true })
+  defaultSettings?: string | null;
 
-    @Field(type => String, { nullable: true })
-    @Column({ type: "text", nullable: true })
-    defaultSettings?: string | null;
+  @Field((type) => String, { nullable: true })
+  @Column({ type: 'text', nullable: true })
+  moduleInfo?: string | null;
 
-    @Field(type => String, { nullable: true })
-    @Column({ type: "text", nullable: true })
-    moduleInfo?: string | null;
-
-    @Field(type => Boolean, { nullable: true })
-    @Column({ type: "boolean", nullable: true })
-    isUpdating?: boolean | null = false;
+  @Field((type) => Boolean, { nullable: true })
+  @Column({ type: 'boolean', nullable: true })
+  isUpdating?: boolean | null = false;
 }

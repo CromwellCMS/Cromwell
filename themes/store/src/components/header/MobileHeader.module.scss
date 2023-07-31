@@ -1,70 +1,70 @@
-@import "../../styles/common.module.scss";
-@import "../../styles/variables.scss";
+@import '../../styles/common.module.scss';
+@import '../../styles/variables.scss';
 
 header.appBar {
-    padding: 0;
-    box-shadow: none;
-    @include paperElevated;
+  padding: 0;
+  box-shadow: none;
+  @include paperElevated;
 
-    > div {
-        padding: 0;
-    }
+  > div {
+    padding: 0;
+  }
 }
 
 .dummyToolbar {
-    height: 68px;
+  height: 68px;
 }
 
 .appBarContent {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    width: 100%;
-    background-color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  width: 100%;
+  background-color: #fff;
 
-    svg:global(.MuiSvgIcon-root) {
-        color: #333;
-    }
+  svg:global(.MuiSvgIcon-root) {
+    color: #333;
+  }
 }
 
 .drawer {
-    min-width: 300px;
-    background-color: #fff;
-    height: 100vh;
-    padding: 10px;
+  min-width: 300px;
+  background-color: #fff;
+  height: 100vh;
+  padding: 10px;
 }
 
 .logo {
-    height: 40px;
-    width: auto;
+  height: 40px;
+  width: auto;
 }
 
 .leftActions {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 .rightActions {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .menuActions {
-    display: flex;
-    align-items: center;
-    margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
 
-    svg:global(.MuiSvgIcon-root) {
-        color: #333;
-    }
+  svg:global(.MuiSvgIcon-root) {
+    color: #333;
+  }
 }
 
 .mobileSearch {
-    width: 100%;
-    margin-bottom: 15px;
+  width: 100%;
+  margin-bottom: 15px;
 }
 
 div.currencyOption {
-    display: flex;
-    width: 100px;
+  display: flex;
+  width: 100px;
 }

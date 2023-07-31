@@ -4,18 +4,17 @@ import React from 'react';
 import styles from './Pagination.module.scss';
 
 /** @internal */
-export const Pagination = (props: {
-  count: number;
-  page: number;
-  onChange: (page: number) => void;
-}) => {
+export const Pagination = (props: { count: number; page: number; onChange: (page: number) => void }) => {
   return (
-    <MUIPagination count={props.count} page={props.page}
+    <MUIPagination
+      count={props.count}
+      page={props.page}
       onChange={(event: React.ChangeEvent<unknown>, value: number) => {
-        props.onChange(value)
+        props.onChange(value);
       }}
       className={styles.pagination}
-      showFirstButton showLastButton
+      showFirstButton
+      showLastButton
     />
-  )
-}
+  );
+};

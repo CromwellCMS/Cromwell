@@ -1,0 +1,11 @@
+node_modules
+dist
+build
+.next
+.cromwell
+static
+.tsbuildinfo
+.docusaurus
+.generated-docs
+blog
+docs

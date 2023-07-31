@@ -1,109 +1,109 @@
-@import "../variables.scss";
-@import "../common.module.scss";
+@import '../variables.scss';
+@import '../common.module.scss';
 
 .IndexPage {
-    // display: flex;
-    // flex-wrap: wrap;
-    position: relative;
+  // display: flex;
+  // flex-wrap: wrap;
+  position: relative;
 }
 
 .advantagesBlockWrapper {
-    background-color: #fff;
-    border-radius: 6px;
+  background-color: #fff;
+  border-radius: 6px;
 }
 .advantagesBlock {
-    display: flex;
-    justify-content: space-between;
-    padding: 15px 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 0;
 }
 .advantageItem {
-    display: flex;
-    align-items: center;
-    flex-wrap: nowrap;
-    padding: 20px 15px;
-    width: 32%;
-    border-radius: 15px;
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  padding: 20px 15px;
+  width: 32%;
+  border-radius: 15px;
 }
 .advantageItemHeader {
-    font-weight: 600;
+  font-weight: 600;
 }
 .advantageItemText {
-    margin-left: 20px;
-    flex-direction: column;
+  margin-left: 20px;
+  flex-direction: column;
 }
 
 .mainBannerGallery {
-    padding: 0;
+  padding: 0;
 }
 
 .mainBlock {
-    display: flex;
+  display: flex;
 }
 .mainSidebar {
-    width: 30%;
-    padding: 20px 10px 20px 0;
+  width: 30%;
+  padding: 20px 10px 20px 0;
 }
 
 .mainContent {
-    width: 70%;
-    padding: 20px 0 20px 20px;
+  width: 70%;
+  padding: 20px 0 20px 20px;
 }
 .mainSubBanners {
-    display: flex;
-    justify-content: space-between;
+  display: flex;
+  justify-content: space-between;
 }
 .mainSubBanner {
-    width: 30%;
-    position: relative;
-    border-radius: 15px;
+  width: 30%;
+  position: relative;
+  border-radius: 15px;
 
-    img {
-        border-radius: 6px;
-    }
+  img {
+    border-radius: 6px;
+  }
 
-    &::before {
-        content: "";
-        transition: 0.3s;
-        pointer-events: none;
-    }
+  &::before {
+    content: '';
+    transition: 0.3s;
+    pointer-events: none;
+  }
 
-    &:hover::before {
-        pointer-events: none;
-        position: absolute;
-        background-color: rgba(0, 0, 0, 0.2);
-        border-radius: 6px;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-    }
+  &:hover::before {
+    pointer-events: none;
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 6px;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
 }
 
 .sidebarBanner img {
-    border-radius: 20px;
+  border-radius: 20px;
 }
 
 .mainShowcaseWrapper {
-    margin: 20px 0;
-    padding: 15px 0;
-    border-radius: 15px;
+  margin: 20px 0;
+  padding: 15px 0;
+  border-radius: 15px;
 }
 
 @media screen and (max-width: $mobileBreakpoint) {
-    .mainSidebar {
-        display: none;
-    }
+  .mainSidebar {
+    display: none;
+  }
 
-    .mainContent {
-        width: 100%;
-    }
+  .mainContent {
+    width: 100%;
+  }
 
-    .advantagesBlock {
-        flex-direction: column;
-    }
+  .advantagesBlock {
+    flex-direction: column;
+  }
 
-    .advantageItem {
-        width: 100%;
-        justify-content: center;
-    }
+  .advantageItem {
+    width: 100%;
+    justify-content: center;
+  }
 }

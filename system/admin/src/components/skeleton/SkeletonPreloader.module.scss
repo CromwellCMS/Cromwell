@@ -1,0 +1,22 @@
+.listPreloader {
+  overflow: hidden;
+  position: absolute;
+  bottom: 0vh;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 99;
+  background-color: #fff;
+  margin-top: 15px;
+  border-radius: 10px;
+}
+
+:global(.modeDark) {
+  .listPreloader {
+    background-color: #333;
+
+    * {
+      color: #eee;
+    }
+  }
+}

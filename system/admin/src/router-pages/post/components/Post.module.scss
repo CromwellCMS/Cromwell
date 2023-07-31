@@ -1,0 +1,97 @@
+@import '../../../styles/common.module.scss';
+
+.postTitle {
+  font-weight: 500;
+  font-size: 1.5rem;
+  margin-left: 15px;
+  margin-right: 5px;
+  background: transparent;
+  margin: 0;
+  width: 100%;
+}
+
+.postTitle:focus {
+  outline: none;
+}
+
+.Post {
+  @include paper;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  padding-top: 0;
+  display: flex;
+  flex-direction: column;
+  max-width: 900px;
+  min-height: 300px;
+
+  div.editor {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: inline-block;
+    padding: 40px;
+    @include styledScrollBarList;
+  }
+
+  .postHeader {
+    @include paper;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+  }
+
+  .headerLeft {
+    display: flex;
+    align-items: center;
+  }
+
+  .backIcon {
+    display: flex;
+    align-items: center;
+    border-radius: 5px;
+  }
+
+  .notFoundPage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+
+  .notFoundText {
+    font-size: 25px;
+    font-weight: 500;
+  }
+
+  .publishBtn {
+    margin-right: 10px;
+  }
+}
+
+:global(.modeDark) {
+  .Post {
+    background-color: #333;
+
+    * {
+      color: #eee;
+    }
+
+    *::selection {
+      background-color: #777;
+    }
+
+    .postHeader {
+      background-color: #2b2b2b;
+
+      svg {
+        fill: #eee;
+      }
+
+      * {
+        color: #eee;
+      }
+    }
+  }
+}

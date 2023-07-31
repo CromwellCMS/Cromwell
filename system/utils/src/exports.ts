@@ -4,10 +4,8 @@
 
 // export { rollupPluginCromwellFrontend } from './plugins/rollup';
 export { rollupConfigWrapper, rollupPluginCromwellFrontend } from './plugins/rollup';
-export {
-    getNodeModuleVersion, getNodeModuleNameWithVersion,
-    parseFrontendDeps, defaultFrontendDeps
-} from './shared';
+export { getNodeModuleVersion, getNodeModuleNameWithVersion, parseFrontendDeps, defaultFrontendDeps } from './shared';
 export { installer } from './installer';
 export { downloader } from './downloader';
 export { TPackage } from './types';
+export { resolvePublicFilePathToServe, fastifySendFile, vanillaSendFile } from './static';

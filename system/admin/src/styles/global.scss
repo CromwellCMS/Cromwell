@@ -1,0 +1,290 @@
+@import './variables.scss';
+@import './common.module.scss';
+
+* {
+  box-sizing: border-box;
+  font-family: 'Roboto', 'Apple-System', 'Arial', 'Helvetica', 'sans-serif';
+
+  &::before,
+  &::after {
+    box-sizing: border-box;
+  }
+}
+
+h1 {
+  font-size: 24px;
+  font-weight: 500;
+}
+
+h2 {
+  font-size: 20px;
+  font-weight: 500;
+}
+
+h3 {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+a {
+  display: block;
+  color: initial;
+  text-decoration: initial;
+}
+
+.MuiButtonBase-root.MuiIconButton-root {
+  color: #333;
+}
+
+div.react-grid-item.react-grid-placeholder {
+  background-color: rgb(162, 162, 162);
+  border-radius: 5px;
+}
+
+.modeDark {
+  div.react-grid-item.react-grid-placeholder {
+    background-color: #777;
+  }
+
+  div.Mui-disabled {
+    -webkit-text-fill-color: #aaa;
+  }
+
+  input.Mui-disabled {
+    -webkit-text-fill-color: #aaa;
+  }
+
+  .MuiChip-root {
+    background-color: #555;
+  }
+
+  .MuiInput-underline:before {
+    border-bottom: 1px solid #aaa;
+  }
+
+  .MuiInput-underline:hover:not(.Mui-disabled):before {
+    border-bottom: 2px solid #fff;
+  }
+
+  .MuiOutlinedInput-notchedOutline {
+    border-color: #aaa;
+  }
+
+  .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+    border-color: #fff;
+  }
+
+  *::selection {
+    background-color: #777;
+  }
+
+  .MuiPaper-root.MuiMenu-paper {
+    background-color: #333;
+
+    * {
+      color: #eee;
+    }
+  }
+
+  .MuiList-root.MuiMenu-list {
+    @include styledScrollBar;
+    background-color: #222;
+    border-radius: 6px;
+
+    * {
+      color: #eee;
+    }
+  }
+
+  .MuiPaginationItem-page.Mui-selected {
+    background-color: #222;
+  }
+
+  .MuiChip-root.MuiAutocomplete-tag {
+    background-color: #444;
+
+    * {
+      color: #eee;
+    }
+  }
+}
+
+.crw-text-editor {
+  .tc-wrap {
+    height: unset;
+  }
+
+  .image-tool--loading .image-tool__image {
+    background-color: transparent;
+    border: none;
+  }
+}
+
+.modeDark .crw-text-editor {
+  *::selection {
+    background-color: #777;
+  }
+
+  * {
+    color: #eee;
+  }
+
+  .ce-inline-toolbar {
+    background-color: #222;
+    border: 1px solid #222;
+  }
+
+  .ce-inline-tool:hover {
+    background-color: #444;
+  }
+
+  .ce-inline-toolbar__dropdown:hover {
+    background-color: #444;
+  }
+
+  .ce-conversion-tool:hover {
+    background-color: #444;
+  }
+
+  .ce-settings__button:hover {
+    background-color: #444;
+  }
+
+  .cdx-settings-button:hover {
+    background-color: #555;
+  }
+
+  .cdx-settings-button--active {
+    background-color: #444;
+  }
+
+  .ce-conversion-toolbar {
+    background-color: #222;
+    border: 1px solid #222;
+  }
+
+  .ce-toolbar__settings-btn {
+    background-color: #222;
+    border: 1px solid #222;
+    width: 22px;
+    height: 22px;
+    border-radius: 5px;
+    filter: invert(100%);
+  }
+
+  .codex-editor--narrow .ce-toolbox {
+    background-color: #222;
+  }
+
+  .ce-settings {
+    background-color: #222;
+    border: 1px solid #222;
+  }
+
+  .ce-inline-tool-input {
+    background-color: #222;
+    border: 1px solid #222;
+  }
+
+  .tc-row--selected {
+    background-color: #555;
+  }
+
+  .tc-popover {
+    background-color: #222;
+    border: 1px solid #222;
+  }
+
+  .ce-block--selected .ce-block__content,
+  .tc-cell--selected {
+    background-color: #666;
+  }
+
+  .tc-add-column:hover,
+  .tc-add-row:hover,
+  .tc-add-row:hover:before {
+    background-color: #666;
+  }
+
+  .tc-popover__item-icon {
+    color: #222;
+
+    * {
+      color: #222;
+    }
+  }
+
+  .tc-row--selected:after {
+    background-color: #777;
+  }
+
+  .tc-toolbox__toggler svg {
+    background-color: #fff;
+    border-radius: 5px;
+    color: #333;
+
+    * {
+      color: #333;
+    }
+  }
+
+  .ce-code__textarea {
+    background-color: #222;
+  }
+
+  .ce-conversion-tool svg {
+    fill: #333;
+  }
+
+  .ce-toolbar {
+    background-color: #222;
+  }
+
+  .cdx-button {
+    background-color: #222;
+  }
+}
+
+body .ct {
+  z-index: 99;
+}
+
+// body,
+// #root{
+//     overflow: hidden;
+// }
+
+div.MuiToolbar-regular {
+  min-height: 50px;
+}
+
+.MuiPickersDay-daySelected p {
+  color: #fff;
+}
+
+.fontSize {
+  position: relative;
+}
+
+.chart {
+  text {
+    font-family: 'Untitled Sans', sans-serif;
+  }
+}
+
+.visx-axis-tick {
+  text {
+    font-size: 12px;
+    font-weight: 400;
+    fill: #666666;
+  }
+}
+
+#headlessui-portal-root {
+  position: relative;
+  z-index: 1102;
+}
+
+body p + p {
+  margin-top: unset;
+}

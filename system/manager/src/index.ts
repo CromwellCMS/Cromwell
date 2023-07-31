@@ -4,8 +4,14 @@ import { readCMSConfigSync } from '@cromwell/core-backend/dist/helpers/cms-setti
 const cmsConfig = readCMSConfigSync();
 setStoreItem('cmsSettings', cmsConfig);
 
-export { startSystem, startServiceByName, closeServiceByName, 
-    closeServiceManagerByName, shutDownSystem, getServicesStatus } from './managers/baseManager';
+export {
+  startSystem,
+  startServiceByName,
+  closeServiceByName,
+  closeServiceAndManagerByName,
+  shutDownSystem,
+  getServicesStatus,
+} from './managers/baseManager';
 export { buildTask } from './tasks/buildTask';
 export { checkModules } from './tasks/checkModules';
 export { serviceNames, TServiceNames } from './constants';

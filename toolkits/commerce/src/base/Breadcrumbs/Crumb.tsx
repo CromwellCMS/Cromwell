@@ -8,7 +8,6 @@ import { BreadcrumbsProps } from './Breadcrumbs';
 import styles from './Breadcrumbs.module.scss';
 import { DefaultBreadcrumb } from './DefaultElements';
 
-
 /** @internal */
 export const Crumb = (props: {
   crumb: TProductCategory;
@@ -22,16 +21,8 @@ export const Crumb = (props: {
   const link = props.link ?? useCategoryLink(crumb, breadcrumbsProps.getBreadcrumbLink);
 
   return (
-    <Link
-      key={crumb.id}
-      href={link}
-      className={clsx(classes?.link)}
-    >
-      <BreadcrumbComp
-        className={clsx(styles.breadcrumb, classes?.breadcrumb)}
-        label={crumb.name ?? ''}
-        icon={icon}
-      />
+    <Link key={crumb.id} href={link} className={clsx(classes?.link)}>
+      <BreadcrumbComp className={clsx(styles.breadcrumb, classes?.breadcrumb)} label={crumb.name ?? ''} icon={icon} />
     </Link>
-  )
-}
+  );
+};

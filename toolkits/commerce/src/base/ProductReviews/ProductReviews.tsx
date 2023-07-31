@@ -13,6 +13,7 @@ import clsx from 'clsx';
 import { useRouter } from 'next/router';
 import React, { useEffect, useRef } from 'react';
 
+import { getNotifier } from '../../helpers/notifier';
 import { TBaseAlert } from '../shared/Alert';
 import { TBaseButton } from '../shared/Button';
 import { TBaseRating } from '../shared/Rating';
@@ -23,9 +24,22 @@ import { ReviewForm, ReviewFormProps } from './ReviewForm';
 import { ReviewItem, ReviewItemProps } from './ReviewItem';
 
 export type ProductReviewsProps = {
-  classes?: Partial<Record<'root' | 'ReviewForm' | 'reviewFormTitle' | 'reviewInput'
-    | 'submitBtnWrapper' | 'ReviewItem' | 'itemHeader' | 'itemUsername' | 'itemCreateDate'
-    | 'itemTitle' | 'itemDescription', string>>;
+  classes?: Partial<
+    Record<
+      | 'root'
+      | 'ReviewForm'
+      | 'reviewFormTitle'
+      | 'reviewInput'
+      | 'submitBtnWrapper'
+      | 'ReviewItem'
+      | 'itemHeader'
+      | 'itemUsername'
+      | 'itemCreateDate'
+      | 'itemTitle'
+      | 'itemDescription',
+      string
+    >
+  >;
 
   elements?: {
     Title?: React.ComponentType;
@@ -42,8 +56,8 @@ export type ProductReviewsProps = {
     Button?: TBaseButton;
     Rating?: TBaseRating;
     TextField?: TBaseTextField;
-    Tooltip?: TBaseTooltip
-  }
+    Tooltip?: TBaseTooltip;
+  };
 
   text?: {
     writeReview?: string;
@@ -54,7 +68,7 @@ export type ProductReviewsProps = {
     submitButton?: string;
     failedToSubmit?: string;
     submitSuccess?: string;
-  }
+  };
 
   /**
    * Target product's ID. Required
@@ -70,10 +84,15 @@ export type ProductReviewsProps = {
   notifier?: TCromwellNotify;
 
   /**
-  * Disable editing of inner blocks in Theme editor 
-  */
-  disableEdit?: boolean
-}
+   * Disable editing of inner blocks in Theme editor
+   */
+  disableEdit?: boolean;
+
+  /**
+   * Hide "Write review" form.
+   */
+  disableWriteReview?: boolean;
+};
 
 /** @internal */
 type TReviewListItemProps = TListItemProps<TProductReview, ProductReviewsProps>;
@@ -81,24 +100,25 @@ type TReviewListItemProps = TListItemProps<TProductReview, ProductReviewsProps>;
 /** @internal */
 const ListItem = (props: TReviewListItemProps) => {
   const Comp = props.listItemProps?.elements?.ReviewItem ?? ReviewItem;
-  return <Comp data={props.data} key={props.data?.id} parentProps={props.listItemProps!} />
-}
+  return <Comp data={props.data} key={props.data?.id} parentProps={props.listItemProps!} />;
+};
 
 /**
  * Displays customer reviews of a product. Fetches data client-side
  */
 export function ProductReviews(props: ProductReviewsProps) {
-  const { productId, listProps, notifier, elements, classes, disableEdit } = props;
+  const { productId, listProps, notifier = getNotifier(), elements, classes, disableEdit, disableWriteReview } = props;
   const reviewsInst = useRef<TCromwellBlock<TCList> | undefined>();
   const client = getGraphQLClient();
   const router = useRouter();
   const Form = elements?.ReviewForm ?? ReviewForm;
-  const Title = elements?.Title ?? (() => (
-    <CText id="ccom_product_reviews_title"
-      className={styles.reviewsTitle}
-      editorHidden={disableEdit}
-    >Customer reviews</CText>
-  ));
+  const Title =
+    elements?.Title ??
+    (() => (
+      <CText id="ccom_product_reviews_title" className={styles.reviewsTitle} editorHidden={disableEdit}>
+        Customer reviews
+      </CText>
+    ));
 
   useEffect(() => {
     const list: TCList | undefined = reviewsInst.current?.getContentInstance();
@@ -108,19 +128,20 @@ export function ProductReviews(props: ProductReviewsProps) {
   }, [router?.asPath]);
 
   if (!productId) {
-    console.error('ccom_ProductReviews: you must provide productId prop')
+    console.error('ccom_ProductReviews: you must provide productId prop');
     return null;
   }
 
   return (
-    <CContainer id="ccom_product_reviews_block"
+    <CContainer
+      id="ccom_product_reviews_block"
       className={clsx(styles.ProductReviews, classes?.root)}
       editorHidden={disableEdit}
     >
       <Title />
       <CContainer id="ccom_product_reviews_list_container" editorHidden={disableEdit}>
         <CList<TProductReview>
-          id={"ccom_product_reviews_list"}
+          id={'ccom_product_reviews_list'}
           ListItem={ListItem}
           listItemProps={props}
           usePagination
@@ -129,23 +150,23 @@ export function ProductReviews(props: ProductReviewsProps) {
           disableCaching
           noDataLabel={'No reviews at the moment. Be the first to leave one!'}
           pageSize={10}
-          blockRef={(block) => reviewsInst.current = block}
-          loader={async (params) => {
-            return client.getFilteredProductReviews({
-              pagedParams: params,
+          blockRef={(block) => (reviewsInst.current = block)}
+          loader={async ({ pagedParams }) => {
+            return client.getProductReviews({
+              pagedParams,
               filterParams: {
                 productId,
                 approved: true,
-              }
+              },
             });
           }}
           elements={{
             pagination: elements?.Pagination,
           }}
-          {...(listProps ?? {})}
+          {...((listProps as Partial<TCListProps<TProductReview, TReviewListItemProps>>) ?? {})}
         />
-        <Form productId={productId} notifier={notifier} parentProps={props} />
+        {!disableWriteReview && <Form productId={productId} notifier={notifier} parentProps={props} />}
       </CContainer>
     </CContainer>
-  )
+  );
 }

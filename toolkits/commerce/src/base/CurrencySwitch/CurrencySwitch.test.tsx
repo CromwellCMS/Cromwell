@@ -8,22 +8,21 @@ jest.mock('@cromwell/core-frontend', () => {
     ...originalModule,
     getGraphQLClient: () => {
       return {
-        getAttributes: jest.fn().mockImplementation(async () => [])
-      }
+        getAttributes: jest.fn().mockImplementation(async () => ({ elements: [] })),
+      };
     },
     getCStore: () => {
       return originalModule.getCStore({ apiClient: {} });
     },
     CContainer: (props) => props.children,
     CText: (props) => props.children,
-  }
+  };
 });
 
 import { CurrencySwitch } from './CurrencySwitch';
 
 describe('CurrencySwitch', () => {
-
-  it("renders currencies", async () => {
+  it('renders currencies', async () => {
     const settings = getStoreItem('cmsSettings');
     setStoreItem('cmsSettings', {
       ...(settings ?? {}),
@@ -33,12 +32,12 @@ describe('CurrencySwitch', () => {
           title: '_test1_',
           tag: '_test1_',
           id: '1',
-        }
-      ]
+        },
+      ],
     });
 
     render(<CurrencySwitch />);
 
     await screen.findByText('_test1_');
   });
-})
+});

@@ -2,34 +2,37 @@ import { getServerBuildMonitorPath } from '@cromwell/core-backend';
 import { Worker } from 'worker_threads';
 
 const monitorPath = getServerBuildMonitorPath();
-if (!monitorPath) throw new Error('Could not define monitor build path')
-
-const worker = new Worker(monitorPath);
+if (!monitorPath) throw new Error('Could not define monitor build path');
+let worker: Worker;
 
 export const getSysInfo = async () => {
-    return new Promise(done => {
-        worker.on('message', (message) => {
-            if (message.type === 'sysInfo') {
-                done(message.info)
-            }
-        });
+  if (!worker) worker = new Worker(monitorPath);
 
-        worker.postMessage({
-            command: 'getSysInfo'
-        });
+  return new Promise((done) => {
+    worker.on('message', (message) => {
+      if (message.type === 'sysInfo') {
+        done(message.info);
+      }
     });
-}
+
+    worker.postMessage({
+      command: 'getSysInfo',
+    });
+  });
+};
 
 export const getSysUsageInfo = async () => {
-    return new Promise(done => {
-        worker.on('message', (message) => {
-            if (message.type === 'usageInfo') {
-                done(message.info)
-            }
-        });
+  if (!worker) worker = new Worker(monitorPath);
 
-        worker.postMessage({
-            command: 'getUsageInfo'
-        });
+  return new Promise((done) => {
+    worker.on('message', (message) => {
+      if (message.type === 'usageInfo') {
+        done(message.info);
+      }
     });
-}
+
+    worker.postMessage({
+      command: 'getUsageInfo',
+    });
+  });
+};

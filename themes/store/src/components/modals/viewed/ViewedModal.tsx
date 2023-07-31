@@ -14,25 +14,22 @@ import styles from './ViewedModal.module.scss';
 export const ViewedModal = observer(() => {
   const handleClose = () => {
     appState.isWatchedOpen = false;
-  }
+  };
 
   return (
-    <Modal className={clsx(commonStyles.center)}
+    <Modal
+      className={clsx(commonStyles.center)}
       open={appState.isWatchedOpen}
       onClose={handleClose}
-      blurSelector={"#CB_root"}
+      blurSelector={'#CB_root'}
     >
       <div className={clsx(styles.ViewedModal)}>
-        <IconButton
-          aria-label="Close recently viewed items"
-          onClick={handleClose} className={styles.closeBtn}>
+        <IconButton aria-label="Close recently viewed items" onClick={handleClose} className={styles.closeBtn}>
           <CloseIcon />
         </IconButton>
         <h3 className={styles.modalTitle}>Viewed Items</h3>
-        <MuiViewedItems elements={{ ProductCard }}
-          classes={{ root: styles.list }}
-        />
+        <MuiViewedItems elements={{ ProductCard }} classes={{ root: styles.list }} />
       </div>
     </Modal>
-  )
+  );
 });

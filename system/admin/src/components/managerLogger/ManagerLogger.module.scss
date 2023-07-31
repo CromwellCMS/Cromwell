@@ -1,0 +1,45 @@
+.notification {
+  display: flex;
+  margin: 0;
+  padding: 0;
+}
+.notificationLink {
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+.logModal {
+  width: 600px;
+  height: 500px;
+  max-height: 100vh;
+  max-width: 100vw;
+  display: flex;
+  flex-direction: column;
+  background-color: #111;
+  padding: 10px;
+  // border-radius: 10px;
+  outline: none;
+  color: #fff;
+  overflow: auto;
+  border: 1px solid #666;
+
+  .logModalContent {
+    width: 100%;
+    height: auto;
+    word-break: break-all;
+  }
+
+  p {
+    margin-bottom: 10px;
+  }
+
+  .logList {
+    background-color: #fff;
+    border-radius: 10px;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border: 1px solid #ddd;
+  }
+}

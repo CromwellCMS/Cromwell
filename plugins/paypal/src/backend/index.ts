@@ -4,7 +4,7 @@ import { pluginName } from '../constants';
 import { createPayment } from './actions/create-payment.action';
 
 registerAction({
-    pluginName,
-    actionName: 'create_payment',
-    action: createPayment,
+  pluginName,
+  actionName: 'create_payment',
+  action: createPayment,
 });

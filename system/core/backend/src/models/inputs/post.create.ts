@@ -4,22 +4,21 @@ import { Field, InputType, Int } from 'type-graphql';
 import { CustomDateScalar } from '../objects/custom-date.scalar';
 import { BasePageInput } from './base-page.input';
 
-@InputType({ description: "New Post data" })
+@InputType({ description: 'New Post data' })
 export class CreatePost extends BasePageInput implements TPostInput {
-
   @Field(() => String, { nullable: true })
   title: string;
 
-  @Field(type => Int)
+  @Field((type) => Int)
   authorId: number;
 
   @Field(() => String, { nullable: true })
   mainImage?: string;
 
-  @Field(type => String, { nullable: true })
+  @Field((type) => String, { nullable: true })
   readTime?: string | null;
 
-  @Field(type => [Number], { nullable: true })
+  @Field((type) => [Number], { nullable: true })
   tagIds?: number[] | null;
 
   @Field(() => String, { nullable: true })
@@ -28,7 +27,7 @@ export class CreatePost extends BasePageInput implements TPostInput {
   @Field(() => String, { nullable: true })
   delta: string;
 
-  @Field(type => String, { nullable: true })
+  @Field((type) => String, { nullable: true })
   excerpt?: string | null;
 
   @Field(() => Boolean, { nullable: true })
@@ -37,6 +36,6 @@ export class CreatePost extends BasePageInput implements TPostInput {
   @Field(() => Boolean, { nullable: true })
   featured?: boolean;
 
-  @Field(type => CustomDateScalar, { nullable: true })
+  @Field((type) => CustomDateScalar, { nullable: true })
   publishDate?: Date | null;
 }

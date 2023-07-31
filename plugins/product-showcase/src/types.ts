@@ -1,3 +1,3 @@
 export type TSettings = {
-    size?: number;
-}
+  size?: number;
+};

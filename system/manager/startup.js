@@ -1,25 +1,27 @@
 const fs = require('fs-extra');
 const { resolve } = require('path');
 const { execSync } = require('child_process');
-const { getUtilsBuildDir, getUtilsDir, getRendererBuildDir, getRendererDir }
-  = require('@cromwell/core-backend/dist/helpers/paths');
+const {
+  getUtilsBuildDir,
+  getUtilsDir,
+  getRendererBuildDir,
+  getRendererDir,
+} = require('@cromwell/core-backend/dist/helpers/paths');
 
 const localProjectRootDir = resolve(__dirname);
 const buildScriptPath = resolve(localProjectRootDir, 'build/index.js');
 
 /**
-  * @scriptName
-  * production
-  * development
-  * check - build if previous build does not exist
-  * buildService - build manager service
-  * build - build all services
-  * winDev - start dev environment in Windows OS
-  */
+ * @scriptName
+ * production
+ * development
+ * check - build if previous build does not exist
+ * buildService - build manager service
+ * build - build all services
+ */
 const scriptName = process.argv[2];
 
 const main = async () => {
-
   const utilsDir = getUtilsDir();
   const utilsBuildDir = getUtilsBuildDir();
 
@@ -45,6 +47,6 @@ const main = async () => {
   await startSystem({
     scriptName: scriptName,
   });
-}
+};
 
 main();

@@ -1,18 +1,10 @@
 {
-    "version": "independent",
-    "command": {
-        "publish": {
-            "ignoreChanges": [
-                "*.md"
-            ],
-            "message": "chore(release): publish"
-        }
-    },
-    "packages": [
-        "plugins/*",
-        "system/*",
-        "system/core/*",
-        "themes/*",
-        "toolkits/*"
-    ]
+  "version": "independent",
+  "command": {
+    "publish": {
+      "ignoreChanges": ["*.md"],
+      "message": "chore(release): publish"
+    }
+  },
+  "packages": ["plugins/*", "system/*", "system/core/*", "themes/*", "toolkits/*"]
 }

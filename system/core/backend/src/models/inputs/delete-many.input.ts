@@ -3,10 +3,9 @@ import { Field, InputType, Int } from 'type-graphql';
 
 @InputType()
 export class DeleteManyInput implements TDeleteManyInput {
+  @Field(() => [Int])
+  ids: number[];
 
-    @Field(() => [Int])
-    ids: number[];
-
-    @Field(() => Boolean)
-    all?: boolean;
+  @Field(() => Boolean)
+  all?: boolean;
 }

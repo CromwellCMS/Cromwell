@@ -1,23 +1,21 @@
 {
-    "out": "../../docs/api",
-    "exclude": [
-        "*.(spec|test).ts",
-        "*.(spec|test).tsx",
-        "**/es/*",
-        "**/dist/*",
-        "**/node_modules/*",
-        "**/build/*",
-        "**/.cromwell/*",
-        "**/frontend/src/declarations"
-    ],
-    "gitRevision": "master",
-    "externalPattern": "**/node_modules/**",
-    "excludePrivate": true,
-    "excludeInternal": true,
-    "excludeExternals": true,
-    "external-modulemap": ".*system\/core\/([^\/]+)\/.*",
-    "entryPoints": [
-        "../../../system/core"
-    ],
-    "tsconfig": "./apiTsconfig.json"
+  "out": "../../docs/api",
+  "exclude": [
+    "*.(spec|test).ts",
+    "*.(spec|test).tsx",
+    "**/es/*",
+    "**/dist/*",
+    "**/node_modules/*",
+    "**/build/*",
+    "**/.cromwell/*",
+    "**/frontend/src/declarations"
+  ],
+  "gitRevision": "master",
+  "externalPattern": "**/node_modules/**",
+  "excludePrivate": true,
+  "excludeInternal": true,
+  "excludeExternals": true,
+  "external-modulemap": ".*system/core/([^/]+)/.*",
+  "entryPoints": ["../../../system/core"],
+  "tsconfig": "./apiTsconfig.json"
 }

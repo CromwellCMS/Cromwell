@@ -1,31 +1,20 @@
 {
-    "compilerOptions": {
-        "module": "ESNext",
-        "target": "ES2019",
-        "baseUrl": ".",
-        "strict": true,
-        "experimentalDecorators": true,
-        "emitDecoratorMetadata": true,
-        "strictPropertyInitialization": false,
-        "noImplicitAny": false,
-        "allowJs": true,
-        "resolveJsonModule": true,
-        "esModuleInterop": true,
-        "moduleResolution": "node",
-        "skipLibCheck": true,
-        "types": [
-            "node",
-            "jest",
-        ],
-    },
-    "include": [
-        "**/*.ts",
-        "../src/**/*.ts"
-    ],
-    "exclude": [
-        "node_modules",
-        ".cromwell",
-        "build",
-        "migration"
-    ],
+  "compilerOptions": {
+    "module": "ESNext",
+    "target": "ES2019",
+    "baseUrl": ".",
+    "strict": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "strictPropertyInitialization": false,
+    "noImplicitAny": false,
+    "allowJs": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "skipLibCheck": true,
+    "types": ["node", "jest"]
+  },
+  "include": ["**/*.ts", "../src/**/*.ts"],
+  "exclude": ["node_modules", ".cromwell", "build", "migration"]
 }

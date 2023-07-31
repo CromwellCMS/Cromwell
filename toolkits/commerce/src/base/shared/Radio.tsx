@@ -3,17 +3,23 @@ import React, { useRef } from 'react';
 
 /** @internal */
 export type TRadioProps = {
-  options?: ({
-    value: string | number | undefined;
-    label: string;
-  } | string | number | undefined)[];
+  options?: (
+    | {
+        value: string | number | undefined;
+        label: string;
+      }
+    | string
+    | number
+    | undefined
+  )[];
   onChange?: (event: React.ChangeEvent<HTMLInputElement>, value: string | number | undefined) => any;
   style?: React.CSSProperties;
   className?: string;
   name?: string;
   value?: string;
   id?: string;
-}
+  children?: React.ReactNode;
+};
 /** @internal */
 export type TBaseRadio = React.ComponentType<TRadioProps>;
 
@@ -30,7 +36,8 @@ export const BaseRadio = (props: TRadioProps) => {
         const optionId = getRandStr(10);
         return (
           <div key={value}>
-            <input type="radio"
+            <input
+              type="radio"
               id={optionId}
               name={name ?? id.current}
               checked={props.value === value}
@@ -38,8 +45,8 @@ export const BaseRadio = (props: TRadioProps) => {
             />
             <label htmlFor={optionId}>{label}</label>
           </div>
-        )
+        );
       })}
     </div>
-  )
-}
+  );
+};

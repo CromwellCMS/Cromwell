@@ -19,7 +19,7 @@ const ProductQuickView = observer(() => {
 
   const handleClose = () => {
     appState.isQuickViewOpen = false;
-  }
+  };
 
   const getData = async () => {
     setIsLoading(true);
@@ -27,16 +27,16 @@ const ProductQuickView = observer(() => {
       if (!appState.quickViewProductId) return;
 
       const [attrs, prod] = await Promise.all([
-        getGraphQLClient()?.getAttributes(),
-        getGraphQLClient()?.getProductById(appState.quickViewProductId)
-      ])
+        getGraphQLClient()?.getAttributes({ pagedParams: { pageSize: 1000 } }),
+        getGraphQLClient()?.getProductById(appState.quickViewProductId),
+      ]);
       if (prod) setProduct(prod);
-      if (attrs) setAttributes(attrs);
+      if (attrs?.elements) setAttributes(attrs.elements);
     } catch (e) {
       console.error(e);
     }
     setIsLoading(false);
-  }
+  };
 
   useEffect(() => {
     if (appState.isQuickViewOpen) {
@@ -49,29 +49,19 @@ const ProductQuickView = observer(() => {
       className={commonStyles.center}
       open={appState.isQuickViewOpen}
       onClose={handleClose}
-      blurSelector={"#CB_root"}
+      blurSelector={'#CB_root'}
     >
       <div className={styles.ProductQuickView}>
-        <IconButton
-          aria-label="Open product quick view"
-          onClick={handleClose} className={styles.closeBtn}>
+        <IconButton aria-label="Open product quick view" onClick={handleClose} className={styles.closeBtn}>
           <CloseIcon />
         </IconButton>
         <div className={styles.list}>
-          {isLoading && (
-            <LoadBox />
-          )}
-          {!isLoading && (
-            <ProductDetails
-              compact={true}
-              product={product}
-              attributes={attributes}
-            />
-          )}
+          {isLoading && <LoadBox />}
+          {!isLoading && <ProductDetails compact={true} product={product} attributes={attributes} />}
         </div>
       </div>
     </Modal>
-  )
-})
+  );
+});
 
 export default ProductQuickView;

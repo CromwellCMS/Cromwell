@@ -59,4 +59,4 @@ export const defaultCss = `
 import '@cromwell/core-frontend/dist/_index.css';
 import '@cromwell/renderer/build/editor-styles.css';
 import 'pure-react-carousel/dist/react-carousel.es.css';
-import 'react-image-lightbox/style.css';`
+import 'react-image-lightbox/style.css';`;

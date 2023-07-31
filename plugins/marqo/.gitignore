@@ -1,0 +1,5 @@
+/.cromwell
+/build
+/public
+node_modules/
+*.tsbuildinfo

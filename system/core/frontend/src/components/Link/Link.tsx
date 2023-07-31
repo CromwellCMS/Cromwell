@@ -3,28 +3,25 @@ import { isValidElementType } from 'react-is';
 import React from 'react';
 
 type TLinkProps = React.AnchorHTMLAttributes<HTMLAnchorElement> & {
-    href?: string;
-    children?: React.ReactNode;
-    className?: string;
-}
+  href?: string;
+  children?: React.ReactNode;
+  className?: string;
+};
 
 export const Link = (props: TLinkProps) => {
-    const NextLink = getStore().nodeModules?.modules?.['next/link']?.default;
-    const { href, children, ...anchorProps } = props;
+  const NextLink = getStore().nodeModules?.modules?.['next/link']?.default;
+  const { href, children, ...anchorProps } = props;
 
-    if (href && NextLink && isValidElementType(NextLink)) {
-        return (
-            <NextLink
-                href={href}
-            >
-                <a {...(anchorProps ?? {})}
-                >{children ?? ''}</a>
-            </NextLink>
-        )
-    }
+  if (href && NextLink && isValidElementType(NextLink)) {
     return (
-        <a href={href}
-            {...(anchorProps ?? {})}
-        >{children ?? ''}</a>
-    )
-}
+      <NextLink href={href} {...(anchorProps ?? {})}>
+        {children ?? ''}
+      </NextLink>
+    );
+  }
+  return (
+    <a href={href} {...(anchorProps ?? {})}>
+      {children ?? ''}
+    </a>
+  );
+};

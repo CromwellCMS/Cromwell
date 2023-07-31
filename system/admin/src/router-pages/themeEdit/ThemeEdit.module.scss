@@ -1,0 +1,25 @@
+@import '../../styles/common.module.scss';
+
+.ThemeEdit {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  margin: 0 auto;
+  min-height: 300px;
+  padding: 15px;
+  padding-left: 40px;
+}
+
+.header {
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+.pageBuilder {
+  transition-duration: 0.3s;
+  transition-property: opacity;
+  height: 100%;
+  width: 100%;
+}

@@ -7,27 +7,26 @@ jest.mock('@cromwell/core-frontend', () => {
     ...originalModule,
     getGraphQLClient: () => {
       return {
-        getAttributes: jest.fn().mockImplementation(async () => [])
-      }
+        getAttributes: jest.fn().mockImplementation(async () => ({ elements: [] })),
+      };
     },
     getCStore: () => {
       return originalModule.getCStore({ apiClient: {} });
     },
     useCart: () => {
-      return originalModule.useCart({ cstoreOptions: { apiClient: {} } })
+      return originalModule.useCart({ cstoreOptions: { apiClient: {} } });
     },
     useWishlist: () => {
-      return originalModule.useWishlist({ cstoreOptions: { apiClient: {} } })
+      return originalModule.useWishlist({ cstoreOptions: { apiClient: {} } });
     },
-  }
+  };
 });
 
 import { AppPropsContext } from '@cromwell/core-frontend';
 import { CategoryList } from './CategoryList';
 
 describe('CategoryList', () => {
-
-  it("renders list", async () => {
+  it('renders list', async () => {
     render(
       <AppPropsContext.Provider
         value={{
@@ -35,24 +34,30 @@ describe('CategoryList', () => {
             cmsProps: {
               defaultPages: {
                 product: 'product/[slug]',
-              }
-            }
+              },
+            },
           },
-        }}><CategoryList
+        }}
+      >
+        <CategoryList
           data={{
             firstPage: {
-              elements: [{
-                id: 1,
-                name: '_test1_'
-              }]
+              elements: [
+                {
+                  id: 1,
+                  name: '_test1_',
+                },
+              ],
             },
             category: {
               id: 2,
-              name: '_test2_'
-            }
-          }} />
-      </AppPropsContext.Provider>);
+              name: '_test2_',
+            },
+          }}
+        />
+      </AppPropsContext.Provider>,
+    );
 
     await screen.findByText('_test1_');
   });
-})
+});

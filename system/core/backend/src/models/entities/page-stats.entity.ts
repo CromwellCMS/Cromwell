@@ -3,30 +3,26 @@ import { BaseEntity, Column, Entity, Index, PrimaryGeneratedColumn } from 'typeo
 
 @Entity()
 export class PageStats extends BaseEntity implements TPageStats {
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @PrimaryGeneratedColumn()
-    id: number;
+  @Column({ type: 'varchar', length: 255 })
+  pageRoute: string;
 
-    @Column({ type: "varchar", length: 255 })
-    pageRoute: string;
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  pageName?: string;
 
-    @Column({ type: "varchar", length: 255, nullable: true })
-    pageName?: string;
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  pageId?: string;
 
-    @Column({ type: "varchar", length: 255, nullable: true })
-    pageId?: string;
+  @Column({ type: 'integer', nullable: true })
+  views: number;
 
-    @Column({ type: "integer", nullable: true })
-    views: number;
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  @Index()
+  slug?: string;
 
-    @Column({ type: "varchar", length: 255, nullable: true })
-    @Index()
-    slug?: string;
-
-    @Column({ type: "varchar", length: 255, nullable: true })
-    @Index()
-    entityType?: EDBEntity | string;
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  @Index()
+  entityType?: EDBEntity | string;
 }
-
-
-

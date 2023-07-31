@@ -26,10 +26,7 @@ const ProductCategory: TPageWithLayout = () => {
             <MuiCategorySort />
           </div>
         </CContainer>
-        <EntityHead
-          entity={category}
-          useFallback
-        />
+        <EntityHead entity={category} useFallback />
         <MuiCategoryList
           listProps={{ useShowMoreButton: true }}
           elements={{
@@ -38,24 +35,17 @@ const ProductCategory: TPageWithLayout = () => {
         />
         <CContainer id="category_14" style={{ paddingLeft: '20px' }}>
           {category?.description && (
-            <div
-              className={styles.description}
-              dangerouslySetInnerHTML={{ __html: category.description }}
-            ></div>
+            <div className={styles.description} dangerouslySetInnerHTML={{ __html: category.description }}></div>
           )}
         </CContainer>
       </CContainer>
     </CContainer>
   );
-}
+};
 
 ProductCategory.getLayout = (page: ReactElement) => {
-  return (
-    <Layout>
-      {page}
-    </Layout >
-  )
-}
+  return <Layout>{page}</Layout>;
+};
 
 export const getStaticProps = CategoryFilter.withGetProps(MuiCategoryList.withGetProps());
 
@@ -64,6 +54,6 @@ export const getStaticPaths = () => {
     paths: [],
     fallback: 'blocking',
   };
-}
+};
 
 export default ProductCategory;

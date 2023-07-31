@@ -1,115 +1,206 @@
-import { EDBEntity, GraphQLPaths, TAuthRole, TPagedList, TCustomEntity } from '@cromwell/core';
 import {
-    DeleteManyInput,
-    entityMetaRepository,
-    CustomEntityInput,
-    PagedParamsInput,
-    PagedCustomEntity,
-    CustomEntity,
-    CustomEntityRepository,
-    CustomEntityFilterInput,
+  EDBEntity,
+  GraphQLPaths,
+  matchPermissions,
+  TAdminCustomEntity,
+  TCustomEntity,
+  TPagedList,
+  TPermissionName,
+} from '@cromwell/core';
+import {
+  CustomEntity,
+  CustomEntityFilterInput,
+  CustomEntityInput,
+  CustomEntityRepository,
+  DeleteManyInput,
+  entityMetaRepository,
+  PagedCustomEntity,
+  PagedParamsInput,
+  TGraphQLContext,
 } from '@cromwell/core-backend';
+import { HttpException, HttpStatus } from '@nestjs/common';
 import { GraphQLJSONObject } from 'graphql-type-json';
-import { Arg, Authorized, FieldResolver, Int, Mutation, Query, Resolver, Root } from 'type-graphql';
+import { throttle } from 'throttle-debounce';
+import { Arg, Ctx, FieldResolver, Int, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
-import { resetAllPagesCache } from '../helpers/reset-page';
-import { serverFireAction } from '../helpers/server-fire-action';
+import {
+  createWithFilters,
+  deleteManyWithFilters,
+  deleteWithFilters,
+  getByIdWithFilters,
+  getBySlugWithFilters,
+  getManyWithFilters,
+  updateWithFilters,
+} from '../helpers/data-filters';
+import { getDIService } from '../helpers/utils';
+import { CmsService } from '../services/cms.service';
 
 const getOneBySlugPath = GraphQLPaths.CustomEntity.getOneBySlug;
 const getOneByIdPath = GraphQLPaths.CustomEntity.getOneById;
-const getManyPath = GraphQLPaths.CustomEntity.getMany;
 const createPath = GraphQLPaths.CustomEntity.create;
 const updatePath = GraphQLPaths.CustomEntity.update;
 const deletePath = GraphQLPaths.CustomEntity.delete;
 const deleteManyPath = GraphQLPaths.CustomEntity.deleteMany;
-const getFilteredPath = GraphQLPaths.CustomEntity.getFiltered;
-const deleteManyFilteredPath = GraphQLPaths.CustomEntity.deleteManyFiltered;
+const getManyPath = GraphQLPaths.CustomEntity.getMany;
 const viewsKey: keyof TCustomEntity = 'views';
-
 
 @Resolver(CustomEntity)
 export class CustomEntityResolver {
+  private repository = getCustomRepository(CustomEntityRepository);
+  private cmsService = getDIService(CmsService);
 
-    private repository = getCustomRepository(CustomEntityRepository);
+  private customEntities: TAdminCustomEntity[] = [];
 
-    @Query(() => PagedCustomEntity)
-    async [getManyPath](@Arg("pagedParams", { nullable: true }) pagedParams?: PagedParamsInput<TCustomEntity>):
-        Promise<TPagedList<TCustomEntity>> {
-        return this.repository.getCustomEntities(pagedParams);
+  async checkPermissions(
+    entityType: string | undefined,
+    action: 'read' | 'create' | 'update' | 'delete',
+    ctx: TGraphQLContext,
+  ): Promise<TPermissionName[]> {
+    if (!entityType) {
+      throw new HttpException(`You must provide 'entityType' parameter for this request`, HttpStatus.BAD_REQUEST);
     }
 
-    @Query(() => PagedCustomEntity)
-    async [getFilteredPath](
-        @Arg("pagedParams", { nullable: true }) pagedParams?: PagedParamsInput<TCustomEntity>,
-        @Arg("filterParams", { nullable: true }) filterParams?: CustomEntityFilterInput,
-    ): Promise<TPagedList<TCustomEntity> | undefined> {
-        return this.repository.getFilteredCustomEntities(pagedParams, filterParams);
+    if (!this.customEntities.find((e) => e.entityType === entityType)) {
+      this.customEntities = (await this.cmsService.getAdminSettings()).customEntities ?? [];
+    } else {
+      // Async update to not slow down request
+      this.updateEntityConfig();
     }
 
-    @Query(() => CustomEntity)
-    async [getOneBySlugPath](@Arg("slug") slug: string): Promise<TCustomEntity | undefined> {
-        return this.repository.getCustomEntityBySlug(slug);
+    const entityConfig = this.customEntities.find((e) => e.entityType === entityType);
+    if (!entityConfig)
+      throw new HttpException(`Entity of type ${entityType} is not registered`, HttpStatus.BAD_REQUEST);
+
+    const permissions: TPermissionName[] = [];
+
+    // Anyone can read by default if no permissions specified
+    if (action === 'read') {
+      if (entityConfig.permissions?.read) {
+        permissions.push('read_custom_entities', entityConfig.permissions?.read as any);
+      } else return permissions;
+    }
+    // Other actions require permission
+    if (action === 'create') {
+      permissions.push(...['create_custom_entity', entityConfig.permissions?.create as any].filter(Boolean));
+    }
+    if (action === 'update') {
+      permissions.push(...['update_custom_entity', entityConfig.permissions?.update as any].filter(Boolean));
+    }
+    if (action === 'delete') {
+      permissions.push(...['delete_custom_entity', entityConfig.permissions?.delete as any].filter(Boolean));
     }
 
-    @Query(() => CustomEntity)
-    async [getOneByIdPath](@Arg("id", () => Int) id: number): Promise<TCustomEntity | undefined> {
-        return this.repository.getCustomEntityById(id);
-    }
+    if (!matchPermissions(ctx?.user, permissions)) throw new HttpException('Access denied.', HttpStatus.FORBIDDEN);
 
-    @Authorized<TAuthRole>("administrator")
-    @Mutation(() => CustomEntity)
-    async [createPath](@Arg("data") data: CustomEntityInput): Promise<TCustomEntity> {
-        const customEntity = await this.repository.createCustomEntity(data);
-        serverFireAction('create_custom_entity', customEntity);
-        resetAllPagesCache();
-        return customEntity;
-    }
+    return permissions;
+  }
 
-    @Authorized<TAuthRole>("administrator")
-    @Mutation(() => CustomEntity)
-    async [updatePath](@Arg("id", () => Int) id: number, @Arg("data") data: CustomEntityInput): Promise<TCustomEntity | undefined> {
-        const customEntity = await this.repository.updateCustomEntity(id, data);
-        serverFireAction('update_custom_entity', customEntity);
-        resetAllPagesCache();
-        return customEntity;
-    }
+  private updateEntityConfig = throttle(1000, () => {
+    setTimeout(async () => {
+      this.customEntities = (await this.cmsService.getAdminSettings()).customEntities ?? [];
+    }, 100);
+  });
 
-    @Authorized<TAuthRole>("administrator")
-    @Mutation(() => Boolean)
-    async [deletePath](@Arg("id", () => Int) id: number): Promise<boolean> {
-        const customEntity = await this.repository.deleteCustomEntity(id);
-        serverFireAction('delete_custom_entity', { id });
-        resetAllPagesCache();
-        return customEntity;
-    }
+  @Query(() => CustomEntity)
+  async [getOneByIdPath](
+    @Ctx() ctx: TGraphQLContext,
+    @Arg('entityType', () => String) entityType: string,
+    @Arg('id', () => Int) id: number,
+  ): Promise<TCustomEntity | undefined> {
+    const permissions = await this.checkPermissions(entityType, 'read', ctx);
+    const getAllPermissions = [...new Set([...permissions, 'read_custom_entities'])] as TPermissionName[];
+    return getByIdWithFilters('CustomEntity', ctx, permissions, getAllPermissions, id, (...args) =>
+      this.repository.getCustomEntityById(...args),
+    );
+  }
 
-    @Authorized<TAuthRole>("administrator")
-    @Mutation(() => Boolean)
-    async [deleteManyPath](@Arg("data") data: DeleteManyInput): Promise<boolean | undefined> {
-        const res = await this.repository.deleteMany(data);
-        resetAllPagesCache();
-        return res;
-    }
+  @Query(() => CustomEntity)
+  async [getOneBySlugPath](
+    @Ctx() ctx: TGraphQLContext,
+    @Arg('entityType', () => String) entityType: string,
+    @Arg('slug', () => String) slug: string,
+  ): Promise<TCustomEntity | undefined> {
+    const permissions = await this.checkPermissions(entityType, 'read', ctx);
+    const getAllPermissions = [...new Set([...permissions, 'read_custom_entities'])] as TPermissionName[];
+    return getBySlugWithFilters('CustomEntity', ctx, permissions, getAllPermissions, slug, (...args) =>
+      this.repository.getCustomEntityBySlug(...args),
+    );
+  }
 
-    @Authorized<TAuthRole>("administrator")
-    @Mutation(() => Boolean)
-    async [deleteManyFilteredPath](
-        @Arg("input") input: DeleteManyInput,
-        @Arg("filterParams", { nullable: true }) filterParams?: CustomEntityFilterInput,
-    ): Promise<boolean | undefined> {
-        const res = await this.repository.deleteManyFilteredCustomEntities(input, filterParams);
-        resetAllPagesCache();
-        return res;
-    }
+  @Query(() => PagedCustomEntity)
+  async [getManyPath](
+    @Ctx() ctx: TGraphQLContext,
+    @Arg('pagedParams', () => PagedParamsInput, { nullable: true }) pagedParams?: PagedParamsInput<TCustomEntity>,
+    @Arg('filterParams', () => CustomEntityFilterInput, { nullable: true }) filterParams?: CustomEntityFilterInput,
+  ): Promise<TPagedList<TCustomEntity> | undefined> {
+    const permissions = await this.checkPermissions(filterParams?.entityType, 'read', ctx);
+    const getAllPermissions = [...new Set([...permissions, 'read_custom_entities'])] as TPermissionName[];
+    return getManyWithFilters(
+      'CustomEntity',
+      ctx,
+      permissions,
+      getAllPermissions,
+      pagedParams,
+      filterParams,
+      (...args) => this.repository.getFilteredCustomEntities(...args),
+    );
+  }
 
-    @FieldResolver(() => GraphQLJSONObject, { nullable: true })
-    async customMeta(@Root() entity: CustomEntity, @Arg("keys", () => [String]) fields: string[]): Promise<any> {
-        return entityMetaRepository.getEntityMetaByKeys(EDBEntity.CustomEntity, entity.id, fields);
-    }
+  @Mutation(() => CustomEntity)
+  async [createPath](
+    @Ctx() ctx: TGraphQLContext,
+    @Arg('data', () => CustomEntityInput) data: CustomEntityInput,
+  ): Promise<TCustomEntity> {
+    const permissions = await this.checkPermissions(data?.entityType, 'create', ctx);
+    return createWithFilters('CustomEntity', ctx, permissions, data, (...args) =>
+      this.repository.createCustomEntity(...args),
+    );
+  }
 
-    @FieldResolver(() => Int, { nullable: true })
-    async [viewsKey](@Root() entity: CustomEntity): Promise<number | undefined> {
-        return this.repository.getEntityViews(entity.id, EDBEntity.CustomEntity);
-    }
+  @Mutation(() => CustomEntity)
+  async [updatePath](
+    @Ctx() ctx: TGraphQLContext,
+    @Arg('id', () => Int) id: number,
+    @Arg('data', () => CustomEntityInput) data: CustomEntityInput,
+  ): Promise<TCustomEntity | undefined> {
+    const permissions = await this.checkPermissions(data?.entityType, 'update', ctx);
+    return updateWithFilters('CustomEntity', ctx, permissions, data, id, (...args) =>
+      this.repository.updateCustomEntity(...args),
+    );
+  }
+
+  @Mutation(() => Boolean)
+  async [deletePath](
+    @Ctx() ctx: TGraphQLContext,
+    @Arg('entityType', () => String) entityType: string,
+    @Arg('id', () => Int) id: number,
+  ): Promise<boolean> {
+    const permissions = await this.checkPermissions(entityType, 'delete', ctx);
+    return deleteWithFilters('CustomEntity', ctx, permissions, id, (...args) =>
+      this.repository.deleteCustomEntity(...args),
+    );
+  }
+
+  @Mutation(() => Boolean)
+  async [deleteManyPath](
+    @Ctx() ctx: TGraphQLContext,
+    @Arg('input', () => DeleteManyInput) input: DeleteManyInput,
+    @Arg('filterParams', () => CustomEntityFilterInput, { nullable: true }) filterParams?: CustomEntityFilterInput,
+  ): Promise<boolean | undefined> {
+    const permissions = await this.checkPermissions(filterParams?.entityType, 'delete', ctx);
+    return deleteManyWithFilters('CustomEntity', ctx, permissions, input, filterParams, (...args) =>
+      this.repository.deleteManyFilteredCustomEntities(...args),
+    );
+  }
+
+  @FieldResolver(() => GraphQLJSONObject, { nullable: true })
+  async customMeta(@Root() entity: CustomEntity, @Arg('keys', () => [String]) fields: string[]): Promise<any> {
+    return entityMetaRepository.getEntityMetaByKeys(EDBEntity.CustomEntity, entity.id, fields);
+  }
+
+  @FieldResolver(() => Int, { nullable: true })
+  async [viewsKey](@Root() entity: CustomEntity): Promise<number | undefined> {
+    return this.repository.getEntityViews(entity.id, EDBEntity.CustomEntity);
+  }
 }

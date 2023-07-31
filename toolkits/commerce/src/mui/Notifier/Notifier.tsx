@@ -9,13 +9,15 @@ import { Notifier } from '../../helpers/notifier';
 export const NotifierWrapper = (props) => {
   return (
     <div className={styles.notifierContainer}>
-      <Alert severity={props.severity} className={styles.notifierAlert}>{props.children}</Alert>
+      <Alert severity={props.severity} className={styles.notifierAlert}>
+        {props.children}
+      </Alert>
     </div>
-  )
-}
+  );
+};
 
 export const muiNotifier = new Notifier({
   position: toastify.POSITION.TOP_RIGHT,
   className: styles.muiToast,
   Wrapper: NotifierWrapper,
-})
+});

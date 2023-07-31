@@ -2,31 +2,32 @@ import { TAttributeInput, TAttributeValue } from '@cromwell/core';
 import { Field, InputType } from 'type-graphql';
 import { BasePageInput } from './base-page.input';
 
-@InputType("AttributeInput")
+@InputType('AttributeInput')
 export class AttributeInput extends BasePageInput implements TAttributeInput {
-    @Field(type => String)
-    key: string;
+  @Field((type) => String)
+  key: string;
 
-    @Field(type => [AttributeValueInput])
-    values: AttributeValueInput[];
+  @Field((type) => String, { nullable: true })
+  title?: string | null;
 
-    @Field(type => String)
-    type: 'radio' | 'checkbox';
+  @Field((type) => [AttributeValueInput])
+  values: AttributeValueInput[];
 
-    @Field(type => String, { nullable: true })
-    icon?: string;
+  @Field((type) => String)
+  type: 'radio' | 'checkbox' | 'text_input';
 
-    @Field(type => Boolean, { nullable: true })
-    required?: boolean;
+  @Field((type) => String, { nullable: true })
+  icon?: string;
 
+  @Field((type) => Boolean, { nullable: true })
+  required?: boolean;
 }
 
-@InputType("AttributeValueInput")
+@InputType('AttributeValueInput')
 export class AttributeValueInput implements TAttributeValue {
-    @Field(type => String)
-    value: string;
+  @Field((type) => String)
+  value: string;
 
-    @Field(type => String, { nullable: true })
-    icon?: string;
-
+  @Field((type) => String, { nullable: true })
+  icon?: string;
 }

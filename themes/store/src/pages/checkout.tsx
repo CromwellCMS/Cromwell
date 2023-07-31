@@ -18,35 +18,38 @@ const CheckoutPage: TPageWithLayout = () => {
   const handleSignInOpen = () => {
     appState.signInFormType = 'sign-in';
     appState.isSignInOpen = true;
-  }
+  };
 
   const handleSignUpOpen = () => {
-    appState.signInFormType = 'sign-up'
+    appState.signInFormType = 'sign-up';
     appState.isSignInOpen = true;
-  }
+  };
 
   return (
     <CContainer className={commonStyles.content} id="checkout-1">
       <CContainer className={styles.CheckoutPage} id="checkout-2">
-        <CContainer className={styles.inputZone}
-          style={{ width: placedOrder ? '100%' : undefined }}
-          id="checkout-4"
-        >
+        <CContainer className={styles.inputZone} style={{ width: placedOrder ? '100%' : undefined }} id="checkout-4">
           <h1 className={styles.pageTitle}>Checkout</h1>
           {!userInfo && !placedOrder && (
             <div className={styles.signInBlock}>
-              <Button variant="outlined"
+              <Button
+                variant="outlined"
                 color="primary"
                 size="small"
                 className={styles.signInBtn}
                 onClick={handleSignInOpen}
-              >Sign in</Button>
-              <Button variant="outlined"
+              >
+                Sign in
+              </Button>
+              <Button
+                variant="outlined"
                 color="primary"
                 size="small"
                 className={styles.signInBtn}
                 onClick={handleSignUpOpen}
-              >Sign up</Button>
+              >
+                Sign up
+              </Button>
             </div>
           )}
           <CContainer className={styles.checkout} id="checkout-6">
@@ -115,14 +118,10 @@ const CheckoutPage: TPageWithLayout = () => {
       </CContainer>
     </CContainer>
   );
-}
+};
 
 CheckoutPage.getLayout = (page) => {
-  return (
-    <Layout>
-      {page}
-    </Layout >
-  )
-}
+  return <Layout>{page}</Layout>;
+};
 
 export default CheckoutPage;

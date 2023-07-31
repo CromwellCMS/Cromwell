@@ -1,8 +1,6 @@
-export type TSettings = {
-
-}
+export type TSettings = {};
 
 export interface NewsletterForm {
-    id: number;
-    email: string;
+  id: number;
+  email: string;
 }

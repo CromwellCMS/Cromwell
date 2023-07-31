@@ -1,23 +1,21 @@
 {
-    "out": "../../.generated-docs/toolkits",
-    "exclude": [
-        "*.(spec|test).ts",
-        "*.(spec|test).tsx",
-        "**/es/*",
-        "**/dist/*",
-        "**/node_modules/*",
-        "**/build/*",
-        "**/.cromwell/*",
-        "**/src/declarations"
-    ],
-    "gitRevision": "master",
-    "externalPattern": "**/node_modules/**",
-    "excludePrivate": true,
-    "excludeInternal": true,
-    "excludeExternals": true,
-    "external-modulemap": ".*toolkits\/([^\/]+)\/.*",
-    "entryPoints": [
-        "../../../toolkits"
-    ],
-    "tsconfig": "./apiTsconfig.json"
+  "out": "../../.generated-docs/toolkits",
+  "exclude": [
+    "*.(spec|test).ts",
+    "*.(spec|test).tsx",
+    "**/es/*",
+    "**/dist/*",
+    "**/node_modules/*",
+    "**/build/*",
+    "**/.cromwell/*",
+    "**/src/declarations"
+  ],
+  "gitRevision": "master",
+  "externalPattern": "**/node_modules/**",
+  "excludePrivate": true,
+  "excludeInternal": true,
+  "excludeExternals": true,
+  "external-modulemap": ".*toolkits/([^/]+)/.*",
+  "entryPoints": ["../../../toolkits"],
+  "tsconfig": "./apiTsconfig.json"
 }
