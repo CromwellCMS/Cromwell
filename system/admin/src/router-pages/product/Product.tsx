@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client';
-import { EDBEntity, TProduct } from '@cromwell/core';
+import { EDBEntity, removeUndefinedOrNull, TProduct } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
 import queryString from 'query-string';
 import React, { useState } from 'react';
@@ -8,9 +8,9 @@ import EntityEdit from '../../components/entity/entityEdit/EntityEdit';
 import { productListInfo, productPageInfo } from '../../constants/PageInfos';
 import { getCustomMetaFor, getCustomMetaKeysFor } from '../../helpers/customFields';
 import { Header } from './components/Header';
-import { useTabs } from './hooks/useTabs';
 import { PageContent } from './components/PageContent';
 import { ProductContext, TProductStore } from './contexts/Product';
+import { useTabs } from './hooks/useTabs';
 
 export default function ProductPage() {
   const [store, setStore] = useState<TProductStore>({
@@ -92,7 +92,9 @@ export default function ProductPage() {
           );
         }}
         onSave={async (data) => {
-          const product = Object.assign({}, data, store.productRef?.data);
+          const product = {
+            ...Object.assign({}, removeUndefinedOrNull(store.productRef?.data), removeUndefinedOrNull(data)),
+          };
 
           const productAttributes = product.attributes?.map((attr) => ({
             key: attr.key,

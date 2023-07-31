@@ -3,8 +3,9 @@ import clsx from 'clsx';
 import { CarouselProvider, Image, Slide, Slider } from 'pure-react-carousel';
 import React from 'react';
 
-import styles from './CGallery.module.scss';
+import { getThumbnailSrc } from '../../helpers/thumbs';
 import { TImageComponent } from './CGallery';
+import styles from './CGallery.module.scss';
 
 const CarouselImage = Image as TImageComponent;
 
@@ -69,7 +70,7 @@ export default class Thumbs extends React.Component<{
                         styles.thumbnailImg,
                         thumbOpts?.backgroundSize === 'contain' ? styles.slideContain : styles.slideCover,
                       )}
-                      src={imgSrc}
+                      src={getThumbnailSrc({ src: imgSrc, width: 100, height: 100 })}
                     />
                   </Slide>
                 );

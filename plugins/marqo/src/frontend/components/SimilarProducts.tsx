@@ -127,7 +127,7 @@ export function SimilarProducts(props: { autoLoadFirstPageAfter?: number; limit?
     const root = document.getElementById(rootId);
     if (root) {
       if (root.clientWidth > 1000) {
-        productWidthRef.current = 1 / 5;
+        productWidthRef.current = 1 / 4;
       } else if (root.clientWidth > 600) {
         productWidthRef.current = 1 / 3;
       } else {

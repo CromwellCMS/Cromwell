@@ -62,6 +62,62 @@ export const removeUndefined = <T>(obj: T): T => {
   return obj;
 };
 
+/** @internal */
+export const removeUndefinedOrNull = <T>(obj: T): T => {
+  if (!obj || typeof obj !== 'object') return obj;
+  for (const [key, val] of Object.entries(obj)) {
+    if (typeof val === 'undefined') delete obj[key];
+    if (val === null) delete obj[key];
+    if (val !== null && typeof val === 'object' && !Array.isArray(val)) removeUndefined(val);
+  }
+  return obj;
+};
+
+/** @internal */
+export const removeEmpty = <T>(obj: T): T => {
+  if (!obj || typeof obj !== 'object') return obj;
+
+  const processArray = (arr: any[]) => {
+    return arr
+      .map((it) => {
+        if (typeof it === 'object' && Array.isArray(it)) {
+          return processArray(it);
+        }
+        return it;
+      })
+      .filter((it) => {
+        if (typeof it === 'undefined') return false;
+        if (it === null) return false;
+        if (typeof it === 'number' && isNaN(it)) return false;
+        if (typeof it === 'object') {
+          if (!Array.isArray(it)) {
+            removeEmpty(it);
+            if (Object.keys(it).length === 0) return false;
+          } else {
+            if (it.length === 0) return false;
+          }
+        }
+        return true;
+      });
+  };
+
+  for (const [key, val] of Object.entries(obj)) {
+    if (typeof val === 'undefined') delete obj[key];
+    if (val === null) delete obj[key];
+    if (typeof val === 'number' && isNaN(val)) delete obj[key];
+
+    if (val !== null && typeof val === 'object') {
+      if (Array.isArray(val)) {
+        obj[key] = processArray(val);
+        if (obj[key].length === 0) delete obj[key];
+      } else {
+        removeUndefined(val);
+      }
+    }
+  }
+  return obj;
+};
+
 export const awaitValue = async <T>(
   valueGetter: () => T | Promise<T | undefined | null> | undefined | null,
   timeout: number,

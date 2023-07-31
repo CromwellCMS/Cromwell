@@ -123,6 +123,7 @@ export const withCromwellApp = (App: (props: TAppProps) => JSX.Element | null) =
       if (favicon.endsWith('.png')) faviconType = 'image/png';
       if (favicon.endsWith('.ico')) faviconType = 'image/x-icon';
       if (favicon.endsWith('.jpg')) faviconType = 'image/jpeg';
+      if (favicon.endsWith('.jpeg')) faviconType = 'image/jpeg';
       if (favicon.endsWith('.svg')) faviconType = 'image/svg+xml';
     }
 

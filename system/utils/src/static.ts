@@ -30,7 +30,11 @@ export async function resolvePublicFilePathToServe(requestPath: string): Promise
 
     const thumbnail =
       (width &&
+        width > 0 &&
         height &&
+        height > 0 &&
+        width <= 1920 &&
+        height <= 1920 &&
         (await getThumbnailPaths({
           src,
           width,
@@ -39,7 +43,14 @@ export async function resolvePublicFilePathToServe(requestPath: string): Promise
         }).catch(() => null))) ||
       null;
 
-    if (thumbnail?.outFilePath) {
+    const supportedExtensions = ['jpg', 'jpeg', 'png', 'webp'];
+
+    if (
+      thumbnail?.outFilePath &&
+      thumbnail?.originalPath &&
+      (thumbnail.originalPath.startsWith('http') ||
+        supportedExtensions.find((ext) => thumbnail.originalPath.endsWith('.' + ext)))
+    ) {
       if (await fs.pathExists(thumbnail.outFilePath)) {
         pathInPublicDir = thumbnail.outFilePath;
       } else {

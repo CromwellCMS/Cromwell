@@ -18,7 +18,7 @@ if (process.env.NODE_ENV === 'development') {
 } else {
   config.output = 'export';
   config.basePath = '/admin';
-  config.staticPageGenerationTimeout = 180;
+  config.staticPageGenerationTimeout = 360;
 }
 
 module.exports = withTM(config);
