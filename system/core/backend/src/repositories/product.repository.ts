@@ -176,7 +176,7 @@ export class ProductRepository extends BaseRepository<Product> {
         const attribute = await getCustomRepository(AttributeRepository).getAttributeByKey(inputAttribute.key);
         if (!attribute) continue;
 
-        for (const inputValue of inputAttribute.values) {
+        for (const inputValue of inputAttribute.values || []) {
           if (!attribute.values) continue;
           const attributeValue = attribute.values.find((value) => value.value === inputValue.value);
           if (!attributeValue) continue;
@@ -187,6 +187,18 @@ export class ProductRepository extends BaseRepository<Product> {
             attribute,
             attributeValue,
           });
+        }
+
+        if (attribute.type === 'text_input') {
+          const attributeValue = attribute.values?.find((value) => value.value === 'text_input');
+          if (attributeValue) {
+            inputValues.push({
+              key: inputAttribute.key,
+              value: 'text_input',
+              attribute,
+              attributeValue,
+            });
+          }
         }
       }
 

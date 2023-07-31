@@ -1,4 +1,4 @@
-import { TProduct, TStoreListItem } from '@cromwell/core';
+import { TAttribute, TProduct, TStoreListItem } from '@cromwell/core';
 import { getCStore, LoadBox as BaseLoadBox, useCart } from '@cromwell/core-frontend';
 import React, { useEffect, useState } from 'react';
 
@@ -6,6 +6,7 @@ import { TBaseButton } from '../shared/Button';
 import styles from './CartList.module.scss';
 import { CartListItem, CartListItemProps } from './CartListItem';
 import { useModuleState } from '../../helpers/state';
+import { useStoreAttributes } from '../../helpers/useStoreAttributes';
 import clsx from 'clsx';
 
 export type CartListProps = {
@@ -43,6 +44,9 @@ export type CartListProps = {
     total?: string;
   };
 
+  /** All available attributes */
+  attributes?: TAttribute[];
+
   /**
    * Fires when clicked link for a product page.
    */
@@ -78,6 +82,7 @@ export function CartList(props: CartListProps) {
   const { Loadbox = BaseLoadBox, ListItem = CartListItem, HeaderActions } = elements ?? {};
   const cstore = getCStore();
   const moduleState = useModuleState();
+  const attributes = useStoreAttributes(props.attributes);
 
   const cart = useCart();
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -104,7 +109,7 @@ export function CartList(props: CartListProps) {
     if (!props.cart) {
       (async () => {
         setIsLoading(true);
-        await cstore.updateCart();
+        await cstore.updateCart(attributes || []);
         setIsLoading(false);
       })();
     }

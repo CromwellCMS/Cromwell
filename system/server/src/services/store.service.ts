@@ -78,7 +78,10 @@ export class StoreService {
 
     cstore.saveCart(cart);
     await cstore.applyCouponCodes(input.couponCodes);
-    await cstore.updateCart();
+
+    const attributes = await getCustomRepository(AttributeRepository).getAll();
+    await cstore.updateCart(attributes);
+
     const total = cstore.getCartTotal();
 
     orderTotal.cart = cstore.getCart();

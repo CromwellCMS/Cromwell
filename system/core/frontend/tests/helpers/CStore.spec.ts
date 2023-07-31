@@ -173,7 +173,7 @@ describe('CStore', () => {
     expect(store.isInCart(item1)).toBeTruthy();
     expect(res1.success).toEqual(true);
 
-    await store.updateCart();
+    await store.updateCart([]);
     expect(store.getCart()[0]?.product?.name).toEqual('_test2_');
   });
 

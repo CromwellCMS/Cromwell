@@ -178,6 +178,7 @@ export type TEditField<TEntityType> = {
   // Uses json-to-graphql-query to translate object into graphql fragment
   customGraphQlProperty?: TCustomGraphQlProperty;
   saveValue?: (value: any) => any;
+  onChange?: (value: any) => any;
   required?: boolean;
   onlyOnCreate?: boolean;
   getInitialValue?: (value: any, entityData: TEntityType) => any;
@@ -230,4 +231,5 @@ export type TFieldsComponentProps<TEntityType> = TEntityEditState<TEntityType> &
   onSave: () => Promise<void>;
   goBack: () => void;
   handleInputChange: (key: keyof TEntityType, val: any) => void;
+  getInputData: () => Promise<Omit<TEntityType, 'id'>>;
 };

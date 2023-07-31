@@ -1,7 +1,8 @@
 import { TAttributeValue } from '@cromwell/core';
 import { PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { Tooltip } from '@mui/material';
-import React, { useState } from 'react';
+import { useState } from 'react';
+import React from 'react';
 
 import { IconButton } from '../../../components/buttons/IconButton';
 import { CheckList } from '../../../components/transferList/CheckList';

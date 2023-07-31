@@ -191,11 +191,13 @@ export function Checkout(props: CheckoutProps) {
 
   if (checkout.placedOrder) {
     return wrapContent(
-      <PlacedOrder order={checkout.placedOrder}>
-        <p className={clsx(styles.placedOrderText, classes?.placedOrderText)}>
-          {text?.yourOrderPlaced ?? 'Your order has been placed! Order ID:'} {checkout.placedOrder?.id}
-        </p>
-      </PlacedOrder>,
+      <div id="ccom-order-placed-success">
+        <PlacedOrder order={checkout.placedOrder}>
+          <p className={clsx(styles.placedOrderText, classes?.placedOrderText)}>
+            {text?.yourOrderPlaced ?? 'Your order has been placed! Order ID:'} {checkout.placedOrder?.id}
+          </p>
+        </PlacedOrder>
+      </div>,
     );
   }
 

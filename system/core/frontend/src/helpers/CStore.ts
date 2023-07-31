@@ -369,7 +369,7 @@ export class CStore {
    * If item has checked attributes that were deleted at the server, then it will delete
    * such items from the cart.
    */
-  private updateList = async (listKey: string) => {
+  private updateList = async (listKey: string, attributes?: TAttribute[]) => {
     const list = this.getList(listKey);
     const promises: Record<string, Promise<TProduct | undefined>> = {};
     for (const listItem of list) {
@@ -404,10 +404,14 @@ export class CStore {
           for (const updatedAttr of updated.attributes) {
             if (updatedAttr.key === key) {
               hasAttr = true;
-              const values = listItem.pickedAttributes[key];
-              const updatedValues: string[] = updatedAttr.values.map((v) => v.value);
-              if (!values.every((v) => updatedValues.includes(v))) {
-                hasAttr = false;
+
+              const origAttribute = attributes?.find((attr) => attr.key === key);
+              if (origAttribute?.type === 'checkbox' || origAttribute?.type === 'radio') {
+                const values = listItem.pickedAttributes[key];
+                const updatedValues: string[] = updatedAttr.values.map((v) => v.value);
+                if (!values.every((v) => updatedValues.includes(v))) {
+                  hasAttr = false;
+                }
               }
             }
           }
@@ -416,6 +420,7 @@ export class CStore {
           }
         }
       }
+
       if (hasAllAttrs) {
         updatedListItem.product = this.applyProductVariants(updated, updatedListItem.pickedAttributes);
 
@@ -434,20 +439,20 @@ export class CStore {
     if (!deepEqual(list, updatedList)) this.saveList(listKey, updatedList);
   };
 
-  public updateCart = async () => {
-    await this.updateList(cartKey);
+  public updateCart = async (attributes: TAttribute[]) => {
+    await this.updateList(cartKey, attributes);
   };
 
-  public updateWishlist = async () => {
-    await this.updateList(wishlistKey);
+  public updateWishlist = async (attributes: TAttribute[]) => {
+    await this.updateList(wishlistKey, attributes);
   };
 
-  public updateComparisonList = async () => {
-    await this.updateList(compareKey);
+  public updateComparisonList = async (attributes: TAttribute[]) => {
+    await this.updateList(compareKey, attributes);
   };
 
-  public updateViewedItems = async () => {
-    await this.updateList(viewedKey);
+  public updateViewedItems = async (attributes: TAttribute[]) => {
+    await this.updateList(viewedKey, attributes);
   };
 
   public clearCart = () => {

@@ -155,6 +155,7 @@ const main = async () => {
   }
 };
 
-main().catch(() => {
+main().catch((e) => {
+  logger.error(e);
   if (process.send) process.send(adminPanelMessages.onStartErrorMessage);
 });

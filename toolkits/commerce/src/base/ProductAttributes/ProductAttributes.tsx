@@ -28,12 +28,13 @@ export type ProductAttributesProps = {
   elements?: {
     /** Component for a value of an attribute. Must implement onClick prop */
     AttributeValue?: React.ComponentType<{
-      onClick: () => void;
+      onClick?: () => void;
+      onInputChange?: (value: string) => void;
       value: string;
-      checked: boolean;
+      checked?: boolean;
       valid?: boolean;
       canValidate?: boolean;
-      icon?: string;
+      icon?: string | null;
       attribute?: TAttribute;
       attributeInstance?: TAttributeInstance;
       classes?: Partial<
@@ -153,77 +154,99 @@ export function ProductAttributes(props: ProductAttributesProps): JSX.Element {
                 <TitleComp attribute={origAttribute} valid={isValid} canValidate={canValidate} />
               </div>
               <div className={clsx(styles.valuesWrapper, classes?.valuesWrapper)}>
-                {attr.values.map((attrValue: TAttributeInstanceValue) => {
-                  const value = attrValue.value;
-                  const origValue = origAttribute?.values?.find((v) => v.value === value);
-                  const isChecked = Boolean(checked ? checked.indexOf(value) !== -1 : false);
+                {origAttribute.type === 'text_input' &&
+                  (ValueComp ? (
+                    <ValueComp
+                      key={origAttribute.key}
+                      value={'text_input'}
+                      icon={origAttribute.icon}
+                      valid={isValid}
+                      attribute={origAttribute}
+                      attributeInstance={attr}
+                      canValidate={canValidate}
+                      onInputChange={(value) => {
+                        handleSetAttribute(attr.key, [value]);
+                      }}
+                    />
+                  ) : (
+                    <input
+                      onChange={(e) => {
+                        handleSetAttribute(attr.key, [e.target.value]);
+                      }}
+                    />
+                  ))}
+                {(origAttribute.type === 'radio' || origAttribute.type === 'checkbox') &&
+                  attr.values.map((attrValue: TAttributeInstanceValue) => {
+                    const value = attrValue.value;
+                    const origValue = origAttribute?.values?.find((v) => v.value === value);
+                    const isChecked = Boolean(checked ? checked.indexOf(value) !== -1 : false);
 
-                  if (origValue) {
-                    const handleClick = () => {
-                      const newChecked = checked ? [...checked] : [];
-                      if (origAttribute?.type === 'radio') {
-                        if (isChecked) {
-                          handleSetAttribute(attr.key, []);
-                        } else {
-                          handleSetAttribute(attr.key, [value]);
+                    if (origValue) {
+                      const handleClick = () => {
+                        const newChecked = checked ? [...checked] : [];
+                        if (origAttribute?.type === 'radio') {
+                          if (isChecked) {
+                            handleSetAttribute(attr.key, []);
+                          } else {
+                            handleSetAttribute(attr.key, [value]);
+                          }
                         }
-                      }
-                      if (origAttribute?.type === 'checkbox') {
-                        const currentIndex = newChecked.indexOf(value);
-                        if (currentIndex === -1) {
-                          newChecked.push(value);
-                        } else {
-                          newChecked.splice(currentIndex, 1);
+                        if (origAttribute?.type === 'checkbox') {
+                          const currentIndex = newChecked.indexOf(value);
+                          if (currentIndex === -1) {
+                            newChecked.push(value);
+                          } else {
+                            newChecked.splice(currentIndex, 1);
+                          }
+                          handleSetAttribute(attr.key, newChecked);
                         }
-                        handleSetAttribute(attr.key, newChecked);
-                      }
-                    };
+                      };
 
-                    if (ValueComp) {
+                      if (ValueComp) {
+                        return (
+                          <ValueComp
+                            key={value}
+                            onClick={handleClick}
+                            value={value}
+                            icon={origValue.icon}
+                            checked={isChecked}
+                            valid={isValid}
+                            attribute={origAttribute}
+                            attributeInstance={attr}
+                            canValidate={canValidate}
+                          />
+                        );
+                      }
+
                       return (
-                        <ValueComp
+                        <div
                           key={value}
+                          className={clsx(
+                            styles.attributeValue,
+                            classes?.attributeValue,
+                            isChecked && styles.attributeValueChecked,
+                            isChecked && classes?.attributeValueChecked,
+                            !isValid && styles.invalidAttributeValue,
+                            !isValid && classes?.invalidAttributeValue,
+                          )}
                           onClick={handleClick}
-                          value={value}
-                          icon={origValue.icon}
-                          checked={isChecked}
-                          valid={isValid}
-                          attribute={origAttribute}
-                          attributeInstance={attr}
-                          canValidate={canValidate}
-                        />
+                        >
+                          {origValue && origValue.icon && (
+                            <div
+                              style={{ backgroundImage: `url(${origValue.icon}` }}
+                              className={clsx(styles.attributeValueIcon, classes?.attributeValueIcon)}
+                            ></div>
+                          )}
+                          <p
+                            className={clsx(styles.attributeValueText, classes?.attributeValueText)}
+                            style={{ textTransform: 'none' }}
+                          >
+                            {value}
+                          </p>
+                        </div>
                       );
                     }
-
-                    return (
-                      <div
-                        key={value}
-                        className={clsx(
-                          styles.attributeValue,
-                          classes?.attributeValue,
-                          isChecked && styles.attributeValueChecked,
-                          isChecked && classes?.attributeValueChecked,
-                          !isValid && styles.invalidAttributeValue,
-                          !isValid && classes?.invalidAttributeValue,
-                        )}
-                        onClick={handleClick}
-                      >
-                        {origValue && origValue.icon && (
-                          <div
-                            style={{ backgroundImage: `url(${origValue.icon}` }}
-                            className={clsx(styles.attributeValueIcon, classes?.attributeValueIcon)}
-                          ></div>
-                        )}
-                        <p
-                          className={clsx(styles.attributeValueText, classes?.attributeValueText)}
-                          style={{ textTransform: 'none' }}
-                        >
-                          {value}
-                        </p>
-                      </div>
-                    );
-                  }
-                })}
+                  })}
               </div>
             </div>
           );

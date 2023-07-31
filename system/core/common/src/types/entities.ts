@@ -365,7 +365,7 @@ export type TAttribute = TBasePageEntity & {
   key?: string | null;
   title?: string | null;
   values?: TAttributeValue[] | null;
-  type?: 'radio' | 'checkbox' | null;
+  type?: 'radio' | 'checkbox' | 'text_input' | null;
   icon?: string | null;
   required?: boolean | null;
 };

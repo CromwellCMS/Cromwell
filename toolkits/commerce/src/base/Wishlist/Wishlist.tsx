@@ -33,7 +33,7 @@ export function Wishlist(props: WishlistProps) {
      */
     (async () => {
       setIsLoading(true);
-      await cstore.updateWishlist();
+      await cstore.updateWishlist(attributes || []);
       setIsLoading(false);
     })();
   }, []);

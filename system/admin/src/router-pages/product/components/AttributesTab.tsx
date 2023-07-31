@@ -94,19 +94,21 @@ export function AttributesTab(props: {
                   <TrashIcon className="w-5 h-5" />
                 </IconButton>
               </div>
-              <TransferList
-                text={{ choices: 'Available', chosen: 'Assigned' }}
-                left={leftValues.map((v) => v.value)}
-                setLeft={() => {}}
-                right={rightValues}
-                classes={{ checklist: styles.checklist }}
-                itemComp={(props) => (
-                  <div className={styles.attributeInstanceValue}>
-                    <p>{props.value}</p>
-                  </div>
-                )}
-                setRight={(val) => setRight(prodAttrIdx, val)}
-              />
+              {attribute.type !== 'text_input' && (
+                <TransferList
+                  text={{ choices: 'Available', chosen: 'Assigned' }}
+                  left={leftValues.map((v) => v.value)}
+                  setLeft={() => {}}
+                  right={rightValues}
+                  classes={{ checklist: styles.checklist }}
+                  itemComp={(props) => (
+                    <div className={styles.attributeInstanceValue}>
+                      <p>{props.value}</p>
+                    </div>
+                  )}
+                  setRight={(val) => setRight(prodAttrIdx, val)}
+                />
+              )}
             </div>
           );
         })}

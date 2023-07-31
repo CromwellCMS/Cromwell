@@ -587,6 +587,8 @@ export class ProductFilter extends React.Component<FilterProps, FilterState> imp
         {attributes &&
           attributes.map((attr) => {
             if (!attr.key || !attr.values) return null;
+            if (!(attr.type === 'checkbox' || attr.type === 'radio')) return null;
+
             const checked: string[] | undefined = this.checkedAttrs[attr.key];
             const numberOfChecked = () => (checked ? checked.length : 0);
             const handleToggleAll = () => {

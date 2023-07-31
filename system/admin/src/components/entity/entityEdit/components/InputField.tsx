@@ -5,6 +5,7 @@ import React from 'react';
 
 import { TFieldDefaultComponent } from '../../../../helpers/customFields';
 import { useForceUpdate } from '../../../../helpers/forceUpdate';
+import { TEditField } from '../../types';
 
 export function InputField({
   field,
@@ -12,7 +13,7 @@ export function InputField({
   canValidate,
   entityData,
 }: {
-  field;
+  field: TEditField<TBasePageEntity>;
   fieldCache;
   canValidate?: boolean;
   entityData: TBasePageEntity;
@@ -36,7 +37,10 @@ export function InputField({
         }
         canValidate={canValidate}
         error={error}
-        onChange={forceUpdate}
+        onChange={(value) => {
+          field.onChange?.(value);
+          forceUpdate();
+        }}
       />
       {field?.tooltip && (
         <Tooltip title={field?.tooltip}>

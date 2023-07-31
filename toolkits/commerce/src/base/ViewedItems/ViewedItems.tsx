@@ -33,7 +33,7 @@ export function ViewedItems(props: ViewedItemsProps) {
      */
     (async () => {
       setIsLoading(true);
-      await cstore.updateViewedItems();
+      await cstore.updateViewedItems(attributes || []);
       setIsLoading(false);
     })();
   }, []);

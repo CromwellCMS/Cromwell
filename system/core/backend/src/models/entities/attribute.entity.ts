@@ -26,7 +26,7 @@ export class Attribute extends BasePageEntity implements TAttribute {
 
   @Field((type) => String, { nullable: true })
   @Column({ type: 'varchar', length: 255, nullable: true })
-  type?: 'radio' | 'checkbox' | null;
+  type?: 'radio' | 'checkbox' | 'text_input' | null;
 
   @Field((type) => String, { nullable: true })
   @Column({ type: 'varchar', nullable: true, length: 400 })

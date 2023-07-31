@@ -126,18 +126,7 @@ class EntityEdit<
     });
   };
 
-  private handleSave = async () => {
-    if (!this.props.create) {
-      console.error('this.props.create in not defined, you must provide "create" prop for entity to be saved');
-      return;
-    }
-    if (!this.props.update) {
-      console.error('this.props.update in not defined, you must provide "update" prop for entity to be saved');
-      return;
-    }
-
-    this.setState({ canValidate: true });
-
+  private getInputData = async () => {
     const entityData = this.state?.entityData;
     if (!entityData) {
       console.warn('handleSave: !entityData');
@@ -177,12 +166,9 @@ class EntityEdit<
           // Update
         } else {
           console.warn('handleSave: invalid field: ', field);
-          return;
         }
       }
     }
-
-    const entityId = this.props.params?.id;
 
     inputData.customMeta = Object.assign(
       {},
@@ -197,6 +183,25 @@ class EntityEdit<
         return;
       }
     }
+
+    return inputData;
+  };
+
+  private handleSave = async () => {
+    if (!this.props.create) {
+      console.error('this.props.create in not defined, you must provide "create" prop for entity to be saved');
+      return;
+    }
+    if (!this.props.update) {
+      console.error('this.props.update in not defined, you must provide "update" prop for entity to be saved');
+      return;
+    }
+
+    this.setState({ canValidate: true });
+
+    const entityId = this.props.params?.id;
+    const inputData = await this.getInputData();
+    if (!inputData) return;
 
     this.setState({ isSaving: true });
 
@@ -265,6 +270,7 @@ class EntityEdit<
       onSave: this.handleSave,
       goBack: this.goBack,
       handleInputChange: this.handleInputChange,
+      getInputData: this.getInputData,
       frontendUrl,
     };
 
