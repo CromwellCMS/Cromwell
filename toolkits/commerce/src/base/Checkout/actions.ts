@@ -223,6 +223,10 @@ export const usuCheckoutActions = (config: {
         setPlacedOrder(placedOrder);
         moduleState.setPaymentSession(null);
         cstore.clearCart();
+
+        const parsedUrl = queryString.parseUrl(window.location.href, { parseFragmentIdentifier: true });
+        parsedUrl.query.placedOrderSuccess = 'true';
+        window.history.replaceState({}, '', queryString.stringifyUrl(parsedUrl));
       }
     },
 

@@ -2,6 +2,7 @@ import type { API, BlockAPI, OutputData } from '@editorjs/editorjs';
 
 import { getFileManager } from '../../components/fileManager/helpers';
 import { toast } from '../../components/toast/toast';
+import { getCustomHtmlClass } from './customHtml/CustomHtml';
 import { FontSize } from './fontSize/FontSize';
 
 let EditorJS: typeof import('@editorjs/editorjs');
@@ -17,7 +18,6 @@ let EditorMarker: typeof import('@editorjs/marker');
 let EditorCode: typeof import('@editorjs/code');
 let EditorLink: typeof import('@editorjs/link');
 let EditorWarning: typeof import('@editorjs/warning');
-let InlineCode: typeof import('@editorjs/inline-code');
 
 const importDependencies = async () => {
   if (!EditorJS) {
@@ -35,7 +35,6 @@ const importDependencies = async () => {
       EditorCode,
       EditorLink,
       EditorWarning,
-      InlineCode,
     ] = await Promise.all([
       await import('@editorjs/editorjs'),
       await import('@editorjs/header'),
@@ -50,12 +49,11 @@ const importDependencies = async () => {
       await import('@editorjs/code'),
       await import('@editorjs/link'),
       await import('@editorjs/warning'),
-      await import('@editorjs/inline-code'),
     ]);
   }
 };
 
-const getTools = (readOnly?: boolean) => ({
+const getTools = (onChange: (...args) => any, readOnly?: boolean) => ({
   image: {
     class: EditorImage.default,
     inlineToolbar: !readOnly,
@@ -133,10 +131,6 @@ const getTools = (readOnly?: boolean) => ({
     class: EditorCode.default,
     inlineToolbar: true,
   },
-  code: {
-    class: InlineCode.default,
-    inlineToolbar: true,
-  },
   linkTool: {
     class: EditorLink.default,
     inlineToolbar: !readOnly,
@@ -146,6 +140,7 @@ const getTools = (readOnly?: boolean) => ({
     inlineToolbar: !readOnly,
   },
   fontSize: FontSize,
+  customHtml: getCustomHtmlClass(onChange),
 });
 
 const editors: Record<string, EditorJS.default> = {};
@@ -180,7 +175,7 @@ export const initTextEditor = async (options: {
     // readOnly: true,
     minHeight: 0,
     tools: {
-      ...getTools(),
+      ...getTools(onChange, false),
     },
     onChange,
     autofocus,
@@ -216,7 +211,7 @@ export const getEditorHtml = async (htmlId: string, data?: OutputData) => {
       readOnly: true,
       autofocus: false,
       tools: {
-        ...getTools(true),
+        ...getTools(() => null, true),
       },
     });
     await editor.isReady;

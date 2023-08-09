@@ -17,7 +17,16 @@ type ProductShowcaseProps = {
   slug?: string | null;
 };
 
-const ProductShowcase = (props: TFrontendPluginProps<ProductShowcaseProps>): JSX.Element => {
+const ProductShowcase = (
+  props: TFrontendPluginProps<
+    ProductShowcaseProps,
+    {
+      categorySlug: string;
+      categoryId: number;
+      productSlug: string;
+    }
+  >,
+): JSX.Element => {
   const galleryId = useRef(`ProductShowcase_${getRandStr(5)}`);
   const [products, setProducts] = useState<TPagedList<TProduct> | undefined>();
 
@@ -28,8 +37,8 @@ const ProductShowcase = (props: TFrontendPluginProps<ProductShowcaseProps>): JSX
     try {
       data = await client?.query({
         query: gql`
-          query pluginProductShowcase($slug: String) {
-            pluginProductShowcase(slug: $slug) {
+          query pluginProductShowcase($data: PluginProductShowcase_PageData) {
+            pluginProductShowcase(data: $data) {
               pagedMeta {
                 pageSize
               }
@@ -49,7 +58,12 @@ const ProductShowcase = (props: TFrontendPluginProps<ProductShowcaseProps>): JSX
           }
         `,
         variables: {
-          slug,
+          data: {
+            pageSlug: slug,
+            categorySlug: props.instanceSettings?.categorySlug,
+            categoryId: props.instanceSettings?.categoryId,
+            productSlug: props.instanceSettings?.productSlug,
+          },
         },
       });
       setProducts(data?.data?.pluginProductShowcase);
