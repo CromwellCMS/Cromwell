@@ -1,6 +1,6 @@
 {
   "name": "@cromwell/utils",
-  "version": "2.0.18",
+  "version": "3.0.0-alpha.0",
   "keywords": [],
   "license": "MIT",
   "repository": "https://github.com/CromwellCMS/Cromwell",
@@ -21,11 +21,11 @@
     "format": "prettier --write --ignore-unknown \"**/*.+(js|jsx|json|css|md|ts|tsx)\""
   },
   "dependencies": {
-    "@babel/preset-react": "7.14.5",
     "@babel/preset-env": "7.17.10",
-    "@cromwell/core": "2.0.13",
-    "@cromwell/core-backend": "2.0.15",
-    "@cromwell/core-frontend": "2.1.5",
+    "@babel/preset-react": "7.14.5",
+    "@cromwell/core": "^3.0.0-alpha.0",
+    "@cromwell/core-backend": "^3.0.0-alpha.0",
+    "@cromwell/core-frontend": "^3.0.0-alpha.0",
     "@rollup/plugin-babel": "5.3.0",
     "@rollup/plugin-node-resolve": "13.0.4",
     "@rollup/plugin-virtual": "2.0.3",

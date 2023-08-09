@@ -1,6 +1,6 @@
 {
   "name": "@cromwell/core-frontend",
-  "version": "2.1.5",
+  "version": "3.0.0-alpha.0",
   "description": "",
   "license": "MIT",
   "repository": "https://github.com/CromwellCMS/Cromwell",
@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "@apollo/client": "3.7.1",
-    "@cromwell/core": "2.0.13",
+    "@cromwell/core": "^3.0.0-alpha.0",
     "@loadable/component": "5.15.2",
     "clsx": "1.1.1",
     "fast-deep-equal": "3.1.3",
