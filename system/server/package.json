@@ -15,7 +15,8 @@
     "migrations",
     "static",
     "db.sqlite3",
-    "startup.js"
+    "startup.js",
+    "src/helpers/patches.js"
   ],
   "scripts": {
     "build": "node startup.js build",
