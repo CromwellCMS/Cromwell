@@ -1,6 +1,6 @@
 {
   "name": "@cromwell/cms",
-  "version": "3.0.1-alpha.0",
+  "version": "3.0.2-alpha.0",
   "keywords": [],
   "license": "MIT",
   "repository": "https://github.com/CromwellCMS/Cromwell",
@@ -22,13 +22,13 @@
     "format": "prettier --write --ignore-unknown \"**/*.+(js|jsx|json|css|md|ts|tsx)\""
   },
   "dependencies": {
-    "@cromwell/admin-panel": "^3.0.0-alpha.0",
-    "@cromwell/cli": "^3.0.1-alpha.0",
+    "@cromwell/admin-panel": "^3.0.1-alpha.0",
+    "@cromwell/cli": "^3.0.2-alpha.0",
     "@cromwell/core": "^3.0.0-alpha.0",
     "@cromwell/core-backend": "^3.0.0-alpha.0",
     "@cromwell/core-frontend": "^3.0.0-alpha.0",
-    "@cromwell/renderer": "^3.0.0-alpha.0",
-    "@cromwell/server": "^3.0.1-alpha.0",
+    "@cromwell/renderer": "^3.0.1-alpha.0",
+    "@cromwell/server": "^3.0.2-alpha.0",
     "@cromwell/utils": "^3.0.0-alpha.0",
     "async": "3.2.1",
     "cacache": "17.0.3",
