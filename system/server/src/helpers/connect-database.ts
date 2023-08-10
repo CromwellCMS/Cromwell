@@ -8,6 +8,7 @@ import {
   getPublicPluginsDir,
   getPublicThemesDir,
   readCmsModules,
+  setDbConnected,
 } from '@cromwell/core-backend';
 import fs from 'fs-extra';
 import { resolve } from 'path';
@@ -33,8 +34,13 @@ export const connectDatabase = async (
   await coreConnectDatabase({ ormConfigOverride, development: env.envMode === 'dev' });
 
   const args = yargs(process.argv.slice(2));
-  const checking = checkData(args.init);
-  if (awaitCheck) await checking;
+  const checking = checkData(args.init).then(() => {
+    setDbConnected(true);
+  });
+
+  if (awaitCheck) {
+    await checking;
+  }
 };
 
 const checkData = async (init: boolean) => {

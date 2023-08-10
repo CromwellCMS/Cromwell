@@ -1,9 +1,8 @@
 import { gql } from '@apollo/client';
 import { TProduct } from '@cromwell/core';
-import { awaitValue, getLogger, getPluginSettings } from '@cromwell/core-backend';
+import { awaitDbConnection, getLogger, getPluginSettings } from '@cromwell/core-backend';
 import { fetch, getGraphQLClient } from '@cromwell/core-frontend';
 import { throttle } from 'throttle-debounce';
-import { getConnection } from 'typeorm';
 
 import { SettingsType } from '../types';
 
@@ -22,13 +21,7 @@ class MarqoClient {
   }
 
   private async init() {
-    await awaitValue(() => {
-      try {
-        return getConnection()?.isConnected;
-      } catch (error) {
-        //
-      }
-    }, 10);
+    await awaitDbConnection();
     this.throttledUpdateSettings();
   }
 

@@ -6,7 +6,7 @@ import { ConnectionOptions, createConnection, Logger } from 'typeorm';
 import { MysqlConnectionOptions } from 'typeorm/driver/mysql/MysqlConnectionOptions';
 
 import { readCMSConfig } from './cms-settings';
-import { getMigrationsDirName, ORMEntities } from './constants';
+import { awaitValue, getMigrationsDirName, ORMEntities } from './constants';
 import { getLogger } from './logger';
 import { getServerDir, getServerTempDir } from './paths';
 import { collectPlugins } from './plugin-exports';
@@ -123,4 +123,22 @@ export const connectDatabase = async ({
   };
 
   if (connectionOptions) await createConnection(connectionOptions);
+};
+
+const state = {
+  connected: false,
+};
+
+export const setDbConnected = (connected: boolean) => {
+  state.connected = connected;
+};
+
+export const awaitDbConnection = async () => {
+  await awaitValue(() => {
+    try {
+      return state.connected;
+    } catch (error) {
+      //
+    }
+  }, 10);
 };

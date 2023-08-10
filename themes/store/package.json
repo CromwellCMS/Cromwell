@@ -28,7 +28,6 @@
     "author": "Cromwell CMS",
     "plugins": [
       "@cromwell/plugin-product-filter",
-      "@cromwell/plugin-marqo",
       "@cromwell/plugin-main-menu",
       "@cromwell/plugin-product-showcase",
       "@cromwell/plugin-newsletter",
