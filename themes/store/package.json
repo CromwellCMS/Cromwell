@@ -33,7 +33,8 @@
       "@cromwell/plugin-product-showcase",
       "@cromwell/plugin-newsletter",
       "@cromwell/plugin-stripe",
-      "@cromwell/plugin-paypal"
+      "@cromwell/plugin-paypal",
+      "@cromwell/plugin-marqo"
     ],
     "frontendDependencies": [
       "mobx",

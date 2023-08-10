@@ -25,7 +25,7 @@ export const loadEnv = (): TEnv => {
 
   const scriptName = process.argv[2] as TServerCommands;
   const cmsConfig = readCMSConfigSync();
-  const envMode = cmsConfig?.env ?? scriptName === 'dev' ? 'dev' : 'prod';
+  const envMode = (cmsConfig?.env ?? scriptName) === 'dev' ? 'dev' : 'prod';
 
   setStoreItem('environment', {
     mode: envMode,

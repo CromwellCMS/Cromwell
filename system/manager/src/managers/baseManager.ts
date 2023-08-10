@@ -158,12 +158,12 @@ export const startSystem = async (options: TStartOptions) => {
   const { scriptName } = options;
   const isDevelopment = scriptName === 'development';
 
-  const cmsconfig = await readCMSConfig();
+  const cmsConfig = await readCMSConfig();
   const cmsPckg = await getModulePackage(cmsPackageName);
   await new Promise((resolve) => loadCache(resolve));
 
   setStoreItem('environment', {
-    mode: cmsconfig.env ?? isDevelopment ? 'dev' : 'prod',
+    mode: (cmsConfig.env ?? isDevelopment) === 'dev' ? 'dev' : 'prod',
   });
 
   // eslint-disable-next-line
@@ -239,11 +239,11 @@ export const startServiceByName = async (options: TStartOptions) => {
     logger.warn('Invalid service name. Available names are: ' + serviceNames);
   }
 
-  const cmsconfig = await readCMSConfig();
+  const cmsConfig = await readCMSConfig();
   await new Promise((resolve) => loadCache(resolve));
 
   setStoreItem('environment', {
-    mode: cmsconfig.env ?? isDevelopment ? 'dev' : 'prod',
+    mode: (cmsConfig.env ?? isDevelopment) === 'dev' ? 'dev' : 'prod',
   });
 
   await checkConfigs();

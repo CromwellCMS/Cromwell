@@ -189,7 +189,7 @@ yarn add @cromwell/cms --exact
 You also can specify what themes and plugins your want to use. Usually we install the following by default (but you also will be able to install them later in the admin panel):
 
 ```sh
-yarn add @cromwell/theme-store @cromwell/theme-blog @cromwell/plugin-main-menu @cromwell/plugin-newsletter @cromwell/plugin-product-filter @cromwell/plugin-product-showcase @cromwell/plugin-stripe --exact
+yarn add @cromwell/theme-store @cromwell/theme-blog @cromwell/plugin-main-menu @cromwell/plugin-newsletter @cromwell/plugin-product-filter @cromwell/plugin-product-showcase @cromwell/plugin-stripe @cromwell/plugin-paypal @cromwell/plugin-marqo --exact
 ```
 
 Run the CMS:

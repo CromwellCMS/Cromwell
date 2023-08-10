@@ -13,7 +13,8 @@
   "files": [
     "build",
     "static",
-    "startup.js"
+    "startup.js",
+    "next.config.js"
   ],
   "scripts": {
     "build": "node startup.js build",

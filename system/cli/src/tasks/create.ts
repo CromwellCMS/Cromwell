@@ -38,7 +38,7 @@ export const createTask = async (name?: string, noInstall?: boolean, type?: stri
       spawnSync(`yarn`, [], { shell: true, stdio: 'inherit', cwd: dir });
     } else {
       spawnSync(
-        `yarn add @cromwell/cms @cromwell/theme-store @cromwell/theme-blog @cromwell/plugin-main-menu @cromwell/plugin-newsletter @cromwell/plugin-product-filter @cromwell/plugin-product-showcase @cromwell/plugin-stripe @cromwell/plugin-paypal --exact --non-interactive`,
+        `yarn add @cromwell/cms @cromwell/theme-store @cromwell/theme-blog @cromwell/plugin-main-menu @cromwell/plugin-newsletter @cromwell/plugin-product-filter @cromwell/plugin-product-showcase @cromwell/plugin-stripe @cromwell/plugin-paypal @cromwell/plugin-marqo --exact --non-interactive`,
         [],
         { shell: true, stdio: 'inherit', cwd: dir },
       );

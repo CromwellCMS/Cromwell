@@ -32,7 +32,7 @@ const main = () => {
   const config = readCMSConfigSync();
 
   setStoreItem('environment', {
-    mode: config.env || scriptName === 'dev' ? 'dev' : 'prod',
+    mode: (config.env || scriptName) === 'dev' ? 'dev' : 'prod',
   });
 
   const args = yargs(process.argv.slice(2));
