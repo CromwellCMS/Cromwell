@@ -31,6 +31,10 @@ export const getPluginSettings = async <T>(pluginName: string): Promise<T | unde
     return;
   }
 
+  return entityToSettings(plugin);
+};
+
+const entityToSettings = (plugin: TPluginEntity) => {
   let defaultSettings;
   let settings;
   try {
@@ -55,6 +59,6 @@ export const savePluginSettings = async (pluginName: string, input: any) => {
   }
 
   plugin.settings = typeof input === 'string' ? input : JSON.stringify(input);
-  await savePlugin(plugin);
-  return true;
+  const updated = await savePlugin(plugin);
+  return entityToSettings(updated);
 };

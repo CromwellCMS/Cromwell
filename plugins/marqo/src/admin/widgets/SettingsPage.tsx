@@ -10,16 +10,17 @@ import {
 import { TPluginSettingsProps } from '@cromwell/core';
 import { getRestApiClient } from '@cromwell/core-frontend';
 import React from 'react';
+import { Tooltip } from '@mui/material';
 
 import { SettingsType } from '../../types';
 
 export function SettingsPage(props: TPluginSettingsProps<SettingsType>) {
   const [syncing, setSyncing] = React.useState(false);
 
-  const updateData = async () => {
+  const syncData = async () => {
     if (syncing) return;
     setSyncing(true);
-    const result: any = await getRestApiClient()?.post(`plugin-marqo/update-data`, {}).catch(console.error);
+    const result: any = await getRestApiClient()?.post(`plugin-marqo/sync-data`, {}).catch(console.error);
     if (result?.success) {
       toast.success('Data updated');
     } else {
@@ -77,15 +78,19 @@ export function SettingsPage(props: TPluginSettingsProps<SettingsType>) {
             onChange={(event) => changeSetting('secret', event.target.value)}
           />
           <Box sx={{ display: 'flex' }}>
-            <TextButton onClick={updateData} disabled={syncing} sx={{ mr: 2 }}>
-              Add/Update data
-            </TextButton>
-            <TextButton
-              onClick={() => deleteData(pluginSettings?.index_name || '')}
-              disabled={!pluginSettings?.index_name || syncing}
-            >
-              Delete data
-            </TextButton>
+            <Tooltip title="Sync data from Cromwell database to Marqo">
+              <TextButton onClick={syncData} disabled={syncing} sx={{ mr: 2 }}>
+                Sync data
+              </TextButton>
+            </Tooltip>
+            <Tooltip title="Delete data in Marqo for specified index">
+              <TextButton
+                onClick={() => deleteData(pluginSettings?.index_name || '')}
+                disabled={!pluginSettings?.index_name || syncing}
+              >
+                Delete data
+              </TextButton>
+            </Tooltip>
           </Box>
           <LoadingStatus isActive={syncing} />
         </>

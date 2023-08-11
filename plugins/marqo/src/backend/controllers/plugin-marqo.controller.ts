@@ -9,15 +9,15 @@ import { marqoClient } from '../marqo-client';
 class PluginMarqoController {
   private syncing = false;
 
-  @Post('update-data')
+  @Post('sync-data')
   @AuthGuard({ permissions: ['update_plugin_settings'] })
-  @ApiOperation({ description: 'Update data from Cromwell DB to Marqo DB' })
+  @ApiOperation({ description: 'Sync data from Cromwell DB to Marqo DB' })
   @ApiResponse({
     status: 200,
     type: String,
   })
   @ApiForbiddenResponse({ description: 'Forbidden.' })
-  async updateData(): Promise<{ success: boolean; message?: string }> {
+  async syncData(): Promise<{ success: boolean; message?: string }> {
     if (this.syncing) return { success: false, message: 'Syncing in progress. Try again later' };
     this.syncing = true;
 
@@ -34,6 +34,8 @@ class PluginMarqoController {
       }
 
       if (index_name && marqo_url) {
+        await marqoClient.ensureIndex(index_name);
+
         success = await marqoClient.syncAllProducts();
       }
     } catch (error: any) {

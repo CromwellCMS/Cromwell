@@ -1,5 +1,6 @@
 import { registerDataFilter, TBackendModule } from '@cromwell/core-backend';
 
+import { SettingsType } from '../types';
 import PluginMarqoController from './controllers/plugin-marqo.controller';
 import { marqoClient } from './marqo-client';
 import PluginMarqoResolver from './resolvers/plugin-marqo.resolver';
@@ -48,5 +49,21 @@ registerDataFilter({
     } else {
       marqoClient.deleteProducts(input.ids);
     }
+  },
+});
+
+registerDataFilter({
+  id: '@cromwell/plugin-marqo__plugin-any',
+  entity: 'PluginSettings',
+  action: 'updateOutput',
+  filter: async (args) => {
+    if ((args.id as any) !== '@cromwell/plugin-marqo') return;
+    const indexName = (args.data as SettingsType)?.index_name;
+    if (!indexName) return args;
+
+    // Create index if does not exist
+    await marqoClient.ensureIndex(indexName);
+
+    return args;
   },
 });

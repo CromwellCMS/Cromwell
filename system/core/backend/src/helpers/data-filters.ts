@@ -102,6 +102,7 @@ export type TFilterableEntities = {
   User: { entity: TUser; create: TCreateUser; update: TUpdateUser; filter: TUserFilter };
   Role: { entity: TRole; create: TRoleInput; update: TRoleInput; filter: TBaseFilter };
   Plugin: { entity: TPluginEntity; create: TPluginEntityInput; update: TPluginEntityInput; filter: TBaseFilter };
+  PluginSettings: { entity: any; create: any; update: any; filter: any };
   CustomEntity: {
     entity: TCustomEntity;
     create: TCustomEntityInput;
@@ -123,7 +124,7 @@ type TGetDataFilterParameter<
 
 type TDataFilterFunction<TEntityKey extends keyof TFilterableEntities, TAction extends keyof TDataFilterParameters> = (
   options: TGetDataFilterParameter<TEntityKey, TAction> & {
-    entity: TDBEntity;
+    entity: TDBEntity | 'PluginSettings';
     action: keyof TDataFilterParameters;
   },
 ) => Promise<Partial<TGetDataFilterParameter<TEntityKey, TAction>> | null | undefined | void> | null | undefined | void;

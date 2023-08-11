@@ -3,6 +3,7 @@ import { TProduct } from '@cromwell/core';
 import { awaitDbConnection, getLogger, getPluginSettings } from '@cromwell/core-backend';
 import { fetch, getGraphQLClient } from '@cromwell/core-frontend';
 import { throttle } from 'throttle-debounce';
+import normalizePath from 'normalize-path';
 
 import { SettingsType } from '../types';
 
@@ -12,6 +13,7 @@ type MarqoProduct = {
   _id: string;
   title?: string;
   description?: string;
+  attributesText?: string;
   [key: string]: string | undefined;
 };
 
@@ -47,6 +49,11 @@ class MarqoClient {
     title: product.name || undefined,
     description: product.description || undefined,
     marqo_data: product.customMeta?.marqo_data || undefined,
+    attributesText: product.attributes?.length
+      ? (
+          product.attributes?.map((attr) => attr.key + ': ' + attr.values?.map((val) => val.value)?.join(', ')) || []
+        ).join('; ')
+      : undefined,
     ...Object.assign(
       {},
       ...(product.attributes?.map((attr) => ({ [attr.key]: attr.values?.map((val) => val.value)?.join(', ') })) || []),
@@ -70,20 +77,24 @@ class MarqoClient {
   };
 
   private fetchMarqo = ({
+    entity = 'indexes',
     index,
     path,
     body,
-    method = 'POST',
+    method = 'GET',
   }: {
-    index: string;
-    path: string;
+    entity?: 'indexes' | 'documents';
+    index?: string;
+    path?: string;
     body?: any;
     method?: string;
   }) => {
     const { marqo_url, secret } = this.getSettings();
     if (!marqo_url) return;
 
-    return fetch(`${marqo_url}/indexes/${index}/${path}`, {
+    const url = `${marqo_url}/${normalizePath(`${entity}/${index || ''}/${path || ''}`)}`;
+
+    return fetch(url, {
       method,
       headers: {
         'Content-Type': 'application/json',
@@ -98,10 +109,15 @@ class MarqoClient {
   public upsertProducts = async (products: TProduct[]) => {
     const { index_name } = this.getSettings();
     if (!index_name) return;
-    const documents = products.map(this.mapProduct);
+    const documents = products.map(this.mapProductMultiField);
 
     logger.log('Marqo upsert documents: ', JSON.stringify(documents?.map((d) => d._id)));
-    return this.fetchMarqo({ index: index_name, path: 'documents', body: documents });
+    return this.fetchMarqo({
+      method: 'POST',
+      index: index_name,
+      path: 'documents',
+      body: { documents, tensorFields: ['title', 'marqo_data', 'attributesText'] },
+    });
   };
 
   public deleteDocuments = async (ids: string[]) => {
@@ -109,7 +125,7 @@ class MarqoClient {
     if (!index_name) return;
 
     logger.log('Marqo delete documents: ', ids);
-    return this.fetchMarqo({ index: index_name, path: 'documents/delete-batch', body: ids });
+    return this.fetchMarqo({ index: index_name, path: 'documents/delete-batch', body: ids, method: 'POST' });
   };
 
   public deleteProducts = async (ids: number[]) => {
@@ -131,6 +147,7 @@ class MarqoClient {
     const result = await this.fetchMarqo({
       index: index_name,
       path: 'search',
+      method: 'POST',
       body: {
         q: query,
         limit: limit || 20,
@@ -181,7 +198,13 @@ class MarqoClient {
       const result = await this.upsertProducts(products.elements);
 
       if (!result?.items?.length) {
-        logger.log(`Marqo-plugin: Failed to create/update ${products?.elements?.length} products`);
+        logger.log(
+          `Marqo-plugin: Failed to create/update ${products?.elements?.length} products: ${JSON.stringify(
+            result,
+            null,
+            2,
+          )}`,
+        );
       } else {
         const statuses = {};
         for (const item of result.items) {
@@ -203,6 +226,29 @@ class MarqoClient {
       path: '',
     });
   };
+
+  public async getIndexes(): Promise<{ index_name: string }[] | undefined> {
+    const response = await this.fetchMarqo({});
+    return response?.results;
+  }
+
+  public async createIndex(indexName: string): Promise<any | undefined> {
+    const response = await this.fetchMarqo({
+      method: 'POST',
+      index: indexName,
+    });
+    return response;
+  }
+
+  public async ensureIndex(indexName: string) {
+    if (!indexName) return;
+
+    // Create index if does not exist
+    const indexes = await this.getIndexes();
+    if ((indexes || []).find((i) => i.index_name === indexName)) return;
+
+    await marqoClient.createIndex(indexName);
+  }
 }
 
 export const marqoClient = new MarqoClient();

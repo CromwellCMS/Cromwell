@@ -6,6 +6,7 @@ import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags
 import { FrontendBundleDto } from '../dto/frontend-bundle.dto';
 import { PluginEntityDto } from '../dto/plugin-entity.dto';
 import { UpdateInfoDto } from '../dto/update-info.dto';
+import { updateWithFilters } from '../helpers/data-filters';
 import { getDIService } from '../helpers/utils';
 import { PluginService } from '../services/plugin.service';
 
@@ -47,15 +48,25 @@ export class PluginController {
   })
   @ApiResponse({
     status: 200,
-    type: Boolean,
   })
   @ApiForbiddenResponse({ description: 'Forbidden.' })
-  async savePluginSettings(@Query('pluginName') pluginName: string, @Body() input): Promise<boolean> {
+  async savePluginSettings(@Query('pluginName') pluginName: string, @Body() input): Promise<any> {
     logger.log('PluginController::savePluginSettings');
 
     if (!pluginName) throw new HttpException(`Invalid plugin name: ${pluginName}`, HttpStatus.NOT_ACCEPTABLE);
 
-    return savePluginSettings(pluginName, input);
+    const plugin = await updateWithFilters(
+      'PluginSettings',
+      undefined,
+      ['update_plugin_settings'],
+      input,
+      pluginName as any,
+      async (id, input) => {
+        return savePluginSettings(id as any, input);
+      },
+    );
+
+    return plugin;
   }
 
   @Get('entity')

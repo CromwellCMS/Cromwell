@@ -138,7 +138,7 @@ export const createWithFilters = async <TEntityKey extends keyof TFilterableEnti
 
 export const updateWithFilters = async <TEntityKey extends keyof TFilterableEntities>(
   entity: TEntityKey,
-  ctx: TGraphQLContext,
+  ctx: TGraphQLContext | undefined,
   permissions: TPermissionName[],
   input: TFilterableEntities[TEntityKey]['update'],
   id: number,
