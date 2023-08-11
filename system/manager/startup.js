@@ -7,6 +7,7 @@ const {
   getRendererBuildDir,
   getRendererDir,
 } = require('@cromwell/core-backend/dist/helpers/paths');
+const { reportProcessPid } = require('@cromwell/core-backend/dist/helpers/shell');
 
 const localProjectRootDir = resolve(__dirname);
 const buildScriptPath = resolve(localProjectRootDir, 'build/index.js');
@@ -37,7 +38,7 @@ const main = async () => {
   }
 
   if (!fs.existsSync(buildScriptPath) || scriptName === 'buildService') {
-    console.log('\x1b[36m%s\x1b[0m', `Building Manager service...`);
+    console.log('\x1b[36m%s\x1b[0m', `Building Manager service...`); // eslint-disable-line no-console
     execSync('npm run build', { shell: true, cwd: localProjectRootDir, stdio: 'inherit' });
   }
 
@@ -50,3 +51,5 @@ const main = async () => {
 };
 
 main();
+
+reportProcessPid('manager_startup');

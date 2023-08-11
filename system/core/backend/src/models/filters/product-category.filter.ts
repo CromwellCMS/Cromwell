@@ -1,5 +1,5 @@
 import { TProductCategoryFilter } from '@cromwell/core';
-import { Field, InputType } from 'type-graphql';
+import { Field, InputType, Int } from 'type-graphql';
 
 import { BaseFilterInput } from './base-filter.filter';
 
@@ -10,4 +10,7 @@ export class ProductCategoryFilterInput extends BaseFilterInput implements TProd
 
   @Field((type) => String, { nullable: true })
   parentName?: string;
+
+  @Field((type) => Int, { nullable: true })
+  parentId?: number;
 }

@@ -121,6 +121,7 @@ export type TProductCategoryInput = TBasePageEntityInput &
 export type TProductCategoryFilter = TBaseFilter & {
   nameSearch?: string;
   parentName?: string;
+  parentId?: number | null;
 };
 
 /**

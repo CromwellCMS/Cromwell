@@ -1,5 +1,17 @@
+import { getAllProcessPids, reportProcessPid } from '@cromwell/core-backend/dist/helpers/shell';
 import si from 'systeminformation';
 import { parentPort } from 'worker_threads';
+import pidusage from 'pidusage';
+
+type PidStat = {
+  cpu: number;
+  memory: number;
+  ppid: number;
+  pid: number;
+  ctime: number;
+  elapsed: number;
+  timestamp: number;
+};
 
 let sysInfo: {
   cpu: any;
@@ -7,6 +19,7 @@ let sysInfo: {
   osInfo: any;
   fsSize: any;
 };
+
 const getSysInfo = async () => {
   if (sysInfo) return sysInfo;
 
@@ -53,6 +66,38 @@ let latestUsageInfo: {
   mem: any;
   currentLoad: any;
   fsSize: any;
+  processes: { stats: PidStat; name: string; pid: number }[];
+};
+
+const getMemUsageByProcesses = async (): Promise<{ stats: PidStat; name: string; pid: number }[]> => {
+  const data = await getAllProcessPids();
+
+  const uniquePids: Record<number, { name: string; pid: number }> = {};
+  for (const proc of data) {
+    if (!proc) continue;
+    if (!uniquePids[proc.pid]) {
+      uniquePids[proc.pid] = proc;
+    } else {
+      uniquePids[proc.pid].name += `, ${proc.name}`;
+    }
+  }
+
+  const stats = (
+    await Promise.all(
+      Object.values(uniquePids).map(async (proc) => {
+        return new Promise<{ stats: PidStat; name: string; pid: number }>((done) => {
+          pidusage(proc.pid, function (err, stats) {
+            done({
+              ...proc,
+              stats,
+            });
+          });
+        });
+      }),
+    )
+  ).filter(Boolean);
+
+  return stats;
 };
 
 const getUsageInfo = async (): Promise<typeof latestUsageInfo> => {
@@ -73,30 +118,52 @@ const getUsageInfo = async (): Promise<typeof latestUsageInfo> => {
   });
 
   let mem;
-  try {
-    mem = await si.mem();
-  } catch (error) {
-    console.error(error);
-  }
+
+  const getMem = async () => {
+    try {
+      mem = await si.mem();
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   let currentLoad;
-  try {
-    currentLoad = await si.currentLoad();
-  } catch (error) {
-    console.error(error);
-  }
+
+  const getLoad = async () => {
+    try {
+      currentLoad = await si.currentLoad();
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   let fsSize;
-  try {
-    fsSize = await si.fsSize();
-  } catch (error) {
-    console.error(error);
-  }
+
+  const getFsSize = async () => {
+    try {
+      fsSize = await si.fsSize();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  let processesStats;
+
+  const getProcessesStats = async () => {
+    try {
+      processesStats = await getMemUsageByProcesses();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  await Promise.all([getMem(), getLoad(), getFsSize(), getProcessesStats()]);
 
   latestUsageInfo = {
     mem,
     currentLoad,
     fsSize,
+    processes: processesStats,
   };
 
   setTimeout(() => {
@@ -118,9 +185,12 @@ parentPort?.on('message', async (message) => {
 
   if (message?.command === 'getUsageInfo') {
     const info = await getUsageInfo();
+
     parentPort?.postMessage({
       type: 'usageInfo',
       info,
     });
   }
 });
+
+reportProcessPid('server_monitor');

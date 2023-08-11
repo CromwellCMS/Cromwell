@@ -1,6 +1,7 @@
 const fs = require('fs-extra');
 const { resolve } = require('path');
 const { spawnSync } = require('child_process');
+const { reportProcessPid } = require('@cromwell/core-backend/dist/helpers/shell');
 
 const localProjectRootDir = resolve(__dirname);
 const buildScriptPath = resolve(localProjectRootDir, 'build/cli.js');
@@ -23,3 +24,5 @@ const main = () => {
 };
 
 main();
+
+reportProcessPid('cli_startup');

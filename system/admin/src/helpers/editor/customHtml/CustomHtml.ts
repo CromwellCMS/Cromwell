@@ -3,9 +3,10 @@ import type { BlockTool, API } from '@editorjs/editorjs';
 type DataType = {
   html: string;
 };
+
 export const getCustomHtmlClass = (onChange: () => any) => {
   class CustomHtml implements BlockTool {
-    private state: {
+    state: {
       data?: DataType;
       api?: API;
       readOnly: boolean;

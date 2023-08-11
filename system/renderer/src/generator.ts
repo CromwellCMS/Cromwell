@@ -1,6 +1,7 @@
 import { bundledModulesDirName, getRandStr, setStoreItem, sleep } from '@cromwell/core';
 import { readCMSConfig } from '@cromwell/core-backend/dist/helpers/cms-settings';
 import { getLogger } from '@cromwell/core-backend/dist/helpers/logger';
+import { reportProcessPid } from '@cromwell/core-backend/dist/helpers/shell';
 import {
   getBundledModulesDir,
   getCmsModuleConfig,
@@ -586,3 +587,5 @@ const startConfigWatcher = async (packageName: string) => {
 
   watcher.on('change', configChange).on('add', configChange).on('unlink', configChange);
 };
+
+reportProcessPid('renderer_generator');

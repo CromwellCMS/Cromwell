@@ -637,6 +637,11 @@ export type TSystemUsage = {
     available: number;
     total: number;
   };
+  processStats: {
+    cpu: number; // percentage (from 0 to 100*vcore)
+    memory: number; // bytes
+    name: string;
+  }[];
 };
 
 export type TSharedComponents = Partial<{

@@ -2,6 +2,7 @@ import { findRedirect, setStoreItem, TCmsSettings } from '@cromwell/core';
 import { getAuthSettings } from '@cromwell/core-backend/dist/helpers/auth-settings';
 import { readCMSConfig } from '@cromwell/core-backend/dist/helpers/cms-settings';
 import { getLogger } from '@cromwell/core-backend/dist/helpers/logger';
+import { reportProcessPid } from '@cromwell/core-backend/dist/helpers/shell';
 import { resolvePublicFilePathToServe, vanillaSendFile } from '@cromwell/utils/build/static';
 import cookie from 'cookie';
 import { createServer } from 'http';
@@ -129,6 +130,8 @@ export const startNextServer = async (options?: {
 
     setTimeout(() => done(false), 45000);
   });
+
+  reportProcessPid('renderer_server');
 
   return success;
 };
