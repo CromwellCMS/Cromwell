@@ -40,9 +40,13 @@ type TAppProps = Omit<AppProps<TPageProps>, 'pageProps'> & {
   pageProps: TPageProps;
 };
 
+const nodeRequire = (name: string) => (isServer() ? eval(`require('${name}');`) : undefined);
+const reportProcessPid = nodeRequire('@cromwell/core-backend/dist/helpers/shell')?.reportProcessPid;
+
 export const withCromwellApp = (App: (props: TAppProps) => JSX.Element | null) => {
   patchDocument();
   initRenderer();
+  reportProcessPid?.('renderer_app');
 
   return (props: TAppProps) => {
     const pageInstances = useRef({});

@@ -1,5 +1,6 @@
 import { spawn } from 'child_process';
 import yargs from 'yargs/yargs';
+import { reportProcessPid } from '@cromwell/core-backend/dist/helpers/shell';
 
 import { createTask } from './tasks/create';
 
@@ -291,3 +292,5 @@ const args = yargs(process.argv.slice(2))
   .demandCommand(1, '')
   .help()
   .strict().argv;
+
+reportProcessPid('cli_runner');

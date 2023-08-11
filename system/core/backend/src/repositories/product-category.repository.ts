@@ -254,6 +254,13 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
       );
       qb.andWhere(`parent_category_table.name ${this.getSqlLike()} :parentLikeStr`, { parentLikeStr });
     }
+
+    if (filterParams?.parentId) {
+      const parentColumn = this.metadata.treeParentRelation?.joinColumns[0].databaseName as string;
+      qb.andWhere(`${this.metadata.tablePath}.${this.quote(parentColumn)} = :parentId`, {
+        parentId: filterParams.parentId,
+      });
+    }
   }
 
   async getFilteredCategories(

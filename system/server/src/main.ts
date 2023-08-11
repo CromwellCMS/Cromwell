@@ -16,6 +16,7 @@ import {
   TRequestWithUser,
 } from '@cromwell/core-backend';
 import { checkRoles } from '@cromwell/core-backend/dist/helpers/auth-roles-permissions';
+import { reportProcessPid } from '@cromwell/core-backend/dist/helpers/shell';
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
@@ -155,3 +156,5 @@ process.on('uncaughtException', (err) => {
       );
   }
 })();
+
+reportProcessPid('server_main');

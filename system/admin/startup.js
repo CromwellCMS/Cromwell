@@ -6,6 +6,7 @@ const yargs = require('yargs-parser');
 const normalizePath = require('normalize-path');
 const { adminPanelMessages } = require('@cromwell/core-backend/dist/helpers/constants');
 const { getLogger } = require('@cromwell/core-backend/dist/helpers/logger');
+const { reportProcessPid } = require('@cromwell/core-backend/dist/helpers/shell');
 
 // 'build' | 'dev' | 'prod' | 'types'
 const scriptName = process.argv[2];
@@ -159,3 +160,5 @@ main().catch((e) => {
   logger.error(e);
   if (process.send) process.send(adminPanelMessages.onStartErrorMessage);
 });
+
+reportProcessPid('admin_startup');

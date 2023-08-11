@@ -1,4 +1,4 @@
-import { EDBEntity, TProductCategory, TProductCategoryFilter } from '@cromwell/core';
+import { EDBEntity, TProductCategory, TProductCategoryFilter, TProductCategoryInput } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
 import React, { useRef, useState } from 'react';
 
@@ -103,7 +103,7 @@ export default function CategoryList() {
           visible: true,
         },
         {
-          name: 'parent',
+          name: 'parent_name',
           label: 'Parent name',
           type: 'Simple text',
           visible: true,
@@ -111,7 +111,7 @@ export default function CategoryList() {
             (filter as TProductCategoryFilter).parentName = value;
             return filter;
           },
-          getValueView: (parent) => parent?.name,
+          getValueView: (parent, entity) => entity?.parent?.name,
           customGraphQlProperty: {
             parent: {
               name: true,
@@ -119,16 +119,20 @@ export default function CategoryList() {
           },
         },
         {
-          name: 'parent',
+          name: 'parent_id',
           label: 'Parent ID',
           type: 'Simple text',
           visible: false,
           applyFilter: (value: string, filter) => {
-            //@ts-ignore
-            (filter as TProductCategoryFilter).parentId = value;
+            const id = Number(value);
+            if (!id || isNaN(id)) {
+              delete (filter as TProductCategoryInput).parentId;
+            } else {
+              (filter as TProductCategoryInput).parentId = id;
+            }
             return filter;
           },
-          getValueView: (parent) => parent?.id,
+          getValueView: (parent, entity) => entity?.parent?.id,
           customGraphQlProperty: {
             parent: {
               id: true,

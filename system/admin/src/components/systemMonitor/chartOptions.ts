@@ -1,6 +1,7 @@
 import { TSystemUsage } from '@cromwell/core';
 import { format } from 'date-fns';
 import prettyBytes from 'pretty-bytes';
+import type { EChartsOption } from 'echarts';
 
 export const getCpuUsageOption = (echarts, loads: TSystemUsage['cpuUsage']['previousLoads']) => {
   return {
@@ -61,6 +62,99 @@ export const getCpuUsageOption = (echarts, loads: TSystemUsage['cpuUsage']['prev
       },
     ],
   };
+};
+
+export const getCmsCpuUsageOption = (echarts, processStats: TSystemUsage['processStats']): EChartsOption => {
+  return {
+    xAxis: {
+      min: 0,
+      max: 100,
+      axisLabel: {
+        formatter: (val) => `${val}%`,
+      },
+    },
+    yAxis: {
+      type: 'category',
+      data: ['total', ...processStats.map((stat, i) => `${stat.name}_${i}`)],
+      inverse: true,
+      animationDuration: 300,
+      animationDurationUpdate: 300,
+      axisLabel: {
+        fontSize: 10,
+        formatter: (value) => value.split(' ').join('\n'),
+      },
+    },
+    grid: {
+      left: 120,
+    },
+    series: [
+      {
+        realtimeSort: true,
+        name: 'X',
+        type: 'bar',
+        data: [processStats.reduce((prev, curr) => prev + curr.cpu, 0), ...processStats.map((stat) => stat.cpu)].map(
+          (value) => Number(value.toFixed(3)),
+        ),
+        label: {
+          show: true,
+          position: 'right',
+          valueAnimation: true,
+          formatter: (val) => `${val.data}%`,
+        },
+      },
+    ],
+    legend: {
+      show: false,
+    },
+    animationDuration: 0,
+    animationDurationUpdate: 2000,
+    animationEasing: 'linear',
+    animationEasingUpdate: 'linear',
+  } as EChartsOption;
+};
+export const getCmsMemoryUsageOption = (echarts, processStats: TSystemUsage['processStats']): EChartsOption => {
+  return {
+    xAxis: {
+      axisLabel: {
+        formatter: (val) => `${prettyBytes(val)}`,
+      },
+    },
+    yAxis: {
+      type: 'category',
+      data: ['total', ...processStats.map((stat, i) => `${stat.name}_${i}`)],
+      inverse: true,
+      animationDuration: 300,
+      animationDurationUpdate: 300,
+      axisLabel: {
+        fontSize: 10,
+        formatter: (value) => value.split(' ').join('\n'),
+      },
+    },
+    grid: {
+      left: 120,
+    },
+    series: [
+      {
+        realtimeSort: true,
+        name: 'X',
+        type: 'bar',
+        data: [processStats.reduce((prev, curr) => prev + curr.memory, 0), ...processStats.map((stat) => stat.memory)],
+        label: {
+          show: true,
+          position: 'right',
+          valueAnimation: true,
+          formatter: (val) => `${prettyBytes(Number(val.data))}`,
+        },
+      },
+    ],
+    legend: {
+      show: false,
+    },
+    animationDuration: 0,
+    animationDurationUpdate: 3000,
+    animationEasing: 'linear',
+    animationEasingUpdate: 'linear',
+  } as EChartsOption;
 };
 
 export const getPieOption = (title: string, free: number, used: number) => {

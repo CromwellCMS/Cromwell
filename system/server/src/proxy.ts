@@ -1,6 +1,7 @@
 import { serviceLocator, setStoreItem } from '@cromwell/core';
 import { readCMSConfigSync } from '@cromwell/core-backend/dist/helpers/cms-settings';
 import { getLogger } from '@cromwell/core-backend/dist/helpers/logger';
+import { reportProcessPid } from '@cromwell/core-backend/dist/helpers/shell';
 import http from 'http';
 import httpProxy from 'http-proxy';
 import nodeCleanup from 'node-cleanup';
@@ -137,3 +138,5 @@ nodeCleanup(() => {
 });
 
 main();
+
+reportProcessPid('server_proxy');

@@ -2,6 +2,7 @@ const fs = require('fs-extra');
 const { spawnSync, spawn } = require('child_process');
 const { getServerDir, getServerBuildProxyPath } = require('@cromwell/core-backend/dist/helpers/paths');
 const { serverMessages } = require('@cromwell/core-backend/dist/helpers/constants');
+const { reportProcessPid } = require('@cromwell/core-backend/dist/helpers/shell');
 
 // 'build' | 'prod' | 'dev'
 const scriptName = process.argv[2];
@@ -83,3 +84,5 @@ const main = () => {
 };
 
 main();
+
+reportProcessPid('server_startup');

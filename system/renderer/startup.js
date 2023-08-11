@@ -12,6 +12,7 @@ const {
 const { readCMSConfigSync } = require('@cromwell/core-backend/dist/helpers/cms-settings');
 const { rendererMessages } = require('@cromwell/core-backend/dist/helpers/constants');
 const { getLogger } = require('@cromwell/core-backend/dist/helpers/logger');
+const { reportProcessPid } = require('@cromwell/core-backend/dist/helpers/shell');
 
 const yargs = require('yargs-parser');
 
@@ -164,3 +165,5 @@ const main = () => {
 };
 
 main();
+
+reportProcessPid('renderer_startup');

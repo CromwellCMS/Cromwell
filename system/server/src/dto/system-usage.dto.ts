@@ -17,6 +17,9 @@ export class SystemUsageDto implements TSystemUsage {
   @ApiProperty()
   memoryUsage: TSystemUsage['memoryUsage'];
 
+  @ApiProperty()
+  processStats: TSystemUsage['processStats'];
+
   parseSysInfo(info: any) {
     this.osInfo = {
       arch: info?.osInfo?.arch,
@@ -42,6 +45,7 @@ export class SystemUsageDto implements TSystemUsage {
       available: info?.mem?.available,
       total: info?.mem?.total,
     };
+
     return this;
   }
 
@@ -63,6 +67,13 @@ export class SystemUsageDto implements TSystemUsage {
       available: info?.mem?.available,
       total: info?.mem?.total,
     };
+
+    this.processStats = info?.processes?.map((proc) => ({
+      cpu: proc?.stats?.cpu,
+      memory: proc?.stats?.memory,
+      name: proc?.name,
+    }));
+
     return this;
   }
 }

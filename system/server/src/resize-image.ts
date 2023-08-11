@@ -4,6 +4,7 @@ import got from 'got';
 import { dirname } from 'path';
 import sharp from 'sharp';
 import { parentPort } from 'worker_threads';
+import { reportProcessPid } from '@cromwell/core-backend/dist/helpers/shell';
 
 const logger = getLogger();
 
@@ -95,3 +96,5 @@ parentPort?.on('message', async (message: { command: 'resize' } & ResizeImageArg
 process.on('uncaughtException', (err) => {
   logger.error('An unhandled error occurred: ', err);
 });
+
+reportProcessPid('server_resize_image');

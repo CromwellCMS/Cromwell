@@ -9,8 +9,9 @@ import {
   getAdminPanelWebPublicDir,
   getPublicDir,
 } from '@cromwell/core-backend/dist/helpers/paths';
+import { reportProcessPid } from '@cromwell/core-backend/dist/helpers/shell';
 import { getRestApiClient } from '@cromwell/core-frontend/dist/api/CRestApiClient';
-import { resolvePublicFilePathToServe, fastifySendFile } from '@cromwell/utils/build/static';
+import { fastifySendFile, resolvePublicFilePathToServe } from '@cromwell/utils/build/static';
 import fs from 'fs-extra';
 import normalizePath from 'normalize-path';
 import { join, resolve } from 'path';
@@ -206,3 +207,5 @@ const startProdServer = (port: number) => {
 start().catch((e) => console.error(e));
 
 type HelperOptions = { isProduction: boolean; configsDir: string };
+
+reportProcessPid('admin_server');
