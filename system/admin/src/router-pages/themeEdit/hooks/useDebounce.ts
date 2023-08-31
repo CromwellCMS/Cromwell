@@ -6,9 +6,6 @@ export function useDebounceFn<T extends (...args: any) => void>(fn: T, delay: nu
 
   React.useEffect(() => {
     originalFn.current = fn;
-    () => {
-      originalFn.current = null;
-    };
   }, [fn]);
 
   React.useEffect(() => {

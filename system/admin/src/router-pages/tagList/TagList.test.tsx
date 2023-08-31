@@ -1,6 +1,5 @@
 import { render, screen } from '@testing-library/react';
 import React from 'react';
-import loadable from '@loadable/component';
 import { TPagedList, TTag } from '@cromwell/core';
 
 const testData: TPagedList<TTag> = {
@@ -17,14 +16,8 @@ const testData: TPagedList<TTag> = {
   ],
 };
 
-jest.mock('../../constants/PageInfos', () => {
-  return {
-    tagListPageInfo: {},
-    tagPageInfo: {},
-  };
-});
-
 jest.mock('@cromwell/core-frontend', () => {
+  const loadable = jest.requireActual('@loadable/component')?.default;
   return {
     CList: (props: any) => {
       const Comp = loadable(async () => {

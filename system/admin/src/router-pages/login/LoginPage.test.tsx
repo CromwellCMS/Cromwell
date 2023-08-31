@@ -21,16 +21,6 @@ jest.mock('@cromwell/core-frontend', () => {
   };
 });
 
-jest.mock('react-router-dom', () => {
-  const originalModule = jest.requireActual('react-router-dom');
-  return {
-    useHistory: () => {},
-    BrowserRouter: originalModule.BrowserRouter,
-    Link: () => <></>,
-    withRouter: (c) => c,
-  };
-});
-
 import LoginPage from './LoginPage';
 
 describe('Login page', () => {

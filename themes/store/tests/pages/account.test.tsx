@@ -6,7 +6,7 @@ const testData = {
   name: '_test1_',
 };
 
-jest.mock('@cromwell/core-frontend', () => {
+jest.doMock('@cromwell/core-frontend', () => {
   return {
     ...jest.requireActual('@cromwell/core-frontend'),
     CGallery: (props) => props.gallery?.slides ?? null,

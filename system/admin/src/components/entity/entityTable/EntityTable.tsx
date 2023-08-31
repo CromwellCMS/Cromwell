@@ -319,7 +319,7 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
   };
 
   private maximizeImages = (urls: string[], index: number) => {
-    this.setLightbox(true, index, urls);
+    this.setLightbox?.(true, index, urls);
   };
 
   render() {

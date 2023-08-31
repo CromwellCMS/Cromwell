@@ -1,5 +1,11 @@
+import { TPagedList, TProductCategory } from '@cromwell/core';
+import { render, screen } from '@testing-library/react';
 import React from 'react';
-import { TProductCategory, TPagedList } from '@cromwell/core';
+import { Provider } from 'react-redux-ts';
+import { BrowserRouter as Router } from 'react-router-dom';
+
+import { store } from '../../redux/store';
+import CategoryListPage from './CategoryList';
 
 const testData: TPagedList<TProductCategory> = {
   elements: [
@@ -14,40 +20,19 @@ const testData: TPagedList<TProductCategory> = {
   ],
 };
 
-jest.mock('@cromwell/core-frontend', () => {
+const frontend = require('@cromwell/core-frontend');
+frontend.getGraphQLClient = () => {
   return {
-    getGraphQLClient: () => {
-      return {
-        getRootCategories: jest.fn().mockImplementation(() => testData),
-      };
-    },
-    getRestApiClient: () => {
-      return {
-        getCmsStatus: () => null,
-      };
-    },
+    getRootCategories: jest.fn().mockImplementation(() => testData),
   };
-});
-
-jest.mock('../../constants/PageInfos', () => {
-  return {
-    categoryPageInfo: {},
-  };
-});
-
-import { render, screen } from '@testing-library/react';
-import { BrowserRouter as Router } from 'react-router-dom';
-import { Provider } from 'react-redux-ts';
-
-import CategoryListPage from './CategoryList';
-import { store } from '../../redux/store';
+};
 
 describe('CategoryList page', () => {
   it('renders categories', async () => {
     render(
       <Provider store={store}>
         <Router>
-          <CategoryListPage />
+        <CategoryListPage />
         </Router>
       </Provider>,
     );

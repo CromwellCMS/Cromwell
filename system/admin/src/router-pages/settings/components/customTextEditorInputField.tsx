@@ -6,6 +6,7 @@ import { useFormContext } from 'react-hook-form';
 export const CustomTextEditorInputField = ({ label, name }: { id?: string; label?: any; name?: string }) => {
   const [editorId] = useState('editor_' + getRandStr(12));
   const { setValue, getValues } = useFormContext();
+  const editorDivRef = useRef<HTMLDivElement | null>(null);
 
   const initialValueRef = useRef<null | any>(getValues(name));
 
@@ -29,6 +30,7 @@ export const CustomTextEditorInputField = ({ label, name }: { id?: string; label
       htmlId: editorId,
       data: data?.json,
       placeholder: 'Add your text...',
+      container: editorDivRef.current,
       onChange: async () => {
         const json = await getEditorData(editorId);
         if (!json?.blocks?.length) return null;
@@ -47,8 +49,8 @@ export const CustomTextEditorInputField = ({ label, name }: { id?: string; label
 
   useEffect(() => {
     // initialValueRef.current = value;
-    initEditor();
-  }, []);
+    if (editorDivRef.current) initEditor();
+  }, [editorDivRef.current]);
 
   return (
     <div className="col-span-2">
@@ -56,7 +58,7 @@ export const CustomTextEditorInputField = ({ label, name }: { id?: string; label
         <p className="font-bold pb-1 pl-[2px] text-gray-700">{label}</p>
       </label>
       <div className="border rounded-lg shadow-md w-full py-3 px-3 col-span-2">
-        <div id={editorId} className="min-h-[250px] w-full"></div>
+        <div id={editorId} ref={editorDivRef} className="min-h-[250px] w-full"></div>
       </div>
     </div>
   );

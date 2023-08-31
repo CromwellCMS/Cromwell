@@ -1,6 +1,3 @@
-import { render, screen } from '@testing-library/react';
-import React from 'react';
-
 jest.mock('@cromwell/core-frontend', () => {
   return {
     getRestApiClient: () => {
@@ -11,6 +8,9 @@ jest.mock('@cromwell/core-frontend', () => {
     getPluginStaticUrl: () => '',
   };
 });
+
+import { render, screen } from '@testing-library/react';
+import React from 'react';
 import { Dashboard } from '../../src/admin/widgets/Dashboard';
 
 describe('admin dashboard widget', () => {

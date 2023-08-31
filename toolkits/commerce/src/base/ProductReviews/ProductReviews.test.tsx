@@ -1,7 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import React from 'react';
 import { TPagedList, TProductReview } from '@cromwell/core';
-import loadable from '@loadable/component';
 
 const testData: TPagedList<TProductReview> = {
   elements: [
@@ -16,8 +15,9 @@ const testData: TPagedList<TProductReview> = {
   ],
 };
 
-jest.mock('@cromwell/core-frontend', () => {
+jest.doMock('@cromwell/core-frontend', () => {
   const originalModule = jest.requireActual('@cromwell/core-frontend');
+  const loadable = jest.requireActual('@loadable/component')?.default;
   return {
     ...originalModule,
     getGraphQLClient: () => {

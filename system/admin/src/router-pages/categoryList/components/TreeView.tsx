@@ -9,7 +9,7 @@ import styles from '../CategoryList.module.scss';
 import CategoryItem from './CategoryItem';
 
 export function TreeView(props: {
-  entityListPageRef: React.MutableRefObject<IEntityListPage<TProductCategory, TProductCategoryFilter>>;
+  entityListPageRef: React.MutableRefObject<IEntityListPage<TProductCategory, TProductCategoryFilter> | null>;
   collapsedItemsRef: React.MutableRefObject<Record<string, boolean>>;
   deletedItemsRef: React.MutableRefObject<Record<string, boolean>>;
   updateRoot: any;
@@ -20,7 +20,7 @@ export function TreeView(props: {
   const totalElements = useRef<number | null>(null);
 
   const handleDeleteCategory = async (category: TProductCategory) => {
-    const success = await props.entityListPageRef.current.handleDeleteItem(category);
+    const success = await props.entityListPageRef.current?.handleDeleteItem(category);
     if (!success) return;
     props.deletedItemsRef.current[category.id] = true;
     await getRootCategories();
@@ -32,7 +32,7 @@ export function TreeView(props: {
       const categories = await client.getRootCategories();
       if (categories?.elements && Array.isArray(categories?.elements)) {
         setRootCategories(categories.elements);
-        totalElements.current = categories.pagedMeta?.totalElements;
+        totalElements.current = categories.pagedMeta?.totalElements || 0;
       }
     } catch (e) {
       console.error(e);

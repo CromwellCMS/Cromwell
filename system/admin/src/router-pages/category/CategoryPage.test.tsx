@@ -6,23 +6,6 @@ const testData: TProductCategory = {
   name: '_test1_',
 };
 
-jest.mock('../../constants/PageInfos', () => {
-  return {
-    categoryPageInfo: {},
-    categoryListPageInfo: {},
-  };
-});
-
-jest.mock('react-router-dom', () => {
-  const originalModule = jest.requireActual('react-router-dom');
-  return {
-    useParams: () => ({ id: '1' }),
-    useHistory: () => {},
-    BrowserRouter: originalModule.BrowserRouter,
-    Link: () => <></>,
-  };
-});
-
 jest.mock('@cromwell/core-frontend', () => {
   return {
     getGraphQLClient: () => {

@@ -26,8 +26,10 @@ export const ImageBlockEditor = ({ block }: { block?: TCromwellBlock }) => {
 
   const imageData = Object.assign({}, block?.getContentInstance()?.props, data?.image);
 
-  const handleChange = (key: keyof TCromwellBlockData['image'], value: any) => {
+  const handleChange = (key: keyof Required<TCromwellBlockData>['image'], value: any) => {
     const data = block?.getData();
+    if (!data?.id) return;
+
     if (!data.image) data.image = {};
     (data.image[key] as any) = value;
     blockProps?.modifyData?.(data);
@@ -35,7 +37,7 @@ export const ImageBlockEditor = ({ block }: { block?: TCromwellBlock }) => {
     rerender();
   };
 
-  const handleTextInput = (name: keyof TCromwellBlockData['image']) => (value: any) => {
+  const handleTextInput = (name: keyof Required<TCromwellBlockData>['image']) => (value: any) => {
     let val = value;
     if (val === '' || !val) val = undefined;
     handleChange(name, val);

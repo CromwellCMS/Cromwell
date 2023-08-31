@@ -1,4 +1,4 @@
-jest.mock('../../helpers/loadFrontendBundle', () => {
+jest.doMock('../../helpers/loadFrontendBundle', () => {
   return {
     getLoadableFrontendBundle: () => (props) => {
       return <p>{props.pluginName}</p>;
@@ -6,7 +6,7 @@ jest.mock('../../helpers/loadFrontendBundle', () => {
   };
 });
 
-jest.mock('../../api/CRestApiClient', () => {
+jest.doMock('../../api/CRestApiClient', () => {
   return { getRestApiClient: () => ({}) };
 });
 

@@ -1,7 +1,11 @@
+import { TCoupon, TPagedList } from '@cromwell/core';
 import { render, screen } from '@testing-library/react';
 import React from 'react';
-import loadable from '@loadable/component';
-import { TPagedList, TCoupon } from '@cromwell/core';
+import { Provider } from 'react-redux-ts';
+import { BrowserRouter as Router } from 'react-router-dom';
+
+import { store } from '../../redux/store';
+import CouponList from './CouponList';
 
 const testData: TPagedList<TCoupon> = {
   pagedMeta: { totalElements: 2, pageNumber: 1, pageSize: 2, totalPages: 1 },
@@ -17,52 +21,12 @@ const testData: TPagedList<TCoupon> = {
   ],
 };
 
-jest.mock('../../constants/PageInfos', () => {
+const frontend = require('@cromwell/core-frontend');
+frontend.getGraphQLClient = () => {
   return {
-    couponListPageInfo: {},
-    orderListPageInfo: {},
-    couponPageInfo: {},
+    getCoupons: jest.fn().mockImplementation(async () => testData),
   };
-});
-
-jest.mock('@cromwell/core-frontend', () => {
-  return {
-    CList: (props: any) => {
-      const Comp = loadable(async () => {
-        const items: TPagedList<TCoupon> = await props.loader();
-        const ListItem = props.ListItem;
-        return () => (
-          <div>
-            {items.elements.map((it) => {
-              return <ListItem key={it.id} data={it} listItemProps={props.listItemProps} />;
-            })}
-          </div>
-        );
-      });
-      return <Comp />;
-    },
-    getGraphQLClient: () => {
-      return {
-        getCoupons: jest.fn().mockImplementation(async () => testData),
-      };
-    },
-    getRestApiClient: () => {
-      return {
-        getCmsStatus: () => null,
-      };
-    },
-    getCStore: () => {
-      return {
-        getPriceWithCurrency: jest.fn().mockImplementation((val) => val + ''),
-      };
-    },
-  };
-});
-
-import { Provider } from 'react-redux-ts';
-import CouponList from './CouponList';
-import { BrowserRouter as Router } from 'react-router-dom';
-import { store } from '../../redux/store';
+};
 
 describe('CouponList page', () => {
   it('renders page', async () => {

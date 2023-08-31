@@ -15,11 +15,12 @@ describe('plugin frontend', () => {
     render(
       <Showcase
         pluginName="showcase"
+        blockName="showcase"
         data={{
-          productShowcase: {
+          products: {
             elements: [
               {
-                id: '_test1_',
+                id: 1,
                 name: '_test1_',
               },
             ],

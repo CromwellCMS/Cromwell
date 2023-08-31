@@ -41,12 +41,6 @@ jest.mock('@cromwell/core-frontend', () => {
   };
 });
 
-jest.mock('../../constants/PageInfos', () => {
-  return {
-    pluginPageInfo: {},
-  };
-});
-
 import { fireEvent, render, screen } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 

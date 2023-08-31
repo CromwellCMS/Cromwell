@@ -1,6 +1,5 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, act } from '@testing-library/react';
 import React from 'react';
-import loadable from '@loadable/component';
 
 import FileManager from './FileManager';
 import { getFileManager } from './helpers';
@@ -13,22 +12,29 @@ jest.mock('@cromwell/core-frontend', () => {
       };
     },
     CList: (props: any) => {
-      const Comp = loadable(async () => () => (
+      return (
         <div>
           {props.dataList.map((it) => {
             return <p key={it}>{it}</p>;
           })}
         </div>
-      ));
-      return <Comp />;
+      );
     },
+    Lightbox: () => <></>,
   };
 });
 
 describe('FileManager component', () => {
   it('renders public dir', async () => {
-    render(<FileManager isActive={true} />);
-    getFileManager()?.getPhoto();
+    act(() => {
+      render(<FileManager isActive={true} />);
+    });
+    await screen.findByTestId('FileManagerContainer');
+
+    act(() => {
+      getFileManager()?.getPhoto();
+    });
+
     await screen.findByText('_test1_');
   });
 });

@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import React from 'react';
 
-jest.mock('@cromwell/admin-panel', () => {
+jest.doMock('@cromwell/admin-panel', () => {
   return {
     PluginSettingsLayout: (props) => props.children({ pluginSettings: props.pluginSettings }),
     LoadingStatus: () => null,

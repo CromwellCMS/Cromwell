@@ -44,6 +44,10 @@
   },
   "dependencies": {
     "@apollo/client": "3.7.1",
+    "@babel/plugin-transform-modules-commonjs": "^7.22.11",
+    "@babel/preset-env": "7.17.10",
+    "@babel/preset-react": "7.14.5",
+    "@babel/preset-typescript": "7.22.5",
     "@codexteam/ajax": "4.2.0",
     "@cromwell/core": "^3.0.1-alpha.0",
     "@cromwell/core-backend": "^3.0.3-alpha.0",
@@ -97,6 +101,7 @@
     "gridlex": "2.7.1",
     "history": "5.3.0",
     "javascript-time-ago": "2.5.9",
+    "jest-environment-jsdom": "^29.6.2",
     "json-to-graphql-query": "2.2.4",
     "middie": "7.1.0",
     "mime-types": "2.1.35",

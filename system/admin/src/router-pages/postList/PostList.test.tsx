@@ -1,5 +1,4 @@
 import React from 'react';
-import loadable from '@loadable/component';
 import { TPagedList, TPost, TUser } from '@cromwell/core';
 
 const postsData: TPagedList<TPost> = {
@@ -28,6 +27,7 @@ const users: TPagedList<TUser> = {
 };
 
 jest.mock('@cromwell/core-frontend', () => {
+  const loadable = jest.requireActual('@loadable/component')?.default;
   return {
     CList: (props: any) => {
       const Comp = loadable(async () => {
@@ -60,13 +60,6 @@ jest.mock('@cromwell/core-frontend', () => {
         getPriceWithCurrency: jest.fn().mockImplementation((val) => val + ''),
       };
     },
-  };
-});
-
-jest.mock('../../constants/PageInfos', () => {
-  return {
-    postPageInfo: {},
-    postListInfo: {},
   };
 });
 

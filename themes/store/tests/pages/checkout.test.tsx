@@ -6,7 +6,7 @@ const testData = {
   name: '_test1_',
 };
 
-jest.mock('@cromwell/core-frontend', () => {
+jest.doMock('@cromwell/core-frontend', () => {
   return {
     ...jest.requireActual('@cromwell/core-frontend'),
     getRestApiClient: () => {
@@ -24,7 +24,7 @@ jest.mock('@cromwell/core-frontend', () => {
   };
 });
 
-jest.mock('@mui/material', () => {
+jest.doMock('@mui/material', () => {
   return {
     ...jest.requireActual('@mui/material'),
     useMediaQuery: () => false,

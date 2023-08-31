@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import React from 'react';
 
-jest.mock('@cromwell/core-frontend', () => {
+jest.doMock('@cromwell/core-frontend', () => {
   const originalModule = jest.requireActual('@cromwell/core-frontend');
   return {
     ...originalModule,

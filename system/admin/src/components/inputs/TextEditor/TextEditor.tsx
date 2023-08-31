@@ -18,6 +18,8 @@ export class TextEditor extends React.Component<{
   public initialValue: string;
   public initPromise: null | Promise<void>;
 
+  private editorDivRef = React.createRef<HTMLDivElement | null>();
+
   constructor(props: any) {
     super(props);
 
@@ -38,6 +40,8 @@ export class TextEditor extends React.Component<{
   }
 
   private checkUpdate = () => {
+    if (!this.editorDivRef.current) return;
+
     if (this.props.initialValue !== this.initialValue) {
       this.initialValue = this.props.initialValue;
       this.initEditor();
@@ -72,6 +76,7 @@ export class TextEditor extends React.Component<{
       htmlId: this.editorId,
       data: data?.json,
       placeholder: this.props.placeholder,
+      container: this.editorDivRef.current,
       onChange: () => {
         this.props.onChange?.(null);
       },
@@ -98,7 +103,7 @@ export class TextEditor extends React.Component<{
           }}
           className={styles.descriptionEditor}
         >
-          <div style={{ minHeight: '350px' }} id={this.editorId}></div>
+          <div style={{ minHeight: '350px' }} id={this.editorId} ref={this.editorDivRef}></div>
         </div>
       </>
     );

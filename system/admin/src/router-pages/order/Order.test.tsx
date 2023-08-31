@@ -6,22 +6,6 @@ const testData: TOrder = {
   customerName: '_test1_',
 };
 
-jest.mock('react-router-dom', () => {
-  const originalModule = jest.requireActual('react-router-dom');
-  return {
-    useParams: () => ({ id: '1' }),
-    BrowserRouter: originalModule.BrowserRouter,
-    Link: () => <></>,
-  };
-});
-
-jest.mock('../../constants/PageInfos', () => {
-  return {
-    orderListPageInfo: {},
-    orderPageInfo: {},
-  };
-});
-
 jest.mock('@cromwell/core-frontend', () => {
   return {
     getGraphQLClient: () => {
@@ -49,6 +33,13 @@ jest.mock('@cromwell/core-frontend', () => {
   };
 });
 
+jest.mock('../../constants/PageInfos', () => {
+  return {
+    orderListPageInfo: {},
+    orderPageInfo: {},
+  };
+});
+
 import { render, screen } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 
@@ -62,6 +53,6 @@ describe('Order page', () => {
       </Router>,
     );
 
-    await screen.findByDisplayValue('_test1_');
+    await screen.findByDisplayValue(testData.customerName!);
   });
 });

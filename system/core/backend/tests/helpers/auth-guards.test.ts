@@ -1,4 +1,4 @@
-jest.mock('typeorm', () => {
+jest.doMock('typeorm', () => {
   const originalModule = jest.requireActual('typeorm');
   return {
     getCustomRepository: () => ({
@@ -7,7 +7,7 @@ jest.mock('typeorm', () => {
   };
 });
 
-jest.mock('../../src/repositories/role.repository', () => {
+jest.doMock('../../src/repositories/role.repository', () => {
   return {
     RoleRepository: null,
   };

@@ -34,7 +34,7 @@ export const EditorBlockEditor = ({
           if (!nextData.editor) nextData.editor = {};
           nextData.editor.data = JSON.stringify(editorData);
           nextData.editor.html = html;
-          blockProps.modifyData(nextData);
+          blockProps.modifyData?.(nextData);
           requestAnimationFrame(() => {
             updateFramesPosition();
           });
@@ -43,7 +43,7 @@ export const EditorBlockEditor = ({
 
       await initTextEditor({
         htmlId: editorId,
-        data: JSON.parse(bData?.editor?.data ?? null),
+        data: JSON.parse(bData?.editor?.data ?? '{}'),
         onChange: handler,
       });
     };

@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import React from 'react';
 
-jest.mock('react-resize-detector', () => {
+jest.doMock('react-resize-detector', () => {
   return (props) => <>{props.children({ width: 400, height: 400 })}</>;
 });
 

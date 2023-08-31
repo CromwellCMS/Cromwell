@@ -15,6 +15,7 @@ import { DefaultProductCard } from './ProductCard';
 
 type ProductShowcaseProps = {
   slug?: string | null;
+  products?: TPagedList<TProduct>;
 };
 
 const ProductShowcase = (

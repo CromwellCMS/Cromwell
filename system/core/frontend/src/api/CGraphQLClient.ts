@@ -109,7 +109,7 @@ export class CGraphQLClient {
 
   /** @internal */
   constructor(fetch?: any) {
-    if (isServer() && !fetch) {
+    if (!fetch) {
       fetch = isomorphicFetch;
     }
     this.fetch = fetch;

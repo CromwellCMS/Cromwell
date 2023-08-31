@@ -12,6 +12,7 @@
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
+    "strictNullChecks": true,
     "types": ["jest", "node", "@testing-library/jest-dom"],
     "paths": {
       "@components/*": ["./src/components/*"],

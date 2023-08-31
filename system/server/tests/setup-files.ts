@@ -1,10 +1,10 @@
-jest.mock('../src/helpers/server-fire-action', () => {
+jest.doMock('../src/helpers/server-fire-action', () => {
   return {
     serverFireAction: () => null,
   };
 });
 
-jest.mock('winston', () => {
+jest.doMock('winston', () => {
   class Console {}
   class File {}
   return {

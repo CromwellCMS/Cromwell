@@ -25,7 +25,7 @@ jest.mock('@cromwell/core-frontend', () => {
 });
 
 import Filter from '../../src/frontend/index';
-import { TProductFilterData } from '../../src/frontend/service';
+import { TPluginProductFilterData } from '../../src/types';
 
 describe('plugin frontend', () => {
   it('renders filter with categories', async () => {
@@ -42,7 +42,7 @@ describe('plugin frontend', () => {
                 name: '_test2_',
               },
             },
-          } as TProductFilterData
+          } as TPluginProductFilterData
         }
       />,
     );

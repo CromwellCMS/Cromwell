@@ -55,7 +55,7 @@ export default class PluginMarket extends Component<
     }
   };
 
-  public loadList = async ({ pagedParams }: { pagedParams: TPagedParams<TCCSModuleInfo> }) => {
+  public loadList = async ({ pagedParams }: { pagedParams?: TPagedParams<TCCSModuleInfo> } = {}) => {
     return getCentralServerClient().getPluginList(pagedParams, this.filterInput);
   };
 

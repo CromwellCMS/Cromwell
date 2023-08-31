@@ -54,6 +54,7 @@ jest.mock('echarts', () => {
     },
   };
 });
+
 jest.mock('react-resize-detector', () => {
   return () => <></>;
 });

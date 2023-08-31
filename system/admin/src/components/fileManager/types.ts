@@ -13,15 +13,4 @@ export interface IFileManager {
   open: (settings?: { initialPath?: string; initialFileLocation?: string }) => void;
 }
 
-declare global {
-  namespace NodeJS {
-    interface Global {
-      CromwellFileManager?: IFileManager;
-    }
-  }
-  interface Window {
-    CromwellFileManager?: IFileManager;
-  }
-}
-
 export type TItemType = 'image' | 'folder' | 'file';

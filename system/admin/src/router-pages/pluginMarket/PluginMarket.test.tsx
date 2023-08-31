@@ -1,6 +1,5 @@
 import React from 'react';
 import { TPackageCromwellConfig, TPagedList, TCCSModuleInfo } from '@cromwell/core';
-import loadable from '@loadable/component';
 
 const testDataAll: TPackageCromwellConfig[] = [
   {
@@ -14,6 +13,7 @@ const testDataAll: TPackageCromwellConfig[] = [
 ];
 
 jest.mock('@cromwell/core-frontend', () => {
+  const loadable = jest.requireActual('@loadable/component')?.default;
   return {
     getRestApiClient: () => {
       return {

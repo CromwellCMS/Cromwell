@@ -1,4 +1,4 @@
-jest.mock('next/link', () => {
+jest.doMock('next/link', () => {
   return {
     __esModule: true,
     default: undefined,

@@ -3,6 +3,7 @@ import React from 'react';
 const settings = {
   key: 'test',
 };
+
 jest.mock('@cromwell/core-frontend', () => {
   return {
     getRestApiClient: () => {

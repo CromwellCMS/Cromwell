@@ -148,6 +148,7 @@ const editors: Record<string, EditorJS.default> = {};
 export const initTextEditor = async (options: {
   htmlId: string;
   placeholder?: string;
+  container?: HTMLElement;
   data?: any;
   autofocus?: boolean;
   onChange?: (api: API, block: BlockAPI) => any;
@@ -162,7 +163,7 @@ export const initTextEditor = async (options: {
     delete editors[htmlId];
   }
 
-  const container = document.querySelector(`#${htmlId}`);
+  const container = options.container || document.querySelector(`#${htmlId}`);
   if (!container) {
     console.error('initTextEditor: Failed to find container by id: ' + htmlId);
     return;

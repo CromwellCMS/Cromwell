@@ -6,23 +6,6 @@ const testData: TTag = {
   name: '_test1_',
 };
 
-jest.mock('react-router-dom', () => {
-  const originalModule = jest.requireActual('react-router-dom');
-  return {
-    useParams: () => ({ id: 1 }),
-    BrowserRouter: originalModule.BrowserRouter,
-    Link: () => <></>,
-    useHistory: () => {},
-  };
-});
-
-jest.mock('../../constants/PageInfos', () => {
-  return {
-    tagListPageInfo: {},
-    tagPageInfo: {},
-  };
-});
-
 jest.mock('@cromwell/core-frontend', () => {
   return {
     getGraphQLClient: () => {

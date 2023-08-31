@@ -36,7 +36,7 @@ export const DimensionsEditor = ({
       <p className="font-bold my-2 mt-0 text-xs uppercase">Size</p>
       <div className="grid gap-1 grid-cols-2">
         <StyleNumberField
-          value={styles.width}
+          value={styles?.width}
           keyName="width"
           label="W"
           min={0}
@@ -45,7 +45,7 @@ export const DimensionsEditor = ({
         />
 
         <StyleNumberField
-          value={styles.height}
+          value={styles?.height}
           keyName="height"
           label="H"
           min={0}
@@ -54,7 +54,7 @@ export const DimensionsEditor = ({
         />
 
         <StyleNumberField
-          value={styles.borderRadius}
+          value={styles?.borderRadius}
           keyName="borderRadius"
           label="⛶"
           min={0}

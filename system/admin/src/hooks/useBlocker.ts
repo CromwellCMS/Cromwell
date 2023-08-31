@@ -11,19 +11,19 @@ import { History } from 'history';
  * @see https://reactrouter.com/api/useBlocker
  */
 export function useBlocker(blocker, when = true) {
-  const navigator = useContext(NavigationContext).navigator as History;
+  const navigator = useContext(NavigationContext)?.navigator as History | null;
 
   useEffect(() => {
     if (!when) return;
 
-    const unblock = navigator.block((tx) => {
+    const unblock = navigator?.block((tx) => {
       const autoUnblockingTx = {
         ...tx,
         retry() {
           // Automatically unblock the transition so it can play all the way
           // through before retrying it. TODO: Figure out how to re-enable
           // this block if the transition is cancelled for some reason.
-          unblock();
+          unblock?.();
           tx.retry();
         },
       };

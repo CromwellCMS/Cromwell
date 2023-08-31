@@ -1,13 +1,15 @@
 import { EDBEntity, TBaseFilter, TBasePageEntity, TCustomEntityColumn, TPagedList } from '@cromwell/core';
-import loadable from '@loadable/component';
 import { render, screen } from '@testing-library/react';
 import React from 'react';
 import { Provider } from 'react-redux-ts';
 import { BrowserRouter as Router } from 'react-router-dom';
 
 import { store } from '../../../redux/store';
+import { TEntityPageProps } from '../types';
+import EntityTable from './EntityTable';
 
 jest.mock('@cromwell/core-frontend', () => {
+  const loadable = jest.requireActual('@loadable/component')?.default;
   return {
     CList: (props: any) => {
       const Comp = loadable(async () => {
@@ -26,11 +28,9 @@ jest.mock('@cromwell/core-frontend', () => {
     getCStore: () => ({
       getPriceWithCurrency: (p) => p,
     }),
+    Lightbox: () => <></>,
   };
 });
-
-import { TEntityPageProps } from '../types';
-import EntityTable from './EntityTable';
 
 type TItem = TBasePageEntity & {
   name: string;

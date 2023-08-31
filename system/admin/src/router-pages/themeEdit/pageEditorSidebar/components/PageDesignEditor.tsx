@@ -18,14 +18,16 @@ export const PageDesignEditor = ({ block }: { block?: TCromwellBlock }) => {
 
   const handleStyleChange = useCallback(
     (name: keyof CSSProperties, value: any, withType?: any) => {
-      const newData = block.getData();
+      const newData = block?.getData?.();
+      if (!newData?.id) return;
       if (!newData.style) newData.style = {};
       if (typeof newData.style === 'string') {
         newData.style = JSON.parse(newData.style);
       }
       if (value === null || value === '') {
-        delete newData.style[name];
+        if (newData.style) delete newData.style[name];
       } else {
+        if (!newData.style) newData.style = {};
         newData.style[name] = value + (withType ? withType : '');
       }
 
@@ -38,7 +40,7 @@ export const PageDesignEditor = ({ block }: { block?: TCromwellBlock }) => {
 
   // useEffect(() => {
   // const nextData = block?.getData()
-  if (!data?.style) data.style = {};
+  if (data && !data.style) data.style = {};
   if (typeof data?.style === 'string') data.style = JSON.parse(data?.style);
 
   //   setData(nextData);

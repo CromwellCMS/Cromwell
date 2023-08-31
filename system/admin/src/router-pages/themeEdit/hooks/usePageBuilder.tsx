@@ -178,7 +178,7 @@ const usePageBuilderContext = () => {
     setStoreItem.current('pageConfig', pageConfig);
 
     // Add to local changedModifications (contains only newly added changes)
-    updateChangedModifications(addToModifications(blockData, changedModifications));
+    updateChangedModifications(addToModifications(blockData, changedModifications || []));
   }
 
   function updateDraggable() {
@@ -187,7 +187,7 @@ const usePageBuilderContext = () => {
     pageFrameRef.current?.addEventListener('scroll', onAnyElementScroll);
     contentWindowRef.current?.addEventListener('scroll', onAnyElementScroll);
 
-    const allElements = Array.from(contentWindowRef.current.document.getElementsByTagName('*') ?? []);
+    const allElements = Array.from(contentWindowRef.current?.document?.getElementsByTagName('*') ?? []);
     allElements.forEach((el: HTMLElement) => {
       // Disable all links
       el.onclick = (e) => {
@@ -253,7 +253,7 @@ const usePageBuilderContext = () => {
   }
 
   async function applyHistory(history: THistoryItem) {
-    const pageConfig = getStoreItem.current('pageConfig');
+    const pageConfig = getStoreItem.current('pageConfig')!;
     pageConfig.modifications = JSON.parse(history.global);
     setStoreItem.current('pageConfig', pageConfig);
     // changedModifications = JSON.parse(history.local);
@@ -261,7 +261,7 @@ const usePageBuilderContext = () => {
     await new Promise((done) => setTimeout(done, 10));
     await rerenderBlocks();
 
-    if (selectedBlock.current) selectBlock(getBlockData.current(selectedBlock.current));
+    if (selectedBlock.current) selectBlock(getBlockData.current(selectedBlock.current)!);
   }
 
   function undoModification() {
@@ -293,7 +293,7 @@ const usePageBuilderContext = () => {
       blockData.isDeleted = true;
       modifyBlock(blockData);
     }
-    deselectBlock(getBlockElementById.current(blockData.id));
+    deselectBlock(getBlockElementById.current(blockData.id)!);
     await rerenderBlocks();
 
     draggable.current?.updateBlocks();
@@ -356,7 +356,7 @@ const usePageBuilderContext = () => {
       },
     };
 
-    if (newBlockType === 'plugin') {
+    if (newBlockType === 'plugin' && pluginInfo?.pluginName) {
       newBlock.plugin = {
         pluginName: pluginInfo.pluginName,
       };
@@ -387,7 +387,8 @@ const usePageBuilderContext = () => {
     const bId = data?.id;
     const bType = data?.type;
     const privateDeleteBlock = () => {
-      if (!data.global && isGlobalElem(getBlockElementById.current(data?.id))) {
+      if (!data) return;
+      if (!data.global && isGlobalElem(getBlockElementById.current(data?.id)!)) {
         data.global = true;
       }
       deleteBlock(data);
@@ -399,10 +400,12 @@ const usePageBuilderContext = () => {
         blockName?: string;
       },
     ) => {
+      if (!data) return;
       return createNewBlock(newBType, data, bType === 'container' ? data : undefined, pluginInfo);
     };
 
     const handleAddBlock = async (block: TCromwellBlockData, position: 'top' | 'bottom') => {
+      if (!data) return;
       return createBlockV2(block, data, block.type === 'container' ? data : undefined, position);
     };
 
@@ -425,11 +428,13 @@ const usePageBuilderContext = () => {
       createBlockAfter: handleCreateNewBlock,
       plugins: plugins,
       setCanDrag: (canDrag: boolean) => {
+        if (!bId) return;
         if (!blockInfos[bId]) blockInfos[bId] = {};
         blockInfos[bId].canDrag = canDrag;
         setBlockInfos(blockInfos);
       },
       setCanDeselect: (canDeselect: boolean) => {
+        if (!bId) return;
         if (!blockInfos[bId]) blockInfos[bId] = {};
         blockInfos[bId].canDeselect = canDeselect;
         setBlockInfos(blockInfos);
@@ -578,7 +583,7 @@ const usePageBuilderContext = () => {
   function pageChangeFinish() {
     if (pageFrameRef.current) {
       setTimeout(() => {
-        pageFrameRef.current.style.opacity = '1';
+        pageFrameRef.current!.style.opacity = '1';
       }, 100);
     }
   }
@@ -591,15 +596,15 @@ const usePageBuilderContext = () => {
     deselectCurrentBlock();
     pageChangeStart();
     await sleep(0.2);
-    contentWindowRef.current = pageFrameRef.current?.contentWindow;
+    contentWindowRef.current = pageFrameRef.current.contentWindow!;
     // console.log(contentWindowRef.current.origin)
     editorWidgetWrapperRef.current = document.getElementById('editorWidgetWrapper') as HTMLDivElement;
     editorWidgetWrapperCroppedRef.current = document.getElementById('editorWidgetWrapperCropped') as HTMLDivElement;
 
     const waitForModules = async () => {
       if (
-        !contentWindowRef.current.CromwellStore?.nodeModules?.modules?.['@cromwell/core-frontend'] ||
-        !contentWindowRef.current.CromwellStore?.forceUpdatePage
+        !contentWindowRef.current?.CromwellStore?.nodeModules?.modules?.['@cromwell/core-frontend'] ||
+        !contentWindowRef.current?.CromwellStore?.forceUpdatePage
       ) {
         await sleep(0.2);
         await waitForModules();
@@ -616,9 +621,9 @@ const usePageBuilderContext = () => {
     // console.log(contentWindowRef.current, contentStore.current)
     contentFrontend.current = contentStore.current.nodeModules?.modules?.['@cromwell/core-frontend'];
     // if (contentFrontend.current) {
-    getBlockElementById.current = contentFrontend.current.getBlockElementById;
-    getBlockData.current = contentFrontend.current.getBlockData;
-    getBlockById.current = contentFrontend.current.getBlockById;
+    getBlockElementById.current = contentFrontend.current?.getBlockElementById || getBlockElementById.current;
+    getBlockData.current = contentFrontend.current?.getBlockData || getBlockData.current;
+    getBlockById.current = contentFrontend.current?.getBlockById || getBlockById.current;
     // }
 
     getStoreItem.current = contentStore.current.nodeModules?.modules?.['@cromwell/core'].getStoreItem;

@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { TUser } from '@cromwell/core';
 import React from 'react';
+import { BrowserRouter as Router } from 'react-router-dom';
 
 const testData: TUser = {
   fullName: '__test1__',
@@ -24,20 +25,15 @@ jest.mock('@cromwell/core-frontend', () => {
   };
 });
 
-jest.mock('react-router-dom', () => {
-  const originalModule = jest.requireActual('react-router-dom');
-  return {
-    useHistory: () => {},
-    BrowserRouter: originalModule.BrowserRouter,
-    Link: () => <></>,
-  };
-});
-
 import WelcomePage from './Welcome';
 
 describe('Welcome page', () => {
   it('logs in, fetches user data', async () => {
-    render(<WelcomePage />);
+    render(
+      <Router>
+        <WelcomePage />
+      </Router>,
+    );
 
     await screen.findByText('Create');
 

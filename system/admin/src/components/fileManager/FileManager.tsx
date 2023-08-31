@@ -1,7 +1,7 @@
 import { IconButton } from '@components/buttons/IconButton';
 import { TextButton } from '@components/buttons/TextButton';
-import { getBlockInstance, getRandStr, isServer, sleep } from '@cromwell/core';
-import { CList, getRestApiClient, TCList, Lightbox } from '@cromwell/core-frontend';
+import { getBlockInstance, getRandStr, sleep } from '@cromwell/core';
+import { CList, getRestApiClient, Lightbox, TCList } from '@cromwell/core-frontend';
 import {
   ArrowLeftCircleIcon,
   ArrowRightCircleIcon,
@@ -25,6 +25,7 @@ import Pagination from '../pagination/Pagination';
 import { toast } from '../toast/toast';
 import { FileItem } from './FileItem';
 import styles from './FileManager.module.scss';
+import { fileManagerStore } from './helpers';
 import { IFileManager, TItemType, TState } from './types';
 
 class FileManager
@@ -64,8 +65,7 @@ class FileManager
       hasLoadingStatus: false,
     };
 
-    if (!isServer()) window.CromwellFileManager = this;
-    else global.CromwellFileManager = this;
+    fileManagerStore.getState().setInstance(this);
   }
 
   private listEl: HTMLDivElement;
@@ -449,7 +449,7 @@ class FileManager
         disableEnforceFocus
         modalClassName={styles.modalWrapper}
       >
-        <div className={styles.header}>
+        <div className={styles.header} data-testid={'FileManagerContainer'}>
           <div className={styles.headerLeft}>
             <Tooltip title="Back">
               <span>

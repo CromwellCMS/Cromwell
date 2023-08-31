@@ -96,7 +96,7 @@ export const useBlockEvents = ({
     editorWidgetWrapperCroppedRef.current.appendChild(frame);
 
     const invisibleFrame = frame.cloneNode(true) as HTMLDivElement;
-    invisibleFrame.style.border = null;
+    invisibleFrame.style.border = '';
     invisibleSelectedFrames.current[block.id] = invisibleFrame;
     editorWidgetWrapperRef.current.appendChild(invisibleFrame);
 
@@ -150,7 +150,7 @@ export const useBlockEvents = ({
     const parent = getBlockElementById.current(parentData.id);
     if (!parentData || !parent) {
       console.warn('Failed to add new block, parent was not found: ', parentData, parent, ' block data: ', blockData);
-      return;
+      return [];
     }
 
     const childrenData: TCromwellBlockData[] = [];

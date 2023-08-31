@@ -1,5 +1,4 @@
 import React from 'react';
-import loadable from '@loadable/component';
 
 const productsData: TPagedList<TProduct> = {
   pagedMeta: { totalElements: 2, pageNumber: 1, pageSize: 2, totalPages: 1 },
@@ -17,18 +16,12 @@ const productsData: TPagedList<TProduct> = {
   ],
 };
 
-jest.mock('../../constants/PageInfos', () => {
-  return {
-    productPageInfo: {},
-    productListInfo: {},
-  };
-});
-
 jest.mock('@cromwell/plugin-product-filter/src/frontend/components/Filter', () => {
   return () => <></>;
 });
 
 jest.mock('@cromwell/core-frontend', () => {
+  const loadable = jest.requireActual('@loadable/component')?.default;
   return {
     CList: (props: any) => {
       const Comp = loadable(async () => {

@@ -32,7 +32,8 @@ export const PageActions = () => {
   }, [editingPageConfig]);
 
   const handleChangeUrl = (val: string) => {
-    const rootUrl = config.route.replace('[slug]', '').replace('[id]', '');
+    const rootUrl = config?.route.replace('[slug]', '').replace('[id]', '');
+    if (!rootUrl) return;
     if (!val) val = '';
     val = val.replace(rootUrl, '');
     val = val.replace(/\W/g, '-');
@@ -53,7 +54,7 @@ export const PageActions = () => {
   const handleChange = (prop: keyof TPageConfig, val: any) => {
     if (config?.isVirtual && prop === 'route') {
       if (!val) val = '';
-      const prefix = pageLayout.current.route.replace('[slug]', '');
+      const prefix = pageLayout?.current?.route.replace('[slug]', '') || '';
       val = val.replace(prefix, '');
       val = val.replace(/\W/g, '-');
       val = prefix + val;
@@ -62,7 +63,7 @@ export const PageActions = () => {
       return {
         ...prev,
         [prop]: val,
-        layoutRoute: pageLayout.current.route,
+        layoutRoute: pageLayout.current?.route,
       };
     });
     setChangedPageInfo(true);
@@ -70,8 +71,9 @@ export const PageActions = () => {
   };
 
   const changeLayout = ({ route, name }: { route?: string; name?: string }) => {
+    if (!route || !name) return;
     pageLayout.current = { route, name };
-    handleChange('route', config.route);
+    handleChange('route', route);
   };
 
   if (!editingPageConfig) {
@@ -113,7 +115,7 @@ export const PageActions = () => {
             <div className="ml-2 relative inline-block">
               <Listbox.Button className="rounded-sm cursor-default bg-indigo-800 shadow-md text-left w-full py-1 pr-10 pl-3 relative sm:text-xs focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-white focus-visible:ring-2 focus-visible:ring-opacity-75 focus-visible:ring-offset-indigo-300 focus-visible:ring-offset-2">
                 <span className="text-gray-300 block truncate">
-                  <span className="text-gray-400">Layout:</span> {pageLayout.current.name}
+                  <span className="text-gray-400">Layout:</span> {pageLayout?.current?.name || ''}
                 </span>
                 <span className="flex pr-2 inset-y-0 right-0 absolute items-center pointer-events-none">
                   {genericPages.length > 1 && (

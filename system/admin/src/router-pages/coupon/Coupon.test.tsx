@@ -6,22 +6,6 @@ const testData: TCoupon = {
   code: '_test1_',
 };
 
-jest.mock('react-router-dom', () => {
-  const originalModule = jest.requireActual('react-router-dom');
-  return {
-    useParams: () => ({ id: '1' }),
-    BrowserRouter: originalModule.BrowserRouter,
-    useHistory: () => {},
-    Link: () => <></>,
-  };
-});
-
-jest.mock('../../constants/PageInfos', () => {
-  return {
-    couponPageInfo: {},
-  };
-});
-
 jest.mock('@cromwell/core-frontend', () => {
   return {
     getGraphQLClient: () => {

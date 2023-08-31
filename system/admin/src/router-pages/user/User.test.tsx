@@ -7,23 +7,6 @@ const testData: TUser = {
   fullName: '123',
 };
 
-jest.mock('../../constants/PageInfos', () => {
-  return {
-    userPageInfo: {},
-    userListPageInfo: {},
-  };
-});
-
-jest.mock('react-router-dom', () => {
-  const originalModule = jest.requireActual('react-router-dom');
-  return {
-    useParams: () => ({ id: '1' }),
-    useHistory: () => {},
-    BrowserRouter: originalModule.BrowserRouter,
-    Link: () => <></>,
-  };
-});
-
 jest.mock('@cromwell/core-frontend', () => {
   return {
     getGraphQLClient: () => {

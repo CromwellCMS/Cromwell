@@ -8,7 +8,7 @@ import { useThemeEditor } from '../../hooks/useThemeEditor';
 
 export const HTMLBlockEditor = ({ block }: { block?: TCromwellBlock }) => {
   const data = block?.getData();
-  const blockValue = data.html?.innerHTML as string;
+  const blockValue = data?.html?.innerHTML as string;
 
   const rerender = useForceUpdate();
   const { createBlockProps } = usePageBuilder();
@@ -17,6 +17,7 @@ export const HTMLBlockEditor = ({ block }: { block?: TCromwellBlock }) => {
 
   const setBlockValue = (value: string) => {
     const data = block?.getData();
+    if (!data?.id) return;
     if (data) {
       if (!data.html) data.html = {};
       data.html.innerHTML = value;

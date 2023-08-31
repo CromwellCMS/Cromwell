@@ -70,6 +70,7 @@ export default function CategoryList() {
               />
             );
           }
+          return <></>;
         },
       }}
       getPageListInstance={(inst) => {

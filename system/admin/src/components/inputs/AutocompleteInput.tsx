@@ -25,7 +25,8 @@ export function AutocompleteInput<T>(
         size, // eslint-disable-line @typescript-eslint/no-unused-vars
         InputProps,
         inputProps,
-        ...rest
+        disabled,
+        id,
       }) => {
         let content: JSX.Element = (
           <div ref={InputProps.ref}>
@@ -35,7 +36,8 @@ export function AutocompleteInput<T>(
               inputFieldClassName={InputProps.className}
               inputElementClassName={inputProps.className}
               {...inputProps}
-              {...rest}
+              disabled={disabled}
+              id={id}
               label={label}
             />
           </div>

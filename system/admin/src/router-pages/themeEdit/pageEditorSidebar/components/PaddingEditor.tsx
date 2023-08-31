@@ -50,7 +50,7 @@ export const PaddingEditor = ({
       {individual && (
         <div className={`grid gap-1 grid-cols-2`}>
           <StyleNumberField
-            value={styles.paddingLeft}
+            value={styles?.paddingLeft}
             keyName="paddingLeft"
             label="L"
             min={0}
@@ -59,7 +59,7 @@ export const PaddingEditor = ({
           />
 
           <StyleNumberField
-            value={styles.paddingRight}
+            value={styles?.paddingRight}
             keyName="paddingRight"
             label="R"
             min={0}
@@ -68,7 +68,7 @@ export const PaddingEditor = ({
           />
 
           <StyleNumberField
-            value={styles.paddingTop}
+            value={styles?.paddingTop}
             keyName="paddingTop"
             label="T"
             min={0}
@@ -77,7 +77,7 @@ export const PaddingEditor = ({
           />
 
           <StyleNumberField
-            value={styles.paddingBottom}
+            value={styles?.paddingBottom}
             keyName="paddingBottom"
             label="B"
             min={0}
@@ -89,7 +89,7 @@ export const PaddingEditor = ({
       {!individual && (
         <div className="grid gap-1 grid-cols-2">
           <StyleNumberField
-            value={styles.padding}
+            value={styles?.padding}
             keyName="padding"
             label="P"
             min={0}

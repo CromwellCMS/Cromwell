@@ -25,6 +25,7 @@ export type TextInputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, '
   inputElementClassName?: string;
   defaultValue?: string | number | readonly string[];
   sx?: SxProps;
+  fullWidth?: boolean;
 };
 
 export const TextInput = React.forwardRef(
@@ -49,6 +50,7 @@ export const TextInput = React.forwardRef(
       onChange,
       baseSize,
       sx,
+      fullWidth, // eslint-disable-line @typescript-eslint/no-unused-vars
       ...rest
     } = props;
     const [_value, setValue] = useState(defaultValue ?? '');

@@ -55,7 +55,7 @@ export default class ThemeMarket extends Component<
     }
   };
 
-  public loadList = async ({ pagedParams }: { pagedParams: TPagedParams<TCCSModuleInfo> }) => {
+  public loadList = async ({ pagedParams }: { pagedParams?: TPagedParams<TCCSModuleInfo> } = {}) => {
     return getCentralServerClient().getThemeList(pagedParams, this.filterInput);
   };
 

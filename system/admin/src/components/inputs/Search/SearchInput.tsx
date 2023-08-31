@@ -225,7 +225,7 @@ export class SearchInput<TItemData extends { id: number | string }> extends Reac
           }}
           PopperComponent={() => <></>}
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          renderInput={({ InputProps, inputProps, size, ...rest }) => {
+          renderInput={({ InputProps, inputProps, size, disabled, id, ...rest }) => {
             return (
               <div ref={this.searchAnchorRef}>
                 <div ref={InputProps.ref}>
@@ -234,8 +234,9 @@ export class SearchInput<TItemData extends { id: number | string }> extends Reac
                     endAdornment={InputProps.endAdornment}
                     inputFieldClassName={InputProps.className}
                     inputElementClassName={inputProps.className}
+                    disabled={disabled}
+                    id={id}
                     {...inputProps}
-                    {...rest}
                     onKeyDown={(event: any) => {
                       if (event.key === 'Backspace') {
                         if (event.target.value.length >= 1) event.stopPropagation();
