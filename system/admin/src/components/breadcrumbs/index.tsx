@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 
 export type BreadcrumbItem = {
   link?: string;
-  title: string;
+  title?: string;
 };
 
 export type BreadcrumbProps = {
@@ -93,7 +93,7 @@ export const TBreadcrumbs = (props: BreadcrumbProps) => {
         }
 
         return (
-          <React.Fragment key={idx + itm.title}>
+          <React.Fragment key={idx + (itm?.title || '')}>
             {content}
             <ChevronRightIcon className="h-7 mx-2 mb-[3px] text-gray-300 w-7 inline-block" />
           </React.Fragment>

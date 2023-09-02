@@ -13,7 +13,7 @@ const SideNavLink = (props: {
   toggleSubMenu: (panel: string) => (event: React.ChangeEvent, isExpanded: boolean) => void;
   expanded: string | false;
   forceUpdate: () => void;
-  activeId: string;
+  activeId?: string;
   userInfo: TUser | undefined;
   minimize?: boolean;
 }) => {
@@ -29,7 +29,7 @@ const SideNavLink = (props: {
 
   if (!hasPermission(data)) return null;
   // Don't show sidebar category if no sub links permitted to access
-  if (!data.route && !data.subLinks.some(hasPermission)) return null;
+  if (!data.route && !data.subLinks?.some(hasPermission)) return null;
 
   const onLinkClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -84,7 +84,7 @@ const SideNavLink = (props: {
                 leaveTo="transform scale-90 opacity-0"
               >
                 <Disclosure.Panel className="pl-4">
-                  {props.data.subLinks.map((subLink) => (
+                  {props.data?.subLinks?.map((subLink) => (
                     <SideNavLink
                       data={subLink}
                       key={subLink.id}
@@ -111,7 +111,7 @@ const SideNavLink = (props: {
           ? 'font-thin text-indigo-500 flex items-center p-4 my-2 transition-colors duration-200 justify-start bg-gradient-to-r from-white to-indigo-100 border-r-4 border-indigo-500 dark:from-gray-700 dark:to-indigo-800 hover:bg-gradient-to-r hover:border-r-4 hover:border-indigo-300'
           : 'font-thin text-gray-500 dark:text-gray-200 flex items-center p-4 my-2 transition-colors duration-200 justify-start hover:text-indigo-500 bg-gradient-to-r hover:border-r-4 hover:border-indigo-300'
       } ${props.minimize ? 'w-6 h-6' : ' w-full'}`}
-      to={props.data.route}
+      to={props.data.route!}
     >
       <span className="text-left">{props.data.icon}</span>
       {!props.minimize && <span className="mx-4 text-sm font-normal">{props.data.title}</span>}

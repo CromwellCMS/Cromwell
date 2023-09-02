@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client';
-import { EDBEntity } from '@cromwell/core';
+import { EDBEntity, TPost } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
 import React, { useContext } from 'react';
 
@@ -29,9 +29,9 @@ function PostEdit() {
       entityBaseRoute={postPageInfo.baseRoute}
       listLabel="Posts"
       entityLabel=""
-      onSave={() => {
-        context.hasChangesRef.current = false;
-        return context.getInput();
+      onSave={async () => {
+        if (context.hasChangesRef) context.hasChangesRef.current = false;
+        return context.getInput?.() as Omit<TPost, 'id'>;
       }}
       getById={async (id) => {
         return client.getPostById(

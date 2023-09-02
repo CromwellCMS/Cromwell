@@ -4,25 +4,13 @@ import React from 'react';
 import FileManager from './FileManager';
 import { getFileManager } from './helpers';
 
-jest.mock('@cromwell/core-frontend', () => {
+const frontend = require('@cromwell/core-frontend');
+frontend.getRestApiClient = () => {
   return {
-    getRestApiClient: () => {
-      return {
-        readPublicDir: jest.fn().mockImplementation(() => ['_test1_']),
-      };
-    },
-    CList: (props: any) => {
-      return (
-        <div>
-          {props.dataList.map((it) => {
-            return <p key={it}>{it}</p>;
-          })}
-        </div>
-      );
-    },
-    Lightbox: () => <></>,
+    getCmsStatus: () => null,
+    readPublicDir: jest.fn().mockImplementation(() => ['_test1_']),
   };
-});
+};
 
 describe('FileManager component', () => {
   it('renders public dir', async () => {

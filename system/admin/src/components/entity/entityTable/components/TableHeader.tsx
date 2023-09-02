@@ -3,14 +3,11 @@ import { ChevronDownIcon, TableCellsIcon, XMarkIcon } from '@heroicons/react/24/
 import { Close as CloseIcon } from '@mui/icons-material';
 import { Popover, Theme, Tooltip } from '@mui/material';
 import { useTheme } from '@mui/styles';
+import { toggleSelectAll, useSelectedItems } from '@store/selectedItems';
 import clsx from 'clsx';
 import React, { useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { connect } from 'react-redux-ts';
-
 import { useForceUpdate } from '../../../../helpers/forceUpdate';
-import { toggleSelectAll } from '../../../../redux/helpers';
-import { TAppState } from '../../../../redux/store';
+
 import commonStyles from '../../../../styles/common.module.scss';
 import { TextButton } from '../../../buttons/TextButton';
 import { DraggableList } from '../../../draggableList/DraggableList';
@@ -21,17 +18,10 @@ import styles from '../EntityTable.module.scss';
 import { ColumnConfigureItem, TColumnConfigureItemData } from './ColumnConfigureItem';
 import { SearchContent } from './SearchContent';
 
-const mapStateToProps = (state: TAppState) => {
-  return {
-    allSelected: state.allSelected,
-  };
-};
-
 type PropsType<TEntityType extends TBasePageEntity, TFilterType extends TBaseEntityFilter> = TListItemProps<
   TEntityType,
   TFilterType
-> &
-  Partial<ReturnType<typeof mapStateToProps>>;
+>;
 
 export type TGetAutocompleteValueFromSearch = (
   value: string | undefined | null | number | boolean | Date,
@@ -58,7 +48,7 @@ export function TableHeader<TEntityType extends TBasePageEntity, TFilterType ext
   const currentSearchRef = useRef<string | number | boolean | Date | null | undefined>('');
   const configureColumnsButtonRef = useRef<HTMLDivElement | null>(null);
   const forceUpdate = useForceUpdate();
-  const { allSelected }: ReturnType<typeof mapStateToProps> = useSelector(mapStateToProps);
+  const { allSelected } = useSelectedItems();
   const [columnSearch, setColumnSearch] = useState<TCustomEntityColumn | null>(null);
   const [configureColumnsOpen, setConfigureColumnsOpen] = useState<boolean>(false);
   const theme = useTheme<Theme>();
@@ -387,4 +377,4 @@ export function TableHeader<TEntityType extends TBasePageEntity, TFilterType ext
   );
 }
 
-export default connect(mapStateToProps)(TableHeader);
+export default TableHeader;

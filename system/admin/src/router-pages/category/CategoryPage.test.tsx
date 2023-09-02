@@ -1,36 +1,24 @@
-import React from 'react';
 import { TProductCategory } from '@cromwell/core';
+import { render, screen } from '@testing-library/react';
+import React from 'react';
+import { BrowserRouter as Router } from 'react-router-dom';
+
+import CategoryPage from './CategoryPage';
 
 const testData: TProductCategory = {
   id: 1,
   name: '_test1_',
 };
 
-jest.mock('@cromwell/core-frontend', () => {
+const frontend = require('@cromwell/core-frontend');
+frontend.getGraphQLClient = () => {
   return {
-    getGraphQLClient: () => {
-      return {
-        getProductCategoryById: jest.fn().mockImplementation(() => testData),
-        createProductCategory: jest.fn().mockImplementation(() => testData),
-        updateProductCategory: jest.fn().mockImplementation(() => testData),
-        getProductCategories: jest.fn().mockImplementation(() => ({ elements: [testData] })),
-      };
-    },
-    CList: () => {
-      return <div>...list</div>;
-    },
-    getRestApiClient: () => {
-      return {
-        getCmsStatus: () => null,
-      };
-    },
+    getProductCategoryById: jest.fn().mockImplementation(() => testData),
+    createProductCategory: jest.fn().mockImplementation(() => testData),
+    updateProductCategory: jest.fn().mockImplementation(() => testData),
+    getProductCategories: jest.fn().mockImplementation(() => ({ elements: [testData] })),
   };
-});
-
-import { render, screen } from '@testing-library/react';
-import { BrowserRouter as Router } from 'react-router-dom';
-
-import CategoryPage from './CategoryPage';
+};
 
 describe('Category page', () => {
   it('renders category', async () => {

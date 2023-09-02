@@ -4,7 +4,7 @@ type DataType = {
   html: string;
 };
 
-export const getCustomHtmlClass = (onChange: () => any) => {
+export const getCustomHtmlClass = (onChange?: () => any) => {
   class CustomHtml implements BlockTool {
     state: {
       data?: DataType;
@@ -53,7 +53,7 @@ export const getCustomHtmlClass = (onChange: () => any) => {
 
         input.addEventListener('input', () => {
           // Send manually since editorjs won't send it if only value is changed
-          onChange();
+          onChange?.();
         });
 
         container.appendChild(input);

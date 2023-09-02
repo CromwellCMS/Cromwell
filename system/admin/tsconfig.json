@@ -19,8 +19,8 @@
       "@pages/*": ["src/router-pages/*"],
       "@hooks/*": ["./src/hooks/*"],
       "@helpers/*": ["./src/helpers/*"],
-      "@redux/*": ["./src/redux/*"],
-      "@constants/*": ["./src/constants/*"]
+      "@constants/*": ["./src/constants/*"],
+      "@store/*": ["./src/store/*"]
     },
     "strict": false,
     "forceConsistentCasingInFileNames": true,

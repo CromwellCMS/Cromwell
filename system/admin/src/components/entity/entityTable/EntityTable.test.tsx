@@ -1,36 +1,10 @@
 import { EDBEntity, TBaseFilter, TBasePageEntity, TCustomEntityColumn, TPagedList } from '@cromwell/core';
-import { render, screen } from '@testing-library/react';
+import { render, screen, act } from '@testing-library/react';
 import React from 'react';
-import { Provider } from 'react-redux-ts';
 import { BrowserRouter as Router } from 'react-router-dom';
 
-import { store } from '../../../redux/store';
 import { TEntityPageProps } from '../types';
 import EntityTable from './EntityTable';
-
-jest.mock('@cromwell/core-frontend', () => {
-  const loadable = jest.requireActual('@loadable/component')?.default;
-  return {
-    CList: (props: any) => {
-      const Comp = loadable(async () => {
-        const items: TPagedList<any> = await props.loader();
-        const ListItem = props.ListItem;
-        return () => (
-          <div>
-            {items.elements?.map((it) => {
-              return <ListItem key={it.id} data={it} listItemProps={props.listItemProps} />;
-            })}
-          </div>
-        );
-      });
-      return <Comp />;
-    },
-    getCStore: () => ({
-      getPriceWithCurrency: (p) => p,
-    }),
-    Lightbox: () => <></>,
-  };
-});
 
 type TItem = TBasePageEntity & {
   name: string;
@@ -66,8 +40,8 @@ const columns: TCustomEntityColumn[] = [
 
 describe('EntityTable component', () => {
   it('renders table', async () => {
-    render(
-      <Provider store={store as any}>
+    act(() => {
+      render(
         <Router>
           <EntityTableComp
             entityCategory={EDBEntity.CustomEntity}
@@ -75,9 +49,9 @@ describe('EntityTable component', () => {
             getMany={async () => testData}
             columns={columns}
           />
-        </Router>
-      </Provider>,
-    );
+        </Router>,
+      );
+    });
 
     // Column names
     await screen.findByText(columns[0].label);

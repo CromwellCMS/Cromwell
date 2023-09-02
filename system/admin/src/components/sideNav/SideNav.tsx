@@ -2,17 +2,17 @@ import { getStoreItem, onStoreChange, TUser } from '@cromwell/core';
 import { useForceUpdate } from '@helpers/forceUpdate';
 import { getLinkByInfo, getPageInfos, getSideBarLinks } from '@helpers/navigation';
 import { EyeIcon } from '@heroicons/react/24/solid';
+import { appStore } from '@store/app';
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
-import { store } from '../../redux/store';
 import Topbar from '../topbar/Topbar';
 import SideNavLink from './SideNavLink';
 
 export const SideNav = ({ screen }: { screen: 'mobile' | 'desktop' }) => {
   const pageInfos = getPageInfos();
   const currentInfo = pageInfos.find((i) => i.route === window.location.pathname.replace('/admin', ''));
-  const currentLink = getLinkByInfo(currentInfo);
+  const currentLink = getLinkByInfo(currentInfo!);
   const [expanded, setExpanded] = useState<string | false>(currentLink?.parentId ?? false);
   const location = useLocation();
   const forceUpdate = useForceUpdate();
@@ -27,15 +27,12 @@ export const SideNav = ({ screen }: { screen: 'mobile' | 'desktop' }) => {
       setTimeout(forceUpdate, 100);
     });
 
-    store.setStateProp({
-      prop: 'forceUpdateSidebar',
-      payload: forceUpdate,
-    });
+    appStore.getState().setForceUpdateSidebar(forceUpdate);
   }, []);
 
   useEffect(() => {
     const currentInfo = pageInfos.find((i) => i.route === window.location.pathname.replace('/admin', ''));
-    const newCurrentLink = getLinkByInfo(currentInfo);
+    const newCurrentLink = getLinkByInfo(currentInfo!);
     if (newCurrentLink && newCurrentLink !== currentLink) {
       // setActiveId(newCurrentLink.id);
       if (newCurrentLink.parentId) setExpanded(newCurrentLink.parentId);

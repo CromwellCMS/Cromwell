@@ -7,29 +7,13 @@ const testData: TProduct = {
   categories: [],
 };
 
-jest.mock('@cromwell/core-frontend', () => {
+const frontend = require('@cromwell/core-frontend');
+frontend.getGraphQLClient = () => {
   return {
-    getGraphQLClient: () => {
-      return {
-        getProductById: jest.fn().mockImplementation(async () => testData),
-        getAttributes: jest.fn().mockImplementation(async () => ({ elements: [] })),
-      };
-    },
-    CGallery: () => {
-      return <div>...images mock</div>;
-    },
-    getCStore: () => ({
-      getActiveCurrencySymbol: () => '',
-      getPriceWithCurrency: jest.fn().mockImplementation((val) => val + ''),
-    }),
-    getRestApiClient: () => {
-      return {
-        getCmsStatus: () => null,
-      };
-    },
-    Lightbox: () => <></>,
+    getProductById: jest.fn().mockImplementation(async () => testData),
+    getAttributes: jest.fn().mockImplementation(async () => ({ elements: [] })),
   };
-});
+};
 
 import { render, screen } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';

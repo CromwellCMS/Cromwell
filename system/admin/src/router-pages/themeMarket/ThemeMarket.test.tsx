@@ -1,5 +1,5 @@
 import React from 'react';
-import { TPackageCromwellConfig, TPagedList, TCCSModuleInfo } from '@cromwell/core';
+import { TPackageCromwellConfig } from '@cromwell/core';
 
 const testDataAll: TPackageCromwellConfig[] = [
   {
@@ -12,36 +12,18 @@ const testDataAll: TPackageCromwellConfig[] = [
   },
 ];
 
-jest.mock('@cromwell/core-frontend', () => {
-  const loadable = jest.requireActual('@loadable/component')?.default;
+const frontend = require('@cromwell/core-frontend');
+frontend.getRestApiClient = () => {
   return {
-    getRestApiClient: () => {
-      return {
-        getThemesInfo: jest.fn().mockImplementation(async () => testDataAll),
-      };
-    },
-    getCentralServerClient: () => {
-      return {
-        getThemeList: jest.fn().mockImplementation(async () => ({ elements: testDataAll })),
-      };
-    },
-    CList: (props: any) => {
-      const Comp = loadable(async () => {
-        const items: TPagedList<TCCSModuleInfo> = await props.loader();
-        const ListItem = props.ListItem;
-        return () => (
-          <div>
-            {items.elements.map((it) => {
-              return <ListItem key={it.name} data={it} />;
-            })}
-          </div>
-        );
-      });
-      return <Comp />;
-    },
-    CGallery: () => <></>,
+    getThemesInfo: jest.fn().mockImplementation(async () => testDataAll),
+    getCmsStatus: jest.fn().mockImplementation(async () => ({})),
   };
-});
+};
+frontend.getCentralServerClient = () => {
+  return {
+    getThemeList: jest.fn().mockImplementation(async () => ({ elements: testDataAll })),
+  };
+};
 
 import { render, screen } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';

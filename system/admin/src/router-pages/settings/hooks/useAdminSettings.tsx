@@ -26,14 +26,14 @@ const defaultBreadcrumbs: BreadcrumbItem[] = [{ title: 'Settings', link: '/setti
 
 const useAdminSettingsStore = () => {
   const cmsSets = useCmsSettings();
-  const [adminSettings, setAdminSettings] = useState<TAdminCmsSettingsType>(null);
+  const [adminSettings, setAdminSettings] = useState<TAdminCmsSettingsType | null | undefined>(null);
   const [roles, setRoles] = useState<TRole[]>([]);
   const [permissions, setPermissions] = useState<TPermission[]>([]);
   const [breadcrumbs, setBreadcrumbs] = useState<BreadcrumbItem[]>(defaultBreadcrumbs);
   const [saveDisabled, setSaveDisabled] = useState<boolean>(true);
   const [saveVisible, setSaveVisible] = useState<boolean>(false);
   const [saving, setSaving] = useState<boolean>(false);
-  const [onSave, setOnSave] = useState<() => void>(undefined);
+  const [onSave, setOnSave] = useState<(() => void) | undefined>(undefined);
   const client = getRestApiClient();
 
   const getAdminCmsSettings = useCallback(async () => {
@@ -65,7 +65,7 @@ const useAdminSettingsStore = () => {
   const getRoles = useCallback(async () => {
     const rolesRes = await getGraphQLClient().getRoles({ pagedParams: { pageNumber: 0, pageSize: 100 } });
 
-    setRoles(rolesRes.elements);
+    setRoles(rolesRes?.elements || []);
   }, []);
 
   const getPermissions = useCallback(async () => {
@@ -73,7 +73,7 @@ const useAdminSettingsStore = () => {
 
     const permList = await client.getPermissions();
 
-    setPermissions(permList);
+    setPermissions(permList || []);
   }, []);
 
   const saveRole = useCallback(
@@ -94,7 +94,7 @@ const useAdminSettingsStore = () => {
     await getGraphQLClient().createRole({
       title: role.title,
       name: role.name,
-      permissions: role.permissions,
+      permissions: role.permissions || [],
       isEnabled: role.isEnabled,
     });
 
@@ -114,10 +114,10 @@ const useAdminSettingsStore = () => {
           ...(newData.customMeta || {}),
         },
         modules: {
-          ...(old.modules || {}),
+          ...(old?.modules || {}),
           ...(newData.modules || {}),
         },
-        redirects: [...(old.redirects || []), ...(newData.redirects || [])],
+        redirects: [...(old?.redirects || []), ...(newData.redirects || [])],
         rewrites: [...(old?.rewrites || []), ...(newData.rewrites || [])],
         revalidateCacheAfter: Number(newData.revalidateCacheAfter) ?? 10,
       };
@@ -188,7 +188,7 @@ const useAdminSettingsStore = () => {
       const old = adminSettings;
       const newSettings: TAdminCmsSettingsType = {
         ...old,
-        customFields: [...(old.customFields?.filter((k) => k.entityType !== entityType) || []), ...customFields],
+        customFields: [...(old?.customFields?.filter((k) => k.entityType !== entityType) || []), ...customFields],
       };
 
       return await __saveSettings(newSettings);
@@ -202,10 +202,10 @@ const useAdminSettingsStore = () => {
       const newSettings: TAdminCmsSettingsType = {
         ...old,
         customFields: [
-          ...(old.customFields?.filter((k) => k.entityType !== originalEntityType) || []),
+          ...(old?.customFields?.filter((k) => k.entityType !== originalEntityType) || []),
           ...customFields,
         ],
-        customEntities: [...(old.customEntities?.filter((k) => k.entityType !== originalEntityType) || []), entity],
+        customEntities: [...(old?.customEntities?.filter((k) => k.entityType !== originalEntityType) || []), entity],
       };
 
       return await __saveSettings(newSettings);
@@ -284,7 +284,7 @@ export const useAdminSettings = ({ breadcrumbs, saveVisible, onSave, saveDisable
   }, []);
 
   useEffect(() => {
-    setSaveDisabled(saveDisabled);
+    setSaveDisabled(saveDisabled ?? true);
   }, [saveDisabled]);
 
   return settings;

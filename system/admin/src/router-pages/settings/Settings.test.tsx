@@ -8,20 +8,20 @@ const testData: TCmsSettings = {
   timezone: 0,
 };
 
-jest.mock('@cromwell/core-frontend', () => {
+const frontend = require('@cromwell/core-frontend');
+frontend.getRestApiClient = () => {
   return {
-    getRestApiClient: () => {
-      return {
-        getCmsSettings: jest.fn().mockImplementation(() => testData),
-        getAdminCmsSettings: jest.fn().mockImplementation(() => testData),
-        saveCmsSettings: jest.fn().mockImplementation(() => true),
-      };
-    },
-    getCStore: () => ({
-      getActiveCurrencySymbol: () => '',
-    }),
+    getCmsSettings: jest.fn().mockImplementation(async () => testData),
+    getAdminCmsSettings: jest.fn().mockImplementation(async () => testData),
+    saveCmsSettings: jest.fn().mockImplementation(async () => true),
+    getPermissions: jest.fn().mockImplementation(async () => []),
   };
-});
+};
+frontend.getGraphQLClient = () => {
+  return {
+    getRoles: jest.fn().mockImplementation(() => ({ elements: [] })),
+  };
+};
 
 import SettingsPage from './Settings';
 

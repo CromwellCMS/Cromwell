@@ -11,22 +11,14 @@ const testData: TPost = {
     '{"time":1629830430985,"blocks":[{"id":"ik9CPF8uzr","type":"header","data":{"text":"Lorem ipsum dolor sit amet","level":2}},{"id":"SpXFHh321s","type":"paragraph","data":{"text":"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Sed viverra tellus in hac habitasse platea dictumst vestibulum rhoncus. Ac tortor dignissim convallis aenean et tortor. In iaculis nunc sed augue. Tristique senectus et netus et malesuada fames ac turpis. Fermentum leo vel orci porta non pulvinar neque. In fermentum posuere urna nec tincidunt praesent semper. Massa eget egestas purus viverra.&nbsp;"}}],"version":"2.22.2"}', // eslint-disable-line
 };
 
-jest.mock('@cromwell/core-frontend', () => {
+const frontend = require('@cromwell/core-frontend');
+frontend.getGraphQLClient = () => {
   return {
-    getGraphQLClient: () => {
-      return {
-        getPostById: jest.fn().mockImplementation(async () => testData),
-        updatePost: jest.fn().mockImplementation(async () => true),
-        getTags: jest.fn().mockImplementation(() => []),
-      };
-    },
-    getRestApiClient: () => {
-      return {
-        getCmsStatus: () => null,
-      };
-    },
+    getPostById: jest.fn().mockImplementation(async () => testData),
+    updatePost: jest.fn().mockImplementation(async () => true),
+    getTags: jest.fn().mockImplementation(() => []),
   };
-});
+};
 
 import { fireEvent, render, screen, act } from '@testing-library/react';
 
@@ -34,29 +26,40 @@ import PostPage from './Post';
 
 describe('Post page', () => {
   it('renders delta', async () => {
-    render(
-      <Router>
-        <PostPage />
-      </Router>,
-    );
+    act(() => {
+      render(
+        <Router>
+          <PostPage />
+        </Router>,
+      );
+    });
+
     await sleep(1);
 
     await screen.findByText('Lorem ipsum dolor sit amet');
   });
 
   it('opens settings', async () => {
-    render(
-      <Router>
-        <PostPage />
-      </Router>,
-    );
+    act(() => {
+      render(
+        <Router>
+          <PostPage />
+        </Router>,
+      );
+    });
     await sleep(1);
 
     await screen.findByText('Lorem ipsum dolor sit amet');
 
-    fireEvent.click(document.getElementById('more-button')!);
+    act(() => {
+      fireEvent.click(document.getElementById('more-button')!);
+    });
+
     await screen.findByDisplayValue(testData.slug!);
-    fireEvent.click(document.getElementById('post-settings-close-btn')!);
+
+    act(() => {
+      fireEvent.click(document.getElementById('post-settings-close-btn')!);
+    });
     await screen.findByText('Save');
 
     await act(async () => {});

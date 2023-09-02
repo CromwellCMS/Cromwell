@@ -16,52 +16,22 @@ const testData: TPagedList<TOrder> = {
   ],
 };
 
-jest.mock('@cromwell/core-frontend', () => {
-  const loadable = jest.requireActual('@loadable/component')?.default;
+const frontend = require('@cromwell/core-frontend');
+frontend.getGraphQLClient = () => {
   return {
-    CList: (props: any) => {
-      const Comp = loadable(async () => {
-        const items: TPagedList<TOrder> = await props.loader();
-        const ListItem = props.ListItem;
-        return () => (
-          <div>
-            {items.elements.map((it) => {
-              return <ListItem key={it.id} data={it} listItemProps={props.listItemProps} />;
-            })}
-          </div>
-        );
-      });
-      return <Comp />;
-    },
-    getGraphQLClient: () => {
-      return {
-        getOrders: jest.fn().mockImplementation(async () => testData),
-      };
-    },
-    getRestApiClient: () => {
-      return {
-        getCmsStatus: () => null,
-      };
-    },
-    getCStore: () => ({
-      getPriceWithCurrency: () => '',
-    }),
+    getOrders: jest.fn().mockImplementation(async () => testData),
   };
-});
+};
 
-import { Provider } from 'react-redux-ts';
 import OrderListPage from './OrderList';
 import { BrowserRouter as Router } from 'react-router-dom';
-import { store } from '../../redux/store';
 
 describe('OrderList page', () => {
   it('renders orders', async () => {
     render(
-      <Provider store={store}>
-        <Router>
-          <OrderListPage />
-        </Router>
-      </Provider>,
+      <Router>
+        <OrderListPage />
+      </Router>,
     );
 
     await screen.findByText('_test1_');

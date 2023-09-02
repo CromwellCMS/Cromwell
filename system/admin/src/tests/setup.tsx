@@ -28,6 +28,7 @@ jest.mock('react-router-dom', () => {
     useHistory: () => {},
     withRouter: (c) => c,
     block: () => null,
+    useNavigate: () => () => null,
   };
 });
 
@@ -90,15 +91,47 @@ jest.mock('@cromwell/core-frontend', () => {
       return <Comp />;
     },
     Lightbox: () => <></>,
+    LoadBox: () => <div></div>,
     getRestApiClient: () => {
       return {
         getCmsStatus: () => null,
       };
     },
+    getGraphQLClient: () => ({}),
     getCStore: () => {
       return {
         getPriceWithCurrency: jest.fn().mockImplementation((val) => val + ''),
+        updateCart: jest.fn().mockImplementation(() => null),
+        getCart: jest.fn().mockImplementation(() => []),
+        addToCart: jest.fn().mockImplementation(() => []),
+        clearCart: jest.fn().mockImplementation(() => []),
+        removeFromCart: jest.fn().mockImplementation(() => []),
+        getCartTotal: jest.fn().mockImplementation(() => ({})),
+        getActiveCurrencySymbol: jest.fn().mockImplementation(() => ''),
+        getCoupons: jest.fn().mockImplementation(() => []),
+        setCoupons: jest.fn().mockImplementation(() => ''),
       };
     },
+    getWidgetsForPlace: () => [<></>],
+    CGallery: () => <></>,
+    onWidgetRegister: () => null,
+    iconFromPath: () => null,
+    loadFrontendBundle: jest.fn().mockImplementation(async () => () => <div></div>),
+    getCmsStatus: async () => null,
+    useCmsSettings: () => ({}),
+    AdminPanelWidgetPlace: (props) => <p>{props.pluginName}</p>,
   };
 });
+
+// const frontend = require('@cromwell/core-frontend');
+// frontend.getGraphQLClient = () => {
+//   return {
+//     getRootCategories: jest.fn().mockImplementation(() => testData),
+//   };
+// };
+
+// frontend.getRestApiClient = () => {
+//   return {
+//     getCmsStatus: () => null,
+//   };
+// };

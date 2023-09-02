@@ -26,58 +26,26 @@ const users: TPagedList<TUser> = {
   ],
 };
 
-jest.mock('@cromwell/core-frontend', () => {
-  const loadable = jest.requireActual('@loadable/component')?.default;
+const frontend = require('@cromwell/core-frontend');
+frontend.getGraphQLClient = () => {
   return {
-    CList: (props: any) => {
-      const Comp = loadable(async () => {
-        const items: TPagedList<TPost> = await props.loader();
-        const ListItem = props.ListItem;
-        return () => (
-          <div>
-            {items.elements.map((it) => {
-              return <ListItem key={it.id} data={it} listItemProps={props.listItemProps} />;
-            })}
-          </div>
-        );
-      });
-      return <Comp />;
-    },
-    getGraphQLClient: () => {
-      return {
-        getPosts: jest.fn().mockImplementation(async () => postsData),
-        getUsers: jest.fn().mockImplementation(async () => users),
-        getTags: jest.fn().mockImplementation(async () => []),
-      };
-    },
-    getRestApiClient: () => {
-      return {
-        getCmsStatus: () => null,
-      };
-    },
-    getCStore: () => {
-      return {
-        getPriceWithCurrency: jest.fn().mockImplementation((val) => val + ''),
-      };
-    },
+    getPosts: jest.fn().mockImplementation(async () => postsData),
+    getUsers: jest.fn().mockImplementation(async () => users),
+    getTags: jest.fn().mockImplementation(async () => []),
   };
-});
+};
 
 import { render, screen } from '@testing-library/react';
-import { Provider } from 'react-redux-ts';
 import { BrowserRouter as Router } from 'react-router-dom';
 
-import { store } from '../../redux/store';
 import PostListPage from './PostList';
 
 describe('PostList page', () => {
   it('renders posts', async () => {
     render(
-      <Provider store={store}>
-        <Router>
-          <PostListPage />
-        </Router>
-      </Provider>,
+      <Router>
+        <PostListPage />
+      </Router>,
     );
 
     await screen.findByText('_test1_');

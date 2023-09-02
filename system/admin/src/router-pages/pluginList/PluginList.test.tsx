@@ -22,24 +22,22 @@ const testDataDB: TPluginEntity[] = [
 
 const activatePlugin = jest.fn().mockImplementation(async () => true);
 
-jest.mock('@cromwell/core-frontend', () => {
+const frontend = require('@cromwell/core-frontend');
+frontend.getRestApiClient = () => {
   return {
-    getGraphQLClient: () => {
-      return {
-        getAllEntities: jest.fn().mockImplementation(async () => testDataDB),
-      };
-    },
-    getRestApiClient: () => {
-      return {
-        getPluginList: jest.fn().mockImplementation(async () => testDataAll),
-        activatePlugin,
-        getPluginUpdate: jest.fn().mockImplementation(async () => null),
-        updatePlugin: jest.fn().mockImplementation(async () => null),
-        deletePlugin: jest.fn().mockImplementation(async () => null),
-      };
-    },
+    getPluginList: jest.fn().mockImplementation(async () => testDataAll),
+    activatePlugin,
+    getPluginUpdate: jest.fn().mockImplementation(async () => null),
+    updatePlugin: jest.fn().mockImplementation(async () => null),
+    deletePlugin: jest.fn().mockImplementation(async () => null),
+    getCmsStatus: () => null,
   };
-});
+};
+frontend.getGraphQLClient = () => {
+  return {
+    getAllEntities: jest.fn().mockImplementation(async () => testDataDB),
+  };
+};
 
 import { fireEvent, render, screen } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';

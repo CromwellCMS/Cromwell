@@ -1,5 +1,9 @@
-import React from 'react';
 import { TCmsStats } from '@cromwell/core';
+import { render, screen } from '@testing-library/react';
+import React from 'react';
+import { BrowserRouter as Router } from 'react-router-dom';
+
+import DashboardPage from './Dashboard';
 
 const testData: TCmsStats = {
   reviews: 0,
@@ -13,28 +17,19 @@ const testData: TCmsStats = {
   customers: 0,
 };
 
-jest.mock('@cromwell/core-frontend', () => {
+const frontend = require('@cromwell/core-frontend');
+frontend.getGraphQLClient = () => {
   return {
-    getGraphQLClient: () => {
-      return {
-        getProductReviews: jest.fn().mockImplementation(() => undefined),
-      };
-    },
-    getRestApiClient: () => {
-      return {
-        getCmsStats: jest.fn().mockImplementation(() => testData),
-        getCmsStatus: () => null,
-      };
-    },
-    getCStore: () => {
-      return {
-        getActiveCurrencySymbol: jest.fn().mockImplementation(() => ''),
-      };
-    },
-    getWidgetsForPlace: () => [<></>],
-    onWidgetRegister: () => null,
+    getProductReviews: jest.fn().mockImplementation(() => undefined),
   };
-});
+};
+frontend.getRestApiClient = () => {
+  return {
+    getCmsStatus: () => null,
+    getCmsStats: jest.fn().mockImplementation(() => testData),
+    getDashboardLayout: jest.fn().mockImplementation(() => {}),
+  };
+};
 
 jest.mock('countup.js', () => {
   class CountUp {
@@ -58,16 +53,12 @@ jest.mock('echarts', () => {
 jest.mock('react-resize-detector', () => {
   return () => <></>;
 });
-jest.mock('@mui/material', () => {
-  return {
-    Rating: () => <></>,
-  };
-});
-
-import { render, screen } from '@testing-library/react';
-import { BrowserRouter as Router } from 'react-router-dom';
-
-import DashboardPage from './Dashboard';
+// jest.mock('@mui/material', () => {
+//   return {
+//     Rating: () => <></>,
+//     Skeleton: () => <></>,
+//   };
+// });
 
 describe('Dashboard page', () => {
   it('renders stats', async () => {

@@ -3,13 +3,12 @@ import { getCStore } from '@cromwell/core-frontend';
 import { Checkbox, Grid, IconButton } from '@mui/material';
 import { DeleteForever as DeleteForeverIcon, Edit as EditIcon } from '@mui/icons-material';
 import React from 'react';
-import { connect, PropsType } from 'react-redux-ts';
 import { Link } from 'react-router-dom';
 
 import { productPageInfo } from '../../constants/PageInfos';
-import { TAppState } from '../../redux/store';
 import commonStyles from '../../styles/common.module.scss';
 import styles from './ProductListItem.module.scss';
+import { useSelectedItems } from '@store/selectedItems';
 
 export type TProductItemProps = {
   data?: TProduct;
@@ -18,28 +17,21 @@ export type TProductItemProps = {
 };
 
 export type ListItemProps = {
-  handleDeleteProductBtnClick: (product: TProduct) => void;
-  toggleSelection: (data: TProduct) => void;
+  handleDeleteProductBtnClick: (product?: TProduct) => void;
+  toggleSelection: (data?: TProduct) => void;
 };
 
-const mapStateToProps = (state: TAppState) => {
-  return {
-    selectedItems: state.selectedItems,
-    allSelected: state.allSelected,
-  };
-};
-
-type TPropsType = PropsType<PropsType, TProductItemProps, ReturnType<typeof mapStateToProps>>;
-
-const ProductListItem = (props: TPropsType) => {
+const ProductListItem = (props: TProductItemProps) => {
   const cstore = getCStore();
   const { data } = props;
 
   if (!props.data) return null;
 
+  const { allSelected, selectedItems } = useSelectedItems();
+
   let selected = false;
-  if (props.allSelected && !props.selectedItems[data.id]) selected = true;
-  if (!props.allSelected && props.selectedItems[data.id]) selected = true;
+  if (allSelected && !selectedItems[data?.id || '']) selected = true;
+  if (!allSelected && selectedItems[data?.id || '']) selected = true;
 
   return (
     <Grid container className={styles.listItem}>
@@ -82,6 +74,4 @@ const ProductListItem = (props: TPropsType) => {
   );
 };
 
-const connectedComponent = connect(mapStateToProps)(ProductListItem);
-
-export default connectedComponent;
+export default ProductListItem;

@@ -1,5 +1,4 @@
 import { TPageConfig, TPageInfo } from '@cromwell/core';
-import React from 'react';
 
 const pagesInfo: TPageInfo[] = [
   {
@@ -23,29 +22,24 @@ const testPageConfig: TPageConfig = {
   modifications: [],
 };
 
-jest.mock('@cromwell/core-frontend', () => {
+const frontend = require('@cromwell/core-frontend');
+frontend.getRestApiClient = () => {
   return {
-    getRestApiClient: () => {
-      return {
-        getPagesInfo: jest.fn().mockImplementation(async () => pagesInfo),
-        getPageConfig: jest.fn().mockImplementation(async () => testPageConfig),
-        getThemeConfig: jest.fn().mockImplementation(async () => ({})),
-        getThemeCustomConfig: jest.fn().mockImplementation(async () => ({})),
-        getThemePalette: jest.fn().mockImplementation(async () => ({})),
-        getCmsStatus: jest.fn().mockImplementation(async () => ({})),
-        fetch: async () => null,
-      };
-    },
-    getGraphQLClient: () => {
-      return {
-        getAllEntities: jest.fn().mockImplementation(async () => []),
-        getCmsStatus: () => null,
-      };
-    },
-    loadFrontendBundle: jest.fn().mockImplementation(async () => () => <div></div>),
-    iconFromPath: () => null,
+    getPagesInfo: jest.fn().mockImplementation(async () => pagesInfo),
+    getPageConfig: jest.fn().mockImplementation(async () => testPageConfig),
+    getThemeConfig: jest.fn().mockImplementation(async () => ({})),
+    getThemeCustomConfig: jest.fn().mockImplementation(async () => ({})),
+    getThemePalette: jest.fn().mockImplementation(async () => ({})),
+    getCmsStatus: jest.fn().mockImplementation(async () => ({})),
+    fetch: async () => null,
   };
-});
+};
+frontend.getGraphQLClient = () => {
+  return {
+    getAllEntities: jest.fn().mockImplementation(async () => []),
+    getCmsStatus: () => null,
+  };
+};
 
 describe('ThemeEdit page', () => {
   it('renders sidebar with pages', async () => {

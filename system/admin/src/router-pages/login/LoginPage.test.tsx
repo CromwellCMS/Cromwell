@@ -8,18 +8,15 @@ const testData: TUser = {
   roles: [{ name: 'administrator', permissions: ['all'], id: 1 }],
   id: 1,
 };
-jest.mock('@cromwell/core-frontend', () => {
+
+const frontend = require('@cromwell/core-frontend');
+frontend.getRestApiClient = () => {
   return {
-    getRestApiClient: () => {
-      return {
-        login: jest.fn().mockImplementation(() => true),
-        getUserInfo: jest.fn().mockImplementation(() => testData),
-      };
-    },
-    iconFromPath: () => null,
+    login: jest.fn().mockImplementation(async () => true),
+    getUserInfo: jest.fn().mockImplementation(async () => testData),
     getCmsStatus: async () => null,
   };
-});
+};
 
 import LoginPage from './LoginPage';
 
@@ -34,13 +31,13 @@ describe('Login page', () => {
     const passwordInput = document.getElementById('password-input');
     expect(passwordInput).toBeTruthy();
 
-    fireEvent.change(emailInput, { target: { value: 'Michael@example.com' } });
-    fireEvent.change(passwordInput, { target: { value: 'passs' } });
+    fireEvent.change(emailInput!, { target: { value: 'Michael@example.com' } });
+    fireEvent.change(passwordInput!, { target: { value: 'passs' } });
     fireEvent.click(loginBtn);
 
     await act(async () => {
       const userInfo = getStoreItem('userInfo');
-      expect(userInfo.fullName).toEqual(testData.fullName);
+      expect(userInfo!.fullName).toEqual(testData.fullName);
     });
   });
 });

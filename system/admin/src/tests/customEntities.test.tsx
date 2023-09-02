@@ -1,11 +1,5 @@
 import { TAdminCustomEntity } from '@cromwell/core';
 
-jest.mock('@cromwell/core-frontend', () => {
-  return {
-    getGraphQLClient: () => ({}),
-  };
-});
-
 import {
   getCustomEntities,
   getCustomEntityPages,

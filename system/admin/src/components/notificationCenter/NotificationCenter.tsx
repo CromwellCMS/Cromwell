@@ -6,38 +6,30 @@ import {
   Update as UpdateIcon,
 } from '@mui/icons-material';
 import { Alert, AlertProps, Grid, IconButton, LinearProgress, Popover, Tooltip } from '@mui/material';
+import { getCmsStatus, setCmsStatus, updateCmsStatus, useCmsStatus } from '@store/cmsStatus';
 import clsx from 'clsx';
 import React, { useRef, useState } from 'react';
-import { connect, PropsType } from 'react-redux-ts';
 
-import { updateStatus } from '../../redux/helpers';
-import { store, TAppState } from '../../redux/store';
 import { askConfirmation } from '../modal/Confirmation';
 import { toast } from '../toast/toast';
 import styles from './NotificationCenter.module.scss';
 import UpdateInfoCard from './UpdateInfoCard';
 
-const mapStateToProps = (state: TAppState) => {
-  return {
-    status: state.status,
-  };
-};
-type TPropsType = PropsType<PropsType, { color?: string }, ReturnType<typeof mapStateToProps>>;
-
-function NotificationCenter(props: TPropsType) {
+function NotificationCenter(props: { color?: string }) {
   const [open, setOpen] = useState(false);
   const popperAnchorEl = useRef<HTMLDivElement | null>(null);
   const client = getRestApiClient();
+  const status = useCmsStatus();
 
   let NotificationIcon = NotificationsNoneIcon;
   let tipText = '';
-  if (props?.status?.updateAvailable) {
+  if (status?.updateAvailable) {
     NotificationIcon = NotificationImportantIcon;
     tipText = 'Update available';
   }
 
-  const updateInfo = props.status?.updateInfo;
-  const notifications = props.status?.notifications;
+  const updateInfo = status?.updateInfo;
+  const notifications = status?.notifications;
 
   const handleOpen = () => {
     if (!notifications?.length && !updateInfo) return;
@@ -45,21 +37,18 @@ function NotificationCenter(props: TPropsType) {
   };
 
   const handleStartUpdate = async () => {
-    store.setStateProp({
-      prop: 'status',
-      payload: {
-        ...store.getState().status,
-        isUpdating: true,
-      },
+    setCmsStatus({
+      ...getCmsStatus()!,
+      isUpdating: true,
     });
 
     let success = false;
     try {
-      success = await client.launchCmsUpdate();
+      success = (await client.launchCmsUpdate()) || false;
     } catch (error) {
       console.error(error);
     }
-    await updateStatus();
+    await updateCmsStatus();
 
     if (success) {
       toast.success('CMS updated');
@@ -100,7 +89,7 @@ function NotificationCenter(props: TPropsType) {
         }}
       >
         <Grid container className={styles.list}>
-          {props.status?.isUpdating && (
+          {status?.isUpdating && (
             <Grid item container xs={12} className={clsx(styles.update, styles.updating)}>
               <h3 className={styles.updateTitle}>
                 <UpdateIcon style={{ marginRight: '7px' }} />
@@ -109,10 +98,10 @@ function NotificationCenter(props: TPropsType) {
               <LinearProgress className={styles.updateProgress} />
             </Grid>
           )}
-          {props.status?.updateAvailable && updateInfo && !props.status?.isUpdating && (
+          {status?.updateAvailable && updateInfo && !status?.isUpdating && (
             <UpdateInfoCard
               updateInfo={updateInfo}
-              currentVersion={props.status?.currentVersion}
+              currentVersion={status?.currentVersion}
               onStartUpdate={handleStartUpdate}
             />
           )}
@@ -142,4 +131,4 @@ function NotificationCenter(props: TPropsType) {
   );
 }
 
-export default connect(mapStateToProps)(NotificationCenter);
+export default NotificationCenter;

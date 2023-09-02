@@ -24,7 +24,7 @@ export const StoreSettingsPage = () => {
   const { adminSettings, saveStoreSettings } = useAdminSettingsContext();
   const methods = useForm<FormType>({
     defaultValues: {
-      enablePayLater: !adminSettings.disablePayLater,
+      enablePayLater: !adminSettings?.disablePayLater,
       ...adminSettings,
     },
   });
@@ -45,7 +45,7 @@ export const StoreSettingsPage = () => {
   const paymentsDirty = methods.formState.dirtyFields.enablePayLater;
   const currencyDirty = Object.keys(methods.formState.dirtyFields.currencies || {})
     .map((o) => {
-      const fld = methods.formState.dirtyFields.currencies[o];
+      const fld = methods.formState.dirtyFields.currencies?.[o];
       return fld?.id || fld?.tag || fld.title || fld.symbol || fld.ratio;
     })
     .reduce((acc, cur) => acc || cur, false);

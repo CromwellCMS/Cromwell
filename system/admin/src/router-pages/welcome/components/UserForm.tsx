@@ -8,7 +8,7 @@ import { ImageInput } from '../../../components/inputs/Image/ImageInput';
 
 export function UserForm(props: { onSuccess: (user: TUser) => void }) {
   const apiClient = getRestApiClient();
-  const [avatarInput, setAvatarInput] = useState<string | null>(null);
+  const [avatarInput, setAvatarInput] = useState<string | null | undefined>(null);
   const [loading, setLoading] = useState(false);
 
   const {
@@ -125,6 +125,7 @@ export function UserForm(props: { onSuccess: (user: TUser) => void }) {
             <input
               type="text"
               placeholder="Name"
+              id="name-input"
               disabled={loading}
               {...register('name', { required: true })}
               className={`text-sm sm:text-base relative w-full border ${
@@ -152,6 +153,7 @@ export function UserForm(props: { onSuccess: (user: TUser) => void }) {
             <input
               type="email"
               placeholder="Email Address"
+              id="email-input"
               disabled={loading}
               {...register('email', { required: true })}
               className={`text-sm sm:text-base relative w-full border ${
@@ -179,6 +181,7 @@ export function UserForm(props: { onSuccess: (user: TUser) => void }) {
             <input
               type="password"
               placeholder="******"
+              id="password-input"
               disabled={loading}
               {...register('password', {
                 required: true,

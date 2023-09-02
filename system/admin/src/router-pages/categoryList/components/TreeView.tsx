@@ -1,10 +1,10 @@
 import { TProductCategory, TProductCategoryFilter } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
 import { Skeleton } from '@mui/material';
+import { resetSelected, toggleItemSelection } from '@store/selectedItems';
 import React, { useEffect, useRef, useState } from 'react';
 
 import { IEntityListPage } from '../../../components/entity/types';
-import { resetSelected, toggleItemSelection } from '../../../redux/helpers';
 import styles from '../CategoryList.module.scss';
 import CategoryItem from './CategoryItem';
 

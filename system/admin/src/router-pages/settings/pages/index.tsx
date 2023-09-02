@@ -53,7 +53,7 @@ export const SettingsIndexPage = () => {
             />
 
             <SettingItem
-              onClick={() => getFileManager?.().open()}
+              onClick={() => getFileManager?.()?.open()}
               icon={<CloudIcon className="mx-auto h-8 w-8 self-center" />}
               title="Media Files"
               description="Manage your media files."

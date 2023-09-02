@@ -6,7 +6,6 @@ import { registerCustomEntity } from '@helpers/customEntities';
 import { registerCustomFieldOfType } from '@helpers/customFields';
 import { useForceUpdate } from '@helpers/forceUpdate';
 import { loadPlugins } from '@helpers/loadPlugins';
-import { store } from '@redux/store';
 import deepEqual from 'fast-deep-equal/es6';
 import { useEffect, useState } from 'react';
 
@@ -30,7 +29,7 @@ const initApp = async () => {
     setStoreItem('environment', env.environment);
   }
 
-  const request = async <T>(req: Promise<T>): Promise<T> => {
+  const request = async <T>(req: Promise<T>): Promise<T | undefined> => {
     try {
       return await req;
     } catch (e) {
@@ -69,7 +68,7 @@ const initApp = async () => {
 
   const onUnauthorizedCbId = 'admin-logout';
   const onUnauthorized = async () => {
-    let userInfo: TUser;
+    let userInfo: TUser | undefined;
     restClient?.removeOnUnauthorized(onUnauthorizedCbId);
     try {
       userInfo = await restClient?.getUserInfo({ disableLog: true });
@@ -123,10 +122,6 @@ const initApp = async () => {
   }
 
   if (themeConfig) {
-    store.setStateProp({
-      prop: 'activeTheme',
-      payload: themeConfig,
-    });
     setStoreItem('defaultPages', themeConfig?.defaultPages);
   }
 
@@ -154,7 +149,7 @@ const initApp = async () => {
     onUserLogged(userInfo);
   } else {
     onStoreChange('userInfo', (info) => {
-      onUserLogged(info);
+      if (info) onUserLogged(info);
     });
   }
 };
@@ -185,11 +180,6 @@ export function useAppState() {
   });
 
   useEffect(() => {
-    store.setStateProp({
-      prop: 'forceUpdateApp',
-      payload: forceUpdate,
-    });
-
     (async () => {
       setIsReady(false);
       await initPromise;

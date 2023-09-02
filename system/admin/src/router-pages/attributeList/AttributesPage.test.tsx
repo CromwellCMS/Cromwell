@@ -1,5 +1,8 @@
-import React from 'react';
 import { TAttribute } from '@cromwell/core';
+import { render, screen } from '@testing-library/react';
+import React from 'react';
+
+import AttributesPage from './AttributesList';
 
 const testData: TAttribute[] = [
   {
@@ -16,29 +19,18 @@ const testData: TAttribute[] = [
   },
 ];
 
-jest.mock('@cromwell/core-frontend', () => {
+const frontend = require('@cromwell/core-frontend');
+frontend.getGraphQLClient = () => {
   return {
-    getGraphQLClient: () => {
-      return {
-        getAttributes: jest.fn().mockImplementation(async () => ({ elements: testData })),
-      };
-    },
-    getRestApiClient: () => {
-      return {
-        getCmsStatus: () => null,
-      };
-    },
+    getAttributes: jest.fn().mockImplementation(async () => ({ elements: testData })),
   };
-});
-
-import { render, screen } from '@testing-library/react';
-import AttributesPage from './AttributesList';
+};
 
 describe('AttributesPage', () => {
   it('renders attributes', async () => {
     render(<AttributesPage />);
 
-    await screen.findByDisplayValue(testData[0].key);
-    await screen.findByDisplayValue(testData[1].key);
+    await screen.findByDisplayValue(testData[0].key!);
+    await screen.findByDisplayValue(testData[1].key!);
   });
 });

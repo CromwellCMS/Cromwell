@@ -725,11 +725,11 @@ export type TCmsDashboardSingleLayout = {
 }[];
 
 export type TCmsDashboardLayout = {
-  lg: TCmsDashboardSingleLayout;
-  md: TCmsDashboardSingleLayout;
-  sm: TCmsDashboardSingleLayout;
-  xs: TCmsDashboardSingleLayout;
-  xxs: TCmsDashboardSingleLayout;
+  lg?: TCmsDashboardSingleLayout;
+  md?: TCmsDashboardSingleLayout;
+  sm?: TCmsDashboardSingleLayout;
+  xs?: TCmsDashboardSingleLayout;
+  xxs?: TCmsDashboardSingleLayout;
 };
 
 export type TCmsDashboardSettings = {

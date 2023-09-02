@@ -6,11 +6,11 @@ const config: Config.InitialOptions = {
   moduleNameMapper: {
     '@App/(.*)': '<rootDir>/src/$1',
     '@components/(.*)': '<rootDir>/src/components/$1',
-    '@pages/(.*)': '<rootDir>rc/router-pages/$1',
+    '@pages/(.*)': '<rootDir>/src/router-pages/$1',
     '@hooks/(.*)': '<rootDir>/src/hooks/$1',
     '@helpers/(.*)': '<rootDir>/src/helpers/$1',
-    '@redux/(.*)': '<rootDir>/src/redux/$1',
     '@constants/(.*)': '<rootDir>/src/constants/$1',
+    '@store/(.*)': '<rootDir>/src/store/$1',
     '\\.s?css$': 'identity-obj-proxy',
   },
   silent: false,

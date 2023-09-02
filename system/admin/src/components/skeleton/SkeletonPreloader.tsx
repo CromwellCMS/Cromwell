@@ -3,7 +3,7 @@ import React from 'react';
 
 import styles from './SkeletonPreloader.module.scss';
 
-const listSkeleton = [];
+const listSkeleton: JSX.Element[] = [];
 for (let i = 0; i < 35; i++) {
   listSkeleton.push(<Skeleton key={i} variant="text" height="20px" style={{ margin: '25px 20px' }} />);
 }

@@ -38,6 +38,3 @@ import {
 export const registerThemeEditorPluginBlock = register;
 export type TPluginBlockOptions = TBlockOpts;
 export * from './constants/PageInfos';
-
-import { store } from './redux/store';
-export const reduxStore = store;

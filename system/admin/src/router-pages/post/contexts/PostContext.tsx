@@ -5,17 +5,21 @@ import React, { useRef, useState } from 'react';
 export const PostContext = React.createContext<{
   settingsOpen: boolean;
   setSettingsOpen?: (value: boolean) => void;
-  getEditorDataRef?: React.MutableRefObject<(() => Promise<{ content: string; delta: string }>) | null>;
-  dataRef?: React.MutableRefObject<TPost>;
-  hasChangesRef?: React.MutableRefObject<boolean>;
+  getEditorDataRef: React.MutableRefObject<
+    (() => Promise<{ content: string | null | undefined; delta: string | null | undefined }>) | null
+  >;
+  dataRef: React.MutableRefObject<TPost | null | undefined>;
+  hasChangesRef: React.MutableRefObject<boolean>;
   getInput?: () => Promise<TPostInput>;
 }>({
   settingsOpen: false,
-});
+} as any);
 
 export const PostContextProvider = (props: { children: React.ReactNode }) => {
   const [settingsOpen, setSettingsOpen] = useState(false);
-  const getEditorDataRef = useRef<(() => Promise<{ content: string; delta: string }>) | null>(null);
+  const getEditorDataRef = useRef<
+    (() => Promise<{ content: string | null | undefined; delta: string | null | undefined }>) | null
+  >(null);
   const dataRef = useRef<TPost | null>(null);
   const hasChangesRef = useRef<boolean>(false);
 
@@ -23,7 +27,7 @@ export const PostContextProvider = (props: { children: React.ReactNode }) => {
 
   const getInput = async (): Promise<TPostInput> => {
     const data = dataRef.current;
-    if (!data || !getEditorDataRef.current) return;
+    if (!data || !getEditorDataRef.current) return {};
     const userInfo: TUser | undefined = getStoreItem('userInfo');
     const editorData = await getEditorDataRef.current();
 

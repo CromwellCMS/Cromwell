@@ -69,7 +69,7 @@ const InlinePopperComponent =
   };
 
 const InlinePopper = styled('div')({
-  [`& .${autocompleteClasses.paper}`]: {
+  [`& .${autocompleteClasses?.paper || ''}`]: {
     top: '2px',
     position: 'relative',
     boxShadow: 'none',
@@ -77,7 +77,7 @@ const InlinePopper = styled('div')({
 });
 
 const StyledPopper = styled(Popper)({
-  [`& .${autocompleteClasses.paper}`]: {
+  [`& .${autocompleteClasses?.paper || ''}`]: {
     boxShadow: '0 2px 3px 0 rgba(0, 0, 0, 0.05), 0 0 20px 4px rgba(0, 0, 0, 0.1)',
     top: '2px',
     position: 'relative',

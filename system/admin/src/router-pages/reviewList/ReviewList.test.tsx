@@ -18,52 +18,22 @@ const testData: TPagedList<TProductReview> = {
   ],
 };
 
-jest.mock('@cromwell/core-frontend', () => {
-  const loadable = jest.requireActual('@loadable/component')?.default;
+const frontend = require('@cromwell/core-frontend');
+frontend.getGraphQLClient = () => {
   return {
-    CList: (props: any) => {
-      const Comp = loadable(async () => {
-        const items: TPagedList<TProductReview> = await props.loader();
-        const ListItem = props.ListItem;
-        return () => (
-          <div>
-            {items.elements.map((it) => {
-              return <ListItem key={it.id} data={it} listItemProps={props.listItemProps} />;
-            })}
-          </div>
-        );
-      });
-      return <Comp />;
-    },
-    getGraphQLClient: () => {
-      return {
-        getProductReviews: jest.fn().mockImplementation(async () => testData),
-      };
-    },
-    getCStore: () => ({
-      getPriceWithCurrency: () => '',
-    }),
-    getRestApiClient: () => {
-      return {
-        getCmsStatus: () => null,
-      };
-    },
+    getProductReviews: jest.fn().mockImplementation(async () => testData),
   };
-});
+};
 
-import { Provider } from 'react-redux-ts';
 import ProductReviewPage from './ReviewList';
 import { BrowserRouter as Router } from 'react-router-dom';
-import { store } from '../../redux/store';
 
 describe('ProductReview page', () => {
   it('renders reviews', async () => {
     render(
-      <Provider store={store}>
-        <Router>
-          <ProductReviewPage />
-        </Router>
-      </Provider>,
+      <Router>
+        <ProductReviewPage />
+      </Router>,
     );
 
     await screen.findByText('_test1_');

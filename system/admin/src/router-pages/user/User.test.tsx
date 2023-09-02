@@ -7,18 +7,15 @@ const testData: TUser = {
   fullName: '123',
 };
 
-jest.mock('@cromwell/core-frontend', () => {
+const frontend = require('@cromwell/core-frontend');
+frontend.getGraphQLClient = () => {
   return {
-    getGraphQLClient: () => {
-      return {
-        getUserById: jest.fn().mockImplementation(() => testData),
-        createUser: jest.fn().mockImplementation(() => testData),
-        updateUser: jest.fn().mockImplementation(() => testData),
-        getRoles: jest.fn().mockImplementation(() => []),
-      };
-    },
+    getUserById: jest.fn().mockImplementation(() => testData),
+    createUser: jest.fn().mockImplementation(() => testData),
+    updateUser: jest.fn().mockImplementation(() => testData),
+    getRoles: jest.fn().mockImplementation(() => []),
   };
-});
+};
 
 import { render, screen } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
@@ -33,6 +30,6 @@ describe('User page', () => {
       </Router>,
     );
 
-    await screen.findByDisplayValue(testData.email);
+    await screen.findByDisplayValue(testData.email!);
   });
 });

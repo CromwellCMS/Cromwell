@@ -333,12 +333,12 @@ class FileManager
   };
 
   private openPreview = (fileName: string) => {
-    const index = this.currentItems.indexOf(fileName);
+    const index = this.currentItems?.indexOf(fileName);
 
     this.setLightbox?.(
       true,
-      index,
-      this.currentItems.map((fileName) => this.normalize(`/${this.currentPath}/${fileName}`)),
+      index || 0,
+      this.currentItems?.map((fileName) => this.normalize(`/${this.currentPath}/${fileName}`)) || [],
     );
   };
 

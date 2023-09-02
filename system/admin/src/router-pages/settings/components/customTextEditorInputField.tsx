@@ -3,7 +3,7 @@ import { getEditorData, getEditorHtml, initTextEditor } from '@helpers/editor';
 import React, { useEffect, useRef, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 
-export const CustomTextEditorInputField = ({ label, name }: { id?: string; label?: any; name?: string }) => {
+export const CustomTextEditorInputField = ({ label, name }: { id?: string; label?: any; name: string }) => {
   const [editorId] = useState('editor_' + getRandStr(12));
   const { setValue, getValues } = useFormContext();
   const editorDivRef = useRef<HTMLDivElement | null>(null);

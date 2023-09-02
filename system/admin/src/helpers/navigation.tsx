@@ -46,7 +46,7 @@ import {
   welcomePageInfo,
 } from '../constants/PageInfos';
 import { getCustomEntityPages, getCustomEntitySidebarLinks } from '../helpers/customEntities';
-import { store } from '../redux/store';
+import { forceUpdateSidebar } from '@store/app';
 
 const pageInfoModifiers: Record<string, (infos: TPageInfo[]) => TPageInfo[]> = {};
 const sidebarLinkModifiers: Record<string, (infos: TSidebarLink[]) => TSidebarLink[]> = {};
@@ -58,7 +58,7 @@ export const registerPageInfoModifier = (key: string, modifier: (infos: TPageInf
 
 export const registerSidebarLinkModifier = (key: string, modifier: (links: TSidebarLink[]) => TSidebarLink[]) => {
   sidebarLinkModifiers[key] = modifier;
-  store.getState().forceUpdateSidebar?.();
+  forceUpdateSidebar();
 };
 
 // Export all pages for react-router

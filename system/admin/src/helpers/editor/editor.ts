@@ -36,24 +36,24 @@ const importDependencies = async () => {
       EditorLink,
       EditorWarning,
     ] = await Promise.all([
-      await import('@editorjs/editorjs'),
-      await import('@editorjs/header'),
-      await import('@editorjs/list'),
-      await import('@cromwell/editorjs-image'),
-      await import('@editorjs/embed'),
-      await import('@editorjs/quote'),
-      await import('@editorjs/delimiter'),
-      // await import('@editorjs/raw'),
-      await import('@editorjs/table'),
-      await import('@editorjs/marker'),
-      await import('@editorjs/code'),
-      await import('@editorjs/link'),
-      await import('@editorjs/warning'),
+      import('@editorjs/editorjs'),
+      import('@editorjs/header'),
+      import('@editorjs/list'),
+      import('@cromwell/editorjs-image'),
+      import('@editorjs/embed'),
+      import('@editorjs/quote'),
+      import('@editorjs/delimiter'),
+      // import('@editorjs/raw'),
+      import('@editorjs/table'),
+      import('@editorjs/marker'),
+      import('@editorjs/code'),
+      import('@editorjs/link'),
+      import('@editorjs/warning'),
     ]);
   }
 };
 
-const getTools = (onChange: (...args) => any, readOnly?: boolean) => ({
+const getTools = (onChange?: (...args) => any, readOnly?: boolean) => ({
   image: {
     class: EditorImage.default,
     inlineToolbar: !readOnly,
@@ -61,7 +61,7 @@ const getTools = (onChange: (...args) => any, readOnly?: boolean) => ({
       ? undefined
       : {
           onSelectFile: async () => {
-            return getFileManager().getPhoto();
+            return getFileManager()?.getPhoto();
           },
           uploader: {
             uploadByFile: () => {
@@ -148,7 +148,7 @@ const editors: Record<string, EditorJS.default> = {};
 export const initTextEditor = async (options: {
   htmlId: string;
   placeholder?: string;
-  container?: HTMLElement;
+  container?: HTMLElement | null;
   data?: any;
   autofocus?: boolean;
   onChange?: (api: API, block: BlockAPI) => any;
@@ -220,7 +220,9 @@ export const getEditorHtml = async (htmlId: string, data?: OutputData) => {
 
   editors['saver'] = editor;
 
-  const redactor = saverContainer.querySelector('.codex-editor__redactor');
+  const redactor = saverContainer?.querySelector('.codex-editor__redactor');
+  if (!redactor) return null;
+
   (redactor as any).style = null;
   redactor.querySelectorAll('*').forEach((element) => {
     element.removeAttribute('contentEditable');

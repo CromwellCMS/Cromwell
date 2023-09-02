@@ -11,7 +11,7 @@ import queryString from 'query-string';
 import React from 'react';
 
 import { getCustomFieldsFor } from '../../../helpers/customFields';
-import { countSelectedItems, getSelectedInput, resetSelected, toggleItemSelection } from '../../../redux/helpers';
+import { countSelectedItems, getSelectedInput, resetSelected, toggleItemSelection } from '@store/selectedItems';
 import { askConfirmation } from '../../modal/Confirmation';
 import Pagination from '../../pagination/Pagination';
 import { listPreloader } from '../../skeleton/SkeletonPreloader';
@@ -353,7 +353,7 @@ class EntityTable<TEntityType extends TBasePageEntity, TFilterType extends TBase
               usePagination
               listItemProps={{ ...itemProps }}
               useQueryPagination
-              loader={({ pagedParams }) => this.getManyFilteredItems(pagedParams)}
+              loader={(params) => this.getManyFilteredItems(params?.pagedParams)}
               cssClasses={{
                 scrollBox: styles.list,
                 contentWrapper: styles.listContent,

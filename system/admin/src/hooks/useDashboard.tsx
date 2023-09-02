@@ -123,8 +123,8 @@ const useDashboardContext = () => {
 
     const settings = await client.getDashboardLayout();
 
-    setLayout(settings.layout);
-    setLastSnapshot(JSON.parse(JSON.stringify(settings.layout)));
+    setLayout(settings?.layout);
+    setLastSnapshot(JSON.parse(JSON.stringify(settings?.layout || {})));
     setLoading(false);
   }, []);
 
@@ -141,7 +141,7 @@ const useDashboardContext = () => {
 
   const addWidget = useCallback(async (widgetKey: string) => {
     setLayout((oldLayout) => {
-      if (oldLayout.lg.find((k) => k.i === widgetKey)) {
+      if (oldLayout?.lg?.find((k) => k.i === widgetKey)) {
         return oldLayout;
       }
 

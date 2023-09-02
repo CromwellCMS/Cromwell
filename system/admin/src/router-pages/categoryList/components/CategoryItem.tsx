@@ -6,12 +6,10 @@ import {
   ExpandMore as ExpandMoreIcon,
   SubdirectoryArrowRight as SubdirectoryArrowRightIcon,
 } from '@mui/icons-material';
-import StarIcon from '@mui/icons-material/Star';
-import StarBorderIcon from '@mui/icons-material/StarBorder';
 import { Collapse, Grid, Skeleton, Tooltip } from '@mui/material';
 import { TransitionProps } from '@mui/material/transitions';
+import { useSelectedItems } from '@store/selectedItems';
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { animated, useSpring } from 'react-spring';
 
@@ -19,7 +17,6 @@ import { IconButton } from '../../../components/buttons/IconButton';
 import { CheckboxInput } from '../../../components/inputs/CheckboxInput';
 import { categoryPageInfo } from '../../../constants/PageInfos';
 import { useForceUpdate } from '../../../helpers/forceUpdate';
-import { store, TAppState } from '../../../redux/store';
 import commonStyles from '../../../styles/common.module.scss';
 import { ListItemProps } from '../CategoryList';
 import styles from './CategoryItem.module.scss';
@@ -31,21 +28,12 @@ export type TCategoryItemProps = {
   listItemProps: ListItemProps;
 };
 
-const mapStateToProps = (state: TAppState) => {
-  return {
-    selectedItems: state.selectedItems,
-    allSelected: state.allSelected,
-    selectedItem: state.selectedItem,
-  };
-};
-
 const CategoryItem = (props: TCategoryItemProps) => {
   const { data: category } = props;
   const client = getGraphQLClient();
   let expanded = !!props.collapsedItemsRef?.current[category.id];
-  const embeddedView = props.listItemProps?.embeddedView;
 
-  const { allSelected, selectedItem, selectedItems }: ReturnType<typeof mapStateToProps> = useSelector(mapStateToProps);
+  const { allSelected, selectedItems } = useSelectedItems();
   const [isLoading, setIsLoading] = useState(false);
   const [childCategories, setChildCategories] = useState<TProductCategory[] | null>(null);
   const forceUpdate = useForceUpdate();
@@ -60,27 +48,14 @@ const CategoryItem = (props: TCategoryItemProps) => {
   }
 
   const setExpanded = (val: boolean) => {
-    props.collapsedItemsRef.current['all'] = undefined;
+    if (!props.collapsedItemsRef?.current) return;
+    delete props.collapsedItemsRef.current['all'];
     props.collapsedItemsRef.current[category.id] = !val;
     forceUpdate();
   };
 
   const handleToggleCollapse = async () => {
     setExpanded(expanded);
-  };
-
-  const togglePrimary = () => {
-    if (selectedItem !== category.id) {
-      store.setStateProp({
-        prop: 'selectedItem',
-        payload: category.id,
-      });
-    } else {
-      store.setStateProp({
-        prop: 'selectedItem',
-        payload: undefined,
-      });
-    }
   };
 
   const loadChildren = async () => {
@@ -127,7 +102,6 @@ const CategoryItem = (props: TCategoryItemProps) => {
   let selected = false;
   if (allSelected && !selectedItems[category.id]) selected = true;
   if (!allSelected && selectedItems[category.id]) selected = true;
-  const isPrimary = selectedItem === category.id;
 
   if (props.deletedItemsRef?.current[category.id]) {
     return <></>;
@@ -148,15 +122,8 @@ const CategoryItem = (props: TCategoryItemProps) => {
             <div style={{ height: '38px', width: '40px' }}></div>
           )}
           <div className={commonStyles.center}>
-            <CheckboxInput checked={selected} onChange={() => props.listItemProps.toggleSelection(category)} />
+            <CheckboxInput checked={selected} onChange={() => props.listItemProps.toggleSelection?.(category)} />
           </div>
-          {embeddedView && selected && (
-            <div className={commonStyles.center}>
-              <Tooltip title={isPrimary ? 'Primary category' : 'Set as primary category'}>
-                <IconButton onClick={togglePrimary}>{isPrimary ? <StarIcon /> : <StarBorderIcon />}</IconButton>
-              </Tooltip>
-            </div>
-          )}
           <p className={styles.ellipsis}>{category.name}</p>
         </Grid>
         <Grid item xs={3} className={`${styles.itemActions} `}>

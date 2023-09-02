@@ -1,10 +1,8 @@
 import { TPagedList, TProductCategory } from '@cromwell/core';
 import { render, screen } from '@testing-library/react';
 import React from 'react';
-import { Provider } from 'react-redux-ts';
 import { BrowserRouter as Router } from 'react-router-dom';
 
-import { store } from '../../redux/store';
 import CategoryListPage from './CategoryList';
 
 const testData: TPagedList<TProductCategory> = {
@@ -30,11 +28,9 @@ frontend.getGraphQLClient = () => {
 describe('CategoryList page', () => {
   it('renders categories', async () => {
     render(
-      <Provider store={store}>
-        <Router>
+      <Router>
         <CategoryListPage />
-        </Router>
-      </Provider>,
+      </Router>,
     );
 
     await screen.findByText('_test1_');

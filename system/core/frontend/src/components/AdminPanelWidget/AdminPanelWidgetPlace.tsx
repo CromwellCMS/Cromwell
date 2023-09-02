@@ -42,7 +42,10 @@ export const getNamedWidgetForPlace = <T extends WidgetNames>(
   );
 };
 
-export const getWidgetsForPlace = <T extends WidgetNames>(widgetName: T, widgetProps?: WidgetTypes[T]) => {
+export const getWidgetsForPlace = <T extends WidgetNames>(
+  widgetName: T,
+  widgetProps?: WidgetTypes[T],
+): JSX.Element[] => {
   const widgets = getWidgets(widgetName) ?? {};
   return Object.keys(widgets)
     .map((pluginName) => {
@@ -54,5 +57,5 @@ export const getWidgetsForPlace = <T extends WidgetNames>(widgetName: T, widgetP
         </WidgetErrorBoundary>
       );
     })
-    .filter(Boolean);
+    .filter(Boolean) as JSX.Element[];
 };

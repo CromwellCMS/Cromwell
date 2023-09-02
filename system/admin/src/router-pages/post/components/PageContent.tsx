@@ -8,7 +8,7 @@ import React, { useContext, useEffect } from 'react';
 import { PostContext } from '../contexts/PostContext';
 import styles from './Post.module.scss';
 
-const textPreloader = [];
+const textPreloader: JSX.Element[] = [];
 for (let i = 0; i < 30; i++) {
   textPreloader.push(<Skeleton variant="text" height="10px" style={{ margin: '3px 0' }} key={i} />);
 }
@@ -41,8 +41,11 @@ export function PageContent(props: TFieldsComponentProps<TPost>) {
   };
 
   useEffect(() => {
-    context.dataRef.current = props.entityData;
-    context.dataRef.current.title = context.dataRef.current.title ?? 'Untitled';
+    if (props.entityData) {
+      context.dataRef.current = props.entityData;
+      context.dataRef.current.title = context.dataRef?.current?.title ?? 'Untitled';
+    }
+
     (async () => {
       try {
         await _initEditor(JSON.parse(props.entityData?.delta || '{}'));

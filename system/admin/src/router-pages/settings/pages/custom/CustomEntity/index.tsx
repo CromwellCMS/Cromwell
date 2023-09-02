@@ -24,7 +24,7 @@ export const CustomEntitySettingsPage = () => {
   const { adminSettings } = useAdminSettingsContext();
   const params = useParams<{ entityType?: string }>();
 
-  const entity = adminSettings.customEntities.find((e) => e.entityType === params.entityType);
+  const entity = adminSettings?.customEntities?.find((e) => e.entityType === params.entityType);
 
   if (!entity) {
     return null;
@@ -41,7 +41,7 @@ const CustomEntityForm = ({ entity }: { entity: TAdminCustomEntity }) => {
   const methods = useForm<CustomEntityFormType>({
     defaultValues: {
       ...entity,
-      customFields: adminSettings.customFields?.filter((k) => k.entityType === entity.entityType),
+      customFields: adminSettings?.customFields?.filter((k) => k.entityType === entity.entityType),
     },
   });
 
@@ -80,7 +80,7 @@ const CustomEntityForm = ({ entity }: { entity: TAdminCustomEntity }) => {
     ...info,
     saveDisabled: !formState.isDirty,
     breadcrumbs: [
-      ...info.breadcrumbs,
+      ...(info.breadcrumbs || []),
       {
         title: entity?.entityLabel,
         link: `/settings/custom-data/${entity?.entityType}`,

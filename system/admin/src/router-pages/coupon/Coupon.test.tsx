@@ -1,37 +1,21 @@
-import React from 'react';
 import { TCoupon } from '@cromwell/core';
+import { render, screen } from '@testing-library/react';
+import React from 'react';
+import { BrowserRouter as Router } from 'react-router-dom';
+
+import CouponPage from './Coupon';
 
 const testData: TCoupon = {
   id: 1,
   code: '_test1_',
 };
 
-jest.mock('@cromwell/core-frontend', () => {
+const frontend = require('@cromwell/core-frontend');
+frontend.getGraphQLClient = () => {
   return {
-    getGraphQLClient: () => {
-      return {
-        getCouponById: jest.fn().mockImplementation(() => testData),
-      };
-    },
-    getCStore: () => {
-      return {
-        updateCart: jest.fn().mockImplementation(() => null),
-        getCart: jest.fn().mockImplementation(() => []),
-        addToCart: jest.fn().mockImplementation(() => []),
-        clearCart: jest.fn().mockImplementation(() => []),
-        removeFromCart: jest.fn().mockImplementation(() => []),
-        getCartTotal: jest.fn().mockImplementation(() => ({})),
-        getPriceWithCurrency: jest.fn().mockImplementation(() => ''),
-        getActiveCurrencySymbol: jest.fn().mockImplementation(() => ''),
-      };
-    },
+    getCouponById: jest.fn().mockImplementation(() => testData),
   };
-});
-
-import { render, screen } from '@testing-library/react';
-import { BrowserRouter as Router } from 'react-router-dom';
-
-import CouponPage from './Coupon';
+};
 
 describe('Coupon page', () => {
   it('renders order', async () => {

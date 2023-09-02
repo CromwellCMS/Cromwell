@@ -6,21 +6,13 @@ const testData: TTag = {
   name: '_test1_',
 };
 
-jest.mock('@cromwell/core-frontend', () => {
+const frontend = require('@cromwell/core-frontend');
+frontend.getGraphQLClient = () => {
   return {
-    getGraphQLClient: () => {
-      return {
-        getTagById: jest.fn().mockImplementation(() => testData),
-        updateTag: jest.fn().mockImplementation(() => testData),
-      };
-    },
-    getRestApiClient: () => {
-      return {
-        getCmsStatus: () => null,
-      };
-    },
+    getTagById: jest.fn().mockImplementation(() => testData),
+    updateTag: jest.fn().mockImplementation(() => testData),
   };
-});
+};
 
 import { render, screen } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';

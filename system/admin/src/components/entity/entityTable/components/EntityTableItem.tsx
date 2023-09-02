@@ -2,36 +2,24 @@ import { TBasePageEntity } from '@cromwell/core';
 import { getCStore, getThumbnailSrc } from '@cromwell/core-frontend';
 import { ArrowTopRightOnSquareIcon, MagnifyingGlassPlusIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { Rating, Tooltip } from '@mui/material';
+import { useSelectedItems } from '@store/selectedItems';
 import clsx from 'clsx';
 import React, { useRef, useState } from 'react';
-import { connect, PropsType } from 'react-redux-ts';
 import { Link, useLocation } from 'react-router-dom';
 
 import { toLocaleDateString, toLocaleDateTimeString, toLocaleTimeString } from '../../../../helpers/time';
-import { TAppState } from '../../../../redux/store';
 import commonStyles from '../../../../styles/common.module.scss';
 import { IconButton } from '../../../buttons/IconButton';
 import { CheckboxInput } from '../../../inputs/CheckboxInput';
 import { TBaseEntityFilter, TListItemProps } from '../../types';
 import styles from './EntityTableItem.module.scss';
 
-const mapStateToProps = (state: TAppState) => {
-  return {
-    selectedItems: state.selectedItems,
-    allSelected: state.allSelected,
-  };
+type TEntityTableItemProps<TEntityType extends TBasePageEntity, TFilterType extends TBaseEntityFilter> = {
+  data?: TEntityType;
+  numberOnScreen?: number;
+  listItemProps: TListItemProps<TEntityType, TFilterType>;
+  // prevItemProps?: {}
 };
-
-type TEntityTableItemProps<TEntityType extends TBasePageEntity, TFilterType extends TBaseEntityFilter> = PropsType<
-  PropsType,
-  {
-    data: TEntityType;
-    numberOnScreen?: number;
-    listItemProps: TListItemProps<TEntityType, TFilterType>;
-    // prevItemProps?: {}
-  },
-  ReturnType<typeof mapStateToProps>
->;
 
 function EntityTableItem<TEntityType extends TBasePageEntity, TFilterType extends TBaseEntityFilter>(
   props: TEntityTableItemProps<TEntityType, TFilterType>,
@@ -40,20 +28,21 @@ function EntityTableItem<TEntityType extends TBasePageEntity, TFilterType extend
   const columnRefs = useRef<Record<string, React.RefObject<HTMLDivElement>>>({});
   const [forcedData, setForcedData] = useState<TEntityType | undefined | null>();
   const location = useLocation();
+  const { allSelected, selectedItems } = useSelectedItems();
 
   const { listItemProps, numberOnScreen } = props;
   const { tableProps } = listItemProps;
-  const data: TEntityType = forcedData || props.data;
+  const data: TEntityType | undefined = forcedData || props.data;
   const cstore = getCStore();
   let selected = false;
-  if (props.allSelected && !props.selectedItems[data.id]) selected = true;
-  if (!props.allSelected && props.selectedItems[data.id]) selected = true;
+  if (allSelected && !selectedItems[data?.id ?? '']) selected = true;
+  if (!allSelected && selectedItems[data?.id ?? '']) selected = true;
   const tableColumns = props.listItemProps.getColumns();
 
   return (
     <div className={clsx(styles.listItem)} style={{ backgroundColor: (numberOnScreen || 0) % 2 ? '#fafafa' : '#eee' }}>
       <div className={commonStyles.center}>
-        <CheckboxInput checked={selected} onChange={() => props.listItemProps.toggleSelection?.(data)} />
+        <CheckboxInput checked={selected} onChange={() => data && props.listItemProps.toggleSelection?.(data)} />
       </div>
       <div className={styles.columns}>
         {!!tableColumns?.length &&
@@ -246,4 +235,4 @@ function EntityTableItem<TEntityType extends TBasePageEntity, TFilterType extend
   );
 }
 
-export default connect(mapStateToProps)(EntityTableItem);
+export default EntityTableItem;

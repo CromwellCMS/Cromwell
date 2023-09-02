@@ -1,5 +1,4 @@
 import { IconButton } from '@components/buttons/IconButton';
-import entityTableItemStyles from '@components/entity/entityTable/components/EntityTableItem.module.scss';
 import EntityTable from '@components/entity/entityTable/EntityTable';
 import { TBaseEntityFilter } from '@components/entity/types';
 import { askConfirmation } from '@components/modal';
@@ -49,7 +48,7 @@ export default function PluginList() {
           };
         })
         .sort((a, b) => {
-          if (!a.entity || !b.entity) return 0;
+          if (!a.entity?.createDate || !b.entity?.createDate) return 0;
           return new Date(b.entity.createDate).getTime() - new Date(a.entity.createDate).getTime();
         });
     } catch (e) {
@@ -166,15 +165,21 @@ export default function PluginList() {
                       padding: '8px 0',
                     }}
                   >
-                    <div
-                      className={entityTableItemStyles.imageItem}
+                    <Box
+                      sx={{
+                        width: '100%',
+                        height: '100%',
+                        backgroundPosition: 'center',
+                        backgroundSize: 'cover',
+                        borderRadius: '10px',
+                      }}
                       style={{
                         borderRadius: '0px',
                         backgroundSize: 'contain',
                         backgroundRepeat: 'no-repeat',
                         backgroundImage: pluginIcon ? `url("data:image/png;base64,${pluginIcon}")` : '',
                       }}
-                    ></div>
+                    ></Box>
                   </Box>
                 );
               },

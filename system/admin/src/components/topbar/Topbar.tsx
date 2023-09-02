@@ -15,14 +15,12 @@ import {
   UserCircleIcon,
   XCircleIcon,
 } from '@heroicons/react/24/solid';
+import { setCmsUpdating, updateCmsStatus, useCmsStatus } from '@store/cmsStatus';
 import React, { Fragment, useState } from 'react';
-import { connect, PropsType } from 'react-redux-ts';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { loginPageInfo, userPageInfo } from '../../constants/PageInfos';
 import { useForceUpdate } from '../../helpers/forceUpdate';
-import { updateStatus } from '../../redux/helpers';
-import { store, TAppState } from '../../redux/store';
 import CmsInfo from '../cmsInfo/CmsInfo';
 import { getFileManager } from '../fileManager/helpers';
 import { askConfirmation } from '../modal/Confirmation';
@@ -69,8 +67,7 @@ export const Topbar = () => {
               openCmsInfo={openCmsInfo}
               handleLogout={handleLogout}
             />
-            <NotificationMenu userInfo={userInfo} />
-
+            <NotificationMenu />
             <CmsInfo open={cmsInfoOpen} onClose={() => setCmsInfoOpen(false)} />
             <SystemMonitor open={systemMonitorOpen} onClose={() => setSystemMonitorOpen(false)} />
           </div>
@@ -80,42 +77,29 @@ export const Topbar = () => {
   );
 };
 
-const mapStateToProps = (state: TAppState) => {
-  return {
-    status: state.status,
-  };
-};
-
-type TPropsType = PropsType<PropsType, { color?: string }, ReturnType<typeof mapStateToProps>>;
-
-const NotificationMenu = connect(mapStateToProps)((props: TPropsType) => {
+const NotificationMenu = () => {
   const client = getRestApiClient();
+  const status = useCmsStatus();
 
-  const updateInfo = props.status?.updateInfo;
-  const notifications = props.status?.notifications;
+  const updateInfo = status?.updateInfo;
+  const notifications = status?.notifications;
 
-  const isUpdating = props.status?.isUpdating;
-  const showUpdateAvailable = props.status?.updateAvailable && updateInfo && !props.status?.isUpdating;
+  const isUpdating = status?.isUpdating;
+  const showUpdateAvailable = status?.updateAvailable && updateInfo && !status?.isUpdating;
 
   const nothingToShow = !isUpdating && !showUpdateAvailable && notifications?.length === 0;
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleStartUpdate = async () => {
-    store.setStateProp({
-      prop: 'status',
-      payload: {
-        ...store.getState().status,
-        isUpdating: true,
-      },
-    });
+    setCmsUpdating(true);
 
     let success = false;
     try {
-      success = await client.launchCmsUpdate();
+      success = (await client.launchCmsUpdate()) || false;
     } catch (error) {
       console.error(error);
     }
-    await updateStatus();
+    await updateCmsStatus();
 
     if (success) {
       toast.success('CMS updated');
@@ -195,7 +179,7 @@ const NotificationMenu = connect(mapStateToProps)((props: TPropsType) => {
 
                     return (
                       <div
-                        key={note.pageLink + index}
+                        key={(note.pageLink || '') + index}
                         className={`flex cursor-pointer items-center select-none py-2 px-4 transition w-full duration-150 ease-in-out rounded-lg ${
                           severity === 'info' ? 'bg-blue-100' : 'bg-yellow-100'
                         } ${
@@ -229,7 +213,7 @@ const NotificationMenu = connect(mapStateToProps)((props: TPropsType) => {
       )}
     </Menu>
   );
-});
+};
 
 const UserMenu = ({ userInfo, openFileManager, setSystemMonitorOpen, openDocs, openCmsInfo, handleLogout }) => {
   return (

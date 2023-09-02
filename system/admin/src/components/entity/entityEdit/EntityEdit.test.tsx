@@ -10,19 +10,6 @@ const testData: TProductCategory = {
   slug: '_test1_',
 };
 
-jest.mock('@cromwell/core-frontend', () => {
-  return {
-    CList: () => {
-      return <div>...list</div>;
-    },
-    getRestApiClient: () => {
-      return {
-        getCmsStatus: () => null,
-      };
-    },
-  };
-});
-
 describe('EntityEdit page', () => {
   it('renders EntityEdit', async () => {
     render(

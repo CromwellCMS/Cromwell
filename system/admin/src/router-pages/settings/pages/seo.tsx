@@ -2,7 +2,7 @@ import { CodeEditor } from '@components/inputs/CodeEditor';
 import { getRestApiClient } from '@cromwell/core-frontend';
 import React, { useState } from 'react';
 import { Controller, FormProvider, useForm } from 'react-hook-form';
-import { TextButton } from 'src/exports';
+import { TextButton } from '@components/buttons/TextButton';
 
 import { LoadingStatus } from '../../../components/loadBox/LoadingStatus';
 import { toast } from '../../../components/toast/toast';

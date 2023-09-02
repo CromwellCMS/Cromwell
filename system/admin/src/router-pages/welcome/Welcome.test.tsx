@@ -8,22 +8,21 @@ const testData: TUser = {
   email: '__test2__',
   id: 1,
 };
-jest.mock('@cromwell/core-frontend', () => {
+
+const frontend = require('@cromwell/core-frontend');
+frontend.getGraphQLClient = () => {
   return {
-    getRestApiClient: () => {
-      return {
-        setUpCms: jest.fn().mockImplementation(() => true),
-        login: jest.fn().mockImplementation(() => true),
-        getUserInfo: jest.fn().mockImplementation(() => testData),
-      };
-    },
-    getGraphQLClient: () => {
-      return {
-        createUser: jest.fn().mockImplementation(() => true),
-      };
-    },
+    createUser: jest.fn().mockImplementation(() => true),
   };
-});
+};
+frontend.getRestApiClient = () => {
+  return {
+    setUpCms: jest.fn().mockImplementation(() => true),
+    login: jest.fn().mockImplementation(() => true),
+    getUserInfo: jest.fn().mockImplementation(() => testData),
+    getCmsStatus: () => null,
+  };
+};
 
 import WelcomePage from './Welcome';
 

@@ -3,18 +3,18 @@ import {
   getStoreItem,
   TAdminCustomEntity,
   TCustomEntity,
-  TCustomEntityFilter,
   TCustomEntityColumn,
+  TCustomEntityFilter,
 } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
+import { forceUpdateSidebar } from '@store/app';
 import React from 'react';
 
 import EntityEdit from '../components/entity/entityEdit/EntityEdit';
 import EntityTable from '../components/entity/entityTable/EntityTable';
 import { TEntityPageProps } from '../components/entity/types';
-import commonStyles from '../styles/common.module.scss';
 import { TPageInfo, TSidebarLink } from '../constants/PageInfos';
-import { store } from '../redux/store';
+import commonStyles from '../styles/common.module.scss';
 import { formatTimeAgo } from './time';
 
 const customEntities: Record<string, TAdminCustomEntity> = {};
@@ -27,7 +27,7 @@ export const registerCustomEntity = (options: TAdminCustomEntity) => {
 
 export const unregisterCustomEntity = (entityType: string) => {
   delete customEntities[entityType];
-  store.getState().forceUpdateSidebar?.();
+  forceUpdateSidebar();
 };
 
 export const getCustomEntities = (): TAdminCustomEntity[] => {

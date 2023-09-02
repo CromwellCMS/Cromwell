@@ -145,7 +145,7 @@ export type TCList<DataType = any, ListItemProps = any> = {
 export type TListenerType = 'componentDidUpdate';
 
 export type TListItemProps<DataType, ListItemProps> = {
-  data?: DataType;
+  data?: DataType | undefined;
   listItemProps?: ListItemProps;
   pageNumber?: number;
   numberOnPage?: number;

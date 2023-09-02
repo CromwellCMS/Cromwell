@@ -1,10 +1,8 @@
 import { TCoupon, TPagedList } from '@cromwell/core';
 import { render, screen } from '@testing-library/react';
 import React from 'react';
-import { Provider } from 'react-redux-ts';
 import { BrowserRouter as Router } from 'react-router-dom';
 
-import { store } from '../../redux/store';
 import CouponList from './CouponList';
 
 const testData: TPagedList<TCoupon> = {
@@ -31,11 +29,9 @@ frontend.getGraphQLClient = () => {
 describe('CouponList page', () => {
   it('renders page', async () => {
     render(
-      <Provider store={store}>
-        <Router>
-          <CouponList />
-        </Router>
-      </Provider>,
+      <Router>
+        <CouponList />
+      </Router>,
     );
 
     await screen.findByText('_test1_');
