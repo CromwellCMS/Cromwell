@@ -11,7 +11,7 @@
 ```sh
 $ git clone https://github.com/CromwellCMS/Cromwell
 $ npm run build
-$ npx cromwell start
+$ yarn cromwell start
 ```
 
 **You don't need to run `npm install`**, installation/build handled by startup.js script in the root which invoked by `npm run build`. In development use yarn to install/update dependencies.
@@ -35,7 +35,7 @@ Below listed core services with default settings (ports at localhost address can
 
 - Path - system/server
 - NPM Module - @cromwell/server
-- Run command - `npx crw s --sv s`
+- Run command - `yarn crw s --sv s`
 - Available at - http://localhost:4016
 
 API server and Proxy. That's two servers in one service.  
@@ -51,7 +51,7 @@ API Server Implements REST API for transactions or internal usage and GraphQL AP
 
 - Path - system/renderer
 - NPM Module - @cromwell/renderer
-- Run command - `npx crw s --sv r`
+- Run command - `yarn crw s --sv r`
 - Available at - http://localhost:4128
 
 Next.js service, compiles (using Utils) and serves files of an active Theme and Plugins to end-users.
@@ -60,7 +60,7 @@ Next.js service, compiles (using Utils) and serves files of an active Theme and 
 
 - Path - system/admin
 - NPM Module - @cromwell/admin-panel
-- Run command - `npx crw s --sv a`
+- Run command - `yarn crw s --sv a`
 - Available at - http://localhost:4064
 
 Uses dedicated Fastify server to serve Admin Panel files and public media files.
@@ -91,8 +91,8 @@ Provides "cromwell" CLI.
 ## Develop services
 
 After cloning and building the repo you can start services in development mode (with watchers) by adding --dev flag:  
-`npx crw s --sv s --dev` - Will start API Server service with Nodemon and Rollup watching code changes.  
-`npx crw s --sv a --dev` - Start Admin panel service with Webpack watcher and hot reloading.
+`yarn crw s --sv s --dev` - Will start API Server service with Nodemon and Rollup watching code changes.  
+`yarn crw s --sv a --dev` - Start Admin panel service with Webpack watcher and hot reloading.
 
 For other services you can run scripts from their location:  
 `cd system/core/common && npm run watch` - Will launch watcher on `@cromwell/core` package.

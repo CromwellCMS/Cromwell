@@ -141,7 +141,7 @@ Run the CMS:
 
 ```sh
 cd my-website-name
-npx cromwell start -d
+yarn cromwell start -d
 ```
 
 Open [`http://localhost:4016`](http://localhost:4016) in a web browser to see your web site.  
@@ -195,5 +195,5 @@ yarn add @cromwell/theme-store @cromwell/theme-blog @cromwell/plugin-main-menu @
 Run the CMS:
 
 ```sh
-npx cromwell start -d
+yarn cromwell start -d
 ```

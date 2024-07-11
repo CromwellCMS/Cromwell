@@ -7,7 +7,7 @@ export const sleep = (time: number) => new Promise((done) => setTimeout(done, ti
 
 export const createTask = async (name?: string, noInstall?: boolean, type?: string) => {
   if (!name) {
-    console.error('You must provide App name, eg.: npx crw create my-app');
+    console.error('You must provide App name, eg.: yarn crw create my-app');
     return;
   }
 
@@ -47,7 +47,7 @@ export const createTask = async (name?: string, noInstall?: boolean, type?: stri
 
   if (type === 'theme') {
     console.log(
-      `\n Created Theme boilerplate. Run\x1b[36m cd ${name} && npx cromwell b -w\x1b[0m to start development server`,
+      `\n Created Theme boilerplate. Run\x1b[36m cd ${name} && yarn cromwell b -w\x1b[0m to start development server`,
     );
   }
 
@@ -57,7 +57,7 @@ export const createTask = async (name?: string, noInstall?: boolean, type?: stri
     await fs.outputJSON(resolve(dir, 'package.json'), pckg, { spaces: 2 });
 
     console.log(
-      `\n Created basic boilerplate. Run\x1b[36m cd ${name} && npx cromwell start\x1b[0m to launch Cromwell CMS`,
+      `\n Created basic boilerplate. Run\x1b[36m cd ${name} && yarn cromwell start\x1b[0m to launch Cromwell CMS`,
     );
   }
 };

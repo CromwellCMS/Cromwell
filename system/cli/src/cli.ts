@@ -74,7 +74,7 @@ const args = yargs(process.argv.slice(2))
       const init = argv.init;
 
       if (detached) {
-        let command = `npx --no-install crw s`;
+        let command = `yarn crw s`;
         if (serviceToStart) command += ` --sv ${serviceToStart}`;
         if (development) command += ' --dev';
         if (port) command += ` --port ${port}`;

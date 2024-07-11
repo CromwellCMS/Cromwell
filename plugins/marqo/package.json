@@ -14,9 +14,9 @@
     "cromwell.config.js"
   ],
   "scripts": {
-    "build": "npx cromwell b",
+    "build": "yarn cromwell b",
     "format": "prettier --write --ignore-unknown \"**/*.+(js|jsx|json|css|scss|md|ts|tsx)\"",
-    "watch": "npx cromwell b -w"
+    "watch": "yarn cromwell b -w"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "20.0.0",

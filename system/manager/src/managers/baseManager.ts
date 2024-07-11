@@ -194,9 +194,9 @@ export const startSystem = async (options: TStartOptions) => {
   }
 
   if (isDevelopment) {
-    spawn(`npx rollup -cw`, [], { shell: true, stdio: 'inherit', cwd: getCoreCommonDir() });
-    spawn(`npx rollup -cw`, [], { shell: true, stdio: 'inherit', cwd: getCoreBackendDir() });
-    spawn(`npx rollup -cw`, [], { shell: true, stdio: 'inherit', cwd: getCoreFrontendDir() });
+    spawn(`yarn rollup -cw`, [], { shell: true, stdio: 'inherit', cwd: getCoreCommonDir() });
+    spawn(`yarn rollup -cw`, [], { shell: true, stdio: 'inherit', cwd: getCoreBackendDir() });
+    spawn(`yarn rollup -cw`, [], { shell: true, stdio: 'inherit', cwd: getCoreFrontendDir() });
   }
 
   const serverSuccess = await startServiceByName({

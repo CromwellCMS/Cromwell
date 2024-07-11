@@ -7,11 +7,11 @@ sidebar_position: 6
 Cromwell CMS is designed to be scalable. CMS consists of three independent services which could be deployed separately.
 You can see more info about services in [development document](https://github.com/CromwellCMS/Cromwell/tree/master/system).
 
-By default command `npx cromwell start` will launch all three services, but it's possible to launch services independently via CLI.
+By default command `yarn cromwell start` will launch all three services, but it's possible to launch services independently via CLI.
 
-- Run `npx crw s --sv s` to start API server.
-- Run `npx crw s --sv r` to start Next.js server (renderer).
-- Run `npx crw s --sv s` to start admin panel server.
+- Run `yarn crw s --sv s` to start API server.
+- Run `yarn crw s --sv r` to start Next.js server (renderer).
+- Run `yarn crw s --sv s` to start admin panel server.
 
 ## Deployment
 
@@ -135,7 +135,7 @@ User authentication, such as in Admin panel, works via JWT. This method requires
 
 #### 5. Run servers on all machines
 
-Run `npx crw s --sv s` to launch only API server. First time you can launch it this way to see server logs and ensure there's no errors. To run the server in background add flag `-d` to start in detached from terminal mode: `npx crw s --sv s -d`.
+Run `yarn crw s --sv s` to launch only API server. First time you can launch it this way to see server logs and ensure there's no errors. To run the server in background add flag `-d` to start in detached from terminal mode: `yarn crw s --sv s -d`.
 
 #### 6. Configure load balancer
 
@@ -157,8 +157,8 @@ For smaller websites it also can be beneficial to set up load balancing on one m
 In one project just run servers on different ports with commands:
 
 ```sh
-npx crw s --sv s -p 4016
-npx crw s --sv s -p 4017
+yarn crw s --sv s -p 4016
+yarn crw s --sv s -p 4017
 ```
 
 Edit Nginx config:

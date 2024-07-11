@@ -23,8 +23,8 @@
     "dev": "node startup.js dev",
     "build:types": "node startup.js types",
     "prod": "node startup.js prod",
-    "test": "npx --no-install jest",
-    "test:watch": "npx --no-install jest --watch",
+    "test": "yarn jest",
+    "test:watch": "yarn jest --watch",
     "typecheck": "tsc --noEmit"
   },
   "browserslist": {
@@ -46,7 +46,7 @@
     "@apollo/client": "3.7.1",
     "@codexteam/ajax": "4.2.0",
     "@cromwell/core": "^3.0.1-alpha.0",
-    "@cromwell/core-backend": "^3.0.3-alpha.0",
+    "@cromwell/core-backend": "^3.0.4-alpha.0",
     "@cromwell/core-frontend": "^3.0.1-alpha.0",
     "@cromwell/editorjs-image": "^2.7.2",
     "@cromwell/plugin-product-filter": "^2.0.0-alpha.0",

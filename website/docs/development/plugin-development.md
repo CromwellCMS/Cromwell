@@ -569,14 +569,14 @@ If your Plugin adds new TypeORM Entities, it should change database schema. To e
 }
 ```
 
-Now when you start the CMS via `npx cromwell start`, server will update database's schema according to your entities.
+Now when you start the CMS via `yarn cromwell start`, server will update database's schema according to your entities.
 
 :::note
-Using `npx cromwell start` in development may appear slow if you want, for example, only to restart API server. In this case, you can manage services separately in different terminals:
+Using `yarn cromwell start` in development may appear slow if you want, for example, only to restart API server. In this case, you can manage services separately in different terminals:
 
-- `npx crw s --sv s` - To start API server.
-- `npx crw s --sv a` - To start Admin panel.
-- `npx crw s --sv r` - To start Frontend (Next.js) server.
+- `yarn crw s --sv s` - To start API server.
+- `yarn crw s --sv a` - To start Admin panel.
+- `yarn crw s --sv r` - To start Frontend (Next.js) server.
   :::
 
 After your Plugin will be installed, we need to update user's database since user's CMS will be in a production environment with disabled "synchronize". [Migrations](https://typeorm.io/#/migrations) are designed for such updates. You can write your custom migrations and export them as `migrations` extension in `src/backend/index.ts` file.  
@@ -594,13 +594,13 @@ To simplify creation of such migrations, there's the suggested workflow:
 
 ```json title="package.json"
 "scripts": {
-  "build": "npx cromwell b",
-  "watch": "npx cromwell b -w",
+  "build": "yarn cromwell b",
+  "watch": "yarn cromwell b -w",
   "docker:start-dev-mariadb": "docker run -d -p 3306:3306 --name crw-mariadb -e MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=true -e MARIADB_DATABASE=cromwell -e MYSQL_USER=cromwell -e MYSQL_PASSWORD=my_password mariadb:latest",
   "docker:start-dev-postgres": "docker run -d -p 5432:5432 --name crw-postgres -e POSTGRES_DB=cromwell -e POSTGRES_USER=cromwell -e POSTGRES_PASSWORD=my_password postgres",
-  "migration:generate:mysql": "npx typeorm migration:generate -o -f migration-mysql -n %npm_config_name%",
-  "migration:generate:postgres": "npx typeorm migration:generate -o -f migration-postgres -n %npm_config_name%",
-  "migration:generate:sqlite": "npx typeorm migration:generate -o -f migration-sqlite -n %npm_config_name%",
+  "migration:generate:mysql": "yarn typeorm migration:generate -o -f migration-mysql -n %npm_config_name%",
+  "migration:generate:postgres": "yarn typeorm migration:generate -o -f migration-postgres -n %npm_config_name%",
+  "migration:generate:sqlite": "yarn typeorm migration:generate -o -f migration-sqlite -n %npm_config_name%",
   "migration:generate:all": "npm run migration:generate:mysql --name=%npm_config_name% && npm run migration:generate:postgres --name=%npm_config_name% && npm run migration:generate:sqlite --name=%npm_config_name%",
   "migration:generate:all-example": "npm run migration:generate:all --name=init"
 }
@@ -629,13 +629,13 @@ Don't forget to include the directory in your `files`, so migrations will be dis
 To transpile code and turn it into the format that can be imported by the CMS, you have to build it. Same as in [Theme development](/docs/development/theme-development#compile) use Cromwell CMS CLI:
 
 ```bash
-npx cromwell build
+yarn cromwell build
 ```
 
 Or start watcher:
 
 ```bash
-npx cromwell build -w
+yarn cromwell build -w
 ```
 
 Go to Admin panel and make sure your Plugin appeared at `/admin/plugins` page.  

@@ -20,13 +20,13 @@
     "dev": "node startup.js dev",
     "gen": "node startup.js gen",
     "start": "node startup.js prod",
-    "watch": "npx rollup -cw",
+    "watch": "yarn rollup -cw",
     "typecheck": "tsc --noEmit",
     "format": "prettier --write --ignore-unknown \"**/*.+(js|jsx|json|css|md|ts|tsx)\""
   },
   "dependencies": {
     "@cromwell/core": "^3.0.1-alpha.0",
-    "@cromwell/core-backend": "^3.0.3-alpha.0",
+    "@cromwell/core-backend": "^3.0.4-alpha.0",
     "@cromwell/core-frontend": "^3.0.1-alpha.0",
     "@cromwell/utils": "^3.0.3-alpha.0",
     "chokidar": "3.5.2",

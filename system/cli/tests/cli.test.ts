@@ -8,7 +8,7 @@ describe('cli', () => {
     // CircleCI throws error: sh: 1: crw: Permission denied
     // for code below. @TODO: fix it.
 
-    // spawnSync(`npx crw c ${projName} --noInstall`, { shell: true, stdio: 'inherit' });
+    // spawnSync(`yarn crw c ${projName} --noInstall`, { shell: true, stdio: 'inherit' });
     // expect(fs.existsSync(resolve(process.cwd(), projName))).toBeTruthy();
     // fs.removeSync(resolve(process.cwd(), projName));
   });

@@ -11,7 +11,7 @@ const buildProxyPath = getServerBuildProxyPath();
 
 const buildServer = () => {
   const npmRunPath = require('npm-run-path');
-  spawnSync(`npx --no-install rollup -c ./rollup-prod.config.js`, [], {
+  spawnSync(`yarn rollup -c ./rollup-prod.config.js`, [], {
     shell: true,
     stdio: 'inherit',
     cwd: serverRootDir,
@@ -31,14 +31,14 @@ const runDevScript = () => {
   const spawnOptions = { shell: true, stdio: 'pipe' };
 
   const processes = [
-    spawn(`npx --no-install rollup -c ./rollup-dev.config.js -w`, [], { ...spawnOptions, cwd: serverRootDir }),
+    spawn(`yarn rollup -c ./rollup-dev.config.js -w`, [], { ...spawnOptions, cwd: serverRootDir }),
     spawn(
-      `npx tsx watch --tsconfig ./system/server/tsconfig.json ./system/server/src/main.ts`,
+      `yarn tsx watch --tsconfig ./system/server/tsconfig.json ./system/server/src/main.ts`,
       process.argv.slice(2),
       spawnOptions,
     ),
     spawn(
-      `npx tsx watch --tsconfig ./system/server/tsconfig.json ./system/server/src/proxy.ts `,
+      `yarn tsx watch --tsconfig ./system/server/tsconfig.json ./system/server/src/proxy.ts `,
       process.argv.slice(2),
       spawnOptions,
     ),

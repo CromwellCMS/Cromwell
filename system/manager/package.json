@@ -16,8 +16,8 @@
     "startup.js"
   ],
   "scripts": {
-    "build": "npx rollup -c",
-    "watch": "npx rollup -cw",
+    "build": "yarn rollup -c",
+    "watch": "yarn rollup -cw",
     "typecheck": "tsc --noEmit",
     "format": "prettier --write --ignore-unknown \"**/*.+(js|jsx|json|css|md|ts|tsx)\""
   },
@@ -25,7 +25,7 @@
     "@cromwell/admin-panel": "^3.0.4-alpha.0",
     "@cromwell/cli": "^3.0.5-alpha.0",
     "@cromwell/core": "^3.0.1-alpha.0",
-    "@cromwell/core-backend": "^3.0.3-alpha.0",
+    "@cromwell/core-backend": "^3.0.4-alpha.0",
     "@cromwell/core-frontend": "^3.0.1-alpha.0",
     "@cromwell/renderer": "^3.0.4-alpha.0",
     "@cromwell/server": "^3.0.5-alpha.0",

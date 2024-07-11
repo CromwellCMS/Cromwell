@@ -16,8 +16,8 @@
     "/es"
   ],
   "scripts": {
-    "build": "npx rollup -c",
-    "watch": "npx rollup -cw",
+    "build": "yarn rollup -c",
+    "watch": "yarn rollup -cw",
     "format": "prettier --write --ignore-unknown \"**/*.+(js|jsx|json|css|md|ts|tsx)\""
   },
   "dependencies": {

@@ -13,9 +13,9 @@
     "cromwell.config.js"
   ],
   "scripts": {
-    "build": "npx --no-install cromwell build",
-    "test": "cd tests && npx --no-install jest",
-    "watch": "npx --no-install cromwell b -w",
+    "build": "yarn cromwell build",
+    "test": "cd tests && yarn jest",
+    "watch": "yarn cromwell b -w",
     "typecheck": "tsc --noEmit",
     "format": "prettier --write --ignore-unknown \"**/*.+(js|jsx|json|css|md|ts|tsx)\""
   },

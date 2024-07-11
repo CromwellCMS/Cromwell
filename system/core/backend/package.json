@@ -1,6 +1,6 @@
 {
   "name": "@cromwell/core-backend",
-  "version": "3.0.3-alpha.0",
+  "version": "3.0.4-alpha.0",
   "description": "",
   "license": "MIT",
   "repository": "https://github.com/CromwellCMS/Cromwell",
@@ -16,9 +16,9 @@
     "/es"
   ],
   "scripts": {
-    "build": "npx rollup -c",
-    "test": "npx --no-install jest",
-    "watch": "npx rollup -cw",
+    "build": "yarn rollup -c",
+    "test": "yarn jest",
+    "watch": "yarn rollup -cw",
     "typecheck": "tsc --noEmit",
     "format": "prettier --write --ignore-unknown \"**/*.+(js|jsx|json|css|md|ts|tsx)\""
   },
@@ -39,6 +39,7 @@
     "fs-extra": "9.1.0",
     "graphql": "15.5.1",
     "graphql-type-json": "0.3.2",
+    "is-running": "2.1.0",
     "handlebars": "4.7.7",
     "node-fetch": "2.6.1",
     "nodemailer": "6.6.3",

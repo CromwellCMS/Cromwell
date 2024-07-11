@@ -23,7 +23,7 @@ For example, if you want to connect CMS to your own database, create cmsconfig.j
 }
 ```
 
-The config will be loaded on CMS start with `npx cromwell start`
+The config will be loaded on CMS start with `yarn cromwell start`
 
 ### Docker
 

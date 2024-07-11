@@ -16,9 +16,9 @@
     "/es"
   ],
   "scripts": {
-    "build": "npx rollup -c",
-    "watch": "npx rollup -cw",
-    "test": "npx --no-install jest",
+    "build": "yarn rollup -c",
+    "watch": "yarn rollup -cw",
+    "test": "yarn jest",
     "typecheck": "tsc --noEmit",
     "format": "prettier --write --ignore-unknown \"**/*.+(js|jsx|json|css|md|ts|tsx)\""
   },

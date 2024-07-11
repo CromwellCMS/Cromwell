@@ -16,10 +16,10 @@
     "cromwell.config.js"
   ],
   "scripts": {
-    "build": "npx --no-install cromwell b",
-    "test": "cd tests && npx --no-install jest",
+    "build": "yarn cromwell b",
+    "test": "cd tests && yarn jest",
     "format": "prettier --write --ignore-unknown \"**/*.+(js|jsx|json|css|scss|md|ts|tsx)\"",
-    "watch": "npx --no-install cromwell b -w"
+    "watch": "yarn cromwell b -w"
   },
   "dependencies": {
     "@mui/material": "5.10.17",

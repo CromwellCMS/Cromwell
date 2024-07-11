@@ -9,7 +9,7 @@ const generate = async () => {
   spawnSync(
     `cd ${normalizePath(
       resolve(__dirname, '../../'),
-    )} && npx typedoc --options website/api-generator/core/typedoc.json`,
+    )} && yarn typedoc --options website/api-generator/core/typedoc.json`,
     { shell: true, stdio: 'inherit' },
   );
 
@@ -26,7 +26,7 @@ const generate = async () => {
   spawnSync(
     `cd ${normalizePath(
       resolve(__dirname, '../../'),
-    )} && npx typedoc --options website/api-generator/toolkits/typedoc.json`,
+    )} && yarn typedoc --options website/api-generator/toolkits/typedoc.json`,
     { shell: true, stdio: 'inherit' },
   );
 

@@ -45,7 +45,7 @@ You need to add Frontend dependencies into `frontendDependencies` array of your 
 }
 ```
 
-Transformation happens when you run Cromwell CMS builder via `npx cromwell build`. Builder will point imports to the global store (for all Plugins to reuse) and generates additional meta info files. When the CMS needs to display a Plugin, it reads its meta info file, loads and executes Frontend dependencies first, then executes code of the Plugin.
+Transformation happens when you run Cromwell CMS builder via `yarn cromwell build`. Builder will point imports to the global store (for all Plugins to reuse) and generates additional meta info files. When the CMS needs to display a Plugin, it reads its meta info file, loads and executes Frontend dependencies first, then executes code of the Plugin.
 
 :::note
 You don't have to include React because it is used by the CMS core, so it is a Default Frontend dependency.

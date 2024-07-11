@@ -27,7 +27,7 @@ export const startServer = async (
   if (command !== 'build') {
     let message;
     if (await isPortUsed(port)) {
-      message = `Manager: Failed to start Server: api port ${port} is already in use. You may want to run stop command: npx cromwell stop --sv server`;
+      message = `Manager: Failed to start Server: api port ${port} is already in use. You may want to run stop command: yarn cromwell stop --sv server`;
     }
     if (message) {
       logger.error(message);

@@ -34,7 +34,7 @@ const main = async () => {
     if (fs.pathExistsSync(buildServerPath)) fs.removeSync(buildServerPath);
 
     spawnSync(
-      `npx --no-install tsc --outDir ${buildDir} --project ${normalizePath(join(startupCompileDir, 'tsconfig.json'))}`,
+      `yarn tsc --outDir ${buildDir} --project ${normalizePath(join(startupCompileDir, 'tsconfig.json'))}`,
       [],
       {
         shell: true,
@@ -49,7 +49,7 @@ const main = async () => {
     if (fs.pathExistsSync(nextTempBuildDir)) fs.removeSync(nextTempBuildDir);
     if (fs.pathExistsSync(nextBuildDir)) fs.removeSync(nextBuildDir);
 
-    spawnSync('npx --no-install next build --no-lint', [], { shell: true, stdio: 'inherit', cwd: __dirname });
+    spawnSync('yarn next build --no-lint', [], { shell: true, stdio: 'inherit', cwd: __dirname });
 
     setTimeout(() => {
       if (fs.pathExistsSync(join(nextTempBuildDir, 'BUILD_ID'))) {
@@ -69,7 +69,7 @@ const main = async () => {
     if (fs.pathExistsSync(declarationsBuildDir)) fs.removeSync(declarationsBuildDir);
 
     spawn(
-      `npx --no-install tsc --declaration --emitDeclarationOnly --noEmit null -p ${normalizePath(
+      `yarn tsc --declaration --emitDeclarationOnly --noEmit null -p ${normalizePath(
         join(getAdminPanelDir(), 'tsconfig.json'),
       )} --outDir ${normalizePath(declarationsBuildDir)}`,
       [],
@@ -84,14 +84,10 @@ const main = async () => {
   const runDev = () => {
     fs.ensureDirSync(buildDir);
 
-    const serverProc = spawn(
-      `npx --no-install tsx watch ${normalizePath(join(startupCompileDir, 'server.ts'))} development`,
-      [],
-      {
-        shell: true,
-        stdio: 'pipe',
-      },
-    );
+    const serverProc = spawn(`yarn tsx watch ${normalizePath(join(startupCompileDir, 'server.ts'))} development`, [], {
+      shell: true,
+      stdio: 'pipe',
+    });
 
     const buffToText = (buff) => {
       let str = buff && buff.toString ? buff.toString() : buff;
@@ -109,7 +105,7 @@ const main = async () => {
       if (process.send) process.send(adminPanelMessages.onStartMessage);
     }, 1000);
 
-    spawn(`npx --no-install next dev -p ${port}`, {
+    spawn(`yarn next dev -p ${port}`, {
       shell: true,
       cwd: getAdminPanelDir(),
       stdio: 'inherit',

@@ -5,7 +5,7 @@ services:
   env: node
   pullRequestPreviewsEnabled: true
   buildCommand: npm run build
-  startCommand: npx crw s
+  startCommand: yarn crw s
   envVars:
   - key: PORT
     value: 4016

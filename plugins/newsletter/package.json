@@ -15,15 +15,15 @@
     "cromwell.config.js"
   ],
   "scripts": {
-    "build": "npx --no-install cromwell b",
-    "watch": "npx --no-install cromwell b -w",
-    "test": "cd tests && npx --no-install jest",
+    "build": "yarn cromwell b",
+    "watch": "yarn cromwell b -w",
+    "test": "cd tests && yarn jest",
     "format": "prettier --write --ignore-unknown \"**/*.+(js|jsx|json|css|scss|md|ts|tsx)\"",
     "docker:start-dev-mariadb": "docker run --rm -d -p 3306:3306 --name crw-mariadb -e MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=true -e MARIADB_DATABASE=cromwell -e MYSQL_USER=cromwell -e MYSQL_PASSWORD=my_password mariadb:latest",
     "docker:start-dev-postgres": "docker run --rm -d -p 5432:5432 --name crw-postgres -e POSTGRES_DB=cromwell -e POSTGRES_USER=cromwell -e POSTGRES_PASSWORD=my_password postgres",
-    "migration:generate:mysql": "npx --no-install typeorm migration:generate -o -f migration-mysql -n %npm_config_name%",
-    "migration:generate:postgres": "npx --no-install typeorm migration:generate -o -f migration-postgres -n %npm_config_name%",
-    "migration:generate:sqlite": "npx --no-install typeorm migration:generate -o -f migration-sqlite -n %npm_config_name%",
+    "migration:generate:mysql": "yarn typeorm migration:generate -o -f migration-mysql -n %npm_config_name%",
+    "migration:generate:postgres": "yarn typeorm migration:generate -o -f migration-postgres -n %npm_config_name%",
+    "migration:generate:sqlite": "yarn typeorm migration:generate -o -f migration-sqlite -n %npm_config_name%",
     "migration:generate:all": "npm run migration:generate:mysql --name=%npm_config_name% && npm run migration:generate:postgres --name=%npm_config_name% && npm run migration:generate:sqlite --name=%npm_config_name%",
     "migration:generate:all-example": "npm run migration:generate:all --name=init"
   },

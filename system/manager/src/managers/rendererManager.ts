@@ -45,7 +45,7 @@ export const startRenderer = async (
   }
 
   if (!isBuild && (await isPortUsed(Number(port)))) {
-    const message = `Manager: Failed to start Renderer: port ${port} is already in use. You may want to run stop command: npx cromwell stop --sv renderer`;
+    const message = `Manager: Failed to start Renderer: port ${port} is already in use. You may want to run stop command: yarn cromwell stop --sv renderer`;
     logger.error(message);
     throw new Error(message);
   }

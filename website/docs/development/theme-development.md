@@ -31,13 +31,13 @@ To make your Theme work with the CMS we generate wrappers and meta files. These 
 To start Next.js development server with watcher (same as `next dev`):
 
 ```bash
-npx cromwell build -w
+yarn cromwell build -w
 ```
 
 Or via shortcut:
 
 ```bash
-npx crw b -w
+yarn crw b -w
 ```
 
 Open [http://localhost:4256/](http://localhost:4256/) to see your website.
@@ -45,7 +45,7 @@ Open [http://localhost:4256/](http://localhost:4256/) to see your website.
 When your Theme is ready and you want to try it with the CMS in production environment, your need to build it. Same as `next build` run:
 
 ```bash
-npx cromwell build
+yarn cromwell build
 ```
 
 Now you can go into Admin panel > Themes > click "Set active" on your Theme card. It will change active CMS Theme at [http://localhost:4016/](http://localhost:4016/)
@@ -69,7 +69,7 @@ In development you will probably need to see list of all available API methods. 
 Now start the CMS:
 
 ```bash
-npx cromwell start
+yarn cromwell start
 ```
 
 For data flow the CMS uses GraphQL. You can see and play with requests in the [Apollo](https://www.apollographql.com/) Graph sandbox. Go to [http://localhost:4016/api/graphql](http://localhost:4016/api/graphql) and it will suggest you to start one.

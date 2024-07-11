@@ -14,10 +14,10 @@
     "cromwell.config.js"
   ],
   "scripts": {
-    "build": "npx cromwell b",
-    "test": "cd tests && npx --no-install jest",
+    "build": "yarn cromwell b",
+    "test": "cd tests && yarn jest",
     "format": "prettier --write --ignore-unknown \"**/*.+(js|jsx|json|css|scss|md|ts|tsx)\"",
-    "watch": "npx cromwell b -w"
+    "watch": "yarn cromwell b -w"
   },
   "dependencies": {
     "paypal-rest-sdk": "1.8.1"
