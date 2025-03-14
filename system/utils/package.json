@@ -21,7 +21,7 @@
     "format": "prettier --write --ignore-unknown \"**/*.+(js|jsx|json|css|md|ts|tsx)\""
   },
   "dependencies": {
-    "@babel/preset-env": "7.17.10",
+    "@babel/preset-env": "7.23.2",
     "@babel/preset-react": "7.14.5",
     "@cromwell/core": "3.0.1",
     "@cromwell/core-backend": "3.0.4",
@@ -31,13 +31,13 @@
     "@rollup/plugin-virtual": "2.0.3",
     "@rollup/pluginutils": "4.1.1",
     "archiver": "5.3.0",
-    "async": "3.2.1",
-    "babel-loader": "8.2.2",
+    "async": "3.2.2",
+    "babel-loader": "9.1.3",
     "babel-plugin-transform-commonjs": "1.1.6",
     "chokidar": "3.5.2",
     "colors": "1.4.0",
     "crypto-random-string": "3.3.0",
-    "css-loader": "6.2.0",
+    "css-loader": "6.9.0",
     "estree-walker": "2.0.1",
     "extract-zip": "2.0.1",
     "flatted": "3.1.1",
@@ -56,7 +56,7 @@
     "style-loader": "3.2.1",
     "symlink-dir": "5.0.1",
     "tslib": "2.4.1",
-    "webpack": "5.65.0",
+    "webpack": "5.76.0",
     "yargs-parser": "20.2.9"
   },
   "devDependencies": {
